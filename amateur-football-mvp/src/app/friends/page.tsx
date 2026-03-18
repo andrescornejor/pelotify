@@ -627,9 +627,7 @@ export default function FriendsPage() {
                             ) : (
                                 <div className="relative max-w-full mx-auto py-10">
                                     {/* Laser scan line in background */}
-                                    <div className="absolute inset-0 bg-gradient-to-b from-transparent via-primary/5 to-transparent h-40 w-full animate-scan-line pointer-events-none z-0" />
-
-                                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 3xl:grid-cols-6 gap-6 relative z-10 px-4">
+                                    <div className="absolute inset-0 bg-gradient-to-b from-transpar                                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 relative z-10 px-4">
                                     <AnimatePresence mode="popLayout">
                                         {searchResults.map((p, i) => (
                                             <motion.div
@@ -644,38 +642,44 @@ export default function FriendsPage() {
                                                     damping: 20,
                                                     delay: i * 0.05 
                                                 }}
-                                                className="glass-premium-hover p-6 rounded-[2.5rem] flex items-center justify-between gap-4 border border-foreground/5 bg-surface group relative overflow-hidden shadow-xl"
+                                                className="glass-premium-hover p-10 rounded-[4rem] flex flex-col items-center text-center gap-8 border border-foreground/5 bg-surface group relative overflow-hidden shadow-2xl transition-all duration-500 hover:border-primary/20 hover:bg-foreground/[0.02]"
                                             >
-                                                <div className="absolute -top-12 -right-12 w-24 h-24 bg-primary/10 blur-[40px] rounded-full group-hover:bg-primary/20 transition-all pointer-events-none" />
+                                                <div className="absolute top-0 right-0 w-48 h-48 bg-primary/5 blur-[80px] rounded-full group-hover:bg-primary/10 transition-all pointer-events-none" />
                                                 
-                                                <Link href={`/profile?id=${p.id}`} className="flex-1 flex items-center gap-4 min-w-0 group/link">
-                                                    <div className="w-16 h-16 rounded-2xl bg-surface-elevated border border-foreground/10 shrink-0 overflow-hidden relative shadow-2xl group-hover/link:scale-110 transition-transform duration-500">
+                                                <Link href={`/profile?id=${p.id}`} className="flex flex-col items-center gap-6 group/link w-full">
+                                                    <div className="w-32 h-32 rounded-[2.5rem] bg-surface-elevated border-2 border-foreground/10 shrink-0 overflow-hidden relative shadow-2xl group-hover/link:scale-110 transition-transform duration-700 group-hover/link:border-primary/40">
                                                         {p.avatar_url ? (
-                                                            <img src={p.avatar_url} alt="" className="w-full h-full object-cover grayscale-[0.5] group-hover:grayscale-0 transition-all duration-700" />
+                                                            <img src={p.avatar_url} alt="" className="w-full h-full object-cover grayscale-[0.2] group-hover:grayscale-0 transition-all duration-700" />
                                                         ) : (
-                                                            <div className="w-full h-full flex items-center justify-center text-primary/40 font-black text-xl italic bg-primary/5">{p.name?.charAt(0)}</div>
+                                                            <div className="w-full h-full flex items-center justify-center text-primary/40 font-black text-4xl italic bg-primary/5">{p.name?.charAt(0)}</div>
                                                         )}
+                                                        <div className="absolute top-3 right-3 w-8 h-8 rounded-xl bg-primary/80 backdrop-blur flex items-center justify-center shadow-lg border border-white/10 group-hover:scale-110 transition-transform">
+                                                            <Zap className="w-4 h-4 text-background" />
+                                                        </div>
                                                     </div>
-                                                    <div className="flex-1 min-w-0 space-y-1">
-                                                        <p className="font-black text-base text-foreground italic uppercase truncate tracking-tight group-hover/link:text-primary transition-colors">{p.name}</p>
-                                                        <div className="flex items-center gap-2">
-                                                            <div className="flex items-center gap-1 px-2 py-0.5 bg-accent/10 rounded-md">
-                                                                <Trophy className="w-3 h-3 text-accent" />
-                                                                <span className="text-[10px] font-black text-accent">{p.elo || 0}</span>
+                                                    
+                                                    <div className="space-y-2 w-full">
+                                                        <p className="font-black text-2xl text-foreground italic uppercase truncate tracking-tighter group-hover/link:text-primary transition-colors leading-none">{p.name}</p>
+                                                        <div className="flex flex-col items-center gap-2">
+                                                            <span className="text-[10px] font-black uppercase tracking-[0.3em] text-foreground/40 italic">{p.position || 'LÍBERO'}</span>
+                                                            <div className="flex items-center gap-2 px-4 py-1.5 bg-accent/10 rounded-full border border-accent/20">
+                                                                <Trophy className="w-3.5 h-3.5 text-accent" />
+                                                                <span className="text-xs font-black text-accent tracking-widest">{p.elo || 0} XP</span>
                                                             </div>
-                                                            <span className="text-[9px] font-bold uppercase tracking-widest text-foreground/40">{p.position || 'LÍBERO'}</span>
                                                         </div>
                                                     </div>
                                                 </Link>
 
-                                                <div className="shrink-0 relative z-20">
+                                                <div className="w-full pt-6 border-t border-foreground/5 relative z-20">
                                                     {p.relationshipStatus === 'accepted' ? (
-                                                        <div className="w-11 h-11 rounded-xl bg-primary/20 text-primary flex items-center justify-center border border-primary/30 shadow-[0_0_20px_rgba(16,185,129,0.1)]">
+                                                        <div className="w-full h-14 rounded-2xl bg-primary/10 text-primary flex items-center justify-center gap-3 border border-primary/20 shadow-inner">
                                                             <UserCheck className="w-5 h-5" />
+                                                            <span className="text-[10px] font-black uppercase tracking-widest">AMIGO CONFIRMADO</span>
                                                         </div>
                                                     ) : p.relationshipStatus === 'pending_sent' ? (
-                                                        <div className="w-11 h-11 rounded-xl bg-foreground/[0.05] text-foreground/50 flex items-center justify-center border border-foreground/10 animate-pulse">
-                                                            <Clock className="w-5 h-5" />
+                                                        <div className="w-full h-14 rounded-2xl bg-foreground/[0.03] text-foreground/30 flex items-center justify-center gap-3 border border-foreground/5 italic">
+                                                            <Clock className="w-5 h-5 animate-pulse" />
+                                                            <span className="text-[10px] font-black uppercase tracking-widest">ESPERANDO SEÑAL</span>
                                                         </div>
                                                     ) : p.relationshipStatus === 'pending_received' ? (
                                                         <button
@@ -685,9 +689,9 @@ export default function FriendsPage() {
                                                                 setSearchResults(prev => prev.map(item => item.id === p.id ? { ...item, relationshipStatus: 'accepted' } : item));
                                                             }}
                                                             disabled={actionLoading === p.friendshipId}
-                                                            className="h-11 px-4 rounded-xl bg-primary text-background text-[9px] font-black uppercase tracking-widest shadow-xl shadow-primary/20 active:scale-95 transition-all hover:bg-foreground hover:text-background"
+                                                            className="w-full h-14 rounded-2xl bg-primary text-background text-[11px] font-black uppercase tracking-[0.3em] shadow-xl shadow-primary/20 active:scale-95 transition-all hover:bg-foreground hover:text-background flex items-center justify-center gap-3 italic"
                                                         >
-                                                            {actionLoading === p.friendshipId ? <Loader2 className="w-4 h-4 animate-spin" /> : 'ACEPTAR'}
+                                                            {actionLoading === p.friendshipId ? <Loader2 className="w-4 h-4 animate-spin" /> : <><Check className="w-5 h-5" /> ACEPTAR CONTRATO</>}
                                                         </button>
                                                     ) : (
                                                         <button
@@ -696,9 +700,16 @@ export default function FriendsPage() {
                                                                 handleSendRequest(p.id);
                                                             }}
                                                             disabled={actionLoading === p.id}
-                                                            className="w-11 h-11 rounded-xl bg-primary text-background flex items-center justify-center hover:bg-white hover:text-primary hover:scale-110 shadow-xl shadow-primary/30 transition-all active:scale-95 border-2 border-primary"
+                                                            className="w-full h-14 rounded-2xl bg-primary text-background flex items-center justify-center gap-3 hover:bg-white hover:text-black hover:scale-[1.02] shadow-[0_10px_30px_rgba(16,185,129,0.3)] transition-all active:scale-95 border-2 border-primary group/btn"
                                                         >
-                                                            {actionLoading === p.id ? <Loader2 className="w-5 h-5 animate-spin" /> : <UserPlus className="w-5 h-5" />}
+                                                            {actionLoading === p.id ? (
+                                                                <Loader2 className="w-5 h-5 animate-spin" />
+                                                            ) : (
+                                                                <>
+                                                                    <UserPlus className="w-5 h-5 group-hover/btn:rotate-12 transition-transform" />
+                                                                    <span className="text-[11px] font-black uppercase tracking-[0.3em] italic">SOLICITAR ALIANZA</span>
+                                                                </>
+                                                            )}
                                                         </button>
                                                     )}
                                                 </div>
