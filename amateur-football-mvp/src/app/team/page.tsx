@@ -549,17 +549,17 @@ function TeamProfileContent() {
                                         setIsJoining(false);
                                     }
                                 }}
-                                disabled={isJoining || members.some(m => m.user_id === user?.id && m.status === 'pending')}
+                                disabled={isJoining || members.some(m => m.user_id === user?.id && m.status === 'requested')}
                                 className={cn(
                                     "w-full h-14 md:h-16 rounded-[2rem] font-black uppercase tracking-[0.2em] md:tracking-[0.4em] text-[10px] transition-all active:scale-95 shadow-xl flex items-center justify-center gap-3",
-                                    members.some(m => m.user_id === user?.id && m.status === 'pending')
+                                    members.some(m => m.user_id === user?.id && m.status === 'requested')
                                         ? "bg-foreground/10 text-foreground/40 cursor-not-allowed border border-foreground/5"
                                         : "bg-primary text-background hover:bg-foreground hover:text-background shadow-primary/10"
                                 )}
                             >
                                 {isJoining ? (
                                     <Loader2 className="w-5 h-5 animate-spin" />
-                                ) : members.some(m => m.user_id === user?.id && m.status === 'pending') ? (
+                                ) : members.some(m => m.user_id === user?.id && m.status === 'requested') ? (
                                     <>SOLICITUD ENVIADA</>
                                 ) : (
                                     <><Plus className="w-5 h-5" /> <span className="truncate">SOLICITAR INGRESO</span></>

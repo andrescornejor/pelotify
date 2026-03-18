@@ -120,7 +120,7 @@ export async function joinTeam(teamId: string, userId: string, role: 'captain' |
                 team_id: teamId,
                 user_id: userId,
                 profile_id: userId,
-                status: role === 'captain' ? 'confirmed' : 'pending', // Captain is auto-confirmed, members are pending
+                status: role === 'captain' ? 'confirmed' : 'requested', // Captain is auto-confirmed, member joins are requests
                 role: role
             },
             { onConflict: 'team_id,user_id' }
@@ -212,8 +212,7 @@ export async function getTeamRequests(teamId: string) {
                 elo
             )
         `)
-        .eq('team_id', teamId)
-        .eq('status', 'pending')
+        .eq('status', 'requested')
         .eq('role', 'member');
 
     if (error) throw error;
@@ -285,6 +284,17 @@ export async function getTeamInvitations(userId: string) {
 
     if (error) throw error;
     return data;
+}
+
+export async function getTeamInvitationsCount(userId: string) {
+    const { count, error } = await supabase
+        .from('team_members')
+        .select('*', { count: 'exact', head: true })
+        .eq('user_id', userId)
+        .eq('status', 'pending');
+
+    if (error) throw error;
+    return count || 0;
 }
 
 export async function getTeamTrophies(teamId: string) {
@@ -376,7 +386,7 @@ export async function getPendingJoinRequestsForCaptain(captainId: string) {
                 position
             )
         `)
-        .eq('status', 'pending')
+        .eq('status', 'requested')
         .eq('role', 'member')
         .eq('teams.captain_id', captainId);
 
@@ -393,7 +403,7 @@ export async function getPendingJoinRequestsCountForCaptain(captainId: string) {
                 captain_id
             )
         `, { count: 'exact', head: true })
-        .eq('status', 'pending')
+        .eq('status', 'requested')
         .eq('role', 'member')
         .eq('teams.captain_id', captainId);
 

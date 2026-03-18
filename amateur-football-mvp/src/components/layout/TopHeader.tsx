@@ -10,7 +10,7 @@ import { NotificationCenter } from '../notifications/NotificationCenter';
 import { useAuth } from '@/contexts/AuthContext';
 import { getPendingRequestsCount } from '@/lib/friends';
 import { getMatchInvitationsCount } from '@/lib/matches';
-import { getPendingJoinRequestsCountForCaptain } from '@/lib/teams';
+import { getPendingJoinRequestsCountForCaptain, getTeamInvitationsCount } from '@/lib/teams';
 import { useTheme } from '@/contexts/ThemeContext';
 import { cn } from '@/lib/utils';
 
@@ -34,13 +34,14 @@ export function TopHeader() {
     const updateCount = async () => {
         if (!user) return;
         try {
-            const [f, m, t] = await Promise.all([
+            const [f, m, t, ti] = await Promise.all([
                 getPendingRequestsCount(user.id),
                 getMatchInvitationsCount(user.id),
-                getPendingJoinRequestsCountForCaptain(user.id)
+                getPendingJoinRequestsCountForCaptain(user.id),
+                getTeamInvitationsCount(user.id)
             ]);
             setFriendsCount(f || 0);
-            setNotifCount((f || 0) + (m || 0) + (t || 0));
+            setNotifCount((f || 0) + (m || 0) + (t || 0) + (ti || 0));
         } catch (err) {
             console.error(err);
         }

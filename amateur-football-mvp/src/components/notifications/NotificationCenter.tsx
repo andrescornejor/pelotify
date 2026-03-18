@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { getPendingRequests, acceptFriendRequest, deleteFriendship, FriendshipData } from '@/lib/friends';
 import { getMatchInvitations, respondToInvitation } from '@/lib/matches';
-import { getPendingJoinRequestsForCaptain, respondToTeamInvitation } from '@/lib/teams';
+import { getPendingJoinRequestsForCaptain, respondToTeamInvitation, getTeamInvitations } from '@/lib/teams';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Bell, X, Check, XCircle, Users, Calendar, Loader2, Info, ArrowRight } from 'lucide-react';
 import Link from 'next/link';
@@ -19,6 +19,7 @@ export function NotificationCenter({ isOpen, onClose }: NotificationCenterProps)
     const [friendRequests, setFriendRequests] = useState<FriendshipData[]>([]);
     const [matchInvites, setMatchInvites] = useState<any[]>([]);
     const [teamRequests, setTeamRequests] = useState<any[]>([]);
+    const [teamInvitations, setTeamInvitations] = useState<any[]>([]);
     const [isLoading, setIsLoading] = useState(false);
     const [actionLoading, setActionLoading] = useState<string | null>(null);
 
@@ -26,14 +27,16 @@ export function NotificationCenter({ isOpen, onClose }: NotificationCenterProps)
         if (!user) return;
         setIsLoading(true);
         try {
-            const [f, m, t] = await Promise.all([
+            const [f, m, t, ti] = await Promise.all([
                 getPendingRequests(user.id),
                 getMatchInvitations(user.id),
-                getPendingJoinRequestsForCaptain(user.id)
+                getPendingJoinRequestsForCaptain(user.id),
+                getTeamInvitations(user.id)
             ]);
             setFriendRequests(f);
             setMatchInvites(m);
             setTeamRequests(t);
+            setTeamInvitations(ti);
         } catch (err) {
             console.error("Error fetching notifications:", err);
         } finally {
@@ -79,6 +82,7 @@ export function NotificationCenter({ isOpen, onClose }: NotificationCenterProps)
         try {
             await respondToTeamInvitation(teamId, targetUserId, accept ? 'accept' : 'decline');
             setTeamRequests(prev => prev.filter(r => r.team_id !== teamId || r.user_id !== targetUserId));
+            setTeamInvitations(prev => prev.filter(r => r.team_id !== teamId || r.user_id !== targetUserId));
         } catch (err) {
             console.error(err);
         } finally {
@@ -86,7 +90,7 @@ export function NotificationCenter({ isOpen, onClose }: NotificationCenterProps)
         }
     };
 
-    const hasNotifications = friendRequests.length > 0 || matchInvites.length > 0 || teamRequests.length > 0;
+    const hasNotifications = friendRequests.length > 0 || matchInvites.length > 0 || teamRequests.length > 0 || teamInvitations.length > 0;
 
     return (
         <AnimatePresence>
@@ -199,6 +203,63 @@ export function NotificationCenter({ isOpen, onClose }: NotificationCenterProps)
                                                             </button>
                                                             <button 
                                                                 onClick={() => handleTeamAction(req.team_id, req.user_id, false)}
+                                                                disabled={actionLoading === actionId}
+                                                                className="w-10 h-10 rounded-xl bg-white/[0.03] border border-white/[0.05] flex items-center justify-center text-foreground/20 hover:text-red-400 hover:border-red-400/30 hover:bg-red-400/5 transition-all active:scale-95 disabled:opacity-50"
+                                                            >
+                                                                <XCircle className="w-5 h-5" />
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </motion.div>
+                                            );
+                                        })}
+                                    </AnimatePresence>
+
+                                    {/* Team Invitations (Player) */}
+                                    <AnimatePresence mode="popLayout">
+                                        {teamInvitations.map((inv) => {
+                                            const actionId = `${inv.team_id}-${user?.id}`;
+                                            return (
+                                                <motion.div 
+                                                    key={actionId}
+                                                    variants={{
+                                                        hidden: { opacity: 0, y: 15, scale: 0.96, filter: 'blur(4px)' },
+                                                        show: { opacity: 1, y: 0, scale: 1, filter: 'blur(0px)' }
+                                                    }}
+                                                    layout
+                                                    transition={{ 
+                                                        type: "spring",
+                                                        stiffness: 400,
+                                                        damping: 30
+                                                    }}
+                                                    className="p-4 rounded-3xl bg-accent/[0.02] border border-accent/10 hover:bg-accent/[0.04] hover:border-accent/30 transition-all flex flex-col gap-3 group"
+                                                >
+                                                    <div className="flex items-center gap-4">
+                                                        <div className="w-12 h-12 rounded-2xl bg-[#0a0a10] border-2 border-accent/20 flex items-center justify-center shrink-0 overflow-hidden shadow-lg group-hover:border-accent/40 transition-colors">
+                                                            {inv.teams?.logo_url ? (
+                                                                <img src={inv.teams.logo_url} alt="" className="w-full h-full object-cover" />
+                                                            ) : (
+                                                                <Shield className="w-6 h-6 text-accent" />
+                                                            )}
+                                                        </div>
+                                                        <div className="flex-1 min-w-0">
+                                                            <p className="text-[13px] font-black text-foreground italic uppercase tracking-tight truncate leading-none mb-1 group-hover:text-accent transition-colors">
+                                                                {inv.teams?.name || 'Equipo'}
+                                                            </p>
+                                                            <div className="flex items-center gap-1.5">
+                                                                <span className="text-[9px] text-accent font-black uppercase tracking-widest italic animate-pulse">¡Convocatoria Abierta!</span>
+                                                            </div>
+                                                        </div>
+                                                        <div className="flex gap-2">
+                                                            <button 
+                                                                onClick={() => handleTeamAction(inv.team_id, user!.id, true)}
+                                                                disabled={actionLoading === actionId}
+                                                                className="w-10 h-10 rounded-xl bg-accent flex items-center justify-center text-background hover:scale-105 transition-all active:scale-95 disabled:opacity-50 shadow-lg shadow-accent/20"
+                                                            >
+                                                                {actionLoading === actionId ? <Loader2 className="w-4 h-4 animate-spin" /> : <Check className="w-5 h-5" strokeWidth={3} />}
+                                                            </button>
+                                                            <button 
+                                                                onClick={() => handleTeamAction(inv.team_id, user!.id, false)}
                                                                 disabled={actionLoading === actionId}
                                                                 className="w-10 h-10 rounded-xl bg-white/[0.03] border border-white/[0.05] flex items-center justify-center text-foreground/20 hover:text-red-400 hover:border-red-400/30 hover:bg-red-400/5 transition-all active:scale-95 disabled:opacity-50"
                                                             >
