@@ -328,6 +328,14 @@ function TeamProfileContent() {
                                 {isEditing ? (
                                     <div className="flex gap-2 md:gap-3">
                                         <button
+                                            onClick={handleDeleteTeam}
+                                            className="h-12 md:h-14 lg:h-16 px-4 md:px-5 bg-red-500/10 text-red-500 rounded-2xl lg:rounded-3xl font-black uppercase tracking-widest text-[10px] md:text-xs hover:bg-red-500/20 transition-all active:scale-95 border border-red-500/20 flex items-center gap-2"
+                                            title="Eliminar Equipo"
+                                        >
+                                            <Trash2 className="w-4 h-4 md:w-5 md:h-5" />
+                                            <span className="hidden md:inline">ELIMINAR</span>
+                                        </button>
+                                        <button
                                             onClick={() => setIsEditing(false)}
                                             className="h-12 md:h-14 lg:h-16 px-6 lg:px-8 bg-foreground/5 text-foreground/40 rounded-2xl lg:rounded-3xl font-black uppercase tracking-widest text-[10px] md:text-xs hover:text-foreground transition-all active:scale-95 border border-foreground/5"
                                         >
