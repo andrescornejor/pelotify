@@ -42,12 +42,19 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
                 if (session?.user) {
                     const metadata = session.user.user_metadata || {};
+                    // Fetch existing profile to prioritize DB data (avatar, etc)
+                    const { data: profile } = await supabase
+                        .from('profiles')
+                        .select('avatar_url, name')
+                        .eq('id', session.user.id)
+                        .maybeSingle();
+
                     setUser({
                         id: session.user.id,
                         email: session.user.email || '',
-                        name: metadata.name || metadata.full_name || session.user.email?.split('@')[0] || 'Jugador',
-                        avatar_url: metadata.avatar_url,
-                        user_metadata: metadata,
+                        name: profile?.name || metadata.name || metadata.full_name || session.user.email?.split('@')[0] || 'Jugador',
+                        avatar_url: profile?.avatar_url || metadata.avatar_url,
+                        user_metadata: { ...metadata, ...(profile || {}) },
                     });
                 }
             } catch (error) {
@@ -64,12 +71,19 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             async (_event, session) => {
                 if (session?.user) {
                     const metadata = session.user.user_metadata || {};
+                    // Fetch profile to avoid Google metadata overwriting local custom data
+                    const { data: profile } = await supabase
+                        .from('profiles')
+                        .select('avatar_url, name')
+                        .eq('id', session.user.id)
+                        .maybeSingle();
+
                     const userData = {
                         id: session.user.id,
                         email: session.user.email || '',
-                        name: metadata.name || metadata.full_name || session.user.email?.split('@')[0] || 'Jugador',
-                        avatar_url: metadata.avatar_url,
-                        user_metadata: metadata,
+                        name: profile?.name || metadata.name || metadata.full_name || session.user.email?.split('@')[0] || 'Jugador',
+                        avatar_url: profile?.avatar_url || metadata.avatar_url,
+                        user_metadata: { ...metadata, ...(profile || {}) },
                     };
                     setUser(userData);
 

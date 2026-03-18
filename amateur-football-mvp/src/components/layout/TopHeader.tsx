@@ -75,9 +75,9 @@ export function TopHeader() {
                         {/* Background subtle light beam */}
                         <div className="absolute top-0 left-[-10%] w-[40%] h-full bg-gradient-to-r from-primary/5 via-transparent to-transparent -skew-x-12 pointer-events-none" />
 
-                        <div className="flex items-center justify-between h-[58px] sm:h-[68px] lg:h-[76px] px-4 sm:px-6 lg:px-8">
+                        <div className="grid grid-cols-[1fr_auto_1fr] items-center h-[58px] sm:h-[68px] lg:h-[76px] px-4 sm:px-6 lg:px-8">
                             {/* Left: Menu + Logo */}
-                            <div className="flex items-center gap-3 sm:gap-4 lg:gap-4 xl:gap-6">
+                            <div className="flex items-center gap-3 sm:gap-4 lg:gap-3 xl:gap-6 min-w-0">
                                 <motion.button
                                     onClick={toggleSidebar}
                                     whileTap={{ scale: 0.92 }}
@@ -110,9 +110,9 @@ export function TopHeader() {
                                     <div className="w-9 h-9 sm:w-11 sm:h-11 lg:w-10 lg:h-10 xl:w-12 xl:h-12 rounded-[0.875rem] lg:rounded-[1rem] overflow-hidden border border-primary/20 bg-primary/5 shadow-2xl transition-transform duration-500 group-hover/logo:scale-105">
                                         <img src="/logo_pelotify.png" alt="Logo" className="w-full h-full object-cover scale-110" />
                                     </div>
-                                    <div className="flex flex-col lg:gap-0.5">
+                                    <div className="flex-1 min-w-0 flex flex-col lg:gap-0.5">
                                         <div className="flex items-center gap-2">
-                                            <span className="text-[20px] sm:text-[24px] lg:text-[26px] xl:text-[32px] font-[900] tracking-tighter font-outfit uppercase italic leading-none flex items-center gap-0">
+                                            <span className="text-[20px] sm:text-[24px] lg:text-[24px] xl:text-[30px] font-[900] tracking-tighter font-outfit uppercase italic leading-none flex items-center gap-0 truncate">
                                                 <span
                                                     className="bg-clip-text text-transparent"
                                                     style={{
@@ -137,8 +137,8 @@ export function TopHeader() {
                                 </Link>
                             </div>
 
-                            {/* Middle: Desktop Nav (centered on large screens) */}
-                            <nav className="hidden lg:flex absolute left-1/2 -translate-x-1/2 items-center gap-1.5 bg-foreground/[0.03] p-1.5 rounded-[1.25rem] border border-foreground/[0.05] backdrop-blur-md">
+                            {/* Middle: Desktop Nav */}
+                            <nav className="hidden lg:flex items-center gap-1.5 bg-foreground/[0.03] p-1.5 rounded-[1.25rem] border border-foreground/[0.05] backdrop-blur-md">
                                 {DESKTOP_NAV.map((item) => {
                                     const isActive = pathname === item.href || (item.href !== '/' && pathname.startsWith(item.href));
                                     const hasBadge = item.id === 'friends' && friendsCount > 0 && !isActive;
@@ -190,7 +190,7 @@ export function TopHeader() {
 
 
                             {/* Right: Actions */}
-                            <div className="flex items-center gap-1.5 sm:gap-4 lg:gap-2.5 xl:gap-4">
+                            <div className="flex items-center justify-end gap-1.5 sm:gap-4 lg:gap-2.5 xl:gap-4">
                                 {/* Create Match Button - Only Desktop */}
                                 <Link href="/create" className="hidden xl:block">
                                     <motion.button
