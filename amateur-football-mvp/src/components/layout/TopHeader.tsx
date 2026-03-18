@@ -116,7 +116,7 @@ export function TopHeader() {
                                     </div>
                                     <div className="flex-1 min-w-0 flex flex-col lg:gap-0.5">
                                         <div className="flex items-center gap-2">
-                                            <span className="text-[20px] sm:text-[24px] lg:text-[24px] xl:text-[32px] font-[900] tracking-tighter font-kanit uppercase italic leading-none flex items-center gap-0 truncate">
+                                            <span className="text-[20px] sm:text-[24px] lg:text-[24px] xl:text-[32px] font-[900] tracking-tighter font-kanit uppercase italic leading-none flex items-center gap-0 pr-2">
                                                 <span className="text-foreground">
                                                     PELO
                                                 </span>
