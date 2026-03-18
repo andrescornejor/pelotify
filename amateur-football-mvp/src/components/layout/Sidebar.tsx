@@ -87,7 +87,7 @@ export function SidebarContent({ isMobile = false, onClose }: { isMobile?: boole
                         <div className="flex flex-col">
                             <span className="text-[22px] font-[900] tracking-[-0.04em] font-kanit uppercase italic leading-tight flex items-center gap-0 group-hover/logo:text-primary transition-all pr-4">
                                 <span className="text-foreground">
-                                    PELO
+                                    PELOTI
                                 </span>
                                 <span
                                     className="px-2 -mx-2"
@@ -96,7 +96,7 @@ export function SidebarContent({ isMobile = false, onClose }: { isMobile?: boole
                                         WebkitBackgroundClip: 'text',
                                         WebkitTextFillColor: 'transparent',
                                     }}>
-                                    TIFY
+                                    FY
                                 </span>
                             </span>
                             <span className="text-[8px] font-black uppercase tracking-[0.25em] leading-none mt-0.5 text-foreground/55">
