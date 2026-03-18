@@ -75,29 +75,6 @@ export async function DELETE(request: Request) {
         await supabaseAdmin.from('matches').delete().eq('creator_id', userId);
         await supabaseAdmin.from('teams').delete().eq('captain_id', userId);
 
-        // --- STORAGE CLEANUP (Avatar) ---
-        const { data: profile } = await supabaseAdmin
-            .from('profiles')
-            .select('avatar_url')
-            .eq('id', userId)
-            .single();
-
-        if (profile?.avatar_url) {
-            try {
-                // The avatar URL is: https://.../avatars/avatars/FILENAME
-                // We need the part starting from the second 'avatars/'
-                const parts = profile.avatar_url.split('/avatars/');
-                if (parts.length > 1) {
-                    // filePath should be 'avatars/FILENAME' (as used in storage.tsx)
-                    const filePath = `avatars/${parts[parts.length - 1]}`;
-                    console.log('Deleting avatar from storage:', filePath);
-                    await supabaseAdmin.storage.from('avatars').remove([filePath]);
-                }
-            } catch (err) {
-                console.warn('Error deleting avatar from storage:', err);
-            }
-        }
-
         // Finally the profile
         await supabaseAdmin.from('profiles').delete().eq('id', userId);
 
