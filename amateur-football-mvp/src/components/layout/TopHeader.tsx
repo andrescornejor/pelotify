@@ -251,12 +251,12 @@ export function TopHeader() {
                                         </AnimatePresence>
                                     </motion.button>
 
-                                    {/* Profile Avatar - Only LG+ */}
-                                    <Link href="/profile/me" className="hidden lg:block">
+                                    {/* Profile Avatar */}
+                                    <Link href="/profile/me">
                                         <motion.div
                                             whileHover={{ scale: 1.08 }}
                                             whileTap={{ scale: 0.92 }}
-                                            className="w-11 h-11 rounded-2xl p-0.5 bg-foreground/[0.04] border border-foreground/[0.08] hover:border-primary/30 transition-all"
+                                            className="w-10 h-10 sm:w-11 sm:h-11 rounded-2xl p-0.5 bg-foreground/[0.04] border border-foreground/[0.08] hover:border-primary/30 transition-all"
                                         >
                                             <div className="w-full h-full rounded-[0.85rem] overflow-hidden bg-primary/5 flex items-center justify-center">
                                                 {user?.avatar_url ? (
