@@ -140,15 +140,18 @@ function ProfileContent() {
 
             // Fetch Gamification Data
             try {
-                const [badgesRes, mvpRes, teamRes] = await Promise.all([
+                const [badgesRes, teamRes] = await Promise.all([
                     supabase.from('user_badges').select('*').eq('user_id', targetId),
-                    supabase.from('mvp_votes').select('id', { count: 'exact' }).eq('voted_player_id', targetId),
                     supabase.from('team_members').select('teams(name)').eq('user_id', targetId).single()
                 ]);
 
                 if (badgesRes.data) setUserBadges(badgesRes.data);
-                if (mvpRes.count !== null) setMvpCount(mvpRes.count);
                 if (teamRes.data?.teams) setUserTeam(teamRes.data.teams);
+
+                // IMPORTANT: Calculate MVP using the aggregated count from the profile table, not counting individual votes
+                // targetProfile is our DB record fetched above
+                const actualMvpCount = targetProfile?.mvp_count || 0;
+                setMvpCount(actualMvpCount);
 
                 // Fetch real matches
                 const matches = await getUserMatches(targetId);

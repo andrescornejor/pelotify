@@ -440,18 +440,38 @@ export async function getMatchStats(matchId: string) {
             }));
     }
 
-    // Calculate MVP
+    // Calculate MVP (Candidate logic with tiebreaker)
     const voteCounts: Record<string, number> = {};
     mvpVotes?.forEach(v => {
         voteCounts[v.voted_player_id] = (voteCounts[v.voted_player_id] || 0) + 1;
     });
 
-    let mvpId = null;
     let maxVotes = 0;
-    for (const [id, count] of Object.entries(voteCounts)) {
-        if (count > maxVotes) {
-            maxVotes = count;
-            mvpId = id;
+    Object.values(voteCounts).forEach(v => {
+        if (v > maxVotes) maxVotes = v;
+    });
+
+    let mvpId = null;
+    if (maxVotes > 0) {
+        const candidates = Object.entries(voteCounts)
+            .filter(([_, count]) => count === maxVotes)
+            .map(([id]) => id);
+
+        if (candidates.length > 1) {
+            // Tiebreaker: Goles (as defined by user)
+            let topScorerId = candidates[0];
+            let maxGoals = -1;
+
+            candidates.forEach(id => {
+                const goals = goalScorers.find(gs => gs.id === id)?.goals || 0;
+                if (goals > maxGoals) {
+                    maxGoals = goals;
+                    topScorerId = id;
+                }
+            });
+            mvpId = topScorerId;
+        } else {
+            mvpId = candidates[0];
         }
     }
 
