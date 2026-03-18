@@ -627,7 +627,8 @@ export default function FriendsPage() {
                             ) : (
                                 <div className="relative max-w-full mx-auto py-10">
                                     {/* Laser scan line in background */}
-                                    <div className="absolute inset-0 bg-gradient-to-b from-transpar                                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 relative z-10 px-4">
+                                    <div className="absolute inset-0 bg-gradient-to-b from-transparent via-primary/5 to-transparent h-40 w-full animate-scan-line pointer-events-none z-0" />
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 relative z-10 px-4">
                                     <AnimatePresence mode="popLayout">
                                         {searchResults.map((p, i) => (
                                             <motion.div
