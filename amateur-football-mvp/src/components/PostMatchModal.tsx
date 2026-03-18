@@ -63,18 +63,22 @@ export default function PostMatchModal({ matchId, participants, currentUserId, o
             }));
 
             // We fire these without 'await' to prevent UI hanging if network is slow
-            submitPlayerRatings(matchId, ratings, myGoals).catch(e => console.warn(e));
-            
-            if (selectedMvp) {
-                submitMvpVote(matchId, currentUserId, selectedMvp).catch(e => console.warn(e));
-            }
-
-            // Fire and forget badge calculation
-            supabase.rpc('award_match_badges', {
-                p_match_id: matchId,
-                p_user_id: currentUserId,
-                p_goals: myGoals
-            }).catch(e => console.warn(e));
+            (async () => {
+                try {
+                    await submitPlayerRatings(matchId, ratings, myGoals);
+                    if (selectedMvp) {
+                        await submitMvpVote(matchId, currentUserId, selectedMvp);
+                    }
+                    // Fire and forget badge calculation
+                    await supabase.rpc('award_match_badges', {
+                        p_match_id: matchId,
+                        p_user_id: currentUserId,
+                        p_goals: myGoals
+                    });
+                } catch (e) {
+                    console.warn("Background match update error:", e);
+                }
+            })();
 
             // 3. Handle Consensus Visuals
             if (result.consensus) {
