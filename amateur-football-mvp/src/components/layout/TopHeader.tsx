@@ -230,7 +230,10 @@ export function TopHeader() {
                                     <motion.button
                                         whileHover={{ scale: 1.08 }}
                                         whileTap={{ scale: 0.88 }}
-                                        onClick={() => setNotificationsOpen(true)}
+                                        onClick={() => {
+                                            setNotificationsOpen(true);
+                                            setNotifCount(0);
+                                        }}
                                         className="relative w-10 h-10 sm:w-11 sm:h-11 flex items-center justify-center rounded-2xl bg-foreground/[0.04] hover:bg-foreground/[0.08] text-foreground/45 hover:text-foreground/70 transition-all border border-foreground/[0.04]"
                                     >
                                         <Bell className="w-4 h-4 sm:w-[1.1rem] sm:h-[1.1rem]" />

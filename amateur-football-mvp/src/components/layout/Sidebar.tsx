@@ -134,7 +134,10 @@ export function SidebarContent({ isMobile = false, onClose }: { isMobile?: boole
                             <motion.button
                                 whileHover={{ scale: 1.08 }}
                                 whileTap={{ scale: 0.9 }}
-                                onClick={() => setNotificationsOpen(true)}
+                                onClick={() => {
+                                    setNotificationsOpen(true);
+                                    setPendingCount(0);
+                                }}
                                 className="relative w-8 h-8 flex items-center justify-center rounded-xl transition-all bg-foreground/[0.06] border border-foreground/[0.08] hover:bg-foreground/10"
                             >
                                 <Bell className="w-3.5 h-3.5 text-foreground/40" />
