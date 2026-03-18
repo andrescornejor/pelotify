@@ -3,6 +3,7 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
+import { getURL } from '@/lib/utils';
 
 interface User {
     id: string;
@@ -174,7 +175,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         const { error } = await supabase.auth.signInWithOAuth({
             provider: 'google',
             options: {
-                redirectTo: `${window.location.origin}`,
+                redirectTo: getURL(),
             }
         });
 
@@ -207,7 +208,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         if (!checkConfig()) return;
 
         const { error } = await supabase.auth.resetPasswordForEmail(email, {
-            redirectTo: `${window.location.origin}/update-password`,
+            redirectTo: `${getURL()}/update-password`,
         });
 
         if (error) {
