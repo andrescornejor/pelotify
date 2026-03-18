@@ -92,7 +92,7 @@ export function SidebarContent({ isMobile = false, onClose }: { isMobile?: boole
                                 }}>
                                 PELOTIFY
                             </span>
-                            <span className="text-[8px] font-black uppercase tracking-[0.25em] leading-none mt-0.5 text-foreground/30">
+                            <span className="text-[8px] font-black uppercase tracking-[0.25em] leading-none mt-0.5 text-foreground/55">
                                 Dominá el Potrero
                             </span>
                         </div>
@@ -196,10 +196,16 @@ export function SidebarContent({ isMobile = false, onClose }: { isMobile?: boole
                                         style={{ background: '#2cfc7d', boxShadow: '0 0 6px rgba(44,252,125,0.6)' }} />
                                 </div>
 
-                                <div className="flex-1 min-w-0">
-                                    <p className="font-black text-sm text-foreground/90 tracking-tight truncate leading-tight">
+                                <div className="flex flex-col min-w-0 pr-1">
+                                    <p className="text-sm font-black text-foreground italic uppercase tracking-tighter truncate">
                                         {user.name || 'Usuario'}
                                     </p>
+                                    <p className="text-[9px] font-black text-foreground/50 uppercase tracking-[0.2em] mt-0.5">
+                                        #{user?.id?.slice(0, 5) || '00000'}
+                                    </p>
+                                </div>
+
+                                <div className="flex-1 min-w-0">
                                     <div className="flex items-center gap-1.5 mt-0.5">
                                         <span className="text-[9px] font-black uppercase tracking-widest"
                                             style={{ color: rank.color }}>
@@ -226,7 +232,7 @@ export function SidebarContent({ isMobile = false, onClose }: { isMobile?: boole
 
             {/* ── Navigation ── */}
             <div className="relative z-10 flex-1 overflow-y-auto px-3 pb-3 flex flex-col gap-0.5 no-scrollbar min-h-0">
-                <span className="text-[9px] font-black uppercase tracking-[0.3em] px-3 mb-1.5 mt-1 text-foreground/30">
+                <span className="text-[9px] font-black uppercase tracking-[0.3em] px-3 mb-1.5 mt-1 text-foreground/55">
                     Navegación
                 </span>
 
@@ -272,9 +278,10 @@ export function SidebarContent({ isMobile = false, onClose }: { isMobile?: boole
                                     <item.icon className={`w-4 h-4 transition-colors duration-200 ${
                                         isActive ? 'text-primary' : 'text-foreground/35 group-hover:text-foreground/65'
                                     }`} strokeWidth={isActive ? 2.5 : 2} />
-                                    <span className={`text-[12.5px] font-black uppercase tracking-tight transition-colors duration-200 ${
-                                        isActive ? 'text-foreground/90' : 'text-foreground/45 group-hover:text-foreground/75'
-                                    }`}>
+                                    <span className={cn(
+                                    "text-[10px] font-black tracking-widest transition-colors uppercase italic",
+                                    isActive ? "text-foreground" : "text-foreground/75 group-hover:text-foreground"
+                                )}>
                                         {item.label}
                                     </span>
                                 </div>

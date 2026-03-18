@@ -21,15 +21,18 @@
   --danger: #f43f5e;
 
   /* LIGHT THEME */
-  --background: #f0f4f8;
-  --foreground: #0f172a;
-  --foreground-rgb: 15, 23, 42;
+  --background: #f8fafc;
+  --foreground: #020617; /* Darker for better contrast */
+  --foreground-rgb: 2, 6, 23;
 
   --surface: #ffffff;
   --surface-elevated: #f1f5f9;
   --surface-bright: #e2e8f0;
 
-  --border: rgba(0, 0, 0, 0.08);
+  --muted: #475569; /* Slate 600 for light theme muted text */
+  --muted-foreground: #64748b;
+
+  --border: rgba(0, 0, 0, 0.12); /* Slightly darker border */
   --input: #f1f5f9;
   --ring: #2cfc7d;
 
@@ -39,14 +42,17 @@
 :root.dark {
   /* ULTRA DARK THEME */
   --background: #020205;
-  --foreground: #f8fafc;
-  --foreground-rgb: 248, 250, 252;
+  --foreground: #ffffff; /* Pure white for max contrast */
+  --foreground-rgb: 255, 255, 255;
 
   --surface: #04040a;
   --surface-elevated: #080812;
   --surface-bright: #0c0c1a;
 
-  --border: rgba(255, 255, 255, 0.06);
+  --muted: #94a3b8; /* Slate 400 for dark theme muted text */
+  --muted-foreground: #64748b;
+
+  --border: rgba(255, 255, 255, 0.1);
   --input: #080812;
   --ring: #2cfc7d;
 }
@@ -76,6 +82,9 @@
   --color-success: var(--success);
   --color-warning: var(--warning);
   --color-danger: var(--danger);
+
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
 
   --radius-2xl: 1.5rem;
   --radius-xl: 1.25rem;

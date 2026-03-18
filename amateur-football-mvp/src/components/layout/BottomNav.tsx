@@ -134,7 +134,7 @@ export function BottomNav() {
                                     "text-[8px] font-black uppercase tracking-[0.12em] mt-1.5 z-10 transition-all duration-300",
                                     isActive
                                         ? "text-primary opacity-100"
-                                        : "text-foreground/30 opacity-80 group-hover:opacity-100"
+                                        : "text-foreground/65 opacity-90 group-hover:opacity-100"
                                 )}>
                                     {label}
                                 </span>

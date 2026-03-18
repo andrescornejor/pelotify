@@ -214,10 +214,10 @@ export default function HomePage() {
                 className="max-w-sm space-y-2"
               >
                 <div className="flex justify-between items-center">
-                  <span className="text-[9px] font-black uppercase tracking-[0.3em] text-foreground/30">{rank.name}</span>
-                  <span className="text-[9px] font-black uppercase tracking-widest text-foreground/30">{elo} / {nextThreshold}</span>
+                  <span className="text-[9px] font-black uppercase tracking-[0.3em] text-foreground/55">{rank.name}</span>
+                  <span className="text-[9px] font-black uppercase tracking-widest text-foreground/55">{elo} / {nextThreshold}</span>
                 </div>
-                <div className="h-[3px] w-full bg-foreground/[0.06] rounded-full overflow-hidden">
+                <div className="h-[3px] w-full bg-foreground/[0.12] rounded-full overflow-hidden">
                   <motion.div
                     initial={{ width: 0 }}
                     animate={{ width: `${progressToNextRank}%` }}
@@ -226,7 +226,7 @@ export default function HomePage() {
                     style={{ background: `linear-gradient(90deg, ${rank.hex}, #5dfd9d)`, boxShadow: `0 0 12px ${rank.glow}` }}
                   />
                 </div>
-                <p className="text-[8px] font-black text-foreground/20 uppercase tracking-[0.25em]">
+                <p className="text-[8px] font-black text-foreground/45 uppercase tracking-[0.25em]">
                   {Math.round(progressToNextRank)}% al siguiente rango
                 </p>
               </motion.div>
@@ -251,7 +251,7 @@ export default function HomePage() {
                     <div className="text-xl font-black italic tracking-tighter leading-none" style={{ color: s.color }}>
                       {s.value}
                     </div>
-                    <div className="text-[8px] font-black uppercase tracking-widest text-foreground/30 mt-0.5">{s.label}</div>
+                    <div className="text-[8px] font-black uppercase tracking-widest text-foreground/55 mt-0.5">{s.label}</div>
                   </div>
                 ))}
               </div>
@@ -341,8 +341,8 @@ export default function HomePage() {
                   <div className="relative z-10">
                     <stat.icon className="w-4 h-4 mb-3 transition-transform group-hover:scale-110" style={{ color: stat.color }} />
                     <p className="text-[1.7rem] font-black tracking-tighter italic leading-none text-foreground">{stat.value}</p>
-                    <p className="text-[8px] font-black text-foreground/30 uppercase tracking-widest mt-1.5">{stat.unit}</p>
-                    <p className="text-[9px] font-black text-foreground/50 uppercase tracking-wide mt-0.5">{stat.label}</p>
+                    <p className="text-[8px] font-black text-foreground/55 uppercase tracking-widest mt-1.5">{stat.unit}</p>
+                    <p className="text-[9px] font-black text-foreground/70 uppercase tracking-wide mt-0.5">{stat.label}</p>
                   </div>
                 </motion.div>
               ))}
@@ -364,7 +364,7 @@ export default function HomePage() {
                 </div>
                 <div>
                   <h4 className="text-base font-black text-foreground italic uppercase tracking-tighter leading-none">Comunidad Activa</h4>
-                  <p className="text-[9px] font-black text-foreground/40 uppercase tracking-[0.2em] mt-0.5">
+                    <p className="text-[9px] font-black text-foreground/55 uppercase tracking-[0.2em] mt-0.5">
                     <span className="text-primary text-sm font-black">{totalPlayers}</span> jugadores registrados
                   </p>
                 </div>
@@ -426,7 +426,7 @@ export default function HomePage() {
                         <h3 className="text-base font-black text-foreground italic uppercase tracking-tighter leading-none">{item.label}</h3>
                         <span className="text-xl font-black italic" style={{ color: item.color }}>{item.points}</span>
                       </div>
-                      <p className="text-[9px] text-foreground/40 font-black uppercase tracking-widest leading-relaxed">{item.desc}</p>
+                      <p className="text-[9px] text-foreground/55 font-black uppercase tracking-widest leading-relaxed">{item.desc}</p>
                     </div>
 
                     <div className="relative z-10 h-[2px] bg-foreground/[0.05] rounded-full overflow-hidden">
@@ -458,14 +458,14 @@ export default function HomePage() {
                   </div>
                   <div>
                     <h4 className="text-base font-black text-foreground italic uppercase tracking-tighter leading-none">Tu Carrera Arranca en 0</h4>
-                    <p className="text-[9px] text-foreground/40 font-black uppercase tracking-[0.2em] mt-0.5">
-                      Todos arrancan como <span className="text-foreground/60">ROOKIES</span>. Subí de nivel jugando.
+                    <p className="text-[9px] text-foreground/55 font-black uppercase tracking-[0.2em] mt-0.5">
+                      Todos arrancan como <span className="text-foreground/80">ROOKIES</span>. Subí de nivel jugando.
                     </p>
                   </div>
                 </div>
                 <div className="flex items-center gap-3 relative z-10 shrink-0">
                   <div className="text-right hidden sm:block">
-                    <p className="text-[8px] font-black text-foreground/25 uppercase tracking-[0.3em]">PRÓXIMO RANGO</p>
+                    <p className="text-[8px] font-black text-foreground/45 uppercase tracking-[0.3em]">PRÓXIMO RANGO</p>
                     <p className="text-sm font-black text-primary italic uppercase tracking-tighter">AMATEUR PRO</p>
                   </div>
                   <div className="w-10 h-10 rounded-[0.875rem] flex items-center justify-center"
@@ -484,7 +484,7 @@ export default function HomePage() {
                   <span className="text-[9px] font-black text-primary uppercase tracking-[0.4em]">ADMINISTRACIÓN DE PLANTEL</span>
                 </div>
                 <Link href="/teams"
-                  className="group flex items-center gap-1.5 px-4 py-2 rounded-2xl text-[9px] font-black text-foreground/40 hover:text-foreground transition-all tracking-[0.2em] uppercase"
+                  className="group flex items-center gap-1.5 px-4 py-2 rounded-2xl text-[9px] font-black text-foreground/55 hover:text-foreground transition-all tracking-[0.2em] uppercase"
                   style={{ background: 'rgba(var(--foreground-rgb),0.04)', border: '1px solid rgba(var(--foreground-rgb),0.07)' }}>
                   Ver Todos <ChevronRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
                 </Link>
@@ -524,12 +524,12 @@ export default function HomePage() {
                               <h3 className="font-black text-foreground text-base leading-none tracking-tighter uppercase group-hover:text-primary transition-colors truncate">
                                 {team.name}
                               </h3>
-                              <ArrowUpRight className="w-4 h-4 text-foreground/25 group-hover:text-primary transition-colors shrink-0 -mr-0.5 -mt-0.5 opacity-0 group-hover:opacity-100" />
+                              <ArrowUpRight className="w-4 h-4 text-foreground/50 group-hover:text-primary transition-colors shrink-0 -mr-0.5 -mt-0.5 opacity-0 group-hover:opacity-100" />
                             </div>
                             <div className="flex items-center gap-2 mt-2 pt-1.5"
                               style={{ borderTop: '1px solid rgba(var(--foreground-rgb),0.06)' }}>
                               <span className="flex items-center gap-1 text-[8.5px] font-black uppercase tracking-widest px-2 py-1 rounded-lg"
-                                style={{ background: 'rgba(var(--foreground-rgb),0.05)', border: '1px solid rgba(var(--foreground-rgb),0.06)', color: 'rgba(var(--foreground-rgb),0.4)' }}>
+                                style={{ background: 'rgba(var(--foreground-rgb),0.05)', border: '1px solid rgba(var(--foreground-rgb),0.06)', color: 'rgba(var(--foreground-rgb),0.6)' }}>
                                 <Users className="w-2.5 h-2.5" /> {team.members_count}
                               </span>
                               <span className="flex items-center gap-1 text-[8.5px] font-black uppercase tracking-widest px-2 py-1 rounded-lg"
@@ -555,7 +555,7 @@ export default function HomePage() {
                     </div>
                     <div className="max-w-xs space-y-1.5">
                       <h3 className="text-base font-black text-foreground italic tracking-tighter uppercase">¿Sin Club?</h3>
-                      <p className="text-[9px] text-foreground/45 font-black uppercase tracking-[0.22em] leading-relaxed">
+                      <p className="text-[9px] text-foreground/65 font-black uppercase tracking-[0.22em] leading-relaxed">
                         Las leyendas no juegan solas. Unite a un equipo o armá el tuyo.
                       </p>
                     </div>
@@ -618,8 +618,8 @@ export default function HomePage() {
                           </div>
                         </div>
                         <div className="text-right">
-                          <p className="text-[9px] font-black text-foreground/50 uppercase tracking-[0.22em]">{match.date.split(',')[0]}</p>
-                          <p className="text-sm font-black text-foreground/30 capitalize mt-0.5">{match.date.split(',')[1]}</p>
+                          <p className="text-[9px] font-black text-foreground/70 uppercase tracking-[0.22em]">{match.date.split(',')[0]}</p>
+                          <p className="text-sm font-black text-foreground/55 capitalize mt-0.5">{match.date.split(',')[1]}</p>
                         </div>
                       </div>
 
@@ -630,7 +630,7 @@ export default function HomePage() {
                             return venue?.displayName || venue?.name || match.location;
                           })()}
                         </h4>
-                        <p className="text-foreground/40 text-[8.5px] font-black uppercase tracking-[0.14em] flex items-center gap-1">
+                        <p className="text-foreground/65 text-[8.5px] font-black uppercase tracking-[0.14em] flex items-center gap-1">
                           <MapPin className="w-3 h-3" /> {match.location}
                         </p>
                       </div>
@@ -650,8 +650,8 @@ export default function HomePage() {
                           </div>
                         </div>
                         <div className="flex items-center gap-1.5 group-hover:gap-2.5 transition-all duration-300">
-                          <span className="text-[8px] font-black uppercase tracking-[0.18em] text-foreground/40 group-hover:text-foreground/70 transition-colors">VER</span>
-                          <ChevronRight className="w-3.5 h-3.5 text-foreground/35 group-hover:text-primary transition-colors" />
+                          <span className="text-[8px] font-black uppercase tracking-[0.18em] text-foreground/60 group-hover:text-foreground/90 transition-colors">VER</span>
+                          <ChevronRight className="w-3.5 h-3.5 text-foreground/55 group-hover:text-primary transition-colors" />
                         </div>
                       </div>
                     </motion.div>
@@ -672,7 +672,7 @@ export default function HomePage() {
                   </div>
                   <div className="space-y-1.5">
                     <h3 className="text-base font-black text-foreground italic tracking-tighter uppercase">Sin Partidos</h3>
-                    <p className="text-[9px] text-foreground/40 font-black uppercase tracking-[0.22em] leading-relaxed">
+                    <p className="text-[9px] text-foreground/65 font-black uppercase tracking-[0.22em] leading-relaxed">
                       Tu agenda está vacía. ¡Buscá una cancha!
                     </p>
                   </div>
@@ -689,7 +689,7 @@ export default function HomePage() {
             {/* ── Quick Links Widget (desktop only) ── */}
             <div className="hidden lg:block rounded-[1.5rem] p-5 space-y-3"
               style={{ background: 'rgba(var(--foreground-rgb),0.03)', border: '1px solid rgba(var(--foreground-rgb),0.07)' }}>
-              <p className="text-[9px] font-black uppercase tracking-[0.35em] text-foreground/30">Accesos Rápidos</p>
+              <p className="text-[9px] font-black uppercase tracking-[0.35em] text-foreground/55">Accesos Rápidos</p>
               <div className="grid grid-cols-2 gap-2">
                 {[
                   { label: 'Crear Equipo',   href: '/teams',         color: '#2cfc7d' },

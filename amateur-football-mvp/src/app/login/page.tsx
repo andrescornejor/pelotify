@@ -101,7 +101,7 @@ export default function LoginPage() {
                             
                             <div className="flex items-center gap-4">
                                 <div className="h-px flex-1 bg-white/5" />
-                                <span className="text-[10px] font-black text-white/20 uppercase tracking-widest">O con tu ficha</span>
+                                <span className="text-[10px] font-black text-white/45 uppercase tracking-widest">O con tu ficha</span>
                                 <div className="h-px flex-1 bg-white/5" />
                             </div>
                         </div>
@@ -109,10 +109,10 @@ export default function LoginPage() {
                         {/* Traditional Form */}
                         <form onSubmit={handleLogin} className="flex flex-col gap-6">
                             <div className="space-y-2">
-                                <label className="text-[10px] font-black text-foreground/40 uppercase tracking-widest ml-4">Email de Jugador</label>
+                                <label className="text-[10px] font-black text-foreground/65 uppercase tracking-widest ml-4">Email de Jugador</label>
                                 <div className="relative group/input">
                                     <div className="absolute inset-y-0 left-5 flex items-center pointer-events-none">
-                                        <Mail className="w-5 h-5 text-foreground/20 group-focus-within/input:text-primary transition-colors" />
+                                        <Mail className="w-5 h-5 text-foreground/45 group-focus-within/input:text-primary transition-colors" />
                                     </div>
                                     <input
                                         type="email"
@@ -127,7 +127,7 @@ export default function LoginPage() {
 
                             <div className="space-y-2">
                                 <div className="flex justify-between items-center ml-4 mr-1">
-                                    <label className="text-[10px] font-black text-foreground/40 uppercase tracking-widest">Contraseña</label>
+                                    <label className="text-[10px] font-black text-foreground/65 uppercase tracking-widest">Contraseña</label>
                                     <button 
                                         type="button"
                                         onClick={() => setShowForgotModal(true)}
@@ -138,7 +138,7 @@ export default function LoginPage() {
                                 </div>
                                 <div className="relative group/input">
                                     <div className="absolute inset-y-0 left-5 flex items-center pointer-events-none">
-                                        <Lock className="w-5 h-5 text-foreground/20 group-focus-within/input:text-primary transition-colors" />
+                                        <Lock className="w-5 h-5 text-foreground/45 group-focus-within/input:text-primary transition-colors" />
                                     </div>
                                     <input
                                         type="password"
@@ -169,7 +169,7 @@ export default function LoginPage() {
 
                         {/* Footer */}
                         <div className="pt-2 text-center">
-                            <p className="text-[10px] font-black text-foreground/30 uppercase tracking-[0.2em]">
+                            <p className="text-[10px] font-black text-foreground/55 uppercase tracking-[0.2em]">
                                 ¿No tenés equipo?{' '}
                                 <Link href="/register" className="text-primary hover:text-white transition-colors underline decoration-primary/30 underline-offset-4">
                                     FICHATE ACÁ
@@ -202,7 +202,7 @@ export default function LoginPage() {
                                     <label className="text-[10px] font-black uppercase text-foreground/40 tracking-[0.3em] ml-1">Email de tu cuenta</label>
                                     <div className="relative group/input">
                                         <div className="absolute inset-y-0 left-5 flex items-center pointer-events-none">
-                                            <Mail className="w-5 h-5 text-foreground/20 group-focus-within/input:text-primary transition-colors" />
+                                            <Mail className="w-5 h-5 text-foreground/45 group-focus-within/input:text-primary transition-colors" />
                                         </div>
                                         <input
                                             type="email"

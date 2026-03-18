@@ -83,7 +83,7 @@ export function RatingModal({ isOpen, onClose }: { isOpen: boolean; onClose: () 
                             className="absolute top-4 right-4 z-10 w-8 h-8 flex items-center justify-center rounded-xl transition-all hover:scale-105 active:scale-95"
                             style={{ background: 'rgba(var(--foreground-rgb),0.06)', border: '1px solid rgba(var(--foreground-rgb),0.08)' }}
                         >
-                            <X className="w-4 h-4 text-foreground/50" />
+                            <X className="w-4 h-4 text-foreground/75" />
                         </button>
 
                         <AnimatePresence mode="wait">
@@ -115,9 +115,7 @@ export function RatingModal({ isOpen, onClose }: { isOpen: boolean; onClose: () 
                                         <h3 className="text-xl font-black italic uppercase tracking-tighter text-foreground">
                                             ¡Valoraciones Enviadas!
                                         </h3>
-                                        <p className="text-[10px] font-black uppercase tracking-widest text-foreground/40">
-                                            ELO actualizado
-                                        </p>
+                                        <p className="text-[10px] text-foreground/70 font-black uppercase tracking-widest italic">Puntajes Enviados</p>
                                     </div>
 
                                     {eloResult && (
@@ -172,7 +170,7 @@ export function RatingModal({ isOpen, onClose }: { isOpen: boolean; onClose: () 
                                                 </p>
                                             </div>
                                         </div>
-                                        <p className="text-[10px] text-foreground/45 leading-relaxed">
+                                        <p className="text-[10px] text-foreground/60 leading-relaxed">
                                             Las valoraciones ajustan el ELO de tus compañeros. ¡Sé honesto!
                                         </p>
                                     </div>
@@ -202,11 +200,9 @@ export function RatingModal({ isOpen, onClose }: { isOpen: boolean; onClose: () 
                                                             <img src={player.avatar} alt={player.name} className="w-full h-full object-cover" />
                                                         </div>
                                                         <div className="flex-1 min-w-0">
-                                                            <p className="font-black text-foreground text-sm tracking-tight truncate">{player.name}</p>
+                                                            <p className="text-[9px] font-black text-foreground/45 uppercase tracking-[0.5em] italic">Rating de Camaradería</p>
                                                             {currentRating > 0 && (
-                                                                <p className="text-[9px] font-black uppercase tracking-widest text-primary">
-                                                                    {'★'.repeat(currentRating)} {currentRating === 5 ? '¡Crack!' : currentRating >= 4 ? 'Muy bueno' : currentRating >= 3 ? 'Regular' : 'Bajo nivel'}
-                                                                </p>
+                                                                <p className="text-[9px] font-black text-foreground/70 uppercase tracking-[0.2em] mb-1">Tu desempeño</p>
                                                             )}
                                                         </div>
                                                         {currentRating > 0 && (

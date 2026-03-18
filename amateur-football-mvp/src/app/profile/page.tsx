@@ -556,7 +556,7 @@ function ProfileContent() {
                                                 </div>
                                                 <div className="flex flex-col">
                                                     <h3 className="text-sm font-black uppercase tracking-[0.2em] text-foreground italic">Biometría</h3>
-                                                    <span className="text-[9px] font-black text-foreground/40 uppercase tracking-widest leading-none">Identidad de Jugador</span>
+                                                    <span className="text-[9px] font-black text-foreground/70 uppercase tracking-widest leading-none">Identidad de Jugador</span>
                                                 </div>
                                             </div>
                                             
@@ -564,7 +564,7 @@ function ProfileContent() {
                                                 {isEditing ? (
                                                     <div className="grid grid-cols-2 gap-6">
                                                         <div className="space-y-2">
-                                                            <label className="text-[10px] font-black uppercase text-foreground/40 tracking-[0.2em] ml-1">Edad</label>
+                                                            <label className="text-[10px] font-black uppercase text-foreground/70 tracking-[0.2em] ml-1">Edad</label>
                                                             <input
                                                                 type="number"
                                                                 className="w-full h-12 bg-foreground/[0.02] border border-foreground/10 rounded-xl px-4 text-foreground text-sm font-black outline-none focus:border-primary/40 transition-all"
@@ -573,7 +573,7 @@ function ProfileContent() {
                                                             />
                                                         </div>
                                                         <div className="space-y-2">
-                                                            <label className="text-[10px] font-black uppercase text-foreground/40 tracking-[0.2em] ml-1">Altura (cm)</label>
+                                                            <label className="text-[10px] font-black uppercase text-foreground/70 tracking-[0.2em] ml-1">Altura (cm)</label>
                                                             <input
                                                                 type="number"
                                                                 className="w-full h-12 bg-foreground/[0.02] border border-foreground/10 rounded-xl px-4 text-foreground text-sm font-black outline-none focus:border-primary/40 transition-all"
@@ -582,7 +582,7 @@ function ProfileContent() {
                                                             />
                                                         </div>
                                                         <div className="col-span-full space-y-2">
-                                                            <label className="text-[10px] font-black uppercase text-foreground/40 tracking-[0.2em] ml-1">Perfil de Pierna</label>
+                                                            <label className="text-[10px] font-black uppercase text-foreground/70 tracking-[0.2em] ml-1">Perfil de Pierna</label>
                                                             <select
                                                                 className="w-full h-12 bg-foreground/[0.02] border border-foreground/10 rounded-xl px-4 text-foreground text-sm font-black outline-none focus:border-primary/40 appearance-none transition-all uppercase"
                                                                 value={editedData.preferredFoot}
@@ -597,19 +597,19 @@ function ProfileContent() {
                                                 ) : (
                                                     <div className="grid grid-cols-2 gap-y-10">
                                                         <div className="space-y-2">
-                                                            <span className="text-[10px] font-black uppercase text-foreground/30 tracking-[0.3em]">Edad Real</span>
-                                                            <p className="text-xl font-black text-foreground italic uppercase tracking-tighter">{displayAge} <span className="text-foreground/40 text-[11px] not-italic ml-1">Años</span></p>
+                                                            <span className="text-[10px] font-black uppercase text-foreground/60 tracking-[0.3em]">Edad Real</span>
+                                                            <p className="text-xl font-black text-foreground italic uppercase tracking-tighter">{displayAge} <span className="text-foreground/65 text-[11px] not-italic ml-1">Años</span></p>
                                                         </div>
                                                         <div className="space-y-2">
-                                                            <span className="text-[10px] font-black uppercase text-foreground/30 tracking-[0.3em]">Envergadura</span>
-                                                            <p className="text-xl font-black text-foreground italic uppercase tracking-tighter">{displayHeight} <span className="text-foreground/40 text-[11px] not-italic ml-1">cm</span></p>
+                                                            <span className="text-[10px] font-black uppercase text-foreground/60 tracking-[0.3em]">Envergadura</span>
+                                                            <p className="text-xl font-black text-foreground italic uppercase tracking-tighter">{displayHeight} <span className="text-foreground/65 text-[11px] not-italic ml-1">cm</span></p>
                                                         </div>
                                                         <div className="space-y-2">
-                                                            <span className="text-[10px] font-black uppercase text-foreground/30 tracking-[0.3em]">Perfil Hábil</span>
+                                                            <span className="text-[10px] font-black uppercase text-foreground/60 tracking-[0.3em]">Perfil Hábil</span>
                                                             <p className="text-xl font-black text-foreground italic uppercase tracking-tighter">{displayFoot}</p>
                                                         </div>
                                                         <div className="space-y-2">
-                                                            <span className="text-[10px] font-black uppercase text-foreground/30 tracking-[0.3em]">Afiliación</span>
+                                                            <span className="text-[10px] font-black uppercase text-foreground/60 tracking-[0.3em]">Afiliación</span>
                                                             <p className="text-xl font-black text-primary italic uppercase tracking-tighter group-hover:scale-110 transition-transform origin-left">{teamName}</p>
                                                         </div>
                                                     </div>
