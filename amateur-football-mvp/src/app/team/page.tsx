@@ -20,10 +20,10 @@ function TeamProfileContent() {
     const searchParams = useSearchParams();
     const router = useRouter();
     const { user } = useAuth();
-    
+
     // Get ID from query param ?id=...
     const id = searchParams.get('id');
-    
+
     const [team, setTeam] = useState<Team | null>(null);
     const [members, setMembers] = useState<any[]>([]);
     const [isLoading, setIsLoading] = useState(true);
@@ -307,8 +307,8 @@ function TeamProfileContent() {
                         style={ambientColor ? { backgroundImage: `radial-gradient(circle at 50% -20%, ${ambientColor}, transparent 70%)` } : undefined}
                     />
                     <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-30 mix-blend-overlay" />
-                    <div 
-                        className={cn("absolute top-0 left-1/4 w-96 h-96 rounded-full blur-[120px] animate-pulse", !ambientColor && "bg-primary/5")} 
+                    <div
+                        className={cn("absolute top-0 left-1/4 w-96 h-96 rounded-full blur-[120px] animate-pulse", !ambientColor && "bg-primary/5")}
                         style={ambientColor ? { backgroundColor: ambientColor } : undefined}
                     />
                     <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-accent/5 rounded-full blur-[120px] animate-pulse delay-700" />
@@ -474,38 +474,45 @@ function TeamProfileContent() {
                 </div>
             </div>
 
-            <div className="max-w-2xl mx-auto px-6 mt-12 mb-8">
-                <div className="relative p-1.5 bg-foreground/[0.03] backdrop-blur-3xl rounded-full border border-foreground/[0.08] flex items-center gap-1 shadow-2xl">
-                    {/* Sliding Background */}
-                    <motion.div
-                        layoutId="activeTabSlidingBg"
-                        className="absolute inset-1.5 rounded-full bg-primary shadow-[0_8px_30px_rgba(var(--primary-rgb),0.4)]"
-                        initial={false}
-                        animate={{
-                            x: activeTab === 'squad' ? 0 : activeTab === 'tactics' ? 'calc(100% + 4px)' : 'calc(200% + 8px)',
-                            width: 'calc(33.333% - 6px)'
-                        }}
-                        transition={{ type: "spring", stiffness: 350, damping: 35 }}
-                    />
+            <div className="max-w-3xl mx-auto px-4 md:px-6 mt-14 mb-10">
+                <div className="relative p-2 bg-foreground/[0.03] backdrop-blur-3xl rounded-[2.5rem] border border-foreground/[0.08] flex items-center gap-2 shadow-2xl overflow-hidden">
+                    {/* Sliding Dynamic Background */}
+                    <div className="absolute inset-2 left-2 right-2 flex pointer-events-none">
+                        <motion.div
+                            layoutId="premiumTabBg"
+                            className="h-full rounded-[2rem] bg-primary shadow-[0_10px_40px_rgba(var(--primary-rgb),0.5)] bg-gradient-to-r from-primary to-primary/80"
+                            animate={{
+                                x: activeTab === 'squad' ? '0%' : activeTab === 'tactics' ? '100%' : '200%',
+                            }}
+                            style={{ 
+                                width: '33.333%',
+                                marginLeft: activeTab === 'squad' ? '0px' : activeTab === 'tactics' ? '4px' : '8px',
+                            }}
+                            transition={{ type: "spring", stiffness: 400, damping: 35 }}
+                        />
+                    </div>
 
                     {[
                         { id: 'squad', label: 'Plantel', icon: Users },
-                        { id: 'tactics', label: 'Tácticas', icon: Layout },
+                        { id: 'tactics', label: 'Alineación', icon: Layout },
                         { id: 'history', label: 'Historial', icon: Calendar }
                     ].map((tab) => (
                         <button
                             key={tab.id}
                             onClick={() => setActiveTab(tab.id as any)}
                             className={cn(
-                                "relative flex-1 h-12 md:h-14 flex items-center justify-center gap-2 md:gap-3 transition-colors duration-500 z-10",
-                                activeTab === tab.id ? "text-background" : "text-foreground/45 hover:text-foreground/70"
+                                "relative flex-1 h-14 md:h-18 lg:h-20 flex flex-col md:flex-row items-center justify-center gap-1.5 md:gap-3 transition-all duration-500 z-10 rounded-[2rem]",
+                                activeTab === tab.id ? "text-background" : "text-foreground/40 hover:text-foreground/80"
                             )}
                         >
                             <tab.icon className={cn(
-                                "w-4 h-4 md:w-5 md:h-5 transition-transform duration-300", 
-                                activeTab === tab.id ? "scale-110" : "opacity-50"
+                                "w-5 h-5 md:w-6 md:h-6 transition-all duration-500", 
+                                activeTab === tab.id ? "scale-110 drop-shadow-md" : "opacity-30 group-hover:opacity-100"
                             )} />
-                            <span className="text-[10px] md:text-xs font-black uppercase tracking-widest italic truncate max-w-[80px] md:max-w-none">
+                            <span className={cn(
+                                "text-[10px] md:text-xs lg:text-sm font-black uppercase tracking-[0.2em] italic transition-all duration-300",
+                                activeTab === tab.id ? "translate-y-0 opacity-100" : "md:opacity-60"
+                            )}>
                                 {tab.label}
                             </span>
                         </button>
@@ -534,16 +541,16 @@ function TeamProfileContent() {
                                     <button
                                         onClick={() => handleRespondInvitation('decline')}
                                         disabled={respondingId === user?.id}
-                                        className="flex-1 h-14 bg-foreground/[0.03] border border-white/5 rounded-2xl text-[10px] font-black text-foreground/30 uppercase tracking-[0.2em] hover:text-foreground hover:bg-white/5 transition-all active:scale-95"
+                                        className="flex-1 h-14 bg-foreground/[0.03] border border-white/5 rounded-full text-[10px] font-black text-foreground/30 uppercase tracking-[0.2em] hover:text-foreground hover:bg-white/5 transition-all active:scale-95 flex items-center justify-center italic"
                                     >
                                         DECLINAR
                                     </button>
                                     <button
                                         onClick={() => handleRespondInvitation('accept')}
                                         disabled={respondingId === user?.id}
-                                        className="flex-1 h-14 bg-primary text-background rounded-2xl text-[10px] font-black uppercase tracking-[0.3em] hover:scale-105 transition-all active:scale-95 shadow-[0_15px_40px_rgba(var(--primary-rgb),0.3)] bg-gradient-to-r from-primary to-primary/80"
+                                        className="flex-1 h-14 bg-primary text-background rounded-full text-[10px] font-black uppercase tracking-[0.3em] hover:scale-105 transition-all active:scale-95 shadow-[0_15px_40px_rgba(var(--primary-rgb),0.3)] bg-gradient-to-r from-primary to-primary/80 flex items-center justify-center gap-3 italic"
                                     >
-                                        {respondingId === user?.id ? <Loader2 className="w-4 h-4 animate-spin mx-auto" /> : 'ACEPTAR CUPO'}
+                                        {respondingId === user?.id ? <Loader2 className="w-4 h-4 animate-spin" /> : <><Check className="w-5 h-5" strokeWidth={3} /> ACEPTAR CUPO</>}
                                     </button>
                                 </div>
                             </div>
@@ -587,8 +594,8 @@ function TeamProfileContent() {
                                     )}
                                 </button>
                                 <p className="text-center mt-6 text-foreground/25 text-[9px] font-black uppercase tracking-[0.3em]">
-                                    {members.some(m => m.user_id === user?.id && m.status === 'requested') 
-                                        ? "Esperando aprobación del alto mando" 
+                                    {members.some(m => m.user_id === user?.id && m.status === 'requested')
+                                        ? "Esperando aprobación del alto mando"
                                         : "Tu carrera profesional comienza aquí"}
                                 </p>
                             </div>
@@ -614,7 +621,7 @@ function TeamProfileContent() {
                                     onClick={() => setInviteModalOpen(true)}
                                     className="h-12 md:h-14 px-6 md:px-8 bg-primary/10 border border-primary/20 rounded-full text-[10px] md:text-xs font-black text-primary uppercase tracking-[0.2em] hover:bg-primary transition-all hover:text-background flex items-center gap-2 md:gap-3 group shadow-lg shadow-primary/5 active:scale-95"
                                 >
-                                    <PlusCircle className="w-4 h-4 md:w-5 md:h-5 group-hover:rotate-90 transition-transform duration-500" /> 
+                                    <PlusCircle className="w-4 h-4 md:w-5 md:h-5 group-hover:rotate-90 transition-transform duration-500" />
                                     <span>CONVOCAR</span>
                                 </button>
                             )}
@@ -690,31 +697,31 @@ function TeamProfileContent() {
                         {teamMatches.length === 0 ? (
                             <div className="glass-premium p-10 rounded-[3rem] border border-dashed border-foreground/10 text-center bg-foreground/[0.01]">
                                 <p className="text-[10px] font-black text-foreground/30 uppercase tracking-[0.4em] italic leading-relaxed">
-                                    Aún no se han registrado partidos oficiales.<br/>¡Desafía a otros equipos para empezar!
+                                    Aún no se han registrado partidos oficiales.<br />¡Desafía a otros equipos para empezar!
                                 </p>
                             </div>
                         ) : (
                             <div className="space-y-4">
                                 {teamMatches.map((match) => {
                                     const isHome = match.team_a_id === team.id;
-                                    const result = (isHome ? match.team_a_score : match.team_b_score) > (isHome ? match.team_b_score : match.team_a_score) 
+                                    const result = (isHome ? match.team_a_score : match.team_b_score) > (isHome ? match.team_b_score : match.team_a_score)
                                         ? 'victory' : (match.team_a_score === match.team_b_score ? 'draw' : 'defeat');
-                                    
+
                                     return (
                                         <Link key={match.id} href={`/match?id=${match.id}`}>
-                                            <motion.div 
+                                            <motion.div
                                                 whileHover={{ scale: 1.01 }}
                                                 className={cn(
                                                     "glass-premium p-6 rounded-[2.5rem] flex items-center justify-between border transition-all",
-                                                    result === 'victory' ? "border-primary/20 bg-primary/5 shadow-lg shadow-primary/5" : 
-                                                    result === 'defeat' ? "border-red-500/10 bg-red-500/[0.02] grayscale-[0.5]" : "border-foreground/5 bg-foreground/[0.01]"
+                                                    result === 'victory' ? "border-primary/20 bg-primary/5 shadow-lg shadow-primary/5" :
+                                                        result === 'defeat' ? "border-red-500/10 bg-red-500/[0.02] grayscale-[0.5]" : "border-foreground/5 bg-foreground/[0.01]"
                                                 )}
                                             >
                                                 <div className="flex items-center gap-6">
                                                     <div className={cn(
                                                         "w-12 h-12 rounded-2xl flex items-center justify-center font-black text-lg italic",
-                                                        result === 'victory' ? "bg-primary text-background" : 
-                                                        result === 'defeat' ? "bg-red-500/20 text-red-500" : "bg-foreground/5 text-foreground/40"
+                                                        result === 'victory' ? "bg-primary text-background" :
+                                                            result === 'defeat' ? "bg-red-500/20 text-red-500" : "bg-foreground/5 text-foreground/40"
                                                     )}>
                                                         {result === 'victory' ? 'W' : result === 'defeat' ? 'L' : 'D'}
                                                     </div>
@@ -740,7 +747,7 @@ function TeamProfileContent() {
                 {isCaptain && challenges.length > 0 && !isEditing && (
                     <section className="space-y-6">
                         <div className="flex items-center gap-4 px-2">
-                             <div className="w-10 h-10 rounded-2xl bg-accent/10 flex items-center justify-center border border-accent/20 text-accent">
+                            <div className="w-10 h-10 rounded-2xl bg-accent/10 flex items-center justify-center border border-accent/20 text-accent">
                                 <Swords className="w-5 h-5" />
                             </div>
                             <div className="flex flex-col">
@@ -777,20 +784,20 @@ function TeamProfileContent() {
                                                 </div>
                                             </div>
                                         </div>
-                                        <div className="flex flex-col sm:flex-row gap-4">
+                                        <div className="flex flex-col sm:flex-row items-center gap-4">
                                             <button
                                                 onClick={() => handleRespondChallenge(challenge.id, 'declined')}
                                                 disabled={respondingChallengeId === challenge.id}
-                                                className="h-14 px-8 bg-foreground/[0.03] border border-white/5 rounded-2xl text-[10px] md:text-xs font-black text-foreground/30 uppercase tracking-[0.2em] hover:text-foreground hover:bg-white/5 transition-all active:scale-95 flex items-center justify-center italic"
+                                                className="w-full sm:w-auto h-14 px-8 bg-foreground/[0.03] border border-white/5 rounded-full text-[10px] md:text-xs font-black text-foreground/30 uppercase tracking-[0.2em] hover:text-foreground hover:bg-white/5 transition-all active:scale-95 flex items-center justify-center italic"
                                             >
                                                 DECLINAR
                                             </button>
                                             <button
                                                 onClick={() => handleRespondChallenge(challenge.id, 'accepted')}
                                                 disabled={respondingChallengeId === challenge.id}
-                                                className="h-14 px-10 bg-accent text-white rounded-2xl text-[10px] md:text-xs font-black uppercase tracking-[0.3em] hover:scale-105 transition-all active:scale-95 shadow-[0_15px_40px_rgba(var(--accent-rgb),0.3)] bg-gradient-to-r from-accent to-accent/80 flex items-center justify-center gap-3 italic"
+                                                className="w-full sm:w-auto h-14 px-10 bg-accent text-white rounded-full text-[10px] md:text-xs font-black uppercase tracking-[0.3em] hover:scale-105 transition-all active:scale-95 shadow-[0_15px_40px_rgba(var(--accent-rgb),0.3)] bg-gradient-to-r from-accent to-accent/80 flex items-center justify-center gap-3 italic"
                                             >
-                                                {respondingChallengeId === challenge.id ? <Loader2 className="w-4 h-4 animate-spin mx-auto" /> : <><Check className="w-5 h-5" strokeWidth={3} /> ACEPTAR</>}
+                                                {respondingChallengeId === challenge.id ? <Loader2 className="w-4 h-4 animate-spin" /> : <><Check className="w-5 h-5" strokeWidth={3} /> ACEPTAR</>}
                                             </button>
                                         </div>
                                     </div>
@@ -840,20 +847,20 @@ function TeamProfileContent() {
                                             </div>
                                         </div>
                                     </Link>
-                                    <div className="flex gap-3">
+                                    <div className="flex items-center gap-4 w-full md:w-auto">
                                         <button
                                             onClick={() => handleRespondInvitation('decline', req.user_id)}
                                             disabled={respondingId === req.user_id}
-                                            className="flex-1 md:flex-none h-12 px-6 bg-foreground/[0.03] border border-foreground/10 rounded-2xl text-[10px] font-black text-foreground/50 uppercase tracking-widest hover:text-foreground transition-all active:scale-95"
+                                            className="flex-1 md:flex-none h-14 px-8 bg-foreground/[0.03] border border-white/5 rounded-full text-[10px] md:text-xs font-black text-foreground/30 uppercase tracking-[0.2em] hover:text-foreground hover:bg-white/5 transition-all active:scale-95 flex items-center justify-center italic"
                                         >
                                             RECHAZAR
                                         </button>
                                         <button
                                             onClick={() => handleRespondInvitation('accept', req.user_id)}
                                             disabled={respondingId === req.user_id}
-                                            className="flex-1 md:flex-none h-12 px-8 bg-primary text-background rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-foreground hover:text-background transition-all active:scale-95 shadow-lg shadow-primary/20"
+                                            className="flex-1 md:flex-none h-14 px-10 bg-primary text-background rounded-full text-[10px] md:text-xs font-black uppercase tracking-[0.3em] hover:scale-105 transition-all active:scale-95 shadow-[0_15px_40px_rgba(var(--primary-rgb),0.3)] bg-gradient-to-r from-primary to-primary/80 flex items-center justify-center gap-3 italic font-black"
                                         >
-                                            {respondingId === req.user_id ? <Loader2 className="w-4 h-4 animate-spin mx-auto" /> : 'ACEPTAR'}
+                                            {respondingId === req.user_id ? <Loader2 className="w-4 h-4 animate-spin" /> : <><Check className="w-5 h-5" strokeWidth={3} /> ADMITIR</>}
                                         </button>
                                     </div>
                                 </div>
