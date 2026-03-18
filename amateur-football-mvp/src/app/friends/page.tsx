@@ -178,7 +178,7 @@ export default function FriendsPage() {
             </div>
 
             {/* ── TABS ── */}
-            <div className="relative z-20 px-4 w-full max-w-4xl mx-auto">
+            <div className="relative z-20 px-4 w-full max-w-7xl mx-auto">
                 <div className="flex p-2 bg-foreground/[0.02] backdrop-blur-3xl rounded-[2.5rem] border border-foreground/[0.05] relative shadow-2xl">
                     <button
                         onClick={() => setActiveTab('friends')}
@@ -558,7 +558,7 @@ export default function FriendsPage() {
                 {/* ── SEARCH TAB ── */}
                 {activeTab === 'search' && (
                     <div className="space-y-12 px-4 w-full mx-auto">
-                        <div className="relative group w-full max-w-5xl mx-auto">
+                        <div className="relative group w-full max-w-7xl mx-auto">
                             <div className="absolute -inset-1 bg-gradient-to-r from-primary/20 via-primary/40 to-primary/20 rounded-[2.6rem] blur opacity-25 group-focus-within:opacity-100 transition duration-1000 group-focus-within:duration-200" />
                             <div className="relative bg-background rounded-[2.5rem]">
                                 <div className="absolute inset-y-0 left-6 flex items-center pointer-events-none">
@@ -625,11 +625,11 @@ export default function FriendsPage() {
                                     <p className="text-[10px] text-foreground/80 font-bold uppercase tracking-widest mt-2">Prueba con otro término de búsqueda</p>
                                 </motion.div>
                             ) : (
-                                <div className="relative max-w-6xl mx-auto py-10">
+                                <div className="relative max-w-full mx-auto py-10">
                                     {/* Laser scan line in background */}
                                     <div className="absolute inset-0 bg-gradient-to-b from-transparent via-primary/5 to-transparent h-40 w-full animate-scan-line pointer-events-none z-0" />
 
-                                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 relative z-10 px-4">
+                                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 3xl:grid-cols-6 gap-6 relative z-10 px-4">
                                     <AnimatePresence mode="popLayout">
                                         {searchResults.map((p, i) => (
                                             <motion.div
