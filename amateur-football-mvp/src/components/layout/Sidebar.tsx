@@ -9,6 +9,7 @@ import { getPendingRequestsCount } from '@/lib/friends';
 import { getMatchInvitationsCount } from '@/lib/matches';
 import { useTheme } from '@/contexts/ThemeContext';
 import { NotificationCenter } from '../notifications/NotificationCenter';
+import { cn } from '@/lib/utils';
 
 export function SidebarContent({ isMobile = false, onClose }: { isMobile?: boolean, onClose?: () => void }) {
     const { user, logout } = useAuth();
