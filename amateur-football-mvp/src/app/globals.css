@@ -6,17 +6,17 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
-  /* Elite Emerald Theme */
-  --primary: #10b981;
-  --primary-light: #34d399;
-  --primary-dark: #059669;
-  --primary-rgb: 16, 185, 129;
+  /* Neon Elite Theme */
+  --primary: #2cfc7d;
+  --primary-light: #5dfd9d;
+  --primary-dark: #1db95a;
+  --primary-rgb: 44, 252, 125;
 
   --accent: #f59e0b;
   --accent-light: #fbce4e;
   --accent-rgb: 245, 158, 11;
 
-  --success: #10b981;
+  --success: #2cfc7d;
   --warning: #f59e0b;
   --danger: #f43f5e;
 
@@ -31,24 +31,24 @@
 
   --border: rgba(0, 0, 0, 0.08);
   --input: #f1f5f9;
-  --ring: #10b981;
+  --ring: #2cfc7d;
 
   --radius: 0.75rem;
 }
 
 :root.dark {
-  /* DARK THEME */
-  --background: #04040a;
-  --foreground: #f0f0f8;
-  --foreground-rgb: 240, 240, 248;
+  /* ULTRA DARK THEME */
+  --background: #020205;
+  --foreground: #f8fafc;
+  --foreground-rgb: 248, 250, 252;
 
-  --surface: #08080f;
-  --surface-elevated: #0f0f1a;
-  --surface-bright: #17172a;
+  --surface: #04040a;
+  --surface-elevated: #080812;
+  --surface-bright: #0c0c1a;
 
   --border: rgba(255, 255, 255, 0.06);
-  --input: #0f0f1a;
-  --ring: #10b981;
+  --input: #080812;
+  --ring: #2cfc7d;
 }
 
 @theme {

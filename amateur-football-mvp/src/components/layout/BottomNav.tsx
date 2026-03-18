@@ -56,13 +56,13 @@ export function BottomNav() {
                                         className={cn(
                                             "relative w-12 h-12 rounded-2xl flex items-center justify-center shadow-lg transition-all duration-300",
                                             isActive
-                                                ? "shadow-[0_0_20px_rgba(16,185,129,0.5),0_8px_24px_rgba(16,185,129,0.3)]"
-                                                : "shadow-[0_4px_16px_rgba(16,185,129,0.25)]"
+                                                ? "shadow-[0_0_20px_rgba(44,252,125,0.5),0_8px_24px_rgba(44,252,125,0.3)]"
+                                                : "shadow-[0_4px_16px_rgba(44,252,125,0.25)]"
                                         )}
                                         style={{
                                             background: isActive
-                                                ? 'linear-gradient(135deg, #34d399, #10b981, #059669)'
-                                                : 'linear-gradient(135deg, #10b981, #059669)',
+                                                ? 'linear-gradient(135deg, #5dfd9d, #2cfc7d, #1db95a)'
+                                                : 'linear-gradient(135deg, #2cfc7d, #1db95a)',
                                         }}
                                     >
                                         <Icon className="w-5 h-5 text-white" strokeWidth={2.5} />
@@ -88,15 +88,15 @@ export function BottomNav() {
                                 <AnimatePresence>
                                     {isActive && (
                                         <motion.div
-                                            layoutId="bottom-nav-glow"
+                                            layoutId="bottom-nav-active-pill"
                                             initial={{ opacity: 0, scale: 0.8 }}
                                             animate={{ opacity: 1, scale: 1 }}
                                             exit={{ opacity: 0, scale: 0.8 }}
                                             transition={{ type: 'spring', stiffness: 500, damping: 35 }}
                                             className="absolute inset-x-2 top-1 bottom-1 rounded-2xl"
                                             style={{
-                                                background: 'radial-gradient(ellipse at 50% 60%, rgba(16,185,129,0.14) 0%, rgba(16,185,129,0.04) 70%, transparent 100%)',
-                                                border: '1px solid rgba(16,185,129,0.12)',
+                                                background: 'radial-gradient(ellipse at 50% 60%, rgba(44,252,125,0.14) 0%, rgba(44,252,125,0.04) 70%, transparent 100%)',
+                                                border: '1px solid rgba(44,252,125,0.12)',
                                             }}
                                         />
                                     )}

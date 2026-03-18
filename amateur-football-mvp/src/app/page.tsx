@@ -81,9 +81,9 @@ export default function HomePage() {
   const getRankInfo = (elo: number) => {
     if (elo < 1000) return { name: 'ROOKIE',      color: 'text-foreground/50', glow: 'rgba(255,255,255,0.1)', hex: '#94a3b8' };
     if (elo < 3000) return { name: 'AMATEUR',     color: 'text-blue-400',      glow: 'rgba(59,130,246,0.3)',  hex: '#60a5fa' };
-    if (elo < 6000) return { name: 'PREMIER',     color: 'text-primary',       glow: 'rgba(16,185,129,0.35)', hex: '#10b981' };
+    if (elo < 6000) return { name: 'PREMIER',     color: 'text-primary',       glow: 'rgba(44,252,125,0.35)', hex: '#2cfc7d' };
     if (elo < 10000) return { name: 'ELITE',       color: 'text-accent',        glow: 'rgba(245,158,11,0.35)', hex: '#f59e0b' };
-    return              { name: 'WORLD CLASS', color: 'text-primary',       glow: 'rgba(16,185,129,0.5)',  hex: '#34d399' };
+    return              { name: 'WORLD CLASS', color: 'text-primary',       glow: 'rgba(44,252,125,0.5)',  hex: '#5dfd9d' };
   };
   const rank = getRankInfo(elo);
 
@@ -111,7 +111,7 @@ export default function HomePage() {
       {/* ── AMBIENT ── */}
       <div className="fixed inset-0 pointer-events-none -z-10 overflow-hidden">
         <div className="absolute top-[-10%] right-[-5%] w-[45%] h-[55%] opacity-[0.07]"
-          style={{ background: 'radial-gradient(circle, #10b981 0%, transparent 70%)', filter: 'blur(80px)' }} />
+          style={{ background: 'radial-gradient(circle, #2cfc7d 0%, transparent 70%)', filter: 'blur(80px)' }} />
         <div className="absolute bottom-[-5%] left-[-10%] w-[50%] h-[50%] opacity-[0.04]"
           style={{ background: 'radial-gradient(circle, #f59e0b 0%, transparent 70%)', filter: 'blur(100px)' }} />
         <div className="absolute top-[35%] right-[20%] w-[35%] h-[35%] opacity-[0.03]"
@@ -159,7 +159,7 @@ export default function HomePage() {
                 animate={{ x: 0, opacity: 1 }}
                 transition={{ delay: 0.1, type: 'spring', stiffness: 300, damping: 26 }}
                 className="inline-flex items-center gap-3 px-4 py-2 rounded-2xl"
-                style={{ background: 'rgba(16,185,129,0.08)', border: '1px solid rgba(16,185,129,0.2)', backdropFilter: 'blur(10px)' }}
+                style={{ background: 'rgba(44,252,125,0.08)', border: '1px solid rgba(44,252,125,0.2)', backdropFilter: 'blur(10px)' }}
               >
                 <span className="relative flex h-2 w-2">
                   <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-70" />
@@ -181,9 +181,9 @@ export default function HomePage() {
                   <span
                     className="animate-gradient bg-clip-text text-transparent"
                     style={{
-                      backgroundImage: 'linear-gradient(135deg, #34d399 0%, #10b981 40%, #059669 70%, #34d399 100%)',
+                      backgroundImage: 'linear-gradient(135deg, #5dfd9d 0%, #2cfc7d 40%, #1db95a 70%, #5dfd9d 100%)',
                       backgroundSize: '200% 200%',
-                      filter: 'drop-shadow(0 0 35px rgba(16,185,129,0.4))',
+                      filter: 'drop-shadow(0 0 35px rgba(44,252,125,0.4))',
                     }}
                   >
                     la Cancha.
@@ -223,7 +223,7 @@ export default function HomePage() {
                     animate={{ width: `${progressToNextRank}%` }}
                     transition={{ duration: 1.8, ease: 'easeOut', delay: 0.4 }}
                     className="h-full rounded-full"
-                    style={{ background: `linear-gradient(90deg, ${rank.hex}, #34d399)`, boxShadow: `0 0 12px ${rank.glow}` }}
+                    style={{ background: `linear-gradient(90deg, ${rank.hex}, #5dfd9d)`, boxShadow: `0 0 12px ${rank.glow}` }}
                   />
                 </div>
                 <p className="text-[8px] font-black text-foreground/20 uppercase tracking-[0.25em]">
@@ -242,7 +242,7 @@ export default function HomePage() {
               {/* Mini stat strip */}
               <div className="grid grid-cols-3 gap-2">
                 {[
-                  { label: 'ELO',      value: elo,                            color: '#10b981' },
+                  { label: 'ELO',      value: elo,                            color: '#2cfc7d' },
                   { label: 'MVPs',     value: metadata?.mvp_count || 0,       color: '#f59e0b' },
                   { label: 'Win%',     value: `${metadata?.win_rate || 0}%`,  color: '#f43f5e' },
                 ].map((s, i) => (
@@ -265,8 +265,8 @@ export default function HomePage() {
                     className="w-full h-13 px-6 font-black uppercase text-[11px] tracking-[0.25em] rounded-[1.1rem] flex items-center justify-center gap-3 text-background relative overflow-hidden group"
                     style={{
                       height: '52px',
-                      background: 'linear-gradient(135deg, #34d399 0%, #10b981 55%, #059669 100%)',
-                      boxShadow: '0 10px 30px rgba(16,185,129,0.35), 0 4px 10px rgba(0,0,0,0.2)',
+                      background: 'linear-gradient(135deg, #5dfd9d 0%, #2cfc7d 55%, #1db95a 100%)',
+                      boxShadow: '0 10px 30px rgba(44,252,125,0.35), 0 4px 10px rgba(0,0,0,0.2)',
                     }}
                   >
                     <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity"
@@ -315,7 +315,7 @@ export default function HomePage() {
               className="grid grid-cols-2 md:grid-cols-4 gap-3 snap-start scroll-mt-26"
             >
               {[
-                { icon: Trophy,   label: 'ELO Rating',  value: elo,                           unit: 'puntos',    color: '#10b981', glow: 'rgba(16,185,129,0.18)' },
+                { icon: Trophy,   label: 'ELO Rating',  value: elo,                           unit: 'puntos',    color: '#2cfc7d', glow: 'rgba(44,252,125,0.18)' },
                 { icon: Activity, label: 'Partidos',    value: totalMatches,                   unit: 'jugados',   color: '#6366f1', glow: 'rgba(99,102,241,0.18)' },
                 { icon: Star,     label: 'MVPs',        value: metadata?.mvp_count || 0,       unit: 'figuras',   color: '#f59e0b', glow: 'rgba(245,158,11,0.18)' },
                 { icon: Flame,    label: 'Win Rate',    value: `${metadata?.win_rate || 0}%`,  unit: 'victorias', color: '#f43f5e', glow: 'rgba(244,63,94,0.18)' },
@@ -353,13 +353,13 @@ export default function HomePage() {
               variants={fadeUp} initial="hidden" animate="visible" custom={1}
               whileHover={{ scale: 1.005 }}
               className="relative overflow-hidden rounded-[1.75rem] p-5 flex flex-col sm:flex-row items-center justify-between gap-5 snap-start scroll-mt-26"
-              style={{ background: 'linear-gradient(135deg, rgba(16,185,129,0.06), rgba(16,185,129,0.02))', border: '1px solid rgba(16,185,129,0.12)' }}
+              style={{ background: 'linear-gradient(135deg, rgba(44,252,125,0.06), rgba(44,252,125,0.02))', border: '1px solid rgba(44,252,125,0.12)' }}
             >
               <div className="absolute right-0 top-0 w-48 h-full opacity-20 pointer-events-none"
-                style={{ background: 'radial-gradient(ellipse at 80% 50%, rgba(16,185,129,0.4) 0%, transparent 70%)' }} />
+                style={{ background: 'radial-gradient(ellipse at 80% 50%, rgba(44,252,125,0.4) 0%, transparent 70%)' }} />
               <div className="flex items-center gap-4 relative z-10">
                 <div className="w-11 h-11 rounded-2xl flex items-center justify-center shrink-0"
-                  style={{ background: 'rgba(16,185,129,0.1)', border: '1px solid rgba(16,185,129,0.2)' }}>
+                  style={{ background: 'rgba(44,252,125,0.1)', border: '1px solid rgba(44,252,125,0.2)' }}>
                   <Users className="w-5 h-5 text-primary" />
                 </div>
                 <div>
@@ -378,7 +378,7 @@ export default function HomePage() {
                 </Link>
                 <Link href="/search">
                   <button className="h-9 px-4 rounded-xl text-[9px] font-black uppercase tracking-widest transition-all hover:scale-[1.03] text-background"
-                    style={{ background: 'linear-gradient(135deg, #10b981, #059669)', boxShadow: '0 4px 14px rgba(16,185,129,0.28)' }}>
+                    style={{ background: 'linear-gradient(135deg, #2cfc7d, #1db95a)', boxShadow: '0 4px 14px rgba(44,252,125,0.28)' }}>
                     Mapa en Vivo
                   </button>
                 </Link>
@@ -399,7 +399,7 @@ export default function HomePage() {
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 {[
-                  { icon: Zap,    color: '#10b981', glow: 'rgba(16,185,129,0.13)', label: 'Victoria Inicial', points: '+1000', desc: 'Bono masivo por ganar tu primer partido registrado.' },
+                  { icon: Zap,    color: '#2cfc7d', glow: 'rgba(44,252,125,0.13)', label: 'Victoria Inicial', points: '+1000', desc: 'Bono masivo por ganar tu primer partido registrado.' },
                   { icon: Target, color: '#f59e0b', glow: 'rgba(245,158,11,0.13)', label: 'Goles Anotados',   points: '+100',  desc: 'Cada gol informado y validado suma a tu ELO personal.' },
                   { icon: Award,  color: '#6366f1', glow: 'rgba(99,102,241,0.13)', label: 'MVP del Partido',  points: '+200',  desc: 'Ser el más votado por tus compañeros tiene recompensa.' },
                 ].map((item, i) => (
@@ -446,10 +446,10 @@ export default function HomePage() {
               <motion.div
                 whileHover={{ scale: 1.005 }}
                 className="relative overflow-hidden rounded-[1.5rem] p-5 flex flex-col sm:flex-row items-center justify-between gap-5"
-                style={{ background: 'linear-gradient(135deg, rgba(16,185,129,0.05), rgba(16,185,129,0.02))', border: '1px solid rgba(16,185,129,0.1)' }}
+                style={{ background: 'linear-gradient(135deg, rgba(44,252,125,0.05), rgba(44,252,125,0.02))', border: '1px solid rgba(44,252,125,0.1)' }}
               >
                 <div className="absolute right-0 top-0 h-full w-2/5 overflow-hidden pointer-events-none">
-                  <div style={{ background: 'radial-gradient(ellipse at 80% 50%, rgba(16,185,129,0.07) 0%, transparent 70%)', height: '100%', width: '100%' }} />
+                  <div style={{ background: 'radial-gradient(ellipse at 80% 50%, rgba(44,252,125,0.07) 0%, transparent 70%)', height: '100%', width: '100%' }} />
                 </div>
                 <div className="flex items-center gap-4 relative z-10">
                   <div className="w-10 h-10 rounded-[0.875rem] flex items-center justify-center shrink-0"
@@ -469,7 +469,7 @@ export default function HomePage() {
                     <p className="text-sm font-black text-primary italic uppercase tracking-tighter">AMATEUR PRO</p>
                   </div>
                   <div className="w-10 h-10 rounded-[0.875rem] flex items-center justify-center"
-                    style={{ background: 'linear-gradient(135deg, #10b981, #059669)', boxShadow: '0 0 20px rgba(16,185,129,0.35)' }}>
+                    style={{ background: 'linear-gradient(135deg, #2cfc7d, #1db95a)', boxShadow: '0 0 20px rgba(44,252,125,0.35)' }}>
                     <Star className="w-5 h-5 text-white fill-white" />
                   </div>
                 </div>
@@ -507,9 +507,9 @@ export default function HomePage() {
                         style={{ background: 'rgba(var(--foreground-rgb),0.03)', border: '1px solid rgba(var(--foreground-rgb),0.07)' }}
                       >
                         <div className="absolute inset-0 rounded-[1.5rem] opacity-0 group-hover:opacity-100 transition-opacity duration-500"
-                          style={{ background: 'radial-gradient(ellipse at 80% 20%, rgba(16,185,129,0.08) 0%, transparent 70%)' }} />
+                          style={{ background: 'radial-gradient(ellipse at 80% 20%, rgba(44,252,125,0.08) 0%, transparent 70%)' }} />
                         <div className="absolute top-0 inset-x-0 h-[1.5px] opacity-0 group-hover:opacity-100 transition-opacity"
-                          style={{ background: 'linear-gradient(90deg, transparent, rgba(16,185,129,0.4), transparent)' }} />
+                          style={{ background: 'linear-gradient(90deg, transparent, rgba(44,252,125,0.4), transparent)' }} />
 
                         <div className="flex items-center gap-3.5 relative z-10">
                           <div className="w-12 h-12 rounded-[0.875rem] flex items-center justify-center shrink-0 overflow-hidden border-2 transition-all duration-500 group-hover:border-primary/40"
@@ -533,7 +533,7 @@ export default function HomePage() {
                                 <Users className="w-2.5 h-2.5" /> {team.members_count}
                               </span>
                               <span className="flex items-center gap-1 text-[8.5px] font-black uppercase tracking-widest px-2 py-1 rounded-lg"
-                                style={{ background: 'rgba(16,185,129,0.07)', border: '1px solid rgba(16,185,129,0.14)', color: '#10b981' }}>
+                                style={{ background: 'rgba(44,252,125,0.07)', border: '1px solid rgba(44,252,125,0.14)', color: '#2cfc7d' }}>
                                 <Trophy className="w-2.5 h-2.5" /> {team.elo} XP
                               </span>
                             </div>
@@ -551,7 +551,7 @@ export default function HomePage() {
                         <Users className="w-8 h-8 text-foreground/55" />
                       </div>
                       <div className="absolute -top-1.5 -right-1.5 w-6 h-6 rounded-full animate-pulse"
-                        style={{ background: 'rgba(16,185,129,0.15)', border: '1px solid rgba(16,185,129,0.2)' }} />
+                        style={{ background: 'rgba(44,252,125,0.15)', border: '1px solid rgba(44,252,125,0.2)' }} />
                     </div>
                     <div className="max-w-xs space-y-1.5">
                       <h3 className="text-base font-black text-foreground italic tracking-tighter uppercase">¿Sin Club?</h3>
@@ -561,7 +561,7 @@ export default function HomePage() {
                     </div>
                     <Link href="/teams">
                       <button className="h-11 px-9 font-black text-[10px] uppercase tracking-[0.22em] rounded-2xl text-white hover:scale-[1.03] transition-transform"
-                        style={{ background: 'linear-gradient(135deg, #10b981, #059669)', boxShadow: '0 8px 24px rgba(16,185,129,0.25)' }}>
+                        style={{ background: 'linear-gradient(135deg, #2cfc7d, #1db95a)', boxShadow: '0 8px 24px rgba(44,252,125,0.25)' }}>
                         VER EQUIPOS →
                       </button>
                     </Link>
@@ -601,14 +601,14 @@ export default function HomePage() {
                       style={{ background: 'rgba(var(--foreground-rgb),0.03)', border: '1px solid rgba(var(--foreground-rgb),0.07)' }}
                     >
                       <div className="absolute top-0 right-0 w-20 h-20 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
-                        style={{ background: 'radial-gradient(circle, rgba(16,185,129,0.1) 0%, transparent 70%)', transform: 'translate(25%,-25%)' }} />
+                        style={{ background: 'radial-gradient(circle, rgba(44,252,125,0.1) 0%, transparent 70%)', transform: 'translate(25%,-25%)' }} />
 
                       <div className="flex justify-between items-start mb-3.5 relative z-10">
                         <div className="flex flex-col gap-2">
                           <div className="flex items-center gap-2">
                             <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
                             <span className="px-2 py-0.5 text-[8px] font-black rounded-md uppercase tracking-[0.18em]"
-                              style={{ background: 'rgba(16,185,129,0.08)', border: '1px solid rgba(16,185,129,0.15)', color: '#10b981' }}>
+                              style={{ background: 'rgba(44,252,125,0.08)', border: '1px solid rgba(44,252,125,0.15)', color: '#2cfc7d' }}>
                               FÚTBOL {match.type.replace('F', '')}
                             </span>
                           </div>
@@ -692,7 +692,7 @@ export default function HomePage() {
               <p className="text-[9px] font-black uppercase tracking-[0.35em] text-foreground/30">Accesos Rápidos</p>
               <div className="grid grid-cols-2 gap-2">
                 {[
-                  { label: 'Crear Equipo',   href: '/teams',         color: '#10b981' },
+                  { label: 'Crear Equipo',   href: '/teams',         color: '#2cfc7d' },
                   { label: 'Buscar Partido', href: '/search',        color: '#6366f1' },
                   { label: 'Mi Perfil',      href: '/profile/me',    color: '#f59e0b' },
                   { label: 'Amigos',         href: '/friends',       color: '#f43f5e' },

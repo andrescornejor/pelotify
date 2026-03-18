@@ -119,8 +119,8 @@ export function TopHeader() {
                                                 <span
                                                     className="bg-clip-text text-transparent"
                                                     style={{
-                                                        backgroundImage: 'linear-gradient(135deg, #34d399 0%, #10b981 40%, #059669 100%)',
-                                                        filter: 'drop-shadow(0 0 15px rgba(16,185,129,0.35))',
+                                                        backgroundImage: 'linear-gradient(135deg, #5dfd9d 0%, #2cfc7d 40%, #1db95a 100%)',
+                                                        filter: 'drop-shadow(0 0 20px rgba(44,252,125,0.45))',
                                                     }}
                                                 >
                                                     PELOTIFY
@@ -130,7 +130,7 @@ export function TopHeader() {
                                             <motion.div
                                                 animate={{ scale: [1, 1.2, 1], opacity: [0.5, 1, 0.5] }}
                                                 transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
-                                                className="hidden lg:block w-2.5 h-2.5 rounded-full bg-primary shadow-[0_0_15px_rgba(16,185,129,0.8)]"
+                                                className="hidden lg:block w-2.5 h-2.5 rounded-full bg-primary shadow-[0_0_15px_rgba(44,252,125,0.8)]"
                                             />
                                         </div>
                                         <span className="hidden sm:block lg:hidden xl:block text-[7px] sm:text-[9px] lg:text-[10px] font-black uppercase tracking-[0.3em] text-foreground/25 leading-none mt-0.5 group-hover/logo:text-primary transition-colors duration-500">

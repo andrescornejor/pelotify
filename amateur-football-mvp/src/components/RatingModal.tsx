@@ -75,7 +75,7 @@ export function RatingModal({ isOpen, onClose }: { isOpen: boolean; onClose: () 
 
                         {/* Green glow top-right */}
                         <div className="absolute top-0 right-0 w-40 h-40 pointer-events-none"
-                            style={{ background: 'radial-gradient(circle, rgba(16,185,129,0.08) 0%, transparent 70%)', transform: 'translate(30%,-30%)' }} />
+                            style={{ background: 'radial-gradient(circle, rgba(44,252,125,0.08) 0%, transparent 70%)', transform: 'translate(30%,-30%)' }} />
 
                         {/* Close btn */}
                         <button
@@ -103,9 +103,9 @@ export function RatingModal({ isOpen, onClose }: { isOpen: boolean; onClose: () 
                                         transition={{ type: 'spring', delay: 0.1, stiffness: 300, damping: 18 }}
                                         className="w-20 h-20 rounded-[1.5rem] flex items-center justify-center"
                                         style={{
-                                            background: 'linear-gradient(135deg, rgba(16,185,129,0.15), rgba(16,185,129,0.05))',
-                                            border: '1px solid rgba(16,185,129,0.25)',
-                                            boxShadow: '0 0 40px rgba(16,185,129,0.2)',
+                                            background: 'linear-gradient(135deg, rgba(44,252,125,0.15), rgba(44,252,125,0.05))',
+                                            border: '1px solid rgba(44,252,125,0.25)',
+                                            boxShadow: '0 0 40px rgba(44,252,125,0.2)',
                                         }}
                                     >
                                         <CheckCircle className="w-10 h-10 text-primary" />
@@ -160,7 +160,7 @@ export function RatingModal({ isOpen, onClose }: { isOpen: boolean; onClose: () 
                                     <div className="px-6 pt-6 pb-4 pr-14 shrink-0">
                                         <div className="flex items-center gap-3 mb-3">
                                             <div className="w-8 h-8 rounded-xl flex items-center justify-center"
-                                                style={{ background: 'rgba(16,185,129,0.1)', border: '1px solid rgba(16,185,129,0.2)' }}>
+                                                style={{ background: 'rgba(44,252,125,0.1)', border: '1px solid rgba(44,252,125,0.2)' }}>
                                                 <Sparkles className="w-4 h-4 text-primary" />
                                             </div>
                                             <div>
@@ -188,10 +188,10 @@ export function RatingModal({ isOpen, onClose }: { isOpen: boolean; onClose: () 
                                                     className="rounded-[1.25rem] p-4 space-y-3"
                                                     style={{
                                                         background: currentRating > 0
-                                                            ? 'rgba(16,185,129,0.04)'
+                                                            ? 'rgba(44,252,125,0.04)'
                                                             : 'rgba(var(--foreground-rgb),0.03)',
                                                         border: currentRating > 0
-                                                            ? '1px solid rgba(16,185,129,0.12)'
+                                                            ? '1px solid rgba(44,252,125,0.12)'
                                                             : '1px solid rgba(var(--foreground-rgb),0.07)',
                                                         transition: 'all 0.3s ease',
                                                     }}
@@ -263,9 +263,9 @@ export function RatingModal({ isOpen, onClose }: { isOpen: boolean; onClose: () 
                                             whileTap={allRated ? { scale: 0.97 } : {}}
                                             className="w-full py-3.5 font-black rounded-2xl text-[11px] uppercase tracking-[0.25em] transition-all"
                                             style={allRated ? {
-                                                background: 'linear-gradient(135deg, #34d399, #10b981, #059669)',
+                                                background: 'linear-gradient(135deg, #5dfd9d, #2cfc7d, #1db95a)',
                                                 color: 'white',
-                                                boxShadow: '0 8px 24px rgba(16,185,129,0.35)',
+                                                boxShadow: '0 8px 24px rgba(44,252,125,0.35)',
                                             } : {
                                                 background: 'rgba(var(--foreground-rgb),0.04)',
                                                 border: '1px solid rgba(var(--foreground-rgb),0.08)',

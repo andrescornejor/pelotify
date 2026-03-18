@@ -60,7 +60,7 @@ export function SidebarContent({ isMobile = false, onClose }: { isMobile?: boole
             {/* ── Ambient background ── */}
             <div className="absolute inset-0 pointer-events-none overflow-hidden">
                 <div className="absolute top-[-30%] right-[-40%] w-[80%] h-[60%] rounded-full opacity-[0.06]"
-                    style={{ background: 'radial-gradient(circle, #10b981 0%, transparent 70%)', filter: 'blur(60px)' }} />
+                    style={{ background: 'radial-gradient(circle, #2cfc7d 0%, transparent 70%)', filter: 'blur(60px)' }} />
                 <div className="absolute bottom-[5%] left-[-30%] w-[70%] h-[40%] rounded-full opacity-[0.04]"
                     style={{ background: 'radial-gradient(circle, #3b82f6 0%, transparent 70%)', filter: 'blur(80px)' }} />
             </div>
@@ -68,7 +68,7 @@ export function SidebarContent({ isMobile = false, onClose }: { isMobile?: boole
             {/* ── Top border ── */}
             {!isMobile && (
                 <div className="absolute top-0 left-0 right-0 h-px"
-                    style={{ background: 'linear-gradient(90deg, transparent, rgba(16,185,129,0.2), transparent)' }} />
+                    style={{ background: 'linear-gradient(90deg, transparent, rgba(44,252,125,0.2), transparent)' }} />
             )}
 
             {/* ── Logo Header ── */}
@@ -82,8 +82,8 @@ export function SidebarContent({ isMobile = false, onClose }: { isMobile?: boole
                         {/* Logo Icon */}
                         <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0 overflow-hidden"
                             style={{
-                                background: 'rgba(16,185,129,0.05)',
-                                border: '1px solid rgba(16,185,129,0.15)',
+                                background: 'rgba(44,252,125,0.05)',
+                                border: '1px solid rgba(44,252,125,0.15)',
                                 boxShadow: '0 8px 25px rgba(0,0,0,0.2)',
                             }}>
                             <img src="/logo_pelotify.png" alt="Logo" className="w-full h-full object-cover scale-110 group-hover/logo:scale-125 transition-transform duration-500" />
@@ -91,7 +91,7 @@ export function SidebarContent({ isMobile = false, onClose }: { isMobile?: boole
                         <div className="flex flex-col">
                             <span className="text-[22px] font-[900] tracking-[-0.06em] font-outfit uppercase italic leading-none group-hover/logo:text-primary transition-colors"
                                 style={{
-                                    background: 'linear-gradient(135deg, #34d399 0%, #10b981 50%, #d1fae5 100%)',
+                                    background: 'linear-gradient(135deg, #5dfd9d 0%, #2cfc7d 50%, #1db95a 100%)',
                                     WebkitBackgroundClip: 'text',
                                     WebkitTextFillColor: 'transparent',
                                 }}>
@@ -143,7 +143,7 @@ export function SidebarContent({ isMobile = false, onClose }: { isMobile?: boole
                                             animate={{ scale: 1 }}
                                             exit={{ scale: 0 }}
                                             className="absolute -top-0.5 -right-0.5 w-4 h-4 bg-primary text-background text-[8px] font-black rounded-full flex items-center justify-center border border-background"
-                                            style={{ boxShadow: '0 0 8px rgba(16,185,129,0.5)' }}
+                                            style={{ boxShadow: '0 0 8px rgba(44,252,125,0.5)' }}
                                         >
                                             {pendingCount > 9 ? '9+' : pendingCount}
                                         </motion.span>
@@ -171,22 +171,22 @@ export function SidebarContent({ isMobile = false, onClose }: { isMobile?: boole
                             whileHover={{ scale: 1.015 }}
                             className="group relative overflow-hidden rounded-[1.25rem] p-4 cursor-pointer"
                             style={{
-                                background: 'linear-gradient(135deg, rgba(16,185,129,0.08) 0%, rgba(16,185,129,0.03) 100%)',
-                                border: '1px solid rgba(16,185,129,0.15)',
+                                background: 'linear-gradient(135deg, rgba(44,252,125,0.08) 0%, rgba(44,252,125,0.03) 100%)',
+                                border: '1px solid rgba(44,252,125,0.15)',
                             }}
                         >
                             {/* Background shine on hover */}
                             <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
-                                style={{ background: 'radial-gradient(ellipse at 30% 50%, rgba(16,185,129,0.08) 0%, transparent 80%)' }} />
+                                style={{ background: 'radial-gradient(ellipse at 30% 50%, rgba(44,252,125,0.08) 0%, transparent 80%)' }} />
 
                             <div className="flex items-center gap-3 relative z-10">
                                 {/* Avatar */}
                                 <div className="relative shrink-0">
                                     <div className="w-11 h-11 rounded-[0.875rem] flex items-center justify-center overflow-hidden"
                                         style={{
-                                            background: 'linear-gradient(135deg, rgba(16,185,129,0.2), rgba(16,185,129,0.08))',
-                                            border: '1.5px solid rgba(16,185,129,0.3)',
-                                            boxShadow: '0 4px 16px rgba(16,185,129,0.15)',
+                                            background: 'linear-gradient(135deg, rgba(44,252,125,0.2), rgba(44,252,125,0.08))',
+                                            border: '1.5px solid rgba(44,252,125,0.3)',
+                                            boxShadow: '0 4px 16px rgba(44,252,125,0.15)',
                                         }}>
                                         {user.avatar_url ? (
                                             <img src={user.avatar_url} alt="" className="w-full h-full object-cover" />
@@ -198,7 +198,7 @@ export function SidebarContent({ isMobile = false, onClose }: { isMobile?: boole
                                     </div>
                                     {/* Online dot */}
                                     <div className="absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full border-2 border-background"
-                                        style={{ background: '#10b981', boxShadow: '0 0 6px rgba(16,185,129,0.6)' }} />
+                                        style={{ background: '#2cfc7d', boxShadow: '0 0 6px rgba(44,252,125,0.6)' }} />
                                 </div>
 
                                 <div className="flex-1 min-w-0">
@@ -218,7 +218,7 @@ export function SidebarContent({ isMobile = false, onClose }: { isMobile?: boole
                                 </div>
 
                                 <div className="w-6 h-6 rounded-lg flex items-center justify-center shrink-0 opacity-0 group-hover:opacity-100 transition-opacity"
-                                    style={{ background: 'rgba(16,185,129,0.12)' }}>
+                                    style={{ background: 'rgba(44,252,125,0.12)' }}>
                                     <svg className="w-3 h-3 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" />
                                     </svg>
@@ -251,8 +251,8 @@ export function SidebarContent({ isMobile = false, onClose }: { isMobile?: boole
                                     isActive ? '' : 'hover:bg-foreground/[0.04]'
                                 }`}
                                 style={isActive ? {
-                                    background: 'linear-gradient(135deg, rgba(16,185,129,0.14) 0%, rgba(16,185,129,0.06) 100%)',
-                                    border: '1px solid rgba(16,185,129,0.18)',
+                                    background: 'linear-gradient(135deg, rgba(44,252,125,0.14) 0%, rgba(44,252,125,0.06) 100%)',
+                                    border: '1px solid rgba(44,252,125,0.18)',
                                 } : {
                                     border: '1px solid transparent',
                                 }}
@@ -262,7 +262,7 @@ export function SidebarContent({ isMobile = false, onClose }: { isMobile?: boole
                                     <motion.div
                                         layoutId="sidebar-active-bar"
                                         className="absolute left-0 top-2 bottom-2 w-[3px] rounded-full"
-                                        style={{ background: 'linear-gradient(180deg, #34d399, #10b981)', boxShadow: '0 0 8px rgba(16,185,129,0.5)' }}
+                                        style={{ background: 'linear-gradient(180deg, #5dfd9d, #2cfc7d)', boxShadow: '0 0 8px rgba(44,252,125,0.5)' }}
                                         transition={{ type: 'spring', stiffness: 500, damping: 35 }}
                                     />
                                 )}
@@ -289,7 +289,7 @@ export function SidebarContent({ isMobile = false, onClose }: { isMobile?: boole
                                         initial={{ scale: 0 }}
                                         animate={{ scale: 1 }}
                                         className="relative z-10 min-w-[20px] h-5 px-1.5 rounded-full flex items-center justify-center text-[9px] font-black bg-primary/90 text-background"
-                                        style={{ boxShadow: '0 0 10px rgba(16,185,129,0.35)' }}
+                                        style={{ boxShadow: '0 0 10px rgba(44,252,125,0.35)' }}
                                     >
                                         {item.badge}
                                     </motion.span>
@@ -309,8 +309,8 @@ export function SidebarContent({ isMobile = false, onClose }: { isMobile?: boole
                             whileTap={{ scale: 0.97 }}
                             className="w-full h-11 rounded-[0.875rem] font-black text-[10px] uppercase tracking-[0.2em] flex items-center justify-center gap-2.5 text-background relative overflow-hidden group"
                             style={{
-                                background: 'linear-gradient(135deg, #34d399 0%, #10b981 50%, #059669 100%)',
-                                boxShadow: '0 6px 20px rgba(16,185,129,0.3), 0 2px 8px rgba(0,0,0,0.2)',
+                                background: 'linear-gradient(135deg, #5dfd9d 0%, #2cfc7d 50%, #1db95a 100%)',
+                                boxShadow: '0 6px 20px rgba(44,252,125,0.3), 0 2px 8px rgba(0,0,0,0.2)',
                             }}
                         >
                             <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity"
