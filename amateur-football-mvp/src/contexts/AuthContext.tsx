@@ -35,104 +35,77 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const pathname = usePathname();
 
     useEffect(() => {
-        // Check active sessions and sets the user
-        const getSession = async () => {
-            try {
-                const { data: { session } } = await supabase.auth.getSession();
+        // Shared logic to fetch profile and normalize user state
+        const handleUserSession = async (session: any) => {
+            if (!session?.user) {
+                setUser(null);
+                setIsLoading(false);
+                return;
+            }
 
-                if (session?.user) {
-                    const metadata = session.user.user_metadata || {};
-                    // Fetch existing profile to prioritize DB data (avatar, etc)
-                    const { data: profile } = await supabase
+            const { user: authUser } = session;
+            const metadata = authUser.user_metadata || {};
+
+            try {
+                // 1. Fetch profile from public schema (source of truth)
+                let { data: profile, error: profileError } = await supabase
+                    .from('profiles')
+                    .select('*')
+                    .eq('id', authUser.id)
+                    .maybeSingle();
+
+                if (profileError) {
+                    console.error("Error fetching profile:", profileError);
+                }
+
+                // 2. Ensure profile exists (especially for new Google users)
+                // Note: The database trigger 'on_auth_user_created' usually handles this, 
+                // but we check here as a fallback for existing users or race conditions.
+                if (!profile) {
+                    console.log("Ensuring profile for user:", authUser.id);
+                    const { data: newProfile, error: insertError } = await supabase
                         .from('profiles')
-                        .select('avatar_url, name')
-                        .eq('id', session.user.id)
+                        .upsert({
+                            id: authUser.id,
+                            name: metadata.name || metadata.full_name || authUser.email?.split('@')[0] || 'Jugador',
+                            avatar_url: metadata.avatar_url,
+                            position: metadata.position || 'DC',
+                            age: parseInt(metadata.age) || 23,
+                            height: parseInt(metadata.height) || 175,
+                            preferred_foot: metadata.preferredFoot || metadata.preferred_foot || 'Derecha',
+                            updated_at: new Date().toISOString()
+                        })
+                        .select()
                         .maybeSingle();
 
-                    setUser({
-                        id: session.user.id,
-                        email: session.user.email || '',
-                        name: profile?.name || metadata.name || metadata.full_name || session.user.email?.split('@')[0] || 'Jugador',
-                        avatar_url: profile?.avatar_url || metadata.avatar_url,
-                        user_metadata: { ...metadata, ...(profile || {}) },
-                    });
+                    if (!insertError) profile = newProfile;
                 }
-            } catch (error) {
-                console.error("Error getting session:", error);
+
+                // 3. Normalize user state for the app
+                setUser({
+                    id: authUser.id,
+                    email: authUser.email || '',
+                    name: profile?.name || metadata.name || metadata.full_name || 'Jugador',
+                    avatar_url: profile?.avatar_url || metadata.avatar_url,
+                    user_metadata: { ...metadata, ...(profile || {}) },
+                });
+            } catch (err) {
+                console.error("Critical error in auth session sync:", err);
             } finally {
                 setIsLoading(false);
             }
         };
 
-        getSession();
+        // Initial session check
+        supabase.auth.getSession().then(({ data: { session } }) => {
+            handleUserSession(session);
+        });
 
-        // Listen for changes on auth state (log in, log out, etc.)
+        // Listen for auth changes
         const { data: { subscription } } = supabase.auth.onAuthStateChange(
             async (_event, session) => {
-                if (session?.user) {
-                    const metadata = session.user.user_metadata || {};
-                    // Fetch profile to avoid Google metadata overwriting local custom data
-                    const { data: profile } = await supabase
-                        .from('profiles')
-                        .select('avatar_url, name')
-                        .eq('id', session.user.id)
-                        .maybeSingle();
-
-                    const userData = {
-                        id: session.user.id,
-                        email: session.user.email || '',
-                        name: profile?.name || metadata.name || metadata.full_name || session.user.email?.split('@')[0] || 'Jugador',
-                        avatar_url: profile?.avatar_url || metadata.avatar_url,
-                        user_metadata: { ...metadata, ...(profile || {}) },
-                    };
-                    setUser(userData);
-
-                    // Ensure profile exists for any authenticated user
-                    // This is critical for features that depend on the 'profiles' table (FKs)
-                    const ensureProfile = async () => {
-                        try {
-                            const { data: profile, error: fetchError } = await supabase
-                                .from('profiles')
-                                .select('id')
-                                .eq('id', session.user.id)
-                                .maybeSingle();
-                            
-                            if (fetchError) {
-                                console.error("Error fetching profile in auth change:", fetchError);
-                                return;
-                            }
-
-                            if (!profile) {
-                                console.log("Creating missing profile for user:", session.user.id);
-                                const { error: insertError } = await supabase.from('profiles').upsert({
-                                    id: session.user.id,
-                                    name: userData.name,
-                                    avatar_url: userData.avatar_url,
-                                    position: metadata.position || 'DC',
-                                    age: parseInt(metadata.age) || 23,
-                                    height: parseInt(metadata.height) || 175,
-                                    preferred_foot: metadata.preferredFoot || metadata.preferred_foot || 'Derecha',
-                                    updated_at: new Date().toISOString()
-                                });
-
-                                if (insertError) {
-                                    console.error("Critical error: Could not create profile for Google user:", insertError);
-                                } else {
-                                    console.log("Profile auto-created successfully for:", session.user.id);
-                                }
-                            }
-                        } catch (err) {
-                            console.error("Unexpected error in ensureProfile:", err);
-                        }
-                    };
-
-                    if (_event === 'SIGNED_IN' || _event === 'INITIAL_SESSION' || _event === 'USER_UPDATED') {
-                        ensureProfile();
-                    }
-                } else {
-                    setUser(null);
-                }
-                setIsLoading(false);
+                console.log("Auth event:", _event);
+                handleUserSession(session);
             }
         );
 

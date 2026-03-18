@@ -37,6 +37,7 @@ import { getUserMatches, Match } from '@/lib/matches';
 import { ProfileSkeleton } from '@/components/Skeletons';
 import { getDominantColor } from '@/lib/colorUtils';
 import { uploadUserAvatar } from '@/lib/storage';
+import { compressImage, blobToFile } from '@/lib/imageUtils';
 
 interface PlayerStats {
     pac: number;
@@ -230,7 +231,19 @@ function ProfileContent() {
             let newAvatarUrl = getField('avatar_url', null);
             if (avatarFile) {
                 console.log("Subiendo nuevo avatar...");
-                newAvatarUrl = await uploadUserAvatar(avatarFile, user.id);
+                
+                // Compress the image before uploading
+                try {
+                    console.log("Comprimiendo imagen...");
+                    const compressedBlob = await compressImage(avatarFile, 800, 0.8);
+                    const compressedFile = blobToFile(compressedBlob, avatarFile.name);
+                    console.log(`Imagen comprimida: de ${Math.round(avatarFile.size / 1024)}KB a ${Math.round(compressedFile.size / 1024)}KB`);
+                    newAvatarUrl = await uploadUserAvatar(compressedFile, user.id);
+                } catch (compressionError) {
+                    console.error("Error comprimiendo imagen, intentando subir original:", compressionError);
+                    newAvatarUrl = await uploadUserAvatar(avatarFile, user.id);
+                }
+                
                 console.log("Avatar subido:", newAvatarUrl);
             }
 
