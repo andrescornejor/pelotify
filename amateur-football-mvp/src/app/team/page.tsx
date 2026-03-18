@@ -70,8 +70,9 @@ function TeamProfileContent() {
         setError(null);
         try {
             // First fetch team core data
+            let teamData;
             try {
-                const teamData = await getTeamById(id as string);
+                teamData = await getTeamById(id as string);
                 setTeam(teamData);
                 setEditName(teamData.name);
                 setEditDesc(teamData.description || '');
@@ -118,7 +119,7 @@ function TeamProfileContent() {
             }
 
             // Then fetch join requests if captain
-            if (user?.id === teamData.captain_id) {
+            if (user?.id === teamData?.captain_id) {
                 try {
                     const requests = await getTeamRequests(id as string);
                     setJoinRequests(requests);
