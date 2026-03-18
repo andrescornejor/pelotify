@@ -42,7 +42,7 @@ export default function PostMatchModal({ matchId, participants, currentUserId, o
 
     const handleSubmit = async () => {
         try {
-            // 1. Submit Report for Consensus
+            // 1. Submit Report for Consensus (CRITICAL PATH)
             const report = {
                 match_id: matchId,
                 reporter_id: currentUserId,
@@ -54,7 +54,7 @@ export default function PostMatchModal({ matchId, participants, currentUserId, o
 
             const result = await reportMatchScore(report);
             
-            // 2. Prepare ratings array (Feedback for teammates is always saved)
+            // 2. Prepare and fire secondary updates (NON-BLOCKING)
             const ratings: PlayerRating[] = Object.entries(playerRatings).map(([to_id, r]) => ({
                 match_id: matchId,
                 from_user_id: currentUserId,
@@ -62,62 +62,44 @@ export default function PostMatchModal({ matchId, participants, currentUserId, o
                 rating: r
             }));
 
-            await submitPlayerRatings(matchId, ratings, myGoals);
-
-            // 3. Submit MVP Vote if selected
+            // We fire these without 'await' to prevent UI hanging if network is slow
+            submitPlayerRatings(matchId, ratings, myGoals).catch(e => console.warn(e));
+            
             if (selectedMvp) {
-                await submitMvpVote(matchId, currentUserId, selectedMvp);
+                submitMvpVote(matchId, currentUserId, selectedMvp).catch(e => console.warn(e));
             }
 
-            // 4. Award Badges (Internal Trigger or Function call safely)
-            await supabase.rpc('award_match_badges', {
+            // Fire and forget badge calculation
+            supabase.rpc('award_match_badges', {
                 p_match_id: matchId,
                 p_user_id: currentUserId,
                 p_goals: myGoals
-            });
+            }).catch(e => console.warn(e));
 
-            // 5. Handle Consensus
+            // 3. Handle Consensus Visuals
             if (result.consensus) {
                 setIsConsensus(true);
                 
-                // We update CURRENT user's local auth metadata for immediate session sync 
-                // but we DO NOT update the 'profiles' table manually because the RPC 
-                // 'finalize_match_and_sync_stats' already did it for all players in a safe way.
-                const { data: userData } = await supabase.auth.getUser();
-                if (userData?.user) {
-                    const metadata = userData.user.user_metadata || {};
-                    const currentElo = metadata.elo || 0;
-                    const matchesWon = metadata.matches_won || 0;
-                    const won = (myTeam === 'A' && scoreA > scoreB) || (myTeam === 'B' && scoreB > scoreA);
-                    const isMvp = selectedMvp === currentUserId;
-                    const isFirstWin = won && matchesWon === 0;
-
-                    const { gainedPoints, newElo } = calculateMatchPoints(
-                        currentElo, 
-                        won, 
-                        myGoals, 
-                        isMvp, 
-                        isFirstWin
-                    );
-
-                    // Update Auth Metadata (Visual refresh of the session only)
-                    await supabase.auth.updateUser({
-                        data: {
-                            ...metadata,
-                            elo: newElo,
-                            matches: (metadata.matches || 0) + 1,
-                            matches_won: won ? (metadata.matches_won || 0) + 1 : (metadata.matches_won || 0),
-                            goals: (metadata.goals || 0) + myGoals,
-                            mvp_count: isMvp ? (metadata.mvp_count || 0) + 1 : (metadata.mvp_count || 0)
+                // Background metadata update to refresh session (header, etc)
+                // We don't await this to keep UI snappy
+                (async () => {
+                    try {
+                        const { data: userData } = await supabase.auth.getUser();
+                        if (userData?.user) {
+                            // We trigger an Auth update to force context refresh,
+                            // but we DO NOT increment stats manually to avoid duplication/errors.
+                            // The AuthContext will re-fetch the profile from DB automatically.
+                            await supabase.auth.updateUser({
+                                data: {
+                                    last_match_sync: new Date().toISOString()
+                                }
+                            });
                         }
-                    });
-                }
+                    } catch (e) { console.warn("Background metadata sync error:", e); }
+                })();
             }
             
-            // NOTE: We no longer update profiles manually here for individual goals.
-            // All stats consolidation must wait for match consensus and be handled by the SQL RPC 
-            // to avoid double counting if multiple players report or confirm.
-
+            // 4. GO TO SUCCESS STEP IMMEDIATELY (DATA RECORDED)
             setStep('success');
         } catch (err: any) {
             console.error('Error submitting post-match:', err);
