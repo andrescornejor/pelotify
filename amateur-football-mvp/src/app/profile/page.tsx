@@ -363,8 +363,10 @@ function ProfileContent() {
                         <div className="w-2 h-2 rounded-full bg-primary animate-pulse" />
                         <span className="text-[10px] font-black uppercase tracking-[0.4em] text-foreground/40 italic">Central de Jugador</span>
                     </div>
-                    <h1 className="text-4xl md:text-6xl lg:text-7xl font-black italic text-foreground uppercase tracking-tighter leading-none">
-                        Mi <span className="text-foreground/40 group-hover:text-primary transition-colors duration-500">Perfil</span>
+                    <h1 className="text-4xl md:text-6xl lg:text-7xl font-black italic text-foreground uppercase tracking-tighter leading-none group">
+                        {isMe ? 'Mi ' : ''}
+                        <span className="text-foreground/40 group-hover:text-primary transition-colors duration-500">Perfil</span>
+                        {!isMe && <span className="text-foreground/20 ml-4 group-hover:text-primary/40 transition-colors">Público</span>}
                     </h1>
                 </div>
 
@@ -714,7 +716,7 @@ function ProfileContent() {
                                             </div>
                                             <div className="space-y-3">
                                                 <p className="text-2xl font-black text-foreground italic uppercase tracking-tighter">Sin Despliegues Registrados</p>
-                                                <p className="text-[10px] font-black uppercase text-foreground/20 tracking-[0.3em]">Tu historial de partidos está listo para ser escrito.</p>
+                                                <p className="text-[10px] font-black uppercase text-foreground/20 tracking-[0.3em]">{isMe ? 'Tu historial de partidos está listo para ser escrito.' : 'Este jugador aún no tiene partidos registrados.'}</p>
                                             </div>
                                             <Link href="/search">
                                                  <button className="h-14 px-10 bg-primary/5 hover:bg-primary text-primary hover:text-black font-black text-[10px] uppercase tracking-[0.3em] rounded-xl border border-primary/20 transition-all active:scale-95">INICIAR CONVOCATORIA</button>
