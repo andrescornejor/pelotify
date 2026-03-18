@@ -326,19 +326,27 @@ function TeamProfileContent() {
                         {isCaptain && (
                             <div className="flex gap-3">
                                 {isEditing ? (
-                                    <button
-                                        onClick={handleSaveTeam}
-                                        disabled={isSaving}
-                                        className="h-12 px-6 bg-primary text-background rounded-2xl font-black uppercase tracking-widest text-[10px] hover:bg-foreground hover:text-background transition-all active:scale-95 shadow-xl shadow-primary/20 flex items-center gap-2"
-                                    >
-                                        {isSaving ? <Loader2 className="w-4 h-4 animate-spin" /> : <><Save className="w-4 h-4" /> GUARDAR</>}
-                                    </button>
+                                    <div className="flex gap-2 md:gap-3">
+                                        <button
+                                            onClick={() => setIsEditing(false)}
+                                            className="h-12 md:h-14 lg:h-16 px-6 lg:px-8 bg-foreground/5 text-foreground/40 rounded-2xl lg:rounded-3xl font-black uppercase tracking-widest text-[10px] md:text-xs hover:text-foreground transition-all active:scale-95 border border-foreground/5"
+                                        >
+                                            CANCELAR
+                                        </button>
+                                        <button
+                                            onClick={handleSaveTeam}
+                                            disabled={isSaving}
+                                            className="h-12 md:h-14 lg:h-16 px-6 md:px-8 lg:px-10 bg-primary text-background rounded-2xl lg:rounded-3xl font-black uppercase tracking-[0.2em] md:tracking-[0.3em] text-[10px] md:text-xs hover:scale-105 hover:bg-foreground hover:text-background transition-all active:scale-95 shadow-xl shadow-primary/20 flex items-center gap-2 md:gap-3"
+                                        >
+                                            {isSaving ? <Loader2 className="w-4 h-4 animate-spin" /> : <><Save className="w-4 h-4 lg:w-5 lg:h-5" /> GUARDAR</>}
+                                        </button>
+                                    </div>
                                 ) : (
                                     <button
                                         onClick={() => setIsEditing(true)}
-                                        className="w-12 h-12 flex items-center justify-center bg-foreground/5 backdrop-blur-2xl rounded-2xl border border-foreground/10 text-foreground hover:bg-foreground/10 transition-all active:scale-90"
+                                        className="w-12 h-12 md:w-14 md:h-14 lg:w-16 lg:h-16 flex items-center justify-center bg-foreground/5 backdrop-blur-2xl rounded-2xl lg:rounded-3xl border border-foreground/10 text-foreground hover:bg-foreground/10 hover:border-primary/50 transition-all active:scale-90 shadow-xl"
                                     >
-                                        <Settings className="w-5 h-5" />
+                                        <Settings className="w-5 h-5 lg:w-6 lg:h-6" />
                                     </button>
                                 )}
                             </div>
@@ -477,16 +485,19 @@ function TeamProfileContent() {
                             key={tab.id}
                             onClick={() => setActiveTab(tab.id as any)}
                             className={cn(
-                                "flex-1 h-12 md:h-14 rounded-[2rem] flex items-center justify-center gap-2.5 transition-all duration-500 relative overflow-hidden",
+                                "flex-1 h-14 md:h-16 lg:h-20 rounded-[2rem] md:rounded-[2.5rem] flex items-center justify-center gap-2 md:gap-3 lg:gap-4 transition-all duration-500 relative overflow-hidden",
                                 activeTab === tab.id 
-                                    ? "bg-primary text-background font-black italic shadow-xl shadow-primary/20" 
-                                    : "text-foreground/40 hover:text-foreground/70 hover:bg-foreground/[0.02] italic uppercase text-[9px] md:text-[10px] font-black tracking-widest"
+                                    ? "bg-primary text-background font-black italic shadow-2xl shadow-primary/30" 
+                                    : "text-foreground/45 hover:text-foreground/80 hover:bg-foreground/[0.05] italic uppercase font-black tracking-[0.15em] md:tracking-[0.25em]"
                             )}
                         >
-                            <tab.icon className={cn("w-4 h-4 md:w-5 md:h-5", activeTab === tab.id ? "text-background" : "text-foreground/20")} />
+                            <tab.icon className={cn(
+                                "w-4 h-4 md:w-5 md:h-5 lg:w-6 lg:h-6 transition-transform duration-500", 
+                                activeTab === tab.id ? "text-background scale-110" : "text-foreground/20 group-hover:scale-110"
+                            )} />
                             <span className={cn(
-                                "transition-all duration-300",
-                                activeTab === tab.id ? "text-[11px] md:text-sm" : "hidden sm:inline"
+                                "transition-all duration-300 text-[10px] md:text-xs lg:text-sm",
+                                activeTab === tab.id ? "opacity-100" : "opacity-80"
                             )}>
                                 {tab.label}
                             </span>
@@ -521,14 +532,14 @@ function TeamProfileContent() {
                                     <button
                                         onClick={() => handleRespondInvitation('decline')}
                                         disabled={respondingId === user?.id}
-                                        className="flex-1 h-14 bg-foreground/[0.03] border border-foreground/10 rounded-2xl text-[10px] font-black text-foreground/50 uppercase tracking-widest hover:text-foreground transition-all active:scale-95"
+                                        className="flex-1 h-14 md:h-16 lg:h-20 bg-foreground/[0.03] border border-foreground/10 rounded-2xl md:rounded-3xl text-[10px] md:text-xs font-black text-foreground/50 uppercase tracking-widest hover:text-foreground transition-all active:scale-95 italic"
                                     >
                                         DECLINAR
                                     </button>
                                     <button
                                         onClick={() => handleRespondInvitation('accept')}
                                         disabled={respondingId === user?.id}
-                                        className="flex-1 h-14 bg-primary text-background rounded-2xl text-[10px] font-black uppercase tracking-[0.3em] hover:bg-foreground hover:text-background transition-all active:scale-95 shadow-xl shadow-primary/20"
+                                        className="flex-1 h-14 md:h-16 lg:h-20 bg-primary text-background rounded-2xl md:rounded-3xl text-[10px] md:text-xs font-black uppercase tracking-[0.2em] md:tracking-[0.3em] hover:bg-foreground hover:text-background transition-all active:scale-95 shadow-2xl shadow-primary/20 italic"
                                     >
                                         {respondingId === user?.id ? <Loader2 className="w-4 h-4 animate-spin mx-auto" /> : 'ACEPTAR CUPO'}
                                     </button>
@@ -551,18 +562,18 @@ function TeamProfileContent() {
                                 }}
                                 disabled={isJoining || members.some(m => m.user_id === user?.id && m.status === 'requested')}
                                 className={cn(
-                                    "w-full h-14 md:h-16 rounded-[2rem] font-black uppercase tracking-[0.2em] md:tracking-[0.4em] text-[10px] transition-all active:scale-95 shadow-xl flex items-center justify-center gap-3",
+                                    "w-full h-14 md:h-18 lg:h-24 rounded-[2.5rem] md:rounded-[3rem] font-black uppercase tracking-[0.2em] md:tracking-[0.4em] text-[11px] md:text-sm lg:text-base italic transition-all active:scale-95 shadow-2xl flex items-center justify-center gap-3 md:gap-4 lg:gap-6",
                                     members.some(m => m.user_id === user?.id && m.status === 'requested')
                                         ? "bg-foreground/10 text-foreground/40 cursor-not-allowed border border-foreground/5"
-                                        : "bg-primary text-background hover:bg-foreground hover:text-background shadow-primary/10"
+                                        : "bg-primary text-background hover:bg-foreground hover:text-background shadow-primary/20"
                                 )}
                             >
                                 {isJoining ? (
-                                    <Loader2 className="w-5 h-5 animate-spin" />
+                                    <Loader2 className="w-5 h-5 md:w-6 md:h-6 animate-spin" />
                                 ) : members.some(m => m.user_id === user?.id && m.status === 'requested') ? (
                                     <>SOLICITUD ENVIADA</>
                                 ) : (
-                                    <><Plus className="w-5 h-5" /> <span className="truncate">SOLICITAR INGRESO</span></>
+                                    <><PlusCircle className="w-5 h-5 md:w-6 md:h-6 lg:w-8 lg:h-8" /> <span className="truncate">SOLICITAR INGRESO</span></>
                                 )}
                             </button>
                         )}
