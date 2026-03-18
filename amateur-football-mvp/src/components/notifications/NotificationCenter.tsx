@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { getPendingRequests, acceptFriendRequest, deleteFriendship, FriendshipData } from '@/lib/friends';
 import { getMatchInvitations, respondToInvitation } from '@/lib/matches';
+import { getPendingJoinRequestsForCaptain, respondToTeamInvitation } from '@/lib/teams';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Bell, X, Check, XCircle, Users, Calendar, Loader2, Info, ArrowRight } from 'lucide-react';
 import Link from 'next/link';
@@ -17,6 +18,7 @@ export function NotificationCenter({ isOpen, onClose }: NotificationCenterProps)
     const { user } = useAuth();
     const [friendRequests, setFriendRequests] = useState<FriendshipData[]>([]);
     const [matchInvites, setMatchInvites] = useState<any[]>([]);
+    const [teamRequests, setTeamRequests] = useState<any[]>([]);
     const [isLoading, setIsLoading] = useState(false);
     const [actionLoading, setActionLoading] = useState<string | null>(null);
 
@@ -24,12 +26,14 @@ export function NotificationCenter({ isOpen, onClose }: NotificationCenterProps)
         if (!user) return;
         setIsLoading(true);
         try {
-            const [f, m] = await Promise.all([
+            const [f, m, t] = await Promise.all([
                 getPendingRequests(user.id),
-                getMatchInvitations(user.id)
+                getMatchInvitations(user.id),
+                getPendingJoinRequestsForCaptain(user.id)
             ]);
             setFriendRequests(f);
             setMatchInvites(m);
+            setTeamRequests(t);
         } catch (err) {
             console.error("Error fetching notifications:", err);
         } finally {
@@ -69,7 +73,20 @@ export function NotificationCenter({ isOpen, onClose }: NotificationCenterProps)
         }
     };
 
-    const hasNotifications = friendRequests.length > 0 || matchInvites.length > 0;
+    const handleTeamAction = async (teamId: string, targetUserId: string, accept: boolean) => {
+        const actionId = `${teamId}-${targetUserId}`;
+        setActionLoading(actionId);
+        try {
+            await respondToTeamInvitation(teamId, targetUserId, accept ? 'accept' : 'decline');
+            setTeamRequests(prev => prev.filter(r => r.team_id !== teamId || r.user_id !== targetUserId));
+        } catch (err) {
+            console.error(err);
+        } finally {
+            setActionLoading(null);
+        }
+    };
+
+    const hasNotifications = friendRequests.length > 0 || matchInvites.length > 0 || teamRequests.length > 0;
 
     return (
         <AnimatePresence>
@@ -136,6 +153,64 @@ export function NotificationCenter({ isOpen, onClose }: NotificationCenterProps)
                                     animate="show"
                                     className="p-4 flex flex-col gap-3"
                                 >
+                                    {/* Team Join Requests (Captain) */}
+                                    <AnimatePresence mode="popLayout">
+                                        {teamRequests.map((req) => {
+                                            const actionId = `${req.team_id}-${req.user_id}`;
+                                            return (
+                                                <motion.div 
+                                                    key={actionId}
+                                                    variants={{
+                                                        hidden: { opacity: 0, y: 15, scale: 0.96, filter: 'blur(4px)' },
+                                                        show: { opacity: 1, y: 0, scale: 1, filter: 'blur(0px)' }
+                                                    }}
+                                                    layout
+                                                    transition={{ 
+                                                        type: "spring",
+                                                        stiffness: 400,
+                                                        damping: 30
+                                                    }}
+                                                    className="p-4 rounded-3xl bg-primary/[0.02] border border-primary/10 hover:bg-primary/[0.04] hover:border-primary/30 transition-all flex flex-col gap-3 group"
+                                                >
+                                                    <div className="flex items-center gap-4">
+                                                        <div className="w-12 h-12 rounded-2xl bg-[#0a0a10] border-2 border-primary/20 flex items-center justify-center shrink-0 overflow-hidden shadow-lg group-hover:border-primary/40 transition-colors">
+                                                            {req.profiles?.avatar_url ? (
+                                                                <img src={req.profiles.avatar_url} alt="" className="w-full h-full object-cover" />
+                                                            ) : (
+                                                                <span className="font-black text-primary text-xl italic">{req.profiles?.name?.charAt(0)}</span>
+                                                            )}
+                                                        </div>
+                                                        <div className="flex-1 min-w-0">
+                                                            <p className="text-[13px] font-black text-foreground italic uppercase tracking-tight truncate leading-none mb-1 group-hover:text-primary transition-colors">
+                                                                {req.profiles?.name || 'Jugador'}
+                                                            </p>
+                                                            <div className="flex items-center gap-1.5">
+                                                                <span className="text-[9px] text-foreground/30 font-black uppercase tracking-widest">Quiere unirse a </span>
+                                                                <span className="text-[9px] text-primary font-black uppercase tracking-widest truncate max-w-[100px]">{req.teams?.name}</span>
+                                                            </div>
+                                                        </div>
+                                                        <div className="flex gap-2">
+                                                            <button 
+                                                                onClick={() => handleTeamAction(req.team_id, req.user_id, true)}
+                                                                disabled={actionLoading === actionId}
+                                                                className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center text-background hover:scale-105 transition-all active:scale-95 disabled:opacity-50 shadow-lg shadow-primary/20"
+                                                            >
+                                                                {actionLoading === actionId ? <Loader2 className="w-4 h-4 animate-spin" /> : <Check className="w-5 h-5" strokeWidth={3} />}
+                                                            </button>
+                                                            <button 
+                                                                onClick={() => handleTeamAction(req.team_id, req.user_id, false)}
+                                                                disabled={actionLoading === actionId}
+                                                                className="w-10 h-10 rounded-xl bg-white/[0.03] border border-white/[0.05] flex items-center justify-center text-foreground/20 hover:text-red-400 hover:border-red-400/30 hover:bg-red-400/5 transition-all active:scale-95 disabled:opacity-50"
+                                                            >
+                                                                <XCircle className="w-5 h-5" />
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </motion.div>
+                                            );
+                                        })}
+                                    </AnimatePresence>
+
                                     {/* Friend Requests */}
                                     <AnimatePresence mode="popLayout">
                                         {friendRequests.map((req) => (

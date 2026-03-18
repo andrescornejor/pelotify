@@ -356,3 +356,47 @@ export async function sendTeamMessage(teamId: string, userId: string, content: s
 
     if (error) throw error;
 }
+
+export async function getPendingJoinRequestsForCaptain(captainId: string) {
+    const { data, error } = await supabase
+        .from('team_members')
+        .select(`
+            team_id,
+            user_id,
+            status,
+            role,
+            teams!inner (
+                name,
+                logo_url,
+                captain_id
+            ),
+            profiles:profile_id (
+                name,
+                avatar_url,
+                position
+            )
+        `)
+        .eq('status', 'pending')
+        .eq('role', 'member')
+        .eq('teams.captain_id', captainId);
+
+    if (error) throw error;
+    return data;
+}
+
+export async function getPendingJoinRequestsCountForCaptain(captainId: string) {
+    const { count, error } = await supabase
+        .from('team_members')
+        .select(`
+            team_id,
+            teams!inner (
+                captain_id
+            )
+        `, { count: 'exact', head: true })
+        .eq('status', 'pending')
+        .eq('role', 'member')
+        .eq('teams.captain_id', captainId);
+
+    if (error) throw error;
+    return count || 0;
+}
