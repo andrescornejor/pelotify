@@ -255,9 +255,19 @@ function ProfileContent() {
                 throw new Error(`Error en el perfil público: ${profileError.message}`);
             }
 
-            // 2. Update Auth Metadata (for the current session)
-            console.log("Actualizando metadata de autenticación...");
-            const { error: authError } = await supabase.auth.updateUser({
+            // SUCCESS! 
+            // We stop the spinner and close the editor immediately after DB success
+            setIsSaving(false);
+            setIsEditing(false);
+            setAvatarFile(null);
+            setAvatarPreview(null);
+            router.refresh();
+
+            // 2. Update Auth Metadata (for the current session) - Background Fire
+            // This triggers onAuthStateChange to refresh headers, but we don't 'await' it
+            // to avoid hanging if the Auth server is slow.
+            console.log("Actualizando metadata en segundo plano...");
+            supabase.auth.updateUser({
                 data: {
                     name: editedData.name,
                     full_name: editedData.name,
@@ -267,27 +277,15 @@ function ProfileContent() {
                     position: editedData.position,
                     avatar_url: newAvatarUrl
                 }
-            });
+            }).catch(e => console.warn("Error secundario en metadata de auth:", e));
 
-            if (authError) {
-                console.warn("Advertencia: No se pudo actualizar la metadata de auth, pero el perfil se guardó:", authError);
-                // We don't throw here because the main profile was already saved
-            }
-
-            console.log("Perfil guardado con éxito.");
-            
-            // Clean up avatar temporary state
-            setAvatarFile(null);
-            setAvatarPreview(null);
-            
-            alert("✅ Perfil actualizado correctamente.");
-            setIsEditing(false);
-            router.refresh();
         } catch (error: any) {
             console.error("Error crítico en handleSaveProfile:", error);
             alert(`Error guardando perfil: ${error.message || 'Error desconocido'}`);
-        } finally {
             setIsSaving(false);
+        } finally {
+            // Safe fallback
+            setTimeout(() => setIsSaving(false), 500);
         }
     };
 
