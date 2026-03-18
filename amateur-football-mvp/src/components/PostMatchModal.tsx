@@ -76,11 +76,13 @@ export default function PostMatchModal({ matchId, participants, currentUserId, o
                 p_goals: myGoals
             });
 
-            // 5. Handle Consensus results
+            // 5. Handle Consensus
             if (result.consensus) {
                 setIsConsensus(true);
                 
-                // We still update CURRENT user's local auth metadata for session sync
+                // We update CURRENT user's local auth metadata for immediate session sync 
+                // but we DO NOT update the 'profiles' table manually because the RPC 
+                // 'finalize_match_and_sync_stats' already did it for all players in a safe way.
                 const { data: userData } = await supabase.auth.getUser();
                 if (userData?.user) {
                     const metadata = userData.user.user_metadata || {};
@@ -90,7 +92,6 @@ export default function PostMatchModal({ matchId, participants, currentUserId, o
                     const isMvp = selectedMvp === currentUserId;
                     const isFirstWin = won && matchesWon === 0;
 
-                    // Calculate Points locally for immediate session visualization
                     const { gainedPoints, newElo } = calculateMatchPoints(
                         currentElo, 
                         won, 
@@ -99,7 +100,7 @@ export default function PostMatchModal({ matchId, participants, currentUserId, o
                         isFirstWin
                     );
 
-                    // Update Auth Metadata (Best effort for session sync)
+                    // Update Auth Metadata (Visual refresh of the session only)
                     await supabase.auth.updateUser({
                         data: {
                             ...metadata,
@@ -110,32 +111,12 @@ export default function PostMatchModal({ matchId, participants, currentUserId, o
                             mvp_count: isMvp ? (metadata.mvp_count || 0) + 1 : (metadata.mvp_count || 0)
                         }
                     });
-
-                    // Update Profiles Table just in case SQL update didn't run yet or failed
-                    await supabase
-                        .from('profiles')
-                        .update({
-                            elo: newElo,
-                            matches: (metadata.matches || 0) + 1,
-                            matches_won: won ? (metadata.matches_won || 0) + 1 : (metadata.matches_won || 0),
-                            goals: (metadata.goals || 0) + myGoals,
-                            mvp_count: isMvp ? (metadata.mvp_count || 0) + 1 : (metadata.mvp_count || 0),
-                            updated_at: new Date().toISOString()
-                        })
-                        .eq('id', currentUserId);
                 }
             }
             
-            // Individual goals update if NO consensus yet (to show progress in profile)
-            if (!result.consensus) {
-                 await supabase
-                    .from('profiles')
-                    .update({ 
-                        goals: ((myParticipant?.profiles as any)?.goals || 0) + myGoals,
-                        updated_at: new Date().toISOString()
-                    })
-                    .eq('id', currentUserId);
-            }
+            // NOTE: We no longer update profiles manually here for individual goals.
+            // All stats consolidation must wait for match consensus and be handled by the SQL RPC 
+            // to avoid double counting if multiple players report or confirm.
 
             setStep('success');
         } catch (err: any) {
