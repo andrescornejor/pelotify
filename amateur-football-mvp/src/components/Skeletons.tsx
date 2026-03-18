@@ -6,7 +6,7 @@ const shimmer = {
     initial: { x: '-100%' },
     animate: { x: '100%' },
     transition: { repeat: Infinity, ease: 'linear', duration: 1.5 }
-};
+} as const;
 
 export function SkeletonPremium({ className = "" }: { className?: string }) {
     return (
