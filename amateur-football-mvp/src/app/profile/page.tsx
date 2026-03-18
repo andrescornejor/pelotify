@@ -275,9 +275,14 @@ function ProfileContent() {
             }
 
             console.log("Perfil guardado con éxito.");
+            
+            // Clean up avatar temporary state
+            setAvatarFile(null);
+            setAvatarPreview(null);
+            
+            alert("✅ Perfil actualizado correctamente.");
             setIsEditing(false);
             router.refresh();
-            alert("✅ Perfil actualizado correctamente.");
         } catch (error: any) {
             console.error("Error crítico en handleSaveProfile:", error);
             alert(`Error guardando perfil: ${error.message || 'Error desconocido'}`);
