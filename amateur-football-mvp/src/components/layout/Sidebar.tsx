@@ -79,14 +79,9 @@ export function SidebarContent({ isMobile = false, onClose }: { isMobile?: boole
                         onClick={() => isMobile && onClose && onClose()}
                         className="flex items-center gap-2.5 group/logo"
                     >
-                        {/* Logo Icon */}
-                        <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0 overflow-hidden"
-                            style={{
-                                background: 'rgba(44,252,125,0.05)',
-                                border: '1px solid rgba(44,252,125,0.15)',
-                                boxShadow: '0 8px 25px rgba(0,0,0,0.2)',
-                            }}>
-                            <img src="/logo_pelotify.png" alt="Logo" className="w-full h-full object-cover scale-110 group-hover/logo:scale-125 transition-transform duration-500" />
+                        <div className="w-16 h-16 flex items-center justify-center relative shrink-0 transition-transform duration-500 group-hover/logo:scale-110">
+                            <div className="absolute inset-0 bg-primary/20 blur-[25px] rounded-full opacity-40 shrink-0" />
+                            <img src="/logo_pelotify.png" alt="Logo" className="w-full h-full object-contain relative z-10 drop-shadow-[0_0_15px_rgba(44,252,125,0.3)]" />
                         </div>
                         <div className="flex flex-col">
                             <span className="text-[22px] font-[900] tracking-[-0.06em] font-outfit uppercase italic leading-none group-hover/logo:text-primary transition-colors"

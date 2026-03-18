@@ -109,9 +109,10 @@ export function TopHeader() {
                                     </div>
                                 </motion.button>
 
-                                <Link href="/" className="flex items-center gap-3.5 select-none hover:opacity-90 transition-all group/logo">
-                                    <div className="w-9 h-9 sm:w-11 sm:h-11 lg:w-10 lg:h-10 xl:w-12 xl:h-12 rounded-[0.875rem] lg:rounded-[1rem] overflow-hidden border border-primary/20 bg-primary/5 shadow-2xl transition-transform duration-500 group-hover/logo:scale-105">
-                                        <img src="/logo_pelotify.png" alt="Logo" className="w-full h-full object-cover scale-110" />
+                                <Link href="/" className="flex items-center gap-2 select-none hover:opacity-90 transition-all group/logo">
+                                    <div className="w-12 h-12 sm:w-16 sm:h-16 lg:w-14 lg:h-14 xl:w-20 xl:h-20 flex items-center justify-center relative transition-transform duration-500 group-hover/logo:scale-110 shrink-0">
+                                        <div className="absolute inset-0 bg-primary/15 blur-[20px] rounded-full opacity-40 shrink-0" />
+                                        <img src="/logo_pelotify.png" alt="Logo" className="w-full h-full object-contain relative z-10 drop-shadow-[0_0_15px_rgba(44,252,125,0.2)]" />
                                     </div>
                                     <div className="flex-1 min-w-0 flex flex-col lg:gap-0.5">
                                         <div className="flex items-center gap-2">

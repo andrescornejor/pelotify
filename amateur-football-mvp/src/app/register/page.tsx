@@ -119,9 +119,10 @@ export default function RegisterPage() {
                     
                     <div className="flex flex-col gap-8 relative z-10">
                         {/* Header */}
-                        <div className="flex items-center gap-4">
-                            <div className="w-16 h-16 rounded-[1.25rem] overflow-hidden border border-primary/20 bg-primary/5 shadow-xl shrink-0">
-                                <img src="/logo_pelotify.png" alt="Logo" className="w-full h-full object-cover scale-110" />
+                        <div className="flex items-center gap-2">
+                            <div className="w-32 h-32 flex items-center justify-center relative shrink-0">
+                                <div className="absolute inset-0 bg-primary/20 blur-[40px] rounded-full opacity-40 shrink-0" />
+                                <img src="/logo_pelotify.png" alt="Logo" className="w-full h-full object-contain relative z-10 drop-shadow-[0_0_20px_rgba(44,252,125,0.3)]" />
                             </div>
                             <div className="space-y-1">
                                 <h1 className="text-4xl font-black italic text-foreground tracking-tighter uppercase leading-none">Scouting <span className="text-primary">Report</span></h1>

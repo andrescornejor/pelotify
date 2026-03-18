@@ -79,8 +79,9 @@ export default function LoginPage() {
                     <div className="flex flex-col gap-10 relative z-10">
                         {/* Header */}
                             <div className="flex flex-col items-center gap-4 mb-2">
-                                <div className="w-20 h-20 rounded-[1.5rem] overflow-hidden border border-primary/20 bg-primary/5 shadow-2xl">
-                                    <img src="/logo_pelotify.png" alt="Logo" className="w-full h-full object-cover scale-110" />
+                                <div className="w-40 h-40 flex items-center justify-center relative group-hover:scale-110 transition-transform duration-700">
+                                    <div className="absolute inset-0 bg-primary/20 blur-[50px] rounded-full opacity-40 shrink-0" />
+                                    <img src="/logo_pelotify.png" alt="Logo" className="w-full h-full object-contain relative z-10 drop-shadow-[0_0_20px_rgba(44,252,125,0.3)]" />
                                 </div>
                                 <h1 className="text-4xl lg:text-5xl font-black italic text-foreground tracking-tighter uppercase leading-[0.9] text-center">
                                     Entrar a la <span className="text-primary">Cancha</span>
