@@ -33,7 +33,7 @@ import { useState, useEffect } from 'react';
 import { supabase } from '@/lib/supabase';
 import { motion, AnimatePresence } from 'framer-motion';
 import { cn } from '@/lib/utils';
-import { Match } from '@/lib/matches';
+import { getUserMatches, Match } from '@/lib/matches';
 import { ProfileSkeleton } from '@/components/Skeletons';
 import { getDominantColor } from '@/lib/colorUtils';
 import { uploadUserAvatar } from '@/lib/storage';
