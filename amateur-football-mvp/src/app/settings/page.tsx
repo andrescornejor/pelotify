@@ -151,8 +151,10 @@ export default function SettingsPage() {
                         </div>
                     </button>
                     
-                    <p className="text-center text-[10px] font-black uppercase tracking-[0.2em] text-foreground/20 italic">
-                        PELOTIFY v1.0.0
+                    <p className="text-center text-[10px] font-black uppercase tracking-[0.2em] italic font-kanit">
+                        <span className="text-foreground/30">PELO</span>
+                        <span className="text-primary/40">TIFY</span>
+                        <span className="text-foreground/20 ml-2">v1.0.0</span>
                     </p>
                 </motion.section>
             </motion.div>

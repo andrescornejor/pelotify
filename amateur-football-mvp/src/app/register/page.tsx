@@ -125,8 +125,8 @@ export default function RegisterPage() {
                                 <img src="/logo_pelotify.png" alt="Logo" className="w-full h-full object-contain relative z-10 drop-shadow-[0_0_20px_rgba(44,252,125,0.3)]" />
                             </div>
                             <div className="space-y-1">
-                                <h1 className="text-4xl font-black italic text-foreground tracking-tighter uppercase leading-none">Scouting <span className="text-primary">Report</span></h1>
-                                <p className="text-[10px] font-black text-foreground/40 uppercase tracking-[0.4em] italic">Ficha Técnica de Jugador</p>
+                                <h1 className="text-4xl font-black italic text-foreground tracking-tighter uppercase leading-none font-kanit">Scouting <span className="text-primary">Report</span></h1>
+                                <p className="text-[10px] font-black text-foreground/40 uppercase tracking-[0.4em] italic font-kanit">Ficha Técnica de Jugador</p>
                             </div>
                         </div>
 

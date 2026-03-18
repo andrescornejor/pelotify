@@ -85,13 +85,18 @@ export function SidebarContent({ isMobile = false, onClose }: { isMobile?: boole
                             <img src="/logo_pelotify.png" alt="Logo" className="w-full h-full object-contain relative z-10 drop-shadow-[0_0_15px_rgba(44,252,125,0.3)]" />
                         </div>
                         <div className="flex flex-col">
-                            <span className="text-[22px] font-[900] tracking-[-0.06em] font-outfit uppercase italic leading-none group-hover/logo:text-primary transition-colors"
-                                style={{
-                                    background: 'linear-gradient(135deg, #5dfd9d 0%, #2cfc7d 50%, #1db95a 100%)',
-                                    WebkitBackgroundClip: 'text',
-                                    WebkitTextFillColor: 'transparent',
-                                }}>
-                                PELOTIFY
+                            <span className="text-[22px] font-[900] tracking-[-0.04em] font-kanit uppercase italic leading-none flex items-center gap-0 group-hover/logo:text-primary transition-all">
+                                <span className="text-foreground">
+                                    PELO
+                                </span>
+                                <span
+                                    style={{
+                                        background: 'linear-gradient(135deg, #5dfd9d 0%, #2cfc7d 50%, #1db95a 100%)',
+                                        WebkitBackgroundClip: 'text',
+                                        WebkitTextFillColor: 'transparent',
+                                    }}>
+                                    TIFY
+                                </span>
                             </span>
                             <span className="text-[8px] font-black uppercase tracking-[0.25em] leading-none mt-0.5 text-foreground/55">
                                 Dominá el Potrero

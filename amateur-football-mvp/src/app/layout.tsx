@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { Inter, Outfit } from 'next/font/google';
+import { Inter, Outfit, Kanit } from 'next/font/google';
 import './globals.css';
 import { AuthProvider } from '@/contexts/AuthContext';
 import { SidebarProvider } from '@/contexts/SidebarContext';
@@ -9,6 +9,7 @@ import PostMatchManager from '@/components/PostMatchManager';
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-inter' });
 const outfit = Outfit({ subsets: ['latin'], variable: '--font-outfit' });
+const kanit = Kanit({ subsets: ['latin'], weight: ['400', '700', '900'], variable: '--font-kanit' });
 
 export const metadata: Metadata = {
   title: 'Pelotify - Fútbol Amateur',
@@ -42,7 +43,7 @@ export default function RootLayout({
   return (
     <html lang="es" className="dark">
       <body
-        className={`${inter.variable} ${outfit.variable} font-sans antialiased bg-background text-foreground min-h-[100dvh] flex flex-col selection:bg-primary/30`}
+        className={`${inter.variable} ${outfit.variable} ${kanit.variable} font-sans antialiased bg-background text-foreground min-h-[100dvh] flex flex-col selection:bg-primary/30`}
       >
         <ThemeProvider>
           <AuthProvider>

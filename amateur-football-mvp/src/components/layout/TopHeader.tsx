@@ -116,7 +116,10 @@ export function TopHeader() {
                                     </div>
                                     <div className="flex-1 min-w-0 flex flex-col lg:gap-0.5">
                                         <div className="flex items-center gap-2">
-                                            <span className="text-[20px] sm:text-[24px] lg:text-[24px] xl:text-[30px] font-[900] tracking-tighter font-outfit uppercase italic leading-none flex items-center gap-0 truncate">
+                                            <span className="text-[20px] sm:text-[24px] lg:text-[24px] xl:text-[32px] font-[900] tracking-tighter font-kanit uppercase italic leading-none flex items-center gap-0 truncate">
+                                                <span className="text-foreground">
+                                                    PELO
+                                                </span>
                                                 <span
                                                     className="bg-clip-text text-transparent"
                                                     style={{
@@ -124,7 +127,7 @@ export function TopHeader() {
                                                         filter: 'drop-shadow(0 0 20px rgba(44,252,125,0.45))',
                                                     }}
                                                 >
-                                                    PELOTIFY
+                                                    TIFY
                                                 </span>
                                             </span>
                                             {/* Subtitle gem - only lg */}

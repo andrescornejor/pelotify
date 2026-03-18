@@ -83,7 +83,7 @@ export default function LoginPage() {
                                     <div className="absolute inset-0 bg-primary/20 blur-[50px] rounded-full opacity-40 shrink-0" />
                                     <img src="/logo_pelotify.png" alt="Logo" className="w-full h-full object-contain relative z-10 drop-shadow-[0_0_20px_rgba(44,252,125,0.3)]" />
                                 </div>
-                                <h1 className="text-4xl lg:text-5xl font-black italic text-foreground tracking-tighter uppercase leading-[0.9] text-center">
+                                <h1 className="text-4xl lg:text-5xl font-black italic text-foreground tracking-tighter uppercase leading-[0.9] text-center font-kanit">
                                     Entrar a la <span className="text-primary">Cancha</span>
                                 </h1>
                             </div>
