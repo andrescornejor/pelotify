@@ -15,6 +15,12 @@ import PlayerSlot from '@/components/PlayerSlot';
 import PostMatchView from '@/components/PostMatchView';
 import PostMatchModal from '@/components/PostMatchModal';
 import { MatchSkeleton } from '@/components/Skeletons';
+import dynamic from 'next/dynamic';
+
+const VenueMap = dynamic(() => import('@/components/VenueMap'), { 
+    ssr: false,
+    loading: () => <div className="h-80 bg-foreground/5 rounded-[3rem] animate-pulse" />
+});
 
 function formatDate(dateStr: string) {
     if (!dateStr) return '';
@@ -544,7 +550,9 @@ function MatchLobbyContent() {
                                 <span className="text-lg font-black uppercase tracking-[0.4em]">Convocar Pibes</span>
                             </button>
                         </div>
-                    </motion.div>
+            {!isCompleted && match && (
+                <div className="w-full px-4 lg:px-16 xl:px-24 mb-32 relative z-20">
+                    <VenueMap location={match.location} lat={match.lat} lng={match.lng} />
                 </div>
             )}
 
