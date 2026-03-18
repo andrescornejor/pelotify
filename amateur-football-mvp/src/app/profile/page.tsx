@@ -225,29 +225,18 @@ function ProfileContent() {
 
         setIsSaving(true);
         try {
-            console.log("Saving profile for:", user.id, editedData);
+            console.log("Iniciando guardado de perfil para:", user.id);
 
             let newAvatarUrl = getField('avatar_url', null);
             if (avatarFile) {
+                console.log("Subiendo nuevo avatar...");
                 newAvatarUrl = await uploadUserAvatar(avatarFile, user.id);
+                console.log("Avatar subido:", newAvatarUrl);
             }
 
-            // 1. Update Auth Metadata (for the current session)
-            const { error: authError } = await supabase.auth.updateUser({
-                data: {
-                    name: editedData.name,
-                    full_name: editedData.name,
-                    age: editedData.age,
-                    height: editedData.height,
-                    preferredFoot: editedData.preferredFoot,
-                    position: editedData.position,
-                    avatar_url: newAvatarUrl
-                }
-            });
-
-            if (authError) throw authError;
-
-            // 2. Update Public Profile (for other users to see)
+            // 1. Update Public Profile (Source of Truth) FIRST
+            // This ensures onAuthStateChange fetches the NEW data
+            console.log("Actualizando tabla de perfiles...");
             const { error: profileError } = await supabase
                 .from('profiles')
                 .upsert({
@@ -262,15 +251,35 @@ function ProfileContent() {
                 });
 
             if (profileError) {
-                console.error("Error updating public profile:", profileError);
+                console.error("Error en tabla de perfiles:", profileError);
                 throw new Error(`Error en el perfil público: ${profileError.message}`);
             }
 
+            // 2. Update Auth Metadata (for the current session)
+            console.log("Actualizando metadata de autenticación...");
+            const { error: authError } = await supabase.auth.updateUser({
+                data: {
+                    name: editedData.name,
+                    full_name: editedData.name,
+                    age: editedData.age,
+                    height: editedData.height,
+                    preferredFoot: editedData.preferredFoot,
+                    position: editedData.position,
+                    avatar_url: newAvatarUrl
+                }
+            });
+
+            if (authError) {
+                console.warn("Advertencia: No se pudo actualizar la metadata de auth, pero el perfil se guardó:", authError);
+                // We don't throw here because the main profile was already saved
+            }
+
+            console.log("Perfil guardado con éxito.");
             setIsEditing(false);
             router.refresh();
             alert("✅ Perfil actualizado correctamente.");
         } catch (error: any) {
-            console.error("Catch in handleSaveProfile:", error);
+            console.error("Error crítico en handleSaveProfile:", error);
             alert(`Error guardando perfil: ${error.message || 'Error desconocido'}`);
         } finally {
             setIsSaving(false);
