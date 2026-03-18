@@ -119,7 +119,8 @@ export async function joinTeam(teamId: string, userId: string, role: 'captain' |
             {
                 team_id: teamId,
                 user_id: userId,
-                profile_id: userId, // Explicit link
+                profile_id: userId,
+                status: role === 'captain' ? 'confirmed' : 'pending', // Captain is auto-confirmed, members are pending
                 role: role
             },
             { onConflict: 'team_id,user_id' }
@@ -187,10 +188,33 @@ export async function getTeamMembers(teamId: string) {
             profiles:profile_id (
                 name,
                 avatar_url,
-                position
+                position,
+                elo
             )
         `)
         .eq('team_id', teamId);
+
+    if (error) throw error;
+    return data;
+}
+
+export async function getTeamRequests(teamId: string) {
+    const { data, error } = await supabase
+        .from('team_members')
+        .select(`
+            user_id,
+            role,
+            status,
+            profiles:profile_id (
+                name,
+                avatar_url,
+                position,
+                elo
+            )
+        `)
+        .eq('team_id', teamId)
+        .eq('status', 'pending')
+        .eq('role', 'member');
 
     if (error) throw error;
     return data;

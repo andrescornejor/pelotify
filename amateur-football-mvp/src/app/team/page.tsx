@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Shield, Users, Trophy, MapPin, Calendar, ArrowLeft, Settings, Save, X, Trash2, LogOut, Camera, ChevronRight, Check, Sparkles, Loader2, PlusCircle, Plus, Search, Swords, Layout } from 'lucide-react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import { getTeamById, getTeamMembers, updateTeam, deleteTeam, Team, leaveTeam, joinTeam, inviteToTeam, respondToTeamInvitation } from '@/lib/teams';
+import { getTeamById, getTeamMembers, getTeamRequests, updateTeam, deleteTeam, Team, leaveTeam, joinTeam, inviteToTeam, respondToTeamInvitation } from '@/lib/teams';
 import { getTeamChallenges, respondToChallenge, TeamChallenge } from '@/lib/teamChallenges';
 import Link from 'next/link';
 import { useAuth } from '@/contexts/AuthContext';
@@ -51,10 +51,13 @@ function TeamProfileContent() {
     const [invitingId, setInvitingId] = useState<string | null>(null);
     const [respondingId, setRespondingId] = useState<string | null>(null);
 
-    // Challenges State
     const [challenges, setChallenges] = useState<TeamChallenge[]>([]);
     const [loadingChallenges, setLoadingChallenges] = useState(false);
     const [respondingChallengeId, setRespondingChallengeId] = useState<string | null>(null);
+
+    // Join Requests State (for Captains)
+    const [joinRequests, setJoinRequests] = useState<any[]>([]);
+    const [isJoining, setIsJoining] = useState(false);
 
     // Navigation State
     const [activeTab, setActiveTab] = useState<'squad' | 'tactics' | 'history'>('squad');
@@ -113,6 +116,16 @@ function TeamProfileContent() {
             } catch (challengesErr: any) {
                 console.warn('Error fetching team challenges:', challengesErr);
             }
+
+            // Then fetch join requests if captain
+            if (user?.id === teamData.captain_id) {
+                try {
+                    const requests = await getTeamRequests(id as string);
+                    setJoinRequests(requests);
+                } catch (reqErr) {
+                    console.warn('Error fetching join requests:', reqErr);
+                }
+            }
         } catch (err: any) {
             console.error('Error fetching data:', err);
             setError(err.message || 'Error desconocido al cargar el equipo');
@@ -166,17 +179,18 @@ function TeamProfileContent() {
         }
     };
 
-    const handleRespondInvitation = async (action: 'accept' | 'decline') => {
+    const handleRespondInvitation = async (action: 'accept' | 'decline', targetUserId?: string) => {
         if (!team || !user) return;
-        setRespondingId(user.id);
+        const actingUserId = targetUserId || user.id;
+        setRespondingId(actingUserId);
         try {
-            await respondToTeamInvitation(team.id, user.id, action);
+            await respondToTeamInvitation(team.id, actingUserId, action);
             await fetchData();
             if (action === 'accept') {
-                alert('¡Ya sos parte del equipo!');
+                alert(targetUserId ? 'Jugador aceptado.' : '¡Ya sos parte del equipo!');
             } else {
-                alert('Invitación rechazada.');
-                router.push('/teams');
+                alert(targetUserId ? 'Solicitud rechazada.' : 'Has rechazado la invitación.');
+                if (!targetUserId) router.push('/teams');
             }
         } catch (err: any) {
             alert(`Error: ${err.message}`);
@@ -523,16 +537,32 @@ function TeamProfileContent() {
                             <button
                                 onClick={async () => {
                                     if (!user || !id) return;
+                                    setIsJoining(true);
                                     try {
                                         await joinTeam(id, user.id);
-                                        fetchData();
+                                        await fetchData();
+                                        alert('Solicitud enviada al capitán.');
                                     } catch (err: any) {
                                         alert(`Error: ${err.message}`);
+                                    } finally {
+                                        setIsJoining(false);
                                     }
                                 }}
-                                className="w-full h-14 md:h-16 bg-primary text-background rounded-[2rem] font-black uppercase tracking-[0.2em] md:tracking-[0.4em] text-[10px] hover:bg-foreground hover:text-background transition-all active:scale-95 shadow-xl shadow-primary/10 flex items-center justify-center gap-3"
+                                disabled={isJoining || members.some(m => m.user_id === user?.id && m.status === 'pending')}
+                                className={cn(
+                                    "w-full h-14 md:h-16 rounded-[2rem] font-black uppercase tracking-[0.2em] md:tracking-[0.4em] text-[10px] transition-all active:scale-95 shadow-xl flex items-center justify-center gap-3",
+                                    members.some(m => m.user_id === user?.id && m.status === 'pending')
+                                        ? "bg-foreground/10 text-foreground/40 cursor-not-allowed border border-foreground/5"
+                                        : "bg-primary text-background hover:bg-foreground hover:text-background shadow-primary/10"
+                                )}
                             >
-                                <Plus className="w-5 h-5" /> <span className="truncate">SOLICITAR INGRESO</span>
+                                {isJoining ? (
+                                    <Loader2 className="w-5 h-5 animate-spin" />
+                                ) : members.some(m => m.user_id === user?.id && m.status === 'pending') ? (
+                                    <>SOLICITUD ENVIADA</>
+                                ) : (
+                                    <><Plus className="w-5 h-5" /> <span className="truncate">SOLICITAR INGRESO</span></>
+                                )}
                             </button>
                         )}
                     </motion.div>
@@ -737,6 +767,68 @@ function TeamProfileContent() {
                                         </div>
                                     </div>
                                 </motion.div>
+                            ))}
+                        </div>
+                    </section>
+                )}
+
+                {/* ── JOIN REQUESTS (CAPTAIN ONLY) ── */}
+                {isCaptain && joinRequests.length > 0 && !isEditing && (
+                    <section className="space-y-6">
+                        <div className="flex items-center gap-4 px-2">
+                            <div className="w-10 h-10 rounded-2xl bg-primary/10 flex items-center justify-center border border-primary/20 text-primary">
+                                <PlusCircle className="w-5 h-5" />
+                            </div>
+                            <div className="flex flex-col">
+                                <h2 className="text-2xl font-black text-foreground italic uppercase tracking-tighter">Solicitudes de Ingreso</h2>
+                                <span className="text-[9px] font-black text-primary uppercase tracking-widest">{joinRequests.length} JUGADORES QUIEREN UNIRSE</span>
+                            </div>
+                        </div>
+
+                        <div className="grid grid-cols-1 gap-4">
+                            {joinRequests.map((req: any) => (
+                                <div
+                                    key={req.user_id}
+                                    className="glass-premium p-6 rounded-[2.5rem] border border-primary/10 bg-primary/[0.01] flex flex-col md:flex-row md:items-center justify-between gap-6"
+                                >
+                                    <Link href={`/profile?id=${req.user_id}`} className="flex items-center gap-5 group">
+                                        <div className="w-16 h-16 rounded-[1.8rem] overflow-hidden border-2 border-surface-elevated shadow-xl bg-surface-elevated">
+                                            {req.profiles?.avatar_url ? (
+                                                <img src={req.profiles.avatar_url} alt="" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
+                                            ) : (
+                                                <div className="w-full h-full flex items-center justify-center bg-primary/5 text-primary/40 font-black text-3xl italic">
+                                                    {req.profiles?.name?.charAt(0)}
+                                                </div>
+                                            )}
+                                        </div>
+                                        <div className="flex flex-col">
+                                            <span className="text-xl font-black text-foreground italic uppercase tracking-tighter group-hover:text-primary transition-colors">
+                                                {req.profiles?.name}
+                                            </span>
+                                            <div className="flex items-center gap-3 text-[10px] font-black italic uppercase tracking-widest">
+                                                <span className="text-foreground/40">{req.profiles?.position || "DC"}</span>
+                                                <div className="w-1 h-1 rounded-full bg-foreground/10" />
+                                                <span className="text-primary">{req.profiles?.elo || 0} XP</span>
+                                            </div>
+                                        </div>
+                                    </Link>
+                                    <div className="flex gap-3">
+                                        <button
+                                            onClick={() => handleRespondInvitation('decline', req.user_id)}
+                                            disabled={respondingId === req.user_id}
+                                            className="flex-1 md:flex-none h-12 px-6 bg-foreground/[0.03] border border-foreground/10 rounded-2xl text-[10px] font-black text-foreground/50 uppercase tracking-widest hover:text-foreground transition-all active:scale-95"
+                                        >
+                                            RECHAZAR
+                                        </button>
+                                        <button
+                                            onClick={() => handleRespondInvitation('accept', req.user_id)}
+                                            disabled={respondingId === req.user_id}
+                                            className="flex-1 md:flex-none h-12 px-8 bg-primary text-background rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-foreground hover:text-background transition-all active:scale-95 shadow-lg shadow-primary/20"
+                                        >
+                                            {respondingId === req.user_id ? <Loader2 className="w-4 h-4 animate-spin mx-auto" /> : 'ACEPTAR'}
+                                        </button>
+                                    </div>
+                                </div>
                             ))}
                         </div>
                     </section>
