@@ -17,6 +17,7 @@ export const metadata: Metadata = {
     icon: '/logo_pelotify.png',
     apple: '/logo_pelotify.png',
   },
+  manifest: '/manifest.json',
   appleWebApp: {
     capable: true,
     statusBarStyle: 'black-translucent',

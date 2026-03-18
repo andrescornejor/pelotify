@@ -1,0 +1,23 @@
+{
+  "name": "Pelotify - Fútbol Amateur",
+  "short_name": "Pelotify",
+  "description": "Dominá el potrero con la mejor app de gestión de fútbol amateur.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#04040a",
+  "theme_color": "#10b981",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "/logo_pelotify.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/logo_pelotify.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
