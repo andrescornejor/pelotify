@@ -474,8 +474,20 @@ function TeamProfileContent() {
                 </div>
             </div>
 
-            <div className="max-w-4xl mx-auto px-4 md:px-6 mt-10 md:mt-12">
-                <div className="flex p-1.5 bg-foreground/5 backdrop-blur-3xl rounded-[2.5rem] border border-foreground/5 gap-1 shadow-inner">
+            <div className="max-w-2xl mx-auto px-6 mt-12 mb-8">
+                <div className="relative p-1.5 bg-foreground/[0.03] backdrop-blur-3xl rounded-full border border-foreground/[0.08] flex items-center gap-1 shadow-2xl">
+                    {/* Sliding Background */}
+                    <motion.div
+                        layoutId="activeTabSlidingBg"
+                        className="absolute inset-1.5 rounded-full bg-primary shadow-[0_8px_30px_rgba(var(--primary-rgb),0.4)]"
+                        initial={false}
+                        animate={{
+                            x: activeTab === 'squad' ? 0 : activeTab === 'tactics' ? 'calc(100% + 4px)' : 'calc(200% + 8px)',
+                            width: 'calc(33.333% - 6px)'
+                        }}
+                        transition={{ type: "spring", stiffness: 350, damping: 35 }}
+                    />
+
                     {[
                         { id: 'squad', label: 'Plantel', icon: Users },
                         { id: 'tactics', label: 'Tácticas', icon: Layout },
@@ -485,28 +497,17 @@ function TeamProfileContent() {
                             key={tab.id}
                             onClick={() => setActiveTab(tab.id as any)}
                             className={cn(
-                                "flex-1 h-14 md:h-16 lg:h-20 rounded-[2rem] md:rounded-[2.5rem] flex items-center justify-center gap-2 md:gap-3 lg:gap-4 transition-all duration-500 relative overflow-hidden",
-                                activeTab === tab.id 
-                                    ? "bg-primary text-background font-black italic shadow-2xl shadow-primary/30" 
-                                    : "text-foreground/45 hover:text-foreground/80 hover:bg-foreground/[0.05] italic uppercase font-black tracking-[0.15em] md:tracking-[0.25em]"
+                                "relative flex-1 h-12 md:h-14 flex items-center justify-center gap-2 md:gap-3 transition-colors duration-500 z-10",
+                                activeTab === tab.id ? "text-background" : "text-foreground/45 hover:text-foreground/70"
                             )}
                         >
                             <tab.icon className={cn(
-                                "w-4 h-4 md:w-5 md:h-5 lg:w-6 lg:h-6 transition-transform duration-500", 
-                                activeTab === tab.id ? "text-background scale-110" : "text-foreground/20 group-hover:scale-110"
+                                "w-4 h-4 md:w-5 md:h-5 transition-transform duration-300", 
+                                activeTab === tab.id ? "scale-110" : "opacity-50"
                             )} />
-                            <span className={cn(
-                                "transition-all duration-300 text-[10px] md:text-xs lg:text-sm",
-                                activeTab === tab.id ? "opacity-100" : "opacity-80"
-                            )}>
+                            <span className="text-[10px] md:text-xs font-black uppercase tracking-widest italic truncate max-w-[80px] md:max-w-none">
                                 {tab.label}
                             </span>
-                            {activeTab === tab.id && (
-                                <motion.div 
-                                    layoutId="activeTabGlow"
-                                    className="absolute inset-0 bg-white/10 pointer-events-none"
-                                />
-                            )}
                         </button>
                     ))}
                 </div>
@@ -520,62 +521,77 @@ function TeamProfileContent() {
                         className="glass-premium p-8 rounded-[3rem] border border-primary/20 bg-primary/[0.02]"
                     >
                         {members.some(m => m.user_id === user?.id && m.status === 'pending') ? (
-                            <div className="flex flex-col items-center gap-6 text-center">
-                                <div className="w-16 h-16 bg-primary/10 rounded-3xl flex items-center justify-center border border-primary/30">
-                                    <Sparkles className="w-8 h-8 text-primary" />
+                            <div className="flex flex-col items-center gap-8 text-center max-w-sm mx-auto">
+                                <div className="w-20 h-20 bg-primary/10 rounded-[2rem] flex items-center justify-center border border-primary/20 relative group">
+                                    <div className="absolute inset-0 bg-primary/20 blur-2xl rounded-full opacity-0 group-hover:opacity-100 transition-opacity" />
+                                    <Sparkles className="w-10 h-10 text-primary relative z-10" />
                                 </div>
-                                <div className="space-y-2">
-                                    <h3 className="text-xl font-black text-foreground italic uppercase tracking-tighter">¡Convocatoria Recibida!</h3>
-                                    <p className="text-xs text-foreground/50 font-bold uppercase tracking-widest leading-relaxed">El club te quiere en sus filas. ¿Estás listo para el desafío?</p>
+                                <div className="space-y-3">
+                                    <h3 className="text-2xl font-black text-foreground italic uppercase tracking-tight leading-none">¡Te Están Buscando!</h3>
+                                    <p className="text-[11px] text-foreground/40 font-bold uppercase tracking-[0.15em] leading-relaxed">Este club te ha enviado una invitación formal para unirte a su plantel.</p>
                                 </div>
-                                <div className="flex gap-4 w-full max-w-sm">
+                                <div className="flex gap-4 w-full">
                                     <button
                                         onClick={() => handleRespondInvitation('decline')}
                                         disabled={respondingId === user?.id}
-                                        className="flex-1 h-14 md:h-16 lg:h-20 bg-foreground/[0.03] border border-foreground/10 rounded-2xl md:rounded-3xl text-[10px] md:text-xs font-black text-foreground/50 uppercase tracking-widest hover:text-foreground transition-all active:scale-95 italic"
+                                        className="flex-1 h-14 bg-foreground/[0.03] border border-white/5 rounded-2xl text-[10px] font-black text-foreground/30 uppercase tracking-[0.2em] hover:text-foreground hover:bg-white/5 transition-all active:scale-95"
                                     >
                                         DECLINAR
                                     </button>
                                     <button
                                         onClick={() => handleRespondInvitation('accept')}
                                         disabled={respondingId === user?.id}
-                                        className="flex-1 h-14 md:h-16 lg:h-20 bg-primary text-background rounded-2xl md:rounded-3xl text-[10px] md:text-xs font-black uppercase tracking-[0.2em] md:tracking-[0.3em] hover:bg-foreground hover:text-background transition-all active:scale-95 shadow-2xl shadow-primary/20 italic"
+                                        className="flex-1 h-14 bg-primary text-background rounded-2xl text-[10px] font-black uppercase tracking-[0.3em] hover:scale-105 transition-all active:scale-95 shadow-[0_15px_40px_rgba(var(--primary-rgb),0.3)] bg-gradient-to-r from-primary to-primary/80"
                                     >
                                         {respondingId === user?.id ? <Loader2 className="w-4 h-4 animate-spin mx-auto" /> : 'ACEPTAR CUPO'}
                                     </button>
                                 </div>
                             </div>
                         ) : (
-                            <button
-                                onClick={async () => {
-                                    if (!user || !id) return;
-                                    setIsJoining(true);
-                                    try {
-                                        await joinTeam(id, user.id);
-                                        await fetchData();
-                                        alert('Solicitud enviada al capitán.');
-                                    } catch (err: any) {
-                                        alert(`Error: ${err.message}`);
-                                    } finally {
-                                        setIsJoining(false);
-                                    }
-                                }}
-                                disabled={isJoining || members.some(m => m.user_id === user?.id && m.status === 'requested')}
-                                className={cn(
-                                    "w-full h-14 md:h-18 lg:h-24 rounded-[2.5rem] md:rounded-[3rem] font-black uppercase tracking-[0.2em] md:tracking-[0.4em] text-[11px] md:text-sm lg:text-base italic transition-all active:scale-95 shadow-2xl flex items-center justify-center gap-3 md:gap-4 lg:gap-6",
-                                    members.some(m => m.user_id === user?.id && m.status === 'requested')
-                                        ? "bg-foreground/10 text-foreground/40 cursor-not-allowed border border-foreground/5"
-                                        : "bg-primary text-background hover:bg-foreground hover:text-background shadow-primary/20"
-                                )}
-                            >
-                                {isJoining ? (
-                                    <Loader2 className="w-5 h-5 md:w-6 md:h-6 animate-spin" />
-                                ) : members.some(m => m.user_id === user?.id && m.status === 'requested') ? (
-                                    <>SOLICITUD ENVIADA</>
-                                ) : (
-                                    <><PlusCircle className="w-5 h-5 md:w-6 md:h-6 lg:w-8 lg:h-8" /> <span className="truncate">SOLICITAR INGRESO</span></>
-                                )}
-                            </button>
+                            <div className="max-w-md mx-auto w-full">
+                                <button
+                                    onClick={async () => {
+                                        if (!user || !id) return;
+                                        setIsJoining(true);
+                                        try {
+                                            await joinTeam(id, user.id);
+                                            await fetchData();
+                                            alert('Solicitud enviada al capitán.');
+                                        } catch (err: any) {
+                                            alert(`Error: ${err.message}`);
+                                        } finally {
+                                            setIsJoining(false);
+                                        }
+                                    }}
+                                    disabled={isJoining || members.some(m => m.user_id === user?.id && m.status === 'requested')}
+                                    className={cn(
+                                        "w-full h-16 md:h-18 lg:h-20 rounded-full font-black uppercase tracking-[0.2em] md:tracking-[0.4em] text-xs md:text-sm lg:text-base italic transition-all active:scale-95 shadow-2xl flex items-center justify-center gap-4 overflow-hidden group relative",
+                                        members.some(m => m.user_id === user?.id && m.status === 'requested')
+                                            ? "bg-foreground/10 text-foreground/30 cursor-not-allowed border border-white/5"
+                                            : "bg-primary text-background shadow-primary/20 bg-gradient-to-br from-primary via-primary to-primary/70"
+                                    )}
+                                >
+                                    {isJoining ? (
+                                        <Loader2 className="w-6 h-6 animate-spin" />
+                                    ) : members.some(m => m.user_id === user?.id && m.status === 'requested') ? (
+                                        <div className="flex items-center gap-3">
+                                            <div className="w-2 h-2 rounded-full bg-foreground/20 animate-pulse" />
+                                            <span>SOLICITUD ENVIADA</span>
+                                        </div>
+                                    ) : (
+                                        <>
+                                            <PlusCircle className="w-6 h-6 md:w-7 md:h-7 group-hover:rotate-90 transition-transform duration-500" />
+                                            <span className="relative z-10 tracking-[0.3em]">SOLICITAR INGRESO</span>
+                                            <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-500" />
+                                        </>
+                                    )}
+                                </button>
+                                <p className="text-center mt-6 text-foreground/25 text-[9px] font-black uppercase tracking-[0.3em]">
+                                    {members.some(m => m.user_id === user?.id && m.status === 'requested') 
+                                        ? "Esperando aprobación del alto mando" 
+                                        : "Tu carrera profesional comienza aquí"}
+                                </p>
+                            </div>
                         )}
                     </motion.div>
                 )}
@@ -596,10 +612,10 @@ function TeamProfileContent() {
                             {isCaptain && (
                                 <button
                                     onClick={() => setInviteModalOpen(true)}
-                                    className="h-11 md:h-12 px-4 md:px-6 bg-foreground/[0.03] border border-foreground/5 rounded-2xl text-[10px] font-black text-primary uppercase tracking-widest hover:bg-primary/10 hover:border-primary/30 transition-all flex items-center gap-2"
+                                    className="h-12 md:h-14 px-6 md:px-8 bg-primary/10 border border-primary/20 rounded-full text-[10px] md:text-xs font-black text-primary uppercase tracking-[0.2em] hover:bg-primary transition-all hover:text-background flex items-center gap-2 md:gap-3 group shadow-lg shadow-primary/5 active:scale-95"
                                 >
-                                    <PlusCircle className="w-4 h-4" /> 
-                                    <span className="hidden sm:inline">CONVOCAR</span>
+                                    <PlusCircle className="w-4 h-4 md:w-5 md:h-5 group-hover:rotate-90 transition-transform duration-500" /> 
+                                    <span>CONVOCAR</span>
                                 </button>
                             )}
                         </div>
@@ -761,20 +777,20 @@ function TeamProfileContent() {
                                                 </div>
                                             </div>
                                         </div>
-                                        <div className="flex flex-col sm:flex-row gap-3">
+                                        <div className="flex flex-col sm:flex-row gap-4">
                                             <button
                                                 onClick={() => handleRespondChallenge(challenge.id, 'declined')}
                                                 disabled={respondingChallengeId === challenge.id}
-                                                className="h-12 px-6 bg-foreground/[0.03] border border-foreground/10 rounded-2xl text-[10px] font-black text-foreground/50 uppercase tracking-widest hover:text-foreground transition-all active:scale-95 text-center flex items-center justify-center"
+                                                className="h-14 px-8 bg-foreground/[0.03] border border-white/5 rounded-2xl text-[10px] md:text-xs font-black text-foreground/30 uppercase tracking-[0.2em] hover:text-foreground hover:bg-white/5 transition-all active:scale-95 flex items-center justify-center italic"
                                             >
                                                 DECLINAR
                                             </button>
                                             <button
                                                 onClick={() => handleRespondChallenge(challenge.id, 'accepted')}
                                                 disabled={respondingChallengeId === challenge.id}
-                                                className="h-12 px-6 bg-accent text-white rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] hover:bg-foreground hover:text-background transition-all active:scale-95 shadow-lg shadow-accent/20 flex items-center justify-center gap-2"
+                                                className="h-14 px-10 bg-accent text-white rounded-2xl text-[10px] md:text-xs font-black uppercase tracking-[0.3em] hover:scale-105 transition-all active:scale-95 shadow-[0_15px_40px_rgba(var(--accent-rgb),0.3)] bg-gradient-to-r from-accent to-accent/80 flex items-center justify-center gap-3 italic"
                                             >
-                                                {respondingChallengeId === challenge.id ? <Loader2 className="w-4 h-4 animate-spin mx-auto" /> : <><Check className="w-4 h-4" /> ACEPTAR</>}
+                                                {respondingChallengeId === challenge.id ? <Loader2 className="w-4 h-4 animate-spin mx-auto" /> : <><Check className="w-5 h-5" strokeWidth={3} /> ACEPTAR</>}
                                             </button>
                                         </div>
                                     </div>
