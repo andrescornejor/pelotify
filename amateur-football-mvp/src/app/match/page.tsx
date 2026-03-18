@@ -550,6 +550,10 @@ function MatchLobbyContent() {
                                 <span className="text-lg font-black uppercase tracking-[0.4em]">Convocar Pibes</span>
                             </button>
                         </div>
+                    </motion.div>
+                </div>
+            )}
+
             {!isCompleted && match && (
                 <div className="w-full px-4 lg:px-16 xl:px-24 mb-32 relative z-20">
                     <VenueMap location={match.location} lat={match.lat} lng={match.lng} />
