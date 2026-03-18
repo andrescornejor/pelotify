@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Fulbo</string>
+    <string name="title_activity_main">Fulbo</string>
+    <string name="package_name">com.fulbo.app</string>
+    <string name="custom_url_scheme">com.fulbo.app</string>
+</resources>
