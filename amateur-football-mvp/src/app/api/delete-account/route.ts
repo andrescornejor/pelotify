@@ -43,9 +43,21 @@ export async function DELETE(request: Request) {
         const userId = user.id;
 
         // Try to delete from common relationship tables gracefully
-        const tablesWithUserId = ['team_members', 'team_invitations', 'user_badges', 'match_participants'];
+        const tablesWithUserId = [
+            'team_members', 
+            'team_invitations', 
+            'user_badges', 
+            'match_participants', 
+            'match_messages', 
+            'team_messages'
+        ];
+        
         for (const table of tablesWithUserId) {
-            await supabaseAdmin.from(table).delete().eq('user_id', userId);
+            try {
+                await supabaseAdmin.from(table).delete().eq('user_id', userId);
+            } catch (e) {
+                console.warn(`Could not delete from ${table}:`, e);
+            }
         }
 
         // Friendships and Requests
@@ -58,8 +70,9 @@ export async function DELETE(request: Request) {
         await supabaseAdmin.from('player_ratings').delete().or(`from_user_id.eq.${userId},to_user_id.eq.${userId}`);
         await supabaseAdmin.from('mvp_votes').delete().or(`voter_id.eq.${userId},voted_player_id.eq.${userId}`);
 
-        // Parent Entities (Might trigger further cascades in public schema, but helps clear the way)
-        await supabaseAdmin.from('matches').delete().eq('organizer_id', userId);
+        // Parent Entities (Might trigger further cascades in public schema)
+        // Note: Field name is 'creator_id' in matches, not 'organizer_id'
+        await supabaseAdmin.from('matches').delete().eq('creator_id', userId);
         await supabaseAdmin.from('teams').delete().eq('captain_id', userId);
 
         // Finally the profile
