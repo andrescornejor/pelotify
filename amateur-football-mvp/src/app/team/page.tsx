@@ -474,24 +474,8 @@ function TeamProfileContent() {
                 </div>
             </div>
 
-            <div className="max-w-3xl mx-auto px-4 md:px-6 mt-14 mb-10">
-                <div className="relative p-2 bg-foreground/[0.03] backdrop-blur-3xl rounded-[2.5rem] border border-foreground/[0.08] flex items-center gap-2 shadow-2xl overflow-hidden">
-                    {/* Sliding Dynamic Background */}
-                    <div className="absolute inset-2 left-2 right-2 flex pointer-events-none">
-                        <motion.div
-                            layoutId="premiumTabBg"
-                            className="h-full rounded-[2rem] bg-primary shadow-[0_10px_40px_rgba(var(--primary-rgb),0.5)] bg-gradient-to-r from-primary to-primary/80"
-                            animate={{
-                                x: activeTab === 'squad' ? '0%' : activeTab === 'tactics' ? '100%' : '200%',
-                            }}
-                            style={{ 
-                                width: '33.333%',
-                                marginLeft: activeTab === 'squad' ? '0px' : activeTab === 'tactics' ? '4px' : '8px',
-                            }}
-                            transition={{ type: "spring", stiffness: 400, damping: 35 }}
-                        />
-                    </div>
-
+            <div className="max-w-4xl mx-auto px-6 mt-8 mb-6 border-b border-foreground/5">
+                <div className="flex items-center justify-center gap-8 md:gap-12">
                     {[
                         { id: 'squad', label: 'Plantel', icon: Users },
                         { id: 'tactics', label: 'Alineación', icon: Layout },
@@ -501,20 +485,25 @@ function TeamProfileContent() {
                             key={tab.id}
                             onClick={() => setActiveTab(tab.id as any)}
                             className={cn(
-                                "relative flex-1 h-14 md:h-18 lg:h-20 flex flex-col md:flex-row items-center justify-center gap-1.5 md:gap-3 transition-all duration-500 z-10 rounded-[2rem]",
-                                activeTab === tab.id ? "text-background" : "text-foreground/40 hover:text-foreground/80"
+                                "relative py-4 flex items-center gap-2 md:gap-3 transition-all duration-300 group",
+                                activeTab === tab.id ? "text-primary" : "text-foreground/40 hover:text-foreground/70"
                             )}
                         >
                             <tab.icon className={cn(
-                                "w-5 h-5 md:w-6 md:h-6 transition-all duration-500", 
-                                activeTab === tab.id ? "scale-110 drop-shadow-md" : "opacity-30 group-hover:opacity-100"
+                                "w-5 h-5 transition-transform duration-300", 
+                                activeTab === tab.id ? "scale-110" : "opacity-50 group-hover:opacity-100"
                             )} />
-                            <span className={cn(
-                                "text-[10px] md:text-xs lg:text-sm font-black uppercase tracking-[0.2em] italic transition-all duration-300",
-                                activeTab === tab.id ? "translate-y-0 opacity-100" : "md:opacity-60"
-                            )}>
+                            <span className="text-xs md:text-sm font-black uppercase tracking-[0.2em] italic">
                                 {tab.label}
                             </span>
+                            
+                            {activeTab === tab.id && (
+                                <motion.div
+                                    layoutId="tabIndicator"
+                                    className="absolute bottom-0 left-0 right-0 h-1 bg-primary rounded-t-full shadow-[0_-4px_12px_rgba(var(--primary-rgb),0.5)]"
+                                    transition={{ type: "spring", stiffness: 380, damping: 30 }}
+                                />
+                            )}
                         </button>
                     ))}
                 </div>
@@ -528,29 +517,25 @@ function TeamProfileContent() {
                         className="glass-premium p-8 rounded-[3rem] border border-primary/20 bg-primary/[0.02]"
                     >
                         {members.some(m => m.user_id === user?.id && m.status === 'pending') ? (
-                            <div className="flex flex-col items-center gap-8 text-center max-w-sm mx-auto">
-                                <div className="w-20 h-20 bg-primary/10 rounded-[2rem] flex items-center justify-center border border-primary/20 relative group">
-                                    <div className="absolute inset-0 bg-primary/20 blur-2xl rounded-full opacity-0 group-hover:opacity-100 transition-opacity" />
-                                    <Sparkles className="w-10 h-10 text-primary relative z-10" />
-                                </div>
-                                <div className="space-y-3">
-                                    <h3 className="text-2xl font-black text-foreground italic uppercase tracking-tight leading-none">¡Te Están Buscando!</h3>
-                                    <p className="text-[11px] text-foreground/40 font-bold uppercase tracking-[0.15em] leading-relaxed">Este club te ha enviado una invitación formal para unirte a su plantel.</p>
+                            <div className="flex flex-col items-center gap-6 text-center max-w-sm mx-auto">
+                                <div className="space-y-2">
+                                    <h3 className="text-xl font-black text-foreground italic uppercase tracking-tighter">Convocatoria Recibida</h3>
+                                    <p className="text-xs text-foreground/40 font-bold uppercase tracking-widest leading-relaxed">Este club te quiere en su plantel oficial.</p>
                                 </div>
                                 <div className="flex gap-4 w-full">
                                     <button
                                         onClick={() => handleRespondInvitation('decline')}
                                         disabled={respondingId === user?.id}
-                                        className="flex-1 h-14 bg-foreground/[0.03] border border-white/5 rounded-full text-[10px] font-black text-foreground/30 uppercase tracking-[0.2em] hover:text-foreground hover:bg-white/5 transition-all active:scale-95 flex items-center justify-center italic"
+                                        className="flex-1 h-14 bg-foreground/5 border border-foreground/10 rounded-2xl text-[10px] font-black text-foreground/40 uppercase tracking-widest hover:text-foreground transition-all active:scale-95"
                                     >
                                         DECLINAR
                                     </button>
                                     <button
                                         onClick={() => handleRespondInvitation('accept')}
                                         disabled={respondingId === user?.id}
-                                        className="flex-1 h-14 bg-primary text-background rounded-full text-[10px] font-black uppercase tracking-[0.3em] hover:scale-105 transition-all active:scale-95 shadow-[0_15px_40px_rgba(var(--primary-rgb),0.3)] bg-gradient-to-r from-primary to-primary/80 flex items-center justify-center gap-3 italic"
+                                        className="flex-1 h-14 bg-primary text-background rounded-2xl text-[10px] font-black uppercase tracking-widest hover:brightness-110 shadow-lg shadow-primary/10 transition-all active:scale-95 flex items-center justify-center gap-2"
                                     >
-                                        {respondingId === user?.id ? <Loader2 className="w-4 h-4 animate-spin" /> : <><Check className="w-5 h-5" strokeWidth={3} /> ACEPTAR CUPO</>}
+                                        {respondingId === user?.id ? <Loader2 className="w-4 h-4 animate-spin" /> : 'ACEPTAR CUPO'}
                                     </button>
                                 </div>
                             </div>
@@ -572,31 +557,27 @@ function TeamProfileContent() {
                                     }}
                                     disabled={isJoining || members.some(m => m.user_id === user?.id && m.status === 'requested')}
                                     className={cn(
-                                        "w-full h-16 md:h-18 lg:h-20 rounded-full font-black uppercase tracking-[0.2em] md:tracking-[0.4em] text-xs md:text-sm lg:text-base italic transition-all active:scale-95 shadow-2xl flex items-center justify-center gap-4 overflow-hidden group relative",
+                                        "w-full h-14 md:h-16 rounded-2xl font-black uppercase tracking-[0.2em] text-xs italic transition-all active:scale-95 flex items-center justify-center gap-3",
                                         members.some(m => m.user_id === user?.id && m.status === 'requested')
-                                            ? "bg-foreground/10 text-foreground/30 cursor-not-allowed border border-white/5"
-                                            : "bg-primary text-background shadow-primary/20 bg-gradient-to-br from-primary via-primary to-primary/70"
+                                            ? "bg-foreground/10 text-foreground/30 cursor-not-allowed"
+                                            : "bg-primary text-background hover:brightness-110 shadow-lg shadow-primary/10"
                                     )}
                                 >
                                     {isJoining ? (
-                                        <Loader2 className="w-6 h-6 animate-spin" />
+                                        <Loader2 className="w-5 h-5 animate-spin" />
                                     ) : members.some(m => m.user_id === user?.id && m.status === 'requested') ? (
-                                        <div className="flex items-center gap-3">
-                                            <div className="w-2 h-2 rounded-full bg-foreground/20 animate-pulse" />
-                                            <span>SOLICITUD ENVIADA</span>
-                                        </div>
+                                        <span>SOLICITUD ENVIADA</span>
                                     ) : (
                                         <>
-                                            <PlusCircle className="w-6 h-6 md:w-7 md:h-7 group-hover:rotate-90 transition-transform duration-500" />
-                                            <span className="relative z-10 tracking-[0.3em]">SOLICITAR INGRESO</span>
-                                            <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-500" />
+                                            <PlusCircle className="w-5 h-5" />
+                                            <span>SOLICITAR INGRESO</span>
                                         </>
                                     )}
                                 </button>
-                                <p className="text-center mt-6 text-foreground/25 text-[9px] font-black uppercase tracking-[0.3em]">
+                                <p className="text-center mt-6 text-foreground/20 text-[9px] font-black uppercase tracking-[0.3em]">
                                     {members.some(m => m.user_id === user?.id && m.status === 'requested')
-                                        ? "Esperando aprobación del alto mando"
-                                        : "Tu carrera profesional comienza aquí"}
+                                        ? "Esperando aprobación del capitán"
+                                        : "Toca para unirte a este equipo"}
                                 </p>
                             </div>
                         )}
@@ -619,9 +600,9 @@ function TeamProfileContent() {
                             {isCaptain && (
                                 <button
                                     onClick={() => setInviteModalOpen(true)}
-                                    className="h-12 md:h-14 px-6 md:px-8 bg-primary/10 border border-primary/20 rounded-full text-[10px] md:text-xs font-black text-primary uppercase tracking-[0.2em] hover:bg-primary transition-all hover:text-background flex items-center gap-2 md:gap-3 group shadow-lg shadow-primary/5 active:scale-95"
+                                    className="h-11 md:h-12 px-6 bg-foreground/5 border border-foreground/10 rounded-2xl text-[10px] font-black text-primary uppercase tracking-widest hover:text-foreground transition-all flex items-center gap-2 group active:scale-95"
                                 >
-                                    <PlusCircle className="w-4 h-4 md:w-5 md:h-5 group-hover:rotate-90 transition-transform duration-500" />
+                                    <PlusCircle className="w-4 h-4 transition-transform group-hover:rotate-90" />
                                     <span>CONVOCAR</span>
                                 </button>
                             )}
@@ -784,20 +765,20 @@ function TeamProfileContent() {
                                                 </div>
                                             </div>
                                         </div>
-                                        <div className="flex flex-col sm:flex-row items-center gap-4">
+                                        <div className="flex flex-col sm:flex-row gap-3">
                                             <button
                                                 onClick={() => handleRespondChallenge(challenge.id, 'declined')}
                                                 disabled={respondingChallengeId === challenge.id}
-                                                className="w-full sm:w-auto h-14 px-8 bg-foreground/[0.03] border border-white/5 rounded-full text-[10px] md:text-xs font-black text-foreground/30 uppercase tracking-[0.2em] hover:text-foreground hover:bg-white/5 transition-all active:scale-95 flex items-center justify-center italic"
+                                                className="h-12 px-6 bg-foreground/5 border border-foreground/10 rounded-2xl text-[10px] font-black text-foreground/40 uppercase tracking-widest hover:text-foreground transition-all active:scale-95"
                                             >
                                                 DECLINAR
                                             </button>
                                             <button
                                                 onClick={() => handleRespondChallenge(challenge.id, 'accepted')}
                                                 disabled={respondingChallengeId === challenge.id}
-                                                className="w-full sm:w-auto h-14 px-10 bg-accent text-white rounded-full text-[10px] md:text-xs font-black uppercase tracking-[0.3em] hover:scale-105 transition-all active:scale-95 shadow-[0_15px_40px_rgba(var(--accent-rgb),0.3)] bg-gradient-to-r from-accent to-accent/80 flex items-center justify-center gap-3 italic"
+                                                className="h-12 px-8 bg-accent text-white rounded-2xl text-[10px] font-black uppercase tracking-widest hover:brightness-110 transition-all active:scale-95 shadow-lg shadow-accent/10 flex items-center justify-center gap-2"
                                             >
-                                                {respondingChallengeId === challenge.id ? <Loader2 className="w-4 h-4 animate-spin" /> : <><Check className="w-5 h-5" strokeWidth={3} /> ACEPTAR</>}
+                                                {respondingChallengeId === challenge.id ? <Loader2 className="w-4 h-4 animate-spin" /> : <><Check className="w-4 h-4" /> ACEPTAR</>}
                                             </button>
                                         </div>
                                     </div>
@@ -847,20 +828,20 @@ function TeamProfileContent() {
                                             </div>
                                         </div>
                                     </Link>
-                                    <div className="flex items-center gap-4 w-full md:w-auto">
+                                    <div className="flex gap-3">
                                         <button
                                             onClick={() => handleRespondInvitation('decline', req.user_id)}
                                             disabled={respondingId === req.user_id}
-                                            className="flex-1 md:flex-none h-14 px-8 bg-foreground/[0.03] border border-white/5 rounded-full text-[10px] md:text-xs font-black text-foreground/30 uppercase tracking-[0.2em] hover:text-foreground hover:bg-white/5 transition-all active:scale-95 flex items-center justify-center italic"
+                                            className="h-12 px-6 bg-foreground/5 border border-foreground/10 rounded-2xl text-[10px] font-black text-foreground/40 uppercase tracking-widest hover:text-foreground transition-all active:scale-95"
                                         >
                                             RECHAZAR
                                         </button>
                                         <button
                                             onClick={() => handleRespondInvitation('accept', req.user_id)}
                                             disabled={respondingId === req.user_id}
-                                            className="flex-1 md:flex-none h-14 px-10 bg-primary text-background rounded-full text-[10px] md:text-xs font-black uppercase tracking-[0.3em] hover:scale-105 transition-all active:scale-95 shadow-[0_15px_40px_rgba(var(--primary-rgb),0.3)] bg-gradient-to-r from-primary to-primary/80 flex items-center justify-center gap-3 italic font-black"
+                                            className="h-12 px-8 bg-primary text-background rounded-2xl text-[10px] font-black uppercase tracking-widest hover:brightness-110 transition-all active:scale-95 shadow-lg shadow-primary/10 flex items-center justify-center gap-2"
                                         >
-                                            {respondingId === req.user_id ? <Loader2 className="w-4 h-4 animate-spin" /> : <><Check className="w-5 h-5" strokeWidth={3} /> ADMITIR</>}
+                                            {respondingId === req.user_id ? <Loader2 className="w-4 h-4 animate-spin" /> : <><Check className="w-4 h-4" /> ADMITIR</>}
                                         </button>
                                     </div>
                                 </div>
