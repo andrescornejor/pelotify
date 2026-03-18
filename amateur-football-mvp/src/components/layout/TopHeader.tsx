@@ -77,7 +77,7 @@ export function TopHeader() {
 
                         <div className="flex items-center justify-between h-[58px] sm:h-[68px] lg:h-[76px] px-4 sm:px-6 lg:px-8">
                             {/* Left: Menu + Logo */}
-                            <div className="flex items-center gap-4 sm:gap-6">
+                            <div className="flex items-center gap-3 sm:gap-4 lg:gap-4 xl:gap-6">
                                 <motion.button
                                     onClick={toggleSidebar}
                                     whileTap={{ scale: 0.92 }}
@@ -107,12 +107,12 @@ export function TopHeader() {
                                 </motion.button>
 
                                 <Link href="/" className="flex items-center gap-3.5 select-none hover:opacity-90 transition-all group/logo">
-                                    <div className="w-9 h-9 sm:w-11 sm:h-11 lg:w-12 lg:h-12 rounded-[0.875rem] lg:rounded-[1rem] overflow-hidden border border-primary/20 bg-primary/5 shadow-2xl transition-transform duration-500 group-hover/logo:scale-105">
+                                    <div className="w-9 h-9 sm:w-11 sm:h-11 lg:w-10 lg:h-10 xl:w-12 xl:h-12 rounded-[0.875rem] lg:rounded-[1rem] overflow-hidden border border-primary/20 bg-primary/5 shadow-2xl transition-transform duration-500 group-hover/logo:scale-105">
                                         <img src="/logo_pelotify.png" alt="Logo" className="w-full h-full object-cover scale-110" />
                                     </div>
                                     <div className="flex flex-col lg:gap-0.5">
                                         <div className="flex items-center gap-2">
-                                            <span className="text-[22px] sm:text-[28px] lg:text-[32px] font-[900] tracking-tighter font-outfit uppercase italic leading-none flex items-center gap-0">
+                                            <span className="text-[20px] sm:text-[24px] lg:text-[26px] xl:text-[32px] font-[900] tracking-tighter font-outfit uppercase italic leading-none flex items-center gap-0">
                                                 <span
                                                     className="bg-clip-text text-transparent"
                                                     style={{
@@ -130,7 +130,7 @@ export function TopHeader() {
                                                 className="hidden lg:block w-2.5 h-2.5 rounded-full bg-primary shadow-[0_0_15px_rgba(16,185,129,0.8)]"
                                             />
                                         </div>
-                                        <span className="text-[7px] sm:text-[9px] lg:text-[10px] font-black uppercase tracking-[0.3em] text-foreground/25 leading-none mt-0.5 group-hover/logo:text-primary transition-colors duration-500">
+                                        <span className="hidden sm:block lg:hidden xl:block text-[7px] sm:text-[9px] lg:text-[10px] font-black uppercase tracking-[0.3em] text-foreground/25 leading-none mt-0.5 group-hover/logo:text-primary transition-colors duration-500">
                                             Dominá el <span className="text-primary/50 group-hover/logo:text-primary transition-colors duration-500">Potrero</span>
                                         </span>
                                     </div>
@@ -173,7 +173,7 @@ export function TopHeader() {
                                                 )} strokeWidth={isActive ? 2.5 : 2} />
                                                 
                                                 <span className={cn(
-                                                    "text-[12px] font-black uppercase tracking-wider",
+                                                    "hidden xl:block text-[12px] font-black uppercase tracking-wider",
                                                     isActive ? "opacity-100" : "opacity-80"
                                                 )}>
                                                     {item.label}
@@ -190,7 +190,7 @@ export function TopHeader() {
 
 
                             {/* Right: Actions */}
-                            <div className="flex items-center gap-2.5 sm:gap-4">
+                            <div className="flex items-center gap-1.5 sm:gap-4 lg:gap-2.5 xl:gap-4">
                                 {/* Create Match Button - Only Desktop */}
                                 <Link href="/create" className="hidden xl:block">
                                     <motion.button
@@ -203,7 +203,7 @@ export function TopHeader() {
                                     </motion.button>
                                 </Link>
 
-                                <div className="flex items-center gap-2 sm:gap-2.5">
+                                <div className="flex items-center gap-1.5 sm:gap-2.5">
                                     {/* Theme Toggle */}
                                     <motion.button
                                         whileHover={{ scale: 1.08 }}
