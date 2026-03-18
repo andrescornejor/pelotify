@@ -3,7 +3,6 @@
 import { Suspense } from 'react';
 import { FifaCard } from '@/components/FifaCard';
 import { 
-    PlayCircle, 
     Award, 
     History, 
     Info, 
@@ -71,7 +70,7 @@ function ProfileContent() {
     const id = searchParams.get('id');
     const isMe = id === 'me' || id === user?.id || (!id && user?.id);
 
-    const [activeTab, setActiveTab] = useState<'overview' | 'highlights' | 'history'>('overview');
+    const [activeTab, setActiveTab] = useState<'overview' | 'history'>('overview');
     
     // Edit state
     const [isEditing, setIsEditing] = useState(false);
@@ -513,15 +512,7 @@ function ProfileContent() {
                             >
                                 Resumen
                             </button>
-                            <button
-                                onClick={() => setActiveTab('highlights')}
-                                className={cn(
-                                    "flex-1 py-4 text-[11px] font-black uppercase tracking-[0.4em] rounded-2xl transition-all relative z-10 italic",
-                                    activeTab === 'highlights' ? 'text-black' : 'text-foreground/40 hover:text-foreground'
-                                )}
-                            >
-                                Pro-Reels
-                            </button>
+
                             <button
                                 onClick={() => setActiveTab('history')}
                                 className={cn(
@@ -536,8 +527,8 @@ function ProfileContent() {
                                 className="absolute inset-y-1.5 bg-primary rounded-2xl shadow-[0_0_30px_rgba(16,185,129,0.4)]"
                                 initial={false}
                                 animate={{
-                                    left: activeTab === 'overview' ? '6px' : activeTab === 'highlights' ? '33.33%' : '66.66%',
-                                    right: activeTab === 'overview' ? '66.66%' : activeTab === 'highlights' ? '33.33%' : '6px',
+                                    left: activeTab === 'overview' ? '6px' : '50%',
+                                    right: activeTab === 'overview' ? '50%' : '6px',
                                 }}
                                 transition={{ type: 'spring' as const, stiffness: 400, damping: 35 }}
                             />
@@ -657,77 +648,9 @@ function ProfileContent() {
                                         </div>
                                     </div>
                                     
-                                    {/* Highlights Preview */}
-                                    <div className="space-y-8">
-                                        <div className="flex items-center justify-between px-4">
-                                            <div className="flex items-center gap-4">
-                                                <div className="w-8 h-8 rounded-xl bg-primary/10 flex items-center justify-center border border-primary/20">
-                                                    <PlayCircle className="w-4 h-4 text-primary" />
-                                                </div>
-                                                <h3 className="text-sm font-black uppercase tracking-[0.3em] text-foreground italic">Últimas Jugadas</h3>
-                                            </div>
-                                            <button className="text-[10px] font-black uppercase text-primary tracking-[0.3em] hover:text-foreground transition-all bg-primary/5 px-6 py-2 rounded-xl border border-primary/20">GALERÍA COMPLETA</button>
-                                        </div>
-                                        
-                                        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-                                            {isMe && (
-                                                <div className="aspect-[3/4] rounded-[2.5rem] bg-foreground/5 border-dashed border-2 border-foreground/10 flex flex-col items-center justify-center p-8 text-center gap-6 group hover:bg-foreground/10 hover:border-primary/40 transition-all cursor-pointer shadow-2xl">
-                                                    <div className="w-16 h-16 rounded-[1.5rem] bg-primary/10 flex items-center justify-center text-primary group-hover:scale-110 group-hover:rotate-90 transition-all duration-500 shadow-xl">
-                                                        <Plus className="w-8 h-8" />
-                                                    </div>
-                                                    <span className="text-[10px] font-black uppercase tracking-[0.3em] text-foreground/20 group-hover:text-primary transition-colors italic leading-relaxed">Cargar Nueva<br/>Ficha</span>
-                                                </div>
-                                            )}
-                                            
-                                            {[1, 2].map((_, i) => (
-                                                <div key={i} className="aspect-[3/4] rounded-[2.5rem] bg-surface overflow-hidden relative group shadow-2xl border border-foreground/5">
-                                                    <img 
-                                                        src={i === 0 ? "https://images.unsplash.com/photo-1579952363873-27f3bade9f55?q=80&w=400&auto=format&fit=crop" : "https://images.unsplash.com/photo-1574629810360-7efbbe195018?q=80&w=400&auto=format&fit=crop"} 
-                                                        className="w-full h-full object-cover opacity-60 group-hover:scale-110 group-hover:grayscale-0 transition-all duration-[2000ms]" 
-                                                        alt="Highlight" 
-                                                    />
-                                                    <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent opacity-90" />
-                                                    <div className="absolute inset-0 flex items-center justify-center bg-black/20 group-hover:bg-transparent transition-colors">
-                                                        <div className="w-14 h-14 rounded-full bg-foreground/[0.05] backdrop-blur-xl border border-foreground/10 flex items-center justify-center text-white scale-0 group-hover:scale-100 rotate-[-45deg] group-hover:rotate-0 transition-all duration-500 shadow-2xl">
-                                                            <PlayCircle className="w-8 h-8" />
-                                                        </div>
-                                                    </div>
-                                                    <div className="absolute bottom-6 left-6 right-6 space-y-1">
-                                                        <p className="text-lg font-black text-foreground italic uppercase tracking-tighter truncate leading-none group-hover:text-primary transition-colors">{i === 0 ? "GOLAZO F5" : "ATAJADA ELITE"}</p>
-                                                        <div className="flex items-center gap-2">
-                                                            <div className="w-1 h-1 rounded-full bg-primary" />
-                                                            <p className="text-[9px] font-black text-primary uppercase tracking-[0.2em]">Hace 2 días</p>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            ))}
-                                        </div>
-                                    </div>
+
                                 </motion.div>
                             )}
-
-                            {activeTab === 'highlights' && (
-                                <motion.div
-                                    key="highlights"
-                                    initial={{ opacity: 0, scale: 0.95 }}
-                                    animate={{ opacity: 1, scale: 1 }}
-                                    exit={{ opacity: 0, scale: 0.95 }}
-                                    className="flex flex-col items-center justify-center py-32 text-center gap-10"
-                                >
-                                    <div className="relative">
-                                        <div className="w-32 h-32 bg-foreground/5 rounded-[3rem] border border-foreground/10 flex items-center justify-center animate-float shadow-2xl relative z-10">
-                                            <PlayCircle className="w-12 h-12 text-foreground/10" />
-                                        </div>
-                                        <div className="absolute -top-4 -right-4 w-12 h-12 bg-primary/20 rounded-2xl animate-pulse blur-xl" />
-                                    </div>
-                                    <div className="max-w-sm space-y-4">
-                                        <h3 className="text-4xl font-black text-foreground italic uppercase tracking-tighter">Próximamente</h3>
-                                        <p className="text-[11px] text-foreground/40 font-black uppercase tracking-[0.3em] leading-relaxed italic px-8">El generador de SportsReel llegará pronto para automatizar y capturar tus mejores momentos competitivos.</p>
-                                    </div>
-                                    <button className="h-14 px-12 glass-premium text-foreground/40 font-black text-[10px] uppercase tracking-[0.4em] rounded-2xl opacity-50 cursor-not-allowed">SOLICITAR ACCESO BETA</button>
-                                </motion.div>
-                            )}
-
                             {activeTab === 'history' && (
                                 <motion.div
                                     key="history"
