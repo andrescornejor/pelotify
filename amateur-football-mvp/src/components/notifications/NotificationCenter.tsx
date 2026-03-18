@@ -6,7 +6,7 @@ import { getPendingRequests, acceptFriendRequest, deleteFriendship, FriendshipDa
 import { getMatchInvitations, respondToInvitation } from '@/lib/matches';
 import { getPendingJoinRequestsForCaptain, respondToTeamInvitation, getTeamInvitations } from '@/lib/teams';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Bell, X, Check, XCircle, Users, Calendar, Loader2, Info, ArrowRight } from 'lucide-react';
+import { Bell, X, Check, XCircle, Users, Calendar, Loader2, Info, ArrowRight, Shield } from 'lucide-react';
 import Link from 'next/link';
 
 interface NotificationCenterProps {
