@@ -75,7 +75,7 @@ export function TopHeader() {
                         {/* Background subtle light beam */}
                         <div className="absolute top-0 left-[-10%] w-[40%] h-full bg-gradient-to-r from-primary/5 via-transparent to-transparent -skew-x-12 pointer-events-none" />
 
-                        <div className="grid grid-cols-[1fr_auto_1fr] items-center h-[58px] sm:h-[68px] lg:h-[76px] px-4 sm:px-6 lg:px-8">
+                        <div className="grid grid-cols-[1fr_auto_1fr] items-center h-[58px] sm:h-[68px] lg:h-[76px] px-4 sm:px-6 lg:px-8 w-full">
                             {/* Left: Menu + Logo */}
                             <div className="flex items-center gap-3 sm:gap-4 lg:gap-3 xl:gap-6 min-w-0">
                                 <motion.button
@@ -190,7 +190,7 @@ export function TopHeader() {
 
 
                             {/* Right: Actions */}
-                            <div className="flex items-center justify-end gap-1.5 sm:gap-4 lg:gap-2.5 xl:gap-4">
+                            <div className="flex items-center justify-end gap-1.5 sm:gap-4 lg:gap-2.5 xl:gap-4 col-start-3">
                                 {/* Create Match Button - Only Desktop */}
                                 <Link href="/create" className="hidden xl:block">
                                     <motion.button
