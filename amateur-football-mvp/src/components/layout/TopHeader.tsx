@@ -192,16 +192,7 @@ export function TopHeader() {
                             {/* Right: Actions */}
                             <div className="flex items-center justify-end gap-1.5 sm:gap-4 lg:gap-2.5 xl:gap-4 col-start-3">
                                 {/* Create Match Button - Only Desktop */}
-                                <Link href="/create" className="hidden xl:block">
-                                    <motion.button
-                                        whileHover={{ scale: 1.02, y: -1 }}
-                                        whileTap={{ scale: 0.98 }}
-                                        className="h-11 px-6 rounded-2xl bg-primary text-background font-black text-[11px] uppercase tracking-widest flex items-center gap-2.5 shadow-[0_8px_20px_rgba(16,185,129,0.25)] hover:shadow-[0_12px_24px_rgba(16,185,129,0.35)] transition-all"
-                                    >
-                                        <PlusCircle className="w-4 h-4" strokeWidth={3} />
-                                        Armar Partido
-                                    </motion.button>
-                                </Link>
+
 
                                 <div className="flex items-center gap-1.5 sm:gap-2.5">
                                     {/* Theme Toggle */}
