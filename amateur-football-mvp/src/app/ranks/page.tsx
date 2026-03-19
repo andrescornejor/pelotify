@@ -49,7 +49,7 @@ export default function RanksPage() {
     return (
         <div className="min-h-screen bg-background pb-20">
             {/* Header */}
-            <header className="sticky top-[70px] lg:top-[92px] z-50 glass-premium border-b border-foreground/5 py-6 px-4">
+            <header className="sticky top-0 z-50 glass-premium border-b border-foreground/5 py-6 px-4">
                 <div className="max-w-screen-xl mx-auto flex items-center gap-4">
                     <Link href="/">
                         <button className="w-10 h-10 rounded-xl bg-foreground/5 border border-foreground/10 flex items-center justify-center hover:bg-foreground/10 transition-all">

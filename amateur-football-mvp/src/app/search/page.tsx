@@ -83,7 +83,7 @@ export default function SearchPage() {
             </div>
 
             {/* ── HEADER & RADAR SCANNER ── */}
-            <div className="sticky top-[70px] lg:top-[92px] z-30 pt-4 pb-6 bg-background/80 backdrop-blur-xl -mx-4 px-4 lg:-mx-12 lg:px-12 border-b border-foreground/5 shadow-2xl shadow-black/5">
+            <div className="sticky top-0 z-30 pt-4 pb-6 bg-background/80 backdrop-blur-xl -mx-4 px-4 lg:-mx-12 lg:px-12 border-b border-foreground/5 shadow-2xl shadow-black/5">
                 <div className="flex flex-col gap-8 relative z-10 text-center lg:text-left max-w-screen-2xl mx-auto">
                     <div className="flex flex-col gap-2">
                         <div className="flex items-center gap-3 justify-center lg:justify-start">

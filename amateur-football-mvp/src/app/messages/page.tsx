@@ -66,7 +66,7 @@ export default function MessagesPage() {
     if (!user) return null;
 
     return (
-        <div className="min-h-screen bg-background pb-32 px-4 sm:px-6 lg:px-12 xl:px-24">
+        <div className="min-h-screen bg-background pt-24 pb-32 px-4 sm:px-6 lg:px-12 xl:px-24">
             <div className="max-w-7xl mx-auto h-[75vh] grid grid-cols-1 lg:grid-cols-12 gap-6">
                 
                 {/* Conversations List */}
