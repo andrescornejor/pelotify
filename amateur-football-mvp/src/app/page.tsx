@@ -30,6 +30,7 @@ import { getUserMatches, Match } from '@/lib/matches';
 import { getUserTeams, Team } from '@/lib/teams';
 import { cn } from '@/lib/utils';
 import { findVenueByLocation } from '@/lib/venues';
+import { getRankByElo, RANKS } from '@/lib/ranks';
 
 export default function HomePage() {
   const { user } = useAuth();
@@ -78,24 +79,26 @@ export default function HomePage() {
   const totalMatches = userMatches.length > 0 ? userMatches.length : (metadata?.matches || 0);
   const userName = user?.name || 'Jugador';
 
-  const getRankInfo = (elo: number) => {
-    if (elo < 1000) return { name: 'ROOKIE',      color: 'text-foreground/50', glow: 'rgba(255,255,255,0.1)', hex: '#94a3b8' };
-    if (elo < 3000) return { name: 'AMATEUR',     color: 'text-blue-400',      glow: 'rgba(59,130,246,0.3)',  hex: '#60a5fa' };
-    if (elo < 6000) return { name: 'PREMIER',     color: 'text-primary',       glow: 'rgba(44,252,125,0.35)', hex: '#2cfc7d' };
-    if (elo < 10000) return { name: 'ELITE',       color: 'text-accent',        glow: 'rgba(245,158,11,0.35)', hex: '#f59e0b' };
-    return              { name: 'WORLD CLASS', color: 'text-primary',       glow: 'rgba(44,252,125,0.5)',  hex: '#5dfd9d' };
-  };
-  const rank = getRankInfo(elo);
+  const rankInfo = getRankByElo(elo);
+  const nextRank = RANKS[RANKS.findIndex(r => r.name === rankInfo.name) + 1] || rankInfo;
+  const progressToNextRank = nextRank.minElo > 0 
+    ? Math.min(100, (elo / nextRank.minElo) * 100) 
+    : 100;
 
-  const getNextThreshold = (elo: number) => {
-    if (elo < 1000) return 1000;
-    if (elo < 3000) return 3000;
-    if (elo < 6000) return 6000;
-    if (elo < 10000) return 10000;
-    return 15000;
+  const rank = {
+    name: rankInfo.name,
+    color: 'text-primary', // Default fallback
+    glow: `rgba(44,252,125,0.3)`, 
+    hex: rankInfo.color
   };
-  const nextThreshold = getNextThreshold(elo);
-  const progressToNextRank = Math.min(100, (elo / nextThreshold) * 100);
+  
+  // Apply specific colors from our theme
+  if (rank.name === 'HIERRO') { rank.color = 'text-foreground/50'; rank.glow = 'rgba(255,255,255,0.1)'; }
+  else if (rank.name === 'BRONCE') { rank.color = 'text-orange-600'; rank.glow = 'rgba(146,64,14,0.3)'; }
+  else if (rank.name === 'PLATA') { rank.color = 'text-slate-400'; rank.glow = 'rgba(148,163,184,0.3)'; }
+  else if (rank.name === 'ORO') { rank.color = 'text-yellow-500'; rank.glow = 'rgba(202,138,4,0.35)'; }
+  else { rank.color = 'text-primary'; rank.glow = 'rgba(44,252,125,0.4)'; }
+
 
   const fadeUp = {
     hidden: { opacity: 0, y: 20 },
@@ -215,7 +218,7 @@ export default function HomePage() {
               >
                 <div className="flex justify-between items-center">
                   <span className="text-[9px] font-black uppercase tracking-[0.3em] text-foreground/55">{rank.name}</span>
-                  <span className="text-[9px] font-black uppercase tracking-widest text-foreground/55">{elo} / {nextThreshold}</span>
+                  <span className="text-[9px] font-black uppercase tracking-widest text-foreground/55">{elo} / {nextRank.minElo || 'MAX'}</span>
                 </div>
                 <div className="h-[3px] w-full bg-foreground/[0.12] rounded-full overflow-hidden">
                   <motion.div
@@ -457,16 +460,16 @@ export default function HomePage() {
                     <TrendingUp className="w-5 h-5 text-primary" />
                   </div>
                   <div>
-                    <h4 className="text-base font-black text-foreground italic uppercase tracking-tighter leading-none">Tu Carrera Arranca en 0</h4>
+                    <h4 className="text-base font-black text-foreground italic uppercase tracking-tighter leading-none">Tu Carrera Arranca en Hierro</h4>
                     <p className="text-[9px] text-foreground/55 font-black uppercase tracking-[0.2em] mt-0.5">
-                      Todos arrancan como <span className="text-foreground/80">ROOKIES</span>. Subí de nivel jugando.
+                      Todos arrancan en <span className="text-foreground/80">HIERRO</span>. Subí de nivel jugando.
                     </p>
                   </div>
                 </div>
                 <div className="flex items-center gap-3 relative z-10 shrink-0">
                   <div className="text-right hidden sm:block">
                     <p className="text-[8px] font-black text-foreground/45 uppercase tracking-[0.3em]">PRÓXIMO RANGO</p>
-                    <p className="text-sm font-black text-primary italic uppercase tracking-tighter">AMATEUR PRO</p>
+                    <p className="text-sm font-black text-primary italic uppercase tracking-tighter">{nextRank.name}</p>
                   </div>
                   <div className="w-10 h-10 rounded-[0.875rem] flex items-center justify-center"
                     style={{ background: 'linear-gradient(135deg, #2cfc7d, #1db95a)', boxShadow: '0 0 20px rgba(44,252,125,0.35)' }}>
