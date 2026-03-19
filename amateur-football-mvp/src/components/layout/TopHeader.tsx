@@ -25,7 +25,7 @@ const DESKTOP_NAV = [
 ];
 
 
-
+import { getUnreadMessagesCount } from '@/lib/chat';
 
 export function TopHeader() {
     const pathname = usePathname();
