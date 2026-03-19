@@ -451,15 +451,15 @@ function ProfileContent() {
     }
 
     return (
-        <div className="flex flex-col gap-8 p-4 sm:p-6 lg:p-10 xl:p-14 2xl:p-16 max-w-full mx-auto min-h-screen bg-background relative overflow-hidden">
+        <div className="flex flex-col gap-8 p-4 sm:p-6 lg:p-10 xl:p-14 2xl:p-16 max-w-full mx-auto min-h-screen bg-background relative">
             {/* Ambient Effects */}
-            <div className="absolute top-0 left-0 w-full h-[50dvh] pointer-events-none">
+            <div className="fixed inset-0 pointer-events-none -z-10 overflow-hidden">
                 <div 
-                    className="absolute inset-0 bg-gradient-to-b via-transparent to-transparent opacity-30" 
+                    className="absolute top-0 left-0 w-full h-[60dvh] bg-gradient-to-b via-transparent to-transparent opacity-30" 
                     style={{ backgroundImage: ambientColor ? `linear-gradient(to bottom, ${ambientColor}, transparent)` : undefined }}
                 />
                 <div 
-                    className={cn("absolute top-[-10%] right-[-10%] w-[60%] h-[100%] blur-[120px] rounded-full animate-pulse", !ambientColor && "bg-primary/5")} 
+                    className={cn("absolute top-[-15%] right-[-10%] w-[70%] h-[70%] blur-[140px] rounded-full animate-pulse", !ambientColor && "bg-primary/5")} 
                     style={{ backgroundColor: ambientColor || undefined }}
                 />
             </div>
