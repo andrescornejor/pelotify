@@ -8,6 +8,8 @@ import { getPendingJoinRequestsForCaptain, respondToTeamInvitation, getTeamInvit
 import { motion, AnimatePresence } from 'framer-motion';
 import { Bell, X, Check, XCircle, Users, Calendar, Loader2, Info, ArrowRight, Shield } from 'lucide-react';
 import Link from 'next/link';
+import { getUnreadMessagesCount } from '@/lib/chat';
+import { MessageSquare } from 'lucide-react';
 
 interface NotificationCenterProps {
     isOpen: boolean;
@@ -20,6 +22,7 @@ export function NotificationCenter({ isOpen, onClose }: NotificationCenterProps)
     const [matchInvites, setMatchInvites] = useState<any[]>([]);
     const [teamRequests, setTeamRequests] = useState<any[]>([]);
     const [teamInvitations, setTeamInvitations] = useState<any[]>([]);
+    const [unreadChatCount, setUnreadChatCount] = useState(0);
     const [isLoading, setIsLoading] = useState(false);
     const [actionLoading, setActionLoading] = useState<string | null>(null);
 
@@ -27,16 +30,18 @@ export function NotificationCenter({ isOpen, onClose }: NotificationCenterProps)
         if (!user) return;
         setIsLoading(true);
         try {
-            const [f, m, t, ti] = await Promise.all([
+            const [f, m, t, ti, c] = await Promise.all([
                 getPendingRequests(user.id),
                 getMatchInvitations(user.id),
                 getPendingJoinRequestsForCaptain(user.id),
-                getTeamInvitations(user.id)
+                getTeamInvitations(user.id),
+                getUnreadMessagesCount(user.id)
             ]);
             setFriendRequests(f);
             setMatchInvites(m);
             setTeamRequests(t);
             setTeamInvitations(ti);
+            setUnreadChatCount(c || 0);
         } catch (err) {
             console.error("Error fetching notifications:", err);
         } finally {
@@ -90,7 +95,7 @@ export function NotificationCenter({ isOpen, onClose }: NotificationCenterProps)
         }
     };
 
-    const hasNotifications = friendRequests.length > 0 || matchInvites.length > 0 || teamRequests.length > 0 || teamInvitations.length > 0;
+    const hasNotifications = friendRequests.length > 0 || matchInvites.length > 0 || teamRequests.length > 0 || teamInvitations.length > 0 || unreadChatCount > 0;
 
     return (
         <AnimatePresence>
@@ -155,8 +160,35 @@ export function NotificationCenter({ isOpen, onClose }: NotificationCenterProps)
                                     }}
                                     initial="hidden"
                                     animate="show"
-                                    className="p-4 flex flex-col gap-3"
                                 >
+                                    {/* Unread Chat Messages */}
+                                    {unreadChatCount > 0 && (
+                                        <motion.div
+                                            variants={{
+                                                hidden: { opacity: 0, y: 15, scale: 0.96, filter: 'blur(4px)' },
+                                                show: { opacity: 1, y: 0, scale: 1, filter: 'blur(0px)' }
+                                            }}
+                                            className="p-4 rounded-3xl bg-primary/[0.04] border border-primary/20 hover:bg-primary/[0.06] hover:border-primary/40 transition-all group flex items-center justify-between"
+                                        >
+                                            <div className="flex items-center gap-4">
+                                                <div className="w-11 h-11 rounded-2xl bg-primary/10 border border-primary/20 flex items-center justify-center">
+                                                    <MessageSquare className="w-5 h-5 text-primary" />
+                                                </div>
+                                                <div className="flex flex-col">
+                                                    <p className="text-[13px] font-black text-foreground uppercase tracking-tight">Tienes {unreadChatCount === 1 ? '1 mensaje' : `${unreadChatCount} mensajes`} sin leer</p>
+                                                    <span className="text-[9px] font-black text-foreground/30 uppercase tracking-widest">Alguien te está escribiendo</span>
+                                                </div>
+                                            </div>
+                                            <Link 
+                                                href="/messages" 
+                                                onClick={onClose}
+                                                className="px-4 py-2 rounded-xl bg-primary text-background text-[10px] font-black uppercase tracking-widest hover:scale-105 active:scale-95 transition-all shadow-lg shadow-primary/20"
+                                            >
+                                                Ver Chat
+                                            </Link>
+                                        </motion.div>
+                                    )}
+
                                     {/* Team Join Requests (Captain) */}
                                     <AnimatePresence mode="popLayout">
                                         {teamRequests.map((req) => {
