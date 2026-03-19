@@ -85,6 +85,8 @@ function ProfileContent() {
         preferredFoot: 'Derecha',
         position: 'DC'
     });
+    const [skillPoints, setSkillPoints] = useState(0);
+    const [editedStats, setEditedStats] = useState<PlayerStats>(DEFAULT_PLAYER.stats);
 
     const [isSaving, setIsSaving] = useState(false);
     const [targetProfile, setTargetProfile] = useState<any>(null);
@@ -141,7 +143,11 @@ function ProfileContent() {
                     .single();
 
                 if (error && error.code !== 'PGRST116') throw error;
-                if (data) setTargetProfile(data);
+                if (data) {
+                    setTargetProfile(data);
+                    setSkillPoints(data.skill_points || 0);
+                    if (data.stats) setEditedStats(data.stats as PlayerStats);
+                }
             } catch (err) {
                 console.error('Error cargando perfil:', err);
             } finally {
@@ -282,6 +288,7 @@ function ProfileContent() {
     }, [dbProfile, authMetadata, avatarPreview]);
 
     const resolveStats = (): PlayerStats => {
+        if (isEditing) return editedStats;
         const statsSource = isMe ? authMetadata.stats : (dbProfile.stats || dbMetadata.stats);
         if (statsSource && typeof statsSource === 'object') return statsSource as PlayerStats;
         
@@ -345,7 +352,6 @@ function ProfileContent() {
             }
 
             // 1. Update Public Profile (Source of Truth) FIRST
-            // This ensures onAuthStateChange fetches the NEW data
             console.log("Actualizando tabla de perfiles...");
             const { error: profileError } = await supabase
                 .from('profiles')
@@ -357,6 +363,8 @@ function ProfileContent() {
                     age: parseInt(editedData.age) || 18,
                     height: parseInt(editedData.height) || 170,
                     avatar_url: newAvatarUrl,
+                    stats: editedStats,
+                    skill_points: skillPoints,
                     updated_at: new Date().toISOString()
                 });
 
@@ -385,7 +393,9 @@ function ProfileContent() {
                     height: editedData.height,
                     preferredFoot: editedData.preferredFoot,
                     position: editedData.position,
-                    avatar_url: newAvatarUrl
+                    avatar_url: newAvatarUrl,
+                    stats: editedStats,
+                    skill_points: skillPoints
                 }
             }).catch(e => console.warn("Error secundario en metadata de auth:", e));
 
@@ -541,33 +551,89 @@ function ProfileContent() {
                         <motion.div 
                             initial={{ opacity: 0, y: 10 }}
                             animate={{ opacity: 1, y: 0 }}
-                            className="mt-6 glass-premium p-6 space-y-4 border border-primary/20 rounded-[2rem] shadow-xl"
+                            className="mt-6 glass-premium p-6 space-y-6 border border-primary/20 rounded-[2rem] shadow-xl"
                         >
-                            <div className="space-y-3">
-                                <label className="text-[10px] font-black uppercase text-foreground/40 tracking-[0.3em] ml-1">Nombre en Carta</label>
-                                <input
-                                    type="text"
-                                    className="w-full h-14 bg-background/40 border border-foreground/5 rounded-2xl px-6 text-foreground text-sm font-black outline-none focus:border-primary/50 transition-all uppercase placeholder:foreground/20"
-                                    value={editedData.name}
-                                    onChange={e => setEditedData({ ...editedData, name: e.target.value })}
-                                />
+                            {/* Skill Points Display */}
+                            <div className="flex items-center justify-between p-4 bg-primary/10 border border-primary/20 rounded-2xl">
+                                <div className="flex items-center gap-3">
+                                    <div className="w-10 h-10 rounded-xl bg-primary/20 flex items-center justify-center">
+                                        <Zap className="w-5 h-5 text-primary animate-pulse" />
+                                    </div>
+                                    <div className="flex flex-col">
+                                        <span className="text-[9px] font-black text-primary uppercase tracking-[0.2em] leading-tight">Puntos de Habilidad</span>
+                                        <span className="text-xl font-black text-foreground">{skillPoints}</span>
+                                    </div>
+                                </div>
+                                {skillPoints > 0 && (
+                                    <span className="text-[8px] font-black text-primary uppercase animate-bounce">¡Mejora tu carta!</span>
+                                )}
                             </div>
-                            <div className="space-y-3">
-                                <label className="text-[10px] font-black uppercase text-foreground/40 tracking-[0.3em] ml-1">Posición Principal</label>
-                                <div className="relative">
-                                    <select
-                                        className="w-full h-14 bg-background/40 border border-foreground/5 rounded-2xl px-6 text-foreground text-sm font-black outline-none focus:border-primary/50 appearance-none cursor-pointer uppercase transition-all"
-                                        value={editedData.position}
-                                        onChange={e => setEditedData({ ...editedData, position: e.target.value })}
-                                    >
-                                        <option value="POR">PORTERO (POR)</option>
-                                        <option value="DFC">DEFENSA (DFC)</option>
-                                        <option value="MC">MEDIOCAMPISTA (MC)</option>
-                                        <option value="DC">DELANTERO (DC)</option>
-                                        <option value="ED">EXTREMO DERECHO (ED)</option>
-                                        <option value="EI">EXTREMO IZQUIERDO (EI)</option>
-                                    </select>
-                                    <ChevronRight className="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-foreground/40 rotate-90 pointer-events-none" />
+
+                            {/* Stat Editor Controls */}
+                            <div className="grid grid-cols-2 gap-4">
+                                {(Object.keys(editedStats) as Array<keyof PlayerStats>).map(key => (
+                                    <div key={key} className="flex flex-col gap-2">
+                                        <div className="flex justify-between items-center px-1">
+                                            <span className="text-[10px] font-black text-foreground/40 uppercase tracking-widest">{key}</span>
+                                            <span className="text-xs font-black text-foreground">{editedStats[key]}</span>
+                                        </div>
+                                        <div className="flex gap-1">
+                                            <button 
+                                                onClick={() => {
+                                                    if (editedStats[key] > resolveStats()[key]) {
+                                                        setSkillPoints(prev => prev + 1);
+                                                        setEditedStats(prev => ({ ...prev, [key]: prev[key] - 1 }));
+                                                    }
+                                                }}
+                                                disabled={editedStats[key] <= (dbProfile.stats?.[key] || 0)}
+                                                className="flex-1 h-9 rounded-lg bg-foreground/5 border border-foreground/10 text-xs font-black disabled:opacity-30 flex items-center justify-center hover:bg-foreground/10 transition-all"
+                                            >
+                                                -
+                                            </button>
+                                            <button 
+                                                onClick={() => {
+                                                    if (skillPoints > 0 && editedStats[key] < 99) {
+                                                        setSkillPoints(prev => prev - 1);
+                                                        setEditedStats(prev => ({ ...prev, [key]: prev[key] + 1 }));
+                                                    }
+                                                }}
+                                                disabled={skillPoints === 0 || editedStats[key] >= 99}
+                                                className="flex-1 h-9 rounded-lg bg-primary/20 border border-primary/20 text-primary text-xs font-black disabled:opacity-30 flex items-center justify-center hover:bg-primary/30 transition-all"
+                                            >
+                                                +
+                                            </button>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+
+                            <div className="space-y-4 pt-2">
+                                <div className="space-y-3">
+                                    <label className="text-[10px] font-black uppercase text-foreground/40 tracking-[0.3em] ml-1">Nombre en Carta</label>
+                                    <input
+                                        type="text"
+                                        className="w-full h-14 bg-background/40 border border-foreground/5 rounded-2xl px-6 text-foreground text-sm font-black outline-none focus:border-primary/50 transition-all uppercase placeholder:foreground/20"
+                                        value={editedData.name}
+                                        onChange={e => setEditedData({ ...editedData, name: e.target.value })}
+                                    />
+                                </div>
+                                <div className="space-y-3">
+                                    <label className="text-[10px] font-black uppercase text-foreground/40 tracking-[0.3em] ml-1">Posición Principal</label>
+                                    <div className="relative">
+                                        <select
+                                            className="w-full h-14 bg-background/40 border border-foreground/5 rounded-2xl px-6 text-foreground text-sm font-black outline-none focus:border-primary/50 appearance-none cursor-pointer uppercase transition-all"
+                                            value={editedData.position}
+                                            onChange={e => setEditedData({ ...editedData, position: e.target.value })}
+                                        >
+                                            <option value="POR">PORTERO (POR)</option>
+                                            <option value="DFC">DEFENSA (DFC)</option>
+                                            <option value="MC">MEDIOCAMPISTA (MC)</option>
+                                            <option value="DC">DELANTERO (DC)</option>
+                                            <option value="ED">EXTREMO DERECHO (ED)</option>
+                                            <option value="EI">EXTREMO IZQUIERDO (EI)</option>
+                                        </select>
+                                        <ChevronRight className="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-foreground/40 rotate-90 pointer-events-none" />
+                                    </div>
                                 </div>
                             </div>
                         </motion.div>
