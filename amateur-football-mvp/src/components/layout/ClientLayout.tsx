@@ -36,7 +36,7 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
           showNav
             ? pathname.startsWith('/match/')
               ? 'pb-24 lg:pb-12'
-              : 'pt-24 lg:pt-24 pb-24 lg:pb-12'
+              : 'pt-28 lg:pt-32 pb-24 lg:pb-12'
             : ''
         )}>
           {children}

@@ -140,7 +140,7 @@ export default function TeamsPage() {
             <div className="absolute bottom-[-10%] left-[-10%] w-[50%] h-[50%] bg-accent/3 blur-[120px] rounded-full pointer-events-none" />
 
             {/* Header & Tabs */}
-            <div className="sticky top-0 z-30 pt-4 pb-6 bg-background/80 backdrop-blur-xl -mx-4 px-4 lg:-mx-16 lg:px-16 border-b border-foreground/5 shadow-2xl shadow-black/5">
+            <div className="sticky top-[70px] lg:top-[92px] z-30 pt-4 pb-6 bg-background/80 backdrop-blur-xl -mx-4 px-4 lg:-mx-16 lg:px-16 border-b border-foreground/5 shadow-2xl shadow-black/5">
                 <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 relative z-10 max-w-screen-2xl mx-auto">
                     <div className="flex flex-col">
                         <h1 className="text-4xl md:text-5xl font-black italic text-foreground uppercase tracking-tighter leading-none">Asociación <span className="text-foreground/40">de Clubes</span></h1>
