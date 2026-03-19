@@ -8,6 +8,7 @@ import { createMatch } from '@/lib/matches';
 import { useAuth } from '@/contexts/AuthContext';
 import { ROSARIO_VENUES } from '@/lib/venues';
 import LocationSearch from '@/components/LocationSearch';
+import { AVAILABLE_TIMES } from '@/lib/constants';
 
 export default function CreateMatchPage() {
     const router = useRouter();
@@ -138,14 +139,25 @@ export default function CreateMatchPage() {
                                 />
                             </div>
                             <div className="relative group">
-                                <Clock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-foreground/20 group-focus-within:text-primary transition-colors" />
-                                <input
-                                    type="time"
+                                <Clock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-foreground/20 group-focus-within:text-primary transition-colors z-10" />
+                                <select
                                     required
                                     value={formData.time}
                                     onChange={(e) => setFormData({ ...formData, time: e.target.value })}
-                                    className="w-full h-16 pl-12 pr-4 rounded-2xl bg-foreground/[0.02] border border-foreground/10 focus:bg-foreground/[0.04] focus:border-primary/30 outline-none text-sm font-bold text-foreground italic dark:color-scheme-dark"
-                                />
+                                    className="w-full h-16 pl-12 pr-10 rounded-2xl bg-foreground/[0.02] border border-foreground/10 focus:bg-foreground/[0.04] focus:border-primary/30 outline-none text-sm font-bold text-foreground italic appearance-none cursor-pointer"
+                                >
+                                    <option value="" disabled className="bg-background">¿A qué hora?</option>
+                                    {AVAILABLE_TIMES.map(t => (
+                                        <option key={t} value={t} className="bg-background text-foreground">
+                                            {t} {parseInt(t.split(':')[0]) >= 12 ? 'PM' : 'AM'}
+                                        </option>
+                                    ))}
+                                </select>
+                                <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-foreground/20 group-focus-within:text-primary">
+                                    <svg width="12" height="8" viewBox="0 0 12 8" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M1 1L6 6L11 1" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+                                    </svg>
+                                </div>
                             </div>
                         </div>
                     </motion.div>

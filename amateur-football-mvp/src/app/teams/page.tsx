@@ -12,6 +12,7 @@ import { cn } from '@/lib/utils';
 import { supabase } from '@/lib/supabase';
 import { TeamsSkeleton } from '@/components/Skeletons';
 import Link from 'next/link';
+import { AVAILABLE_TIMES } from '@/lib/constants';
 
 export default function TeamsPage() {
     const { user, isLoading: authLoading } = useAuth();
@@ -498,13 +499,26 @@ export default function TeamsPage() {
                                         <label className="text-[9px] font-black text-foreground/50 uppercase tracking-[0.2em] flex items-center gap-2 pl-2">
                                             <Clock className="w-3 h-3 text-primary" /> Hora
                                         </label>
-                                        <input
-                                            type="time"
-                                            required
-                                            value={challengeTime}
-                                            onChange={(e) => setChallengeTime(e.target.value)}
-                                            className="w-full h-14 bg-foreground/[0.02] border border-foreground/5 rounded-2xl px-4 text-xs font-bold uppercase text-foreground outline-none focus:border-primary/50 transition-colors dark:color-scheme-dark"
-                                        />
+                                        <div className="relative group">
+                                            <select
+                                                required
+                                                value={challengeTime}
+                                                onChange={(e) => setChallengeTime(e.target.value)}
+                                                className="w-full h-14 bg-foreground/[0.02] border border-foreground/5 rounded-2xl px-4 text-xs font-bold uppercase text-foreground outline-none focus:border-primary/50 transition-colors appearance-none cursor-pointer"
+                                            >
+                                                <option value="" disabled className="bg-background">¿A qué hora?</option>
+                                                {AVAILABLE_TIMES.map(t => (
+                                                    <option key={t} value={t} className="bg-background text-foreground">
+                                                        {t} {parseInt(t.split(':')[0]) >= 12 ? 'PM' : 'AM'}
+                                                    </option>
+                                                ))}
+                                            </select>
+                                            <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-foreground/20 group-focus-within:text-primary">
+                                                <svg width="10" height="6" viewBox="0 0 12 8" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                    <path d="M1 1L6 6L11 1" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+                                                </svg>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
 
