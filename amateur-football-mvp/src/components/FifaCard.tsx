@@ -4,6 +4,7 @@ import { motion, useMotionValue, useTransform, useSpring } from 'framer-motion';
 import { Star, Award } from 'lucide-react';
 import { useRef } from 'react';
 import { cn } from '@/lib/utils';
+import { getRankByElo } from '@/lib/ranks';
 
 interface FifaCardProps {
     player: {
@@ -28,6 +29,7 @@ interface FifaCardProps {
 
 export function FifaCard({ player }: FifaCardProps) {
     const ref = useRef<HTMLDivElement>(null);
+    const rank = getRankByElo(player.overall);
 
     const x = useMotionValue(0);
     const y = useMotionValue(0);
@@ -140,11 +142,11 @@ export function FifaCard({ player }: FifaCardProps) {
                         <span className="text-[7px] font-black uppercase tracking-[0.2em] px-2 py-0.5 rounded shadow-lg"
                             style={{ 
                                 background: 'rgba(0,0,0,0.6)', 
-                                border: '1px solid rgba(16,185,129,0.4)', 
-                                color: 'rgba(255,255,255,0.9)',
+                                border: `1px solid ${rank.color}66`, 
+                                color: rank.color,
                                 backdropFilter: 'blur(4px)'
                             }}>
-                            PRO ELITE
+                            {rank.name === 'HIERRO' ? 'HIERRO' : `PRO ${rank.name}`}
                         </span>
                     </div>
 
