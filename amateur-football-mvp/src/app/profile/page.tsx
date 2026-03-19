@@ -451,7 +451,7 @@ function ProfileContent() {
     }
 
     return (
-        <div className="flex flex-col gap-8 p-4 sm:p-6 lg:p-10 xl:p-14 2xl:p-16 max-w-screen-2xl mx-auto min-h-screen bg-background relative overflow-hidden snap-y snap-proximity overflow-y-auto">
+        <div className="flex flex-col gap-8 p-4 sm:p-6 lg:p-10 xl:p-14 2xl:p-16 max-w-screen-2xl mx-auto min-h-screen bg-background relative overflow-hidden">
             {/* Ambient Effects */}
             <div className="absolute top-0 left-0 w-full h-[50dvh] pointer-events-none">
                 <div 

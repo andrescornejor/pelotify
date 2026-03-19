@@ -109,7 +109,7 @@ export default function HomePage() {
   };
 
   return (
-    <div className="relative min-h-screen bg-background snap-y snap-proximity overflow-y-auto">
+    <div className="relative min-h-screen bg-background">
 
       {/* ── AMBIENT ── */}
       <div className="fixed inset-0 pointer-events-none -z-10 overflow-hidden">
