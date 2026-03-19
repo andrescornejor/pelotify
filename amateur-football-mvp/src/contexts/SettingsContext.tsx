@@ -36,10 +36,6 @@ export const SettingsProvider: React.FC<{ children: React.ReactNode }> = ({ chil
         }
     };
 
-    if (!mounted) {
-        return <>{children}</>;
-    }
-
     return (
         <SettingsContext.Provider value={{ performanceMode, setPerformanceMode: updatePerformanceMode }}>
             {children}
