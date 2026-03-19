@@ -173,7 +173,9 @@ export function TopHeader() {
                             {/* Middle: Desktop Nav */}
                             <nav className="hidden lg:flex items-center gap-1.5 bg-foreground/[0.03] p-1.5 rounded-[1.25rem] border border-foreground/[0.05] backdrop-blur-md">
                                 {DESKTOP_NAV.map((item) => {
-                                    const isActive = pathname === item.href || (item.href !== '/' && pathname.startsWith(item.href));
+                                    const cleanPath = pathname.replace(/\/$/, '') || '/';
+                                    const cleanHref = item.href.replace(/\/$/, '') || '/';
+                                    const isActive = cleanPath === cleanHref || (cleanHref !== '/' && cleanPath.startsWith(cleanHref));
                                     const hasBadge = (item.id === 'friends' && friendsCount > 0 && !isActive) || 
                                                      (item.label === 'Mensajes' && unreadChatCount > 0 && !isActive);
 
