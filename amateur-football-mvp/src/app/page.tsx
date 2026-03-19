@@ -466,15 +466,13 @@ export default function HomePage() {
                     </p>
                   </div>
                 </div>
-                <div className="flex items-center gap-3 relative z-10 shrink-0">
-                  <div className="text-right hidden sm:block">
-                    <p className="text-[8px] font-black text-foreground/45 uppercase tracking-[0.3em]">PRÓXIMO RANGO</p>
-                    <p className="text-sm font-black text-primary italic uppercase tracking-tighter">{nextRank.name}</p>
-                  </div>
-                  <div className="w-10 h-10 rounded-[0.875rem] flex items-center justify-center"
-                    style={{ background: 'linear-gradient(135deg, #2cfc7d, #1db95a)', boxShadow: '0 0 20px rgba(44,252,125,0.35)' }}>
-                    <Star className="w-5 h-5 text-white fill-white" />
-                  </div>
+                  <Link href="/ranks">
+                    <button className="h-10 px-5 rounded-[0.875rem] flex items-center justify-center gap-3 transition-all hover:scale-[1.03] text-white shadow-xl group"
+                      style={{ background: 'linear-gradient(135deg, #2cfc7d, #1db95a)', boxShadow: `0 8px 24px ${rank.glow}` }}>
+                      <span className="text-[10px] font-black uppercase tracking-widest italic group-hover:translate-x-[-2px] transition-transform">VER ESCALA</span>
+                      <Trophy className="w-4 h-4 text-white fill-white" />
+                    </button>
+                  </Link>
                 </div>
               </motion.div>
             </motion.section>
