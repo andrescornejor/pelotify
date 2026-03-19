@@ -134,7 +134,7 @@ export default function TeamsPage() {
     };
 
     return (
-        <div className="flex flex-col gap-8 p-4 sm:p-6 lg:px-10 lg:pt-0 xl:px-14 2xl:px-16 max-w-screen-2xl mx-auto min-h-screen bg-background relative overflow-hidden snap-y snap-proximity overflow-y-auto">
+        <div className="flex flex-col gap-8 p-4 sm:p-6 lg:px-10 lg:pt-4 xl:px-14 2xl:px-16 max-w-screen-2xl mx-auto min-h-screen bg-background relative overflow-hidden snap-y snap-proximity overflow-y-auto">
             {/* Ambient Effects */}
             <div className="absolute top-0 right-[-10%] w-[40%] h-[40%] bg-primary/5 blur-[120px] rounded-full pointer-events-none" />
             <div className="absolute bottom-[-10%] left-[-10%] w-[50%] h-[50%] bg-accent/3 blur-[120px] rounded-full pointer-events-none" />

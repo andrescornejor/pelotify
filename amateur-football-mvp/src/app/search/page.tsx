@@ -74,7 +74,7 @@ export default function SearchPage() {
     });
 
     return (
-        <div className="flex flex-col gap-8 p-4 lg:p-10 lg:pt-0 max-w-screen-2xl mx-auto h-full bg-background relative overflow-hidden min-h-screen snap-y snap-proximity overflow-y-auto">
+        <div className="flex flex-col gap-8 p-4 lg:p-10 lg:pt-4 max-w-screen-2xl mx-auto h-full bg-background relative overflow-hidden min-h-screen snap-y snap-proximity overflow-y-auto">
             
             {/* ── RADAR AMBIENT ── */}
             <div className="absolute top-0 left-0 w-full h-[300px] pointer-events-none opacity-20">
