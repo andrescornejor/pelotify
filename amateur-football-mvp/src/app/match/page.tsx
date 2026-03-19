@@ -93,6 +93,7 @@ function MatchLobbyContent() {
     const totalPlayers = teamSize * 2;
     const teamA = confirmedParticipants.filter(p => p.team === 'A');
     const teamB = confirmedParticipants.filter(p => p.team === 'B');
+    const unassigned = confirmedParticipants.filter(p => !p.team);
 
     const handleJoinTeam = async (team: 'A' | 'B' | null) => {
         if (!user || !match) return;
@@ -376,7 +377,46 @@ function MatchLobbyContent() {
                     <PostMatchView match={match} participants={participants} stats={matchStats || { goalScorers: [], mvp: null }} />
                 </div>
             ) : (
-                <div className="w-full px-4 lg:px-16 xl:px-24 -mt-8 mb-20 relative z-20 grid grid-cols-1 lg:grid-cols-12 gap-12">
+                <div className="w-full px-4 lg:px-16 xl:px-24 -mt-8 mb-20 relative z-20 space-y-12">
+                    {/* Unassigned Players Section */}
+                    {unassigned.length > 0 && (
+                        <motion.div 
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            className="glass-premium p-8 rounded-[3rem] border border-foreground/10 bg-foreground/[0.02]"
+                        >
+                            <div className="flex flex-col gap-6">
+                                <div className="flex items-center gap-4">
+                                    <div className="w-10 h-10 rounded-xl bg-foreground/5 flex items-center justify-center border border-foreground/10">
+                                        <Users className="w-5 h-5 text-foreground/40" />
+                                    </div>
+                                    <div className="flex flex-col">
+                                        <h3 className="text-xl font-black text-foreground italic uppercase tracking-tighter leading-none">Banquillo de Espera</h3>
+                                        <span className="text-[9px] font-black text-foreground/40 uppercase tracking-widest mt-1">Jugadores inscriptos sin equipo asignado</span>
+                                    </div>
+                                </div>
+                                <div className="flex flex-wrap gap-6 px-2">
+                                    {unassigned.map((p) => (
+                                        <PlayerSlot 
+                                            key={p.id} 
+                                            participant={p} 
+                                            isSelf={p.user_id === user?.id} 
+                                        />
+                                    ))}
+                                    {isConfirmed && !myTeam && (
+                                        <div className="flex flex-col items-center justify-center gap-3">
+                                            <div className="w-16 h-16 lg:w-20 lg:h-20 rounded-[1.8rem] lg:rounded-[2.2rem] border-2 border-dashed border-primary/40 flex items-center justify-center text-primary/40">
+                                                <Star className="w-6 h-6 animate-pulse" />
+                                            </div>
+                                            <span className="text-[9px] font-black text-primary/60 uppercase tracking-widest italic">Elegí Equipo</span>
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
+                        </motion.div>
+                    )}
+
+                    <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
                     <div className="lg:col-span-8 space-y-12">
                         <AnimatePresence>
                             {hasJoined && myEntry?.status === 'pending' && (

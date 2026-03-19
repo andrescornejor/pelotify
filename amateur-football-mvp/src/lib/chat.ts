@@ -133,3 +133,42 @@ export function subscribeToDirectMessages(
         )
         .subscribe();
 }
+
+export async function getRecentChats(userId: string) {
+    const { data, error } = await supabase
+        .from('direct_messages')
+        .select(`
+            sender_id,
+            recipient_id,
+            content,
+            created_at,
+            sender:sender_id ( name, avatar_url ),
+            recipient:recipient_id ( name, avatar_url )
+        `)
+        .or(`sender_id.eq.${userId},recipient_id.eq.${userId}`)
+        .order('created_at', { ascending: false });
+
+    if (error) {
+        console.error('Error fetching recent chats:', error);
+        return [];
+    }
+
+    const conversations = new Map<string, any>();
+    data.forEach(msg => {
+        const otherId = msg.sender_id === userId ? msg.recipient_id : msg.sender_id;
+        if (!conversations.has(otherId)) {
+            const isSender = msg.sender_id === userId;
+            const otherProfile = isSender ? msg.recipient : msg.sender;
+            
+            conversations.set(otherId, {
+                userId: otherId,
+                name: (otherProfile as any)?.name || 'Usuario',
+                avatar_url: (otherProfile as any)?.avatar_url,
+                lastMessage: msg.content,
+                timestamp: msg.created_at
+            });
+        }
+    });
+
+    return Array.from(conversations.values());
+}

@@ -18,6 +18,7 @@ const DESKTOP_NAV = [
     { href: '/', icon: Home, label: 'Inicio' },
     { href: '/search', icon: Search, label: 'Buscar' },
     { href: '/friends', icon: Users, label: 'Amigos', id: 'friends' },
+    { href: '/messages', icon: MessageSquare, label: 'Mensajes' },
     { href: '/teams', icon: Shield, label: 'Equipos' },
 ];
 
