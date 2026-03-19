@@ -225,11 +225,9 @@ function MatchLobbyContent() {
     const userParticipant = user ? participants.find(p => p.user_id === user.id) : null;
 
     return (
-        <div className="flex flex-col min-h-screen bg-background pb-24 relative">
-            <div className="fixed inset-0 pointer-events-none -z-10 overflow-hidden">
-                <div className="absolute top-0 right-[-10%] w-[40%] h-[40%] bg-primary/5 blur-[120px] rounded-full" />
-                <div className="absolute bottom-[-10%] left-[-10%] w-[50%] h-[50%] bg-primary/3 blur-[120px] rounded-full" />
-            </div>
+        <div className="flex flex-col min-h-screen bg-background pb-24 relative overflow-x-hidden">
+            <div className="absolute top-0 right-[-10%] w-[40%] h-[40%] bg-primary/5 blur-[120px] rounded-full pointer-events-none" />
+            <div className="absolute bottom-[-10%] left-[-10%] w-[50%] h-[50%] bg-primary/3 blur-[120px] rounded-full pointer-events-none" />
 
             <div className="relative h-[45dvh] lg:h-[55dvh] w-full shrink-0 overflow-hidden bg-black">
                 <div className="absolute top-0 inset-x-0 z-50 p-6 flex items-center justify-between pointer-events-none">
