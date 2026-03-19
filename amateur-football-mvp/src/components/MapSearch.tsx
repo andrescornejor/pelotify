@@ -141,7 +141,7 @@ export default function MapSearch({ matches }: MapSearchProps) {
                                         </h4>
                                         <div className="flex flex-col gap-1.5 mt-2 bg-zinc-50 p-2 rounded-lg border border-zinc-100">
                                             <div className="flex items-center gap-2 text-[11px] text-zinc-700 font-bold">
-                                                <Calendar className="w-3.5 h-3.5 text-zinc-400" /> {match.date} · {match.time}
+                                                <Calendar className="w-3.5 h-3.5 text-zinc-400" /> {match.date} · {match.time.split(':').slice(0, 2).join(':')}
                                             </div>
                                             <div className="flex items-center gap-2 text-[11px] text-zinc-700 font-bold">
                                                 <Users className="w-3.5 h-3.5 text-zinc-400" /> {(() => {

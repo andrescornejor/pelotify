@@ -21,3 +21,9 @@ export const getURL = () => {
   
   return url;
 };
+export function formatTime(timeStr: string) {
+    if (!timeStr) return '';
+    const parts = timeStr.split(':');
+    if (parts.length < 2) return timeStr;
+    return `${parts[0]}:${parts[1]}`;
+}

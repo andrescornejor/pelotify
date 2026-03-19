@@ -35,10 +35,7 @@ function formatDate(dateStr: string) {
 
 function formatTime(timeStr: string) {
     if (!timeStr) return '';
-    const [h, m] = timeStr.split(':');
-    const hour = parseInt(h);
-    const ampm = hour >= 12 ? 'PM' : 'AM';
-    return `${hour % 12 || 12}:${m} ${ampm}`;
+    return timeStr.split(':').slice(0, 2).join(':');
 }
 
 function MatchLobbyContent() {

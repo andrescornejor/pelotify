@@ -614,7 +614,7 @@ export default function HomePage() {
                           </div>
                           <div className="flex items-center gap-2">
                             <Clock className="w-3.5 h-3.5 text-primary/50" />
-                            <span className="text-2xl font-black italic tracking-tighter leading-none text-foreground">{match.time}</span>
+                            <span className="text-2xl font-black italic tracking-tighter leading-none text-foreground">{match.time.split(':').slice(0, 2).join(':')}</span>
                           </div>
                         </div>
                         <div className="text-right">
