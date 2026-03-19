@@ -229,8 +229,8 @@ function MatchLobbyContent() {
             <div className="absolute top-0 right-[-10%] w-[40%] h-[40%] bg-primary/5 blur-[120px] rounded-full pointer-events-none" />
             <div className="absolute bottom-[-10%] left-[-10%] w-[50%] h-[50%] bg-primary/3 blur-[120px] rounded-full pointer-events-none" />
 
-            <div className="relative h-[45dvh] lg:h-[55dvh] w-full shrink-0 overflow-hidden bg-black">
-                <div className="absolute top-0 inset-x-0 z-50 p-6 flex items-center justify-between pointer-events-none">
+            <div className="relative h-[55dvh] lg:h-[65dvh] w-full shrink-0 overflow-hidden bg-black">
+                <div className="absolute top-28 lg:top-32 inset-x-0 z-50 px-6 lg:px-12 flex items-center justify-between pointer-events-none">
                     <button
                         onClick={() => router.back()}
                         className="w-12 h-12 lg:w-14 lg:h-14 bg-black/20 backdrop-blur-xl rounded-2xl border border-white/10 flex items-center justify-center text-white transition-all hover:bg-black/40 active:scale-90 pointer-events-auto"

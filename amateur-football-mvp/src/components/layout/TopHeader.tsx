@@ -86,7 +86,7 @@ export function TopHeader() {
         };
     }, [user, pathname]);
 
-    if (['/login', '/register'].includes(pathname) || pathname.startsWith('/match/')) {
+    if (['/login', '/register'].includes(pathname)) {
         return null;
     }
 
