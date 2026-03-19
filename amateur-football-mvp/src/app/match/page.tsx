@@ -15,6 +15,12 @@ import PlayerSlot from '@/components/PlayerSlot';
 import PostMatchView from '@/components/PostMatchView';
 import PostMatchModal from '@/components/PostMatchModal';
 import { MatchSkeleton } from '@/components/Skeletons';
+import dynamic from 'next/dynamic';
+
+const MatchMap = dynamic(() => import('@/components/MatchMap'), { 
+    ssr: false,
+    loading: () => <div className="w-full h-[400px] bg-foreground/5 animate-pulse rounded-[3rem]" />
+});
 
 function formatDate(dateStr: string) {
     if (!dateStr) return '';
@@ -525,8 +531,23 @@ function MatchLobbyContent() {
                 </div>
             )}
 
-            {!isCompleted && (
+            {!isCompleted && match && (
                 <div className="w-full px-4 lg:px-16 xl:px-24 pb-32 space-y-12 relative z-20">
+                    <div className="space-y-6">
+                        <div className="flex items-center gap-4 px-8">
+                            <div className="w-10 h-10 rounded-2xl bg-primary/10 flex items-center justify-center border border-primary/20 text-primary">
+                                <MapPin className="w-5 h-5" />
+                            </div>
+                            <div className="flex flex-col">
+                                <h3 className="text-2xl font-black text-foreground italic uppercase tracking-tighter">Ubicación de la Sede</h3>
+                                <span className="text-[10px] font-black text-foreground/40 uppercase tracking-widest italic">{match.location}</span>
+                            </div>
+                        </div>
+                        <Suspense fallback={<div className="w-full h-[400px] bg-foreground/5 animate-pulse rounded-[3rem]" />}>
+                            <MatchMap match={match} />
+                        </Suspense>
+                    </div>
+
                     <motion.div
                         initial={{ opacity: 0, scale: 0.95 }}
                         animate={{ opacity: 1, scale: 1 }}
@@ -546,6 +567,25 @@ function MatchLobbyContent() {
                         </div>
                     </motion.div>
                 </div>
+            )}
+
+            {isCompleted && match && (
+                 <div className="w-full px-4 lg:px-16 xl:px-24 pb-32 space-y-12 relative z-20">
+                    <div className="space-y-6">
+                        <div className="flex items-center gap-4 px-8">
+                            <div className="w-10 h-10 rounded-2xl bg-primary/10 flex items-center justify-center border border-primary/20 text-primary">
+                                <MapPin className="w-5 h-5" />
+                            </div>
+                            <div className="flex flex-col">
+                                <h3 className="text-2xl font-black text-foreground italic uppercase tracking-tighter">Sede del encuentro</h3>
+                                <span className="text-[10px] font-black text-foreground/40 uppercase tracking-widest italic">{match.location}</span>
+                            </div>
+                        </div>
+                        <Suspense fallback={<div className="w-full h-[400px] bg-foreground/5 animate-pulse rounded-[3rem]" />}>
+                            <MatchMap match={match} />
+                        </Suspense>
+                    </div>
+                 </div>
             )}
 
             {/* ── INVITE MODAL ── */}
