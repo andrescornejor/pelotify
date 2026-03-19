@@ -507,11 +507,17 @@ export default function TeamsPage() {
                                                 className="w-full h-14 bg-foreground/[0.02] border border-foreground/5 rounded-2xl px-4 text-xs font-bold uppercase text-foreground outline-none focus:border-primary/50 transition-colors appearance-none cursor-pointer"
                                             >
                                                 <option value="" disabled className="bg-background">¿A qué hora?</option>
-                                                {AVAILABLE_TIMES.map(t => (
-                                                    <option key={t} value={t} className="bg-background text-foreground">
-                                                        {t} {parseInt(t.split(':')[0]) >= 12 ? 'PM' : 'AM'}
-                                                    </option>
-                                                ))}
+                                                {AVAILABLE_TIMES.map(t => {
+                                                    const [h, m] = t.split(':');
+                                                    const hour = parseInt(h);
+                                                    const displayHour = hour % 12 === 0 ? 12 : hour % 12;
+                                                    const ampm = hour >= 12 ? 'PM' : 'AM';
+                                                    return (
+                                                        <option key={t} value={t} className="bg-background text-foreground">
+                                                            {displayHour}:{m} {ampm}
+                                                        </option>
+                                                    );
+                                                })}
                                             </select>
                                             <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-foreground/20 group-focus-within:text-primary">
                                                 <svg width="10" height="6" viewBox="0 0 12 8" fill="none" xmlns="http://www.w3.org/2000/svg">
