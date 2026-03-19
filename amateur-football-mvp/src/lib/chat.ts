@@ -143,6 +143,7 @@ export async function getRecentChats(userId: string) {
             recipient_id,
             content,
             created_at,
+            is_read,
             sender:sender_id ( name, avatar_url ),
             recipient:recipient_id ( name, avatar_url )
         `)
@@ -166,7 +167,8 @@ export async function getRecentChats(userId: string) {
                 name: (otherProfile as any)?.name || 'Usuario',
                 avatar_url: (otherProfile as any)?.avatar_url,
                 lastMessage: msg.content,
-                timestamp: msg.created_at
+                timestamp: msg.created_at,
+                isUnread: msg.recipient_id === userId && !msg.is_read
             });
         }
     });

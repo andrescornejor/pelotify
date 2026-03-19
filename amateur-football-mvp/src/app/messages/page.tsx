@@ -2,7 +2,8 @@
 
 import { useState, useEffect } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
-import { getRecentChats, markAllDirectMessagesAsRead } from '@/lib/chat';
+import { getRecentChats, markAllDirectMessagesAsRead, subscribeToDirectMessages } from '@/lib/chat';
+import { supabase } from '@/lib/supabase';
 import { motion, AnimatePresence } from 'framer-motion';
 import { MessageSquare, Search, Loader2, User as UserIcon, Send, Clock, ChevronRight, Shield } from 'lucide-react';
 import ChatRoom from '@/components/ChatRoom';
@@ -27,6 +28,26 @@ export default function MessagesPage() {
             await markAllDirectMessagesAsRead(user.id);
         };
         loadChats();
+
+        // Subscribe to changes to refresh the list
+        const channel = supabase
+            .channel('messages-page-refresh')
+            .on(
+                'postgres_changes',
+                {
+                    event: '*',
+                    schema: 'public',
+                    table: 'direct_messages'
+                },
+                () => {
+                    loadChats();
+                }
+            )
+            .subscribe();
+
+        return () => {
+            supabase.removeChannel(channel);
+        };
     }, [user]);
 
     const filteredConversations = conversations.filter(c => 
@@ -103,12 +124,17 @@ export default function MessagesPage() {
                                             <h4 className="font-black text-[13px] uppercase tracking-tighter truncate italic">
                                                 {chat.name}
                                             </h4>
-                                            <span className={cn(
-                                                "text-[8px] font-black uppercase tracking-widest",
-                                                selectedChat?.userId === chat.userId ? "text-black/40" : "text-foreground/20"
-                                            )}>
-                                                {new Date(chat.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                                            </span>
+                                            <div className="flex items-center gap-2">
+                                                {chat.isUnread && (
+                                                    <span className="w-1.5 h-1.5 rounded-full bg-primary shadow-[0_0_8px_rgba(16,185,129,0.8)]" />
+                                                )}
+                                                <span className={cn(
+                                                    "text-[8px] font-black uppercase tracking-widest",
+                                                    selectedChat?.userId === chat.userId ? "text-black/40" : "text-foreground/20"
+                                                )}>
+                                                    {new Date(chat.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                                                </span>
+                                            </div>
                                         </div>
                                         <p className={cn(
                                             "text-[11px] font-bold truncate tracking-tight mb-1",
