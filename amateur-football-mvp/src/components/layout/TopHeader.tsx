@@ -13,6 +13,8 @@ import { getMatchInvitationsCount } from '@/lib/matches';
 import { getPendingJoinRequestsCountForCaptain, getTeamInvitationsCount } from '@/lib/teams';
 import { useTheme } from '@/contexts/ThemeContext';
 import { cn } from '@/lib/utils';
+import { getUnreadMessagesCount } from '@/lib/chat';
+import { supabase } from '@/lib/supabase';
 
 const DESKTOP_NAV = [
     { href: '/', icon: Home, label: 'Inicio' },
@@ -55,9 +57,28 @@ export function TopHeader() {
 
 
     useEffect(() => {
+        if (!user) return;
+        
         updateCount();
-        const interval = setInterval(updateCount, 45000);
-        return () => clearInterval(interval);
+
+        const channel = supabase
+            .channel('header-notifications')
+            .on(
+                'postgres_changes',
+                {
+                    event: '*',
+                    schema: 'public',
+                    table: 'direct_messages'
+                },
+                () => {
+                    updateCount();
+                }
+            )
+            .subscribe();
+
+        return () => {
+            supabase.removeChannel(channel);
+        };
     }, [user]);
 
     if (['/login', '/register'].includes(pathname) || pathname.startsWith('/match/')) {

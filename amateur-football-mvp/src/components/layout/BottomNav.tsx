@@ -19,6 +19,7 @@ const NAV_ITEMS = [
 import { useState, useEffect } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { getUnreadMessagesCount } from '@/lib/chat';
+import { supabase } from '@/lib/supabase';
 
 export function BottomNav() {
     const pathname = usePathname();
@@ -36,9 +37,30 @@ export function BottomNav() {
     };
 
     useEffect(() => {
+        if (!user) return;
+        
         updateUnreadCount();
-        const interval = setInterval(updateUnreadCount, 30000);
-        return () => clearInterval(interval);
+
+        // Subscribe to NEW messages where I am the recipient
+        const channel = supabase
+            .channel('unread-messages')
+            .on(
+                'postgres_changes',
+                {
+                    event: '*',
+                    schema: 'public',
+                    table: 'direct_messages'
+                    // We check all events (INSERT/UPDATE/DELETE) to keep count in sync
+                },
+                () => {
+                    updateUnreadCount();
+                }
+            )
+            .subscribe();
+
+        return () => {
+            supabase.removeChannel(channel);
+        };
     }, [user]);
 
     if (['/login', '/register'].includes(pathname)) {
