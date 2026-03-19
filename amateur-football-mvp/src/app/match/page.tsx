@@ -548,6 +548,51 @@ function MatchLobbyContent() {
                 </div>
             )}
 
+            {/* ── MAP SECTION ── */}
+            <div className="w-full px-4 lg:px-16 xl:px-24 pb-12 relative z-20 mt-12">
+                <motion.div 
+                    initial={{ opacity: 0, y: 30 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    className="glass-premium rounded-[3rem] overflow-hidden border border-foreground/10 bg-surface shadow-2xl"
+                >
+                    <div className="p-8 border-b border-foreground/5 flex flex-col md:flex-row md:items-center justify-between gap-6">
+                        <div className="flex items-center gap-4">
+                            <div className="p-3 bg-primary/10 rounded-2xl border border-primary/20">
+                                <MapPin className="w-5 h-5 text-primary" />
+                            </div>
+                            <div className="flex flex-col">
+                                <h3 className="text-xl font-black text-foreground italic uppercase tracking-tighter leading-none">Ubicación del Encuentro</h3>
+                                <div className="flex items-center gap-2 mt-1">
+                                    <span className="text-[10px] font-black text-foreground/40 uppercase tracking-[0.2em]">{match.location}</span>
+                                </div>
+                            </div>
+                        </div>
+                        <a 
+                            href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${match.location} Rosario Argentina`)}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="h-12 px-6 bg-foreground/[0.03] hover:bg-foreground/10 border border-foreground/10 rounded-2xl flex items-center justify-center gap-3 text-[10px] font-black uppercase tracking-widest text-foreground/60 transition-all hover:text-primary active:scale-95 group"
+                        >
+                            <ArrowLeft className="w-4 h-4 rotate-[135deg] group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
+                            Ver en Google Maps
+                        </a>
+                    </div>
+                    
+                    <div className="h-[400px] w-full relative group">
+                        <iframe
+                            width="100%"
+                            height="100%"
+                            style={{ border: 0, filter: 'grayscale(1) invert(0.9) contrast(1.1) brightness(0.8)' }}
+                            src={`https://maps.google.com/maps?q=${encodeURIComponent(`${match.location} Rosario Argentina`)}&t=&z=16&ie=UTF8&iwloc=&output=embed`}
+                            allowFullScreen
+                            loading="lazy"
+                        />
+                        <div className="absolute inset-0 pointer-events-none border-[1px] border-foreground/5 shadow-[inset_0_0_100px_rgba(0,0,0,0.6)]" />
+                    </div>
+                </motion.div>
+            </div>
+
             {/* ── INVITE MODAL ── */}
             <AnimatePresence>
                 {inviteModalOpen && (
