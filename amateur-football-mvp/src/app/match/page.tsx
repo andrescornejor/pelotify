@@ -350,271 +350,256 @@ function MatchLobbyContent() {
                 </div>
             </div>
 
-            {isCompleted ? (
-                <div className="w-full px-4 lg:px-16 xl:px-24 -mt-8 relative z-20 space-y-8">
-                    {!match?.is_completed && isPast && userParticipant && (
-                        <motion.div 
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            className="glass-premium p-8 rounded-[3rem] border border-primary/30 bg-primary/5 flex flex-col md:flex-row items-center justify-between gap-8 shadow-[0_20px_40px_rgba(16,185,129,0.1)]"
-                        >
-                            <div className="flex items-center gap-6">
-                                <div className="p-4 bg-primary/20 rounded-2xl border border-primary/30">
-                                    <Trophy className="w-6 h-6 text-primary" />
-                                </div>
-                                <div className="space-y-1">
-                                    <h3 className="text-xl font-black text-foreground italic uppercase tracking-tighter">Resultados Pendientes</h3>
-                                </div>
+            <div className="w-full px-4 lg:px-16 xl:px-24 -mt-10 relative z-30">
+                <div className="glass-premium rounded-[2.5rem] p-3 border border-foreground/10 flex flex-col md:flex-row items-center gap-2 md:gap-4">
+                    {[
+                        { icon: Calendar, label: 'Fecha', value: formatDate(match.date), color: 'text-primary' },
+                        { icon: Clock, label: 'Hora', value: formatTime(match.time), color: 'text-primary' },
+                        { icon: DollarSign, label: 'Precio', value: match.price ? `$${match.price.toLocaleString()}` : 'Gratis', color: 'text-accent' },
+                        { icon: Users, label: 'Confirmados', value: `${confirmedParticipants.length}/${totalPlayers}`, color: 'text-foreground' }
+                    ].map(({ icon: Icon, label, value, color }, idx) => (
+                        <div key={idx} className="flex-1 w-full md:w-auto flex items-center justify-between md:justify-center gap-4 px-6 py-4 rounded-2xl bg-foreground/[0.03] border border-foreground/5 hover:bg-foreground/5 transition-all">
+                            <div className="flex items-center gap-3">
+                                <Icon className={cn("w-4 h-4 opacity-40", color)} />
+                                <span className="text-[9px] uppercase font-black tracking-widest text-foreground/30">{label}</span>
                             </div>
-                            <button 
-                                onClick={() => setIsPostMatchModalOpen(true)}
-                                className="h-16 px-10 bg-primary text-black font-black uppercase text-[10px] tracking-widest rounded-[1.5rem] shadow-xl shadow-primary/20 hover:scale-105 active:scale-95 transition-all flex items-center justify-center gap-3"
-                            >
-                                <Star className="w-4 h-4" /> REPORTAR RESULTADO
-                            </button>
-                        </motion.div>
-                    )}
-                    <PostMatchView match={match} participants={participants} stats={matchStats || { goalScorers: [], mvp: null }} />
+                            <span className="text-xs font-black text-foreground italic tracking-tight">{value}</span>
+                        </div>
+                    ))}
                 </div>
-            ) : (
-                <div className="w-full px-4 lg:px-16 xl:px-24 -mt-8 mb-20 relative z-20 space-y-12">
-                    {/* Unassigned Players Section */}
-                    {unassigned.length > 0 && (
-                        <motion.div 
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            className="glass-premium p-8 rounded-[3rem] border border-foreground/10 bg-foreground/[0.02]"
-                        >
-                            <div className="flex flex-col gap-6">
-                                <div className="flex items-center gap-4">
-                                    <div className="w-10 h-10 rounded-xl bg-foreground/5 flex items-center justify-center border border-foreground/10">
-                                        <Users className="w-5 h-5 text-foreground/40" />
-                                    </div>
-                                    <div className="flex flex-col">
-                                        <h3 className="text-xl font-black text-foreground italic uppercase tracking-tighter leading-none">Banquillo de Espera</h3>
-                                        <span className="text-[9px] font-black text-foreground/40 uppercase tracking-widest mt-1">Jugadores inscriptos sin equipo asignado</span>
-                                    </div>
-                                </div>
-                                <div className="flex flex-wrap gap-6 px-2">
-                                    {unassigned.map((p) => (
-                                        <PlayerSlot 
-                                            key={p.id} 
-                                            participant={p} 
-                                            isSelf={p.user_id === user?.id} 
-                                        />
-                                    ))}
-                                    {isConfirmed && !myTeam && (
-                                        <div className="flex flex-col items-center justify-center gap-3">
-                                            <div className="w-16 h-16 lg:w-20 lg:h-20 rounded-[1.8rem] lg:rounded-[2.2rem] border-2 border-dashed border-primary/40 flex items-center justify-center text-primary/40">
-                                                <Star className="w-6 h-6 animate-pulse" />
-                                            </div>
-                                            <span className="text-[9px] font-black text-primary/60 uppercase tracking-widest italic">Elegí Equipo</span>
-                                        </div>
-                                    )}
-                                </div>
-                            </div>
-                        </motion.div>
-                    )}
+            </div>
 
-                    <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
-                    <div className="lg:col-span-8 space-y-12">
-                        <AnimatePresence>
-                            {hasJoined && myEntry?.status === 'pending' && (
+            <div className="w-full px-4 lg:px-16 xl:px-24 mt-12 relative z-20 space-y-12 pb-32">
+                {isCompleted ? (
+                    <div className="space-y-12">
+                        {!match?.is_completed && isPast && userParticipant && (
+                            <motion.div 
+                                initial={{ opacity: 0, y: 20 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                className="glass-premium p-8 rounded-[3rem] border border-primary/30 bg-primary/5 flex flex-col md:flex-row items-center justify-between gap-8 shadow-[0_20px_40px_rgba(16,185,129,0.1)]"
+                            >
+                                <div className="flex items-center gap-6">
+                                    <div className="p-4 bg-primary/20 rounded-2xl border border-primary/30">
+                                        <Trophy className="w-6 h-6 text-primary" />
+                                    </div>
+                                    <div className="space-y-1">
+                                        <h3 className="text-xl font-black text-foreground italic uppercase tracking-tighter">Resultados Pendientes</h3>
+                                    </div>
+                                </div>
+                                <button 
+                                    onClick={() => setIsPostMatchModalOpen(true)}
+                                    className="h-16 px-10 bg-primary text-black font-black uppercase text-[10px] tracking-widest rounded-[1.5rem] shadow-xl shadow-primary/20 hover:scale-105 active:scale-95 transition-all flex items-center justify-center gap-3"
+                                >
+                                    <Star className="w-4 h-4" /> REPORTAR RESULTADO
+                                </button>
+                            </motion.div>
+                        )}
+                        <PostMatchView match={match} participants={participants} stats={matchStats || { goalScorers: [], mvp: null }} />
+                    </div>
+                ) : (
+                    <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12">
+                        <div className="lg:col-span-8 space-y-12">
+                            {/* Unassigned Players Section */}
+                            {unassigned.length > 0 && (
                                 <motion.div 
                                     initial={{ opacity: 0, y: 20 }}
                                     animate={{ opacity: 1, y: 0 }}
-                                    className="glass-premium border border-primary/40 p-6 rounded-[2rem] bg-primary/[0.02] relative overflow-hidden group"
+                                    className="glass-premium p-8 rounded-[3rem] border border-foreground/10 bg-foreground/[0.02]"
                                 >
-                                    <div className="flex flex-col md:flex-row items-center gap-6 relative z-10">
-                                        <div className="w-20 h-20 rounded-[2rem] bg-primary flex items-center justify-center text-black border-4 border-black/20 shadow-xl group-hover:scale-110 group-hover:rotate-6 transition-all duration-500">
-                                            <Trophy className="w-10 h-10 fill-black/10" />
+                                    <div className="flex flex-col gap-6">
+                                        <div className="flex items-center gap-4">
+                                            <div className="w-10 h-10 rounded-xl bg-foreground/5 flex items-center justify-center border border-foreground/10">
+                                                <Users className="w-5 h-5 text-foreground/40" />
+                                            </div>
+                                            <div className="flex flex-col">
+                                                <h3 className="text-xl font-black text-foreground italic uppercase tracking-tighter leading-none">Banquillo de Espera</h3>
+                                                <span className="text-[9px] font-black text-foreground/40 uppercase tracking-widest mt-1">Jugadores inscriptos sin equipo asignado</span>
+                                            </div>
                                         </div>
-                                        <div className="flex-1 text-center md:text-left space-y-2">
-                                            <h3 className="font-black text-2xl text-foreground italic uppercase tracking-tighter">Te Invitaron a Jugar</h3>
-                                        </div>
-                                        <div className="flex gap-4 w-full md:w-auto">
-                                            <button
-                                                onClick={() => handleInviteResponse('confirmed')}
-                                                disabled={actionLoading !== null || match.is_completed}
-                                                className="flex-1 md:px-12 h-14 bg-primary text-black font-black uppercase text-xs tracking-widest rounded-2xl shadow-lg shadow-primary/20 hover:bg-white transition-all active:scale-95 disabled:opacity-50"
-                                            >
-                                                {actionLoading === 'A' ? <Loader2 className="w-5 h-5 animate-spin mx-auto" /> : '¡Dale!'}
-                                            </button>
-                                            <button
-                                                onClick={() => handleInviteResponse('rejected')}
-                                                disabled={actionLoading !== null || match.is_completed}
-                                                className="flex-1 md:px-10 h-14 bg-foreground/5 border border-foreground/10 text-foreground/40 font-black uppercase text-xs tracking-widest rounded-2xl hover:text-foreground hover:bg-foreground/10 transition-all"
-                                            >
-                                                Paso
-                                            </button>
+                                        <div className="flex flex-wrap gap-6 px-2">
+                                            {unassigned.map((p) => (
+                                                <PlayerSlot 
+                                                    key={p.id} 
+                                                    participant={p} 
+                                                    isSelf={p.user_id === user?.id} 
+                                                />
+                                            ))}
+                                            {isConfirmed && !myTeam && (
+                                                <div className="flex flex-col items-center justify-center gap-3">
+                                                    <div className="w-16 h-16 lg:w-20 lg:h-20 rounded-[1.8rem] lg:rounded-[2.2rem] border-2 border-dashed border-primary/40 flex items-center justify-center text-primary/40">
+                                                        <Star className="w-6 h-6 animate-pulse" />
+                                                    </div>
+                                                    <span className="text-[9px] font-black text-primary/60 uppercase tracking-widest italic">Elegí Equipo</span>
+                                                </div>
+                                            )}
                                         </div>
                                     </div>
                                 </motion.div>
                             )}
-                        </AnimatePresence>
 
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12">
-                            {(['A', 'B'] as const).map((team) => {
-                                const members = team === 'A' ? teamA : teamB;
-                                const isMine = myTeam === team;
-                                const teamFull = members.length >= teamSize;
-                                const canJoin = (!hasJoined || (hasJoined && myEntry?.status === 'pending')) && !teamFull;
-                                const canSwitch = hasJoined && isConfirmed && myTeam !== team && !teamFull;
-
-                                return (
-                                    <motion.div
-                                        key={team}
-                                        initial={{ opacity: 0, y: 30 }}
+                            <AnimatePresence>
+                                {hasJoined && myEntry?.status === 'pending' && (
+                                    <motion.div 
+                                        initial={{ opacity: 0, y: 20 }}
                                         animate={{ opacity: 1, y: 0 }}
-                                        className={cn(
-                                            "glass-premium rounded-[3rem] p-8 border-2 transition-all duration-500 relative overflow-hidden group",
-                                            team === 'A' ? "border-blue-500/10 hover:border-blue-500/30" : "border-red-500/10 hover:border-red-500/30",
-                                            isMine && (team === 'A' ? "border-blue-500 bg-blue-500/5 shadow-[0_40px_80px_rgba(59,130,246,0.15)]" : "border-red-500 bg-red-500/5 shadow-[0_40px_80px_rgba(239,68,68,0.15)]")
-                                        )}
+                                        className="glass-premium border border-primary/40 p-6 rounded-[2rem] bg-primary/[0.02] relative overflow-hidden group"
                                     >
-                                        <div className="flex items-center justify-between mb-10">
-                                            <div className="flex items-center gap-5">
-                                                <div className={cn(
-                                                    "w-14 h-14 rounded-2xl flex items-center justify-center font-black text-2xl italic shadow-2xl transition-transform group-hover:scale-110",
-                                                    team === 'A' ? "bg-blue-600 text-white" : "bg-red-600 text-white"
-                                                )}>
-                                                    {team}
-                                                </div>
-                                                <div className="space-y-1">
-                                                    <h3 className="text-2xl font-black text-foreground italic uppercase tracking-tighter leading-none">{team === 'A' ? 'Local' : 'Visitante'}</h3>
-                                                    <p className="text-[10px] font-black uppercase tracking-[0.3em] text-foreground/40">{members.length}/{teamSize} JUGADORES</p>
-                                                </div>
+                                        <div className="flex flex-col md:flex-row items-center gap-6 relative z-10">
+                                            <div className="w-20 h-20 rounded-[2rem] bg-primary flex items-center justify-center text-black border-4 border-black/20 shadow-xl group-hover:scale-110 group-hover:rotate-6 transition-all duration-500">
+                                                <Trophy className="w-10 h-10 fill-black/10" />
                                             </div>
-                                        </div>
-
-                                        <div className="mb-12">
-                                            <button
-                                                onClick={() => (canJoin || canSwitch) && handleJoinTeam(team)}
-                                                disabled={actionLoading !== null || (teamFull && !isMine) || match.is_completed}
-                                                className={cn(
-                                                    "w-full h-16 rounded-2xl font-black uppercase text-xs tracking-[0.3em] transition-all relative overflow-hidden flex items-center justify-center gap-3 active:scale-95 disabled:opacity-50",
-                                                    isMine 
-                                                        ? "bg-foreground/5 border border-foreground/10 text-foreground cursor-default"
-                                                        : teamFull
-                                                            ? "bg-surface border border-foreground/5 text-foreground/20 cursor-not-allowed"
-                                                            : (team === 'A' ? "bg-blue-600 hover:bg-blue-500 text-white shadow-xl shadow-blue-600/20" : "bg-red-600 hover:bg-red-500 text-white shadow-xl shadow-red-600/20")
-                                                )}
-                                            >
-                                                {actionLoading === team ? (
-                                                    <Loader2 className="w-5 h-5 animate-spin" />
-                                                ) : isMine ? (
-                                                    <> <Check className="w-5 h-5" /> Estás Acá </>
-                                                ) : teamFull ? (
-                                                    "Equipo Lleno"
-                                                ) : (
-                                                    <> <Zap className="w-5 h-5 fill-current" /> Entrar a Jugar </>
-                                                )}
-                                            </button>
-                                        </div>
-
-                                        <div className="grid grid-cols-4 lg:grid-cols-5 gap-6 gap-y-10">
-                                            {Array.from({ length: teamSize }).map((_, idx) => {
-                                                const participant = members[idx];
-                                                return <PlayerSlot key={idx} participant={participant} isSelf={participant?.user_id === user?.id} />;
-                                            })}
+                                            <div className="flex-1 text-center md:text-left space-y-2">
+                                                <h3 className="font-black text-2xl text-foreground italic uppercase tracking-tighter">Te Invitaron a Jugar</h3>
+                                            </div>
+                                            <div className="flex gap-4 w-full md:w-auto">
+                                                <button
+                                                    onClick={() => handleInviteResponse('confirmed')}
+                                                    disabled={actionLoading !== null || match.is_completed}
+                                                    className="flex-1 md:px-12 h-14 bg-primary text-black font-black uppercase text-xs tracking-widest rounded-2xl shadow-lg shadow-primary/20 hover:bg-white transition-all active:scale-95 disabled:opacity-50"
+                                                >
+                                                    {actionLoading === 'A' ? <Loader2 className="w-5 h-5 animate-spin mx-auto" /> : '¡Dale!'}
+                                                </button>
+                                                <button
+                                                    onClick={() => handleInviteResponse('rejected')}
+                                                    disabled={actionLoading !== null || match.is_completed}
+                                                    className="flex-1 md:px-10 h-14 bg-foreground/5 border border-foreground/10 text-foreground/40 font-black uppercase text-xs tracking-widest rounded-2xl hover:text-foreground hover:bg-foreground/10 transition-all"
+                                                >
+                                                    Paso
+                                                </button>
+                                            </div>
                                         </div>
                                     </motion.div>
-                                );
-                            })}
-                        </div>
-                    </div>
+                                )}
+                            </AnimatePresence>
 
-                    <div className="lg:col-span-4 space-y-8 relative">
-                        <div className="glass-premium rounded-[3.5rem] p-8 border border-foreground/10 space-y-10 relative overflow-hidden group/stats">
-                             <div className="space-y-8 relative z-10">
-                                <div className="space-y-4">
-                                    {[
-                                        { icon: Calendar, label: 'Fecha', value: formatDate(match.date), color: 'text-primary' },
-                                        { icon: Clock, label: 'Hora', value: formatTime(match.time), color: 'text-primary' },
-                                        { icon: DollarSign, label: 'Precio', value: match.price ? `$${match.price.toLocaleString()}` : 'Gratis', color: 'text-accent' }
-                                    ].map(({ icon: Icon, label, value, color }, idx) => (
-                                        <div key={idx} className="flex items-center justify-between p-5 rounded-2xl bg-foreground/[0.02] border border-foreground/5 transition-all hover:bg-foreground/[0.05]">
-                                            <div className="flex items-center gap-4">
-                                                <div className="p-2.5 rounded-lg bg-surface-elevated border border-foreground/5">
-                                                    <Icon className={cn("w-4 h-4", color)} />
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12">
+                                {(['A', 'B'] as const).map((team) => {
+                                    const members = team === 'A' ? teamA : teamB;
+                                    const isMine = myTeam === team;
+                                    const teamFull = members.length >= teamSize;
+                                    const canJoin = (!hasJoined || (hasJoined && myEntry?.status === 'pending')) && !teamFull;
+                                    const canSwitch = hasJoined && isConfirmed && myTeam !== team && !teamFull;
+
+                                    return (
+                                        <motion.div
+                                            key={team}
+                                            initial={{ opacity: 0, y: 30 }}
+                                            animate={{ opacity: 1, y: 0 }}
+                                            className={cn(
+                                                "glass-premium rounded-[3rem] p-8 border-2 transition-all duration-500 relative overflow-hidden group",
+                                                team === 'A' ? "border-blue-500/10 hover:border-blue-500/30" : "border-red-500/10 hover:border-red-500/30",
+                                                isMine && (team === 'A' ? "border-blue-500 bg-blue-500/5 shadow-[0_40px_80px_rgba(59,130,246,0.15)]" : "border-red-500 bg-red-500/5 shadow-[0_40px_80px_rgba(239,68,68,0.15)]")
+                                            )}
+                                        >
+                                            <div className="flex items-center justify-between mb-10">
+                                                <div className="flex items-center gap-5">
+                                                    <div className={cn(
+                                                        "w-14 h-14 rounded-2xl flex items-center justify-center font-black text-2xl italic shadow-2xl transition-transform group-hover:scale-110",
+                                                        team === 'A' ? "bg-blue-600 text-white" : "bg-red-600 text-white"
+                                                    )}>
+                                                        {team}
+                                                    </div>
+                                                    <div className="space-y-1">
+                                                        <h3 className="text-2xl font-black text-foreground italic uppercase tracking-tighter leading-none">{team === 'A' ? 'Local' : 'Visitante'}</h3>
+                                                        <p className="text-[10px] font-black uppercase tracking-[0.3em] text-foreground/40">{members.length}/{teamSize} JUGADORES</p>
+                                                    </div>
                                                 </div>
-                                                <span className="text-[10px] uppercase font-black tracking-widest text-foreground/40">{label}</span>
                                             </div>
-                                            <span className="text-sm font-black text-foreground italic tracking-tighter">{value}</span>
+
+                                            <div className="mb-12">
+                                                <button
+                                                    onClick={() => (canJoin || canSwitch) && handleJoinTeam(team)}
+                                                    disabled={actionLoading !== null || (teamFull && !isMine) || match.is_completed}
+                                                    className={cn(
+                                                        "w-full h-16 rounded-2xl font-black uppercase text-xs tracking-[0.3em] transition-all relative overflow-hidden flex items-center justify-center gap-3 active:scale-95 disabled:opacity-50",
+                                                        isMine 
+                                                            ? "bg-foreground/5 border border-foreground/10 text-foreground cursor-default"
+                                                            : teamFull
+                                                                ? "bg-surface border border-foreground/5 text-foreground/20 cursor-not-allowed"
+                                                                : (team === 'A' ? "bg-blue-600 hover:bg-blue-500 text-white shadow-xl shadow-blue-600/20" : "bg-red-600 hover:bg-red-500 text-white shadow-xl shadow-red-600/20")
+                                                    )}
+                                                >
+                                                    {actionLoading === team ? (
+                                                        <Loader2 className="w-5 h-5 animate-spin" />
+                                                    ) : isMine ? (
+                                                        <> <Check className="w-5 h-5" /> Estás Acá </>
+                                                    ) : teamFull ? (
+                                                        "Equipo Lleno"
+                                                    ) : (
+                                                        <> <Zap className="w-5 h-5 fill-current" /> Entrar a Jugar </>
+                                                    )}
+                                                </button>
+                                            </div>
+
+                                            <div className="grid grid-cols-4 lg:grid-cols-5 gap-6 gap-y-10">
+                                                {Array.from({ length: teamSize }).map((_, idx) => {
+                                                    const participant = members[idx];
+                                                    return <PlayerSlot key={idx} participant={participant} isSelf={participant?.user_id === user?.id} />;
+                                                })}
+                                            </div>
+                                        </motion.div>
+                                    );
+                                })}
+                            </div>
+
+                            {!isCompleted && (
+                                <motion.div
+                                    initial={{ opacity: 0, scale: 0.95 }}
+                                    animate={{ opacity: 1, scale: 1 }}
+                                    className="glass-premium rounded-[3rem] p-8 lg:p-12 border border-foreground/10 relative overflow-hidden group/recruitment"
+                                >
+                                    <div className="flex flex-col md:flex-row items-center justify-between gap-8 relative z-10">
+                                        <div className="space-y-2 text-center md:text-left">
+                                            <h2 className="text-3xl lg:text-4xl font-black text-foreground italic uppercase tracking-tighter leading-none">Armá la Juntada</h2>
+                                            <p className="text-[10px] font-bold text-foreground/40 uppercase tracking-widest">Invitá a tus amigos para llenar los cupos</p>
                                         </div>
-                                    ))}
-                                </div>
-                            </div>
-
-                            <div className="space-y-4 pt-6 border-t border-foreground/10 relative z-10">
-                                <div className="grid grid-cols-1 gap-4">
-                                    {hasJoined && (
                                         <button
-                                            onClick={handleLeave}
-                                            disabled={actionLoading !== null || match.is_completed}
-                                            className="h-16 bg-foreground/5 border border-foreground/10 rounded-2xl flex items-center justify-center gap-3 text-foreground/40 hover:text-red-500 hover:bg-red-500/10 hover:border-red-500/20 transition-all text-[10px] font-black uppercase tracking-widest active:scale-95"
+                                            onClick={handleOpenInviteModal}
+                                            className="h-16 px-10 bg-primary text-black rounded-2xl flex items-center justify-center gap-4 group/invite transition-all active:scale-95 shadow-xl shadow-primary/20 hover:scale-[1.05] hover:bg-white w-full md:w-auto"
                                         >
-                                            <LogOut className="w-5 h-5" /> Bajarme del Partido
+                                            <UserPlus className="w-5 h-5 group-hover/invite:rotate-12 transition-transform" />
+                                            <span className="text-xs font-black uppercase tracking-widest">Convocar Pibes</span>
                                         </button>
-                                    )}
-                                    {user?.id === match.creator_id && (
-                                        <button
-                                            onClick={handleDelete}
-                                            disabled={actionLoading !== null || match.is_completed}
-                                            className="h-16 bg-foreground/5 border border-foreground/10 rounded-2xl flex items-center justify-center gap-3 text-foreground/40 hover:text-red-600 hover:bg-red-600/10 hover:border-red-600/20 transition-all text-[10px] font-black uppercase tracking-widest active:scale-95"
-                                        >
-                                            <Trash2 className="w-5 h-5" /> Suspender Partido
-                                        </button>
-                                    )}
-                                </div>
-                            </div>
+                                    </div>
+                                </motion.div>
+                            )}
                         </div>
 
-                        <div className="glass-premium rounded-[3.5rem] p-8 border border-foreground/10 relative overflow-hidden">
-                            <VenueMap location={match.location} lat={match.lat} lng={match.lng} />
+                        <div className="lg:col-span-4 space-y-8 relative">
+                            {hasJoined && !isCompleted && (
+                                <div className="h-[500px] lg:h-[600px]">
+                                    <ChatRoom matchId={match.id} title="Chat del Lobby" />
+                                </div>
+                            )}
+
+                            <div className="glass-premium rounded-[3.5rem] p-8 border border-foreground/10 relative overflow-hidden">
+                                <VenueMap location={match.location} lat={match.lat} lng={match.lng} />
+                            </div>
+
+                            <div className="space-y-4 pt-4">
+                                {hasJoined && (
+                                    <button
+                                        onClick={handleLeave}
+                                        disabled={actionLoading !== null || match.is_completed}
+                                        className="w-full h-16 bg-foreground/5 border border-foreground/10 rounded-2xl flex items-center justify-center gap-3 text-foreground/40 hover:text-red-500 hover:bg-red-500/10 hover:border-red-500/20 transition-all text-[10px] font-black uppercase tracking-widest active:scale-95"
+                                    >
+                                        <LogOut className="w-5 h-5" /> Bajarme del Partido
+                                    </button>
+                                )}
+                                {user?.id === match.creator_id && (
+                                    <button
+                                        onClick={handleDelete}
+                                        disabled={actionLoading !== null || match.is_completed}
+                                        className="w-full h-16 bg-foreground/5 border border-foreground/10 rounded-2xl flex items-center justify-center gap-3 text-foreground/40 hover:text-red-600 hover:bg-red-600/10 hover:border-red-600/20 transition-all text-[10px] font-black uppercase tracking-widest active:scale-95"
+                                    >
+                                        <Trash2 className="w-5 h-5" /> Suspender Partido
+                                    </button>
+                                )}
+                            </div>
                         </div>
                     </div>
-                </div>
+                )}
             </div>
-        )}
-
-            {!isCompleted && hasJoined && (
-                <div className="w-full px-4 lg:px-16 xl:px-24 pb-12 space-y-12 relative z-20">
-                    <div className="flex flex-col gap-6">
-                        <div className="flex items-center gap-4 px-2">
-                             <div className="h-0.5 flex-1 bg-foreground/5" />
-                             <span className="text-[10px] font-black text-foreground/40 uppercase tracking-[0.4em]">Chat del Lobby</span>
-                             <div className="h-0.5 flex-1 bg-foreground/5" />
-                        </div>
-                        <div className="h-[400px] lg:h-[500px]">
-                            <ChatRoom matchId={match.id} />
-                        </div>
-                    </div>
-                </div>
-            )}
-
-            {!isCompleted && (
-                <div className="w-full px-4 lg:px-16 xl:px-24 pb-32 space-y-12 relative z-20">
-                    <motion.div
-                        initial={{ opacity: 0, scale: 0.95 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        className="glass-premium rounded-[3.5rem] p-8 lg:p-14 border border-foreground/10 relative overflow-hidden group/recruitment"
-                    >
-                        <div className="flex flex-col lg:flex-row items-center justify-between gap-12 relative z-10">
-                            <div className="space-y-4 text-center lg:text-left">
-                                <h2 className="text-4xl lg:text-5xl font-black text-foreground italic uppercase tracking-tighter leading-none">Armá la Juntada</h2>
-                            </div>
-                            <button
-                                onClick={handleOpenInviteModal}
-                                className="h-24 px-16 bg-primary text-black rounded-[2.5rem] flex items-center justify-center gap-6 group/invite transition-all active:scale-95 shadow-2xl shadow-primary/20 hover:scale-[1.05] hover:bg-white min-w-[350px]"
-                            >
-                                <UserPlus className="w-8 h-8 group-hover/invite:rotate-12 transition-transform" />
-                                <span className="text-lg font-black uppercase tracking-[0.4em]">Convocar Pibes</span>
-                            </button>
-                        </div>
-                    </motion.div>
-                </div>
-            )}
 
             {/* ── INVITE MODAL ── */}
             <AnimatePresence>
