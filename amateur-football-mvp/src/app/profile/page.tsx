@@ -23,7 +23,8 @@ import {
     Trash2,
     AlertTriangle,
     Lock,
-    Camera
+    Camera,
+    ExternalLink
 } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useSearchParams, useRouter } from 'next/navigation';
@@ -142,7 +143,7 @@ function ProfileContent() {
             try {
                 const [badgesRes, teamRes] = await Promise.all([
                     supabase.from('user_badges').select('*').eq('user_id', targetId),
-                    supabase.from('team_members').select('teams(name)').eq('user_id', targetId).single()
+                    supabase.from('team_members').select('teams(*)').eq('user_id', targetId).single()
                 ]);
 
                 if (badgesRes.data) setUserBadges(badgesRes.data);
@@ -653,6 +654,86 @@ function ProfileContent() {
                                         </div>
                                     </div>
                                     
+                                    {/* Team Section */}
+                                    {userTeam && (
+                                        <motion.div
+                                            initial={{ opacity: 0, scale: 0.95 }}
+                                            animate={{ opacity: 1, scale: 1 }}
+                                            className="glass-premium p-10 rounded-[3rem] border border-foreground/10 relative overflow-hidden group/team cursor-default"
+                                        >
+                                            <div className="absolute top-0 right-0 w-64 h-64 bg-primary/10 blur-[80px] opacity-0 group-hover/team:opacity-100 transition-opacity duration-700" />
+                                            
+                                            <div className="flex flex-col md:flex-row items-center gap-10 relative z-10">
+                                                {/* Team Crest/Logo */}
+                                                <div className="relative shrink-0">
+                                                    <div className="absolute inset-0 bg-primary/20 blur-2xl rounded-full scale-110 group-hover/team:scale-150 transition-transform duration-700" />
+                                                    <div className="w-32 h-32 md:w-40 md:h-40 rounded-[2.5rem] bg-foreground/5 border border-foreground/10 flex items-center justify-center overflow-hidden relative shadow-2xl group-hover/team:border-primary/40 transition-colors">
+                                                        {userTeam.logo_url ? (
+                                                            <img 
+                                                                src={userTeam.logo_url} 
+                                                                alt={userTeam.name} 
+                                                                className="w-full h-full object-cover group-hover/team:scale-110 transition-transform duration-700"
+                                                            />
+                                                        ) : (
+                                                            <Shield className="w-16 h-16 md:w-24 md:h-24 text-primary/40 group-hover/team:text-primary transition-colors" />
+                                                        )}
+                                                    </div>
+                                                </div>
+
+                                                <div className="flex-1 space-y-6 text-center md:text-left">
+                                                    <div className="space-y-2">
+                                                        <div className="flex items-center justify-center md:justify-start gap-4">
+                                                            <div className="px-3 py-1 bg-primary/10 border border-primary/20 rounded-full">
+                                                                <span className="text-[9px] font-black text-primary uppercase tracking-[0.2em] italic">EQUIPO ACTUAL</span>
+                                                            </div>
+                                                            <span className="text-[10px] font-black text-foreground/20 italic tracking-widest uppercase">ID #{userTeam.id.slice(0, 8)}</span>
+                                                        </div>
+                                                        <h2 className="text-4xl md:text-6xl font-black italic text-foreground uppercase tracking-tighter leading-none group-hover/team:text-primary transition-colors duration-500">
+                                                            {userTeam.name}
+                                                        </h2>
+                                                        {userTeam.motto && (
+                                                            <p className="text-sm md:text-lg font-bold text-foreground/40 italic uppercase tracking-tight">
+                                                                "{userTeam.motto}"
+                                                            </p>
+                                                        )}
+                                                    </div>
+
+                                                    <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
+                                                        {[
+                                                            { icon: Trophy, label: 'ELO Equipo', value: userTeam.elo, color: 'text-primary' },
+                                                            { icon: Users, label: 'Miembros', value: userTeam.members_count, color: 'text-blue-500' },
+                                                            { icon: Shield, label: 'Nivel', value: userTeam.level || 1, color: 'text-accent' },
+                                                            { icon: Zap, label: 'Victoria %', value: userTeam.wins + userTeam.losses > 0 ? ((userTeam.wins / (userTeam.wins + userTeam.losses + userTeam.draws)) * 100).toFixed(0) + '%' : '--', color: 'text-purple-500' }
+                                                        ].map((stat, i) => (
+                                                            <div key={i} className="space-y-1">
+                                                                <div className="flex items-center justify-center md:justify-start gap-2">
+                                                                    <stat.icon className={cn("w-4 h-4 opacity-40", stat.color)} />
+                                                                    <span className="text-[9px] font-black text-foreground/20 uppercase tracking-widest">{stat.label}</span>
+                                                                </div>
+                                                                <p className="text-2xl font-black text-foreground italic tracking-tighter uppercase">{stat.value}</p>
+                                                            </div>
+                                                        ))}
+                                                    </div>
+
+                                                    <div className="pt-4 flex flex-wrap justify-center md:justify-start gap-4">
+                                                        <Link 
+                                                            href={`/teams?id=${userTeam.id}`}
+                                                            className="h-11 px-8 rounded-xl bg-primary text-black text-[10px] font-black uppercase tracking-[0.2em] flex items-center gap-3 hover:bg-white transition-all shadow-xl shadow-primary/20 hover:shadow-white/20 active:scale-95"
+                                                        >
+                                                            Visitar Sede
+                                                            <ExternalLink className="w-4 h-4" />
+                                                        </Link>
+                                                        {userTeam.captain_id === (id === 'me' || !id ? user?.id : id) && (
+                                                            <div className="h-11 px-6 rounded-xl border border-primary/20 bg-primary/5 flex items-center gap-3">
+                                                                <Star className="w-4 h-4 text-primary fill-primary" />
+                                                                <span className="text-[10px] font-black text-primary uppercase tracking-widest">Capitán</span>
+                                                            </div>
+                                                        )}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </motion.div>
+                                    )}
 
                                 </motion.div>
                             )}
