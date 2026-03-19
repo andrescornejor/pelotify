@@ -116,28 +116,68 @@ export default function CreateMatchPage() {
                     </div>
                 </motion.div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                    <motion.div
-                        initial={{ opacity: 0, x: -20 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ delay: 0.2 }}
-                        className="space-y-4"
-                    >
-                        <div className="flex items-center gap-4 px-2">
-                            <span className="text-[10px] font-black text-foreground/40 uppercase tracking-[0.4em]">Cronograma</span>
-                            <div className="h-0.5 flex-1 bg-foreground/5" />
-                        </div>
-                        <div className="grid grid-cols-2 gap-4">
-                            <div className="relative group">
-                                <Calendar className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-foreground/20 group-focus-within:text-primary transition-colors" />
-                                <input
-                                    type="date"
-                                    required
-                                    value={formData.date}
-                                    onChange={(e) => setFormData({ ...formData, date: e.target.value })}
-                                    className="w-full h-16 pl-12 pr-4 rounded-2xl bg-foreground/[0.02] border border-foreground/10 focus:bg-foreground/[0.04] focus:border-primary/30 outline-none text-sm font-bold text-foreground uppercase italic dark:color-scheme-dark"
-                                />
+                        <div className="space-y-4">
+                            <div className="flex items-center gap-4 px-2">
+                                <span className="text-[10px] font-black text-foreground/40 uppercase tracking-[0.4em]">¿Cuándo se juega?</span>
+                                <div className="h-0.5 flex-1 bg-foreground/5" />
                             </div>
+                            
+                            <div className="flex gap-3 overflow-x-auto no-scrollbar pb-4 -mx-4 px-4 sm:mx-0 sm:px-0 scroll-smooth">
+                                {Array.from({ length: 14 }).map((_, i) => {
+                                    const d = new Date();
+                                    d.setDate(d.getDate() + i);
+                                    const dateStr = d.toISOString().split('T')[0];
+                                    const dayName = d.toLocaleDateString('es-ES', { weekday: 'short' }).replace('.', '').toUpperCase();
+                                    const dayNumber = d.getDate();
+                                    const monthName = d.toLocaleDateString('es-ES', { month: 'short' }).replace('.', '').toUpperCase();
+                                    const isSelected = formData.date === dateStr;
+
+                                    return (
+                                        <button
+                                            key={dateStr}
+                                            type="button"
+                                            onClick={() => setFormData({ ...formData, date: dateStr })}
+                                            className={`flex-shrink-0 w-20 h-24 rounded-2xl border transition-all duration-300 flex flex-col items-center justify-center gap-1 ${
+                                                isSelected 
+                                                ? 'bg-primary border-primary text-black shadow-lg shadow-primary/20 scale-105' 
+                                                : 'bg-foreground/[0.02] border-foreground/5 text-foreground/40 hover:border-foreground/20 hover:bg-foreground/[0.04]'
+                                            }`}
+                                        >
+                                            <span className={`text-[8px] font-black tracking-widest ${isSelected ? 'text-black' : 'text-foreground/30'}`}>{monthName}</span>
+                                            <span className="text-2xl font-black italic tracking-tighter leading-none">{dayNumber}</span>
+                                            <span className={`text-[8px] font-black tracking-widest ${isSelected ? 'text-black' : 'text-foreground/30'}`}>{dayName}</span>
+                                        </button>
+                                    );
+                                })}
+                                {/* Fallback native date picker for dates > 14 days */}
+                                <div className="relative flex-shrink-0 group">
+                                    <input
+                                        type="date"
+                                        value={formData.date}
+                                        onChange={(e) => setFormData({ ...formData, date: e.target.value })}
+                                        className="absolute inset-0 opacity-0 cursor-pointer z-10 w-full"
+                                    />
+                                    <div className={`w-20 h-24 rounded-2xl border transition-all duration-300 flex flex-col items-center justify-center gap-1 ${
+                                        formData.date && !Array.from({ length: 14 }).some((_, i) => {
+                                            const d = new Date(); d.setDate(d.getDate() + i); return d.toISOString().split('T')[0] === formData.date;
+                                        })
+                                        ? 'bg-primary border-primary text-black shadow-lg shadow-primary/20 scale-105'
+                                        : 'bg-foreground/[0.02] border-foreground/5 text-foreground/40 hover:border-foreground/20'
+                                    }`}>
+                                        <Calendar className="w-6 h-6" />
+                                        <span className="text-[8px] font-black tracking-widest uppercase">Otro</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                            <div className="space-y-4">
+                                <div className="flex items-center gap-4 px-2">
+                                    <span className="text-[10px] font-black text-foreground/40 uppercase tracking-[0.4em]">Horario</span>
+                                    <div className="h-0.5 flex-1 bg-foreground/5" />
+                                </div>
+                                <div className="grid grid-cols-1 gap-4">
                             <div className="relative group">
                                 <Clock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-foreground/20 group-focus-within:text-primary transition-colors z-10" />
                                 <select

@@ -487,13 +487,50 @@ export default function TeamsPage() {
                                         <label className="text-[9px] font-black text-foreground/50 uppercase tracking-[0.2em] flex items-center gap-2 pl-2">
                                             <CalendarDays className="w-3 h-3 text-primary" /> Fecha
                                         </label>
-                                        <input
-                                            type="date"
-                                            required
-                                            value={challengeDate}
-                                            onChange={(e) => setChallengeDate(e.target.value)}
-                                            className="w-full h-14 bg-foreground/[0.02] border border-foreground/5 rounded-2xl px-4 text-xs font-bold uppercase text-foreground outline-none focus:border-primary/50 transition-colors dark:color-scheme-dark"
-                                        />
+                                        <div className="flex gap-2 overflow-x-auto no-scrollbar pb-2 scroll-smooth">
+                                            {Array.from({ length: 14 }).map((_, i) => {
+                                                const d = new Date();
+                                                d.setDate(d.getDate() + i);
+                                                const dateStr = d.toISOString().split('T')[0];
+                                                const dayName = d.toLocaleDateString('es-ES', { weekday: 'short' }).replace('.', '').toUpperCase();
+                                                const dayNumber = d.getDate();
+                                                const isSelected = challengeDate === dateStr;
+
+                                                return (
+                                                    <button
+                                                        key={dateStr}
+                                                        type="button"
+                                                        onClick={() => setChallengeDate(dateStr)}
+                                                        className={`flex-shrink-0 w-14 h-16 rounded-xl border transition-all duration-300 flex flex-col items-center justify-center ${
+                                                            isSelected 
+                                                            ? 'bg-primary border-primary text-black' 
+                                                            : 'bg-foreground/[0.02] border-foreground/5 text-foreground/40 hover:border-foreground/20'
+                                                        }`}
+                                                    >
+                                                        <span className="text-lg font-black italic leading-none">{dayNumber}</span>
+                                                        <span className="text-[7px] font-black uppercase tracking-widest">{dayName}</span>
+                                                    </button>
+                                                );
+                                            })}
+                                            <div className="relative flex-shrink-0 group">
+                                                <input
+                                                    type="date"
+                                                    value={challengeDate}
+                                                    onChange={(e) => setChallengeDate(e.target.value)}
+                                                    className="absolute inset-0 opacity-0 cursor-pointer z-10 w-full"
+                                                />
+                                                <div className={`w-14 h-16 rounded-xl border transition-all duration-300 flex flex-col items-center justify-center ${
+                                                    challengeDate && !Array.from({ length: 14 }).some((_, i) => {
+                                                        const d = new Date(); d.setDate(d.getDate() + i); return d.toISOString().split('T')[0] === challengeDate;
+                                                    })
+                                                    ? 'bg-primary border-primary text-black'
+                                                    : 'bg-foreground/[0.02] border-foreground/5 text-foreground/40'
+                                                }`}>
+                                                    <CalendarDays className="w-4 h-4" />
+                                                    <span className="text-[7px] font-black uppercase tracking-widest">OTRO</span>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
                                     <div className="space-y-2">
                                         <label className="text-[9px] font-black text-foreground/50 uppercase tracking-[0.2em] flex items-center gap-2 pl-2">
