@@ -17,9 +17,15 @@ import PostMatchModal from '@/components/PostMatchModal';
 import { MatchSkeleton } from '@/components/Skeletons';
 import dynamic from 'next/dynamic';
 
+<<<<<<< HEAD
 const MatchMap = dynamic(() => import('@/components/MatchMap'), { 
     ssr: false,
     loading: () => <div className="w-full h-[400px] bg-foreground/5 animate-pulse rounded-[3rem]" />
+=======
+const VenueMap = dynamic(() => import('@/components/VenueMap'), { 
+    ssr: false,
+    loading: () => <div className="h-80 bg-foreground/5 rounded-[3rem] animate-pulse" />
+>>>>>>> parent of 2f5950a (sacarmapa)
 });
 
 function formatDate(dateStr: string) {
@@ -569,6 +575,7 @@ function MatchLobbyContent() {
                 </div>
             )}
 
+<<<<<<< HEAD
             {isCompleted && match && (
                  <div className="w-full px-4 lg:px-16 xl:px-24 pb-32 space-y-12 relative z-20">
                     <div className="space-y-6">
@@ -586,6 +593,12 @@ function MatchLobbyContent() {
                         </Suspense>
                     </div>
                  </div>
+=======
+            {!isCompleted && match && (
+                <div className="w-full px-4 lg:px-16 xl:px-24 mb-32 relative z-20">
+                    <VenueMap location={match.location} lat={match.lat} lng={match.lng} />
+                </div>
+>>>>>>> parent of 2f5950a (sacarmapa)
             )}
 
             {/* ── INVITE MODAL ── */}
