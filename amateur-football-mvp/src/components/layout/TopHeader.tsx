@@ -48,13 +48,7 @@ export function TopHeader() {
             ]);
             setFriendsCount(f || 0);
             setUnreadChatCount(c || 0);
-
-            // Determinar si estamos en la página de mensajes para no duplicar la notificación visual
-            const cleanPath = pathname.replace(/\/$/, '') || '/';
-            const isMessagesPage = cleanPath === '/messages' || cleanPath.startsWith('/messages/');
-
-            // Incluir mensajes en el contador global de la campana solo si no estamos en la página de mensajes
-            setNotifCount((f || 0) + (m || 0) + (t || 0) + (ti || 0) + (isMessagesPage ? 0 : (c || 0)));
+            setNotifCount((f || 0) + (m || 0) + (t || 0) + (ti || 0));
         } catch (err) {
             console.error(err);
         }
@@ -68,7 +62,7 @@ export function TopHeader() {
 
         // Clear unread chat count if on messages page
         const cleanPath = pathname.replace(/\/$/, '') || '/';
-        if (cleanPath === '/messages' || cleanPath.startsWith('/messages/')) {
+        if (cleanPath === '/messages') {
             setUnreadChatCount(0);
         }
 
@@ -316,6 +310,11 @@ export function TopHeader() {
                     </motion.div>
                 </div>
             </header>
+
+            <NotificationCenter
+                isOpen={isNotificationsOpen}
+                onClose={() => setNotificationsOpen(false)}
+            />
         </>
     );
 }
