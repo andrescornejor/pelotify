@@ -15,7 +15,10 @@ export const metadata: Metadata = {
   title: 'Pelotify - Fútbol Amateur',
   description: 'Gestiona tus partidos de fútbol amateur. Crea tu carta FIFA y sube de nivel.',
   icons: {
-    icon: '/logo_pelotify.png',
+    icon: [
+      { url: '/icon.png' },
+      { url: '/logo_pelotify.png' }
+    ],
     apple: '/logo_pelotify.png',
   },
   manifest: '/manifest.json',
