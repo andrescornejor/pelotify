@@ -179,11 +179,11 @@
   }
 
   .low-perf .bg-background\/80 {
-    @apply bg-background !important;
+    background-color: var(--background) !important;
   }
 
   .low-perf .bg-foreground\/5 {
-    @apply bg-surface-bright !important;
+    background-color: var(--surface-bright) !important;
   }
 
   /* ── Premium Card ── */
