@@ -39,8 +39,11 @@ export default function MessagesPage() {
                     schema: 'public',
                     table: 'direct_messages'
                 },
-                () => {
-                    loadChats();
+                (payload) => {
+                    // Refresh if the message involves the user
+                    if (payload.new && (payload.new.recipient_id === user.id || payload.new.sender_id === user.id)) {
+                        loadChats();
+                    }
                 }
             )
             .subscribe();
@@ -48,7 +51,7 @@ export default function MessagesPage() {
         return () => {
             supabase.removeChannel(channel);
         };
-    }, [user]);
+    }, [user, user?.id]);
 
     const filteredConversations = conversations.filter(c => 
         c.name.toLowerCase().includes(searchQuery.toLowerCase())
@@ -98,7 +101,15 @@ export default function MessagesPage() {
                                     key={chat.userId}
                                     whileHover={{ x: 4 }}
                                     whileTap={{ scale: 0.98 }}
-                                    onClick={() => setSelectedChat(chat)}
+                                    onClick={async () => {
+                                        setSelectedChat(chat);
+                                        // Update local state immediately to clear the dot
+                                        setConversations(prev => prev.map(c => 
+                                            c.userId === chat.userId ? { ...c, isUnread: false } : c
+                                        ));
+                                        // Mark as read in DB
+                                        if (user) await markAllDirectMessagesAsRead(user.id);
+                                    }}
                                     className={cn(
                                         "w-full p-4 rounded-[2rem] border transition-all flex items-center gap-4 group text-left",
                                         selectedChat?.userId === chat.userId
