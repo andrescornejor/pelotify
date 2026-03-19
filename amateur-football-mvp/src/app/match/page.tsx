@@ -15,6 +15,16 @@ import PlayerSlot from '@/components/PlayerSlot';
 import PostMatchView from '@/components/PostMatchView';
 import PostMatchModal from '@/components/PostMatchModal';
 import { MatchSkeleton } from '@/components/Skeletons';
+import dynamic from 'next/dynamic';
+
+const VenueMap = dynamic(() => import('@/components/VenueMap'), {
+    ssr: false,
+    loading: () => (
+        <div className="w-full h-80 bg-foreground/5 rounded-[3rem] animate-pulse flex items-center justify-center border border-foreground/10">
+            <Loader2 className="w-8 h-8 animate-spin text-primary/20" />
+        </div>
+    )
+});
 
 function formatDate(dateStr: string) {
     if (!dateStr) return '';
@@ -520,6 +530,10 @@ function MatchLobbyContent() {
                                     )}
                                 </div>
                             </div>
+                        </div>
+
+                        <div className="glass-premium rounded-[3.5rem] p-8 border border-foreground/10 relative overflow-hidden">
+                            <VenueMap location={match.location} lat={match.lat} lng={match.lng} />
                         </div>
                     </div>
                 </div>

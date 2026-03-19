@@ -6,6 +6,17 @@ import { Match, MatchParticipant } from '@/lib/matches';
 import { cn } from '@/lib/utils';
 import PlayerSlot from './PlayerSlot';
 import { findVenueByLocation } from '@/lib/venues';
+import dynamic from 'next/dynamic';
+import { Loader2 } from 'lucide-react';
+
+const VenueMap = dynamic(() => import('./VenueMap'), {
+    ssr: false,
+    loading: () => (
+        <div className="w-full h-80 bg-foreground/5 rounded-[3rem] animate-pulse flex items-center justify-center border border-foreground/10">
+            <Loader2 className="w-8 h-8 animate-spin text-primary/20" />
+        </div>
+    )
+});
 
 interface PostMatchViewProps {
     match: Match;
@@ -353,6 +364,10 @@ export default function PostMatchView({ match, participants, stats }: PostMatchV
                                 </div>
                             ))}
                         </div>
+                    </div>
+
+                    <div className="glass-premium rounded-[3.5rem] p-8 border border-foreground/10 relative overflow-hidden group/map">
+                        <VenueMap location={match.location} lat={match.lat} lng={match.lng} />
                     </div>
 
                     <div className="px-4">
