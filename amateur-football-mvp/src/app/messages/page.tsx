@@ -39,7 +39,7 @@ export default function MessagesPage() {
                     schema: 'public',
                     table: 'direct_messages'
                 },
-                (payload) => {
+                (payload: any) => {
                     // Refresh if the message involves the user
                     if (payload.new && (payload.new.recipient_id === user.id || payload.new.sender_id === user.id)) {
                         loadChats();
