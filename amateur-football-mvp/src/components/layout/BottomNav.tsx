@@ -6,6 +6,8 @@ import { Home, Search, PlusCircle, User, Shield } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { motion, AnimatePresence } from 'framer-motion';
 
+
+
 const NAV_ITEMS = [
     { href: '/', icon: Home, label: 'Inicio' },
     { href: '/search', icon: Search, label: 'Buscar' },
