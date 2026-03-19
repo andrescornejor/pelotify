@@ -386,8 +386,8 @@ export function Sidebar() {
                         initial={{ x: '-100%' }}
                         animate={{ x: 0 }}
                         exit={{ x: '-100%' }}
-                        transition={performanceMode ? { duration: 0.2 } : { type: 'spring', damping: 28, stiffness: 220 }}
-                        className="absolute inset-y-0 left-0 w-[290px] flex flex-col shadow-2xl"
+                        transition={performanceMode ? { type: 'tween', duration: 0.15, ease: 'easeOut' } : { type: 'spring', damping: 28, stiffness: 220 }}
+                        className="absolute inset-y-0 left-0 w-[290px] flex flex-col shadow-2xl sidebar-container"
                         style={{
                             backgroundColor: 'var(--surface-elevated)',
                             backdropFilter: performanceMode ? 'none' : 'blur(24px)',
