@@ -1,13 +1,13 @@
 'use client';
 
-import { motion } from 'framer-motion';
+import { motion, Variants } from 'framer-motion';
 import { Trophy, ArrowLeft, Star, TrendingUp, Sparkles, Award, Zap } from 'lucide-react';
 import Link from 'next/link';
 import { RANKS } from '@/lib/ranks';
 import { cn } from '@/lib/utils';
 
 export default function RanksPage() {
-    const fadeUp = {
+    const fadeUp: Variants = {
         hidden: { opacity: 0, y: 20 },
         visible: (i: number) => ({
             opacity: 1, 
