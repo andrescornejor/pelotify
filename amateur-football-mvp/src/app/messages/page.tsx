@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
-import { getRecentChats } from '@/lib/chat';
+import { getRecentChats, markAllDirectMessagesAsRead } from '@/lib/chat';
 import { motion, AnimatePresence } from 'framer-motion';
 import { MessageSquare, Search, Loader2, User as UserIcon, Send, Clock, ChevronRight, Shield } from 'lucide-react';
 import ChatRoom from '@/components/ChatRoom';
@@ -22,6 +22,9 @@ export default function MessagesPage() {
             const chats = await getRecentChats(user.id);
             setConversations(chats);
             setIsLoading(false);
+            
+            // Mark all as read when entering the inbox
+            await markAllDirectMessagesAsRead(user.id);
         };
         loadChats();
     }, [user]);

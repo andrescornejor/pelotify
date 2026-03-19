@@ -48,7 +48,7 @@ export function TopHeader() {
             ]);
             setFriendsCount(f || 0);
             setUnreadChatCount(c || 0);
-            setNotifCount((f || 0) + (m || 0) + (t || 0) + (ti || 0) + (c || 0));
+            setNotifCount((f || 0) + (m || 0) + (t || 0) + (ti || 0));
         } catch (err) {
             console.error(err);
         }

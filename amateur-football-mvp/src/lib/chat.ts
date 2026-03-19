@@ -179,6 +179,7 @@ export async function getUnreadMessagesCount(userId: string) {
         .from('direct_messages')
         .select('*', { count: 'exact', head: true })
         .eq('recipient_id', userId)
+        .neq('sender_id', userId)
         .eq('is_read', false);
 
     if (error) {
@@ -199,5 +200,17 @@ export async function markDirectMessagesAsRead(senderId: string, recipientId: st
 
     if (error) {
         console.error('Error marking as read:', error);
+    }
+}
+
+export async function markAllDirectMessagesAsRead(userId: string) {
+    const { error } = await supabase
+        .from('direct_messages')
+        .update({ is_read: true })
+        .eq('recipient_id', userId)
+        .eq('is_read', false);
+
+    if (error) {
+        console.error('Error marking all as read:', error);
     }
 }
