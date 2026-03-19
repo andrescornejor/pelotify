@@ -602,47 +602,31 @@ function ProfileContent() {
 
                     {/* Navigation Tabs */}
                     <div className="sticky top-0 z-30 py-4 bg-background/80 backdrop-blur-xl -mx-4 px-4 lg:-mx-0 lg:px-0">
-                        <div className="flex p-1.5 bg-foreground/5 rounded-[2rem] border border-foreground/10 relative shadow-2xl backdrop-blur-3xl">
-                            <button
-                                onClick={() => setActiveTab('overview')}
-                                className={cn(
-                                    "flex-1 py-4 text-[11px] font-black uppercase tracking-[0.4em] rounded-2xl transition-all relative z-10 italic",
-                                    activeTab === 'overview' ? 'text-black' : 'text-foreground/40 hover:text-foreground'
-                                )}
-                            >
-                                Resumen
-                            </button>
-
-                            <button
-                                onClick={() => setActiveTab('history')}
-                                className={cn(
-                                    "flex-1 py-4 text-[11px] font-black uppercase tracking-[0.4em] rounded-2xl transition-all relative z-10 italic",
-                                    activeTab === 'history' ? 'text-black' : 'text-foreground/40 hover:text-foreground'
-                                )}
-                            >
-                                Cronología
-                            </button>
-
-                            <button
-                                onClick={() => setActiveTab('wall')}
-                                className={cn(
-                                    "flex-1 py-4 text-[11px] font-black uppercase tracking-[0.4em] rounded-2xl transition-all relative z-10 italic",
-                                    activeTab === 'wall' ? 'text-black' : 'text-foreground/40 hover:text-foreground'
-                                )}
-                            >
-                                Muro
-                            </button>
-
-                            <motion.div 
-                                layoutId="profile-tab-pill-premium"
-                                className="absolute inset-y-1.5 bg-primary rounded-2xl shadow-[0_0_30px_rgba(16,185,129,0.4)]"
-                                initial={false}
-                                animate={{
-                                    left: activeTab === 'overview' ? '4px' : activeTab === 'history' ? '33.33%' : '66.66%',
-                                    right: activeTab === 'overview' ? '66.66%' : activeTab === 'history' ? '33.33%' : '4px',
-                                }}
-                                transition={{ type: 'spring' as const, stiffness: 400, damping: 35 }}
-                            />
+                        <div className="flex p-1 bg-foreground/5 rounded-[2rem] border border-foreground/10 relative shadow-2xl backdrop-blur-3xl">
+                            {[
+                                { id: 'overview', label: 'Resumen' },
+                                { id: 'history', label: 'Cronología' },
+                                { id: 'wall', label: 'Muro' }
+                            ].map((tab) => (
+                                <button
+                                    key={tab.id}
+                                    onClick={() => setActiveTab(tab.id as any)}
+                                    className={cn(
+                                        "flex-1 py-4 text-[11px] font-black uppercase tracking-[0.4em] rounded-2xl transition-all relative z-10 italic",
+                                        activeTab === tab.id ? 'text-black' : 'text-foreground/40 hover:text-foreground'
+                                    )}
+                                >
+                                    <span className="relative z-20">{tab.label}</span>
+                                    {activeTab === tab.id && (
+                                        <motion.div
+                                            layoutId="profile-tab-pill-premium"
+                                            className="absolute inset-0 bg-primary rounded-2xl shadow-[0_0_30px_rgba(16,185,129,0.4)]"
+                                            initial={false}
+                                            transition={{ type: 'spring' as const, stiffness: 400, damping: 30 }}
+                                        />
+                                    )}
+                                </button>
+                            ))}
                         </div>
                     </div>
 
