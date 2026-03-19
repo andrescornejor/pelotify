@@ -6,6 +6,7 @@ export interface ChatMessage {
     sender_id: string;
     recipient_id?: string;
     content: string;
+    is_read?: boolean;
     created_at: string;
     profiles?: {
         name: string;
@@ -171,4 +172,32 @@ export async function getRecentChats(userId: string) {
     });
 
     return Array.from(conversations.values());
+}
+
+export async function getUnreadMessagesCount(userId: string) {
+    const { count, error } = await supabase
+        .from('direct_messages')
+        .select('*', { count: 'exact', head: true })
+        .eq('recipient_id', userId)
+        .eq('is_read', false);
+
+    if (error) {
+        console.error('Error fetching unread count:', error);
+        return 0;
+    }
+
+    return count || 0;
+}
+
+export async function markDirectMessagesAsRead(senderId: string, recipientId: string) {
+    const { error } = await supabase
+        .from('direct_messages')
+        .update({ is_read: true })
+        .eq('sender_id', senderId)
+        .eq('recipient_id', recipientId)
+        .eq('is_read', false);
+
+    if (error) {
+        console.error('Error marking as read:', error);
+    }
 }

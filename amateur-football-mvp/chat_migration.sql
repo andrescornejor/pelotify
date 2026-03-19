@@ -31,6 +31,7 @@ CREATE TABLE IF NOT EXISTS public.direct_messages (
     sender_id UUID NOT NULL REFERENCES public.profiles(id) ON DELETE CASCADE,
     recipient_id UUID NOT NULL REFERENCES public.profiles(id) ON DELETE CASCADE,
     content TEXT NOT NULL,
+    is_read BOOLEAN DEFAULT FALSE,
     created_at TIMESTAMPTZ DEFAULT now()
 );
 

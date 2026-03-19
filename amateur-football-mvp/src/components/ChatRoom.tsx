@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
-import { ChatMessage, getMatchMessages, getDirectMessages, sendMatchMessage, sendDirectMessage, subscribeToMatchMessages, subscribeToDirectMessages } from '@/lib/chat';
+import { ChatMessage, getMatchMessages, getDirectMessages, sendMatchMessage, sendDirectMessage, subscribeToMatchMessages, subscribeToDirectMessages, markDirectMessagesAsRead } from '@/lib/chat';
 import { Send, User as UserIcon, Loader2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -34,7 +34,12 @@ export default function ChatRoom({ matchId, recipientId, className, title }: Cha
                 } else if (recipientId) {
                     msgs = await getDirectMessages(user.id, recipientId);
                 }
-                if (msgs) setMessages(msgs);
+                if (msgs) {
+                    setMessages(msgs);
+                    if (recipientId) {
+                        await markDirectMessagesAsRead(recipientId, user.id);
+                    }
+                }
             } catch (err) {
                 console.error('Error loading messages:', err);
             } finally {

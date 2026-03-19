@@ -23,26 +23,31 @@ const DESKTOP_NAV = [
 ];
 
 
+import { getUnreadMessagesCount } from '@/lib/chat';
+
 export function TopHeader() {
     const pathname = usePathname();
     const { toggleSidebar, isNotificationsOpen, setNotificationsOpen } = useSidebar();
     const { user } = useAuth();
     const { theme, setTheme } = useTheme();
     const [notifCount, setNotifCount] = useState(0);
+    const [unreadChatCount, setUnreadChatCount] = useState(0);
 
     const [friendsCount, setFriendsCount] = useState(0);
 
     const updateCount = async () => {
         if (!user) return;
         try {
-            const [f, m, t, ti] = await Promise.all([
+            const [f, m, t, ti, c] = await Promise.all([
                 getPendingRequestsCount(user.id),
                 getMatchInvitationsCount(user.id),
                 getPendingJoinRequestsCountForCaptain(user.id),
-                getTeamInvitationsCount(user.id)
+                getTeamInvitationsCount(user.id),
+                getUnreadMessagesCount(user.id)
             ]);
             setFriendsCount(f || 0);
-            setNotifCount((f || 0) + (m || 0) + (t || 0) + (ti || 0));
+            setUnreadChatCount(c || 0);
+            setNotifCount((f || 0) + (m || 0) + (t || 0) + (ti || 0) + (c || 0));
         } catch (err) {
             console.error(err);
         }
@@ -149,7 +154,8 @@ export function TopHeader() {
                             <nav className="hidden lg:flex items-center gap-1.5 bg-foreground/[0.03] p-1.5 rounded-[1.25rem] border border-foreground/[0.05] backdrop-blur-md">
                                 {DESKTOP_NAV.map((item) => {
                                     const isActive = pathname === item.href || (item.href !== '/' && pathname.startsWith(item.href));
-                                    const hasBadge = item.id === 'friends' && friendsCount > 0 && !isActive;
+                                    const hasBadge = (item.id === 'friends' && friendsCount > 0 && !isActive) || 
+                                                     (item.label === 'Mensajes' && unreadChatCount > 0 && !isActive);
 
                                     return (
                                         <Link

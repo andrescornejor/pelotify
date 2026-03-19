@@ -16,8 +16,30 @@ const NAV_ITEMS = [
     { href: '/profile/me', icon: User, label: 'Perfil' },
 ];
 
+import { useState, useEffect } from 'react';
+import { useAuth } from '@/contexts/AuthContext';
+import { getUnreadMessagesCount } from '@/lib/chat';
+
 export function BottomNav() {
     const pathname = usePathname();
+    const { user } = useAuth();
+    const [unreadCount, setUnreadCount] = useState(0);
+
+    const updateUnreadCount = async () => {
+        if (!user) return;
+        try {
+            const count = await getUnreadMessagesCount(user.id);
+            setUnreadCount(count);
+        } catch (err) {
+            console.error(err);
+        }
+    };
+
+    useEffect(() => {
+        updateUnreadCount();
+        const interval = setInterval(updateUnreadCount, 30000);
+        return () => clearInterval(interval);
+    }, [user]);
 
     if (['/login', '/register'].includes(pathname)) {
         return null;
@@ -44,6 +66,7 @@ export function BottomNav() {
                 <div className="flex items-stretch h-[62px]">
                     {NAV_ITEMS.map(({ href, icon: Icon, label, isPrimary }) => {
                         const isActive = pathname === href || (href !== '/' && pathname.startsWith(href));
+                        const hasUnread = label === 'Mensajes' && unreadCount > 0;
 
                         if (isPrimary) {
                             return (
@@ -130,6 +153,11 @@ export function BottomNav() {
                                             />
                                         )}
                                     </AnimatePresence>
+
+                                    {/* Unread Dot */}
+                                    {hasUnread && !isActive && (
+                                        <span className="absolute -top-1 -right-1 w-2 h-2 rounded-full bg-primary shadow-[0_0_8px_rgba(16,185,129,0.8)] animate-pulse" />
+                                    )}
                                 </motion.div>
 
                                 <span className={cn(
