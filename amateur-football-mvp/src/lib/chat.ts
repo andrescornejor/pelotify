@@ -182,8 +182,7 @@ export async function getUnreadMessagesCount(userId: string) {
         .select('*', { count: 'exact', head: true })
         .eq('recipient_id', userId)
         .neq('sender_id', userId)
-        .or('is_read.is.null,is_read.eq.false');
-        
+        .eq('is_read', false);
 
     if (error) {
         console.error('Error fetching unread count:', error);
@@ -199,7 +198,7 @@ export async function markDirectMessagesAsRead(senderId: string, recipientId: st
         .update({ is_read: true })
         .eq('sender_id', senderId)
         .eq('recipient_id', recipientId)
-        .or('is_read.is.null,is_read.eq.false');
+        .eq('is_read', false);
 
     if (error) {
         console.error('Error marking as read:', error);
@@ -211,7 +210,7 @@ export async function markAllDirectMessagesAsRead(userId: string) {
         .from('direct_messages')
         .update({ is_read: true })
         .eq('recipient_id', userId)
-        .or('is_read.is.null,is_read.eq.false');
+        .eq('is_read', false);
 
     if (error) {
         console.error('Error marking all as read:', error);
