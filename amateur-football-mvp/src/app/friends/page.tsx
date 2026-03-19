@@ -11,6 +11,8 @@ import { cn } from '@/lib/utils';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Shield } from "lucide-react";
 import Link from 'next/link';
+import ChatModal from '@/components/ChatModal';
+import { MessageSquare } from 'lucide-react';
 
 export default function FriendsPage() {
     const { user } = useAuth();
@@ -23,6 +25,7 @@ export default function FriendsPage() {
     const [teamInvites, setTeamInvites] = useState<any[]>([]);
     const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
     const [searchQuery, setSearchQuery] = useState('');
+    const [chatRecipient, setChatRecipient] = useState<{ id: string; name: string } | null>(null);
 
     // Loading states
     const [isLoadingInit, setIsLoadingInit] = useState(true);
@@ -322,13 +325,21 @@ export default function FriendsPage() {
                                                 </div>
                                             </div>
 
-                                            <button
-                                                onClick={() => handleRejectRemove(f.id, true)}
-                                                disabled={actionLoading === f.id}
-                                                className="w-12 h-12 rounded-2xl bg-foreground/[0.02] text-foreground/80 hover:bg-destructive hover:text-destructive-foreground transition-all flex items-center justify-center border border-foreground/5 group-hover:border-foreground/10"
-                                            >
-                                                {actionLoading === f.id ? <Loader2 className="w-5 h-5 animate-spin" /> : <UserMinus className="w-5 h-5" />}
-                                            </button>
+                                            <div className="flex items-center gap-4">
+                                                <button
+                                                    onClick={() => setChatRecipient({ id: f.profiles?.id || '', name: f.profiles?.name || 'Jugador' })}
+                                                    className="w-12 h-12 rounded-2xl bg-primary/10 text-primary border border-primary/20 hover:bg-primary hover:text-black transition-all flex items-center justify-center group/chat shadow-lg shadow-primary/5 active:scale-95"
+                                                >
+                                                    <MessageSquare className="w-5 h-5 group-hover/chat:scale-110 transition-transform" />
+                                                </button>
+                                                <button
+                                                    onClick={() => handleRejectRemove(f.id, true)}
+                                                    disabled={actionLoading === f.id}
+                                                    className="w-12 h-12 rounded-2xl bg-foreground/[0.02] text-foreground/80 hover:bg-destructive hover:text-destructive-foreground transition-all flex items-center justify-center border border-foreground/5 group-hover:border-foreground/10"
+                                                >
+                                                    {actionLoading === f.id ? <Loader2 className="w-5 h-5 animate-spin" /> : <UserMinus className="w-5 h-5" />}
+                                                </button>
+                                            </div>
                                         </div>
                                     </motion.div>
                                 ))
@@ -743,6 +754,12 @@ export default function FriendsPage() {
                 </motion.div>
                 </AnimatePresence>
             </div>
+            <ChatModal
+                isOpen={!!chatRecipient}
+                onClose={() => setChatRecipient(null)}
+                recipientId={chatRecipient?.id}
+                recipientName={chatRecipient?.name}
+            />
         </div>
     );
 }

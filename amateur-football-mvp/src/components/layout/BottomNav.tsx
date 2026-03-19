@@ -12,8 +12,8 @@ const NAV_ITEMS = [
     { href: '/', icon: Home, label: 'Inicio' },
     { href: '/search', icon: Search, label: 'Buscar' },
     { href: '/create', icon: PlusCircle, label: 'Crear', isPrimary: true },
+    { href: '/friends', icon: Users, label: 'Social' },
     { href: '/profile/me', icon: User, label: 'Perfil' },
-    { href: '/teams', icon: Shield, label: 'Equipo' },
 ];
 
 export function BottomNav() {

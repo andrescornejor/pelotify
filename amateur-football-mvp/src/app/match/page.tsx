@@ -16,6 +16,7 @@ import PostMatchView from '@/components/PostMatchView';
 import PostMatchModal from '@/components/PostMatchModal';
 import { MatchSkeleton } from '@/components/Skeletons';
 import dynamic from 'next/dynamic';
+import ChatRoom from '@/components/ChatRoom';
 
 const VenueMap = dynamic(() => import('@/components/VenueMap'), {
     ssr: false,
@@ -531,6 +532,21 @@ function MatchLobbyContent() {
 
                         <div className="glass-premium rounded-[3.5rem] p-8 border border-foreground/10 relative overflow-hidden">
                             <VenueMap location={match.location} lat={match.lat} lng={match.lng} />
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {!isCompleted && hasJoined && (
+                <div className="w-full px-4 lg:px-16 xl:px-24 pb-12 space-y-12 relative z-20">
+                    <div className="flex flex-col gap-6">
+                        <div className="flex items-center gap-4 px-2">
+                             <div className="h-0.5 flex-1 bg-foreground/5" />
+                             <span className="text-[10px] font-black text-foreground/40 uppercase tracking-[0.4em]">Chat del Lobby</span>
+                             <div className="h-0.5 flex-1 bg-foreground/5" />
+                        </div>
+                        <div className="h-[400px] lg:h-[500px]">
+                            <ChatRoom matchId={match.id} />
                         </div>
                     </div>
                 </div>
