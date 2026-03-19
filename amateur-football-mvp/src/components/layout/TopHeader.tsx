@@ -60,6 +60,12 @@ export function TopHeader() {
         
         updateCount();
 
+        // Clear unread chat count if on messages page
+        const cleanPath = pathname.replace(/\/$/, '') || '/';
+        if (cleanPath === '/messages') {
+            setUnreadChatCount(0);
+        }
+
         const channel = supabase
             .channel('header-notifications')
             .on(
@@ -78,7 +84,7 @@ export function TopHeader() {
         return () => {
             supabase.removeChannel(channel);
         };
-    }, [user]);
+    }, [user, pathname]);
 
     if (['/login', '/register'].includes(pathname) || pathname.startsWith('/match/')) {
         return null;

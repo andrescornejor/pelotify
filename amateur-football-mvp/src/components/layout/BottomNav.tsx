@@ -61,7 +61,7 @@ export function BottomNav() {
         return () => {
             supabase.removeChannel(channel);
         };
-    }, [user]);
+    }, [user, pathname]);
 
     if (['/login', '/register'].includes(pathname)) {
         return null;

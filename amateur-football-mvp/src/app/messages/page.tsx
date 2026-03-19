@@ -18,14 +18,18 @@ export default function MessagesPage() {
 
     useEffect(() => {
         if (!user) return;
+        
+        const markAll = async () => {
+            await markAllDirectMessagesAsRead(user.id);
+        };
+        
+        markAll();
+
         const loadChats = async () => {
             setIsLoading(true);
             const chats = await getRecentChats(user.id);
             setConversations(chats);
             setIsLoading(false);
-            
-            // Mark all as read when entering the inbox
-            await markAllDirectMessagesAsRead(user.id);
         };
         loadChats();
 
@@ -43,6 +47,8 @@ export default function MessagesPage() {
                     // Refresh if the message involves the user
                     if (payload.new && (payload.new.recipient_id === user.id || payload.new.sender_id === user.id)) {
                         loadChats();
+                        // If we are on this page, keep it clean
+                        markAll();
                     }
                 }
             )
