@@ -92,13 +92,13 @@ export function TopHeader() {
 
     return (
         <>
-            <header className="fixed top-0 left-0 right-0 z-[60] pt-0 px-0 sm:px-0 lg:px-4 xl:px-6 pointer-events-none">
-                <div className="w-full pointer-events-auto">
+            <header className="fixed top-0 left-0 right-0 z-[60] pt-3 sm:pt-4 px-3 sm:px-5 lg:px-10 xl:px-16 pointer-events-none">
+                <div className="max-w-screen-2xl mx-auto w-full pointer-events-auto">
                     <motion.div
                         initial={{ y: -24, opacity: 0 }}
                         animate={{ y: 0, opacity: 1 }}
                         transition={{ type: 'spring', stiffness: 300, damping: 26, delay: 0.05 }}
-                        className="overflow-hidden rounded-b-[1.25rem] lg:rounded-b-[2rem]"
+                        className="overflow-hidden rounded-[1.25rem] lg:rounded-[1.75rem]"
                         style={{
                             background: 'rgba(var(--foreground-rgb), 0.04)',
                             backdropFilter: 'blur(28px) saturate(180%)',
