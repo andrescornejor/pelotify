@@ -67,7 +67,7 @@ export default function CreateMatchPage() {
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.1 }}
-                    className="space-y-6"
+                    className="space-y-6 relative z-30"
                 >
                     <div className="flex items-center gap-4 px-2">
                         <div className="h-0.5 flex-1 bg-foreground/5" />
@@ -120,7 +120,7 @@ export default function CreateMatchPage() {
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.1 }}
-                    className="space-y-6"
+                    className="space-y-6 relative z-20"
                 >
                     <div className="flex items-center gap-4 px-2">
                         <div className="h-0.5 flex-1 bg-foreground/5" />
