@@ -473,7 +473,6 @@ export default function HomePage() {
                       <Trophy className="w-4 h-4 text-white fill-white" />
                     </button>
                   </Link>
-                </div>
               </motion.div>
             </motion.section>
 
