@@ -160,6 +160,32 @@
     @apply bg-surface-elevated/60 backdrop-blur-3xl border border-foreground/[0.06] rounded-2xl shadow-2xl;
   }
 
+  /* ── Low Performance Mode Overrides ── */
+  .low-perf .glass, 
+  .low-perf .glass-premium, 
+  .low-perf .glass-card, 
+  .low-perf .premium-card,
+  .low-perf [class*="backdrop-blur"] {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
+
+  .low-perf .glass-premium {
+    background: var(--surface-elevated) !important;
+  }
+
+  .low-perf .glass {
+    background: var(--surface) !important;
+  }
+
+  .low-perf .bg-background\/80 {
+    @apply bg-background !important;
+  }
+
+  .low-perf .bg-foreground\/5 {
+    @apply bg-surface-bright !important;
+  }
+
   /* ── Premium Card ── */
   .premium-card {
     @apply relative overflow-hidden rounded-2xl border border-foreground/5 backdrop-blur-md shadow-2xl transition-all duration-300;
