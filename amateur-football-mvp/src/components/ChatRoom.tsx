@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { ChatMessage, getMatchMessages, getDirectMessages, sendMatchMessage, sendDirectMessage, subscribeToMatchMessages, subscribeToDirectMessages, markDirectMessagesAsRead } from '@/lib/chat';
-import { Send, User as UserIcon, Loader2 } from 'lucide-react';
+import { Send, User as UserIcon, Loader2, ChevronRight } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { motion, AnimatePresence } from 'framer-motion';
 
