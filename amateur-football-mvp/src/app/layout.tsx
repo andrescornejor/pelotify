@@ -35,6 +35,8 @@ export const viewport = {
   themeColor: '#09090b',
 };
 
+import { SettingsProvider } from '@/contexts/SettingsContext';
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -45,16 +47,18 @@ export default function RootLayout({
       <body
         className={`${inter.variable} ${outfit.variable} ${kanit.variable} font-sans antialiased bg-background text-foreground min-h-[100dvh] flex flex-col selection:bg-primary/30`}
       >
-        <ThemeProvider>
-          <AuthProvider>
-            <SidebarProvider>
-              <ClientLayout>
-                {children}
-                <PostMatchManager />
-              </ClientLayout>
-            </SidebarProvider>
-          </AuthProvider>
-        </ThemeProvider>
+        <SettingsProvider>
+          <ThemeProvider>
+            <AuthProvider>
+              <SidebarProvider>
+                <ClientLayout>
+                  {children}
+                  <PostMatchManager />
+                </ClientLayout>
+              </SidebarProvider>
+            </AuthProvider>
+          </ThemeProvider>
+        </SettingsProvider>
       </body>
     </html>
   );

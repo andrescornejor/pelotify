@@ -8,6 +8,7 @@ import { useSidebar } from '@/contexts/SidebarContext';
 import { getPendingRequestsCount } from '@/lib/friends';
 import { getMatchInvitationsCount } from '@/lib/matches';
 import { useTheme } from '@/contexts/ThemeContext';
+import { useSettings } from '@/contexts/SettingsContext';
 import { NotificationCenter } from '../notifications/NotificationCenter';
 import { cn } from '@/lib/utils';
 
@@ -15,6 +16,7 @@ export function SidebarContent({ isMobile = false, onClose }: { isMobile?: boole
     const { user, logout } = useAuth();
     const pathname = usePathname();
     const { theme, setTheme } = useTheme();
+    const { performanceMode } = useSettings();
     const { isNotificationsOpen, setNotificationsOpen } = useSidebar();
     const [pendingCount, setPendingCount] = useState(0);
 
@@ -59,12 +61,14 @@ export function SidebarContent({ isMobile = false, onClose }: { isMobile?: boole
     return (
         <div className="flex flex-col h-full overflow-hidden relative">
             {/* ── Ambient background ── */}
-            <div className="absolute inset-0 pointer-events-none overflow-hidden">
-                <div className="absolute top-[-30%] right-[-40%] w-[80%] h-[60%] rounded-full opacity-[0.06]"
-                    style={{ background: 'radial-gradient(circle, #2cfc7d 0%, transparent 70%)', filter: 'blur(60px)' }} />
-                <div className="absolute bottom-[5%] left-[-30%] w-[70%] h-[40%] rounded-full opacity-[0.04]"
-                    style={{ background: 'radial-gradient(circle, #3b82f6 0%, transparent 70%)', filter: 'blur(80px)' }} />
-            </div>
+            {!performanceMode && (
+                <div className="absolute inset-0 pointer-events-none overflow-hidden">
+                    <div className="absolute top-[-30%] right-[-40%] w-[80%] h-[60%] rounded-full opacity-[0.06]"
+                        style={{ background: 'radial-gradient(circle, #2cfc7d 0%, transparent 70%)', filter: 'blur(60px)' }} />
+                    <div className="absolute bottom-[5%] left-[-30%] w-[70%] h-[40%] rounded-full opacity-[0.04]"
+                        style={{ background: 'radial-gradient(circle, #3b82f6 0%, transparent 70%)', filter: 'blur(80px)' }} />
+                </div>
+            )}
 
             {/* ── Top border ── */}
             {!isMobile && (
@@ -356,6 +360,7 @@ export function SidebarContent({ isMobile = false, onClose }: { isMobile?: boole
 
 export function Sidebar() {
     const { isOpen, closeSidebar: onClose } = useSidebar();
+    const { performanceMode } = useSettings();
     const pathname = usePathname();
     const [mounted, setMounted] = useState(false);
 
@@ -381,11 +386,11 @@ export function Sidebar() {
                         initial={{ x: '-100%' }}
                         animate={{ x: 0 }}
                         exit={{ x: '-100%' }}
-                        transition={{ type: 'spring', damping: 28, stiffness: 220 }}
+                        transition={performanceMode ? { duration: 0.2 } : { type: 'spring', damping: 28, stiffness: 220 }}
                         className="absolute inset-y-0 left-0 w-[290px] flex flex-col shadow-2xl"
                         style={{
                             backgroundColor: 'var(--surface-elevated)',
-                            backdropFilter: 'blur(24px)',
+                            backdropFilter: performanceMode ? 'none' : 'blur(24px)',
                             borderRight: '1px solid rgba(var(--foreground-rgb),0.08)',
                             boxShadow: '20px 0 60px rgba(0,0,0,0.3)',
                         }}

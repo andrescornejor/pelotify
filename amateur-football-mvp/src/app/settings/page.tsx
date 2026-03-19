@@ -1,14 +1,16 @@
 'use client';
 
 import { motion, Variants } from 'framer-motion';
-import { Settings, Moon, Sun, Monitor, Bell, Shield, LogOut, ChevronRight, User } from 'lucide-react';
+import { Settings, Moon, Sun, Monitor, Bell, Shield, LogOut, ChevronRight, User, Zap, ZapOff, Cpu } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useTheme } from '@/contexts/ThemeContext';
+import { useSettings } from '@/contexts/SettingsContext';
 import Link from 'next/link';
 
 export default function SettingsPage() {
     const { user, logout } = useAuth();
     const { theme, setTheme } = useTheme();
+    const { performanceMode, setPerformanceMode } = useSettings();
 
     const containerVariants: Variants = {
         hidden: { opacity: 0 },
@@ -93,6 +95,43 @@ export default function SettingsPage() {
                             <Monitor className="w-6 h-6" />
                             <span className="text-[10px] font-black uppercase tracking-[0.2em]">Sistema</span>
                         </button>
+                    </div>
+                </motion.section>
+
+                {/* ── RENDIMIENTO ── */}
+                <motion.section variants={itemVariants} className="space-y-4">
+                    <div className="flex items-center gap-3 pl-2">
+                        <Cpu className="w-4 h-4 text-foreground/50" />
+                        <h2 className="text-lg font-black text-foreground uppercase tracking-tight">Rendimiento</h2>
+                    </div>
+                    
+                    <div className="glass-premium p-4 rounded-[2rem] border border-foreground/5 space-y-3">
+                        <button
+                            onClick={() => setPerformanceMode(!performanceMode)}
+                            className="w-full flex items-center justify-between p-4 rounded-[1.5rem] bg-foreground/[0.01] hover:bg-foreground/[0.03] transition-colors group cursor-pointer border border-transparent hover:border-foreground/5"
+                        >
+                            <div className="flex items-center gap-4">
+                                <div className={`w-12 h-12 rounded-xl flex items-center justify-center border transition-all ${performanceMode ? 'bg-primary/20 border-primary/20 shadow-[0_0_20px_rgba(16,185,129,0.2)]' : 'bg-foreground/5 border-foreground/10'}`}>
+                                    {performanceMode ? <Zap className="w-5 h-5 text-primary" /> : <ZapOff className="w-5 h-5 text-foreground/30" />}
+                                </div>
+                                <div className="flex flex-col text-left">
+                                    <span className="text-sm font-black text-foreground uppercase">Modo Rendimiento</span>
+                                    <span className="text-[10px] text-foreground/50 font-black uppercase tracking-widest mt-0.5">
+                                        {performanceMode ? 'Activado (Más fluido)' : 'Desactivado (Más efectos)'}
+                                    </span>
+                                </div>
+                            </div>
+                            <div className={`w-12 h-6 rounded-full relative transition-all duration-300 border ${performanceMode ? 'bg-primary border-primary' : 'bg-foreground/10 border-foreground/5'}`}>
+                                <motion.div 
+                                    animate={{ x: performanceMode ? 26 : 2 }}
+                                    className="absolute top-1 left-0 w-4 h-4 rounded-full bg-background shadow-sm"
+                                    transition={{ type: 'spring', stiffness: 500, damping: 30 }}
+                                />
+                            </div>
+                        </button>
+                        <p className="px-4 text-[9px] text-foreground/30 font-black uppercase tracking-widest leading-relaxed">
+                            Desactiva efectos de desenfoque y animaciones pesadas para celulares de gama baja.
+                        </p>
                     </div>
                 </motion.section>
 
