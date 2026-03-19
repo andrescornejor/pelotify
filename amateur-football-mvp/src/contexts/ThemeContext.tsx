@@ -7,15 +7,12 @@ type Theme = 'dark' | 'light' | 'system';
 interface ThemeContextType {
   theme: Theme;
   setTheme: (theme: Theme) => void;
-  lowPerformanceMode: boolean;
-  setLowPerformanceMode: (enabled: boolean) => void;
 }
 
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
   const [theme, setTheme] = useState<Theme>('dark');
-  const [lowPerformanceMode, setLowPerformanceMode] = useState<boolean>(false);
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
@@ -26,9 +23,6 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     } else {
       setTheme('system');
     }
-
-    const savedLowPerf = localStorage.getItem('lowPerformanceMode') === 'true';
-    setLowPerformanceMode(savedLowPerf);
   }, []);
 
   useEffect(() => {
@@ -47,19 +41,11 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     localStorage.setItem('theme', theme);
   }, [theme, mounted]);
 
-  useEffect(() => {
-    if (!mounted) return;
-    const root = window.document.documentElement;
-    if (lowPerformanceMode) {
-      root.classList.add('low-perf');
-    } else {
-      root.classList.remove('low-perf');
-    }
-    localStorage.setItem('lowPerformanceMode', lowPerformanceMode.toString());
-  }, [lowPerformanceMode, mounted]);
+  // Hydration mismatch is prevented by defaulting to 'dark' which matches the HTML class
+  // We MUST render the provider during SSR so children don't crash when calling useTheme
 
   return (
-    <ThemeContext.Provider value={{ theme, setTheme, lowPerformanceMode, setLowPerformanceMode }}>
+    <ThemeContext.Provider value={{ theme, setTheme }}>
       {children}
     </ThemeContext.Provider>
   );

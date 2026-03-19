@@ -1,15 +1,14 @@
 'use client';
 
 import { motion, Variants } from 'framer-motion';
-import { Settings, Moon, Sun, Monitor, Bell, Shield, LogOut, ChevronRight, User, Zap } from 'lucide-react';
+import { Settings, Moon, Sun, Monitor, Bell, Shield, LogOut, ChevronRight, User } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useTheme } from '@/contexts/ThemeContext';
 import Link from 'next/link';
-import { cn } from '@/lib/utils';
 
 export default function SettingsPage() {
     const { user, logout } = useAuth();
-    const { theme, setTheme, lowPerformanceMode, setLowPerformanceMode } = useTheme();
+    const { theme, setTheme } = useTheme();
 
     const containerVariants: Variants = {
         hidden: { opacity: 0 },
@@ -94,34 +93,6 @@ export default function SettingsPage() {
                             <Monitor className="w-6 h-6" />
                             <span className="text-[10px] font-black uppercase tracking-[0.2em]">Sistema</span>
                         </button>
-                    </div>
-                    <div className="glass-premium p-4 mt-4 rounded-[2rem] border border-foreground/5 space-y-2">
-                        <div className="flex items-center justify-between p-4 rounded-[1.5rem] bg-foreground/[0.01] hover:bg-foreground/[0.03] transition-colors group cursor-pointer border border-transparent">
-                            <div className="flex items-center gap-4">
-                                <div className={cn(
-                                    "w-12 h-12 rounded-xl flex items-center justify-center transition-all duration-300",
-                                    lowPerformanceMode ? "bg-accent/10 border border-accent/20" : "bg-foreground/5 border border-foreground/10"
-                                )}>
-                                    <Zap className={`w-5 h-5 ${lowPerformanceMode ? "text-accent" : "text-foreground/30"}`} />
-                                </div>
-                                <div className="flex flex-col">
-                                    <span className="text-sm font-black text-foreground uppercase">Alto Rendimiento</span>
-                                    <span className="text-[10px] text-foreground/50 font-black uppercase tracking-widest mt-0.5">Desactiva transparencias para mayor fluidez</span>
-                                </div>
-                            </div>
-                            <button 
-                                onClick={() => setLowPerformanceMode(!lowPerformanceMode)}
-                                className={cn(
-                                    "w-12 h-6 rounded-full relative transition-all duration-500",
-                                    lowPerformanceMode ? "bg-accent shadow-[0_0_15px_rgba(245,158,11,0.5)]" : "bg-foreground/10"
-                                )}
-                            >
-                                <motion.div 
-                                    animate={{ x: lowPerformanceMode ? 26 : 4 }}
-                                    className="absolute top-1 w-4 h-4 bg-white rounded-full shadow-lg"
-                                />
-                            </button>
-                        </div>
                     </div>
                 </motion.section>
 
