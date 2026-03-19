@@ -575,7 +575,8 @@ function MatchLobbyContent() {
                         </div>
                     </div>
                 </div>
-            )}
+            </div>
+        )}
 
             {!isCompleted && hasJoined && (
                 <div className="w-full px-4 lg:px-16 xl:px-24 pb-12 space-y-12 relative z-20">
