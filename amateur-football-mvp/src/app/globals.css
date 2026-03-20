@@ -7,10 +7,10 @@
 
 :root {
   /* Neon Elite Theme */
-  --primary: #2cfc7d;
-  --primary-light: #5dfd9d;
-  --primary-dark: #1db95a;
-  --primary-rgb: 44, 252, 125;
+  --primary: #55fa86;
+  --primary-light: #83ffab;
+  --primary-dark: #3ec86b;
+  --primary-rgb: 85, 250, 134;
 
   --accent: #f59e0b;
   --accent-light: #fbce4e;
