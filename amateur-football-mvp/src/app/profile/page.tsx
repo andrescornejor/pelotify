@@ -872,7 +872,7 @@ function ProfileContent() {
 
                                                     <div className="pt-4 flex flex-wrap justify-center md:justify-start gap-4">
                                                         <Link 
-                                                            href={`/teams?id=${userTeam.id}`}
+                                                            href={`/team?id=${userTeam.id}`}
                                                             className="h-11 px-8 rounded-xl bg-primary text-black text-[10px] font-black uppercase tracking-[0.2em] flex items-center gap-3 hover:bg-white transition-all shadow-xl shadow-primary/20 hover:shadow-white/20 active:scale-95"
                                                         >
                                                             Visitar Sede
