@@ -2,7 +2,7 @@ import { X, User2, LogOut, Settings, Trophy, Shield, Home as HomeIcon, Search, U
 import Link from 'next/link';
 import { useAuth } from '@/contexts/AuthContext';
 import { usePathname } from 'next/navigation';
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect, memo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useSidebar } from '@/contexts/SidebarContext';
 import { getPendingRequestsCount } from '@/lib/friends';
@@ -12,7 +12,7 @@ import { useSettings } from '@/contexts/SettingsContext';
 import { NotificationCenter } from '../notifications/NotificationCenter';
 import { cn } from '@/lib/utils';
 
-export function SidebarContent({ isMobile = false, onClose }: { isMobile?: boolean, onClose?: () => void }) {
+export const SidebarContent = memo(function SidebarContent({ isMobile = false, onClose }: { isMobile?: boolean, onClose?: () => void }) {
     const { user, logout } = useAuth();
     const pathname = usePathname();
     const { theme, setTheme } = useTheme();
@@ -60,13 +60,13 @@ export function SidebarContent({ isMobile = false, onClose }: { isMobile?: boole
 
     return (
         <div className="flex flex-col h-full overflow-hidden relative">
-            {/* ── Ambient background ── */}
+            {/* ── Ambient background - Optimized ── */}
             {!performanceMode && (
-                <div className="absolute inset-0 pointer-events-none overflow-hidden">
-                    <div className="absolute top-[-30%] right-[-40%] w-[80%] h-[60%] rounded-full opacity-[0.06]"
-                        style={{ background: 'radial-gradient(circle, #2cfc7d 0%, transparent 70%)', filter: 'blur(60px)' }} />
-                    <div className="absolute bottom-[5%] left-[-30%] w-[70%] h-[40%] rounded-full opacity-[0.04]"
-                        style={{ background: 'radial-gradient(circle, #3b82f6 0%, transparent 70%)', filter: 'blur(80px)' }} />
+                <div className="absolute inset-0 pointer-events-none overflow-hidden opacity-[0.05]">
+                    <div className="absolute top-[-20%] right-[-30%] w-[70%] h-[50%] rounded-full"
+                        style={{ background: 'radial-gradient(circle, #2cfc7d 0%, transparent 70%)' }} />
+                    <div className="absolute bottom-[0%] left-[-20%] w-[60%] h-[30%] rounded-full"
+                        style={{ background: 'radial-gradient(circle, #3b82f6 0%, transparent 70%)' }} />
                 </div>
             )}
 
@@ -85,8 +85,8 @@ export function SidebarContent({ isMobile = false, onClose }: { isMobile?: boole
                         className="flex items-center gap-2.5 group/logo"
                     >
                         <div className="w-16 h-16 flex items-center justify-center relative shrink-0 transition-transform duration-500 group-hover/logo:scale-110">
-                            <div className="absolute inset-0 bg-primary/20 blur-[25px] rounded-full opacity-40 shrink-0" />
-                            <img src="/logo_pelotify.png" alt="Logo" className="w-full h-full object-contain relative z-10 drop-shadow-[0_0_15px_rgba(44,252,125,0.3)]" />
+                            {!performanceMode && <div className="absolute inset-0 bg-primary/20 blur-[15px] rounded-full opacity-40 shrink-0" />}
+                            <img src="/logo_pelotify.png" alt="Logo" className="w-full h-full object-contain relative z-10" />
                         </div>
                         <div className="flex flex-col">
                             <span className="text-[22px] font-[900] tracking-[-0.04em] font-kanit uppercase italic leading-tight flex items-center gap-0 group-hover/logo:text-primary transition-all pr-4">
@@ -123,10 +123,10 @@ export function SidebarContent({ isMobile = false, onClose }: { isMobile?: boole
                                 <AnimatePresence mode="wait">
                                     <motion.div
                                         key={theme}
-                                        initial={{ scale: 0.5, opacity: 0 }}
-                                        animate={{ scale: 1, opacity: 1 }}
-                                        exit={{ scale: 0.5, opacity: 0 }}
-                                        transition={{ duration: 0.15 }}
+                                        initial={{ opacity: 0 }}
+                                        animate={{ opacity: 1 }}
+                                        exit={{ opacity: 0 }}
+                                        transition={{ duration: 0.1 }}
                                     >
                                         {theme === 'dark'
                                             ? <Sun className="w-3.5 h-3.5 text-foreground/40" />
@@ -176,12 +176,11 @@ export function SidebarContent({ isMobile = false, onClose }: { isMobile?: boole
             {user && (
                 <div className="relative z-10 mx-4 mb-5 shrink-0">
                     <Link href="/profile/me" onClick={() => isMobile && onClose && onClose()}>
-                        <motion.div
-                            whileHover={{ scale: 1.015 }}
-                            className="group relative overflow-hidden rounded-[1.25rem] p-4 cursor-pointer"
+                        <div
+                            className="group relative overflow-hidden rounded-[1.25rem] p-4 cursor-pointer transition-transform duration-200 hover:scale-[1.015]"
                             style={{
-                                background: 'linear-gradient(135deg, rgba(44,252,125,0.08) 0%, rgba(44,252,125,0.03) 100%)',
-                                border: '1px solid rgba(44,252,125,0.15)',
+                                background: 'linear-gradient(135deg, rgba(44,252,126,0.06) 0%, rgba(44,252,125,0.02) 100%)',
+                                border: '1px solid rgba(44,252,125,0.12)',
                             }}
                         >
                             {/* Background shine on hover */}
@@ -259,33 +258,29 @@ export function SidebarContent({ isMobile = false, onClose }: { isMobile?: boole
                             onClick={() => isMobile && onClose && onClose()}
                             className="relative group"
                         >
-                            <motion.div
-                                whileHover={{ x: 2 }}
-                                transition={{ type: 'spring', stiffness: 500, damping: 30 }}
+                            <div
                                 className={`relative flex items-center justify-between px-3 py-3 rounded-[0.875rem] transition-all duration-200 overflow-hidden ${
-                                    isActive ? '' : 'hover:bg-foreground/[0.04]'
+                                    isActive ? '' : 'hover:bg-foreground/[0.04] hover:translate-x-0.5'
                                 }`}
                                 style={isActive ? {
-                                    background: 'linear-gradient(135deg, rgba(44,252,125,0.14) 0%, rgba(44,252,125,0.06) 100%)',
-                                    border: '1px solid rgba(44,252,125,0.18)',
+                                    background: 'linear-gradient(135deg, rgba(44,252,125,0.12) 0%, rgba(44,252,125,0.05) 100%)',
+                                    border: '1px solid rgba(44,252,125,0.15)',
                                 } : {
                                     border: '1px solid transparent',
                                 }}
                             >
                                 {/* Active left bar */}
                                 {isActive && (
-                                    <motion.div
-                                        layoutId="sidebar-active-bar"
+                                    <div
                                         className="absolute left-0 top-2 bottom-2 w-[3px] rounded-full"
-                                        style={{ background: 'linear-gradient(180deg, #5dfd9d, #2cfc7d)', boxShadow: '0 0 8px rgba(44,252,125,0.5)' }}
-                                        transition={{ type: 'spring', stiffness: 500, damping: 35 }}
+                                        style={{ background: 'linear-gradient(180deg, #5dfd9d, #2cfc7d)' }}
                                     />
                                 )}
 
-                                {/* Hover shimmer */}
-                                {!isActive && (
+                                {/* Hover shimmer - simplified */}
+                                {!isActive && !performanceMode && (
                                     <div className="absolute inset-0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700 pointer-events-none"
-                                        style={{ background: 'linear-gradient(90deg, transparent, rgba(var(--foreground-rgb),0.05), transparent)' }} />
+                                        style={{ background: 'linear-gradient(90deg, transparent, rgba(var(--foreground-rgb),0.03), transparent)' }} />
                                 )}
 
                                 <div className="flex items-center gap-3 relative z-10 pl-1">
@@ -301,16 +296,14 @@ export function SidebarContent({ isMobile = false, onClose }: { isMobile?: boole
                                 </div>
 
                                 {item.badge && (
-                                    <motion.span
-                                        initial={{ scale: 0 }}
-                                        animate={{ scale: 1 }}
+                                    <span
                                         className="relative z-10 min-w-[20px] h-5 px-1.5 rounded-full flex items-center justify-center text-[9px] font-black bg-primary/90 text-background"
                                         style={{ boxShadow: '0 0 10px rgba(44,252,125,0.35)' }}
                                     >
                                         {item.badge}
-                                    </motion.span>
+                                    </span>
                                 )}
-                            </motion.div>
+                            </div>
                         </Link>
                     );
                 })}
@@ -321,16 +314,18 @@ export function SidebarContent({ isMobile = false, onClose }: { isMobile?: boole
                         style={{ background: 'linear-gradient(90deg, transparent, rgba(var(--foreground-rgb),0.1), transparent)' }} />
                     <Link href="/create" onClick={() => isMobile && onClose && onClose()}>
                         <motion.button
-                            whileHover={{ scale: 1.02, y: -1 }}
+                            whileHover={performanceMode ? {} : { scale: 1.02 }}
                             whileTap={{ scale: 0.97 }}
                             className="w-full h-11 rounded-[0.875rem] font-black text-[10px] uppercase tracking-[0.2em] flex items-center justify-center gap-2.5 text-background relative overflow-hidden group"
                             style={{
                                 background: 'linear-gradient(135deg, #5dfd9d 0%, #2cfc7d 50%, #1db95a 100%)',
-                                boxShadow: '0 6px 20px rgba(44,252,125,0.3), 0 2px 8px rgba(0,0,0,0.2)',
+                                boxShadow: performanceMode ? 'none' : '0 6px 20px rgba(44,252,125,0.3)',
                             }}
                         >
-                            <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity"
-                                style={{ background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent)', animation: 'shimmer 1s ease' }} />
+                            {!performanceMode && (
+                                <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity"
+                                    style={{ background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent)', animation: 'shimmer 1s ease' }} />
+                            )}
                             <PlusCircle className="w-4 h-4 group-hover:rotate-90 transition-transform duration-500 relative z-10" strokeWidth={2.5} />
                             <span className="relative z-10">Armar Partido</span>
                         </motion.button>
@@ -386,13 +381,13 @@ export function Sidebar() {
                         initial={{ x: '-100%' }}
                         animate={{ x: 0 }}
                         exit={{ x: '-100%' }}
-                        transition={performanceMode ? { type: 'tween', duration: 0.15, ease: 'easeOut' } : { type: 'spring', damping: 28, stiffness: 220 }}
-                        className="absolute inset-y-0 left-0 w-[290px] flex flex-col shadow-2xl sidebar-container"
+                        transition={performanceMode ? { duration: 0.15, ease: 'easeOut' } : { type: 'tween', duration: 0.25, ease: 'easeOut' }}
+                        className="absolute inset-y-0 left-0 w-[290px] flex flex-col shadow-2xl sidebar-container will-change-transform"
                         style={{
                             backgroundColor: 'var(--surface-elevated)',
-                            backdropFilter: performanceMode ? 'none' : 'blur(24px)',
+                            backdropFilter: performanceMode ? 'none' : 'blur(12px)',
                             borderRight: '1px solid rgba(var(--foreground-rgb),0.08)',
-                            boxShadow: '20px 0 60px rgba(0,0,0,0.3)',
+                            boxShadow: performanceMode ? 'none' : '20px 0 60px rgba(0,0,0,0.3)',
                         }}
                     >
                         <SidebarContent isMobile onClose={onClose} />
