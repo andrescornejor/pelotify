@@ -709,24 +709,37 @@ function MatchLobbyContent() {
                                     <div className="space-y-3 max-h-[45vh] overflow-y-auto no-scrollbar pr-4 -mr-4">
                                         {friends.map(f => {
                                             const otherUserId = f.user_id === user?.id ? f.friend_id : f.user_id;
-                                            const isAlreadyInMatch = participants.some(p => p.user_id === otherUserId);
+                                            const participant = participants.find(p => p.user_id === otherUserId);
+                                            const isInvited = participant?.status === 'pending';
+                                            const isJoined = participant?.status === 'confirmed';
 
                                             return (
                                                 <div key={f.id} className="flex items-center justify-between p-5 rounded-[2rem] bg-foreground/5 border border-foreground/10">
                                                     <div className="flex items-center gap-5">
                                                         <span className="font-black text-sm text-foreground uppercase italic tracking-tighter">{f.profiles?.name}</span>
                                                     </div>
-                                                    {!isAlreadyInMatch && (
+                                                    {isJoined ? (
+                                                        <div className="px-5 py-2 bg-foreground/5 border border-foreground/10 rounded-xl flex items-center gap-2">
+                                                            <div className="w-1.5 h-1.5 rounded-full bg-primary" />
+                                                            <span className="text-[9px] font-black text-foreground/40 uppercase tracking-widest">YA SE UNIÓ</span>
+                                                        </div>
+                                                    ) : isInvited ? (
+                                                        <div className="px-5 py-2 bg-primary/10 border border-primary/20 rounded-xl flex items-center gap-2">
+                                                            <Check className="w-3 h-3 text-primary" />
+                                                            <span className="text-[9px] font-black text-primary uppercase tracking-widest">INVITADO</span>
+                                                        </div>
+                                                    ) : (
                                                         <button
                                                             onClick={() => handleInviteFriend(otherUserId)}
                                                             disabled={invitingId === otherUserId}
-                                                            className="h-12 px-8 bg-primary text-black font-black text-[10px] uppercase tracking-widest rounded-2xl"
+                                                            className="h-12 px-8 bg-primary text-black font-black text-[10px] uppercase tracking-widest rounded-2xl hover:scale-105 active:scale-95 transition-all shadow-lg shadow-primary/20"
                                                         >
                                                             {invitingId === otherUserId ? <Loader2 className="w-4 h-4 animate-spin" /> : 'INVITAR'}
                                                         </button>
                                                     )}
                                                 </div>
                                             );
+
                                         })}
                                     </div>
                                 )}
