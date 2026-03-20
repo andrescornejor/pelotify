@@ -151,7 +151,7 @@ export function TopHeader() {
                                     </div>
                                     <div className="flex-1 min-w-0 flex flex-col lg:gap-0.5">
                                         <div className="flex items-center gap-2">
-                                            <span className="text-[20px] sm:text-[24px] lg:text-[24px] xl:text-[32px] font-[900] tracking-[-0.02em] font-kanit uppercase italic leading-tight flex items-center gap-0 pr-4">
+                                            <span className="text-[20px] sm:text-[24px] lg:text-[24px] 2xl:text-[32px] font-[900] tracking-[-0.02em] font-kanit uppercase italic leading-tight flex items-center gap-0 pr-4">
                                                 <span className="text-foreground">
                                                     PELOTI
                                                 </span>
@@ -172,7 +172,7 @@ export function TopHeader() {
                                                 className="hidden lg:block w-2.5 h-2.5 rounded-full bg-primary shadow-[0_0_15px_rgba(44,252,125,0.8)]"
                                             />
                                         </div>
-                                        <span className="hidden sm:block lg:hidden xl:block text-[7px] sm:text-[9px] lg:text-[10px] font-black uppercase tracking-[0.3em] text-foreground/25 leading-none mt-0.5 group-hover/logo:text-primary transition-colors duration-500">
+                                        <span className="hidden sm:block lg:hidden 2xl:block text-[7px] sm:text-[9px] lg:text-[10px] font-black uppercase tracking-[0.3em] text-foreground/25 leading-none mt-0.5 group-hover/logo:text-primary transition-colors duration-500">
                                             Dominá el <span className="text-primary/50 group-hover/logo:text-primary transition-colors duration-500">Potrero</span>
                                         </span>
                                     </div>
@@ -218,7 +218,7 @@ export function TopHeader() {
                                                 )} strokeWidth={isActive ? 2.5 : 2} />
                                                 
                                                 <span className={cn(
-                                                    "hidden xl:block text-[12px] font-black uppercase tracking-wider",
+                                                    "hidden 2xl:block text-[12px] font-black uppercase tracking-wider",
                                                     isActive ? "opacity-100" : "opacity-80"
                                                 )}>
                                                     {item.label}
