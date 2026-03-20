@@ -2,7 +2,7 @@
 
 import { Suspense } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Shield, Users, Trophy, MapPin, Calendar, ArrowLeft, Settings, Save, X, Trash2, LogOut, Camera, ChevronRight, Check, Sparkles, Loader2, PlusCircle, Plus, Search, Swords, Layout } from 'lucide-react';
+import { Shield, Users, Trophy, MapPin, Calendar, ArrowLeft, Settings, Save, X, Trash2, LogOut, Camera, ChevronRight, Check, Sparkles, Loader2, PlusCircle, Plus, Search, Swords, Layout, History, Zap } from 'lucide-react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { getTeamById, getTeamMembers, getTeamRequests, updateTeam, deleteTeam, Team, leaveTeam, joinTeam, inviteToTeam, respondToTeamInvitation } from '@/lib/teams';
@@ -614,6 +614,54 @@ function TeamProfileContent() {
                     </motion.div>
                 )}
 
+                {activeTab === 'squad' && teamMatches.some(m => !m.is_completed) && (
+                    <div className="space-y-6">
+                        <div className="flex items-center gap-4 px-2">
+                            <div className="w-10 h-10 rounded-2xl bg-primary/10 flex items-center justify-center border border-primary/20 text-primary">
+                                <Zap className="w-5 h-5" />
+                            </div>
+                            <div className="flex flex-col">
+                                <h2 className="text-2xl font-black text-foreground italic uppercase tracking-tighter leading-none">Próximo Desafío</h2>
+                                <span className="text-[9px] font-black text-foreground/40 uppercase tracking-widest mt-1">Siguiente partido programado</span>
+                            </div>
+                        </div>
+                        {teamMatches
+                            .filter(m => !m.is_completed)
+                            .sort((a, b) => new Date(`${a.date}T${a.time}`).getTime() - new Date(`${b.date}T${b.time}`).getTime())
+                            .slice(0, 1)
+                            .map(m => (
+                                <Link key={m.id} href={`/match?id=${m.id}`}>
+                                    <motion.div
+                                        whileHover={{ scale: 1.02 }}
+                                        className="relative group p-8 rounded-[3rem] glass-premium border border-primary/30 overflow-hidden shadow-[0_30px_60px_rgba(var(--primary-rgb),0.2)]"
+                                    >
+                                        <div className="absolute inset-0 bg-primary/5 opacity-0 group-hover:opacity-100 transition-opacity" />
+                                        <div className="flex flex-col md:flex-row items-center justify-between gap-8 relative z-10">
+                                            <div className="flex items-center gap-6">
+                                                <div className="w-20 h-20 rounded-[2rem] bg-primary text-background flex flex-col items-center justify-center font-black italic shadow-2xl">
+                                                    <span className="text-2xl leading-none">{m.date.split('-')[2]}</span>
+                                                    <span className="text-[10px] uppercase tracking-widest">{['ENE', 'FEB', 'MAR', 'ABR', 'MAY', 'JUN', 'JUL', 'AGO', 'SEP', 'OCT', 'NOV', 'DIC'][parseInt(m.date.split('-')[1]) - 1]}</span>
+                                                </div>
+                                                <div className="space-y-1">
+                                                    <h3 className="text-2xl font-black text-foreground italic uppercase tracking-tighter leading-none group-hover:text-primary transition-colors">{m.location}</h3>
+                                                    <div className="flex items-center gap-3">
+                                                        <span className="text-xs font-black text-primary italic uppercase tracking-widest">{m.time} HS</span>
+                                                        <div className="w-1 h-1 rounded-full bg-foreground/20" />
+                                                        <span className="text-[10px] font-black text-foreground/40 uppercase tracking-[0.2em]">{m.type}</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <button className="h-14 px-10 bg-primary text-background rounded-2xl font-black uppercase tracking-widest text-[10px] shadow-xl shadow-primary/20 hover:scale-105 transition-all">
+                                                Lobby del Partido
+                                            </button>
+                                        </div>
+                                    </motion.div>
+                                </Link>
+                            ))}
+                    </div>
+                )}
+
+
                 {activeTab === 'squad' && (
                     <section className="space-y-8">
                         <div className="flex items-center justify-between px-2">
@@ -694,64 +742,123 @@ function TeamProfileContent() {
                 )}
 
                 {activeTab === 'history' && (
-                    <section className="space-y-8">
-                        <div className="flex items-center gap-4 px-2">
-                            <div className="w-10 h-10 rounded-2xl bg-foreground/[0.03] flex items-center justify-center border border-foreground/10 text-foreground/50">
-                                <Calendar className="w-5 h-5" />
+                    <section className="space-y-12 pb-20">
+                        {/* Upcoming Section */}
+                        <div className="space-y-6">
+                            <div className="flex items-center gap-4 px-2">
+                                <div className="w-10 h-10 rounded-2xl bg-foreground/[0.03] flex items-center justify-center border border-foreground/10 text-foreground/50">
+                                    <Calendar className="w-5 h-5" />
+                                </div>
+                                <div className="flex flex-col">
+                                    <h2 className="text-2xl font-black text-foreground italic uppercase tracking-tighter leading-none">Próximos Partidos</h2>
+                                    <span className="text-[9px] font-black text-foreground/60 uppercase tracking-widest mt-1">PARTIDOS PROGRAMADOS</span>
+                                </div>
                             </div>
-                            <div className="flex flex-col">
-                                <h2 className="text-2xl font-black text-foreground italic uppercase tracking-tighter">Historial de Partidos</h2>
-                                <span className="text-[9px] font-black text-foreground/60 uppercase tracking-widest">{teamMatches.length} ENCUENTROS REGISTRADOS</span>
-                            </div>
-                        </div>
 
-                        {teamMatches.length === 0 ? (
-                            <div className="glass-premium p-10 rounded-[3rem] border border-dashed border-foreground/10 text-center bg-foreground/[0.01]">
-                                <p className="text-[10px] font-black text-foreground/30 uppercase tracking-[0.4em] italic leading-relaxed">
-                                    Aún no se han registrado partidos oficiales.<br />¡Desafía a otros equipos para empezar!
-                                </p>
-                            </div>
-                        ) : (
-                            <div className="space-y-4">
-                                {teamMatches.map((match) => {
-                                    const isHome = match.team_a_id === team.id;
-                                    const result = (isHome ? match.team_a_score : match.team_b_score) > (isHome ? match.team_b_score : match.team_a_score)
-                                        ? 'victory' : (match.team_a_score === match.team_b_score ? 'draw' : 'defeat');
-
-                                    return (
-                                        <Link key={match.id} href={`/match?id=${match.id}`}>
-                                            <motion.div
-                                                whileHover={{ scale: 1.01 }}
-                                                className={cn(
-                                                    "glass-premium p-6 rounded-[2.5rem] flex items-center justify-between border transition-all",
-                                                    result === 'victory' ? "border-primary/20 bg-primary/5 shadow-lg shadow-primary/5" :
-                                                        result === 'defeat' ? "border-red-500/10 bg-red-500/[0.02] grayscale-[0.5]" : "border-foreground/5 bg-foreground/[0.01]"
-                                                )}
-                                            >
-                                                <div className="flex items-center gap-6">
-                                                    <div className={cn(
-                                                        "w-12 h-12 rounded-2xl flex items-center justify-center font-black text-lg italic",
-                                                        result === 'victory' ? "bg-primary text-background" :
-                                                            result === 'defeat' ? "bg-red-500/20 text-red-500" : "bg-foreground/5 text-foreground/40"
-                                                    )}>
-                                                        {result === 'victory' ? 'W' : result === 'defeat' ? 'L' : 'D'}
-                                                    </div>
-                                                    <div className="flex flex-col">
-                                                        <span className="text-[10px] font-black text-foreground/30 uppercase tracking-widest">{match.date}</span>
-                                                        <div className="flex items-center gap-3">
-                                                            <span className="text-xl font-black text-foreground uppercase italic tracking-tighter">
-                                                                {match.team_a_score} - {match.team_b_score}
-                                                            </span>
+                            {teamMatches.filter(m => !m.is_completed).length === 0 ? (
+                                <div className="glass-premium p-10 rounded-[3rem] border border-dashed border-foreground/10 text-center bg-foreground/[0.01]">
+                                    <p className="text-[10px] font-black text-foreground/30 uppercase tracking-[0.4em] italic leading-relaxed">
+                                        No hay partidos programados para este equipo.<br />¡El Capitán debe crear un desafío!
+                                    </p>
+                                </div>
+                            ) : (
+                                <div className="grid grid-cols-1 gap-4">
+                                    {teamMatches
+                                        .filter(m => !m.is_completed)
+                                        .sort((a,b) => new Date(`${a.date}T${a.time}`).getTime() - new Date(`${b.date}T${b.time}`).getTime())
+                                        .map((match) => (
+                                            <Link key={match.id} href={`/match?id=${match.id}`}>
+                                                <motion.div
+                                                    whileHover={{ x: 10 }}
+                                                    className="glass-premium p-6 rounded-[2.5rem] flex items-center justify-between border border-foreground/10 hover:border-primary/40 transition-all group"
+                                                >
+                                                    <div className="flex items-center gap-6">
+                                                        <div className="w-16 h-16 rounded-2xl bg-foreground/5 border border-foreground/10 flex flex-col items-center justify-center">
+                                                            <span className="text-xl font-black italic text-foreground leading-none">{match.date.split('-')[2]}</span>
+                                                            <span className="text-[8px] font-black text-foreground/40 uppercase tracking-widest">{['ENE', 'FEB', 'MAR', 'ABR', 'MAY', 'JUN', 'JUL', 'AGO', 'SEP', 'OCT', 'NOV', 'DIC'][parseInt(match.date.split('-')[1]) - 1]}</span>
+                                                        </div>
+                                                        <div className="space-y-1">
+                                                            <h4 className="text-xl font-black text-foreground italic uppercase tracking-tighter group-hover:text-primary transition-colors">{match.location}</h4>
+                                                            <div className="flex items-center gap-3">
+                                                                <span className="text-[10px] font-black text-primary uppercase tracking-[0.2em]">{match.time} HS</span>
+                                                                <div className="w-1 h-1 rounded-full bg-foreground/10" />
+                                                                <span className="text-[10px] font-black text-foreground/40 uppercase tracking-[0.2em]">{match.type}</span>
+                                                            </div>
                                                         </div>
                                                     </div>
-                                                </div>
-                                                <ChevronRight className="w-5 h-5 text-foreground/20" />
-                                            </motion.div>
-                                        </Link>
-                                    );
-                                })}
+                                                    <div className="h-10 px-6 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center">
+                                                        <span className="text-[9px] font-black text-primary uppercase tracking-widest">PENDIENTE</span>
+                                                    </div>
+                                                </motion.div>
+                                            </Link>
+                                        ))}
+                                </div>
+                            )}
+                        </div>
+
+                        {/* History Section */}
+                        <div className="space-y-6 pt-6 border-t border-foreground/5">
+                            <div className="flex items-center gap-4 px-2">
+                                <div className="w-10 h-10 rounded-2xl bg-foreground/[0.03] flex items-center justify-center border border-foreground/10 text-foreground/50">
+                                    <History className="w-5 h-5" />
+                                </div>
+                                <div className="flex flex-col">
+                                    <h2 className="text-2xl font-black text-foreground italic uppercase tracking-tighter leading-none">Historial de Resultados</h2>
+                                    <span className="text-[9px] font-black text-foreground/60 uppercase tracking-widest mt-1">{teamMatches.filter(m => m.is_completed).length} ENCUENTROS FINALIZADOS</span>
+                                </div>
                             </div>
-                        )}
+
+                            {teamMatches.filter(m => m.is_completed).length === 0 ? (
+                                <div className="glass-premium p-10 rounded-[3rem] border border-dashed border-foreground/10 text-center bg-foreground/[0.01]">
+                                    <p className="text-[10px] font-black text-foreground/30 uppercase tracking-[0.4em] italic leading-relaxed">
+                                        Este equipo aún no ha completado ningún partido oficial.
+                                    </p>
+                                </div>
+                            ) : (
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    {teamMatches
+                                        .filter(m => m.is_completed)
+                                        .sort((a,b) => new Date(`${b.date}T${b.time}`).getTime() - new Date(`${a.date}T${a.time}`).getTime())
+                                        .map((match) => {
+                                            const isHome = match.team_a_id === team.id;
+                                            const result = (isHome ? match.team_a_score : match.team_b_score) > (isHome ? match.team_b_score : match.team_a_score)
+                                                ? 'victory' : (match.team_a_score === match.team_b_score ? 'draw' : 'defeat');
+
+                                            return (
+                                                <Link key={match.id} href={`/match?id=${match.id}`}>
+                                                    <motion.div
+                                                        whileHover={{ scale: 1.02 }}
+                                                        className={cn(
+                                                            "glass-premium p-6 rounded-[2.5rem] flex items-center justify-between border transition-all h-full",
+                                                            result === 'victory' ? "border-primary/20 bg-primary/5 shadow-lg shadow-primary/5" :
+                                                                result === 'defeat' ? "border-red-500/10 bg-red-500/[0.02] grayscale-[0.5]" : "border-foreground/5 bg-foreground/[0.01]"
+                                                        )}
+                                                    >
+                                                        <div className="flex items-center gap-6">
+                                                            <div className={cn(
+                                                                "w-12 h-12 rounded-2xl flex items-center justify-center font-black text-lg italic",
+                                                                result === 'victory' ? "bg-primary text-background" :
+                                                                    result === 'defeat' ? "bg-red-500/20 text-red-500" : "bg-foreground/5 text-foreground/40"
+                                                            )}>
+                                                                {result === 'victory' ? 'W' : result === 'defeat' ? 'L' : 'D'}
+                                                            </div>
+                                                            <div className="flex flex-col">
+                                                                <span className="text-[9px] font-black text-foreground/30 uppercase tracking-widest">{match.date}</span>
+                                                                <div className="flex items-center gap-3">
+                                                                    <span className="text-xl font-black text-foreground uppercase italic tracking-tighter">
+                                                                        {match.team_a_score} - {match.team_b_score}
+                                                                    </span>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <ChevronRight className="w-5 h-5 text-foreground/20" />
+                                                    </motion.div>
+                                                </Link>
+                                            );
+                                        })}
+                                </div>
+                            )}
+                        </div>
                     </section>
                 )}
 
