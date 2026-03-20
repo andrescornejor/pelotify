@@ -65,7 +65,7 @@ export function BottomNav() {
                     "relative overflow-hidden rounded-[2.5rem] border transition-all duration-500",
                     performanceMode
                         ? "bg-surface border-border shadow-lg"
-                        : "glass-premium bg-background/60 backdrop-blur-2xl saturate-[1.8] border-foreground/[0.08] shadow-[0_20px_50px_rgba(0,0,0,0.3)]"
+                        : "glass-premium bg-background/60 backdrop-blur-2xl border-foreground/[0.08] shadow-[0_20px_50px_rgba(0,0,0,0.3)]"
                 )}
             >
                 <div className="flex justify-around items-center h-[72px] px-2">
@@ -130,7 +130,7 @@ export function BottomNav() {
                                     {hasUnread && !isActive && (
                                         <span
                                             className="absolute -top-1 -right-1 w-2.5 h-2.5 rounded-full border-2 border-background shadow-lg"
-                                            style={{ backgroundColor: '#55fa86', boxShadow: '0 0 10px rgba(255, 0, 0, 0.5)' }}
+                                            style={{ backgroundColor: '#55fa86', boxShadow: '0 0 10px rgba(85, 250, 134, 0.5)' }}
                                         />
                                     )}
 
