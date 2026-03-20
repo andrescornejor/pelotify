@@ -95,13 +95,13 @@ export function TopHeader() {
 
     return (
         <>
-            <header className="fixed top-0 left-0 right-0 z-[60] pt-3 sm:pt-4 px-3 sm:px-5 xl:px-10 2xl:px-16 pointer-events-none">
+            <header className="fixed top-0 left-0 right-0 z-[60] pt-3 sm:pt-4 px-3 sm:px-5 lg:px-10 xl:px-16 pointer-events-none">
                 <div className="max-w-screen-2xl mx-auto w-full pointer-events-auto">
                     <motion.div
                         initial={{ y: -24, opacity: 0 }}
                         animate={{ y: 0, opacity: 1 }}
                         transition={{ type: 'spring', stiffness: 300, damping: 26, delay: 0.05 }}
-                        className="overflow-hidden rounded-[1.25rem] xl:rounded-[1.75rem]"
+                        className="overflow-hidden rounded-[1.25rem] lg:rounded-[1.75rem]"
                         style={{
                             background: performanceMode ? 'var(--surface-elevated)' : 'rgba(var(--foreground-rgb), 0.04)',
                             backdropFilter: performanceMode ? 'none' : 'blur(28px) saturate(180%)',
@@ -113,13 +113,13 @@ export function TopHeader() {
                         {/* Background subtle light beam */}
                         <div className="absolute top-0 left-[-10%] w-[40%] h-full bg-gradient-to-r from-primary/5 via-transparent to-transparent -skew-x-12 pointer-events-none" />
 
-                        <div className="grid grid-cols-[1fr_auto_1fr] items-center h-[58px] sm:h-[68px] xl:h-[76px] px-4 sm:px-6 xl:px-8 w-full">
+                        <div className="grid grid-cols-[1fr_auto_1fr] items-center h-[58px] sm:h-[68px] lg:h-[76px] px-4 sm:px-6 lg:px-8 w-full">
                             {/* Left: Menu + Logo */}
-                            <div className="flex items-center gap-3 sm:gap-4 xl:gap-3 2xl:gap-6 min-w-0">
+                            <div className="flex items-center gap-3 sm:gap-4 lg:gap-3 xl:gap-6 min-w-0">
                                 <motion.button
                                     onClick={toggleSidebar}
                                     whileTap={{ scale: 0.92 }}
-                                    className="relative w-10 h-10 xl:w-11 xl:h-11 flex items-center justify-center rounded-2xl bg-foreground/[0.04] hover:bg-foreground/[0.08] border border-foreground/[0.06] transition-all group"
+                                    className="relative w-10 h-10 lg:w-11 lg:h-11 flex items-center justify-center rounded-2xl bg-foreground/[0.04] hover:bg-foreground/[0.08] border border-foreground/[0.06] transition-all group"
                                     aria-label="Menu"
                                 >
                                     <div className="flex flex-col gap-[5px] w-[19px] items-end">
@@ -145,13 +145,13 @@ export function TopHeader() {
                                 </motion.button>
 
                                 <Link href="/" className="flex items-center gap-2 select-none hover:opacity-90 transition-all group/logo">
-                                    <div className="w-12 h-12 sm:w-16 sm:h-16 xl:w-14 xl:h-14 2xl:w-20 2xl:h-20 flex items-center justify-center relative transition-transform duration-500 group-hover/logo:scale-110 shrink-0">
+                                    <div className="w-12 h-12 sm:w-16 sm:h-16 lg:w-14 lg:h-14 xl:w-20 xl:h-20 flex items-center justify-center relative transition-transform duration-500 group-hover/logo:scale-110 shrink-0">
                                         <div className="absolute inset-0 bg-primary/15 blur-[20px] rounded-full opacity-40 shrink-0" />
                                         <img src="/logo_pelotify.png" alt="Logo" className="w-full h-full object-contain relative z-10 drop-shadow-[0_0_15px_rgba(44,252,125,0.2)]" />
                                     </div>
-                                    <div className="flex-1 min-w-0 flex flex-col xl:gap-0.5">
+                                    <div className="flex-1 min-w-0 flex flex-col lg:gap-0.5">
                                         <div className="flex items-center gap-2">
-                                            <span className="text-[20px] sm:text-[24px] xl:text-[24px] 2xl:text-[32px] font-[900] tracking-[-0.02em] font-kanit uppercase italic leading-tight flex items-center gap-0 pr-4">
+                                            <span className="text-[20px] sm:text-[24px] lg:text-[24px] xl:text-[32px] font-[900] tracking-[-0.02em] font-kanit uppercase italic leading-tight flex items-center gap-0 pr-4">
                                                 <span className="text-foreground">
                                                     PELOTI
                                                 </span>
@@ -165,14 +165,14 @@ export function TopHeader() {
                                                     FY
                                                 </span>
                                             </span>
-                                            {/* Subtitle gem - only xl */}
+                                            {/* Subtitle gem - only lg */}
                                             <motion.div
                                                 animate={{ scale: [1, 1.2, 1], opacity: [0.5, 1, 0.5] }}
                                                 transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
-                                                className="hidden xl:block w-2.5 h-2.5 rounded-full bg-primary shadow-[0_0_15px_rgba(44,252,125,0.8)]"
+                                                className="hidden lg:block w-2.5 h-2.5 rounded-full bg-primary shadow-[0_0_15px_rgba(44,252,125,0.8)]"
                                             />
                                         </div>
-                                        <span className="hidden sm:block xl:hidden 2xl:block text-[7px] sm:text-[9px] xl:text-[10px] font-black uppercase tracking-[0.3em] text-foreground/25 leading-none mt-0.5 group-hover/logo:text-primary transition-colors duration-500">
+                                        <span className="hidden sm:block lg:hidden xl:block text-[7px] sm:text-[9px] lg:text-[10px] font-black uppercase tracking-[0.3em] text-foreground/25 leading-none mt-0.5 group-hover/logo:text-primary transition-colors duration-500">
                                             Dominá el <span className="text-primary/50 group-hover/logo:text-primary transition-colors duration-500">Potrero</span>
                                         </span>
                                     </div>
@@ -180,7 +180,7 @@ export function TopHeader() {
                             </div>
 
                             {/* Middle: Desktop Nav */}
-                            <nav className="hidden xl:flex items-center gap-1.5 bg-foreground/[0.03] p-1.5 rounded-[1.25rem] border border-foreground/[0.05] backdrop-blur-md">
+                            <nav className="hidden lg:flex items-center gap-1.5 bg-foreground/[0.03] p-1.5 rounded-[1.25rem] border border-foreground/[0.05] backdrop-blur-md">
                                 {DESKTOP_NAV.map((item) => {
                                     const cleanPath = pathname.replace(/\/$/, '') || '/';
                                     const cleanHref = item.href.replace(/\/$/, '') || '/';
@@ -218,7 +218,7 @@ export function TopHeader() {
                                                 )} strokeWidth={isActive ? 2.5 : 2} />
                                                 
                                                 <span className={cn(
-                                                    "hidden 2xl:block text-[12px] font-black uppercase tracking-wider",
+                                                    "hidden xl:block text-[12px] font-black uppercase tracking-wider",
                                                     isActive ? "opacity-100" : "opacity-80"
                                                 )}>
                                                     {item.label}
@@ -235,7 +235,7 @@ export function TopHeader() {
 
 
                             {/* Right: Actions */}
-                            <div className="flex items-center justify-end gap-1.5 sm:gap-4 xl:gap-2.5 2xl:gap-4 col-start-3">
+                            <div className="flex items-center justify-end gap-1.5 sm:gap-4 lg:gap-2.5 xl:gap-4 col-start-3">
                                 {/* Create Match Button - Only Desktop */}
 
 
