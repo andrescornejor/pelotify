@@ -221,17 +221,24 @@ export default function HomePage() {
           {/* Backdrop image & Effects */}
           <div className="absolute inset-0 z-0 select-none">
             <motion.img
-              animate={isPerfMode ? {} : { 
+              initial={false}
+              animate={isPerfMode ? { scale: 1, rotate: 0 } : { 
                 scale: [1.02, 1.08, 1.02],
                 rotate: [0, 1, 0]
               }}
               transition={{ duration: 25, repeat: Infinity, ease: 'linear' }}
               src="https://images.unsplash.com/photo-1574629810360-7efbbe195018?auto=format&fit=crop&q=80&w=2400"
               alt=""
-              className={cn("w-full h-full object-cover grayscale opacity-[0.08] dark:opacity-[0.12] scale-110", isPerfMode && "grayscale-0 opacity-5")}
+              className={cn(
+                "w-full h-full object-cover grayscale opacity-[0.08] dark:opacity-[0.12] scale-110 transition-opacity",
+                isPerfMode && "grayscale-0 opacity-20 scale-100"
+              )}
             />
             {/* Overlay gradients for depth */}
-            <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent opacity-90" />
+            <div className={cn(
+              "absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent opacity-90",
+              isPerfMode && "opacity-70"
+            )} />
             {!isPerfMode && (
               <>
                 <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-transparent to-accent/5" />
