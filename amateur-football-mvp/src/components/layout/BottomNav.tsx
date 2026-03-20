@@ -68,24 +68,56 @@ export function BottomNav() {
     }
 
     return (
-        <div className="fixed bottom-0 left-0 right-0 z-50 pointer-events-none lg:hidden">
-            {/* Safe area blur backdrop */}
-            <div className="absolute inset-x-0 bottom-0 h-[calc(100%+env(safe-area-inset-bottom,0px))] bg-gradient-to-t from-background/95 via-background/80 to-transparent pointer-events-none" />
+        <div className="fixed bottom-0 left-0 right-0 z-[100] px-6 pb-6 pointer-events-none lg:hidden">
+            {/* Ambient Background Glow behind the bar */}
+            <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-background via-background/80 to-transparent pointer-events-none -z-10" />
 
             <nav
-                className="relative mx-4 mb-4 pointer-events-auto rounded-[1.75rem] overflow-hidden"
+                className="relative mx-auto max-w-md pointer-events-auto rounded-[2.5rem] overflow-hidden"
                 style={{
-                    background: 'rgba(var(--foreground-rgb), 0.04)',
-                    backdropFilter: 'blur(32px) saturate(200%)',
-                    WebkitBackdropFilter: 'blur(32px) saturate(200%)',
-                    border: '1px solid rgba(var(--foreground-rgb), 0.08)',
-                    boxShadow: '0 -1px 0 rgba(var(--foreground-rgb), 0.05), 0 20px 60px rgba(0,0,0,0.35), 0 8px 24px rgba(0,0,0,0.2)',
+                    background: 'rgba(var(--foreground-rgb), 0.08)',
+                    backdropFilter: 'blur(24px) saturate(160%)',
+                    WebkitBackdropFilter: 'blur(24px) saturate(160%)',
+                    border: '1px solid rgba(255, 255, 255, 0.08)',
+                    boxShadow: `
+                        0 20px 50px rgba(0, 0, 0, 0.4), 
+                        0 0 0 1px rgba(var(--foreground-rgb), 0.05),
+                        inset 0 1px 0 rgba(255, 255, 255, 0.1)
+                    `,
                 }}
             >
-                {/* Top highlight line */}
-                <div className="absolute top-0 left-8 right-8 h-px bg-gradient-to-r from-transparent via-foreground/15 to-transparent" />
+                {/* Secondary inner border for extra depth */}
+                <div className="absolute inset-0 rounded-[2.5rem] border border-white/5 pointer-events-none" />
 
-                <div className="flex items-stretch h-[62px]">
+                <div className="flex items-center justify-around h-[72px] px-2 relative z-10">
+                    {/* Active Background Indicator - Liquid Sliding effect */}
+                    <div className="absolute inset-0 pointer-events-none overflow-hidden">
+                        <AnimatePresence>
+                            {NAV_ITEMS.map((item, idx) => {
+                                const isActive = pathname === item.href || (item.href !== '/' && pathname.startsWith(item.href));
+                                return isActive && !item.isPrimary && (
+                                    <motion.div
+                                        key="active-indicator"
+                                        layoutId="nav-bg-pill"
+                                        className="absolute h-10 rounded-2xl bg-primary/10 border border-primary/20"
+                                        initial={{ opacity: 0 }}
+                                        animate={{ opacity: 1 }}
+                                        exit={{ opacity: 0 }}
+                                        transition={{ type: 'spring', stiffness: 400, damping: 30 }}
+                                        style={{
+                                            width: `${100 / (NAV_ITEMS.length)}%`,
+                                            left: `${idx * (100 / NAV_ITEMS.length)}%`,
+                                            top: '50%',
+                                            transform: 'translateY(-50%)',
+                                            margin: '0 auto',
+                                            padding: '0 8px'
+                                        }}
+                                    />
+                                );
+                            })}
+                        </AnimatePresence>
+                    </div>
+
                     {NAV_ITEMS.map(({ href, icon: Icon, label, isPrimary }) => {
                         const isActive = pathname === href || (href !== '/' && pathname.startsWith(href));
                         const hasUnread = label === 'Mensajes' && unreadCount > 0;
@@ -95,30 +127,39 @@ export function BottomNav() {
                                 <Link
                                     key={href}
                                     href={href}
-                                    className="relative flex flex-col items-center justify-center flex-1 h-full"
+                                    className="relative flex flex-col items-center justify-center -translate-y-4"
                                 >
                                     <motion.div
-                                        whileTap={{ scale: 0.88 }}
-                                        whileHover={{ scale: 1.08 }}
+                                        whileHover={{ y: -4, scale: 1.05 }}
+                                        whileTap={{ scale: 0.9 }}
                                         className={cn(
-                                            "relative w-12 h-12 rounded-2xl flex items-center justify-center shadow-lg transition-all duration-300",
-                                            isActive
-                                                ? "shadow-[0_0_20px_rgba(44,252,125,0.5),0_8px_24px_rgba(44,252,125,0.3)]"
-                                                : "shadow-[0_4px_16px_rgba(44,252,125,0.25)]"
+                                            "relative w-14 h-14 rounded-full flex items-center justify-center shadow-2xl transition-all duration-500 overflow-hidden",
+                                            isActive 
+                                                ? "bg-primary text-black" 
+                                                : "bg-surface border border-white/10 text-primary"
                                         )}
                                         style={{
-                                            background: isActive
-                                                ? 'linear-gradient(135deg, #5dfd9d, #2cfc7d, #1db95a)'
-                                                : 'linear-gradient(135deg, #2cfc7d, #1db95a)',
+                                            boxShadow: isActive 
+                                                ? '0 12px 30px rgba(44, 252, 125, 0.4), inset 0 2px 4px rgba(255,255,255,0.4)'
+                                                : '0 8px 24px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.05)'
                                         }}
                                     >
-                                        <Icon className="w-5 h-5 text-white" strokeWidth={2.5} />
-                                        {/* Shimmer */}
-                                        <div className="absolute inset-0 rounded-2xl overflow-hidden opacity-50">
-                                            <div className="absolute inset-[-100%] bg-gradient-to-tr from-transparent via-white/30 to-transparent -rotate-45 translate-x-[-100%] hover:translate-x-[200%] transition-transform duration-700 ease-out" />
-                                        </div>
+                                        {!isActive && (
+                                            <div className="absolute inset-0 bg-gradient-to-br from-primary/20 via-transparent to-transparent opacity-50" />
+                                        )}
+                                        <Icon className={cn("w-6 h-6 z-10", isActive ? "fill-black" : "fill-none")} strokeWidth={2.5} />
+                                        
+                                        {/* Animated Shimmer on button */}
+                                        <motion.div 
+                                            animate={{ x: ['-200%', '200%'] }}
+                                            transition={{ duration: 3, repeat: Infinity, ease: 'linear', repeatDelay: 4 }}
+                                            className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent skew-x-[-20deg]"
+                                        />
                                     </motion.div>
-                                    <span className="text-[8px] font-black uppercase tracking-[0.15em] mt-0.5 text-primary/80">
+                                    <span className={cn(
+                                        "text-[9px] font-black uppercase tracking-[0.2em] mt-2 transition-colors",
+                                        isActive ? "text-primary" : "text-foreground/40"
+                                    )}>
                                         {label}
                                     </span>
                                 </Link>
@@ -129,64 +170,42 @@ export function BottomNav() {
                             <Link
                                 key={href}
                                 href={href}
-                                className="relative flex flex-col items-center justify-center flex-1 h-full group"
+                                className="relative flex flex-col items-center justify-center flex-1 h-full py-2 z-20"
                             >
-                                {/* Active glow bg */}
-                                <AnimatePresence>
-                                    {isActive && (
-                                        <motion.div
-                                            layoutId="bottom-nav-active-pill"
-                                            initial={{ opacity: 0, scale: 0.8 }}
-                                            animate={{ opacity: 1, scale: 1 }}
-                                            exit={{ opacity: 0, scale: 0.8 }}
-                                            transition={{ type: 'spring', stiffness: 500, damping: 35 }}
-                                            className="absolute inset-x-2 top-1 bottom-1 rounded-2xl"
-                                            style={{
-                                                background: 'radial-gradient(ellipse at 50% 60%, rgba(44,252,125,0.14) 0%, rgba(44,252,125,0.04) 70%, transparent 100%)',
-                                                border: '1px solid rgba(44,252,125,0.12)',
-                                            }}
-                                        />
-                                    )}
-                                </AnimatePresence>
-
                                 <motion.div
                                     animate={{
-                                        y: isActive ? -1 : 0,
-                                        scale: isActive ? 1.1 : 1,
+                                        y: isActive ? -2 : 0,
+                                        scale: isActive ? 1.15 : 1,
                                     }}
-                                    transition={{ type: 'spring', stiffness: 500, damping: 30 }}
+                                    transition={{ type: 'spring', stiffness: 500, damping: 25 }}
                                     className={cn(
-                                        "relative z-10 transition-colors duration-300",
-                                        isActive ? "text-primary" : "text-foreground/35 group-hover:text-foreground/55"
+                                        "relative flex items-center justify-center transition-colors duration-300 mb-1.5",
+                                        isActive ? "text-primary" : "text-foreground/40"
                                     )}
                                 >
                                     <Icon
-                                        className="w-[1.1rem] h-[1.1rem]"
-                                        strokeWidth={isActive ? 2.5 : 1.8}
+                                        className="w-5 h-5"
+                                        strokeWidth={isActive ? 2.5 : 2}
                                     />
-                                    {/* Active dot */}
-                                    <AnimatePresence>
-                                        {isActive && (
-                                            <motion.div
-                                                initial={{ scale: 0 }}
-                                                animate={{ scale: 1 }}
-                                                exit={{ scale: 0 }}
-                                                className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-[3px] h-[3px] rounded-full bg-primary shadow-[0_0_6px_rgba(16,185,129,0.8)]"
-                                            />
-                                        )}
-                                    </AnimatePresence>
-
-                                    {/* Unread Dot */}
-                                    {hasUnread && !isActive && (
-                                        <span className="absolute -top-1 -right-1 w-2 h-2 rounded-full bg-primary shadow-[0_0_8px_rgba(16,185,129,0.8)] animate-pulse" />
+                                    
+                                    {/* Unread Indicator */}
+                                    {hasUnread && (
+                                        <span className="absolute -top-1 -right-1 w-2.5 h-2.5 rounded-full bg-primary border-2 border-background shadow-[0_0_10px_rgba(44,252,125,0.6)]" />
+                                    )}
+                                    
+                                    {/* Minimalist Under-Indicator Dot */}
+                                    {isActive && (
+                                        <motion.div 
+                                            layoutId="dot-indicator"
+                                            className="absolute -bottom-2 w-1 h-1 rounded-full bg-primary"
+                                            transition={{ type: 'spring', stiffness: 500, damping: 20 }}
+                                        />
                                     )}
                                 </motion.div>
 
                                 <span className={cn(
-                                    "text-[8px] font-black uppercase tracking-[0.12em] mt-1.5 z-10 transition-all duration-300",
-                                    isActive
-                                        ? "text-primary opacity-100"
-                                        : "text-foreground/65 opacity-90 group-hover:opacity-100"
+                                    "text-[8px] font-black uppercase tracking-[0.15em] transition-all duration-300",
+                                    isActive ? "text-primary opacity-100" : "text-foreground/40"
                                 )}>
                                     {label}
                                 </span>
