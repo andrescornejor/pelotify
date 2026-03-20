@@ -363,7 +363,6 @@
   .animate-float, .animate-float-slow, .animate-gradient, .animate-shimmer, 
   .animate-radar-pulse, .animate-scan-line, .animate-loading-bar {
     animation: none !important;
-    background-image: none !important; /* Removes moving gradients */
   }
 
   /* Disable hover transforms that trigger repaints */

@@ -287,7 +287,10 @@ export default function HomePage() {
                   style={{ fontSize: 'clamp(3.5rem, 8vw, 9rem)' }}
                 >
                   <span className="text-foreground/90 mix-blend-difference">DOMINÁ</span><br />
-                  <span className="animate-gradient bg-clip-text text-transparent bg-gradient-to-r from-primary-light via-primary to-primary-dark [text-shadow:0_0_40px_rgba(44,252,125,0.3)]">
+                  <span className={isPerfMode 
+                    ? "text-primary" 
+                    : "bg-clip-text text-transparent bg-gradient-to-r from-primary-light via-primary to-primary-dark animate-gradient [text-shadow:0_0_40px_rgba(44,252,125,0.3)]"
+                  }>
                     LA CANCHA.
                   </span>
                 </motion.h1>
