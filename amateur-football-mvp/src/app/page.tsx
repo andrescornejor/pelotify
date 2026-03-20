@@ -344,7 +344,9 @@ export default function HomePage() {
                 <div className="flex justify-between items-end">
                   <div>
                     <p className="text-[10px] font-black text-foreground/40 uppercase tracking-widest">PROGRESO DE LIGA</p>
-                    <h3 className="text-xl font-black italic text-foreground leading-none font-kanit uppercase">Siguiente: {nextRank.name}</h3>
+                    <h3 className="text-xl font-black italic text-foreground leading-none font-kanit uppercase">
+                      Siguiente: <span style={{ color: nextRank.color }}>{nextRank.name}</span>
+                    </h3>
                   </div>
                   <span className="text-2xl font-black text-primary/80 italic font-kanit">{Math.round(progressToNextRank)}%</span>
                 </div>
@@ -440,8 +442,11 @@ export default function HomePage() {
                   whileInView="visible"
                   viewport={{ once: true }}
                   custom={i}
-                  className="glass-premium-hover relative overflow-hidden rounded-[2rem] p-6 cursor-default group"
+                  className="glass-premium-hover relative overflow-hidden rounded-[2rem] p-6 cursor-default group border border-white/5"
                 >
+                  {/* Top highlight line */}
+                  <div className="absolute top-0 inset-x-0 h-[3px] opacity-40 group-hover:opacity-100 transition-opacity"
+                    style={{ background: `linear-gradient(90deg, transparent, ${stat.color}, transparent)` }} />
                   {/* Subtle background glow */}
                   {!isPerfMode && (
                     <div className="absolute top-0 right-0 w-16 h-16 opacity-5 blur-2xl group-hover:opacity-20 transition-opacity"
