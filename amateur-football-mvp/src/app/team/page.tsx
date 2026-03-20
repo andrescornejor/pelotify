@@ -15,11 +15,13 @@ import { getFriends } from '@/lib/friends';
 import { cn } from '@/lib/utils';
 import TeamTactics from '@/components/TeamTactics';
 import { getDominantColor } from '@/lib/colorUtils';
+import { useSettings } from '@/contexts/SettingsContext';
 
 function TeamProfileContent() {
     const searchParams = useSearchParams();
     const router = useRouter();
     const { user } = useAuth();
+    const { performanceMode: isPerfMode } = useSettings();
 
     // Get ID from query param ?id=...
     const id = searchParams.get('id');
@@ -292,32 +294,47 @@ function TeamProfileContent() {
     }
 
     return (
-        <div className="flex flex-col min-h-screen pb-24 bg-background selection:bg-primary selection:text-background">
+        <div className={cn(
+            "flex flex-col min-h-screen pb-24 bg-background selection:bg-primary selection:text-background",
+            isPerfMode && "perf-mode"
+        )}>
             {/* ── CINEMATIC HERO SECTION ── */}
             <div className="relative h-[45dvh] min-h-[400px] overflow-hidden group">
                 <div className="absolute inset-0 bg-surface">
                     <div className="absolute inset-0 bg-gradient-to-b from-primary/20 via-transparent to-background z-10" />
-                    <motion.div
-                        animate={{
-                            scale: [1, 1.1, 1],
-                            opacity: [0.3, 0.5, 0.3]
-                        }}
-                        transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
-                        className={cn("absolute inset-0", !ambientColor && "bg-[radial-gradient(circle_at_50%_-20%,rgba(var(--primary-rgb),0.15),transparent_70%)]")}
-                        style={ambientColor ? { backgroundImage: `radial-gradient(circle at 50% -20%, ${ambientColor}, transparent 70%)` } : undefined}
-                    />
-                    <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-30 mix-blend-overlay" />
-                    <div
-                        className={cn("absolute top-0 left-1/4 w-96 h-96 rounded-full blur-[120px] animate-pulse", !ambientColor && "bg-primary/5")}
-                        style={ambientColor ? { backgroundColor: ambientColor } : undefined}
-                    />
-                    <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-accent/5 rounded-full blur-[120px] animate-pulse delay-700" />
+                    {!isPerfMode && (
+                        <>
+                            <motion.div
+                                animate={{
+                                    scale: [1, 1.1, 1],
+                                    opacity: [0.3, 0.5, 0.3]
+                                }}
+                                transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
+                                className={cn("absolute inset-0", !ambientColor && "bg-[radial-gradient(circle_at_50%_-20%,rgba(var(--primary-rgb),0.15),transparent_70%)]")}
+                                style={ambientColor ? { backgroundImage: `radial-gradient(circle at 50% -20%, ${ambientColor}, transparent 70%)` } : undefined}
+                            />
+                            <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-30 mix-blend-overlay" />
+                            <div
+                                className={cn("absolute top-0 left-1/4 w-96 h-96 rounded-full blur-[120px] animate-pulse", !ambientColor && "bg-primary/5")}
+                                style={ambientColor ? { backgroundColor: ambientColor } : undefined}
+                            />
+                            <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-accent/5 rounded-full blur-[120px] animate-pulse delay-700" />
+                        </>
+                    )}
                 </div>
 
-                <div className="absolute top-0 left-0 right-0 p-6 z-50 flex justify-between items-center bg-gradient-to-b from-background/80 to-transparent">
+                <div className={cn(
+                    "absolute top-0 left-0 right-0 p-6 z-50 flex justify-between items-center",
+                    !isPerfMode && "bg-gradient-to-b from-background/80 to-transparent"
+                )}>
                     <button
                         onClick={() => router.back()}
-                        className="w-12 h-12 flex items-center justify-center bg-foreground/5 backdrop-blur-2xl rounded-2xl border border-foreground/10 text-foreground hover:bg-foreground/10 hover:border-primary/50 transition-all active:scale-90"
+                        className={cn(
+                            "w-12 h-12 flex items-center justify-center rounded-2xl border transition-all active:scale-90",
+                            isPerfMode 
+                                ? "bg-foreground/10 border-foreground/20 text-foreground" 
+                                : "bg-foreground/5 backdrop-blur-2xl border-foreground/10 text-foreground hover:bg-foreground/10 hover:border-primary/50"
+                        )}
                     >
                         <ArrowLeft className="w-5 h-5" />
                     </button>
@@ -352,7 +369,12 @@ function TeamProfileContent() {
                                 ) : (
                                     <button
                                         onClick={() => setIsEditing(true)}
-                                        className="w-12 h-12 md:w-14 md:h-14 lg:w-16 lg:h-16 flex items-center justify-center bg-foreground/5 backdrop-blur-2xl rounded-2xl lg:rounded-3xl border border-foreground/10 text-foreground hover:bg-foreground/10 hover:border-primary/50 transition-all active:scale-90 shadow-xl"
+                                        className={cn(
+                                            "w-12 h-12 md:w-14 md:h-14 lg:w-16 lg:h-16 flex items-center justify-center rounded-2xl lg:rounded-3xl border transition-all active:scale-90 shadow-xl",
+                                            isPerfMode 
+                                                ? "bg-foreground/10 border-foreground/20 text-foreground" 
+                                                : "bg-foreground/5 backdrop-blur-2xl border-foreground/10 text-foreground hover:bg-foreground/10 hover:border-primary/50"
+                                        )}
                                     >
                                         <Settings className="w-5 h-5 lg:w-6 lg:h-6" />
                                     </button>

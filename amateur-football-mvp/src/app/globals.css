@@ -332,47 +332,33 @@
    PERFORMANCE MODE (MODO RENDIMIENTO)
 ══════════════════════════════════════════ */
 .perf-mode {
-  /* Disable heavy blurs globally */
-  *, *::before, *::after {
+  scroll-behavior: auto !important;
+
+  /* Global performance overrides */
+  * {
     backdrop-filter: none !important;
     -webkit-backdrop-filter: none !important;
-    animation-duration: 0.001ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 150ms !important; /* Keep slight transition for UX but fast */
-  }
-
-  /* Simplify Glass effects to solid backgrounds */
-  .glass, .glass-premium, .glass-card, .premium-card {
-    background: var(--surface) !important;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1) !important;
-    border: 1px solid var(--border) !important;
-  }
-
-  .dark .glass, .dark .glass-premium, .dark .glass-card, .dark .premium-card {
-    background: var(--surface-elevated) !important;
-  }
-
-  /* Disable expensive shadows and glows */
-  .glow-primary, .glow-accent, .text-glow-primary, .animate-glow-pulse, .animate-border-glow {
-    box-shadow: none !important;
-    text-shadow: none !important;
-    border-color: var(--primary) !important;
-  }
-
-  /* Stop complex animations */
-  .animate-float, .animate-float-slow, .animate-gradient, .animate-shimmer, 
-  .animate-radar-pulse, .animate-scan-line, .animate-loading-bar {
     animation: none !important;
+    transition: none !important;
+    text-shadow: none !important;
+    box-shadow: none !important;
   }
 
-  /* Disable hover transforms that trigger repaints */
-  .premium-card:hover, .glass-premium-hover:hover {
-    transform: none !important;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.2) !important;
+  /* Keep basic shadow for depth on cards */
+  .glass, .glass-premium, .glass-card, .premium-card, .glass-premium-hover {
+    background: var(--surface-elevated) !important;
+    border: 1px solid var(--border) !important;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1) !important;
   }
 
-  /* Extra: make sidebar transition even simpler if handled via CSS */
+  /* Simplify sidebar */
   .sidebar-container {
-     transition: transform 0.2s ease-out !important;
+     transition: transform 0.1s ease-out !important;
+     backdrop-filter: none !important;
+  }
+  
+  /* Disable all blur-related styles */
+  [style*="blur"] {
+    filter: none !important;
   }
 }

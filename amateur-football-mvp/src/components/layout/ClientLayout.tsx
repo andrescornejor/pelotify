@@ -35,11 +35,10 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
     <div className="flex min-h-[100dvh] w-full relative bg-background">
 
 
-      {/* ── Main content area (offset by sidebar on lg+) ── */}
       <div 
         ref={scrollContainerRef}
         className={cn(
-          'flex-1 flex flex-col min-w-0 transition-all duration-500 overflow-y-auto max-h-[100dvh]',
+          'flex-1 flex flex-col min-w-0 transition-[padding] duration-300 ease-in-out overflow-y-auto max-h-[100dvh]',
         )}
       >
         {showNav && <TopHeader />}

@@ -13,9 +13,11 @@ import { supabase } from '@/lib/supabase';
 import { TeamsSkeleton } from '@/components/Skeletons';
 import Link from 'next/link';
 import { AVAILABLE_TIMES } from '@/lib/constants';
+import { useSettings } from '@/contexts/SettingsContext';
 
 export default function TeamsPage() {
     const { user, isLoading: authLoading } = useAuth();
+    const { performanceMode: isPerfMode } = useSettings();
     const router = useRouter();
     const [activeTab, setActiveTab] = useState<'my_team' | 'explore' | 'create'>('explore');
 
@@ -131,13 +133,23 @@ export default function TeamsPage() {
     };
 
     return (
-        <div className="flex flex-col gap-8 p-4 sm:p-6 lg:px-10 lg:pt-4 xl:px-14 2xl:px-16 max-w-full mx-auto min-h-screen bg-background relative overflow-hidden">
+        <div className={cn(
+            "flex flex-col gap-8 p-4 sm:p-6 lg:px-10 lg:pt-4 xl:px-14 2xl:px-16 max-w-full mx-auto min-h-screen bg-background relative overflow-hidden",
+            isPerfMode && "perf-mode"
+        )}>
             {/* Ambient Effects */}
-            <div className="absolute top-0 right-[-10%] w-[40%] h-[40%] bg-primary/5 blur-[120px] rounded-full pointer-events-none" />
-            <div className="absolute bottom-[-10%] left-[-10%] w-[50%] h-[50%] bg-accent/3 blur-[120px] rounded-full pointer-events-none" />
+            {!isPerfMode && (
+                <>
+                    <div className="absolute top-0 right-[-10%] w-[40%] h-[40%] bg-primary/5 blur-[120px] rounded-full pointer-events-none" />
+                    <div className="absolute bottom-[-10%] left-[-10%] w-[50%] h-[50%] bg-accent/3 blur-[120px] rounded-full pointer-events-none" />
+                </>
+            )}
 
             {/* Header & Tabs */}
-            <div className="sticky top-0 z-30 pt-4 pb-6 bg-background/80 backdrop-blur-xl -mx-4 px-4 lg:-mx-16 lg:px-16 border-b border-foreground/5 shadow-2xl shadow-black/5">
+            <div className={cn(
+                "sticky top-0 z-30 pt-4 pb-6 -mx-4 px-4 lg:-mx-16 lg:px-16 border-b border-foreground/5 shadow-2xl shadow-black/5",
+                isPerfMode ? "bg-background" : "bg-background/80 backdrop-blur-xl"
+            )}>
                 <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 relative z-10 max-w-screen-2xl mx-auto">
                     <div className="flex flex-col">
                         <h1 className="text-4xl md:text-5xl font-black italic text-foreground uppercase tracking-tighter leading-none">Asociación <span className="text-foreground/40">de Clubes</span></h1>

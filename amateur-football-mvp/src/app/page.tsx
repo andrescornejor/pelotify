@@ -31,9 +31,11 @@ import { getUserTeams, Team } from '@/lib/teams';
 import { cn } from '@/lib/utils';
 import { findVenueByLocation } from '@/lib/venues';
 import { getRankByElo, RANKS } from '@/lib/ranks';
+import { useSettings } from '@/contexts/SettingsContext';
 
 export default function HomePage() {
   const { user } = useAuth();
+  const { performanceMode: isPerfMode, setPerformanceMode } = useSettings();
   const [isRatingOpen, setIsRatingOpen] = useState(false);
   const [userMatches, setUserMatches] = useState<Match[]>([]);
   const [nextMatch, setNextMatch] = useState<Match | null>(null);
@@ -42,18 +44,9 @@ export default function HomePage() {
   const [isLoading, setIsLoading] = useState(true);
   const [totalPlayers, setTotalPlayers] = useState(0);
   const [greeting, setGreeting] = useState('Buen día');
-  const [isPerfMode, setIsPerfMode] = useState(false);
-
-  // Load performance preference
-  useEffect(() => {
-    const saved = localStorage.getItem('perf-mode') === 'true';
-    setIsPerfMode(saved);
-  }, []);
 
   const togglePerfMode = () => {
-    const newVal = !isPerfMode;
-    setIsPerfMode(newVal);
-    localStorage.setItem('perf-mode', String(newVal));
+    setPerformanceMode(!isPerfMode);
   };
 
   useEffect(() => {
@@ -169,22 +162,13 @@ export default function HomePage() {
       "relative min-h-screen bg-background font-sans selection:bg-primary selection:text-background",
       isPerfMode && "perf-mode"
     )}>
-      {/* ── NOISE OVERLAY — Optimized ── */}
-      {!isPerfMode && (
-        <div className="fixed inset-0 pointer-events-none z-[100] opacity-[0.035] dark:opacity-[0.05] mix-blend-overlay hidden md:block"
-          style={{ backgroundImage: `url('https://grainy-gradients.vercel.app/noise.svg')` }} />
-      )}
-
-
-      {/* ── AMBIENT — Disabled in Perf Mode ── */}
+      {/* ── AMBIENT — Simplified for Performance ── */}
       {!isPerfMode && (
         <div className="fixed inset-0 pointer-events-none -z-10 overflow-hidden hidden md:block">
-          <div className="absolute top-[-10%] right-[-5%] w-[45%] h-[55%] opacity-[0.07]"
-            style={{ background: 'radial-gradient(circle, #2cfc7d 0%, transparent 70%)', filter: 'blur(80px)' }} />
-          <div className="absolute bottom-[-5%] left-[-10%] w-[50%] h-[50%] opacity-[0.04]"
-            style={{ background: 'radial-gradient(circle, #f59e0b 0%, transparent 70%)', filter: 'blur(100px)' }} />
-          <div className="absolute top-[35%] right-[20%] w-[35%] h-[35%] opacity-[0.03]"
-            style={{ background: 'radial-gradient(circle, #6366f1 0%, transparent 70%)', filter: 'blur(120px)' }} />
+          <div className="absolute top-[-5%] right-[-5%] w-[40%] h-[40%] opacity-[0.05]"
+            style={{ background: 'radial-gradient(circle, #2cfc7d 0%, transparent 70%)' }} />
+          <div className="absolute bottom-[-5%] left-[-5%] w-[40%] h-[40%] opacity-[0.03]"
+            style={{ background: 'radial-gradient(circle, #f59e0b 0%, transparent 70%)' }} />
         </div>
       )}
 
@@ -227,7 +211,7 @@ export default function HomePage() {
                 rotate: [0, 1, 0]
               }}
               transition={{ duration: 25, repeat: Infinity, ease: 'linear' }}
-              src="https://images.unsplash.com/photo-1574629810360-7efbbe195018?auto=format&fit=crop&q=80&w=2400"
+              src="https://images.unsplash.com/photo-1574629810360-7efbbe195018?auto=format&fit=crop&q=60&w=1200"
               alt=""
               className={cn(
                 "w-full h-full object-cover grayscale opacity-[0.08] dark:opacity-[0.12] scale-110 transition-opacity",

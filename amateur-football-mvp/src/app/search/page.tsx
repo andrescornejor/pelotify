@@ -8,6 +8,7 @@ import { useState } from 'react';
 import { findVenueByLocation } from '@/lib/venues';
 import dynamic from 'next/dynamic';
 import { useMatchSearch } from '@/hooks/useMatchSearch';
+import { useSettings } from '@/contexts/SettingsContext';
 
 const MapSearch = dynamic(() => import('@/components/MapSearch'), {
     ssr: false,
@@ -27,35 +28,46 @@ export default function SearchPage() {
         searchQuery, 
         setSearchQuery 
     } = useMatchSearch();
+    const { performanceMode: isPerfMode } = useSettings();
 
     return (
-        <div className="flex flex-col gap-8 p-4 lg:p-10 lg:pt-4 max-w-screen-2xl mx-auto h-full bg-background relative overflow-hidden min-h-screen snap-y snap-proximity overflow-y-auto">
+        <div className={cn(
+            "flex flex-col gap-8 p-4 lg:p-10 lg:pt-4 max-w-screen-2xl mx-auto h-full bg-background relative overflow-hidden min-h-screen snap-y snap-proximity overflow-y-auto",
+            isPerfMode && "perf-mode"
+        )}>
 
             {/* ── RADAR AMBIENT ── */}
-            <div className="absolute top-0 left-0 w-full h-[300px] pointer-events-none opacity-20">
-                <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-primary/50 to-transparent" />
-                <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(16,185,129,0.1),transparent_70%)]" />
-            </div>
+            {!isPerfMode && (
+                <div className="absolute top-0 left-0 w-full h-[300px] pointer-events-none opacity-20">
+                    <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-primary/50 to-transparent" />
+                    <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(16,185,129,0.1),transparent_70%)]" />
+                </div>
+            )}
 
             {/* ── HEADER & RADAR SCANNER ── */}
-            <div className="sticky top-0 z-30 pt-4 pb-6 bg-background/80 backdrop-blur-xl -mx-4 px-4 lg:-mx-12 lg:px-12 border-b border-foreground/5 shadow-2xl shadow-black/5">
+            <div className={cn(
+                "sticky top-0 z-30 pt-4 pb-6 -mx-4 px-4 lg:-mx-12 lg:px-12 border-b border-foreground/5 shadow-2xl shadow-black/5",
+                isPerfMode ? "bg-background" : "bg-background/80 backdrop-blur-xl"
+            )}>
                 <div className="flex flex-col gap-8 relative z-10 text-center lg:text-left max-w-screen-2xl mx-auto">
                     <div className="flex flex-col gap-2 relative">
                         {/* Radar Sweep Animation behind title */}
-                        <div className="absolute -top-10 -left-10 lg:-left-20 w-32 lg:w-48 h-32 lg:h-48 pointer-events-none opacity-20">
-                            <div className="absolute inset-0 border border-primary/30 rounded-full" />
-                            <div className="absolute inset-0 border border-primary/10 rounded-full scale-150" />
-                            <motion.div
-                                animate={{ rotate: 360 }}
-                                transition={{ duration: 4, repeat: Infinity, ease: 'linear' }}
-                                className="absolute inset-0 border-r-2 border-primary/40 rounded-full"
-                                style={{ clipPath: 'polygon(50% 50%, 100% 0, 100% 100%)' }}
-                            />
-                            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-1.5 h-1.5 bg-primary rounded-full shadow-[0_0_10px_rgba(44,252,125,1)]" />
-                        </div>
+                        {!isPerfMode && (
+                            <div className="absolute -top-10 -left-10 lg:-left-20 w-32 lg:w-48 h-32 lg:h-48 pointer-events-none opacity-20">
+                                <div className="absolute inset-0 border border-primary/30 rounded-full" />
+                                <div className="absolute inset-0 border border-primary/10 rounded-full scale-150" />
+                                <motion.div
+                                    animate={{ rotate: 360 }}
+                                    transition={{ duration: 4, repeat: Infinity, ease: 'linear' }}
+                                    className="absolute inset-0 border-r-2 border-primary/40 rounded-full"
+                                    style={{ clipPath: 'polygon(50% 50%, 100% 0, 100% 100%)' }}
+                                />
+                                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-1.5 h-1.5 bg-primary rounded-full shadow-[0_0_10px_rgba(44,252,125,1)]" />
+                            </div>
+                        )}
 
                         <div className="flex items-center gap-3 justify-center lg:justify-start">
-                            <div className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
+                            <div className={cn("w-1.5 h-1.5 rounded-full bg-primary", !isPerfMode && "animate-pulse")} />
                             <span className="text-[10px] font-black uppercase tracking-[0.5em] text-primary italic">Sintonizando Frecuencias</span>
                         </div>
                         <h1 className="text-5xl lg:text-7xl font-black italic text-foreground uppercase tracking-tightest leading-none">Scouting <span className="text-foreground/20">Radar</span></h1>
@@ -134,12 +146,15 @@ export default function SearchPage() {
                             filteredMatches.map((match, i) => (
                                 <motion.div
                                     key={match.id}
-                                    initial={{ opacity: 0, scale: 0.98, y: 15 }}
-                                    whileInView={{ opacity: 1, scale: 1, y: 0 }}
+                                    initial={isPerfMode ? { opacity: 1 } : { opacity: 0, scale: 0.98, y: 15 }}
+                                    whileInView={isPerfMode ? { opacity: 1 } : { opacity: 1, scale: 1, y: 0 }}
                                     viewport={{ once: true }}
-                                    transition={{ delay: i * 0.04, duration: 0.4 }}
-                                    whileHover={{ y: -4, scale: 1.01 }}
-                                    className="glass-premium rounded-[1.8rem] lg:rounded-[3rem] p-4 lg:p-8 flex flex-col lg:flex-row items-stretch lg:items-center gap-3 lg:gap-14 relative overflow-hidden group border border-foreground/[0.08] bg-foreground/[0.01] hover:bg-foreground/[0.03] transition-all duration-500"
+                                    transition={isPerfMode ? { duration: 0 } : { delay: i * 0.04, duration: 0.4 }}
+                                    whileHover={isPerfMode ? {} : { y: -4, scale: 1.01 }}
+                                    className={cn(
+                                        "glass-premium rounded-[1.8rem] lg:rounded-[3rem] p-4 lg:p-8 flex flex-col lg:flex-row items-stretch lg:items-center gap-3 lg:gap-14 relative overflow-hidden group border border-foreground/[0.08] bg-foreground/[0.01] transition-all",
+                                        isPerfMode ? "duration-0" : "hover:bg-foreground/[0.03] duration-500"
+                                    )}
                                 >
                                     {/* ── BACKGROUND DECORATION ── */}
                                     <div className="absolute top-0 right-0 w-80 h-80 bg-primary/5 blur-[100px] rounded-full group-hover:bg-primary/10 transition-colors pointer-events-none" />

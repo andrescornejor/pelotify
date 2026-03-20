@@ -15,6 +15,7 @@ import { useTheme } from '@/contexts/ThemeContext';
 import { cn } from '@/lib/utils';
 import { getUnreadMessagesCount } from '@/lib/chat';
 import { supabase } from '@/lib/supabase';
+import { useSettings } from '@/contexts/SettingsContext';
 
 const DESKTOP_NAV = [
     { href: '/', icon: Home, label: 'Inicio' },
@@ -86,6 +87,8 @@ export function TopHeader() {
         };
     }, [user, pathname]);
 
+    const { performanceMode } = useSettings();
+
     if (['/login', '/register'].includes(pathname)) {
         return null;
     }
@@ -100,11 +103,11 @@ export function TopHeader() {
                         transition={{ type: 'spring', stiffness: 300, damping: 26, delay: 0.05 }}
                         className="overflow-hidden rounded-[1.25rem] lg:rounded-[1.75rem]"
                         style={{
-                            background: 'rgba(var(--foreground-rgb), 0.04)',
-                            backdropFilter: 'blur(28px) saturate(180%)',
-                            WebkitBackdropFilter: 'blur(28px) saturate(180%)',
+                            background: performanceMode ? 'var(--surface-elevated)' : 'rgba(var(--foreground-rgb), 0.04)',
+                            backdropFilter: performanceMode ? 'none' : 'blur(28px) saturate(180%)',
+                            WebkitBackdropFilter: performanceMode ? 'none' : 'blur(28px) saturate(180%)',
                             border: '1px solid rgba(var(--foreground-rgb), 0.08)',
-                            boxShadow: '0 4px 32px rgba(0,0,0,0.12), inset 0 1px 0 rgba(255,255,255,0.05)',
+                            boxShadow: performanceMode ? '0 10px 30px rgba(0,0,0,0.2)' : '0 4px 32px rgba(0,0,0,0.12), inset 0 1px 0 rgba(255,255,255,0.05)',
                         }}
                     >
                         {/* Background subtle light beam */}
