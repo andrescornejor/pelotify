@@ -642,10 +642,15 @@ export default function HomePage() {
                         <div className="flex flex-col items-center justify-center min-w-[56px] h-14 rounded-xl glass border-white/10 shadow-sm overflow-hidden bg-foreground/[0.02]">
                           {(() => {
                             try {
-                              // Ensure we use the 'date' field from Match, which is the kickoff date
-                              const d = new Date(match.date.includes(',') ? match.date.split(',')[1].trim() : match.date);
-                              if (isNaN(d.getTime())) throw new Error('Invalid Date');
+                              // Robust parsing to avoid UTC shifting (YYYY-MM-DD)
+                              const dateStr = match.date.includes(',') ? match.date.split(',')[1].trim() : match.date;
+                              const [year, month, day] = dateStr.includes('-') 
+                                ? dateStr.split('-').map(Number) 
+                                : dateStr.split('/').reverse().map(Number); // fallback for DD/MM/YYYY
                               
+                              if (!year || !month || !day) throw new Error('Parsing error');
+                              
+                              const d = new Date(year, month - 1, day);
                               const dayName = d.toLocaleDateString('es-ES', { weekday: 'short' }).replace('.', '').toUpperCase();
                               const monthName = d.toLocaleDateString('es-ES', { month: 'short' }).replace('.', '').toUpperCase();
                               const dayNumber = d.getDate();
@@ -662,7 +667,12 @@ export default function HomePage() {
                                 </>
                               );
                             } catch (e) {
-                              return <Calendar className="w-5 h-5 text-foreground/20" />;
+                              return (
+                                <div className="flex flex-col items-center gap-1 opacity-20">
+                                  <Calendar className="w-4 h-4" />
+                                  <span className="text-[8px] font-black uppercase">??</span>
+                                </div>
+                              );
                             }
                           })()}
                         </div>
