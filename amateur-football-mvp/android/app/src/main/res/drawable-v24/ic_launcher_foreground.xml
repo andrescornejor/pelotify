@@ -1,0 +1,23 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="100"
+    android:viewportHeight="100">
+    <!-- Círculo Verde Exterior -->
+    <path
+        android:pathData="M50,10 A40,40 0 1,1 10,50 A40,40 0 0,1 50,10"
+        android:fillColor="#39FF14"/>
+    <!-- Balón de Fútbol (Hexágonos Negros) -->
+    <path
+        android:pathData="M50,30 L60,35 L60,45 L50,50 L40,45 L40,35 Z"
+        android:fillColor="#000000"/>
+    <path
+        android:pathData="M50,50 L60,55 L60,65 L50,70 L40,65 L40,55 Z"
+        android:fillColor="#000000"/>
+    <path
+        android:pathData="M65,40 L75,45 L75,55 L65,60 L55,55 L55,45 Z"
+        android:fillColor="#000000"/>
+    <path
+        android:pathData="M35,40 L45,45 L45,55 L35,60 L25,55 L25,45 Z"
+        android:fillColor="#000000"/>
+</vector>
