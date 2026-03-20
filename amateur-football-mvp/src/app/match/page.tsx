@@ -506,40 +506,47 @@ function MatchLobbyContent() {
                                 )}
                             </AnimatePresence>
 
-                            {!isCompleted && (
-                                <motion.div
-                                    initial={{ opacity: 0, scale: 0.95 }}
-                                    animate={{ opacity: 1, scale: 1 }}
-                                    className="glass-premium rounded-[3rem] p-8 lg:p-10 border border-foreground/10 relative overflow-hidden group/recruitment mb-8"
-                                >
-                                    <div className="flex flex-col md:flex-row items-center justify-between gap-6 relative z-10">
-                                        <div className="space-y-1 text-center md:text-left">
-                                            <h2 className="text-2xl lg:text-3xl font-black text-foreground italic uppercase tracking-tighter leading-none">¿Faltan jugadores?</h2>
-                                            <p className="text-[10px] font-bold text-foreground/40 uppercase tracking-widest">Invitá a tus amigos para completar los equipos</p>
-                                        </div>
+                            <div className="flex items-center justify-between mb-10">
+                                <div className="flex flex-col">
+                                    <h2 className="text-3xl font-black text-foreground italic uppercase tracking-tighter leading-none">Alineaciones</h2>
+                                    <span className="text-[10px] font-bold text-foreground/30 uppercase tracking-[0.3em] mt-2">Gestión de Equipos</span>
+                                </div>
+                                <div className="flex items-center gap-3">
+                                    {!isCompleted && (
                                         <button
                                             onClick={handleOpenInviteModal}
-                                            className="h-14 px-8 bg-primary text-black rounded-2xl flex items-center justify-center gap-4 group/invite transition-all active:scale-95 shadow-xl shadow-primary/20 hover:scale-[1.05] hover:bg-white w-full md:w-auto"
+                                            className="h-14 px-8 bg-primary text-black rounded-[1.5rem] flex items-center justify-center gap-4 transition-all active:scale-95 shadow-2xl shadow-primary/20 hover:scale-[1.05] hover:bg-white group"
                                         >
-                                            <UserPlus className="w-5 h-5 group-hover/invite:rotate-12 transition-transform text-black" />
-                                            <span className="text-[10px] font-black uppercase tracking-widest">Convocar Pibes</span>
+                                            <div className="w-8 h-8 rounded-xl bg-black/10 flex items-center justify-center group-hover:rotate-12 transition-transform">
+                                                <UserPlus className="w-4 h-4" />
+                                            </div>
+                                            <span className="text-[10px] font-black uppercase tracking-[0.2em]">Convocar Pibes</span>
                                         </button>
-                                    </div>
-                                </motion.div>
-                            )}
-
-                            {isCreator && !isCompleted && (
-                                <div className="flex justify-end mb-4">
-                                    <button
-                                        onClick={() => isEditingTeamNames ? handleSaveTeamNames() : setIsEditingTeamNames(true)}
-                                        disabled={isSavingNames}
-                                        className="h-10 px-6 bg-foreground/5 border border-foreground/10 rounded-xl text-[10px] font-black text-foreground/60 uppercase tracking-widest hover:text-primary transition-all flex items-center gap-2 group"
-                                    >
-                                        {isSavingNames ? <Loader2 className="w-3 h-3 animate-spin" /> : isEditingTeamNames ? <Save className="w-3 h-3" /> : <Edit2 className="w-3 h-3" />}
-                                        {isEditingTeamNames ? 'GUARDAR NOMBRES' : 'EDITAR NOMBRES'}
-                                    </button>
+                                    )}
+                                    {isCreator && !isCompleted && (
+                                        <button
+                                            onClick={() => isEditingTeamNames ? handleSaveTeamNames() : setIsEditingTeamNames(true)}
+                                            disabled={isSavingNames}
+                                            className={cn(
+                                                "h-14 w-14 rounded-[1.5rem] transition-all flex items-center justify-center border active:scale-95",
+                                                isEditingTeamNames 
+                                                    ? "bg-foreground text-background border-foreground" 
+                                                    : "bg-foreground/5 border-foreground/10 text-foreground/40 hover:text-primary hover:border-primary/30"
+                                            )}
+                                            title={isEditingTeamNames ? 'Guardar nombres' : 'Editar nombres'}
+                                        >
+                                            {isSavingNames ? (
+                                                <Loader2 className="w-5 h-5 animate-spin" />
+                                            ) : isEditingTeamNames ? (
+                                                <Save className="w-5 h-5" />
+                                            ) : (
+                                                <Edit2 className="w-5 h-5" />
+                                            )}
+                                        </button>
+                                    )}
                                 </div>
-                            )}
+                            </div>
+
 
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12">
                                 {(['A', 'B'] as const).map((team) => {
