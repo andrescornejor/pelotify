@@ -238,7 +238,7 @@ export const SidebarContent = memo(function SidebarContent({ isMobile = false, o
                                     </svg>
                                 </div>
                             </div>
-                        </motion.div>
+                        </div>
                     </Link>
                 </div>
             )}
@@ -351,7 +351,7 @@ export const SidebarContent = memo(function SidebarContent({ isMobile = false, o
             </div>
         </div>
     );
-}
+});
 
 export function Sidebar() {
     const { isOpen, closeSidebar: onClose } = useSidebar();
