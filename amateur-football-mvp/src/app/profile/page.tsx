@@ -158,7 +158,7 @@ function ProfileContent() {
             try {
                 const [badgesRes, teamRes] = await Promise.all([
                     supabase.from('user_badges').select('*').eq('user_id', targetId),
-                    supabase.from('team_members').select('teams(*)').eq('user_id', targetId).single()
+                    supabase.from('team_members').select('teams(*)').eq('user_id', targetId).eq('status', 'confirmed').maybeSingle()
                 ]);
 
                 if (badgesRes.data) setUserBadges(badgesRes.data);

@@ -41,13 +41,10 @@ export default function TeamsPage() {
     const fetchTeams = async () => {
         try {
             const data = await getTeams(user?.id);
-            // Identify user's team if confirmed
-            const userTeam = data.find(t => t.captain_id === user?.id || t.has_requested); // Simplified logic. Ideally, we should check status === 'confirmed' globally.
-            // But since 'getTeams' might only reflect request status boolean for now:
+            const userTeam = data.find(t => t.captain_id === user?.id || t.is_member);
 
             if (userTeam) {
                 setMyTeam(userTeam);
-                setActiveTab('my_team');
             }
 
             // Filter out user's team for explore view

@@ -18,7 +18,8 @@ export interface Team {
     xp: number;
     created_at: string;
     logo_url?: string;
-    has_requested?: boolean; // Virtual field for UI state
+    has_requested?: boolean; // Any relation (pending, requested, confirmed)
+    is_member?: boolean; // Only confirmed
     role?: 'captain' | 'member'; // Virtual field for UI state
 }
 
@@ -66,14 +67,16 @@ export async function getTeams(userId?: string) {
     if (userId) {
         const { data: memberships } = await supabase
             .from('team_members')
-            .select('team_id')
+            .select('team_id, status')
             .eq('user_id', userId);
 
         if (memberships) {
             const requestedIds = new Set(memberships.map(m => m.team_id));
+            const confirmedIds = new Set(memberships.filter(m => m.status === 'confirmed').map(m => m.team_id));
             return teams.map(t => ({
                 ...t,
-                has_requested: requestedIds.has(t.id)
+                has_requested: requestedIds.has(t.id),
+                is_member: confirmedIds.has(t.id)
             }));
         }
     }
@@ -136,7 +139,8 @@ export async function getUserTeams(userId: string) {
             team_id,
             teams (*)
         `)
-        .eq('user_id', userId);
+        .eq('user_id', userId)
+        .eq('status', 'confirmed');
 
     if (error) throw error;
     return data.map((m: any) => ({
