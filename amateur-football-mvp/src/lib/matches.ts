@@ -21,6 +21,7 @@ export interface Match {
     team_b_id?: string;
     is_private?: boolean;
     participants?: { count: number }[];
+    participant_profiles?: { avatar_url?: string }[];
 }
 
 export interface MatchParticipant {
@@ -172,17 +173,40 @@ export async function getUserMatches(userId: string) {
 
     if (error) throw error;
     
-    return (data || []).map(m => {
+    const matches = (data || []).map(m => {
         const match = Array.isArray(m.matches) ? m.matches[0] : m.matches;
         if (!match) return null;
         
-        // Defensive mapping for score fields to handle potential schema cache lag
         return {
             ...match,
             team_a_score: match.team_a_score ?? (match as any).score_a ?? 0,
             team_b_score: match.team_b_score ?? (match as any).score_b ?? 0
         } as Match;
     }).filter(Boolean) as Match[];
+
+    // Enrichment: Get avatars for each match (confirmed participants)
+    if (matches.length > 0) {
+        const matchIds = matches.map(m => m.id);
+        const { data: pData } = await supabase
+            .from('match_participants')
+            .select(`
+                match_id,
+                profiles:user_id(avatar_url)
+            `)
+            .in('match_id', matchIds)
+            .eq('status', 'confirmed');
+
+        if (pData) {
+            matches.forEach(m => {
+                m.participant_profiles = pData
+                    .filter(p => p.match_id === m.id)
+                    .map(p => (p.profiles as any))
+                    .filter(Boolean);
+            });
+        }
+    }
+
+    return matches;
 }
 
 export async function leaveMatch(matchId: string, userId: string) {
