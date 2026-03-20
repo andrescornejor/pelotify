@@ -9,13 +9,14 @@ import { supabase } from '@/lib/supabase';
 
 interface PostMatchModalProps {
     matchId: string;
+    match?: any;
     participants: MatchParticipant[];
     currentUserId: string;
     onClose: () => void;
     onSuccess?: () => void;
 }
 
-export default function PostMatchModal({ matchId, participants, currentUserId, onClose, onSuccess }: PostMatchModalProps) {
+export default function PostMatchModal({ matchId, match, participants, currentUserId, onClose, onSuccess }: PostMatchModalProps) {
     const [step, setStep] = useState<'score' | 'ratings' | 'mvp' | 'success'>('score');
     const [scoreA, setScoreA] = useState(0);
     const [scoreB, setScoreB] = useState(0);
@@ -133,7 +134,7 @@ export default function PostMatchModal({ matchId, participants, currentUserId, o
 
                             <div className="flex items-center justify-center gap-8 py-4">
                                 <div className="flex flex-col items-center gap-3">
-                                    <span className="text-sm font-bold text-foreground/40 uppercase">Equipo A</span>
+                                    <span className="text-sm font-bold text-foreground/40 uppercase">{match?.team_a_name || 'Equipo A'}</span>
                                     <input
                                         type="number"
                                         value={scoreA}
@@ -143,7 +144,7 @@ export default function PostMatchModal({ matchId, participants, currentUserId, o
                                 </div>
                                 <span className="text-4xl font-black text-foreground/10">-</span>
                                 <div className="flex flex-col items-center gap-3">
-                                    <span className="text-sm font-bold text-foreground/40 uppercase">Equipo B</span>
+                                    <span className="text-sm font-bold text-foreground/40 uppercase">{match?.team_b_name || 'Equipo B'}</span>
                                     <input
                                         type="number"
                                         value={scoreB}

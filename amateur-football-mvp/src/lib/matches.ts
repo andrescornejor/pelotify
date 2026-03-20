@@ -19,8 +19,22 @@ export interface Match {
     sportsreel_url?: string;
     team_a_id?: string;
     team_b_id?: string;
+    team_a_name?: string;
+    team_b_name?: string;
     is_private?: boolean;
     participants?: { count: number }[];
+}
+
+export async function updateMatch(matchId: string, updates: Partial<Match>) {
+    const { data, error } = await supabase
+        .from('matches')
+        .update(updates)
+        .eq('id', matchId)
+        .select()
+        .single();
+
+    if (error) throw error;
+    return data as Match;
 }
 
 export interface MatchParticipant {

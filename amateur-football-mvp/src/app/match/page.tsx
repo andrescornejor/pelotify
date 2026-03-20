@@ -2,11 +2,11 @@
 
 import { Suspense } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { MapPin, Calendar, Clock, Users, ArrowLeft, Loader2, DollarSign, Zap, Shield, LogOut, Trash2, Video, Trophy, X, UserPlus, Star, ChevronRight, Activity, Check, PlusCircle, Sparkles, User2 } from 'lucide-react';
+import { MapPin, Calendar, Clock, Users, ArrowLeft, Loader2, DollarSign, Zap, Shield, LogOut, Trash2, Video, Trophy, X, UserPlus, Star, ChevronRight, Activity, Check, PlusCircle, Sparkles, User2, Edit2, Save } from 'lucide-react';
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
-import { getMatchById, Match, MatchParticipant, joinMatch, switchTeam, deleteMatch, leaveMatch, invitePlayer, respondToInvitation, getMatchStats } from '@/lib/matches';
+import { getMatchById, Match, MatchParticipant, joinMatch, switchTeam, deleteMatch, leaveMatch, invitePlayer, respondToInvitation, getMatchStats, updateMatch } from '@/lib/matches';
 import { getFriends, FriendshipData } from '@/lib/friends';
 import { useAuth } from '@/contexts/AuthContext';
 import { ROSARIO_VENUES, findVenueByLocation } from '@/lib/venues';
@@ -56,6 +56,9 @@ function MatchLobbyContent() {
     const [friends, setFriends] = useState<FriendshipData[]>([]);
     const [loadingFriends, setLoadingFriends] = useState(false);
     const [invitingId, setInvitingId] = useState<string | null>(null);
+    const [isEditingTeamNames, setIsEditingTeamNames] = useState(false);
+    const [editingNames, setEditingNames] = useState({ A: '', B: '' });
+    const [isSavingNames, setIsSavingNames] = useState(false);
 
     const fetchMatch = async () => {
         if (!id) return;
@@ -63,6 +66,10 @@ function MatchLobbyContent() {
         try {
             const data = await getMatchById(id as string);
             setMatch(data);
+            setEditingNames({
+                A: data.team_a_name || 'Equipo A',
+                B: data.team_b_name || 'Equipo B'
+            });
             
             if (data.is_completed) {
                 try {
@@ -181,6 +188,23 @@ function MatchLobbyContent() {
             alert(err.message);
         } finally {
             setInvitingId(null);
+        }
+    };
+
+    const handleSaveTeamNames = async () => {
+        if (!match || !id) return;
+        setIsSavingNames(true);
+        try {
+            await updateMatch(id as string, {
+                team_a_name: editingNames.A,
+                team_b_name: editingNames.B
+            });
+            await fetchMatch();
+            setIsEditingTeamNames(false);
+        } catch (err: any) {
+            alert(`Error al guardar nombres: ${err.message}`);
+        } finally {
+            setIsSavingNames(false);
         }
     };
 
@@ -329,14 +353,24 @@ function MatchLobbyContent() {
                                         <span className="text-6xl font-black text-foreground italic tracking-tighter leading-none">
                                             {match.team_a_score ?? 0}
                                         </span>
-                                        <span className="text-[10px] font-black text-blue-500 uppercase tracking-[0.2em] mt-1">Local</span>
+                                        <span className={cn(
+                                            "text-[10px] font-black uppercase tracking-[0.2em] mt-1",
+                                            match.team_a_name ? "text-primary" : "text-blue-500"
+                                        )}>
+                                            {match.team_a_name || 'Local'}
+                                        </span>
                                     </div>
                                     <span className="text-4xl font-black text-foreground/20 italic">-</span>
                                     <div className="flex flex-col items-end">
                                         <span className="text-6xl font-black text-foreground italic tracking-tighter leading-none">
                                             {match.team_b_score ?? 0}
                                         </span>
-                                        <span className="text-[10px] font-black text-red-500 uppercase tracking-[0.2em] mt-1">Visita</span>
+                                        <span className={cn(
+                                            "text-[10px] font-black uppercase tracking-[0.2em] mt-1",
+                                            match.team_b_name ? "text-primary" : "text-red-500"
+                                        )}>
+                                            {match.team_b_name || 'Visita'}
+                                        </span>
                                     </div>
                                 </div>
                             ) : (
@@ -472,6 +506,19 @@ function MatchLobbyContent() {
                                 )}
                             </AnimatePresence>
 
+                            {isCreator && !isCompleted && (
+                                <div className="flex justify-end mb-4">
+                                    <button
+                                        onClick={() => isEditingTeamNames ? handleSaveTeamNames() : setIsEditingTeamNames(true)}
+                                        disabled={isSavingNames}
+                                        className="h-10 px-6 bg-foreground/5 border border-foreground/10 rounded-xl text-[10px] font-black text-foreground/60 uppercase tracking-widest hover:text-primary transition-all flex items-center gap-2 group"
+                                    >
+                                        {isSavingNames ? <Loader2 className="w-3 h-3 animate-spin" /> : isEditingTeamNames ? <Save className="w-3 h-3" /> : <Edit2 className="w-3 h-3" />}
+                                        {isEditingTeamNames ? 'GUARDAR NOMBRES' : 'EDITAR NOMBRES'}
+                                    </button>
+                                </div>
+                            )}
+
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12">
                                 {(['A', 'B'] as const).map((team) => {
                                     const members = team === 'A' ? teamA : teamB;
@@ -492,15 +539,27 @@ function MatchLobbyContent() {
                                             )}
                                         >
                                             <div className="flex items-center justify-between mb-10">
-                                                <div className="flex items-center gap-5">
+                                                <div className="flex items-center gap-5 w-full">
                                                     <div className={cn(
                                                         "w-14 h-14 rounded-2xl flex items-center justify-center font-black text-2xl italic shadow-2xl transition-transform group-hover:scale-110",
                                                         team === 'A' ? "bg-blue-600 text-white" : "bg-red-600 text-white"
                                                     )}>
                                                         {team}
                                                     </div>
-                                                    <div className="space-y-1">
-                                                        <h3 className="text-2xl font-black text-foreground italic uppercase tracking-tighter leading-none">{team === 'A' ? 'Local' : 'Visitante'}</h3>
+                                                    <div className="space-y-1 flex-1">
+                                                        {isEditingTeamNames ? (
+                                                            <input
+                                                                value={team === 'A' ? editingNames.A : editingNames.B}
+                                                                onChange={(e) => setEditingNames({...editingNames, [team]: e.target.value})}
+                                                                className="bg-foreground/5 border border-foreground/10 rounded-xl px-4 py-2 text-lg font-black italic uppercase tracking-tighter text-foreground outline-none focus:border-primary/50 w-full"
+                                                                placeholder={team === 'A' ? 'Equipo A' : 'Equipo B'}
+                                                                onClick={(e) => e.stopPropagation()}
+                                                            />
+                                                        ) : (
+                                                            <h3 className="text-2xl font-black text-foreground italic uppercase tracking-tighter leading-none">
+                                                                {team === 'A' ? (match.team_a_name || 'Local') : (match.team_b_name || 'Visitante')}
+                                                            </h3>
+                                                        )}
                                                         <p className="text-[10px] font-black uppercase tracking-[0.3em] text-foreground/40">{members.length}/{teamSize} JUGADORES</p>
                                                     </div>
                                                 </div>
@@ -671,6 +730,7 @@ function MatchLobbyContent() {
             {isPostMatchModalOpen && user && (
                 <PostMatchModal
                     matchId={match.id}
+                    match={match}
                     participants={participants}
                     currentUserId={user.id}
                     onClose={() => setIsPostMatchModalOpen(false)}
