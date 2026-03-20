@@ -90,9 +90,14 @@ export function BottomNav() {
                                         className={cn(
                                             "w-12 h-12 rounded-[1.25rem] flex items-center justify-center transition-all duration-300",
                                             isActive 
-                                                ? "bg-primary text-background shadow-lg shadow-primary/30" 
-                                                : "bg-primary/90 text-background shadow-md shadow-primary/10"
+                                                ? "shadow-lg" 
+                                                : "shadow-md"
                                         )}
+                                        style={{ 
+                                            backgroundColor: '#55fa86', 
+                                            color: 'black',
+                                            boxShadow: isActive ? '0 0 20px rgba(85, 250, 134, 0.4)' : '0 4px 12px rgba(85, 250, 134, 0.2)'
+                                        }}
                                     >
                                         <Icon className="w-6 h-6" strokeWidth={2.5} />
                                     </motion.div>
@@ -114,30 +119,38 @@ export function BottomNav() {
                                         className={cn(
                                             "w-5 h-5 transition-all duration-300",
                                             isActive 
-                                                ? "text-primary scale-110" 
+                                                ? "scale-110" 
                                                 : "text-foreground/30 group-hover:text-foreground/50"
                                         )}
+                                        style={{ color: isActive ? '#55fa86' : undefined }}
                                         strokeWidth={isActive ? 2.5 : 2}
                                     />
                                     
                                     {/* Unread indicator */}
                                     {hasUnread && !isActive && (
-                                        <span className="absolute -top-1 -right-1 w-2.5 h-2.5 rounded-full bg-primary border-2 border-background shadow-[0_0_10px_rgba(var(--primary-rgb),0.5)]" />
+                                        <span 
+                                            className="absolute -top-1 -right-1 w-2.5 h-2.5 rounded-full border-2 border-background shadow-lg" 
+                                            style={{ backgroundColor: '#55fa86', boxShadow: '0 0 10px rgba(85, 250, 134, 0.5)' }}
+                                        />
                                     )}
 
                                     {/* Active indicator dot */}
                                     {isActive && !performanceMode && (
                                         <motion.div 
                                             layoutId="nav-dot"
-                                            className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-primary shadow-[0_0_8px_rgba(var(--primary-rgb),0.6)]"
+                                            className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full"
+                                            style={{ backgroundColor: '#55fa86', boxShadow: '0 0 8px rgba(85, 250, 134, 0.6)' }}
                                         />
                                     )}
                                 </div>
                                 
-                                <span className={cn(
-                                    "text-[8px] font-black uppercase tracking-[0.15em] mt-2 transition-colors duration-300",
-                                    isActive ? "text-primary italic" : "text-foreground/35"
-                                )}>
+                                <span 
+                                    className={cn(
+                                        "text-[8px] font-black uppercase tracking-[0.15em] mt-2 transition-colors duration-300",
+                                        isActive ? "italic" : "text-foreground/35"
+                                    )}
+                                    style={{ color: isActive ? '#55fa86' : undefined }}
+                                >
                                     {label}
                                 </span>
                             </Link>
