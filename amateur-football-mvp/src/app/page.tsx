@@ -638,28 +638,16 @@ export default function HomePage() {
                       <div className="mt-4 pt-3 flex items-center justify-between relative z-10"
                         style={{ borderTop: '1px solid rgba(var(--foreground-rgb),0.06)' }}>
                         <div className="flex -space-x-1.5">
-                          {match.participant_profiles?.slice(0, 4).map((p, i) => (
-                            <div key={i} className="w-6 h-6 rounded-lg border-2 border-background flex items-center justify-center overflow-hidden group-hover:scale-105 transition-transform"
+                          {[...Array(4)].map((_, i) => (
+                            <div key={i} className="w-6 h-6 rounded-lg border-2 border-background flex items-center justify-center group-hover:scale-105 transition-transform"
                               style={{ background: 'rgba(var(--foreground-rgb),0.08)', transitionDelay: `${i * 35}ms` }}>
-                             {p.avatar_url ? (
-                               <img src={p.avatar_url} alt="Profile" className="w-full h-full object-cover" />
-                             ) : (
-                               <User2 className="w-3 h-3 text-foreground/55" />
-                             )}
-                            </div>
-                          ))}
-                          {(!match.participant_profiles || match.participant_profiles.length === 0) && (
-                            <div className="w-6 h-6 rounded-lg border-2 border-background flex items-center justify-center"
-                              style={{ background: 'rgba(var(--foreground-rgb),0.08)' }}>
                               <User2 className="w-3 h-3 text-foreground/55" />
                             </div>
-                          )}
-                          {match.participant_profiles && match.participant_profiles.length > 4 && (
-                            <div className="w-6 h-6 rounded-lg border-2 border-background flex items-center justify-center"
-                              style={{ background: 'rgba(16,185,129,0.1)' }}>
-                              <span className="text-[7px] font-black text-primary">+{match.participant_profiles.length - 4}</span>
-                            </div>
-                          )}
+                          ))}
+                          <div className="w-6 h-6 rounded-lg border-2 border-background flex items-center justify-center"
+                            style={{ background: 'rgba(16,185,129,0.1)' }}>
+                            <span className="text-[8px] font-black text-primary">+</span>
+                          </div>
                         </div>
                         <div className="flex items-center gap-1.5 group-hover:gap-2.5 transition-all duration-300">
                           <span className="text-[8px] font-black uppercase tracking-[0.18em] text-foreground/60 group-hover:text-foreground/90 transition-colors">VER</span>

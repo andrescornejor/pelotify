@@ -21,7 +21,6 @@ export interface Match {
     team_b_id?: string;
     is_private?: boolean;
     participants?: { count: number }[];
-    participant_profiles?: { avatar_url?: string }[];
 }
 
 export interface MatchParticipant {
@@ -167,14 +166,7 @@ export async function getUserMatches(userId: string) {
         .from('match_participants')
         .select(`
             match_id,
-            matches:matches (
-                *,
-                participants:match_participants (
-                    user_id,
-                    status,
-                    profiles:user_id (avatar_url)
-                )
-            )
+            matches:matches (*)
         `)
         .eq('user_id', userId);
 
@@ -184,16 +176,11 @@ export async function getUserMatches(userId: string) {
         const match = Array.isArray(m.matches) ? m.matches[0] : m.matches;
         if (!match) return null;
         
-        const participants = match.participants || [];
-        const participantProfiles = participants
-            .map((p: any) => p.profiles)
-            .filter(Boolean);
-
+        // Defensive mapping for score fields to handle potential schema cache lag
         return {
             ...match,
             team_a_score: match.team_a_score ?? (match as any).score_a ?? 0,
-            team_b_score: match.team_b_score ?? (match as any).score_b ?? 0,
-            participant_profiles: participantProfiles
+            team_b_score: match.team_b_score ?? (match as any).score_b ?? 0
         } as Match;
     }).filter(Boolean) as Match[];
 }
