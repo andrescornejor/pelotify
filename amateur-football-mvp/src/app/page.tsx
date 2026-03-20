@@ -66,7 +66,7 @@ export default function HomePage() {
           getUserTeams(user.id),
           getTotalPlayersCount()
         ]);
-        
+
         const upcomingMatches = matchesData.filter(m => {
           if (m.is_completed) return false;
           const matchStart = new Date(`${m.date}T${m.time}`);
@@ -104,20 +104,20 @@ export default function HomePage() {
       const target = new Date(`${nextMatch.date}T${nextMatch.time}`);
       const now = new Date();
       const diff = target.getTime() - now.getTime();
-      
+
       if (diff <= 0) {
         setCountdownText('¡YA EMPIEZA! ⚽');
         return;
       }
-      
+
       const hours = Math.floor(diff / (1000 * 60 * 60));
       const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-      
+
       if (hours >= 24) {
         setCountdownText(null);
         return;
       }
-      
+
       if (hours > 0) {
         setCountdownText(`FALTAN ${hours}H ${minutes}M`);
       } else {
@@ -137,17 +137,17 @@ export default function HomePage() {
 
   const rankInfo = getRankByElo(elo);
   const nextRank = RANKS[RANKS.findIndex(r => r.name === rankInfo.name) + 1] || rankInfo;
-  const progressToNextRank = nextRank.minElo > 0 
-    ? Math.min(100, (elo / nextRank.minElo) * 100) 
+  const progressToNextRank = nextRank.minElo > 0
+    ? Math.min(100, (elo / nextRank.minElo) * 100)
     : 100;
 
   const rank = {
     name: rankInfo.name,
     color: 'text-primary', // Default fallback
-    glow: `rgba(44,252,125,0.3)`, 
+    glow: `rgba(44,252,125,0.3)`,
     hex: rankInfo.color
   };
-  
+
   // Apply specific colors from our theme
   if (rank.name === 'HIERRO') { rank.color = 'text-foreground/50'; rank.glow = 'rgba(255,255,255,0.1)'; }
   else if (rank.name === 'BRONCE') { rank.color = 'text-orange-600'; rank.glow = 'rgba(146,64,14,0.3)'; }
@@ -189,7 +189,7 @@ export default function HomePage() {
       )}
 
       {/* ── MOBILE PERF TOGGLE ── */}
-      <button 
+      <button
         onClick={togglePerfMode}
         className={cn(
           "fixed bottom-24 right-6 z-[100] w-12 h-12 rounded-2xl md:hidden glass border-primary/20 flex flex-col items-center justify-center transition-all active:scale-90",
@@ -222,7 +222,7 @@ export default function HomePage() {
           <div className="absolute inset-0 z-0 select-none">
             <motion.img
               initial={false}
-              animate={isPerfMode ? { scale: 1, rotate: 0 } : { 
+              animate={isPerfMode ? { scale: 1, rotate: 0 } : {
                 scale: [1.02, 1.08, 1.02],
                 rotate: [0, 1, 0]
               }}
@@ -243,10 +243,10 @@ export default function HomePage() {
               <>
                 <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-transparent to-accent/5" />
                 <div className="absolute inset-0 backdrop-blur-[2px] opacity-40 mix-blend-overlay" />
-                
+
                 {/* Animated "Beam" light effect */}
-                <motion.div 
-                  animate={{ 
+                <motion.div
+                  animate={{
                     x: ['-100%', '100%'],
                     opacity: [0, 0.3, 0]
                   }}
@@ -259,7 +259,7 @@ export default function HomePage() {
 
           {/* Content Wrapper */}
           <div className="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-10 p-8 sm:p-12 lg:p-16 xl:p-20">
-            
+
             {/* Left: Text & Branding */}
             <div className="flex-1 space-y-8 max-w-2xl">
               <motion.div
@@ -287,8 +287,8 @@ export default function HomePage() {
                   style={{ fontSize: 'clamp(3.5rem, 8vw, 9rem)' }}
                 >
                   <span className="text-foreground/90 mix-blend-difference">DOMINÁ</span><br />
-                  <span className={isPerfMode 
-                    ? "text-primary" 
+                  <span className={isPerfMode
+                    ? "text-primary"
                     : "bg-clip-text text-transparent bg-gradient-to-r from-primary-light via-primary to-primary-dark animate-gradient [text-shadow:0_0_40px_rgba(44,252,125,0.3)]"
                   }>
                     LA CANCHA.
@@ -348,14 +348,14 @@ export default function HomePage() {
                   </div>
                   <span className="text-2xl font-black text-primary/80 italic font-kanit">{Math.round(progressToNextRank)}%</span>
                 </div>
-                
+
                 <div className="relative h-6 bg-foreground/5 rounded-full p-1 overflow-hidden border border-white/5">
                   <motion.div
                     initial={{ width: 0 }}
                     animate={{ width: `${progressToNextRank}%` }}
                     transition={{ duration: 2, ease: "circOut", delay: 0.8 }}
                     className="h-full rounded-full relative group"
-                    style={{ 
+                    style={{
                       background: `linear-gradient(90deg, ${rank.hex}, #5dfd9d)`,
                       boxShadow: `0 0 20px ${rank.glow}`
                     }}
@@ -363,7 +363,7 @@ export default function HomePage() {
                     <div className="absolute inset-0 animate-shimmer opacity-30" />
                   </motion.div>
                 </div>
-                
+
                 <div className="flex justify-between text-[8px] font-black text-foreground/30 uppercase tracking-[0.3em]">
                   <span>{rank.name} ({rankInfo.minElo})</span>
                   <span>{nextRank.minElo} XP REQUERIDOS</span>
@@ -428,10 +428,10 @@ export default function HomePage() {
               className="grid grid-cols-2 sm:grid-cols-4 gap-4 snap-start scroll-mt-26"
             >
               {[
-                { icon: Trophy,   label: 'ELO Rating',  value: elo,                           trend: '+45',  color: '#2cfc7d', glow: 'rgba(44,252,125,0.2)' },
-                { icon: Activity, label: 'Partidos',    value: totalMatches,                   trend: 'NEW',  color: '#6366f1', glow: 'rgba(99,102,241,0.2)' },
-                { icon: Star,     label: 'MVPs',        value: metadata?.mvp_count || 0,       trend: '+1',   color: '#f59e0b', glow: 'rgba(245,158,11,0.2)' },
-                { icon: Flame,    label: 'Win Rate',    value: `${metadata?.win_rate || 0}%`,  trend: 'UP',   color: '#f43f5e', glow: 'rgba(244,63,94,0.2)' },
+                { icon: Trophy, label: 'ELO Rating', value: elo, trend: '+45', color: '#2cfc7d', glow: 'rgba(44,252,125,0.2)' },
+                { icon: Activity, label: 'Partidos', value: totalMatches, trend: 'NEW', color: '#6366f1', glow: 'rgba(99,102,241,0.2)' },
+                { icon: Star, label: 'MVPs', value: metadata?.mvp_count || 0, trend: '+1', color: '#f59e0b', glow: 'rgba(245,158,11,0.2)' },
+                { icon: Flame, label: 'Win Rate', value: `${metadata?.win_rate || 0}%`, trend: 'UP', color: '#f43f5e', glow: 'rgba(244,63,94,0.2)' },
               ].map((stat, i) => (
                 <motion.div
                   key={i}
@@ -444,10 +444,10 @@ export default function HomePage() {
                 >
                   {/* Subtle background glow */}
                   {!isPerfMode && (
-                    <div className="absolute top-0 right-0 w-16 h-16 opacity-5 blur-2xl group-hover:opacity-20 transition-opacity" 
+                    <div className="absolute top-0 right-0 w-16 h-16 opacity-5 blur-2xl group-hover:opacity-20 transition-opacity"
                       style={{ backgroundImage: `linear-gradient(to bottom right, ${stat.color}, transparent)` }} />
                   )}
-                  
+
                   <div className="relative z-10 flex flex-col items-start gap-4">
                     <div className="w-10 h-10 rounded-xl flex items-center justify-center transition-transform group-hover:scale-110 duration-500"
                       style={{ background: `${stat.color}15`, border: `1px solid ${stat.color}30` }}>
@@ -471,8 +471,8 @@ export default function HomePage() {
 
             {/* ── COMMUNITY BANNER ───────────── */}
             <motion.div
-              variants={fadeUp} 
-              initial="hidden" 
+              variants={fadeUp}
+              initial="hidden"
               whileInView="visible"
               viewport={{ once: true }}
               custom={1}
@@ -492,7 +492,7 @@ export default function HomePage() {
                 </div>
                 <div>
                   <h4 className="text-xl font-black text-foreground italic uppercase tracking-tighter leading-none font-kanit">Comunidad Activa</h4>
-                    <p className="text-[10px] font-black text-foreground/40 uppercase tracking-[0.25em] mt-1 font-outfit">
+                  <p className="text-[10px] font-black text-foreground/40 uppercase tracking-[0.25em] mt-1 font-outfit">
                     <span className="text-primary text-base font-black mr-1">{totalPlayers}</span> JUGADORES REGISTRADOS
                   </p>
                 </div>
@@ -525,9 +525,9 @@ export default function HomePage() {
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
                 {[
-                  { icon: Zap,    color: '#2cfc7d', glow: 'rgba(44,252,125,0.15)', label: 'Victoria Inicial', points: '+1000', desc: 'Bono masivo por ganar tu primer partido registrado.' },
-                  { icon: Target, color: '#f59e0b', glow: 'rgba(245,158,11,0.15)', label: 'Goles Anotados',   points: '+100',  desc: 'Cada gol informado y validado suma a tu ELO personal.' },
-                  { icon: Award,  color: '#6366f1', glow: 'rgba(99,102,241,0.15)', label: 'MVP del Partido',  points: '+200',  desc: 'Ser el más votado por tus compañeros tiene recompensa.' },
+                  { icon: Zap, color: '#2cfc7d', glow: 'rgba(44,252,125,0.15)', label: 'Victoria Inicial', points: '+1000', desc: 'Bono masivo por ganar tu primer partido registrado.' },
+                  { icon: Target, color: '#f59e0b', glow: 'rgba(245,158,11,0.15)', label: 'Goles Anotados', points: '+100', desc: 'Cada gol informado y validado suma a tu ELO personal.' },
+                  { icon: Award, color: '#6366f1', glow: 'rgba(99,102,241,0.15)', label: 'MVP del Partido', points: '+200', desc: 'Ser el más votado por tus compañeros tiene recompensa.' },
                 ].map((item, i) => (
                   <motion.div
                     key={i}
@@ -590,75 +590,75 @@ export default function HomePage() {
 
 
             {/* ── TEAMS ──────────────────────── */}
-              <div className="flex items-center justify-between px-1">
-                <div className="flex flex-col gap-1">
-                  <h2 className="text-xl lg:text-2xl font-black text-foreground italic uppercase tracking-tighter font-kanit">Tus Equipos</h2>
-                  <span className="text-[9px] font-black text-primary uppercase tracking-[0.4em]">PLANTEL PROFESIONAL</span>
-                </div>
-                <Link href="/teams"
-                  className="group flex items-center gap-1.5 px-4 py-2 rounded-2xl text-[9px] font-black text-foreground/55 hover:text-foreground transition-all tracking-[0.2em] uppercase glass border-white/10">
-                  VER TODOS <ChevronRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
-                </Link>
+            <div className="flex items-center justify-between px-1">
+              <div className="flex flex-col gap-1">
+                <h2 className="text-xl lg:text-2xl font-black text-foreground italic uppercase tracking-tighter font-kanit">Tus Equipos</h2>
+                <span className="text-[9px] font-black text-primary uppercase tracking-[0.4em]">PLANTEL PROFESIONAL</span>
               </div>
+              <Link href="/teams"
+                className="group flex items-center gap-1.5 px-4 py-2 rounded-2xl text-[9px] font-black text-foreground/55 hover:text-foreground transition-all tracking-[0.2em] uppercase glass border-white/10">
+                VER TODOS <ChevronRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
+              </Link>
+            </div>
 
-              {/* Responsive Horizontal Scroll on Mobile, Grid on Desktop */}
-              <div className="flex lg:grid lg:grid-cols-2 xl:grid-cols-3 gap-5 overflow-x-auto pb-6 lg:pb-0 no-scrollbar snap-x snap-mandatory lg:overflow-x-visible -mx-4 px-4 lg:mx-0 lg:px-0">
-                {isLoading ? (
-                  Array(3).fill(0).map((_, i) => (
-                    <div key={i} className="min-w-[280px] lg:min-w-0 h-28 rounded-[2rem] animate-pulse glass border-white/5" />
-                  ))
-                ) : userTeams.length > 0 ? (
-                  userTeams.map(team => (
-                    <Link key={team.id} href={`/team?id=${team.id}`} className="min-w-[280px] lg:min-w-0 snap-center">
-                      <motion.div
-                        whileHover={{ scale: 1.025, y: -4 }}
-                        whileTap={{ scale: 0.98 }}
-                        className="group relative overflow-hidden rounded-[2rem] p-5 glass-premium-hover bg-surface/40"
-                      >
-                        <div className="flex items-center gap-4">
-                          <div className="w-14 h-14 rounded-2xl flex items-center justify-center shrink-0 overflow-hidden border-2 border-white/10 group-hover:border-primary/40 transition-all duration-500 shadow-xl">
-                            {team.logo_url
-                              ? <img src={team.logo_url} alt={team.name} className="w-full h-full object-cover group-hover:scale-115 transition-transform duration-700" />
-                              : <Shield className="w-6 h-6 text-foreground/30 group-hover:text-primary transition-colors" />
-                            }
-                          </div>
-                          <div className="flex-1 min-w-0">
-                            <h3 className="font-black text-foreground text-lg leading-none tracking-tight uppercase truncate font-kanit">
-                              {team.name}
-                            </h3>
-                            <div className="flex items-center gap-3 mt-3">
-                              <span className="flex items-center gap-1.5 text-[9px] font-black uppercase text-foreground/40">
-                                <Users className="w-3 h-3 text-primary/60" /> {team.members_count}
-                              </span>
-                              <span className="flex items-center gap-1.5 text-[9px] font-black uppercase text-primary">
-                                <Trophy className="w-3 h-3" /> {team.elo} XP
-                              </span>
-                            </div>
-                          </div>
-                          <ArrowUpRight className="w-4 h-4 text-foreground/20 group-hover:text-primary transition-all duration-500 group-hover:rotate-12" />
+            {/* Responsive Horizontal Scroll on Mobile, Grid on Desktop */}
+            <div className="flex lg:grid lg:grid-cols-2 xl:grid-cols-3 gap-5 overflow-x-auto pb-6 lg:pb-0 no-scrollbar snap-x snap-mandatory lg:overflow-x-visible -mx-4 px-4 lg:mx-0 lg:px-0">
+              {isLoading ? (
+                Array(3).fill(0).map((_, i) => (
+                  <div key={i} className="min-w-[280px] lg:min-w-0 h-28 rounded-[2rem] animate-pulse glass border-white/5" />
+                ))
+              ) : userTeams.length > 0 ? (
+                userTeams.map(team => (
+                  <Link key={team.id} href={`/team?id=${team.id}`} className="min-w-[280px] lg:min-w-0 snap-center">
+                    <motion.div
+                      whileHover={{ scale: 1.025, y: -4 }}
+                      whileTap={{ scale: 0.98 }}
+                      className="group relative overflow-hidden rounded-[2rem] p-5 glass-premium-hover bg-surface/40"
+                    >
+                      <div className="flex items-center gap-4">
+                        <div className="w-14 h-14 rounded-2xl flex items-center justify-center shrink-0 overflow-hidden border-2 border-white/10 group-hover:border-primary/40 transition-all duration-500 shadow-xl">
+                          {team.logo_url
+                            ? <img src={team.logo_url} alt={team.name} className="w-full h-full object-cover group-hover:scale-115 transition-transform duration-700" />
+                            : <Shield className="w-6 h-6 text-foreground/30 group-hover:text-primary transition-colors" />
+                          }
                         </div>
-                      </motion.div>
-                    </Link>
-                  ))
-                ) : (
-                  <div className="w-full col-span-full py-14 rounded-[2.5rem] flex flex-col items-center justify-center text-center gap-6 border-2 border-dashed border-foreground/5 bg-foreground/[0.01]">
-                    <div className="w-20 h-20 rounded-[2rem] glass flex items-center justify-center shadow-inner">
-                      <Users className="w-8 h-8 text-foreground/20" />
-                    </div>
-                    <div className="space-y-2 max-w-xs">
-                      <h3 className="text-xl font-black text-foreground italic uppercase font-kanit">¿Sin Gremio?</h3>
-                      <p className="text-[10px] text-foreground/40 font-black uppercase tracking-[0.2em] leading-relaxed">
-                        Unite a una legión o fundá tu propio club hoy mismo.
-                      </p>
-                    </div>
-                    <Link href="/teams">
-                      <button className="h-12 px-10 font-black text-[10px] uppercase tracking-[0.3em] rounded-full bg-primary text-background shadow-lg shadow-primary/20 hover:scale-105 active:scale-95 transition-all">
-                        BUSCAR CLUB →
-                      </button>
-                    </Link>
+                        <div className="flex-1 min-w-0">
+                          <h3 className="font-black text-foreground text-lg leading-none tracking-tight uppercase truncate font-kanit">
+                            {team.name}
+                          </h3>
+                          <div className="flex items-center gap-3 mt-3">
+                            <span className="flex items-center gap-1.5 text-[9px] font-black uppercase text-foreground/40">
+                              <Users className="w-3 h-3 text-primary/60" /> {team.members_count}
+                            </span>
+                            <span className="flex items-center gap-1.5 text-[9px] font-black uppercase text-primary">
+                              <Trophy className="w-3 h-3" /> {team.elo} XP
+                            </span>
+                          </div>
+                        </div>
+                        <ArrowUpRight className="w-4 h-4 text-foreground/20 group-hover:text-primary transition-all duration-500 group-hover:rotate-12" />
+                      </div>
+                    </motion.div>
+                  </Link>
+                ))
+              ) : (
+                <div className="w-full col-span-full py-14 rounded-[2.5rem] flex flex-col items-center justify-center text-center gap-6 border-2 border-dashed border-foreground/5 bg-foreground/[0.01]">
+                  <div className="w-20 h-20 rounded-[2rem] glass flex items-center justify-center shadow-inner">
+                    <Users className="w-8 h-8 text-foreground/20" />
                   </div>
-                )}
-              </div>
+                  <div className="space-y-2 max-w-xs">
+                    <h3 className="text-xl font-black text-foreground italic uppercase font-kanit">¿Sin Gremio?</h3>
+                    <p className="text-[10px] text-foreground/40 font-black uppercase tracking-[0.2em] leading-relaxed">
+                      Unite a una legión o fundá tu propio club hoy mismo.
+                    </p>
+                  </div>
+                  <Link href="/teams">
+                    <button className="h-12 px-10 font-black text-[10px] uppercase tracking-[0.3em] rounded-full bg-primary text-background shadow-lg shadow-primary/20 hover:scale-105 active:scale-95 transition-all">
+                      BUSCAR CLUB →
+                    </button>
+                  </Link>
+                </div>
+              )}
+            </div>
           </div>
 
           {/* ═══════════ RIGHT: AGENDA ═══════════ */}
@@ -681,106 +681,106 @@ export default function HomePage() {
                   <div key={i} className="h-24 rounded-2xl animate-pulse glass border-white/5" />
                 ))
               ) : userMatches.length > 0 ? (
-                    userMatches.map((match, idx) => (
-                      <Link key={match.id} href={`/match?id=${match.id}`}>
-                        <motion.div
-                          initial={isPerfMode ? { opacity: 1 } : { opacity: 0, x: 10 }}
-                          whileInView={{ opacity: 1, x: 0 }}
-                          viewport={{ once: true }}
-                          transition={{ delay: idx * 0.05 }}
-                          whileHover={isPerfMode ? {} : { scale: 1.01, x: -2 }}
-                          whileTap={{ scale: 0.99 }}
-                          className={cn(
-                            "group relative overflow-hidden rounded-2xl p-4 transition-all duration-300",
-                            match.id === nextMatch?.id 
-                              ? "bg-primary/[0.03] border-primary/20 shadow-lg shadow-primary/5" 
-                              : "glass-premium bg-surface/30 border-white/5",
-                            isPerfMode && "bg-surface shadow-none border-border"
-                          )}
-                        >
-                          {/* Status indicator */}
-                          <div className="absolute top-0 left-0 w-1 h-full bg-primary/20 group-hover:bg-primary transition-colors" />
-                          
-                          <div className="flex items-center gap-4 relative z-10">
-                            {/* Date/Time Block - Robust Parsing */}
-                            <div className={cn(
-                              "flex flex-col items-center justify-center min-w-[56px] h-14 rounded-xl glass border-white/10 shadow-sm overflow-hidden bg-foreground/[0.02]",
-                              isPerfMode && "bg-background shadow-none border-border"
-                            )}>
-                              {(() => {
-                                try {
-                                  // Robust parsing to avoid UTC shifting (YYYY-MM-DD)
-                                  const dateStr = match.date.includes(',') ? match.date.split(',')[1].trim() : match.date;
-                                  const [year, month, day] = dateStr.includes('-') 
-                                    ? dateStr.split('-').map(Number) 
-                                    : dateStr.split('/').reverse().map(Number); // fallback for DD/MM/YYYY
-                                  
-                                  if (!year || !month || !day) throw new Error('Parsing error');
-                                  
-                                  const d = new Date(year, month - 1, day);
-                                  const dayName = d.toLocaleDateString('es-ES', { weekday: 'short' }).replace('.', '').toUpperCase();
-                                  const monthName = d.toLocaleDateString('es-ES', { month: 'short' }).replace('.', '').toUpperCase();
-                                  const dayNumber = d.getDate();
-                                  
-                                  return (
-                                    <>
-                                      <div className="flex flex-col items-center leading-none mt-0.5">
-                                        <span className="text-[7px] font-black text-primary/60 uppercase tracking-widest">{dayName}</span>
-                                        <span className="text-[9px] font-black text-primary uppercase tracking-wider">{monthName}</span>
-                                      </div>
-                                      <span className="text-xl font-black text-foreground leading-none font-kanit mt-0.5">
-                                        {dayNumber}
-                                      </span>
-                                    </>
-                                  );
-                                } catch (e) {
-                                  return (
-                                    <div className="flex flex-col items-center gap-1 opacity-20">
-                                      <Calendar className="w-4 h-4" />
-                                      <span className="text-[8px] font-black uppercase">??</span>
-                                    </div>
-                                  );
-                                }
-                              })()}
-                            </div>
+                userMatches.map((match, idx) => (
+                  <Link key={match.id} href={`/match?id=${match.id}`}>
+                    <motion.div
+                      initial={isPerfMode ? { opacity: 1 } : { opacity: 0, x: 10 }}
+                      whileInView={{ opacity: 1, x: 0 }}
+                      viewport={{ once: true }}
+                      transition={{ delay: idx * 0.05 }}
+                      whileHover={isPerfMode ? {} : { scale: 1.01, x: -2 }}
+                      whileTap={{ scale: 0.99 }}
+                      className={cn(
+                        "group relative overflow-hidden rounded-2xl p-4 transition-all duration-300",
+                        match.id === nextMatch?.id
+                          ? "bg-primary/[0.03] border-primary/20 shadow-lg shadow-primary/5"
+                          : "glass-premium bg-surface/30 border-white/5",
+                        isPerfMode && "bg-surface shadow-none border-border"
+                      )}
+                    >
+                      {/* Status indicator */}
+                      <div className="absolute top-0 left-0 w-1 h-full bg-primary/20 group-hover:bg-primary transition-colors" />
 
-                            <div className="flex-1 min-w-0">
-                              <div className="flex items-center justify-between gap-2 mb-1.5">
-                                <div className="flex items-center gap-2">
-                                  <span className="px-1.5 py-0.5 text-[7px] font-black rounded bg-primary/10 text-primary uppercase tracking-widest font-outfit border border-primary/10">
-                                    FÚTBOL {match.type.replace('F', '')}
-                                  </span>
-                                  {match.id === nextMatch?.id && (
-                                    <span className={cn("flex h-2 w-2 rounded-full bg-orange-500 shadow-[0_0_8px_rgba(249,115,22,0.5)]", !isPerfMode && "animate-pulse")} />
-                                  )}
-                                </div>
-                                <div className="flex items-center gap-1.5 text-foreground/40">
-                                  <Clock className="w-3 h-3" />
-                                  <span className="text-[10px] font-black italic font-kanit uppercase leading-none">
-                                    {match.id === nextMatch?.id && countdownText ? countdownText : match.time.split(':').slice(0, 2).join(':')}
-                                  </span>
-                                </div>
-                              </div>
-                              
-                              <h4 className="font-black text-foreground text-sm tracking-tight truncate uppercase italic font-kanit group-hover:text-primary transition-colors mb-0.5">
-                                {(() => {
-                                  const venue = findVenueByLocation(match.location);
-                                  return venue?.displayName || venue?.name || match.location;
-                                })()}
-                              </h4>
-                              
-                              <p className="text-foreground/30 text-[9px] font-black uppercase tracking-wider truncate flex items-center gap-1.5 font-outfit">
-                                <MapPin className="w-2.5 h-2.5 text-primary/40" /> {match.location}
-                              </p>
-                            </div>
+                      <div className="flex items-center gap-4 relative z-10">
+                        {/* Date/Time Block - Robust Parsing */}
+                        <div className={cn(
+                          "flex flex-col items-center justify-center min-w-[56px] h-14 rounded-xl glass border-white/10 shadow-sm overflow-hidden bg-foreground/[0.02]",
+                          isPerfMode && "bg-background shadow-none border-border"
+                        )}>
+                          {(() => {
+                            try {
+                              // Robust parsing to avoid UTC shifting (YYYY-MM-DD)
+                              const dateStr = match.date.includes(',') ? match.date.split(',')[1].trim() : match.date;
+                              const [year, month, day] = dateStr.includes('-')
+                                ? dateStr.split('-').map(Number)
+                                : dateStr.split('/').reverse().map(Number); // fallback for DD/MM/YYYY
 
-                            <div className="w-8 h-8 rounded-full flex items-center justify-center transition-all group-hover:bg-primary/10">
-                              <ChevronRight className={cn("w-4 h-4 text-foreground/20 group-hover:text-primary transition-all", !isPerfMode && "group-hover:translate-x-0.5")} />
+                              if (!year || !month || !day) throw new Error('Parsing error');
+
+                              const d = new Date(year, month - 1, day);
+                              const dayName = d.toLocaleDateString('es-ES', { weekday: 'short' }).replace('.', '').toUpperCase();
+                              const monthName = d.toLocaleDateString('es-ES', { month: 'short' }).replace('.', '').toUpperCase();
+                              const dayNumber = d.getDate();
+
+                              return (
+                                <>
+                                  <div className="flex flex-col items-center leading-none mt-0.5">
+                                    <span className="text-[7px] font-black text-primary/60 uppercase tracking-widest">{dayName}</span>
+                                    <span className="text-[9px] font-black text-primary uppercase tracking-wider">{monthName}</span>
+                                  </div>
+                                  <span className="text-xl font-black text-foreground leading-none font-kanit mt-0.5">
+                                    {dayNumber}
+                                  </span>
+                                </>
+                              );
+                            } catch (e) {
+                              return (
+                                <div className="flex flex-col items-center gap-1 opacity-20">
+                                  <Calendar className="w-4 h-4" />
+                                  <span className="text-[8px] font-black uppercase">??</span>
+                                </div>
+                              );
+                            }
+                          })()}
+                        </div>
+
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center justify-between gap-2 mb-1.5">
+                            <div className="flex items-center gap-2">
+                              <span className="px-1.5 py-0.5 text-[7px] font-black rounded bg-primary/10 text-primary uppercase tracking-widest font-outfit border border-primary/10">
+                                FÚTBOL {match.type.replace('F', '')}
+                              </span>
+                              {match.id === nextMatch?.id && (
+                                <span className={cn("flex h-2 w-2 rounded-full bg-orange-500 shadow-[0_0_8px_rgba(249,115,22,0.5)]", !isPerfMode && "animate-pulse")} />
+                              )}
+                            </div>
+                            <div className="flex items-center gap-1.5 text-foreground/40">
+                              <Clock className="w-3 h-3" />
+                              <span className="text-[10px] font-black italic font-kanit uppercase leading-none">
+                                {match.id === nextMatch?.id && countdownText ? countdownText : match.time.split(':').slice(0, 2).join(':')}
+                              </span>
                             </div>
                           </div>
-                        </motion.div>
-                      </Link>
-                    ))
+
+                          <h4 className="font-black text-foreground text-sm tracking-tight truncate uppercase italic font-kanit group-hover:text-primary transition-colors mb-0.5">
+                            {(() => {
+                              const venue = findVenueByLocation(match.location);
+                              return venue?.displayName || venue?.name || match.location;
+                            })()}
+                          </h4>
+
+                          <p className="text-foreground/30 text-[9px] font-black uppercase tracking-wider truncate flex items-center gap-1.5 font-outfit">
+                            <MapPin className="w-2.5 h-2.5 text-primary/40" /> {match.location}
+                          </p>
+                        </div>
+
+                        <div className="w-8 h-8 rounded-full flex items-center justify-center transition-all group-hover:bg-primary/10">
+                          <ChevronRight className={cn("w-4 h-4 text-foreground/20 group-hover:text-primary transition-all", !isPerfMode && "group-hover:translate-x-0.5")} />
+                        </div>
+                      </div>
+                    </motion.div>
+                  </Link>
+                ))
               ) : (
                 <div className="rounded-[2.5rem] p-10 flex flex-col items-center justify-center text-center gap-6 glass border-white/5 border-dashed bg-foreground/[0.01]">
                   <div className="w-16 h-16 rounded-2xl glass flex items-center justify-center shadow-lg transform rotate-3">
@@ -806,9 +806,9 @@ export default function HomePage() {
               <p className="text-[10px] font-black uppercase tracking-[0.4em] text-foreground/30 font-outfit">SISTEMA & ACCESOS</p>
               <div className="grid grid-cols-2 gap-3">
                 {[
-                  { label: 'Crear Equipo',   href: '/teams',         icon: PlusCircle },
-                  { label: 'Mi Perfil',      href: '/profile/me',    icon: User2 },
-                  { label: 'Ranking',        href: '/ranks',         icon: Trophy },
+                  { label: 'Crear Equipo', href: '/teams', icon: PlusCircle },
+                  { label: 'Mi Perfil', href: '/profile/me', icon: User2 },
+                  { label: 'Ranking', href: '/ranks', icon: Trophy },
                   { label: isPerfMode ? 'MODO: ALTO' : 'MODO: LITE', onClick: togglePerfMode, icon: Zap, active: isPerfMode },
                 ].map((link, i) => (
                   link.onClick ? (
@@ -819,8 +819,8 @@ export default function HomePage() {
                       onClick={link.onClick}
                       className={cn(
                         "w-full h-14 rounded-xl text-[9px] font-black uppercase tracking-wider transition-all glass border-white/10 flex flex-col items-center justify-center gap-1.5 font-outfit",
-                        link.active 
-                          ? "bg-primary/10 border-primary/20 text-primary" 
+                        link.active
+                          ? "bg-primary/10 border-primary/20 text-primary"
                           : "text-foreground/50 hover:text-foreground"
                       )}
                     >

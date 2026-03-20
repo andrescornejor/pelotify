@@ -5,13 +5,14 @@ import { usePathname } from 'next/navigation';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useSidebar } from '@/contexts/SidebarContext';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo, useCallback } from 'react';
 import { NotificationCenter } from '../notifications/NotificationCenter';
 import { useAuth } from '@/contexts/AuthContext';
 import { getPendingRequestsCount } from '@/lib/friends';
 import { getMatchInvitationsCount } from '@/lib/matches';
 import { getPendingJoinRequestsCountForCaptain, getTeamInvitationsCount } from '@/lib/teams';
 import { useTheme } from '@/contexts/ThemeContext';
+import { useSettings } from '@/contexts/SettingsContext';
 import { cn } from '@/lib/utils';
 import { getUnreadMessagesCount } from '@/lib/chat';
 import { supabase } from '@/lib/supabase';
@@ -24,19 +25,17 @@ const DESKTOP_NAV = [
     { href: '/teams', icon: Shield, label: 'Equipos' },
 ];
 
-
-
 export function TopHeader() {
     const pathname = usePathname();
-    const { toggleSidebar, isNotificationsOpen, setNotificationsOpen } = useSidebar();
+    const { toggleSidebar, isNotificationsOpen, setNotificationsOpen, isOpen: isSidebarOpen } = useSidebar();
     const { user } = useAuth();
     const { theme, setTheme } = useTheme();
+    const { performanceMode } = useSettings();
     const [notifCount, setNotifCount] = useState(0);
     const [unreadChatCount, setUnreadChatCount] = useState(0);
-
     const [friendsCount, setFriendsCount] = useState(0);
 
-    const updateCount = async () => {
+    const updateCount = useCallback(async () => {
         if (!user) return;
         try {
             const [f, m, t, ti, c] = await Promise.all([
@@ -52,15 +51,13 @@ export function TopHeader() {
         } catch (err) {
             console.error(err);
         }
-    };
-
+    }, [user]);
 
     useEffect(() => {
         if (!user) return;
         
         updateCount();
 
-        // Clear unread chat count if on messages page
         const cleanPath = pathname.replace(/\/$/, '') || '/';
         if (cleanPath === '/messages') {
             setUnreadChatCount(0);
@@ -84,7 +81,7 @@ export function TopHeader() {
         return () => {
             supabase.removeChannel(channel);
         };
-    }, [user, pathname]);
+    }, [user, pathname, updateCount]);
 
     if (['/login', '/register'].includes(pathname)) {
         return null;
@@ -92,92 +89,79 @@ export function TopHeader() {
 
     return (
         <>
-            <header className="fixed top-0 left-0 right-0 z-[60] pt-3 sm:pt-4 px-3 sm:px-5 lg:px-10 xl:px-16 pointer-events-none">
+            <header className="fixed top-0 left-0 right-0 z-[60] pt-3 sm:pt-4 px-3 sm:px-5 lg:px-10 xl:px-16 pointer-events-none" style={{ contain: 'layout style' }}>
                 <div className="max-w-screen-2xl mx-auto w-full pointer-events-auto">
                     <motion.div
                         initial={{ y: -24, opacity: 0 }}
                         animate={{ y: 0, opacity: 1 }}
-                        transition={{ type: 'spring', stiffness: 300, damping: 26, delay: 0.05 }}
+                        transition={performanceMode ? { duration: 0.15 } : { type: 'spring', stiffness: 300, damping: 26, delay: 0.05 }}
                         className="overflow-hidden rounded-[1.25rem] lg:rounded-[1.75rem]"
                         style={{
-                            background: 'rgba(var(--foreground-rgb), 0.04)',
-                            backdropFilter: 'blur(28px) saturate(180%)',
-                            WebkitBackdropFilter: 'blur(28px) saturate(180%)',
+                            background: 'rgba(var(--foreground-rgb), 0.05)',
+                            backdropFilter: performanceMode ? 'none' : 'blur(16px) saturate(160%)',
+                            WebkitBackdropFilter: performanceMode ? 'none' : 'blur(16px) saturate(160%)',
                             border: '1px solid rgba(var(--foreground-rgb), 0.08)',
-                            boxShadow: '0 4px 32px rgba(0,0,0,0.12), inset 0 1px 0 rgba(255,255,255,0.05)',
+                            boxShadow: '0 8px 32px rgba(0,0,0,0.1)',
+                            transform: 'translateZ(0)',
                         }}
                     >
-                        {/* Background subtle light beam */}
-                        <div className="absolute top-0 left-[-10%] w-[40%] h-full bg-gradient-to-r from-primary/5 via-transparent to-transparent -skew-x-12 pointer-events-none" />
+                        {!performanceMode && (
+                            <div className="absolute top-0 left-[-10%] w-[40%] h-full bg-gradient-to-r from-primary/5 via-transparent to-transparent -skew-x-12 pointer-events-none" />
+                        )}
 
                         <div className="grid grid-cols-[1fr_auto_1fr] items-center h-[58px] sm:h-[68px] lg:h-[76px] px-4 sm:px-6 lg:px-8 w-full">
                             {/* Left: Menu + Logo */}
                             <div className="flex items-center gap-3 sm:gap-4 lg:gap-3 xl:gap-6 min-w-0">
-                                <motion.button
+                                <button
                                     onClick={toggleSidebar}
-                                    whileTap={{ scale: 0.92 }}
-                                    className="relative w-10 h-10 lg:w-11 lg:h-11 flex items-center justify-center rounded-2xl bg-foreground/[0.04] hover:bg-foreground/[0.08] border border-foreground/[0.06] transition-all group"
+                                    className="relative w-10 h-10 lg:w-11 lg:h-11 flex items-center justify-center rounded-2xl bg-foreground/[0.04] hover:bg-foreground/[0.08] border border-foreground/[0.06] transition-all group active:scale-90"
                                     aria-label="Menu"
                                 >
                                     <div className="flex flex-col gap-[5px] w-[19px] items-end">
-                                        <motion.span
-                                            animate={useSidebar().isOpen
-                                                ? { rotate: 45, y: 7.5, width: '100%' }
-                                                : { rotate: 0, y: 0, width: '100%' }}
-                                            className="h-[2px] bg-foreground/80 rounded-full block origin-center transition-all duration-300"
+                                        <div
+                                            className={cn(
+                                                "h-[2px] bg-foreground/80 rounded-full block transition-all duration-300",
+                                                isSidebarOpen ? "w-full rotate-45 translate-y-[7.5px]" : "w-full"
+                                            )}
                                         />
-                                        <motion.span
-                                            animate={useSidebar().isOpen
-                                                ? { opacity: 0, x: -8 }
-                                                : { opacity: 1, x: 0 }}
-                                            className="h-[2.2px] w-[70%] bg-primary rounded-full block transition-all duration-300 shadow-[0_0_8px_rgba(16,185,129,0.4)]"
+                                        <div
+                                            className={cn(
+                                                "h-[2.2px] bg-primary rounded-full block transition-all duration-300 shadow-[0_0_8px_rgba(16,185,129,0.4)]",
+                                                isSidebarOpen ? "opacity-0 -translate-x-2" : "w-[70%]"
+                                            )}
                                         />
-                                        <motion.span
-                                            animate={useSidebar().isOpen
-                                                ? { rotate: -45, y: -7.5, width: '100%' }
-                                                : { rotate: 0, y: 0, width: '100%' }}
-                                            className="h-[2px] bg-foreground/80 rounded-full block origin-center transition-all duration-300"
+                                        <div
+                                            className={cn(
+                                                "h-[2px] bg-foreground/80 rounded-full block transition-all duration-300",
+                                                isSidebarOpen ? "w-full -rotate-45 -translate-y-[7.5px]" : "w-full"
+                                            )}
                                         />
                                     </div>
-                                </motion.button>
+                                </button>
 
-                                <Link href="/" className="flex items-center gap-2 select-none hover:opacity-90 transition-all group/logo">
-                                    <div className="w-12 h-12 sm:w-16 sm:h-16 lg:w-14 lg:h-14 xl:w-20 xl:h-20 flex items-center justify-center relative transition-transform duration-500 group-hover/logo:scale-110 shrink-0">
-                                        <div className="absolute inset-0 bg-primary/15 blur-[20px] rounded-full opacity-40 shrink-0" />
-                                        <img src="/logo_pelotify.png" alt="Logo" className="w-full h-full object-contain relative z-10 drop-shadow-[0_0_15px_rgba(44,252,125,0.2)]" />
+                                <Link href="/" className="flex items-center gap-2 select-none group/logo">
+                                    <div className="w-12 h-12 sm:w-16 sm:h-16 lg:w-14 lg:h-14 xl:w-20 xl:h-20 flex items-center justify-center relative shrink-0">
+                                        {!performanceMode && (
+                                            <div className="absolute inset-0 bg-primary/15 blur-[20px] rounded-full opacity-30 shrink-0" />
+                                        )}
+                                        <img src="/logo_pelotify.png" alt="Logo" className="w-full h-full object-contain relative z-10 drop-shadow-[0_0_12px_rgba(44,252,125,0.2)]" />
                                     </div>
-                                    <div className="flex-1 min-w-0 flex flex-col lg:gap-0.5">
+                                    <div className="flex-1 min-w-0 flex flex-col">
                                         <div className="flex items-center gap-2">
-                                            <span className="text-[20px] sm:text-[24px] lg:text-[24px] xl:text-[32px] font-[900] tracking-[-0.02em] font-kanit uppercase italic leading-tight flex items-center gap-0 pr-4">
-                                                <span className="text-foreground">
-                                                    PELOTI
-                                                </span>
-                                                <span
-                                                    className="bg-clip-text text-transparent px-2 -mx-2"
-                                                    style={{
-                                                        backgroundImage: 'linear-gradient(135deg, #5dfd9d 0%, #2cfc7d 40%, #1db95a 100%)',
-                                                        filter: 'drop-shadow(0 0 20px rgba(44,252,125,0.45))',
-                                                    }}
-                                                >
-                                                    FY
-                                                </span>
+                                            <span className="text-[18px] sm:text-[22px] lg:text-[22px] xl:text-[30px] font-[900] tracking-[-0.02em] font-kanit uppercase italic leading-tight flex items-center gap-0 pr-4">
+                                                <span className="text-foreground">PELOTI</span>
+                                                <span className="bg-clip-text text-transparent px-2 -mx-2" style={{ backgroundImage: 'linear-gradient(135deg, #5dfd9d 0%, #2cfc7d 100%)' }}>FY</span>
                                             </span>
-                                            {/* Subtitle gem - only lg */}
-                                            <motion.div
-                                                animate={{ scale: [1, 1.2, 1], opacity: [0.5, 1, 0.5] }}
-                                                transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
-                                                className="hidden lg:block w-2.5 h-2.5 rounded-full bg-primary shadow-[0_0_15px_rgba(44,252,125,0.8)]"
-                                            />
                                         </div>
-                                        <span className="hidden sm:block lg:hidden xl:block text-[7px] sm:text-[9px] lg:text-[10px] font-black uppercase tracking-[0.3em] text-foreground/25 leading-none mt-0.5 group-hover/logo:text-primary transition-colors duration-500">
-                                            Dominá el <span className="text-primary/50 group-hover/logo:text-primary transition-colors duration-500">Potrero</span>
+                                        <span className="hidden sm:block lg:hidden xl:block text-[7px] sm:text-[9px] xl:text-[10px] font-black uppercase tracking-[0.3em] text-foreground/25 leading-none mt-0.5 group-hover/logo:text-primary transition-colors duration-500">
+                                            Dominá el <span className="text-primary/50 group-hover/logo:text-primary">Potrero</span>
                                         </span>
                                     </div>
                                 </Link>
                             </div>
 
                             {/* Middle: Desktop Nav */}
-                            <nav className="hidden lg:flex items-center gap-1.5 bg-foreground/[0.03] p-1.5 rounded-[1.25rem] border border-foreground/[0.05] backdrop-blur-md">
+                            <nav className="hidden lg:flex items-center gap-1.5 bg-foreground/[0.03] p-1.5 rounded-[1.25rem] border border-foreground/[0.05]">
                                 {DESKTOP_NAV.map((item) => {
                                     const cleanPath = pathname.replace(/\/$/, '') || '/';
                                     const cleanHref = item.href.replace(/\/$/, '') || '/';
@@ -191,21 +175,21 @@ export function TopHeader() {
                                             href={item.href}
                                             className="relative"
                                         >
-                                            <motion.div
-                                                whileHover={{ y: -1 }}
+                                            <div
                                                 className={cn(
                                                     "relative px-4 py-2 rounded-xl flex items-center gap-2.5 transition-all duration-300 group",
                                                     isActive 
-                                                        ? "bg-primary/10 text-primary" 
+                                                        ? "bg-primary/10 text-primary shadow-sm" 
                                                         : "text-foreground/45 hover:text-foreground/70 hover:bg-foreground/[0.04]"
                                                 )}
+                                                style={{ transform: 'translateZ(0)' }}
                                             >
-                                                {isActive && (
+                                                {isActive && !performanceMode && (
                                                     <motion.div
                                                         layoutId="nav-glow"
-                                                        className="absolute inset-0 rounded-xl bg-primary/[0.08]"
+                                                        className="absolute inset-0 rounded-xl bg-primary/[0.05]"
                                                         initial={false}
-                                                        transition={{ type: 'spring', stiffness: 380, damping: 30 }}
+                                                        transition={{ type: 'spring', stiffness: 400, damping: 30 }}
                                                     />
                                                 )}
                                                 
@@ -215,7 +199,7 @@ export function TopHeader() {
                                                 )} strokeWidth={isActive ? 2.5 : 2} />
                                                 
                                                 <span className={cn(
-                                                    "hidden xl:block text-[12px] font-black uppercase tracking-wider",
+                                                    "hidden xl:block text-[11px] font-black uppercase tracking-wider",
                                                     isActive ? "opacity-100" : "opacity-80"
                                                 )}>
                                                     {item.label}
@@ -224,76 +208,53 @@ export function TopHeader() {
                                                 {hasBadge && (
                                                     <span className="w-1.5 h-1.5 rounded-full bg-primary shadow-[0_0_8px_rgba(16,185,129,0.8)] ml-0.5" />
                                                 )}
-                                            </motion.div>
+                                            </div>
                                         </Link>
                                     );
                                 })}
                             </nav>
 
-
                             {/* Right: Actions */}
                             <div className="flex items-center justify-end gap-1.5 sm:gap-4 lg:gap-2.5 xl:gap-4 col-start-3">
-                                {/* Create Match Button - Only Desktop */}
-
-
                                 <div className="flex items-center gap-1.5 sm:gap-2.5">
                                     {/* Theme Toggle */}
-                                    <motion.button
-                                        whileHover={{ scale: 1.08 }}
-                                        whileTap={{ scale: 0.88, rotate: 20 }}
+                                    <button
                                         onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
-                                        className="w-10 h-10 sm:w-11 sm:h-11 flex items-center justify-center rounded-2xl bg-foreground/[0.04] hover:bg-foreground/[0.08] text-foreground/45 hover:text-foreground/70 transition-all border border-foreground/[0.04]"
+                                        className="w-10 h-10 sm:w-11 sm:h-11 flex items-center justify-center rounded-2xl bg-foreground/[0.04] hover:bg-foreground/[0.08] text-foreground/45 hover:text-foreground/70 transition-all border border-foreground/[0.04] active:scale-90"
                                         title="Cambiar Tema"
                                     >
                                         <AnimatePresence mode="wait">
                                             <motion.div
                                                 key={theme}
-                                                initial={{ scale: 0.5, rotate: -30, opacity: 0 }}
-                                                animate={{ scale: 1, rotate: 0, opacity: 1 }}
-                                                exit={{ scale: 0.5, rotate: 30, opacity: 0 }}
-                                                transition={{ duration: 0.2 }}
+                                                initial={{ scale: 0.5, opacity: 0 }}
+                                                animate={{ scale: 1, opacity: 1 }}
+                                                exit={{ scale: 0.5, opacity: 0 }}
+                                                transition={{ duration: 0.15 }}
                                             >
-                                                {theme === 'dark'
-                                                    ? <Sun className="w-4 h-4 sm:w-[1.1rem] sm:h-[1.1rem]" />
-                                                    : <Moon className="w-4 h-4 sm:w-[1.1rem] sm:h-[1.1rem]" />
-                                                }
+                                                {theme === 'dark' ? <Sun className="w-4 h-4 sm:w-5 sm:h-5" /> : <Moon className="w-4 h-4 sm:w-5 sm:h-5" />}
                                             </motion.div>
                                         </AnimatePresence>
-                                    </motion.button>
+                                    </button>
 
                                     {/* Notification Bell */}
-                                    <motion.button
-                                        whileHover={{ scale: 1.08 }}
-                                        whileTap={{ scale: 0.88 }}
+                                    <button
                                         onClick={() => {
                                             setNotificationsOpen(true);
                                             setNotifCount(0);
                                         }}
-                                        className="relative w-10 h-10 sm:w-11 sm:h-11 flex items-center justify-center rounded-2xl bg-foreground/[0.04] hover:bg-foreground/[0.08] text-foreground/45 hover:text-foreground/70 transition-all border border-foreground/[0.04]"
+                                        className="relative w-10 h-10 sm:w-11 sm:h-11 flex items-center justify-center rounded-2xl bg-foreground/[0.04] hover:bg-foreground/[0.08] text-foreground/45 hover:text-foreground/70 transition-all border border-foreground/[0.04] active:scale-90"
                                     >
-                                        <Bell className="w-4 h-4 sm:w-[1.1rem] sm:h-[1.1rem]" />
-                                        <AnimatePresence>
-                                            {notifCount > 0 && (
-                                                <motion.span
-                                                    initial={{ scale: 0, y: 4 }}
-                                                    animate={{ scale: 1, y: 0 }}
-                                                    exit={{ scale: 0 }}
-                                                    transition={{ type: 'spring', stiffness: 500, damping: 25 }}
-                                                    className="absolute -top-1 -right-1 min-w-[19px] h-[19px] px-1 bg-primary text-background text-[10px] font-black rounded-full flex items-center justify-center shadow-[0_0_15px_rgba(16,185,129,0.5)] border-2 border-background"
-                                                >
-                                                    {notifCount > 9 ? '9+' : notifCount}
-                                                </motion.span>
-                                            )}
-                                        </AnimatePresence>
-                                    </motion.button>
+                                        <Bell className="w-4 h-4 sm:w-5 sm:h-5" />
+                                        {notifCount > 0 && (
+                                            <span className="absolute -top-1 -right-1 min-w-[18px] h-[18px] px-1 bg-primary text-background text-[9px] font-black rounded-full flex items-center justify-center shadow-lg border-2 border-background">
+                                                {notifCount > 9 ? '9+' : notifCount}
+                                            </span>
+                                        )}
+                                    </button>
 
                                     {/* Profile Avatar */}
                                     <Link href="/profile/me">
-                                        <motion.div
-                                            whileHover={{ scale: 1.08 }}
-                                            whileTap={{ scale: 0.92 }}
-                                            className="w-10 h-10 sm:w-11 sm:h-11 rounded-2xl p-0.5 bg-foreground/[0.04] border border-foreground/[0.08] hover:border-primary/30 transition-all"
-                                        >
+                                        <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-2xl p-0.5 bg-foreground/[0.04] border border-foreground/[0.08] hover:border-primary/30 transition-all active:scale-95">
                                             <div className="w-full h-full rounded-[0.85rem] overflow-hidden bg-primary/5 flex items-center justify-center">
                                                 {user?.avatar_url ? (
                                                     <img src={user.avatar_url} alt="Perfil" className="w-full h-full object-cover" />
@@ -301,11 +262,10 @@ export function TopHeader() {
                                                     <User2 className="w-5 h-5 text-primary/60" />
                                                 )}
                                             </div>
-                                        </motion.div>
+                                        </div>
                                     </Link>
                                 </div>
                             </div>
-
                         </div>
                     </motion.div>
                 </div>
