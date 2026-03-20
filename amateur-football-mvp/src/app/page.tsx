@@ -638,42 +638,16 @@ export default function HomePage() {
                       <div className="mt-4 pt-3 flex items-center justify-between relative z-10"
                         style={{ borderTop: '1px solid rgba(var(--foreground-rgb),0.06)' }}>
                         <div className="flex -space-x-1.5">
-                          {(() => {
-                            const participants = (match.participants as any[]) || [];
-                            const visibleCount = 4;
-                            const displayParticipants = participants.slice(0, visibleCount);
-                            const remaining = Math.max(0, participants.length - visibleCount);
-
-                            if (participants.length === 0) {
-                              return [...Array(4)].map((_, i) => (
-                                <div key={i} className="w-6 h-6 rounded-lg border-2 border-background flex items-center justify-center group-hover:scale-105 transition-transform"
-                                  style={{ background: 'rgba(var(--foreground-rgb),0.08)', transitionDelay: `${i * 35}ms` }}>
-                                  <User2 className="w-3 h-3 text-foreground/55" />
-                                </div>
-                              ));
-                            }
-
-                            return (
-                              <>
-                                {displayParticipants.map((p, i) => (
-                                  <div key={p.user_id} className="w-6 h-6 rounded-lg border-2 border-background flex items-center justify-center group-hover:scale-105 transition-transform overflow-hidden"
-                                    style={{ background: 'rgba(var(--foreground-rgb),0.08)', transitionDelay: `${i * 35}ms` }}>
-                                    {p.profiles?.avatar_url ? (
-                                      <img src={p.profiles.avatar_url} alt="" className="w-full h-full object-cover" />
-                                    ) : (
-                                      <User2 className="w-3 h-3 text-foreground/55" />
-                                    )}
-                                  </div>
-                                ))}
-                                {remaining > 0 && (
-                                  <div className="w-6 h-6 rounded-lg border-2 border-background flex items-center justify-center"
-                                    style={{ background: 'rgba(16,185,129,0.1)' }}>
-                                    <span className="text-[8px] font-black text-primary">+{remaining}</span>
-                                  </div>
-                                )}
-                              </>
-                            );
-                          })()}
+                          {[...Array(4)].map((_, i) => (
+                            <div key={i} className="w-6 h-6 rounded-lg border-2 border-background flex items-center justify-center group-hover:scale-105 transition-transform"
+                              style={{ background: 'rgba(var(--foreground-rgb),0.08)', transitionDelay: `${i * 35}ms` }}>
+                              <User2 className="w-3 h-3 text-foreground/55" />
+                            </div>
+                          ))}
+                          <div className="w-6 h-6 rounded-lg border-2 border-background flex items-center justify-center"
+                            style={{ background: 'rgba(16,185,129,0.1)' }}>
+                            <span className="text-[8px] font-black text-primary">+</span>
+                          </div>
                         </div>
                         <div className="flex items-center gap-1.5 group-hover:gap-2.5 transition-all duration-300">
                           <span className="text-[8px] font-black uppercase tracking-[0.18em] text-foreground/60 group-hover:text-foreground/90 transition-colors">VER</span>

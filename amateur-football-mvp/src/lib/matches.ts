@@ -20,7 +20,7 @@ export interface Match {
     team_a_id?: string;
     team_b_id?: string;
     is_private?: boolean;
-    participants?: any[];
+    participants?: { count: number }[];
 }
 
 export interface MatchParticipant {
@@ -172,40 +172,17 @@ export async function getUserMatches(userId: string) {
 
     if (error) throw error;
     
-    const matches = (data || []).map(m => {
+    return (data || []).map(m => {
         const match = Array.isArray(m.matches) ? m.matches[0] : m.matches;
-        return match;
-    }).filter(Boolean) as Match[];
-
-    // Enrich matches with participants and profiles
-    if (matches.length > 0) {
-        const matchIds = matches.map(m => m.id);
+        if (!match) return null;
         
-        // Fetch all participants for these matches
-        const { data: participantsData } = await supabase
-            .from('match_participants')
-            .select(`
-                match_id,
-                user_id,
-                status,
-                profiles:profiles(avatar_url)
-            `)
-            .in('match_id', matchIds)
-            .eq('status', 'confirmed');
-
-        if (participantsData) {
-            matches.forEach(match => {
-                const matchParticipants = participantsData.filter(p => p.match_id === match.id);
-                match.participants = matchParticipants as any;
-            });
-        }
-    }
-    
-    return matches.map(match => ({
-        ...match,
-        team_a_score: match.team_a_score ?? (match as any).score_a ?? 0,
-        team_b_score: match.team_b_score ?? (match as any).score_b ?? 0
-    }));
+        // Defensive mapping for score fields to handle potential schema cache lag
+        return {
+            ...match,
+            team_a_score: match.team_a_score ?? (match as any).score_a ?? 0,
+            team_b_score: match.team_b_score ?? (match as any).score_b ?? 0
+        } as Match;
+    }).filter(Boolean) as Match[];
 }
 
 export async function leaveMatch(matchId: string, userId: string) {
