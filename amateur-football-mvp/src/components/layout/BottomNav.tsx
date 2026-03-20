@@ -70,10 +70,10 @@ export function BottomNav() {
             >
                 <div className="flex justify-around items-center h-[72px] px-2">
                     {NAV_ITEMS.map(({ href, icon: Icon, label, isPrimary }) => {
-                        // Better detection for Profile tab (recognize both /profile/me and /profile)
+                        // Enhanced detection for Perfil to ensure it stays active
                         const isActive = href === '/' 
                             ? pathname === '/' 
-                            : (pathname.startsWith(href) || (href === '/profile/me' && pathname.startsWith('/profile')));
+                            : pathname.startsWith(href.split('/me')[0]); // Detects /profile for /profile/me
                         
                         const hasUnread = label === 'Mensajes' && unreadCount > 0;
 
@@ -90,13 +90,13 @@ export function BottomNav() {
                                         className={cn(
                                             "w-12 h-12 rounded-[1.25rem] flex items-center justify-center transition-all duration-300",
                                             isActive 
-                                                ? "bg-primary text-background shadow-lg shadow-primary/30" 
-                                                : "bg-primary/90 text-background shadow-md shadow-primary/10"
+                                                ? "bg-primary text-black shadow-[0_0_20px_rgba(var(--primary-rgb),0.4)]" 
+                                                : "bg-primary text-black shadow-md"
                                         )}
                                     >
                                         <Icon className="w-6 h-6" strokeWidth={2.5} />
                                     </motion.div>
-                                    <span className="text-[7px] font-black uppercase tracking-[0.2em] mt-1.5 text-primary italic">
+                                    <span className="text-[7px] font-black uppercase tracking-[0.2em] mt-1.5 text-primary">
                                         {label}
                                     </span>
                                 </Link>
@@ -114,7 +114,7 @@ export function BottomNav() {
                                         className={cn(
                                             "w-5 h-5 transition-all duration-300",
                                             isActive 
-                                                ? "text-primary scale-110" 
+                                                ? "text-primary scale-110 drop-shadow-[0_0_5px_rgba(var(--primary-rgb),0.5)]" 
                                                 : "text-foreground/30 group-hover:text-foreground/50"
                                         )}
                                         strokeWidth={isActive ? 2.5 : 2}
@@ -129,14 +129,14 @@ export function BottomNav() {
                                     {isActive && !performanceMode && (
                                         <motion.div 
                                             layoutId="nav-dot"
-                                            className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-primary shadow-[0_0_8px_rgba(var(--primary-rgb),0.6)]"
+                                            className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-1.5 h-1.5 rounded-full bg-primary shadow-[0_0_10px_rgba(var(--primary-rgb),0.8)]"
                                         />
                                     )}
                                 </div>
                                 
                                 <span className={cn(
                                     "text-[8px] font-black uppercase tracking-[0.15em] mt-2 transition-colors duration-300",
-                                    isActive ? "text-primary italic" : "text-foreground/35"
+                                    isActive ? "text-primary" : "text-foreground/35"
                                 )}>
                                     {label}
                                 </span>
