@@ -638,47 +638,62 @@ export default function HomePage() {
                       <div className="absolute top-0 left-0 w-1 h-full bg-primary/20 group-hover:bg-primary transition-colors" />
                       
                       <div className="flex items-center gap-4 relative z-10">
-                        {/* Date/Time Block - Compact */}
-                        <div className="flex flex-col items-center justify-center min-w-[56px] h-14 rounded-xl glass border-white/10 shadow-sm">
-                          <span className="text-[10px] font-black text-primary uppercase tracking-tighter leading-none">
-                            {match.date.split(',')[1]?.trim().slice(0, 3) || match.date.split(' ')[0].slice(0, 3)}
-                          </span>
-                          <span className="text-lg font-black text-foreground leading-none mt-1 font-kanit">
-                            {match.date.match(/\d+/)?.[0] || '??'}
-                          </span>
+                        {/* Date/Time Block - Robust Parsing */}
+                        <div className="flex flex-col items-center justify-center min-w-[56px] h-14 rounded-xl glass border-white/10 shadow-sm overflow-hidden bg-foreground/[0.02]">
+                          {(() => {
+                            try {
+                              const d = new Date(match.date.includes(',') ? match.date.split(',')[1].trim() : match.date);
+                              const month = d.toLocaleString('es-ES', { month: 'short' }).replace('.', '').toUpperCase();
+                              const day = d.getDate();
+                              return (
+                                <>
+                                  <span className="text-[9px] font-black text-primary uppercase tracking-wider leading-none mb-0.5">
+                                    {month}
+                                  </span>
+                                  <span className="text-xl font-black text-foreground leading-none font-kanit">
+                                    {day}
+                                  </span>
+                                </>
+                              );
+                            } catch (e) {
+                              return <Calendar className="w-5 h-5 text-foreground/20" />;
+                            }
+                          })()}
                         </div>
 
                         <div className="flex-1 min-w-0">
-                          <div className="flex items-center justify-between gap-2 mb-1">
+                          <div className="flex items-center justify-between gap-2 mb-1.5">
                             <div className="flex items-center gap-2">
-                              <span className="px-1.5 py-0.5 text-[8px] font-black rounded bg-foreground/5 text-foreground/40 uppercase tracking-widest font-outfit">
+                              <span className="px-1.5 py-0.5 text-[7px] font-black rounded bg-primary/10 text-primary uppercase tracking-widest font-outfit border border-primary/10">
                                 FÚTBOL {match.type.replace('F', '')}
                               </span>
                               {match.id === nextMatch?.id && (
-                                <span className="animate-pulse flex h-1.5 w-1.5 rounded-full bg-orange-500" />
+                                <span className="flex h-2 w-2 rounded-full bg-orange-500 shadow-[0_0_8px_rgba(249,115,22,0.5)] animate-pulse" />
                               )}
                             </div>
                             <div className="flex items-center gap-1.5 text-foreground/40">
                               <Clock className="w-3 h-3" />
-                              <span className="text-[10px] font-black italic font-kanit">
+                              <span className="text-[10px] font-black italic font-kanit uppercase leading-none">
                                 {match.id === nextMatch?.id && countdownText ? countdownText : match.time.split(':').slice(0, 2).join(':')}
                               </span>
                             </div>
                           </div>
                           
-                          <h4 className="font-black text-foreground text-sm tracking-tight truncate uppercase italic font-kanit group-hover:text-primary transition-colors">
+                          <h4 className="font-black text-foreground text-sm tracking-tight truncate uppercase italic font-kanit group-hover:text-primary transition-colors mb-0.5">
                             {(() => {
                               const venue = findVenueByLocation(match.location);
                               return venue?.displayName || venue?.name || match.location;
                             })()}
                           </h4>
                           
-                          <p className="text-foreground/30 text-[9px] font-black uppercase tracking-wider truncate flex items-center gap-1 mt-0.5 font-outfit">
-                            <MapPin className="w-2.5 h-2.5" /> {match.location}
+                          <p className="text-foreground/30 text-[9px] font-black uppercase tracking-wider truncate flex items-center gap-1.5 font-outfit">
+                            <MapPin className="w-2.5 h-2.5 text-primary/40" /> {match.location}
                           </p>
                         </div>
 
-                        <ChevronRight className="w-4 h-4 text-foreground/10 group-hover:text-primary transition-all group-hover:translate-x-1" />
+                        <div className="w-8 h-8 rounded-full flex items-center justify-center transition-all group-hover:bg-primary/10">
+                          <ChevronRight className="w-4 h-4 text-foreground/20 group-hover:text-primary group-hover:translate-x-0.5 transition-all" />
+                        </div>
                       </div>
                     </motion.div>
                   </Link>
