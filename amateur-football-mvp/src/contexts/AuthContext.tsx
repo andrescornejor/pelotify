@@ -112,6 +112,50 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         return () => subscription.unsubscribe();
     }, []);
 
+    // Capacitor Deep Link Handling (Google Login return)
+    useEffect(() => {
+        const isApp = typeof window !== 'undefined' && (window as any).Capacitor?.isNativePlatform();
+        if (!isApp) return;
+
+        const handleDeepLink = async () => {
+            try {
+                // Dynamic import to avoid issues in browser environment
+                const { App } = await import('@capacitor/app');
+                
+                App.addListener('appUrlOpen', async (data: any) => {
+                    console.log('Deep link received:', data.url);
+                    
+                    // Supabase sends tokens after the hash (#)
+                    // Format: com.pelotify.app://#access_token=...&refresh_token=...
+                    if (data.url && data.url.includes('#')) {
+                        const hash = data.url.split('#')[1];
+                        const params = new URLSearchParams(hash);
+                        const access_token = params.get('access_token');
+                        const refresh_token = params.get('refresh_token');
+
+                        if (access_token && refresh_token) {
+                            const { error } = await supabase.auth.setSession({ 
+                                access_token, 
+                                refresh_token 
+                            });
+                            
+                            if (!error) {
+                                console.log('Session set successfully from deep link');
+                                router.replace('/');
+                            } else {
+                                console.error('Error setting session:', error.message);
+                            }
+                        }
+                    }
+                });
+            } catch (err) {
+                console.warn('Error setting up Deep Link listener:', err);
+            }
+        };
+
+        handleDeepLink();
+    }, [router]);
+
     // Protected route logic
     useEffect(() => {
         if (isLoading) return;
