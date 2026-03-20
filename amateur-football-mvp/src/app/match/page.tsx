@@ -506,6 +506,28 @@ function MatchLobbyContent() {
                                 )}
                             </AnimatePresence>
 
+                            {!isCompleted && (
+                                <motion.div
+                                    initial={{ opacity: 0, scale: 0.95 }}
+                                    animate={{ opacity: 1, scale: 1 }}
+                                    className="glass-premium rounded-[3rem] p-8 lg:p-10 border border-foreground/10 relative overflow-hidden group/recruitment mb-8"
+                                >
+                                    <div className="flex flex-col md:flex-row items-center justify-between gap-6 relative z-10">
+                                        <div className="space-y-1 text-center md:text-left">
+                                            <h2 className="text-2xl lg:text-3xl font-black text-foreground italic uppercase tracking-tighter leading-none">¿Faltan jugadores?</h2>
+                                            <p className="text-[10px] font-bold text-foreground/40 uppercase tracking-widest">Invitá a tus amigos para completar los equipos</p>
+                                        </div>
+                                        <button
+                                            onClick={handleOpenInviteModal}
+                                            className="h-14 px-8 bg-primary text-black rounded-2xl flex items-center justify-center gap-4 group/invite transition-all active:scale-95 shadow-xl shadow-primary/20 hover:scale-[1.05] hover:bg-white w-full md:w-auto"
+                                        >
+                                            <UserPlus className="w-5 h-5 group-hover/invite:rotate-12 transition-transform text-black" />
+                                            <span className="text-[10px] font-black uppercase tracking-widest">Convocar Pibes</span>
+                                        </button>
+                                    </div>
+                                </motion.div>
+                            )}
+
                             {isCreator && !isCompleted && (
                                 <div className="flex justify-end mb-4">
                                     <button
@@ -601,27 +623,7 @@ function MatchLobbyContent() {
                                 })}
                             </div>
 
-                            {!isCompleted && (
-                                <motion.div
-                                    initial={{ opacity: 0, scale: 0.95 }}
-                                    animate={{ opacity: 1, scale: 1 }}
-                                    className="glass-premium rounded-[3rem] p-8 lg:p-12 border border-foreground/10 relative overflow-hidden group/recruitment"
-                                >
-                                    <div className="flex flex-col md:flex-row items-center justify-between gap-8 relative z-10">
-                                        <div className="space-y-2 text-center md:text-left">
-                                            <h2 className="text-3xl lg:text-4xl font-black text-foreground italic uppercase tracking-tighter leading-none">Armá la Juntada</h2>
-                                            <p className="text-[10px] font-bold text-foreground/40 uppercase tracking-widest">Invitá a tus amigos para llenar los cupos</p>
-                                        </div>
-                                        <button
-                                            onClick={handleOpenInviteModal}
-                                            className="h-16 px-10 bg-primary text-black rounded-2xl flex items-center justify-center gap-4 group/invite transition-all active:scale-95 shadow-xl shadow-primary/20 hover:scale-[1.05] hover:bg-white w-full md:w-auto"
-                                        >
-                                            <UserPlus className="w-5 h-5 group-hover/invite:rotate-12 transition-transform" />
-                                            <span className="text-xs font-black uppercase tracking-widest">Convocar Pibes</span>
-                                        </button>
-                                    </div>
-                                </motion.div>
-                            )}
+
                         </div>
 
                         <div className="lg:col-span-4 space-y-8 relative">
