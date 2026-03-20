@@ -42,6 +42,19 @@ export default function HomePage() {
   const [isLoading, setIsLoading] = useState(true);
   const [totalPlayers, setTotalPlayers] = useState(0);
   const [greeting, setGreeting] = useState('Buen día');
+  const [isPerfMode, setIsPerfMode] = useState(false);
+
+  // Load performance preference
+  useEffect(() => {
+    const saved = localStorage.getItem('perf-mode') === 'true';
+    setIsPerfMode(saved);
+  }, []);
+
+  const togglePerfMode = () => {
+    const newVal = !isPerfMode;
+    setIsPerfMode(newVal);
+    localStorage.setItem('perf-mode', String(newVal));
+  };
 
   useEffect(() => {
     async function fetchData() {
@@ -152,21 +165,40 @@ export default function HomePage() {
   };
 
   return (
-    <div className="relative min-h-screen bg-background font-sans selection:bg-primary selection:text-background">
-      {/* ── NOISE OVERLAY — Premium Finish ── */}
-      <div className="fixed inset-0 pointer-events-none z-50 opacity-[0.035] dark:opacity-[0.05] mix-blend-overlay"
-        style={{ backgroundImage: `url('https://grainy-gradients.vercel.app/noise.svg')` }} />
+    <div className={cn(
+      "relative min-h-screen bg-background font-sans selection:bg-primary selection:text-background",
+      isPerfMode && "perf-mode"
+    )}>
+      {/* ── NOISE OVERLAY — Optimized ── */}
+      {!isPerfMode && (
+        <div className="fixed inset-0 pointer-events-none z-[100] opacity-[0.035] dark:opacity-[0.05] mix-blend-overlay hidden md:block"
+          style={{ backgroundImage: `url('https://grainy-gradients.vercel.app/noise.svg')` }} />
+      )}
 
 
-      {/* ── AMBIENT ── */}
-      <div className="fixed inset-0 pointer-events-none -z-10 overflow-hidden">
-        <div className="absolute top-[-10%] right-[-5%] w-[45%] h-[55%] opacity-[0.07]"
-          style={{ background: 'radial-gradient(circle, #2cfc7d 0%, transparent 70%)', filter: 'blur(80px)' }} />
-        <div className="absolute bottom-[-5%] left-[-10%] w-[50%] h-[50%] opacity-[0.04]"
-          style={{ background: 'radial-gradient(circle, #f59e0b 0%, transparent 70%)', filter: 'blur(100px)' }} />
-        <div className="absolute top-[35%] right-[20%] w-[35%] h-[35%] opacity-[0.03]"
-          style={{ background: 'radial-gradient(circle, #6366f1 0%, transparent 70%)', filter: 'blur(120px)' }} />
-      </div>
+      {/* ── AMBIENT — Disabled in Perf Mode ── */}
+      {!isPerfMode && (
+        <div className="fixed inset-0 pointer-events-none -z-10 overflow-hidden hidden md:block">
+          <div className="absolute top-[-10%] right-[-5%] w-[45%] h-[55%] opacity-[0.07]"
+            style={{ background: 'radial-gradient(circle, #2cfc7d 0%, transparent 70%)', filter: 'blur(80px)' }} />
+          <div className="absolute bottom-[-5%] left-[-10%] w-[50%] h-[50%] opacity-[0.04]"
+            style={{ background: 'radial-gradient(circle, #f59e0b 0%, transparent 70%)', filter: 'blur(100px)' }} />
+          <div className="absolute top-[35%] right-[20%] w-[35%] h-[35%] opacity-[0.03]"
+            style={{ background: 'radial-gradient(circle, #6366f1 0%, transparent 70%)', filter: 'blur(120px)' }} />
+        </div>
+      )}
+
+      {/* ── MOBILE PERF TOGGLE ── */}
+      <button 
+        onClick={togglePerfMode}
+        className={cn(
+          "fixed bottom-24 right-6 z-[100] w-12 h-12 rounded-2xl md:hidden glass border-primary/20 flex flex-col items-center justify-center transition-all active:scale-90",
+          isPerfMode ? "bg-primary text-background border-primary" : "text-primary shadow-lg shadow-primary/10"
+        )}
+      >
+        <Zap className={cn("w-5 h-5", isPerfMode && "fill-current")} />
+        <span className="text-[6px] font-black uppercase mt-0.5 tracking-tighter">{isPerfMode ? 'ALTO' : 'LITE'}</span>
+      </button>
 
       <div className="max-w-full mx-auto px-4 sm:px-6 lg:px-10 xl:px-16 py-4 lg:py-8 space-y-8 lg:space-y-12">
 
@@ -189,29 +221,33 @@ export default function HomePage() {
           {/* Backdrop image & Effects */}
           <div className="absolute inset-0 z-0 select-none">
             <motion.img
-              animate={{ 
+              animate={isPerfMode ? {} : { 
                 scale: [1.02, 1.08, 1.02],
                 rotate: [0, 1, 0]
               }}
               transition={{ duration: 25, repeat: Infinity, ease: 'linear' }}
               src="https://images.unsplash.com/photo-1574629810360-7efbbe195018?auto=format&fit=crop&q=80&w=2400"
               alt=""
-              className="w-full h-full object-cover grayscale opacity-[0.08] dark:opacity-[0.12] scale-110"
+              className={cn("w-full h-full object-cover grayscale opacity-[0.08] dark:opacity-[0.12] scale-110", isPerfMode && "grayscale-0 opacity-5")}
             />
             {/* Overlay gradients for depth */}
             <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent opacity-90" />
-            <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-transparent to-accent/5" />
-            <div className="absolute inset-0 backdrop-blur-[2px] opacity-40 mix-blend-overlay" />
-            
-            {/* Animated "Beam" light effect */}
-            <motion.div 
-              animate={{ 
-                x: ['-100%', '100%'],
-                opacity: [0, 0.3, 0]
-              }}
-              transition={{ duration: 8, repeat: Infinity, ease: 'linear' }}
-              className="absolute inset-0 bg-gradient-to-r from-transparent via-primary/10 to-transparent skew-x-[-25deg]"
-            />
+            {!isPerfMode && (
+              <>
+                <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-transparent to-accent/5" />
+                <div className="absolute inset-0 backdrop-blur-[2px] opacity-40 mix-blend-overlay" />
+                
+                {/* Animated "Beam" light effect */}
+                <motion.div 
+                  animate={{ 
+                    x: ['-100%', '100%'],
+                    opacity: [0, 0.3, 0]
+                  }}
+                  transition={{ duration: 8, repeat: Infinity, ease: 'linear' }}
+                  className="absolute inset-0 bg-gradient-to-r from-transparent via-primary/10 to-transparent skew-x-[-25deg]"
+                />
+              </>
+            )}
           </div>
 
           {/* Content Wrapper */}
@@ -219,15 +255,14 @@ export default function HomePage() {
             
             {/* Left: Text & Branding */}
             <div className="flex-1 space-y-8 max-w-2xl">
-              {/* Badge */}
               <motion.div
-                initial={{ x: -20, opacity: 0 }}
+                initial={isPerfMode ? { opacity: 1 } : { x: -20, opacity: 0 }}
                 animate={{ x: 0, opacity: 1 }}
                 transition={{ delay: 0.2, type: 'spring', stiffness: 200 }}
-                className="inline-flex items-center gap-3 px-4 py-1.5 rounded-full glass-premium border-primary/20"
+                className={cn("inline-flex items-center gap-3 px-4 py-1.5 rounded-full glass-premium border-primary/20", isPerfMode && "bg-surface")}
               >
                 <div className="relative flex h-2 w-2">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75" />
+                  <span className={cn("absolute inline-flex h-full w-full rounded-full bg-primary opacity-75", !isPerfMode && "animate-ping")} />
                   <span className="relative inline-flex rounded-full h-2 w-2 bg-primary" />
                 </div>
                 <span className="text-[10px] font-black uppercase tracking-[0.4em] text-primary/90 font-outfit">
@@ -391,12 +426,17 @@ export default function HomePage() {
                 <motion.div
                   key={i}
                   variants={fadeUp}
+                  initial="hidden"
+                  whileInView="visible"
+                  viewport={{ once: true }}
                   custom={i}
                   className="glass-premium-hover relative overflow-hidden rounded-[2rem] p-6 cursor-default group"
                 >
                   {/* Subtle background glow */}
-                  <div className="absolute top-0 right-0 w-16 h-16 opacity-5 blur-2xl group-hover:opacity-20 transition-opacity" 
-                    style={{ backgroundImage: `linear-gradient(to bottom right, ${stat.color}, transparent)` }} />
+                  {!isPerfMode && (
+                    <div className="absolute top-0 right-0 w-16 h-16 opacity-5 blur-2xl group-hover:opacity-20 transition-opacity" 
+                      style={{ backgroundImage: `linear-gradient(to bottom right, ${stat.color}, transparent)` }} />
+                  )}
                   
                   <div className="relative z-10 flex flex-col items-start gap-4">
                     <div className="w-10 h-10 rounded-xl flex items-center justify-center transition-transform group-hover:scale-110 duration-500"
@@ -406,7 +446,7 @@ export default function HomePage() {
                     <div>
                       <div className="flex items-baseline gap-2">
                         <p className="text-3xl font-black tracking-tighter italic leading-none text-foreground font-kanit">{stat.value}</p>
-                        {stat.trend && (
+                        {stat.trend && !isPerfMode && (
                           <span className="text-[9px] font-black uppercase tracking-tighter px-1.5 py-0.5 rounded bg-foreground/5 text-foreground/40 group-hover:bg-primary/20 group-hover:text-primary-dark transition-colors">
                             {stat.trend}
                           </span>
@@ -421,12 +461,21 @@ export default function HomePage() {
 
             {/* ── COMMUNITY BANNER ───────────── */}
             <motion.div
-              variants={fadeUp} initial="hidden" animate="visible" custom={1}
-              whileHover={{ scale: 1.01 }}
-              className="relative overflow-hidden rounded-[2.5rem] p-6 flex flex-col sm:flex-row items-center justify-between gap-6 snap-start scroll-mt-26 glass-premium border-primary/10"
+              variants={fadeUp} 
+              initial="hidden" 
+              whileInView="visible"
+              viewport={{ once: true }}
+              custom={1}
+              whileHover={isPerfMode ? {} : { scale: 1.01 }}
+              className={cn(
+                "relative overflow-hidden rounded-[2.5rem] p-6 flex flex-col sm:flex-row items-center justify-between gap-6 snap-start scroll-mt-26 glass-premium border-primary/10",
+                isPerfMode && "bg-surface"
+              )}
             >
-              <div className="absolute right-0 top-0 w-full h-full opacity-10 pointer-events-none"
-                style={{ background: 'radial-gradient(ellipse at 100% 0%, rgba(44,252,125,0.6) 0%, transparent 60%)' }} />
+              {!isPerfMode && (
+                <div className="absolute right-0 top-0 w-full h-full opacity-10 pointer-events-none"
+                  style={{ background: 'radial-gradient(ellipse at 100% 0%, rgba(44,252,125,0.6) 0%, transparent 60%)' }} />
+              )}
               <div className="flex items-center gap-5 relative z-10">
                 <div className="w-14 h-14 rounded-2xl flex items-center justify-center shrink-0 glass shadow-inner border-white/5">
                   <Users className="w-7 h-7 text-primary" />
@@ -622,98 +671,106 @@ export default function HomePage() {
                   <div key={i} className="h-24 rounded-2xl animate-pulse glass border-white/5" />
                 ))
               ) : userMatches.length > 0 ? (
-                userMatches.map(match => (
-                  <Link key={match.id} href={`/match?id=${match.id}`}>
-                    <motion.div
-                      whileHover={{ scale: 1.01, x: -2 }}
-                      whileTap={{ scale: 0.99 }}
-                      className={cn(
-                        "group relative overflow-hidden rounded-2xl p-4 transition-all duration-300",
-                        match.id === nextMatch?.id 
-                          ? "bg-primary/[0.03] border-primary/20 shadow-lg shadow-primary/5" 
-                          : "glass-premium bg-surface/30 border-white/5"
-                      )}
-                    >
-                      {/* Status indicator */}
-                      <div className="absolute top-0 left-0 w-1 h-full bg-primary/20 group-hover:bg-primary transition-colors" />
-                      
-                      <div className="flex items-center gap-4 relative z-10">
-                        {/* Date/Time Block - Robust Parsing */}
-                        <div className="flex flex-col items-center justify-center min-w-[56px] h-14 rounded-xl glass border-white/10 shadow-sm overflow-hidden bg-foreground/[0.02]">
-                          {(() => {
-                            try {
-                              // Robust parsing to avoid UTC shifting (YYYY-MM-DD)
-                              const dateStr = match.date.includes(',') ? match.date.split(',')[1].trim() : match.date;
-                              const [year, month, day] = dateStr.includes('-') 
-                                ? dateStr.split('-').map(Number) 
-                                : dateStr.split('/').reverse().map(Number); // fallback for DD/MM/YYYY
-                              
-                              if (!year || !month || !day) throw new Error('Parsing error');
-                              
-                              const d = new Date(year, month - 1, day);
-                              const dayName = d.toLocaleDateString('es-ES', { weekday: 'short' }).replace('.', '').toUpperCase();
-                              const monthName = d.toLocaleDateString('es-ES', { month: 'short' }).replace('.', '').toUpperCase();
-                              const dayNumber = d.getDate();
-                              
-                              return (
-                                <>
-                                  <div className="flex flex-col items-center leading-none mt-0.5">
-                                    <span className="text-[7px] font-black text-primary/60 uppercase tracking-widest">{dayName}</span>
-                                    <span className="text-[9px] font-black text-primary uppercase tracking-wider">{monthName}</span>
-                                  </div>
-                                  <span className="text-xl font-black text-foreground leading-none font-kanit mt-0.5">
-                                    {dayNumber}
-                                  </span>
-                                </>
-                              );
-                            } catch (e) {
-                              return (
-                                <div className="flex flex-col items-center gap-1 opacity-20">
-                                  <Calendar className="w-4 h-4" />
-                                  <span className="text-[8px] font-black uppercase">??</span>
-                                </div>
-                              );
-                            }
-                          })()}
-                        </div>
-
-                        <div className="flex-1 min-w-0">
-                          <div className="flex items-center justify-between gap-2 mb-1.5">
-                            <div className="flex items-center gap-2">
-                              <span className="px-1.5 py-0.5 text-[7px] font-black rounded bg-primary/10 text-primary uppercase tracking-widest font-outfit border border-primary/10">
-                                FÚTBOL {match.type.replace('F', '')}
-                              </span>
-                              {match.id === nextMatch?.id && (
-                                <span className="flex h-2 w-2 rounded-full bg-orange-500 shadow-[0_0_8px_rgba(249,115,22,0.5)] animate-pulse" />
-                              )}
+                    userMatches.map((match, idx) => (
+                      <Link key={match.id} href={`/match?id=${match.id}`}>
+                        <motion.div
+                          initial={isPerfMode ? { opacity: 1 } : { opacity: 0, x: 10 }}
+                          whileInView={{ opacity: 1, x: 0 }}
+                          viewport={{ once: true }}
+                          transition={{ delay: idx * 0.05 }}
+                          whileHover={isPerfMode ? {} : { scale: 1.01, x: -2 }}
+                          whileTap={{ scale: 0.99 }}
+                          className={cn(
+                            "group relative overflow-hidden rounded-2xl p-4 transition-all duration-300",
+                            match.id === nextMatch?.id 
+                              ? "bg-primary/[0.03] border-primary/20 shadow-lg shadow-primary/5" 
+                              : "glass-premium bg-surface/30 border-white/5",
+                            isPerfMode && "bg-surface shadow-none border-border"
+                          )}
+                        >
+                          {/* Status indicator */}
+                          <div className="absolute top-0 left-0 w-1 h-full bg-primary/20 group-hover:bg-primary transition-colors" />
+                          
+                          <div className="flex items-center gap-4 relative z-10">
+                            {/* Date/Time Block - Robust Parsing */}
+                            <div className={cn(
+                              "flex flex-col items-center justify-center min-w-[56px] h-14 rounded-xl glass border-white/10 shadow-sm overflow-hidden bg-foreground/[0.02]",
+                              isPerfMode && "bg-background shadow-none border-border"
+                            )}>
+                              {(() => {
+                                try {
+                                  // Robust parsing to avoid UTC shifting (YYYY-MM-DD)
+                                  const dateStr = match.date.includes(',') ? match.date.split(',')[1].trim() : match.date;
+                                  const [year, month, day] = dateStr.includes('-') 
+                                    ? dateStr.split('-').map(Number) 
+                                    : dateStr.split('/').reverse().map(Number); // fallback for DD/MM/YYYY
+                                  
+                                  if (!year || !month || !day) throw new Error('Parsing error');
+                                  
+                                  const d = new Date(year, month - 1, day);
+                                  const dayName = d.toLocaleDateString('es-ES', { weekday: 'short' }).replace('.', '').toUpperCase();
+                                  const monthName = d.toLocaleDateString('es-ES', { month: 'short' }).replace('.', '').toUpperCase();
+                                  const dayNumber = d.getDate();
+                                  
+                                  return (
+                                    <>
+                                      <div className="flex flex-col items-center leading-none mt-0.5">
+                                        <span className="text-[7px] font-black text-primary/60 uppercase tracking-widest">{dayName}</span>
+                                        <span className="text-[9px] font-black text-primary uppercase tracking-wider">{monthName}</span>
+                                      </div>
+                                      <span className="text-xl font-black text-foreground leading-none font-kanit mt-0.5">
+                                        {dayNumber}
+                                      </span>
+                                    </>
+                                  );
+                                } catch (e) {
+                                  return (
+                                    <div className="flex flex-col items-center gap-1 opacity-20">
+                                      <Calendar className="w-4 h-4" />
+                                      <span className="text-[8px] font-black uppercase">??</span>
+                                    </div>
+                                  );
+                                }
+                              })()}
                             </div>
-                            <div className="flex items-center gap-1.5 text-foreground/40">
-                              <Clock className="w-3 h-3" />
-                              <span className="text-[10px] font-black italic font-kanit uppercase leading-none">
-                                {match.id === nextMatch?.id && countdownText ? countdownText : match.time.split(':').slice(0, 2).join(':')}
-                              </span>
+
+                            <div className="flex-1 min-w-0">
+                              <div className="flex items-center justify-between gap-2 mb-1.5">
+                                <div className="flex items-center gap-2">
+                                  <span className="px-1.5 py-0.5 text-[7px] font-black rounded bg-primary/10 text-primary uppercase tracking-widest font-outfit border border-primary/10">
+                                    FÚTBOL {match.type.replace('F', '')}
+                                  </span>
+                                  {match.id === nextMatch?.id && (
+                                    <span className={cn("flex h-2 w-2 rounded-full bg-orange-500 shadow-[0_0_8px_rgba(249,115,22,0.5)]", !isPerfMode && "animate-pulse")} />
+                                  )}
+                                </div>
+                                <div className="flex items-center gap-1.5 text-foreground/40">
+                                  <Clock className="w-3 h-3" />
+                                  <span className="text-[10px] font-black italic font-kanit uppercase leading-none">
+                                    {match.id === nextMatch?.id && countdownText ? countdownText : match.time.split(':').slice(0, 2).join(':')}
+                                  </span>
+                                </div>
+                              </div>
+                              
+                              <h4 className="font-black text-foreground text-sm tracking-tight truncate uppercase italic font-kanit group-hover:text-primary transition-colors mb-0.5">
+                                {(() => {
+                                  const venue = findVenueByLocation(match.location);
+                                  return venue?.displayName || venue?.name || match.location;
+                                })()}
+                              </h4>
+                              
+                              <p className="text-foreground/30 text-[9px] font-black uppercase tracking-wider truncate flex items-center gap-1.5 font-outfit">
+                                <MapPin className="w-2.5 h-2.5 text-primary/40" /> {match.location}
+                              </p>
+                            </div>
+
+                            <div className="w-8 h-8 rounded-full flex items-center justify-center transition-all group-hover:bg-primary/10">
+                              <ChevronRight className={cn("w-4 h-4 text-foreground/20 group-hover:text-primary transition-all", !isPerfMode && "group-hover:translate-x-0.5")} />
                             </div>
                           </div>
-                          
-                          <h4 className="font-black text-foreground text-sm tracking-tight truncate uppercase italic font-kanit group-hover:text-primary transition-colors mb-0.5">
-                            {(() => {
-                              const venue = findVenueByLocation(match.location);
-                              return venue?.displayName || venue?.name || match.location;
-                            })()}
-                          </h4>
-                          
-                          <p className="text-foreground/30 text-[9px] font-black uppercase tracking-wider truncate flex items-center gap-1.5 font-outfit">
-                            <MapPin className="w-2.5 h-2.5 text-primary/40" /> {match.location}
-                          </p>
-                        </div>
-
-                        <div className="w-8 h-8 rounded-full flex items-center justify-center transition-all group-hover:bg-primary/10">
-                          <ChevronRight className="w-4 h-4 text-foreground/20 group-hover:text-primary group-hover:translate-x-0.5 transition-all" />
-                        </div>
-                      </div>
-                    </motion.div>
-                  </Link>
-                ))
+                        </motion.div>
+                      </Link>
+                    ))
               ) : (
                 <div className="rounded-[2.5rem] p-10 flex flex-col items-center justify-center text-center gap-6 glass border-white/5 border-dashed bg-foreground/[0.01]">
                   <div className="w-16 h-16 rounded-2xl glass flex items-center justify-center shadow-lg transform rotate-3">
@@ -736,24 +793,42 @@ export default function HomePage() {
 
             {/* ── Quick Links Widget (desktop only) ── */}
             <div className="hidden lg:block glass-premium p-6 rounded-[2rem] space-y-5 border-white/5">
-              <p className="text-[10px] font-black uppercase tracking-[0.4em] text-foreground/30 font-outfit">ACCESOS RÁPIDOS</p>
+              <p className="text-[10px] font-black uppercase tracking-[0.4em] text-foreground/30 font-outfit">SISTEMA & ACCESOS</p>
               <div className="grid grid-cols-2 gap-3">
                 {[
                   { label: 'Crear Equipo',   href: '/teams',         icon: PlusCircle },
-                  { label: 'Mapa',           href: '/search',        icon: MapPin },
                   { label: 'Mi Perfil',      href: '/profile/me',    icon: User2 },
                   { label: 'Ranking',        href: '/ranks',         icon: Trophy },
-                ].map(link => (
-                  <Link key={link.href} href={link.href}>
+                  { label: isPerfMode ? 'MODO: ALTO' : 'MODO: LITE', onClick: togglePerfMode, icon: Zap, active: isPerfMode },
+                ].map((link, i) => (
+                  link.onClick ? (
                     <motion.button
+                      key={i}
                       whileHover={{ scale: 1.05, y: -2 }}
                       whileTap={{ scale: 0.95 }}
-                      className="w-full h-12 rounded-xl text-[9px] font-black uppercase tracking-wider transition-all glass border-white/10 text-foreground/50 hover:text-primary hover:border-primary/20 flex flex-col items-center justify-center gap-1.5 font-outfit"
+                      onClick={link.onClick}
+                      className={cn(
+                        "w-full h-14 rounded-xl text-[9px] font-black uppercase tracking-wider transition-all glass border-white/10 flex flex-col items-center justify-center gap-1.5 font-outfit",
+                        link.active 
+                          ? "bg-primary/10 border-primary/20 text-primary" 
+                          : "text-foreground/50 hover:text-foreground"
+                      )}
                     >
                       <link.icon className="w-3.5 h-3.5" />
                       {link.label}
                     </motion.button>
-                  </Link>
+                  ) : (
+                    <Link key={i} href={link.href!}>
+                      <motion.button
+                        whileHover={{ scale: 1.05, y: -2 }}
+                        whileTap={{ scale: 0.95 }}
+                        className="w-full h-14 rounded-xl text-[9px] font-black uppercase tracking-wider transition-all glass border-white/10 text-foreground/50 hover:text-primary hover:border-primary/20 flex flex-col items-center justify-center gap-1.5 font-outfit"
+                      >
+                        <link.icon className="w-3.5 h-3.5" />
+                        {link.label}
+                      </motion.button>
+                    </Link>
+                  )
                 ))}
               </div>
             </div>
