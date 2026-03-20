@@ -642,16 +642,22 @@ export default function HomePage() {
                         <div className="flex flex-col items-center justify-center min-w-[56px] h-14 rounded-xl glass border-white/10 shadow-sm overflow-hidden bg-foreground/[0.02]">
                           {(() => {
                             try {
+                              // Ensure we use the 'date' field from Match, which is the kickoff date
                               const d = new Date(match.date.includes(',') ? match.date.split(',')[1].trim() : match.date);
-                              const month = d.toLocaleString('es-ES', { month: 'short' }).replace('.', '').toUpperCase();
-                              const day = d.getDate();
+                              if (isNaN(d.getTime())) throw new Error('Invalid Date');
+                              
+                              const dayName = d.toLocaleDateString('es-ES', { weekday: 'short' }).replace('.', '').toUpperCase();
+                              const monthName = d.toLocaleDateString('es-ES', { month: 'short' }).replace('.', '').toUpperCase();
+                              const dayNumber = d.getDate();
+                              
                               return (
                                 <>
-                                  <span className="text-[9px] font-black text-primary uppercase tracking-wider leading-none mb-0.5">
-                                    {month}
-                                  </span>
-                                  <span className="text-xl font-black text-foreground leading-none font-kanit">
-                                    {day}
+                                  <div className="flex flex-col items-center leading-none mt-0.5">
+                                    <span className="text-[7px] font-black text-primary/60 uppercase tracking-widest">{dayName}</span>
+                                    <span className="text-[9px] font-black text-primary uppercase tracking-wider">{monthName}</span>
+                                  </div>
+                                  <span className="text-xl font-black text-foreground leading-none font-kanit mt-0.5">
+                                    {dayNumber}
                                   </span>
                                 </>
                               );
