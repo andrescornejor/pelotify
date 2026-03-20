@@ -204,28 +204,14 @@ export default function HomePage() {
                 initial={{ x: -16, opacity: 0 }}
                 animate={{ x: 0, opacity: 1 }}
                 transition={{ delay: 0.1, type: 'spring', stiffness: 300, damping: 26 }}
-                className={cn(
-                  "inline-flex items-center gap-3 px-4 py-2 rounded-2xl transition-colors duration-500",
-                  countdownText ? "bg-orange-500/10 border border-orange-500/30" : "bg-primary/10 border border-primary/20"
-                )}
-                style={{ backdropFilter: 'blur(10px)' }}
+                className="inline-flex items-center gap-3 px-4 py-2 rounded-2xl"
+                style={{ background: 'rgba(44,252,125,0.08)', border: '1px solid rgba(44,252,125,0.2)', backdropFilter: 'blur(10px)' }}
               >
                 <span className="relative flex h-2 w-2">
-                  <span className={cn(
-                    "animate-ping absolute inline-flex h-full w-full rounded-full opacity-70",
-                    countdownText ? "bg-orange-500" : "bg-primary"
-                  )} />
-                  <span className={cn(
-                    "relative inline-flex rounded-full h-2 w-2",
-                    countdownText ? "bg-orange-500" : "bg-primary"
-                  )} />
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-70" />
+                  <span className="relative inline-flex rounded-full h-2 w-2 bg-primary" />
                 </span>
-                <span className={cn(
-                  "text-[10px] font-black uppercase tracking-[0.35em]",
-                  countdownText ? "text-orange-500" : "text-primary/80"
-                )}>
-                  {countdownText || `${greeting} — Red activa`}
-                </span>
+                <span className="text-[10px] font-black uppercase tracking-[0.35em] text-primary/80">{greeting} — Red activa</span>
               </motion.div>
 
               {/* Headline */}
