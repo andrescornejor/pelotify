@@ -428,10 +428,10 @@ export default function HomePage() {
               className="grid grid-cols-2 sm:grid-cols-4 gap-4 snap-start scroll-mt-26"
             >
               {[
-                { icon: Trophy, label: 'ELO Rating', value: elo, trend: '+45', color: '#2cfc7d', glow: 'rgba(44,252,125,0.2)' },
-                { icon: Activity, label: 'Partidos', value: totalMatches, trend: 'NEW', color: '#6366f1', glow: 'rgba(99,102,241,0.2)' },
-                { icon: Star, label: 'MVPs', value: metadata?.mvp_count || 0, trend: '+1', color: '#f59e0b', glow: 'rgba(245,158,11,0.2)' },
-                { icon: Flame, label: 'Win Rate', value: `${metadata?.win_rate || 0}%`, trend: 'UP', color: '#f43f5e', glow: 'rgba(244,63,94,0.2)' },
+                { icon: Trophy, label: 'ELO Rating', value: elo, color: '#2cfc7d', glow: 'rgba(44,252,125,0.2)' },
+                { icon: Activity, label: 'Partidos', value: totalMatches, color: '#6366f1', glow: 'rgba(99,102,241,0.2)' },
+                { icon: Star, label: 'MVPs', value: metadata?.mvp_count || 0, color: '#f59e0b', glow: 'rgba(245,158,11,0.2)' },
+                { icon: Flame, label: 'Win Rate', value: `${metadata?.win_rate || 0}%`, color: '#f43f5e', glow: 'rgba(244,63,94,0.2)' },
               ].map((stat, i) => (
                 <motion.div
                   key={i}
@@ -456,11 +456,6 @@ export default function HomePage() {
                     <div>
                       <div className="flex items-baseline gap-2">
                         <p className="text-3xl font-black tracking-tighter italic leading-none text-foreground font-kanit">{stat.value}</p>
-                        {stat.trend && !isPerfMode && (
-                          <span className="text-[9px] font-black uppercase tracking-tighter px-1.5 py-0.5 rounded bg-foreground/5 text-foreground/40 group-hover:bg-primary/20 group-hover:text-primary-dark transition-colors">
-                            {stat.trend}
-                          </span>
-                        )}
                       </div>
                       <p className="text-[10px] font-black text-foreground/40 uppercase tracking-[0.2em] mt-2 font-outfit">{stat.label}</p>
                     </div>
