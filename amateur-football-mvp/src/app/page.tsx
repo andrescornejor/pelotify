@@ -36,6 +36,8 @@ export default function HomePage() {
   const { user } = useAuth();
   const [isRatingOpen, setIsRatingOpen] = useState(false);
   const [userMatches, setUserMatches] = useState<Match[]>([]);
+  const [nextMatch, setNextMatch] = useState<Match | null>(null);
+  const [countdownText, setCountdownText] = useState<string | null>(null);
   const [userTeams, setUserTeams] = useState<Team[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [totalPlayers, setTotalPlayers] = useState(0);
@@ -51,12 +53,16 @@ export default function HomePage() {
           getUserTeams(user.id),
           getTotalPlayersCount()
         ]);
-        setUserMatches(matchesData.filter(m => {
+        
+        const upcomingMatches = matchesData.filter(m => {
           if (m.is_completed) return false;
           const matchStart = new Date(`${m.date}T${m.time}`);
           const matchEnd = new Date(matchStart.getTime() + 60 * 60 * 1000);
           return new Date() < matchEnd;
-        }));
+        }).sort((a, b) => new Date(`${a.date}T${a.time}`).getTime() - new Date(`${b.date}T${b.time}`).getTime());
+
+        setUserMatches(upcomingMatches);
+        setNextMatch(upcomingMatches[0] || null);
         setUserTeams(teamsData);
         setTotalPlayers(playersCount);
       } catch (err) {
@@ -73,6 +79,43 @@ export default function HomePage() {
 
     fetchData();
   }, [user?.id]);
+
+  // Handle Countdown Update
+  useEffect(() => {
+    if (!nextMatch) {
+      setCountdownText(null);
+      return;
+    }
+
+    const updateCountdown = () => {
+      const target = new Date(`${nextMatch.date}T${nextMatch.time}`);
+      const now = new Date();
+      const diff = target.getTime() - now.getTime();
+      
+      if (diff <= 0) {
+        setCountdownText('¡YA EMPIEZA! ⚽');
+        return;
+      }
+      
+      const hours = Math.floor(diff / (1000 * 60 * 60));
+      const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+      
+      if (hours >= 24) {
+        setCountdownText(null);
+        return;
+      }
+      
+      if (hours > 0) {
+        setCountdownText(`FALTAN ${hours}H ${minutes}M`);
+      } else {
+        setCountdownText(`EN SOLO ${minutes} MINUTOS`);
+      }
+    };
+
+    updateCountdown();
+    const interval = setInterval(updateCountdown, 60000);
+    return () => clearInterval(interval);
+  }, [nextMatch]);
 
   const metadata = user?.user_metadata || {};
   const elo = metadata?.elo || 0;
@@ -161,14 +204,28 @@ export default function HomePage() {
                 initial={{ x: -16, opacity: 0 }}
                 animate={{ x: 0, opacity: 1 }}
                 transition={{ delay: 0.1, type: 'spring', stiffness: 300, damping: 26 }}
-                className="inline-flex items-center gap-3 px-4 py-2 rounded-2xl"
-                style={{ background: 'rgba(44,252,125,0.08)', border: '1px solid rgba(44,252,125,0.2)', backdropFilter: 'blur(10px)' }}
+                className={cn(
+                  "inline-flex items-center gap-3 px-4 py-2 rounded-2xl transition-colors duration-500",
+                  countdownText ? "bg-orange-500/10 border border-orange-500/30" : "bg-primary/10 border border-primary/20"
+                )}
+                style={{ backdropFilter: 'blur(10px)' }}
               >
                 <span className="relative flex h-2 w-2">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-70" />
-                  <span className="relative inline-flex rounded-full h-2 w-2 bg-primary" />
+                  <span className={cn(
+                    "animate-ping absolute inline-flex h-full w-full rounded-full opacity-70",
+                    countdownText ? "bg-orange-500" : "bg-primary"
+                  )} />
+                  <span className={cn(
+                    "relative inline-flex rounded-full h-2 w-2",
+                    countdownText ? "bg-orange-500" : "bg-primary"
+                  )} />
                 </span>
-                <span className="text-[10px] font-black uppercase tracking-[0.35em] text-primary/80">{greeting} — Red activa</span>
+                <span className={cn(
+                  "text-[10px] font-black uppercase tracking-[0.35em]",
+                  countdownText ? "text-orange-500" : "text-primary/80"
+                )}>
+                  {countdownText || `${greeting} — Red activa`}
+                </span>
               </motion.div>
 
               {/* Headline */}
@@ -613,8 +670,15 @@ export default function HomePage() {
                             </span>
                           </div>
                           <div className="flex items-center gap-2">
-                            <Clock className="w-3.5 h-3.5 text-primary/50" />
-                            <span className="text-2xl font-black italic tracking-tighter leading-none text-foreground">{match.time.split(':').slice(0, 2).join(':')}</span>
+                            <Clock className={cn("w-3.5 h-3.5", match.id === nextMatch?.id && countdownText ? "text-orange-500 animate-pulse" : "text-primary/50")} />
+                            <span className={cn(
+                              "text-2xl font-black italic tracking-tighter leading-none",
+                              match.id === nextMatch?.id && countdownText ? "text-orange-500" : "text-foreground"
+                            )}>
+                              {match.id === nextMatch?.id && countdownText 
+                                ? countdownText 
+                                : match.time.split(':').slice(0, 2).join(':')}
+                            </span>
                           </div>
                         </div>
                         <div className="text-right">
