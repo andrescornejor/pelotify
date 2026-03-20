@@ -30,6 +30,20 @@ export default function CreateMatchPage() {
         e.preventDefault();
         if (!user) return;
 
+        // Validation for mandatory fields
+        if (!formData.location) {
+            alert('Por favor, seleccioná un lugar para el partido.');
+            return;
+        }
+        if (!formData.date) {
+            alert('Por favor, seleccioná una fecha.');
+            return;
+        }
+        if (!formData.time) {
+            alert('Por favor, seleccioná un horario.');
+            return;
+        }
+
         setIsCreating(true);
         try {
             const match = await createMatch({
@@ -263,9 +277,8 @@ export default function CreateMatchPage() {
                                     type="number"
                                     min="0"
                                     placeholder="Cuota por jugador (ARS)"
-                                    required
-                                    value={formData.price}
-                                    onChange={(e) => setFormData({ ...formData, price: parseInt(e.target.value) })}
+                                    value={formData.price || ''}
+                                    onChange={(e) => setFormData({ ...formData, price: parseInt(e.target.value) || 0 })}
                                     className="w-full h-16 pl-12 pr-4 rounded-2xl bg-foreground/[0.02] border border-foreground/10 focus:bg-foreground/[0.04] focus:border-primary/30 outline-none text-lg font-black text-foreground italic tracking-tighter"
                                 />
                             </div>
