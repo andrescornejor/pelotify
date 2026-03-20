@@ -284,9 +284,9 @@ export default function HomePage() {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.3, duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
                   className="font-black italic tracking-tight leading-[0.85] uppercase font-kanit"
-                  style={{ fontSize: 'clamp(3.5rem, 8vw, 9rem)' }}
+                  style={{ fontSize: 'clamp(2.5rem, 6vw, 6rem)' }}
                 >
-                  <span className="text-foreground/90 mix-blend-difference">DOMINÁ</span><br />
+                  <span className="text-foreground/90 mix-blend-difference">DOMINA</span><br />
                   <span className={isPerfMode
                     ? "text-primary"
                     : "bg-clip-text text-transparent bg-gradient-to-r from-primary-light via-primary to-primary-dark animate-gradient [text-shadow:0_0_40px_rgba(44,252,125,0.3)]"
