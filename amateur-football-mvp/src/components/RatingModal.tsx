@@ -27,7 +27,7 @@ export function RatingModal({ isOpen, onClose }: { isOpen: boolean; onClose: () 
     };
 
     const handleSubmit = () => {
-        const { gainedPoints, newElo } = calculateMatchPoints(0, true, 2, false, true);
+        const { gainedPoints, newElo } = calculateMatchPoints(0, 'win', 2, false, true);
         setEloResult({ newElo, change: gainedPoints });
         setSubmitted(true);
         setTimeout(() => {

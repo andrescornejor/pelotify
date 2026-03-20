@@ -3,18 +3,21 @@
 export const POINTS_PER_GOAL = 100;
 export const POINTS_PER_MVP = 200;
 export const FIRST_WIN_BONUS = 1000;
+export const WIN_BONUS = 150;
+export const DRAW_BONUS = 50;
+export const LOSS_PENALTY = -150;
 
 /**
  * Calculates a player's points gained in a match.
  * @param currentElo Player's current overall points/ELO.
- * @param matchWon true if the player's team won.
+ * @param matchResult 'win' | 'draw' | 'loss'
  * @param goals Number of goals scored by the player.
  * @param isMvp true if the player was the MVP.
  * @param isFirstWin true if this is the player's first registered win.
  */
 export function calculateMatchPoints(
     currentElo: number,
-    matchWon: boolean,
+    matchResult: 'win' | 'draw' | 'loss',
     goals: number,
     isMvp: boolean,
     isFirstWin: boolean = false
@@ -29,9 +32,17 @@ export function calculateMatchPoints(
         gainedPoints += POINTS_PER_MVP;
     }
 
-    // 3. First Win Bonus
-    if (matchWon && isFirstWin) {
-        gainedPoints += FIRST_WIN_BONUS;
+    // 3. Match Result Points
+    if (matchResult === 'win') {
+        if (isFirstWin) {
+            gainedPoints += FIRST_WIN_BONUS;
+        } else {
+            gainedPoints += WIN_BONUS;
+        }
+    } else if (matchResult === 'draw') {
+        gainedPoints += DRAW_BONUS;
+    } else if (matchResult === 'loss') {
+        gainedPoints += LOSS_PENALTY;
     }
 
     const newElo = currentElo + gainedPoints;

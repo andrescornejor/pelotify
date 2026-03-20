@@ -10,13 +10,13 @@ export default function RanksPage() {
     const fadeUp: Variants = {
         hidden: { opacity: 0, y: 20 },
         visible: (i: number) => ({
-            opacity: 1, 
+            opacity: 1,
             y: 0,
-            transition: { 
-                type: 'spring', 
-                stiffness: 260, 
-                damping: 20, 
-                delay: i * 0.1 
+            transition: {
+                type: 'spring',
+                stiffness: 260,
+                damping: 20,
+                delay: i * 0.1
             }
         })
     };
@@ -34,12 +34,12 @@ export default function RanksPage() {
 
     const getRankDesc = (name: string) => {
         switch (name) {
-            case 'HIERRO': return 'El punto de partida de toda leyenda. Aquí se forja el carácter.';
-            case 'BRONCE': return 'Ya no eres un novato. Has demostrado consistencia en el campo.';
+            case 'HIERRO': return 'El punto de partida de todo jugador.';
+            case 'BRONCE': return 'Ya no sos horrible. Has demostrado consistencia en la cancha.';
             case 'PLATA': return 'Un jugador respetado que entiende la dinámica del juego.';
-            case 'ORO': return 'Talento puro. Eres la referencia tecnológica de tu equipo.';
+            case 'ORO': return 'Talento puro. Eres la referencia de tu equipo.';
             case 'PLATINO': return 'Dominio total. Pocos pueden seguirte el ritmo cuando aceleras.';
-            case 'DIAMANTE': return 'La joya de la corona local. Tu nombre ya suena en cada cancha.';
+            case 'DIAMANTE': return 'La joya de la cancha. Tu nombre ya suena en cada estadio.';
             case 'ELITE': return 'Solo para los privilegiados. El 1% de la comunidad de Pelotify.';
             case 'LEYENDA': return 'Inmortal. Tu estatus trasciende los partidos. Eres historia pura.';
             default: return '';
@@ -83,7 +83,7 @@ export default function RanksPage() {
                     {RANKS.map((rank, i) => {
                         const Icon = getRankIcon(rank.name);
                         const isHighRank = i >= 4; // Platino and above
-                        
+
                         return (
                             <motion.div
                                 key={rank.name}
@@ -95,19 +95,19 @@ export default function RanksPage() {
                                 className="group relative overflow-hidden rounded-[2.5rem] p-8 glass-premium border border-foreground/5 flex flex-col items-center text-center gap-6"
                             >
                                 {/* Background Glow */}
-                                <div 
+                                <div
                                     className="absolute inset-0 opacity-0 group-hover:opacity-20 transition-opacity duration-700"
                                     style={{ background: `radial-gradient(circle at 50% 50%, ${rank.color} 0%, transparent 70%)` }}
                                 />
 
                                 {/* Icon Circle */}
-                                <div 
+                                <div
                                     className={cn(
                                         "w-20 h-20 rounded-[2rem] flex items-center justify-center relative",
                                         "transition-all duration-500 group-hover:scale-110 group-hover:rotate-6"
                                     )}
-                                    style={{ 
-                                        background: `${rank.color}15`, 
+                                    style={{
+                                        background: `${rank.color}15`,
                                         border: `2px solid ${rank.color}30`,
                                         boxShadow: `0 0 30px ${rank.color}15`
                                     }}
@@ -138,7 +138,7 @@ export default function RanksPage() {
 
                                 {/* Footer Progress Simulation */}
                                 <div className="w-full h-1 bg-foreground/5 rounded-full overflow-hidden mt-2 relative z-10">
-                                    <motion.div 
+                                    <motion.div
                                         initial={{ width: 0 }}
                                         animate={{ width: '100%' }}
                                         transition={{ duration: 1.5, delay: i * 0.15 }}
