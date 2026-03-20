@@ -63,18 +63,18 @@ export function BottomNav() {
             <nav
                 className={cn(
                     "relative overflow-hidden rounded-[2.5rem] border transition-all duration-500",
-                    performanceMode 
-                        ? "bg-surface border-border shadow-lg" 
+                    performanceMode
+                        ? "bg-surface border-border shadow-lg"
                         : "glass-premium bg-background/60 backdrop-blur-2xl saturate-[1.8] border-foreground/[0.08] shadow-[0_20px_50px_rgba(0,0,0,0.3)]"
                 )}
             >
                 <div className="flex justify-around items-center h-[72px] px-2">
                     {NAV_ITEMS.map(({ href, icon: Icon, label, isPrimary }) => {
                         // Better detection for Profile tab (recognize both /profile/me and /profile)
-                        const isActive = href === '/' 
-                            ? pathname === '/' 
+                        const isActive = href === '/'
+                            ? pathname === '/'
                             : (pathname.startsWith(href) || (href === '/profile/me' && pathname.startsWith('/profile')));
-                        
+
                         const hasUnread = label === 'Mensajes' && unreadCount > 0;
 
                         if (isPrimary) {
@@ -89,12 +89,12 @@ export function BottomNav() {
                                         whileHover={performanceMode ? {} : { scale: 1.05 }}
                                         className={cn(
                                             "w-12 h-12 rounded-[1.25rem] flex items-center justify-center transition-all duration-300",
-                                            isActive 
-                                                ? "shadow-lg" 
+                                            isActive
+                                                ? "shadow-lg"
                                                 : "shadow-md"
                                         )}
-                                        style={{ 
-                                            backgroundColor: '#55fa86', 
+                                        style={{
+                                            backgroundColor: '#55fa86',
                                             color: 'black',
                                             boxShadow: isActive ? '0 0 20px rgba(85, 250, 134, 0.4)' : '0 4px 12px rgba(85, 250, 134, 0.2)'
                                         }}
@@ -118,33 +118,33 @@ export function BottomNav() {
                                     <Icon
                                         className={cn(
                                             "w-5 h-5 transition-all duration-300",
-                                            isActive 
-                                                ? "scale-110" 
+                                            isActive
+                                                ? "scale-110"
                                                 : "text-foreground/30 group-hover:text-foreground/50"
                                         )}
                                         style={{ color: isActive ? '#55fa86' : undefined }}
                                         strokeWidth={isActive ? 2.5 : 2}
                                     />
-                                    
+
                                     {/* Unread indicator */}
                                     {hasUnread && !isActive && (
-                                        <span 
-                                            className="absolute -top-1 -right-1 w-2.5 h-2.5 rounded-full border-2 border-background shadow-lg" 
-                                            style={{ backgroundColor: '#55fa86', boxShadow: '0 0 10px rgba(85, 250, 134, 0.5)' }}
+                                        <span
+                                            className="absolute -top-1 -right-1 w-2.5 h-2.5 rounded-full border-2 border-background shadow-lg"
+                                            style={{ backgroundColor: '#55fa86', boxShadow: '0 0 10px rgba(255, 0, 0, 0.5)' }}
                                         />
                                     )}
 
                                     {/* Active indicator dot */}
                                     {isActive && !performanceMode && (
-                                        <motion.div 
+                                        <motion.div
                                             layoutId="nav-dot"
                                             className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full"
                                             style={{ backgroundColor: '#55fa86', boxShadow: '0 0 8px rgba(85, 250, 134, 0.6)' }}
                                         />
                                     )}
                                 </div>
-                                
-                                <span 
+
+                                <span
                                     className={cn(
                                         "text-[8px] font-black uppercase tracking-[0.15em] mt-2 transition-colors duration-300",
                                         isActive ? "italic" : "text-foreground/35"
