@@ -395,8 +395,8 @@ export default function HomePage() {
                   className="glass-premium-hover relative overflow-hidden rounded-[2rem] p-6 cursor-default group"
                 >
                   {/* Subtle background glow */}
-                  <div className="absolute top-0 right-0 w-16 h-16 bg-gradient-to-br opacity-5 blur-2xl group-hover:opacity-20 transition-opacity" 
-                    style={{ from: stat.color, to: 'transparent' }} />
+                  <div className="absolute top-0 right-0 w-16 h-16 opacity-5 blur-2xl group-hover:opacity-20 transition-opacity" 
+                    style={{ backgroundImage: `linear-gradient(to bottom right, ${stat.color}, transparent)` }} />
                   
                   <div className="relative z-10 flex flex-col items-start gap-4">
                     <div className="w-10 h-10 rounded-xl flex items-center justify-center transition-transform group-hover:scale-110 duration-500"
