@@ -49,7 +49,7 @@ export default function SearchPage() {
     const filteredMatches = matches.filter(match => {
         if (match.is_completed) return false;
         if (match.is_private) return false;
-        
+
         // Hide past matches from radar
         const matchStart = new Date(`${match.date}T${match.time}`);
         const matchEnd = new Date(matchStart.getTime() + 60 * 60 * 1000);
@@ -75,7 +75,7 @@ export default function SearchPage() {
 
     return (
         <div className="flex flex-col gap-8 p-4 lg:p-10 lg:pt-4 max-w-screen-2xl mx-auto h-full bg-background relative overflow-hidden min-h-screen snap-y snap-proximity overflow-y-auto">
-            
+
             {/* ── RADAR AMBIENT ── */}
             <div className="absolute top-0 left-0 w-full h-[300px] pointer-events-none opacity-20">
                 <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-primary/50 to-transparent" />
@@ -85,26 +85,26 @@ export default function SearchPage() {
             {/* ── HEADER & RADAR SCANNER ── */}
             <div className="sticky top-0 z-30 pt-4 pb-6 bg-background/80 backdrop-blur-xl -mx-4 px-4 lg:-mx-12 lg:px-12 border-b border-foreground/5 shadow-2xl shadow-black/5">
                 <div className="flex flex-col gap-8 relative z-10 text-center lg:text-left max-w-screen-2xl mx-auto">
-                        <div className="flex flex-col gap-2 relative">
-                            {/* Radar Sweep Animation behind title */}
-                            <div className="absolute -top-10 -left-10 lg:-left-20 w-32 lg:w-48 h-32 lg:h-48 pointer-events-none opacity-20">
-                                <div className="absolute inset-0 border border-primary/30 rounded-full" />
-                                <div className="absolute inset-0 border border-primary/10 rounded-full scale-150" />
-                                <motion.div 
-                                    animate={{ rotate: 360 }}
-                                    transition={{ duration: 4, repeat: Infinity, ease: 'linear' }}
-                                    className="absolute inset-0 border-r-2 border-primary/40 rounded-full"
-                                    style={{ clipPath: 'polygon(50% 50%, 100% 0, 100% 100%)' }}
-                                />
-                                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-1.5 h-1.5 bg-primary rounded-full shadow-[0_0_10px_rgba(44,252,125,1)]" />
-                            </div>
-
-                            <div className="flex items-center gap-3 justify-center lg:justify-start">
-                                <div className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
-                                <span className="text-[10px] font-black uppercase tracking-[0.5em] text-primary italic">Sintonizando Frecuencias</span>
-                            </div>
-                            <h1 className="text-5xl lg:text-7xl font-black italic text-foreground uppercase tracking-tightest leading-none">Scouting <span className="text-foreground/20">Radar</span></h1>
+                    <div className="flex flex-col gap-2 relative">
+                        {/* Radar Sweep Animation behind title */}
+                        <div className="absolute -top-10 -left-10 lg:-left-20 w-32 lg:w-48 h-32 lg:h-48 pointer-events-none opacity-20">
+                            <div className="absolute inset-0 border border-primary/30 rounded-full" />
+                            <div className="absolute inset-0 border border-primary/10 rounded-full scale-150" />
+                            <motion.div
+                                animate={{ rotate: 360 }}
+                                transition={{ duration: 4, repeat: Infinity, ease: 'linear' }}
+                                className="absolute inset-0 border-r-2 border-primary/40 rounded-full"
+                                style={{ clipPath: 'polygon(50% 50%, 100% 0, 100% 100%)' }}
+                            />
+                            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-1.5 h-1.5 bg-primary rounded-full shadow-[0_0_10px_rgba(44,252,125,1)]" />
                         </div>
+
+                        <div className="flex items-center gap-3 justify-center lg:justify-start">
+                            <div className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
+                            <span className="text-[10px] font-black uppercase tracking-[0.5em] text-primary italic">Sintonizando Frecuencias</span>
+                        </div>
+                        <h1 className="text-5xl lg:text-7xl font-black italic text-foreground uppercase tracking-tightest leading-none">Scouting <span className="text-foreground/20">Radar</span></h1>
+                    </div>
 
                     <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-end">
                         <div className="lg:col-span-8 space-y-4">
@@ -146,7 +146,7 @@ export default function SearchPage() {
                                 >
                                     <MapPin className="w-3.5 h-3.5" /> MAPEO GPS
                                 </button>
-                                <motion.div 
+                                <motion.div
                                     layoutId="radar-pill"
                                     className="absolute inset-y-1 bg-primary rounded-xl shadow-[0_5px_15px_rgba(16,185,129,0.2)]"
                                     initial={false}
@@ -184,23 +184,22 @@ export default function SearchPage() {
                                     viewport={{ once: true }}
                                     transition={{ delay: i * 0.04, duration: 0.4 }}
                                     whileHover={{ y: -4, scale: 1.01 }}
-                                    className="glass-premium rounded-[2rem] lg:rounded-[3rem] p-5 lg:p-8 flex flex-col lg:flex-row items-stretch lg:items-center gap-6 lg:gap-14 relative overflow-hidden group border border-foreground/[0.08] bg-foreground/[0.01] hover:bg-foreground/[0.03] transition-all duration-500"
+                                    className="glass-premium rounded-[1.8rem] lg:rounded-[3rem] p-4 lg:p-8 flex flex-col lg:flex-row items-stretch lg:items-center gap-3 lg:gap-14 relative overflow-hidden group border border-foreground/[0.08] bg-foreground/[0.01] hover:bg-foreground/[0.03] transition-all duration-500"
                                 >
                                     {/* ── BACKGROUND DECORATION ── */}
                                     <div className="absolute top-0 right-0 w-80 h-80 bg-primary/5 blur-[100px] rounded-full group-hover:bg-primary/10 transition-colors pointer-events-none" />
-                                    <div className="absolute -bottom-20 -left-20 w-60 h-60 bg-blue-500/5 blur-[80px] rounded-full pointer-events-none" />
                                     
                                     {/* Radar Scan Line */}
                                     <div className="absolute inset-y-0 left-0 w-1 bg-gradient-to-b from-transparent via-primary/40 to-transparent group-hover:h-full transition-all duration-700 pointer-events-none" />
 
                                     {/* ── LEFT SECTION: Context & Level ── */}
-                                    <div className="flex lg:flex-col items-center lg:items-start justify-between lg:justify-center gap-4 lg:min-w-[150px] relative z-10 lg:border-r border-foreground/5 lg:pr-14">
-                                        <div className="flex flex-col gap-3">
-                                            <div className="flex items-center gap-2 px-3.5 py-1.5 bg-primary/10 text-primary border border-primary/20 rounded-xl w-fit shadow-sm">
-                                                <div className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
-                                                <span className="text-[10px] font-black uppercase tracking-widest">{match.type}</span>
+                                    <div className="flex lg:flex-col items-center lg:items-start justify-between lg:justify-center gap-2 lg:min-w-[150px] relative z-10 lg:border-r border-foreground/5 lg:pr-14">
+                                        <div className="flex flex-row lg:flex-col gap-2">
+                                            <div className="flex items-center gap-2 px-2.5 py-1 bg-primary/10 text-primary border border-primary/20 rounded-lg w-fit shadow-sm">
+                                                <div className="w-1 h-1 rounded-full bg-primary animate-pulse" />
+                                                <span className="text-[9px] font-black uppercase tracking-widest">{match.type}</span>
                                             </div>
-                                            <div className="px-3.5 py-1.5 bg-blue-500/10 text-blue-400 border border-blue-500/20 rounded-xl text-[10px] font-black uppercase tracking-widest italic w-fit">
+                                            <div className="px-2.5 py-1 bg-blue-500/10 text-blue-400 border border-blue-500/20 rounded-lg text-[9px] font-black uppercase tracking-widest italic w-fit">
                                                 {match.level}
                                             </div>
                                         </div>
@@ -220,20 +219,20 @@ export default function SearchPage() {
                                     </div>
 
                                     {/* ── CENTER SECTION: Venue Info ── */}
-                                    <div className="flex-1 relative z-10 space-y-3 py-1 lg:py-0">
+                                    <div className="flex-1 relative z-10 space-y-1 lg:space-y-3 py-0 lg:py-0">
                                         {(() => {
                                             const venue = findVenueByLocation(match.location || '');
                                             const displayName = venue?.displayName || venue?.name || match.location;
                                             return (
-                                                <div className="space-y-2">
-                                                    <h3 className="font-black text-3xl lg:text-5xl text-foreground italic uppercase group-hover:text-primary transition-colors tracking-tighter leading-none">
+                                                <div className="space-y-0.5 lg:space-y-2">
+                                                    <h3 className="font-black text-2xl lg:text-5xl text-foreground italic uppercase group-hover:text-primary transition-colors tracking-tighter leading-tight">
                                                         {displayName}
                                                     </h3>
-                                                    <div className="flex items-center gap-3">
-                                                        <div className="w-8 h-8 rounded-full bg-foreground/5 flex items-center justify-center border border-foreground/10">
-                                                            <MapPin className="w-4 h-4 text-foreground/40 group-hover:text-primary/60 transition-colors" />
+                                                    <div className="flex items-center gap-2">
+                                                        <div className="w-6 h-6 lg:w-8 lg:h-8 rounded-full bg-foreground/5 flex items-center justify-center border border-foreground/10">
+                                                            <MapPin className="w-3 h-3 lg:w-4 lg:h-4 text-foreground/40 group-hover:text-primary/60 transition-colors" />
                                                         </div>
-                                                        <p className="text-[10px] lg:text-xs text-foreground/50 font-bold uppercase tracking-widest max-w-sm truncate">
+                                                        <p className="text-[9px] lg:text-xs text-foreground/50 font-bold uppercase tracking-widest max-w-[200px] lg:max-w-sm truncate">
                                                             {match.location}
                                                         </p>
                                                     </div>
@@ -241,38 +240,27 @@ export default function SearchPage() {
                                             );
                                         })()}
 
-                                        {/* Mobile Info Overlay (Visible only on mobile) */}
-                                        <div className="lg:hidden grid grid-cols-2 gap-4 pt-5 mt-4 border-t border-foreground/5">
-                                             <div className="flex flex-col gap-1.5 text-left">
-                                                <span className="text-[8px] font-black uppercase text-foreground/20 tracking-[0.2em]">Fecha y Hora</span>
-                                                <div className="flex items-center gap-2">
-                                                    <Calendar className="w-3 h-3 text-primary/40" />
-                                                    <span className="text-[11px] text-foreground font-black uppercase italic tracking-widest leading-none">
-                                                        {match.date}
-                                                    </span>
-                                                </div>
-                                                <span className="text-[10px] text-foreground/40 font-bold ml-5">{match.time} HS</span>
+                                        {/* Mobile Info Overlay (Single Line Tighter) */}
+                                        <div className="lg:hidden flex justify-between items-center pt-2 mt-2 border-t border-foreground/5">
+                                             <div className="flex items-center gap-1.5">
+                                                <Calendar className="w-3 h-3 text-primary/40" />
+                                                <span className="text-[10px] text-foreground/60 font-black uppercase italic tracking-widest">
+                                                    {match.date}
+                                                </span>
                                             </div>
-                                             <div className="flex flex-col items-start gap-1.5">
-                                                <span className="text-[8px] font-black uppercase text-foreground/20 tracking-[0.2em]">Disponibilidad</span>
+                                             <div className="flex items-center gap-2">
                                                 {(() => {
                                                         const maxPlayers = match.type === 'F5' ? 10 : match.type === 'F7' ? 14 : 22;
                                                         const countObj = match.participants?.[0];
                                                         const currentPlayers = typeof countObj === 'number' ? countObj : (countObj?.count || 0);
                                                         const missing = Math.max(0, maxPlayers - currentPlayers);
                                                         return (
-                                                            <div className="flex items-center gap-2">
-                                                                <div className={cn(
-                                                                    "w-2 h-2 rounded-full",
-                                                                    missing > 0 ? "bg-primary animate-pulse shadow-[0_0_8px_rgba(44,252,125,0.4)]" : "bg-zinc-700"
-                                                                )} />
-                                                                <span className={cn(
-                                                                    "text-[11px] font-black uppercase italic tracking-widest leading-none",
-                                                                    missing > 0 ? "text-primary" : "text-foreground/40"
-                                                                )}>
+                                                            <>
+                                                                <div className={cn("w-1.5 h-1.5 rounded-full", missing > 0 ? "bg-primary animate-pulse" : "bg-zinc-700")} />
+                                                                <span className={cn("text-[10px] font-black uppercase italic tracking-widest leading-none", missing > 0 ? "text-primary" : "text-foreground/30")}>
                                                                     {missing > 0 ? `Faltan ${missing}` : 'COMPLETO'}
                                                                 </span>
-                                                            </div>
+                                                            </>
                                                         );
                                                     })()}
                                             </div>
@@ -332,7 +320,7 @@ export default function SearchPage() {
                                                         <>
                                                             <Users className={cn("w-5 h-5", missing > 0 ? "text-primary animate-pulse" : "text-foreground/10")} />
                                                             <span className={cn("text-xs font-black uppercase tracking-[0.2em] italic", missing > 0 ? "text-foreground/40" : "text-foreground/10")}>
-                                                                {missing > 0 ? `Se buscan ${missing} guerreros` : 'Pelotón completo'}
+                                                                {missing > 0 ? `Se buscan ${missing} pibes` : 'Pelotón completo'}
                                                             </span>
                                                         </>
                                                     );
@@ -351,39 +339,36 @@ export default function SearchPage() {
                                         </div>
                                     </div>
 
-                                    {/* ── ACTION SECTION ── */}
-                                    <div className="lg:w-[300px] relative z-20 flex flex-col gap-5 lg:pl-10 lg:border-l border-foreground/5">
-                                        <div className="lg:hidden flex items-center justify-between px-2">
-                                             <div className="flex flex-col">
-                                                <span className="text-[8px] font-black uppercase text-foreground/20 tracking-[0.3em]">Costo x Jugador</span>
-                                                <span className="text-2xl font-black text-foreground italic tracking-tighter group-hover:text-primary transition-colors">${match.price.toLocaleString()}</span>
+                                    {/* ── ACTION SECTION (Mobile Tighter) ── */}
+                                    <div className="lg:w-[300px] relative z-20 flex flex-col gap-3 lg:gap-5 lg:pl-10 lg:border-l border-foreground/5">
+                                        <div className="lg:hidden flex items-center justify-between px-1">
+                                             <div className="flex items-baseline gap-1">
+                                                <span className="text-[14px] font-black text-foreground/20 italic">$</span>
+                                                <span className="text-2xl font-black text-foreground italic tracking-tight">{match.price.toLocaleString()}</span>
                                              </div>
-                                             <Link href={`/match?id=${match.id}`} className="text-primary text-[10px] font-black uppercase italic tracking-widest flex items-center gap-1 group/more">
-                                                 Ver detalles <ChevronRight className="w-3 h-3 group-hover/more:translate-x-1 transition-transform" />
+                                             <Link href={`/match?id=${match.id}`} className="text-primary text-[10px] font-black uppercase italic tracking-widest flex items-center gap-1">
+                                                 DETALLES <ChevronRight className="w-3 h-3" />
                                              </Link>
                                         </div>
                                         
                                         <Link 
                                             href={`/match?id=${match.id}`} 
                                             className={cn(
-                                                "w-full h-16 lg:h-24 rounded-[1.5rem] lg:rounded-[2.2rem] text-[11px] lg:text-[12px] font-black uppercase tracking-[0.35em] transition-all text-center flex items-center justify-center gap-4 active:scale-95 shadow-xl group/btn overflow-hidden relative",
+                                                "w-full h-12 lg:h-24 rounded-[1.2rem] lg:rounded-[2.2rem] text-[10px] lg:text-[12px] font-black uppercase tracking-[0.3em] transition-all text-center flex items-center justify-center gap-3 active:scale-95 shadow-xl relative overflow-hidden",
                                                 joinedIds.has(match.id) 
-                                                    ? "bg-foreground/5 border border-foreground/5 text-foreground/40 hover:text-foreground hover:border-primary/20" 
-                                                    : "bg-primary text-black shadow-[0_10px_30px_rgba(44,252,125,0.25)] hover:bg-white hover:scale-[1.03] hover:shadow-primary/30"
+                                                    ? "bg-foreground/5 text-foreground/40 border border-foreground/5" 
+                                                    : "bg-primary text-black shadow-primary/20 hover:bg-white hover:text-black transition-colors"
                                             )}
                                         >
-                                            <div className="absolute inset-x-0 bottom-0 h-1 bg-black/10 transition-all group-hover/btn:h-2" />
                                             {joinedIds.has(match.id) ? (
                                                 <>
-                                                    <CheckCircle2 className="w-6 h-6 text-primary" /> 
+                                                    <CheckCircle2 className="w-4 h-4 text-primary" /> 
                                                     <span>RECLUTADO</span>
                                                 </>
                                             ) : (
                                                 <>
                                                     <span>SOLICITAR INGRESO</span>
-                                                    <div className="w-10 h-10 rounded-full bg-black/5 flex items-center justify-center group-hover/btn:bg-primary transition-colors">
-                                                        <ChevronRight className="w-5 h-5 group-hover/btn:translate-x-1 transition-transform" />
-                                                    </div>
+                                                    <ChevronRight className="w-4 h-4 lg:hidden" />
                                                 </>
                                             )}
                                         </Link>
