@@ -285,9 +285,55 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         }
     };
 
+    const isAuthRoute = pathname === '/login' || pathname === '/register' || pathname === '/update-password';
+
+    // Verification and redirect logic for showing loader
+    // 1. Initial loading of auth state (except on auth routes for faster perceived performance)
+    // 2. Not authenticated but trying to access protected route (redirecting to login)
+    // 3. Authenticated but trying to access auth route (redirecting to home)
+    const showLoader = (isLoading && !isAuthRoute) || 
+                       (!isLoading && !user && !isAuthRoute) ||
+                       (!isLoading && user && isAuthRoute);
+
     return (
         <AuthContext.Provider value={{ user, isAuthenticated: !!user, login, loginWithGoogle, updatePassword, sendPasswordResetEmail, register, logout, deleteAccount, isLoading }}>
-            {children}
+            {showLoader ? (
+                <div className="fixed inset-0 bg-background flex flex-col items-center justify-center z-[9999] p-8 text-center animate-in fade-in duration-500">
+                    <div className="relative mb-10">
+                        {/* Outer rotating ring */}
+                        <div className="w-24 h-24 border-4 border-primary/5 border-t-primary rounded-full animate-[spin_1.5s_linear_infinite]" />
+                        {/* Middle pulse circle */}
+                        <div className="absolute inset-0 flex items-center justify-center">
+                            <div className="w-12 h-12 bg-primary/10 rounded-full animate-pulse border border-primary/20" />
+                        </div>
+                        {/* Inner glowing core */}
+                        <div className="absolute inset-10 bg-primary/40 rounded-full blur-md animate-pulse" />
+                    </div>
+                    
+                    <div className="space-y-4">
+                        <div className="space-y-1">
+                            <h1 className="text-3xl font-black italic text-foreground tracking-tighter uppercase font-kanit">
+                                PELOTI<span className="text-primary">FY</span>
+                            </h1>
+                            <p className="text-[10px] text-foreground/40 font-black uppercase tracking-[0.4em] font-outfit">
+                                CARGANDO TU ESTADIO...
+                            </p>
+                        </div>
+                        
+                        <div className="flex items-center gap-1.5 justify-center">
+                            <span className="w-1.5 h-1.5 rounded-full bg-primary animate-bounce [animation-delay:-0.3s]" />
+                            <span className="w-1.5 h-1.5 rounded-full bg-primary animate-bounce [animation-delay:-0.15s]" />
+                            <span className="w-1.5 h-1.5 rounded-full bg-primary animate-bounce" />
+                        </div>
+                    </div>
+
+                    {/* Background ambiance */}
+                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 -z-10 w-[500px] h-[500px] opacity-10 blur-[100px] pointer-events-none"
+                         style={{ background: 'radial-gradient(circle, #2cfc7d 0%, transparent 70%)' }} />
+                </div>
+            ) : (
+                children
+            )}
         </AuthContext.Provider>
     );
 }
