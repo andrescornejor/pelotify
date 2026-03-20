@@ -70,7 +70,11 @@ export function BottomNav() {
             >
                 <div className="flex justify-around items-center h-[72px] px-2">
                     {NAV_ITEMS.map(({ href, icon: Icon, label, isPrimary }) => {
-                        const isActive = pathname === href || (href !== '/' && pathname.startsWith(href));
+                        // Better detection for Profile tab (recognize both /profile/me and /profile)
+                        const isActive = href === '/' 
+                            ? pathname === '/' 
+                            : (pathname.startsWith(href) || (href === '/profile/me' && pathname.startsWith('/profile')));
+                        
                         const hasUnread = label === 'Mensajes' && unreadCount > 0;
 
                         if (isPrimary) {
@@ -86,8 +90,8 @@ export function BottomNav() {
                                         className={cn(
                                             "w-12 h-12 rounded-[1.25rem] flex items-center justify-center transition-all duration-300",
                                             isActive 
-                                                ? "bg-primary text-black shadow-lg shadow-primary/30" 
-                                                : "bg-primary/90 text-black shadow-md shadow-primary/10"
+                                                ? "bg-primary text-background shadow-lg shadow-primary/30" 
+                                                : "bg-primary/90 text-background shadow-md shadow-primary/10"
                                         )}
                                     >
                                         <Icon className="w-6 h-6" strokeWidth={2.5} />
@@ -110,7 +114,7 @@ export function BottomNav() {
                                         className={cn(
                                             "w-5 h-5 transition-all duration-300",
                                             isActive 
-                                                ? "text-primary scale-110 drop-shadow-[0_0_8px_rgba(var(--primary-rgb),0.3)]" 
+                                                ? "text-primary scale-110" 
                                                 : "text-foreground/30 group-hover:text-foreground/50"
                                         )}
                                         strokeWidth={isActive ? 2.5 : 2}
@@ -125,7 +129,7 @@ export function BottomNav() {
                                     {isActive && !performanceMode && (
                                         <motion.div 
                                             layoutId="nav-dot"
-                                            className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-primary"
+                                            className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-primary shadow-[0_0_8px_rgba(var(--primary-rgb),0.6)]"
                                         />
                                     )}
                                 </div>
