@@ -4,11 +4,10 @@ import { motion } from 'framer-motion';
 import { Search, MapPin, Calendar, Users, Filter, Loader2, CheckCircle2, LayoutGrid, ChevronRight } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import Link from 'next/link';
-import { useState, useEffect } from 'react';
-import { getMatches, getUserMatches, Match } from '@/lib/matches';
-import { useAuth } from '@/contexts/AuthContext';
-import { findVenueByLocation, normalizeVenueString } from '@/lib/venues';
+import { useState } from 'react';
+import { findVenueByLocation } from '@/lib/venues';
 import dynamic from 'next/dynamic';
+import { useMatchSearch } from '@/hooks/useMatchSearch';
 
 const MapSearch = dynamic(() => import('@/components/MapSearch'), {
     ssr: false,
@@ -20,58 +19,14 @@ const MapSearch = dynamic(() => import('@/components/MapSearch'), {
 });
 
 export default function SearchPage() {
-    const { user } = useAuth();
     const [activeTab, setActiveTab] = useState<'list' | 'map'>('list');
-    const [matches, setMatches] = useState<Match[]>([]);
-    const [joinedIds, setJoinedIds] = useState<Set<string>>(new Set());
-    const [isLoading, setIsLoading] = useState(true);
-
-    const [searchQuery, setSearchQuery] = useState('');
-
-    useEffect(() => {
-        const fetchMatches = async () => {
-            try {
-                const [allMatches, userMatches] = await Promise.all([
-                    getMatches(),
-                    user ? getUserMatches(user.id) : Promise.resolve([]),
-                ]);
-                setMatches(allMatches);
-                setJoinedIds(new Set((userMatches as any[]).filter(Boolean).map((m: any) => m?.id)));
-            } catch (err) {
-                console.error('Error fetching matches:', err);
-            } finally {
-                setIsLoading(false);
-            }
-        };
-        fetchMatches();
-    }, [user?.id]);
-
-    const filteredMatches = matches.filter(match => {
-        if (match.is_completed) return false;
-        if (match.is_private) return false;
-
-        // Hide past matches from radar
-        const matchStart = new Date(`${match.date}T${match.time}`);
-        const matchEnd = new Date(matchStart.getTime() + 60 * 60 * 1000);
-        if (new Date() > matchEnd) return false;
-
-        const search = normalizeVenueString(searchQuery);
-        if (!search) return true;
-
-        const loc = normalizeVenueString(match.location || '');
-        const type = normalizeVenueString(match.type);
-        const level = normalizeVenueString(match.level);
-
-        if (loc.includes(search) || type.includes(search) || level.includes(search)) return true;
-
-        const venue = findVenueByLocation(match.location || '');
-        if (venue) {
-            const vName = normalizeVenueString(venue.name);
-            if (vName.includes(search)) return true;
-        }
-
-        return false;
-    });
+    const { 
+        filteredMatches, 
+        joinedIds, 
+        isLoading, 
+        searchQuery, 
+        setSearchQuery 
+    } = useMatchSearch();
 
     return (
         <div className="flex flex-col gap-8 p-4 lg:p-10 lg:pt-4 max-w-screen-2xl mx-auto h-full bg-background relative overflow-hidden min-h-screen snap-y snap-proximity overflow-y-auto">
