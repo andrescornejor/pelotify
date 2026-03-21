@@ -1075,7 +1075,7 @@ function ProfileContent() {
                                                                     })()}
                                                                 </h4>
                                                                 <p className="text-[10px] font-black text-foreground/30 uppercase tracking-[0.2em] italic -mt-1 group-hover:text-foreground/50 transition-colors">
-                                                                    {m.time} HS · {m.level || 'Nivel General'}
+                                                                    {m.time.slice(0, 5)} HS · {m.level || 'Nivel General'}
                                                                 </p>
                                                                 <div className="flex flex-wrap items-center gap-3">
                                                                     <div className="flex items-center gap-2 px-2.5 py-1 rounded-full bg-primary/10 border border-primary/20 shadow-[0_0_15px_rgba(44,252,125,0.1)]">
