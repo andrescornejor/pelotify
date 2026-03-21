@@ -727,7 +727,7 @@ function ProfileContent() {
                         transition={{ delay: 0.5 }}
                         className={cn("sticky top-0 z-30 py-6 bg-background/80 backdrop-blur-2xl -mx-4 px-4 lg:-mx-0 lg:px-0 border-b border-foreground/5 transition-all duration-700", isEditing && "opacity-30 blur-sm pointer-events-none grayscale")}
                     >
-                        <div className="flex p-1.5 bg-foreground/[0.03] rounded-[2rem] border border-foreground/10 relative shadow-2xl backdrop-blur-3xl max-w-2xl">
+                        <div className="flex p-1.5 bg-foreground/[0.03] rounded-[2rem] border border-foreground/10 relative shadow-2xl backdrop-blur-3xl w-full">
                             {[
                                 { id: 'overview', label: 'Biometría' },
                                 { id: 'history', label: 'Despliegues' },
@@ -1000,7 +1000,7 @@ function ProfileContent() {
                                         const matchEnd = new Date(matchStart.getTime() + 60 * 60 * 1000);
                                         return new Date() > matchEnd;
                                     }).length > 0 ? (
-                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                        <div className="flex flex-col gap-6 w-full">
                                             {userMatches.filter(m => {
                                                 if (m.is_completed) return true;
                                                 const matchStart = new Date(`${m.date}T${m.time}`);
