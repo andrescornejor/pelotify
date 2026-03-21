@@ -96,7 +96,7 @@ export function TopHeader() {
 
     return (
         <>
-            <header className="fixed top-0 left-0 right-0 z-[60] pt-3 sm:pt-4 px-1 sm:px-5 lg:px-10 xl:px-16 pointer-events-none">
+            <header className="fixed top-0 left-0 right-0 z-[60] pt-3 sm:pt-4 px-3 sm:px-5 lg:px-10 xl:px-16 pointer-events-none">
                 <div className="max-w-screen-2xl mx-auto w-full pointer-events-auto">
                     <motion.div
                         initial={{ y: -24, opacity: 0 }}
@@ -114,7 +114,7 @@ export function TopHeader() {
                         {/* Background subtle light beam */}
                         <div className="absolute top-0 left-[-10%] w-[40%] h-full bg-gradient-to-r from-primary/5 via-transparent to-transparent -skew-x-12 pointer-events-none" />
 
-                        <div className="grid grid-cols-[1fr_auto_1fr] items-center h-[58px] sm:h-[68px] lg:h-[76px] px-3 sm:px-6 lg:px-8 w-full">
+                        <div className="grid grid-cols-[1fr_auto_1fr] items-center h-[58px] sm:h-[68px] lg:h-[76px] px-4 sm:px-6 lg:px-8 w-full">
                             {/* Left: Menu + Logo */}
                             <div className="flex items-center gap-3 sm:gap-4 lg:gap-3 xl:gap-6 min-w-0">
                                 <motion.button
