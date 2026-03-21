@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useRouter } from 'next/navigation';
-import { Shield, ChevronRight, ChevronLeft, Camera, Upload, CheckCircle2, Loader2, Sparkles, Hexagon } from 'lucide-react';
+import { Shield, ChevronRight, ChevronLeft, Camera, CheckCircle2, Loader2, Sparkles, ArrowLeft } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { createTeam } from '@/lib/teams';
 import { uploadTeamLogo } from '@/lib/storage';
@@ -118,6 +118,17 @@ export default function TeamBuilderPage() {
             {/* Ambient Colors based on selected colors */}
             <div className="absolute inset-0 z-0 transition-colors duration-1000" style={{ background: `radial-gradient(circle at 50% 50%, ${formData.secondaryColor}22 0%, ${formData.primaryColor}11 50%, transparent 100%)` }} />
             
+            {/* Go Back Button */}
+            <button
+                onClick={() => router.back()}
+                className="absolute top-8 left-8 z-50 flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.2em] text-foreground/50 hover:text-foreground transition-colors group p-2"
+            >
+                <div className="w-8 h-8 rounded-full bg-foreground/[0.03] border border-foreground/5 flex items-center justify-center group-hover:bg-foreground/[0.1] transition-all">
+                    <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
+                </div>
+                <span>Volver Atrás</span>
+            </button>
+
             <motion.div
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
