@@ -3,13 +3,10 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { getFriends, getPendingRequests, searchUsers, sendFriendRequest, acceptFriendRequest, deleteFriendship, FriendshipData, Profile, SearchResult, getRecommendedPlayers } from '@/lib/friends';
-import { getMatchInvitations, respondToInvitation } from '@/lib/matches';
-import { getTeamInvitations, respondToTeamInvitation } from '@/lib/teams';
 import { SocialHubSkeleton } from '@/components/Skeletons';
-import { Search, UserPlus, Users, Loader2, Check, X, UserMinus, Clock, UserCheck, Calendar, Zap, Trophy, Star } from 'lucide-react';
+import { Search, UserPlus, Users, Loader2, Check, X, UserMinus, Clock, UserCheck, Zap, Trophy } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Shield } from "lucide-react";
 import Link from 'next/link';
 import ChatModal from '@/components/ChatModal';
 import { MessageSquare } from 'lucide-react';
@@ -115,8 +112,6 @@ export default function FriendsPage() {
     // State
     const [friends, setFriends] = useState<FriendshipData[]>([]);
     const [requests, setRequests] = useState<FriendshipData[]>([]);
-    const [matchInvites, setMatchInvites] = useState<any[]>([]);
-    const [teamInvites, setTeamInvites] = useState<any[]>([]);
     const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
     const [recommendedPlayers, setRecommendedPlayers] = useState<SearchResult[]>([]);
     const [searchQuery, setSearchQuery] = useState('');
@@ -132,17 +127,13 @@ export default function FriendsPage() {
         if (!user) return;
         const fetchInitialData = async () => {
             try {
-                const [f, r, mi, ti, rec] = await Promise.all([
+                const [f, r, rec] = await Promise.all([
                     getFriends(user.id),
                     getPendingRequests(user.id),
-                    getMatchInvitations(user.id),
-                    getTeamInvitations(user.id),
                     getRecommendedPlayers(user.id)
                 ]);
                 setFriends(f);
                 setRequests(r);
-                setMatchInvites(mi);
-                setTeamInvites(ti);
                 setRecommendedPlayers(rec);
             } catch (err) {
                 console.error("Error loading friends:", err);
@@ -223,34 +214,6 @@ export default function FriendsPage() {
         }
     };
 
-    const handleMatchInviteResponse = async (id: string, status: 'confirmed' | 'rejected') => {
-        setActionLoading(id);
-        try {
-            await respondToInvitation(id, status);
-            setMatchInvites(prev => prev.filter(inv => inv.id !== id));
-        } catch (err: any) {
-            alert("Error: " + err.message);
-        } finally {
-            setActionLoading(null);
-        }
-    };
-
-    const handleTeamInviteResponse = async (teamId: string, action: 'accept' | 'decline') => {
-        if (!user) return;
-        setActionLoading(teamId);
-        try {
-            await respondToTeamInvitation(teamId, user.id, action);
-            setTeamInvites(prev => prev.filter(inv => inv.team_id !== teamId));
-            if (action === 'accept') {
-                alert("¡Ahora eres parte del equipo!");
-            }
-        } catch (err: any) {
-            alert("Error: " + err.message);
-        } finally {
-            setActionLoading(null);
-        }
-    };
-
     if (isLoadingInit) {
         return <SocialHubSkeleton />;
     }
@@ -278,7 +241,7 @@ export default function FriendsPage() {
             </div>
 
             {/* ── QUICK STATS ── */}
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 px-4 w-full max-w-7xl mx-auto relative z-20">
+            <div className="grid grid-cols-2 gap-4 px-4 w-full max-w-7xl mx-auto relative z-20">
                 <div className="glass-premium p-4 md:p-6 rounded-[2rem] border border-foreground/5 flex flex-col items-center justify-center gap-2 group hover:border-primary/20 transition-all">
                     <Users className="w-5 h-5 text-primary opacity-60 group-hover:opacity-100 transition-opacity" />
                     <div className="text-2xl font-black text-foreground italic uppercase tracking-tighter leading-none">{friends.length}</div>
@@ -288,16 +251,6 @@ export default function FriendsPage() {
                     <UserPlus className="w-5 h-5 text-primary opacity-60 group-hover:opacity-100 transition-opacity" />
                     <div className="text-2xl font-black text-foreground italic uppercase tracking-tighter leading-none">{requests.length}</div>
                     <div className="text-[8px] font-black text-foreground/40 uppercase tracking-[0.2em]">SOLICITUDES</div>
-                </div>
-                <div className="glass-premium p-4 md:p-6 rounded-[2rem] border border-foreground/5 flex flex-col items-center justify-center gap-2 group hover:border-accent/20 transition-all text-accent">
-                    <Calendar className="w-5 h-5 opacity-60 group-hover:opacity-100 transition-opacity" />
-                    <div className="text-2xl font-black text-foreground italic uppercase tracking-tighter leading-none">{matchInvites.length}</div>
-                    <div className="text-[8px] font-black text-foreground/40 uppercase tracking-[0.2em]">PARTIDOS</div>
-                </div>
-                <div className="glass-premium p-4 md:p-6 rounded-[2rem] border border-foreground/5 flex flex-col items-center justify-center gap-2 group hover:border-blue-500/20 transition-all text-blue-500">
-                    <Shield className="w-5 h-5 opacity-60 group-hover:opacity-100 transition-opacity" />
-                    <div className="text-2xl font-black text-foreground italic uppercase tracking-tighter leading-none">{teamInvites.length}</div>
-                    <div className="text-[8px] font-black text-foreground/40 uppercase tracking-[0.2em]">EQUIPOS</div>
                 </div>
             </div>
 
@@ -337,7 +290,7 @@ export default function FriendsPage() {
                         )}
                         <UserPlus className="w-4 h-4 relative z-10" />
                         <span className="relative z-10">SOLICITUDES</span>
-                        {(requests.length > 0 || matchInvites.length > 0 || teamInvites.length > 0) && (
+                        {requests.length > 0 && (
                             <div className="w-2 h-2 rounded-full bg-primary animate-pulse shadow-[0_0_10px_rgba(16,185,129,0.5)] relative z-10" />
                         )}
                     </button>
@@ -535,148 +488,6 @@ export default function FriendsPage() {
                                                     className="w-12 h-12 rounded-2xl bg-foreground/[0.03] text-foreground/50 hover:text-foreground transition-all flex items-center justify-center border border-foreground/5 active:scale-90"
                                                 >
                                                     {actionLoading === r.id ? <Loader2 className="w-5 h-5 animate-spin" /> : <X className="w-5 h-5" />}
-                                                </button>
-                                            </div>
-                                        </motion.div>
-                                    ))
-                                )}
-                            </div>
-                        </div>
-
-                        {/* ── MATCH INVITATIONS ── */}
-                        <div className="space-y-6">
-                            <div className="flex items-center justify-between px-2">
-                                <div className="flex items-center gap-4">
-                                    <div className="w-12 h-12 rounded-2xl bg-accent/10 flex items-center justify-center border border-accent/20 shadow-lg">
-                                        <Calendar className="w-6 h-6 text-accent" />
-                                    </div>
-                                    <div className="flex flex-col">
-                                        <h3 className="text-2xl font-black text-foreground italic uppercase tracking-tighter">Eventos y Convocatorias</h3>
-                                        <span className="text-[10px] font-black text-foreground/40 uppercase tracking-widest">Llamados directos al campo de juego</span>
-                                    </div>
-                                </div>
-                                <div className="px-5 py-2 bg-accent/5 rounded-full border border-accent/20 shadow-sm">
-                                    <span className="text-[10px] font-black text-accent uppercase tracking-widest">{matchInvites.length} PENDIENTES</span>
-                                </div>
-                            </div>
-
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                {matchInvites.length === 0 ? (
-                                    <div className="col-span-full text-center py-20 glass-premium rounded-[3rem] border-dashed border-2 border-foreground/5 opacity-40 bg-foreground/[0.01]">
-                                        <p className="text-[10px] font-black uppercase tracking-[0.3em] text-foreground/70 italic">No hay llamados activos en este ciclo</p>
-                                    </div>
-                                ) : (
-                                    matchInvites.map((inv, i) => (
-                                        <motion.div
-                                            key={inv.id}
-                                            initial={{ opacity: 0, scale: 0.95 }}
-                                            animate={{ opacity: 1, scale: 1 }}
-                                            transition={{ delay: i * 0.05 }}
-                                            className="glass-premium overflow-hidden rounded-[3rem] border border-accent/20 bg-accent/[0.01] hover:bg-accent/[0.03] transition-all group flex flex-col shadow-none"
-                                        >
-                                            <div className="p-8 flex items-start gap-6 bg-gradient-to-br from-accent/[0.05] to-transparent">
-                                                <div className="w-16 h-16 rounded-[1.8rem] bg-accent/10 flex items-center justify-center shrink-0 border border-accent/20 shadow-2xl group-hover:rotate-6 transition-transform">
-                                                    <Star className="w-8 h-8 text-accent fill-accent/10" />
-                                                </div>
-                                                <div className="flex-1 min-w-0 space-y-2">
-                                                    <p className="font-black text-2xl text-foreground italic uppercase truncate tracking-tighter group-hover:text-accent transition-colors leading-none">{inv.matches?.location}</p>
-                                                    <div className="flex flex-wrap items-center gap-x-4 gap-y-1">
-                                                        <div className="flex items-center gap-1.5 text-[9px] font-black text-accent uppercase tracking-[0.2em]">
-                                                            <Calendar className="w-3.5 h-3.5" />
-                                                            {inv.matches?.date}
-                                                        </div>
-                                                        <div className="flex items-center gap-1.5 text-[9px] font-black text-foreground/50 uppercase tracking-[0.2em]">
-                                                            <Clock className="w-3.5 h-3.5 opacity-50" />
-                                                            {inv.matches?.time}
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                            <div className="p-6 pt-0 flex gap-4">
-                                                <button
-                                                    onClick={() => handleMatchInviteResponse(inv.id, 'confirmed')}
-                                                    disabled={actionLoading === inv.id}
-                                                    className="flex-1 h-14 rounded-2xl bg-accent text-background text-[10px] font-black uppercase tracking-[0.3em] hover:bg-foreground hover:text-background transition-all shadow-xl shadow-accent/20 active:scale-95 flex items-center justify-center gap-2"
-                                                >
-                                                    {actionLoading === inv.id ? <Loader2 className="w-5 h-5 animate-spin" /> : <>CONFIRMAR ASISTENCIA</>}
-                                                </button>
-                                                <button
-                                                    onClick={() => handleMatchInviteResponse(inv.id, 'rejected')}
-                                                    disabled={actionLoading === inv.id}
-                                                    className="w-14 h-14 rounded-2xl bg-foreground/[0.03] text-foreground/50 hover:text-foreground transition-all border border-foreground/5 active:scale-95 flex items-center justify-center"
-                                                >
-                                                    {actionLoading === inv.id ? <Loader2 className="w-5 h-5 animate-spin" /> : <X className="w-6 h-6" />}
-                                                </button>
-                                            </div>
-                                        </motion.div>
-                                    ))
-                                )}
-                            </div>
-                        </div>
-
-                        {/* ── TEAM INVITATIONS ── */}
-                        <div className="space-y-6">
-                            <div className="flex items-center justify-between px-2">
-                                <div className="flex items-center gap-4">
-                                    <div className="w-12 h-12 rounded-2xl bg-blue-500/10 flex items-center justify-center border border-blue-500/20 shadow-lg">
-                                        <Shield className="w-6 h-6 text-blue-500" />
-                                    </div>
-                                    <div className="flex flex-col">
-                                        <h3 className="text-2xl font-black text-foreground italic uppercase tracking-tighter">Fichajes de Equipos</h3>
-                                        <span className="text-[10px] font-black text-foreground/40 uppercase tracking-widest">Convocatorias para unirte a planteles oficiales</span>
-                                    </div>
-                                </div>
-                                <div className="px-5 py-2 bg-blue-500/5 rounded-full border border-blue-500/20 shadow-sm">
-                                    <span className="text-[10px] font-black text-blue-500 uppercase tracking-widest">{teamInvites.length} PENDIENTES</span>
-                                </div>
-                            </div>
-
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                {teamInvites.length === 0 ? (
-                                    <div className="col-span-full text-center py-20 glass-premium rounded-[3rem] border-dashed border-2 border-foreground/5 opacity-40 bg-foreground/[0.01]">
-                                        <p className="text-[10px] font-black uppercase tracking-[0.3em] text-foreground/70 italic">No hay convocatorias de equipos en este ciclo</p>
-                                    </div>
-                                ) : (
-                                    teamInvites.map((inv, i) => (
-                                        <motion.div
-                                            key={inv.team_id}
-                                            initial={{ opacity: 0, scale: 0.95 }}
-                                            animate={{ opacity: 1, scale: 1 }}
-                                            transition={{ delay: i * 0.05 }}
-                                            className="glass-premium overflow-hidden rounded-[3rem] border border-primary/20 bg-primary/[0.01] hover:bg-primary/[0.03] transition-all group flex flex-col shadow-none"
-                                        >
-                                            <div className="p-8 flex items-start gap-6 bg-gradient-to-br from-primary/[0.05] to-transparent">
-                                                <div className="w-16 h-16 rounded-[1.8rem] bg-surface-elevated flex items-center justify-center shrink-0 border border-foreground/10 shadow-2xl group-hover:rotate-6 transition-transform relative overflow-hidden">
-                                                    {inv.teams?.logo_url ? (
-                                                        <img src={inv.teams.logo_url} alt="" className="w-full h-full object-cover" />
-                                                    ) : (
-                                                        <Shield className="w-8 h-8 text-primary/40" />
-                                                    )}
-                                                </div>
-                                                <div className="flex-1 min-w-0 space-y-2">
-                                                    <p className="font-black text-2xl text-foreground italic uppercase truncate tracking-tighter group-hover:text-primary transition-colors leading-none">{inv.teams?.name}</p>
-                                                    <div className="flex items-center gap-2">
-                                                        <div className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
-                                                        <span className="text-[9px] font-black text-foreground/50 uppercase tracking-widest italic">CONVOCATORIA ABIERTA</span>
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                            <div className="p-6 pt-0 flex gap-4">
-                                                <button
-                                                    onClick={() => handleTeamInviteResponse(inv.team_id, 'accept')}
-                                                    disabled={actionLoading === inv.team_id}
-                                                    className="flex-1 h-14 rounded-2xl bg-primary text-background text-[10px] font-black uppercase tracking-[0.3em] hover:bg-foreground hover:text-background transition-all shadow-xl shadow-primary/20 active:scale-95 flex items-center justify-center gap-2"
-                                                >
-                                                    {actionLoading === inv.team_id ? <Loader2 className="w-5 h-5 animate-spin" /> : <>UNIRSE AL PLANTEL</>}
-                                                </button>
-                                                <button
-                                                    onClick={() => handleTeamInviteResponse(inv.team_id, 'decline')}
-                                                    disabled={actionLoading === inv.team_id}
-                                                    className="w-14 h-14 rounded-2xl bg-foreground/[0.03] text-foreground/50 hover:text-foreground transition-all border border-foreground/5 active:scale-95 flex items-center justify-center"
-                                                >
-                                                    {actionLoading === inv.team_id ? <Loader2 className="w-5 h-5 animate-spin" /> : <X className="w-6 h-6" />}
                                                 </button>
                                             </div>
                                         </motion.div>
