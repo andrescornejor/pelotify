@@ -50,6 +50,7 @@ export default function TeamsPage() {
 
             if (userTeam) {
                 setMyTeam(userTeam);
+                setActiveTab('my_team');
             }
 
             // Filter out user's team for explore view
@@ -276,6 +277,56 @@ export default function TeamsPage() {
                         exit={{ opacity: 0, y: -10 }}
                         className="space-y-12"
                     >
+                        {/* Quick Access to My Team (if exists and on Explore tab) */}
+                        <AnimatePresence>
+                            {myTeam && (
+                                <motion.div
+                                    initial={{ opacity: 0, height: 0, marginBottom: 0 }}
+                                    animate={{ opacity: 1, height: 'auto', marginBottom: 32 }}
+                                    exit={{ opacity: 0, height: 0, marginBottom: 0 }}
+                                    className="relative group overflow-hidden"
+                                >
+                                    <div className="absolute inset-0 bg-gradient-to-r from-primary/20 via-primary/5 to-transparent rounded-[2.5rem] blur-xl opacity-50 group-hover:opacity-100 transition-opacity" />
+                                    <Link 
+                                        href={`/team?id=${myTeam.id}`}
+                                        className="relative flex items-center justify-between p-6 bg-surface border border-primary/20 rounded-[2.5rem] hover:border-primary/50 transition-all shadow-xl shadow-primary/5 group/link overflow-hidden"
+                                    >
+                                        <div className="absolute inset-y-0 right-0 w-64 bg-gradient-to-l from-primary/5 to-transparent pointer-events-none" />
+                                        
+                                        <div className="flex items-center gap-6 relative z-10">
+                                            <div className="relative">
+                                                <div className="absolute inset-0 bg-primary blur-lg rounded-full opacity-20 group-hover/link:opacity-40 transition-opacity" />
+                                                <div className="w-16 h-16 rounded-2xl bg-surface-elevated border-2 border-primary/20 flex items-center justify-center overflow-hidden relative">
+                                                    {myTeam.logo_url ? (
+                                                        <img src={myTeam.logo_url} alt={myTeam.name} className="w-full h-full object-cover" />
+                                                    ) : (
+                                                        <Shield className="w-8 h-8 text-primary" />
+                                                    )}
+                                                </div>
+                                            </div>
+                                            
+                                            <div className="flex flex-col">
+                                                <span className="text-[10px] font-black text-primary uppercase tracking-[0.4em] italic leading-none mb-2">Tu Sede Oficial</span>
+                                                <h3 className="text-2xl font-black italic text-foreground uppercase tracking-tighter leading-none group-hover/link:text-primary transition-colors">
+                                                    {myTeam.name}
+                                                </h3>
+                                            </div>
+                                        </div>
+
+                                        <div className="flex items-center gap-4 relative z-10">
+                                            <div className="hidden sm:flex flex-col items-end">
+                                                <span className="text-[10px] font-black text-foreground/40 uppercase tracking-widest leading-none mb-1">Puntos ELO</span>
+                                                <span className="text-xl font-black text-foreground italic leading-none">{myTeam.elo}</span>
+                                            </div>
+                                            <div className="w-12 h-12 bg-primary text-background rounded-2xl flex items-center justify-center group-hover/link:scale-110 transition-transform shadow-lg shadow-primary/30">
+                                                <ArrowRight className="w-6 h-6" />
+                                            </div>
+                                        </div>
+                                    </Link>
+                                </motion.div>
+                            )}
+                        </AnimatePresence>
+
                         {/* Search & Filter Bar */}
                         <div className="flex gap-4 relative z-10">
                             <div className="flex-1 relative group">
