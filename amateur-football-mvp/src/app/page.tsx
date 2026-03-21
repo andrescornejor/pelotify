@@ -836,7 +836,7 @@ export default function HomePage() {
         {/* ═══════════════════════════════════════
             FOOTER — Socials & Essential Links
         ═══════════════════════════════════════ */}
-        <footer className="mt-20 pt-16 pb-32 lg:pb-16 border-t border-foreground/[0.05] relative overflow-hidden">
+        <footer className="mt-20 pt-16 pb-24 lg:pb-6 border-t border-foreground/[0.05] relative overflow-hidden">
           <div className="absolute inset-0 bg-gradient-to-t from-background via-surface/40 to-transparent pointer-events-none" />
 
           <div className="relative z-10 grid grid-cols-1 md:grid-cols-12 gap-12 lg:gap-8">
