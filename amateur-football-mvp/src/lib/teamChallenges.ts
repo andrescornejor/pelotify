@@ -110,7 +110,7 @@ export async function getPendingChallengesForMember(userId: string) {
     if (memError) throw memError;
     if (!memberships || memberships.length === 0) return [];
 
-    const teamIds = memberships.map(m => m.team_id);
+    const teamIds = Array.from(new Set(memberships.map(m => m.team_id)));
 
     // 2. Get pending challenges for those teams
     const { data, error } = await supabase
