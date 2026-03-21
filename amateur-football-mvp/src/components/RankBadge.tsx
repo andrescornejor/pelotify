@@ -28,7 +28,7 @@ const RANK_CONFIG: Record<RankName, {
     border: 'border-slate-400/30'
   },
   BRONCE: {
-    icon: zap => <Zap {...zap} />,
+    icon: Zap,
     color: '#92400e',
     gradient: 'from-amber-700 to-amber-900',
     glow: 'rgba(146, 64, 14, 0.3)',
