@@ -37,6 +37,7 @@ import { supabase } from '@/lib/supabase';
 import { motion, AnimatePresence } from 'framer-motion';
 import { cn } from '@/lib/utils';
 import { getUserMatches, Match } from '@/lib/matches';
+import { findVenueByLocation } from '@/lib/venues';
 import { ProfileSkeleton } from '@/components/Skeletons';
 import { getDominantColor } from '@/lib/colorUtils';
 import { uploadUserAvatar } from '@/lib/storage';
@@ -1038,7 +1039,10 @@ function ProfileContent() {
                                                             {/* Location & Title */}
                                                             <div className="space-y-1.5 flex-1 min-w-0">
                                                                 <h4 className="text-xl sm:text-2xl font-black text-foreground italic uppercase tracking-tighter truncate group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-foreground group-hover:to-primary transition-all leading-none pb-1">
-                                                                    {m.location}
+                                                                    {(() => {
+                                                                        const venue = findVenueByLocation(m.location);
+                                                                        return venue?.displayName || venue?.name || m.location;
+                                                                    })()}
                                                                 </h4>
                                                                 <div className="flex items-center gap-2">
                                                                     <div className="flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-primary/10 border border-primary/20">
