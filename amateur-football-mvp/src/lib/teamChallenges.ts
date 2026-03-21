@@ -9,6 +9,9 @@ export interface TeamChallenge {
     match_time: string;
     location: string;
     message?: string;
+    price?: number;
+    venue_candidates?: string[];
+    votes?: Record<string, string>;
     created_at: string;
     challenger_team?: any;
     challenged_team?: any;
@@ -20,7 +23,9 @@ export async function createTeamChallenge(
     date: string,
     time: string,
     location: string,
-    message?: string
+    message?: string,
+    price?: number,
+    venueCandidates?: string[]
 ) {
     const { data, error } = await supabase
         .from('team_challenges')
@@ -32,6 +37,9 @@ export async function createTeamChallenge(
                 match_time: time,
                 location: location,
                 message: message,
+                price: price,
+                venue_candidates: venueCandidates,
+                votes: {}
             }
         ])
         .select()
@@ -91,6 +99,34 @@ export async function getPendingChallengesCountForCaptain(userId: string) {
     return count || 0;
 }
 
+export async function getPendingChallengesForMember(userId: string) {
+    // 1. Get teams where user is a confirmed member
+    const { data: memberships, error: memError } = await supabase
+        .from('team_members')
+        .select('team_id')
+        .eq('user_id', userId)
+        .eq('status', 'confirmed');
+
+    if (memError) throw memError;
+    if (!memberships || memberships.length === 0) return [];
+
+    const teamIds = memberships.map(m => m.team_id);
+
+    // 2. Get pending challenges for those teams
+    const { data, error } = await supabase
+        .from('team_challenges')
+        .select(`
+            *,
+            challenger_team:teams!challenger_team_id(id, name, logo_url, captain_id),
+            challenged_team:teams!challenged_team_id(id, name, logo_url, captain_id)
+        `)
+        .eq('status', 'pending')
+        .or(`challenger_team_id.in.(${teamIds.join(',')}),challenged_team_id.in.(${teamIds.join(',')})`);
+
+    if (error) throw error;
+    return data as TeamChallenge[];
+}
+
 export async function respondToChallenge(challengeId: string, status: 'accepted' | 'declined') {
     if (status === 'accepted') {
         // 1. Get challenge details
@@ -108,14 +144,35 @@ export async function respondToChallenge(challengeId: string, status: 'accepted'
 
         // 2. Create the match
         const { createMatch } = await import('./matches');
+        // Determine location based on votes if candidates exist
+        let finalLocation = challenge.location;
+        if (challenge.venue_candidates && challenge.venue_candidates.length > 0 && challenge.votes) {
+            const voteCounts: Record<string, number> = {};
+            Object.values(challenge.votes).forEach((venue: any) => {
+                voteCounts[venue] = (voteCounts[venue] || 0) + 1;
+            });
+            
+            let maxVotes = -1;
+            let winner = challenge.location;
+            
+            challenge.venue_candidates.forEach((venue: string) => {
+                const count = voteCounts[venue] || 0;
+                if (count > maxVotes) {
+                    maxVotes = count;
+                    winner = venue;
+                }
+            });
+            finalLocation = winner;
+        }
+
         const matchData = {
-            location: challenge.location,
+            location: finalLocation,
             date: challenge.match_date,
             time: challenge.match_time,
             type: 'F5' as any, // Default to F5, or we could add type to challenge
             level: 'Amateur',
             missing_players: 0,
-            price: 0,
+            price: challenge.price || 0,
             creator_id: challenge.challenged_team.captain_id,
             team_a_id: challenge.challenger_team_id,
             team_b_id: challenge.challenged_team_id,
@@ -171,6 +228,27 @@ export async function respondToChallenge(challengeId: string, status: 'accepted'
 
     if (error) throw error;
     return data as TeamChallenge;
+}
+
+export async function voteForVenue(challengeId: string, userId: string, venueName: string) {
+    // 1. Get current votes
+    const { data: challenge, error: getError } = await supabase
+        .from('team_challenges')
+        .select('votes')
+        .eq('id', challengeId)
+        .single();
+
+    if (getError) throw getError;
+
+    const currentVotes = (challenge.votes || {}) as Record<string, string>;
+    const newVotes = { ...currentVotes, [userId]: venueName };
+
+    const { error: updateError } = await supabase
+        .from('team_challenges')
+        .update({ votes: newVotes })
+        .eq('id', challengeId);
+
+    if (updateError) throw updateError;
 }
 
 export async function cancelChallenge(challengeId: string) {

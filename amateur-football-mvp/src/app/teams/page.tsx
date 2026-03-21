@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
-import { Shield, Users, Search, PlusCircle, Trophy, ArrowRight, Camera, Loader2, Sparkles, Filter, Swords, Clock, MapPin, CalendarDays, X } from 'lucide-react';
+import { Shield, Users, Search, PlusCircle, Trophy, ArrowRight, Camera, Loader2, Sparkles, Filter, Swords, Clock, MapPin, CalendarDays, X, DollarSign } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { getTeams, createTeam, Team } from '@/lib/teams';
 import { createTeamChallenge } from '@/lib/teamChallenges';
@@ -12,7 +12,7 @@ import { cn } from '@/lib/utils';
 import { supabase } from '@/lib/supabase';
 import { TeamsSkeleton } from '@/components/Skeletons';
 import Link from 'next/link';
-import { AVAILABLE_TIMES } from '@/lib/constants';
+import { ROSARIO_VENUES } from '@/lib/venues';
 import { useSettings } from '@/contexts/SettingsContext';
 
 export default function TeamsPage() {
@@ -37,6 +37,8 @@ export default function TeamsPage() {
     const [challengeDate, setChallengeDate] = useState('');
     const [challengeTime, setChallengeTime] = useState('');
     const [challengeLocation, setChallengeLocation] = useState('');
+    const [challengePrice, setChallengePrice] = useState('0');
+    const [challengeVenues, setChallengeVenues] = useState<string[]>([]);
     const [challengeMessage, setChallengeMessage] = useState('');
     const [isSendingChallenge, setIsSendingChallenge] = useState(false);
 
@@ -118,8 +120,10 @@ export default function TeamsPage() {
                 targetTeam.id,
                 challengeDate,
                 challengeTime,
-                challengeLocation,
-                challengeMessage
+                challengeLocation || (challengeVenues.length > 0 ? challengeVenues[0] : 'Por definir'),
+                challengeMessage,
+                parseInt(challengePrice),
+                challengeVenues
             );
             alert('¡Desafío enviado con éxito!');
             setChallengeModalOpen(false);
@@ -574,18 +578,63 @@ export default function TeamsPage() {
                                     </div>
                                 </div>
 
-                                <div className="space-y-2">
+                                <div className="grid grid-cols-2 gap-4">
+                                    <div className="space-y-2">
+                                        <label className="text-[9px] font-black text-foreground/50 uppercase tracking-[0.2em] flex items-center gap-2 pl-2">
+                                            <DollarSign className="w-3 h-3 text-primary" /> Pesos (x Jugador)
+                                        </label>
+                                        <input
+                                            type="number"
+                                            value={challengePrice}
+                                            onChange={(e) => setChallengePrice(e.target.value)}
+                                            className="w-full h-14 bg-foreground/[0.02] border border-foreground/5 rounded-2xl px-5 text-xs font-bold text-foreground outline-none focus:border-primary/50 transition-colors"
+                                            placeholder="0"
+                                        />
+                                    </div>
+                                    <div className="space-y-2">
+                                        <label className="text-[9px] font-black text-foreground/50 uppercase tracking-[0.2em] flex items-center gap-2 pl-2">
+                                            <MapPin className="w-3 h-3 text-primary" /> Predio específico
+                                        </label>
+                                        <input
+                                            type="text"
+                                            placeholder="Ej: Predio La Finta"
+                                            value={challengeLocation}
+                                            onChange={(e) => {
+                                                setChallengeLocation(e.target.value);
+                                                if (e.target.value) setChallengeVenues([]); // Clear candidates if specific is set
+                                            }}
+                                            className="w-full h-14 bg-foreground/[0.02] border border-foreground/5 rounded-2xl px-5 text-xs font-bold uppercase tracking-wide text-foreground outline-none focus:border-primary/50 transition-colors"
+                                        />
+                                    </div>
+                                </div>
+
+                                <div className="space-y-3">
                                     <label className="text-[9px] font-black text-foreground/50 uppercase tracking-[0.2em] flex items-center gap-2 pl-2">
-                                        <MapPin className="w-3 h-3 text-primary" /> Predio / Lugar
+                                        <Swords className="w-3 h-3 text-primary" /> O proponer candidatos para votar (máx 3)
                                     </label>
-                                    <input
-                                        type="text"
-                                        required
-                                        placeholder="Ej: Predio La Finta, Cancha 1"
-                                        value={challengeLocation}
-                                        onChange={(e) => setChallengeLocation(e.target.value)}
-                                        className="w-full h-14 bg-foreground/[0.02] border border-foreground/5 rounded-2xl px-5 text-xs font-bold uppercase tracking-wide text-foreground outline-none focus:border-primary/50 transition-colors"
-                                    />
+                                    <div className="grid grid-cols-2 gap-2 max-h-[150px] overflow-y-auto no-scrollbar p-1">
+                                        {ROSARIO_VENUES.map(v => (
+                                            <button
+                                                key={v.id}
+                                                type="button"
+                                                onClick={() => {
+                                                    setChallengeLocation(''); // Clear specific if voting
+                                                    if (challengeVenues.includes(v.displayName || v.name)) {
+                                                        setChallengeVenues(prev => prev.filter(cv => cv !== (v.displayName || v.name)));
+                                                    } else if (challengeVenues.length < 3) {
+                                                        setChallengeVenues(prev => [...prev, v.displayName || v.name]);
+                                                    }
+                                                }}
+                                                className={`px-4 py-3 rounded-xl border text-[10px] font-black uppercase tracking-tight transition-all text-left ${
+                                                    challengeVenues.includes(v.displayName || v.name)
+                                                    ? 'bg-primary border-primary text-black'
+                                                    : 'bg-foreground/[0.02] border-foreground/5 text-foreground/40 hover:border-foreground/20'
+                                                }`}
+                                            >
+                                                {v.displayName || v.name}
+                                            </button>
+                                        ))}
+                                    </div>
                                 </div>
 
                                 <div className="space-y-2">
@@ -596,7 +645,7 @@ export default function TeamsPage() {
                                         placeholder="Preparen las canilleras..."
                                         value={challengeMessage}
                                         onChange={(e) => setChallengeMessage(e.target.value)}
-                                        className="w-full h-24 bg-foreground/[0.02] border border-foreground/5 rounded-2xl p-5 text-xs text-foreground/80 font-bold uppercase tracking-wide outline-none focus:border-primary/50 transition-colors resize-none"
+                                        className="w-full h-20 bg-foreground/[0.02] border border-foreground/5 rounded-2xl p-5 text-xs text-foreground/80 font-bold uppercase tracking-wide outline-none focus:border-primary/50 transition-colors resize-none"
                                     />
                                 </div>
 

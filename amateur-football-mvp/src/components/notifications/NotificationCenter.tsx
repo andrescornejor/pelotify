@@ -5,9 +5,9 @@ import { useAuth } from '@/contexts/AuthContext';
 import { getPendingRequests, acceptFriendRequest, deleteFriendship, FriendshipData } from '@/lib/friends';
 import { getMatchInvitations, respondToInvitation } from '@/lib/matches';
 import { getPendingJoinRequestsForCaptain, respondToTeamInvitation, getTeamInvitations } from '@/lib/teams';
-import { getPendingChallengesForCaptain, respondToChallenge } from '@/lib/teamChallenges';
+import { getPendingChallengesForMember, respondToChallenge, voteForVenue } from '@/lib/teamChallenges';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Bell, X, Check, XCircle, Users, Calendar, Loader2, Info, ArrowRight, Shield, Swords } from 'lucide-react';
+import { Bell, X, Check, XCircle, Users, Calendar, Loader2, Info, ArrowRight, Shield, Swords, DollarSign, MapPin } from 'lucide-react';
 import Link from 'next/link';
 
 interface NotificationCenterProps {
@@ -34,7 +34,7 @@ export function NotificationCenter({ isOpen, onClose }: NotificationCenterProps)
                 getMatchInvitations(user.id),
                 getPendingJoinRequestsForCaptain(user.id),
                 getTeamInvitations(user.id),
-                getPendingChallengesForCaptain(user.id)
+                getPendingChallengesForMember(user.id)
             ]);
             setFriendRequests(f);
             setMatchInvites(m);
@@ -105,6 +105,25 @@ export function NotificationCenter({ isOpen, onClose }: NotificationCenterProps)
         } catch (err: any) {
             console.error(err);
             alert(`Error: ${err.message}`);
+        } finally {
+            setActionLoading(null);
+        }
+    };
+
+    const handleVote = async (challengeId: string, venueName: string) => {
+        const actionId = `${challengeId}-vote-${venueName}`;
+        setActionLoading(actionId);
+        try {
+            await voteForVenue(challengeId, user!.id, venueName);
+            // Local update for instant feedback
+            setTeamChallenges(prev => prev.map(c => {
+                if (c.id === challengeId) {
+                    return { ...c, votes: { ...(c.votes || {}), [user!.id]: venueName } };
+                }
+                return c;
+            }));
+        } catch (err) {
+            console.error(err);
         } finally {
             setActionLoading(null);
         }
@@ -235,59 +254,125 @@ export function NotificationCenter({ isOpen, onClose }: NotificationCenterProps)
                                         })}
                                     </AnimatePresence>
 
-                                    {/* Team Challenges (Captain) */}
+                                    {/* Team Challenges (All involved members) */}
                                     <AnimatePresence mode="popLayout">
-                                        {teamChallenges.map((challenge) => (
-                                            <motion.div 
-                                                key={challenge.id}
-                                                variants={{
-                                                    hidden: { opacity: 0, y: 15, scale: 0.96, filter: 'blur(4px)' },
-                                                    show: { opacity: 1, y: 0, scale: 1, filter: 'blur(0px)' }
-                                                }}
-                                                layout
-                                                transition={{ 
-                                                    type: "spring",
-                                                    stiffness: 400,
-                                                    damping: 30
-                                                }}
-                                                className="p-4 rounded-[2rem] bg-amber-500/[0.03] border border-amber-500/20 hover:bg-amber-500/5 hover:border-amber-500/40 transition-all flex flex-col gap-4 group"
-                                            >
-                                                <div className="flex items-center gap-4">
-                                                    <div className="w-12 h-12 rounded-2xl bg-amber-500/10 flex items-center justify-center shrink-0 border border-amber-500/20 shadow-lg group-hover:rotate-6 transition-transform">
-                                                        <Swords className="w-6 h-6 text-amber-500" />
-                                                    </div>
-                                                    <div className="flex-1 min-w-0">
-                                                        <div className="flex items-center gap-2 mb-1">
-                                                            <span className="text-[10px] text-amber-500 font-black uppercase tracking-widest italic animate-pulse">¡RETO RECIBIDO!</span>
+                                        {teamChallenges.map((challenge) => {
+                                            const isCaptainOfChallenged = user?.id === challenge.challenged_team?.captain_id;
+                                            const hasVenueOptions = challenge.venue_candidates && challenge.venue_candidates.length > 0;
+                                            const userVote = challenge.votes?.[user!.id];
+                                            
+                                            // Calculate vote counts
+                                            const voteCounts: Record<string, number> = {};
+                                            if (challenge.votes) {
+                                                Object.values(challenge.votes).forEach((venue: any) => {
+                                                    voteCounts[venue] = (voteCounts[venue] || 0) + 1;
+                                                });
+                                            }
+
+                                            return (
+                                                <motion.div 
+                                                    key={challenge.id}
+                                                    variants={{
+                                                        hidden: { opacity: 0, y: 15, scale: 0.96, filter: 'blur(4px)' },
+                                                        show: { opacity: 1, y: 0, scale: 1, filter: 'blur(0px)' }
+                                                    }}
+                                                    layout
+                                                    transition={{ 
+                                                        type: "spring",
+                                                        stiffness: 400,
+                                                        damping: 30
+                                                    }}
+                                                    className="p-4 rounded-[2.5rem] bg-amber-500/[0.03] border border-amber-500/20 hover:bg-amber-500/[0.05] hover:border-amber-500/40 transition-all flex flex-col gap-4 group"
+                                                >
+                                                    <div className="flex items-center gap-4">
+                                                        <div className="w-12 h-12 rounded-2xl bg-amber-500/10 flex items-center justify-center shrink-0 border border-amber-500/20 shadow-lg group-hover:rotate-6 transition-transform">
+                                                            <Swords className="w-6 h-6 text-amber-500" />
                                                         </div>
-                                                        <p className="text-[14px] font-black text-foreground italic uppercase tracking-tight truncate leading-tight">
-                                                            {challenge.challenger_team?.name}
-                                                        </p>
-                                                        <div className="flex items-center gap-2 mt-1">
-                                                            <span className="text-[9px] text-foreground/40 font-black uppercase tracking-widest leading-none">
-                                                                Para el {challenge.match_date} · {challenge.match_time} HS
-                                                            </span>
+                                                        <div className="flex-1 min-w-0">
+                                                            <div className="flex items-center gap-2 mb-1">
+                                                                <span className="text-[10px] text-amber-500 font-black uppercase tracking-widest italic animate-pulse">¡RETO EN CURSO!</span>
+                                                            </div>
+                                                            <p className="text-[14px] font-black text-foreground italic uppercase tracking-tight truncate leading-tight">
+                                                                {challenge.challenger_team?.name} <span className="text-foreground/20 lowercase font-medium not-italic">vs</span> {challenge.challenged_team?.name}
+                                                            </p>
+                                                            <div className="flex items-center gap-2 mt-1">
+                                                                <span className="text-[9px] text-foreground/40 font-black uppercase tracking-widest leading-none">
+                                                                    {challenge.match_date} · {challenge.match_time} HS
+                                                                </span>
+                                                                {challenge.price > 0 && (
+                                                                    <>
+                                                                        <div className="w-1 h-1 rounded-full bg-foreground/10" />
+                                                                        <span className="text-[9px] text-primary/60 font-black uppercase tracking-widest leading-none">
+                                                                            ${challenge.price} x Jug.
+                                                                        </span>
+                                                                    </>
+                                                                )}
+                                                            </div>
                                                         </div>
                                                     </div>
-                                                </div>
-                                                <div className="flex gap-2">
-                                                    <button 
-                                                        onClick={() => handleChallengeAction(challenge.id, true)}
-                                                        disabled={actionLoading === challenge.id}
-                                                        className="flex-[2] py-3 bg-amber-500 text-background text-[10px] font-black uppercase tracking-widest rounded-xl hover:bg-white transition-all disabled:opacity-50 shadow-xl shadow-amber-500/10 active:scale-95"
-                                                    >
-                                                        {actionLoading === challenge.id ? <Loader2 className="w-4 h-4 animate-spin mx-auto" /> : 'Aceptar Desafío'}
-                                                    </button>
-                                                    <button 
-                                                        onClick={() => handleChallengeAction(challenge.id, false)}
-                                                        disabled={actionLoading === challenge.id}
-                                                        className="flex-1 py-3 bg-white/[0.03] border border-white/[0.05] text-foreground/30 text-[10px] font-black uppercase tracking-widest rounded-xl hover:text-foreground hover:bg-white/[0.08] transition-all disabled:opacity-50 active:scale-95"
-                                                    >
-                                                        Ignorar
-                                                    </button>
-                                                </div>
-                                            </motion.div>
-                                        ))}
+
+                                                    {/* Voting Section */}
+                                                    {hasVenueOptions && (
+                                                        <div className="space-y-3 bg-black/20 p-4 rounded-3xl border border-white/5 shadow-inner">
+                                                            <div className="flex items-center justify-between px-1">
+                                                                <label className="text-[9px] font-black text-foreground/40 uppercase tracking-[0.2em] flex items-center gap-2">
+                                                                    <MapPin className="w-3 h-3 text-amber-500" /> Elegir Sede (Votación)
+                                                                </label>
+                                                                <span className="text-[8px] font-black text-foreground/20 uppercase tracking-widest">{Object.keys(challenge.votes || {}).length} VOTOS</span>
+                                                            </div>
+                                                            <div className="grid grid-cols-1 gap-2">
+                                                                {challenge.venue_candidates!.map(venue => {
+                                                                    const votes = voteCounts[venue] || 0;
+                                                                    const isVoted = userVote === venue;
+                                                                    const actionId = `${challenge.id}-vote-${venue}`;
+
+                                                                    return (
+                                                                        <button
+                                                                            key={venue}
+                                                                            onClick={() => handleVote(challenge.id, venue)}
+                                                                            disabled={actionLoading === actionId}
+                                                                            className={`group/btn relative h-10 px-4 rounded-xl border flex items-center justify-between transition-all ${
+                                                                                isVoted 
+                                                                                ? 'bg-amber-500 border-amber-500 text-background shadow-lg shadow-amber-500/20' 
+                                                                                : 'bg-white/[0.02] border-white/5 text-foreground/50 hover:border-amber-500/30'
+                                                                            }`}
+                                                                        >
+                                                                            <span className="text-[10px] font-black uppercase tracking-tight truncate max-w-[150px]">{venue}</span>
+                                                                            <div className="flex items-center gap-2">
+                                                                                {votes > 0 && <span className="text-[9px] font-black opacity-40">{votes}</span>}
+                                                                                <div className={`w-4 h-4 rounded-lg flex items-center justify-center border ${isVoted ? 'bg-white border-white text-amber-500' : 'border-white/20'}`}>
+                                                                                    {isVoted && <Check className="w-3 h-3" strokeWidth={4} />}
+                                                                                </div>
+                                                                            </div>
+                                                                        </button>
+                                                                    );
+                                                                })}
+                                                            </div>
+                                                        </div>
+                                                    )}
+
+                                                    {/* Admin Actions (ONLY for Challenged Captain) */}
+                                                    {isCaptainOfChallenged && (
+                                                        <div className="flex gap-2 pt-2">
+                                                            <button 
+                                                                onClick={() => handleChallengeAction(challenge.id, true)}
+                                                                disabled={actionLoading === challenge.id}
+                                                                className="flex-[2] py-3 bg-amber-500 text-background text-[10px] font-black uppercase tracking-widest rounded-xl hover:scale-[1.02] transition-all disabled:opacity-50 shadow-xl shadow-amber-500/10 active:scale-95 flex items-center justify-center gap-2"
+                                                            >
+                                                                {actionLoading === challenge.id ? <Loader2 className="w-4 h-4 animate-spin" /> : <><Check className="w-4 h-4" /> Aceptar Desafío</>}
+                                                            </button>
+                                                            <button 
+                                                                onClick={() => handleChallengeAction(challenge.id, false)}
+                                                                disabled={actionLoading === challenge.id}
+                                                                className="flex-1 py-3 bg-white/[0.03] border border-white/[0.05] text-foreground/30 text-[10px] font-black uppercase tracking-widest rounded-xl hover:text-red-400 hover:border-red-400/20 transition-all disabled:opacity-50 active:scale-95"
+                                                            >
+                                                                Ignorar
+                                                            </button>
+                                                        </div>
+                                                    )}
+                                                </motion.div>
+                                            );
+                                        })}
                                     </AnimatePresence>
 
                                     {/* Team Invitations (Player) */}
