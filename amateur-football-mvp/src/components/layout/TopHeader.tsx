@@ -6,7 +6,6 @@ import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useSidebar } from '@/contexts/SidebarContext';
 import { useState, useEffect } from 'react';
-import { NotificationCenter } from '../notifications/NotificationCenter';
 import { useAuth } from '@/contexts/AuthContext';
 import { getPendingRequestsCount } from '@/lib/friends';
 import { getMatchInvitationsCount } from '@/lib/matches';
@@ -316,10 +315,6 @@ export function TopHeader() {
                 </div>
             </header>
 
-            <NotificationCenter
-                isOpen={isNotificationsOpen}
-                onClose={() => setNotificationsOpen(false)}
-            />
         </>
     );
 }
