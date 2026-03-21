@@ -690,36 +690,39 @@ function ProfileContent() {
                     {/* Stats Highlights */}
                     <div className={cn("grid grid-cols-1 sm:grid-cols-3 gap-6 transition-all duration-700", isEditing && "opacity-30 blur-sm pointer-events-none grayscale")}>
                         {[
-                            { icon: () => <RankBadge rankName={getRankByElo(displayElo).name} size="md" />, label: 'Rango Actual', value: getRankByElo(displayElo).name, color: 'text-primary', glow: 'from-primary/20 via-primary/5 to-transparent', unit: '' },
+                            { icon: (props: any) => <RankBadge rankName={getRankByElo(displayElo).name} size="md" {...props} />, label: 'Rango Actual', value: getRankByElo(displayElo).name, color: 'text-primary', glow: 'from-primary/20 via-primary/5 to-transparent', unit: '' },
                             { icon: History, label: 'Despliegues', value: displayMatches, color: 'text-blue-500', glow: 'from-blue-500/20 via-blue-500/5 to-transparent', unit: 'EXP' },
                             { icon: Target, label: 'Objetivos', value: displayGoals, color: 'text-accent', glow: 'from-accent/20 via-accent/5 to-transparent', unit: 'GOL' }
-                        ].map((node, i) => (
-                            <motion.div
-                                initial={{ opacity: 0, y: 20 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                transition={{ delay: 0.3 + (i * 0.1) }}
-                                key={i}
-                                className="glass-premium p-8 lg:p-10 rounded-[2.5rem] border border-foreground/10 relative overflow-hidden group hover:border-foreground/20 transition-all duration-500 hover:-translate-y-2 hover:shadow-2xl"
-                            >
-                                <div className={cn("absolute inset-0 bg-gradient-to-br opacity-0 group-hover:opacity-100 transition-opacity duration-700", node.glow)} />
-                                <div className={cn("absolute inset-x-0 top-0 h-1 bg-gradient-to-r hidden sm:block opacity-50",
-                                    i === 0 ? "from-primary to-transparent" : i === 1 ? "from-blue-500 to-transparent" : "from-accent to-transparent"
-                                )} />
-                                <div className="flex items-center justify-between mb-8 relative z-10">
-                                    <div className={cn("p-4 rounded-2xl bg-background/50 border border-foreground/5 backdrop-blur-xl group-hover:scale-110 transition-transform duration-500 shadow-xl",
-                                        i === 0 ? "shadow-primary/10" : i === 1 ? "shadow-blue-500/10" : "shadow-accent/10"
-                                    )}>
-                                        {typeof node.icon === 'function' ? <node.icon /> : <node.icon className={cn("w-6 h-6", node.color)} />}
+                        ].map((node, i) => {
+                            const Icon = node.icon;
+                            return (
+                                <motion.div
+                                    initial={{ opacity: 0, y: 20 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    transition={{ delay: 0.3 + (i * 0.1) }}
+                                    key={i}
+                                    className="glass-premium p-8 lg:p-10 rounded-[2.5rem] border border-foreground/10 relative overflow-hidden group hover:border-foreground/20 transition-all duration-500 hover:-translate-y-2 hover:shadow-2xl"
+                                >
+                                    <div className={cn("absolute inset-0 bg-gradient-to-br opacity-0 group-hover:opacity-100 transition-opacity duration-700", node.glow)} />
+                                    <div className={cn("absolute inset-x-0 top-0 h-1 bg-gradient-to-r hidden sm:block opacity-50",
+                                        i === 0 ? "from-primary to-transparent" : i === 1 ? "from-blue-500 to-transparent" : "from-accent to-transparent"
+                                    )} />
+                                    <div className="flex items-center justify-between mb-8 relative z-10">
+                                        <div className={cn("p-4 rounded-2xl bg-background/50 border border-foreground/5 backdrop-blur-xl group-hover:scale-110 transition-transform duration-500 shadow-xl",
+                                            i === 0 ? "shadow-primary/10" : i === 1 ? "shadow-blue-500/10" : "shadow-accent/10"
+                                        )}>
+                                            <Icon className={cn("w-6 h-6", node.color)} />
+                                        </div>
+                                        <span className="text-[10px] font-black text-foreground/20 uppercase tracking-widest italic group-hover:text-foreground/40 transition-colors"></span>
                                     </div>
-                                    <span className="text-[10px] font-black text-foreground/20 uppercase tracking-widest italic group-hover:text-foreground/40 transition-colors"></span>
-                                </div>
-                                <div className="flex items-baseline gap-2 relative z-10">
-                                    <span className="text-4xl sm:text-6xl font-black text-foreground italic tracking-tighter leading-none group-hover:scale-105 transition-transform origin-left truncate">{node.value}</span>
-                                    {node.unit && <span className={cn("text-[11px] font-black uppercase tracking-[0.2em] -mt-2", node.color)}>{node.unit}</span>}
-                                </div>
-                                <p className="text-[10px] font-black uppercase text-foreground/40 tracking-[0.4em] mt-4 ml-1 relative z-10">{node.label}</p>
-                            </motion.div>
-                        ))}
+                                    <div className="flex items-baseline gap-2 relative z-10">
+                                        <span className="text-4xl sm:text-6xl font-black text-foreground italic tracking-tighter leading-none group-hover:scale-105 transition-transform origin-left truncate">{node.value}</span>
+                                        {node.unit && <span className={cn("text-[11px] font-black uppercase tracking-[0.2em] -mt-2", node.color)}>{node.unit}</span>}
+                                    </div>
+                                    <p className="text-[10px] font-black uppercase text-foreground/40 tracking-[0.4em] mt-4 ml-1 relative z-10">{node.label}</p>
+                                </motion.div>
+                            );
+                        })}
                     </div>
 
                     {/* Navigation Tabs */}
