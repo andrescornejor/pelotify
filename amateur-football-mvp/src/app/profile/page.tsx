@@ -451,7 +451,7 @@ function ProfileContent() {
     }
 
     return (
-        <div className="flex flex-col gap-8 p-4 sm:p-6 lg:p-14 xl:p-20 max-w-[1800px] mx-auto min-h-screen bg-background relative overflow-hidden">
+        <div className="flex flex-col gap-8 p-4 sm:p-6 lg:p-10 xl:p-14 2xl:p-16 max-w-[1600px] mx-auto min-h-screen bg-background relative overflow-hidden">
             {/* Ambient Effects - More subtle and layered */}
             <div className="fixed inset-0 pointer-events-none -z-10">
                 <div 
@@ -558,11 +558,11 @@ function ProfileContent() {
                 )}
             </div>
 
-            {/* Main Content Layout */}
-            <div className="relative z-20 flex flex-col lg:grid lg:grid-cols-[400px,1fr] xl:grid-cols-[450px,1fr] gap-12 lg:gap-20 pt-10">
+            {/* Hero Dashboard Area: Card on Left, Key Performance on Right */}
+            <div className="relative z-20 flex flex-col lg:grid lg:grid-cols-[400px,1fr] xl:grid-cols-[450px,1fr] gap-12 lg:gap-16 pt-4">
                 
-                {/* Left: Identity Column - Sticky on Large Screens */}
-                <div className="lg:sticky lg:top-12 self-start space-y-12">
+                {/* Left: Identity Column */}
+                <div className="space-y-10">
                     <div className="relative group">
                         {/* Glow behind card */}
                         <div 
@@ -592,7 +592,7 @@ function ProfileContent() {
                         </div>
                     </div>
 
-                    {/* Quick Stats Grid Under Card */}
+                    {/* Quick Stats Grid Under Card - Only on small/medium? No, we'll keep it as a secondary detail */}
                     <div className="grid grid-cols-2 gap-4">
                         <div className="glass-premium p-6 rounded-[2rem] border border-foreground/5 space-y-1">
                             <span className="text-[9px] font-black text-foreground/30 uppercase tracking-widest">Afiliación</span>
@@ -611,10 +611,8 @@ function ProfileContent() {
                     </div>
                 </div>
 
-                {/* Right: Data & Analytics Column */}
-                <div className="space-y-12">
-                    
-                    {/* Performance nodes - Larger, more impactful */}
+                {/* Right: Key Performance Nodes */}
+                <div className="space-y-8 flex flex-col justify-center">
                     <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
                         {[
                             { icon: Zap, label: 'Estatus Radar', value: displayElo, color: 'text-primary', unit: 'ELO' },
@@ -626,29 +624,27 @@ function ProfileContent() {
                                 initial={{ opacity: 0, y: 30 }}
                                 animate={{ opacity: 1, y: 0 }}
                                 transition={{ delay: i * 0.1 }}
-                                className="glass-premium-hover p-10 rounded-[3rem] border border-foreground/10 relative overflow-hidden group"
+                                className="glass-premium-hover p-10 lg:p-12 rounded-[3.5rem] border border-foreground/10 relative overflow-hidden group h-full flex flex-col justify-between"
                             >
                                 <div className="absolute top-0 right-0 p-6 opacity-10 group-hover:opacity-30 group-hover:scale-125 transition-all duration-700">
-                                    <node.icon className={cn("w-16 h-16", node.color)} />
+                                    <node.icon className={cn("w-20 h-20", node.color)} />
                                 </div>
-                                <div className="flex items-center justify-between mb-8">
-                                    <div className={cn("w-12 h-12 rounded-2xl flex items-center justify-center border", 
+                                <div className="flex items-center justify-between mb-10">
+                                    <div className={cn("w-14 h-14 rounded-2xl flex items-center justify-center border", 
                                         i === 0 ? "bg-primary/10 border-primary/20" : i === 1 ? "bg-blue-500/10 border-blue-500/20" : "bg-accent/10 border-accent/20"
                                     )}>
-                                        <node.icon className={cn("w-6 h-6", node.color)} />
+                                        <node.icon className={cn("w-7 h-7", node.color)} />
                                     </div>
-                                    <span className="text-[10px] font-black text-foreground/20 uppercase tracking-[0.4em] italic">0{i+1}</span>
+                                    <span className="text-[10px] font-black text-foreground/20 uppercase tracking-[0.4em] italic">DATO 0{i+1}</span>
                                 </div>
-                                <div className="space-y-1">
-                                    <div className="flex items-baseline gap-2">
-                                        <span className="text-6xl font-black text-foreground italic tracking-tighter leading-none">{node.value}</span>
-                                        <span className={cn("text-[11px] font-black uppercase tracking-[0.3em]", node.color)}>{node.unit}</span>
+                                <div className="space-y-2">
+                                    <div className="flex items-baseline gap-3">
+                                        <span className="text-7xl font-black text-foreground italic tracking-tighter leading-none">{node.value}</span>
+                                        <span className={cn("text-xs font-black uppercase tracking-[0.3em]", node.color)}>{node.unit}</span>
                                     </div>
-                                    <p className="text-[10px] font-black uppercase text-foreground/40 tracking-[0.3em] font-kanit">{node.label}</p>
+                                    <p className="text-[11px] font-black uppercase text-foreground/40 tracking-[0.3em] font-kanit">{node.label}</p>
                                 </div>
-
-                                {/* Progress subtle indicator */}
-                                <div className="mt-8 h-1 w-full bg-foreground/5 rounded-full overflow-hidden">
+                                <div className="mt-10 h-1.5 w-full bg-foreground/5 rounded-full overflow-hidden">
                                     <motion.div 
                                         initial={{ width: 0 }}
                                         animate={{ width: '70%' }}
@@ -661,9 +657,30 @@ function ProfileContent() {
                         ))}
                     </div>
 
-                    {/* Navigation Interface */}
-                    <div className="sticky top-4 z-40 py-2">
-                        <div className="flex p-2 bg-foreground/5 rounded-[2.5rem] border border-foreground/10 backdrop-blur-2xl shadow-2xl relative">
+                    {/* Desktop Integrated Bio (Secondary Data) */}
+                    <div className="hidden xl:grid grid-cols-3 gap-8 p-10 glass-premium rounded-[3rem] border border-foreground/5 bg-background/20 relative overflow-hidden">
+                        <div className="absolute inset-0 bg-gradient-to-r from-primary/5 via-transparent to-transparent opacity-30" />
+                        {[
+                            { label: 'EDAD', value: displayAge, unit: 'Años' },
+                            { label: 'ALTURA', value: displayHeight, unit: 'CM' },
+                            { label: 'PERFIL', value: displayFoot, unit: 'PIE' }
+                        ].map((stat, i) => (
+                            <div key={i} className="flex flex-col gap-1 relative z-10">
+                                <span className="text-[9px] font-black text-foreground/20 uppercase tracking-[0.4em]">{stat.label}</span>
+                                <div className="flex items-baseline gap-2">
+                                    <span className="text-2xl font-black text-foreground italic">{stat.value}</span>
+                                    <span className="text-[8px] font-black text-foreground/10 uppercase tracking-widest italic">{stat.unit}</span>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            </div>
+
+            {/* Content Tabs Section: Navigation + Tab Contents */}
+            <div className="mt-16 sm:mt-24 space-y-12 relative z-20">
+                <div className="sticky top-4 z-40 py-2">
+                    <div className="flex p-2 bg-foreground/5 rounded-[2.5rem] border border-foreground/10 backdrop-blur-2xl shadow-2xl relative">
                             {[
                                 { id: 'overview', label: 'Resumen', icon: Info },
                                 { id: 'history', label: 'Cronología', icon: History },
@@ -1110,7 +1127,6 @@ function ProfileContent() {
                                 </motion.div>
                             )}
                         </AnimatePresence>
-                    </div>
                 </div>
             </div>
 
