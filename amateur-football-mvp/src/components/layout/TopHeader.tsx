@@ -96,7 +96,7 @@ export function TopHeader() {
 
     return (
         <>
-            <header className="fixed top-0 left-0 right-0 z-[60] pt-3 sm:pt-4 px-3 sm:px-5 lg:px-10 xl:px-16 pointer-events-none">
+            <header className="fixed top-0 left-0 right-0 z-[60] pt-3 sm:pt-4 px-1 sm:px-5 lg:px-10 xl:px-16 pointer-events-none">
                 <div className="max-w-screen-2xl mx-auto w-full pointer-events-auto">
                     <motion.div
                         initial={{ y: -24, opacity: 0 }}
