@@ -229,7 +229,7 @@ export default function OnboardingPage() {
                                     { id: 'DFC', title: 'Defensa', icon: Activity, color: 'text-zinc-400', glow: 'hover:shadow-[0_0_30px_rgba(161,161,170,0.2)] hover:border-zinc-400/50 block-glow-zinc' },
                                     { id: 'MC', title: 'Medio', icon: Target, color: 'text-primary', glow: 'hover:shadow-[0_0_30px_rgba(16,185,129,0.2)] hover:border-primary/50 block-glow-emerald' },
                                     { id: 'DC', title: 'Delantero', icon: Crosshair, color: 'text-accent', glow: 'hover:shadow-[0_0_30px_rgba(245,158,11,0.2)] hover:border-accent/50 block-glow-amber' }
-                                ]].map(({ id, title, icon: Icon, color, glow }) => (
+                                ].map(({ id, title, icon: Icon, color, glow }) => (
                                     <button
                                         key={id}
                                         onClick={() => {
