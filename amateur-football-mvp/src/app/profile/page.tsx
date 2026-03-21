@@ -2,18 +2,18 @@
 
 import { Suspense } from 'react';
 import { FifaCard } from '@/components/FifaCard';
-import { 
-    Award, 
-    History, 
-    Info, 
-    Edit2, 
-    Save, 
-    X, 
-    Loader2, 
-    Trophy, 
-    Zap, 
-    MapPin, 
-    Target, 
+import {
+    Award,
+    History,
+    Info,
+    Edit2,
+    Save,
+    X,
+    Loader2,
+    Trophy,
+    Zap,
+    MapPin,
+    Target,
     Calendar,
     Plus,
     ChevronRight,
@@ -69,13 +69,13 @@ function ProfileContent() {
     const searchParams = useSearchParams();
     const router = useRouter();
     const { user, isLoading, deleteAccount } = useAuth();
-    
+
     // Get ID from query param ?id=...
     const id = searchParams.get('id');
     const isMe = id === 'me' || id === user?.id || (!id && user?.id);
 
     const [activeTab, setActiveTab] = useState<'overview' | 'history' | 'wall'>('overview');
-    
+
     // Edit state
     const [isEditing, setIsEditing] = useState(false);
     const [editedData, setEditedData] = useState({
@@ -98,19 +98,19 @@ function ProfileContent() {
     const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
     const [userMatches, setUserMatches] = useState<Match[]>([]);
     const [ambientColor, setAmbientColor] = useState<string | null>(null);
-    
+
     // Comments State
     const [comments, setComments] = useState<any[]>([]);
     const [newComment, setNewComment] = useState('');
     const [isPostingComment, setIsPostingComment] = useState(false);
     const [isLoadingComments, setIsLoadingComments] = useState(false);
-    
+
     // Password change state
     const [showPasswordModal, setShowPasswordModal] = useState(false);
     const [newPassword, setNewPassword] = useState('');
     const [isUpdatingPassword, setIsUpdatingPassword] = useState(false);
     const { updatePassword } = useAuth();
-    
+
     // Avatar Upload State
     const [avatarFile, setAvatarFile] = useState<File | null>(null);
     const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
@@ -291,7 +291,7 @@ function ProfileContent() {
         if (isEditing) return editedStats;
         const statsSource = isMe ? authMetadata.stats : (dbProfile.stats || dbMetadata.stats);
         if (statsSource && typeof statsSource === 'object') return statsSource as PlayerStats;
-        
+
         return {
             pac: getField('pac', DEFAULT_PLAYER.stats.pac),
             sho: getField('sho', DEFAULT_PLAYER.stats.sho),
@@ -335,7 +335,7 @@ function ProfileContent() {
             let newAvatarUrl = getField('avatar_url', null);
             if (avatarFile) {
                 console.log("Subiendo nuevo avatar...");
-                
+
                 // Compress the image before uploading
                 try {
                     console.log("Comprimiendo imagen...");
@@ -347,7 +347,7 @@ function ProfileContent() {
                     console.error("Error comprimiendo imagen, intentando subir original:", compressionError);
                     newAvatarUrl = await uploadUserAvatar(avatarFile, user.id);
                 }
-                
+
                 console.log("Avatar subido:", newAvatarUrl);
             }
 
@@ -433,7 +433,7 @@ function ProfileContent() {
             setAvatarFile(file);
             const previewUrl = URL.createObjectURL(file);
             setAvatarPreview(previewUrl);
-            
+
             // Extract color from preview immediately
             getDominantColor(previewUrl).then(color => {
                 if (color) setAmbientColor(color);
@@ -454,16 +454,16 @@ function ProfileContent() {
         <div className="flex flex-col gap-8 p-4 sm:p-6 lg:p-10 xl:p-14 2xl:p-16 max-w-full mx-auto min-h-screen bg-background relative selection:bg-primary/30 selection:text-primary">
             {/* Ambient Effects */}
             <div className="fixed inset-0 pointer-events-none -z-10 overflow-hidden">
-                <div 
-                    className="absolute top-0 left-0 w-full h-[80dvh] opacity-40 transition-colors duration-1000" 
+                <div
+                    className="absolute top-0 left-0 w-full h-[80dvh] opacity-40 transition-colors duration-1000"
                     style={{ backgroundImage: ambientColor ? `radial-gradient(ellipse at 50% 0%, ${ambientColor}40, transparent 70%)` : 'radial-gradient(ellipse at 50% 0%, rgba(16,185,129,0.15), transparent 70%)' }}
                 />
-                <div 
-                    className={cn("absolute top-[-20%] right-[-10%] w-[90%] h-[90%] blur-[160px] rounded-full animate-pulse opacity-50", !ambientColor && "bg-primary/5")} 
+                <div
+                    className={cn("absolute top-[-20%] right-[-10%] w-[90%] h-[90%] blur-[160px] rounded-full animate-pulse opacity-50", !ambientColor && "bg-primary/5")}
                     style={{ backgroundColor: ambientColor || undefined, animationDuration: '8s' }}
                 />
-                <div 
-                    className={cn("absolute bottom-[-10%] left-[-20%] w-[60%] h-[60%] blur-[120px] rounded-full opacity-30 animate-pulse delay-1000", !ambientColor && "bg-accent/5")} 
+                <div
+                    className={cn("absolute bottom-[-10%] left-[-20%] w-[60%] h-[60%] blur-[120px] rounded-full opacity-30 animate-pulse delay-1000", !ambientColor && "bg-accent/5")}
                     style={{ backgroundColor: ambientColor ? `${ambientColor}80` : undefined, animationDuration: '6s' }}
                 />
                 <div className="absolute inset-0 bg-[url('/noise.png')] opacity-[0.03] mix-blend-overlay" />
@@ -472,7 +472,7 @@ function ProfileContent() {
             {/* Header / Actions */}
             <div className="relative z-10 flex flex-col md:flex-row justify-between items-start md:items-center gap-6 group/header">
                 <div className="space-y-3">
-                    <motion.div 
+                    <motion.div
                         initial={{ opacity: 0, x: -20 }}
                         animate={{ opacity: 1, x: 0 }}
                         className="flex items-center gap-3"
@@ -483,7 +483,7 @@ function ProfileContent() {
                         </div>
                         <span className="text-[10px] font-black uppercase tracking-[0.5em] text-foreground/40 italic bg-clip-text text-transparent bg-gradient-to-r from-foreground/50 to-foreground/20">Identidad Digital</span>
                     </motion.div>
-                    <motion.h1 
+                    <motion.h1
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.1 }}
@@ -499,7 +499,7 @@ function ProfileContent() {
                 </div>
 
                 {isMe && (
-                    <motion.div 
+                    <motion.div
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         transition={{ delay: 0.2 }}
@@ -507,7 +507,7 @@ function ProfileContent() {
                     >
                         <AnimatePresence mode="wait">
                             {isEditing ? (
-                                <motion.div 
+                                <motion.div
                                     key="editing"
                                     initial={{ opacity: 0, scale: 0.95 }}
                                     animate={{ opacity: 1, scale: 1 }}
@@ -562,22 +562,22 @@ function ProfileContent() {
             <div className="relative z-10 flex flex-col lg:flex-row gap-8 items-center lg:items-start pt-4">
                 {/* Left: FIFA Card */}
                 <div className={cn("relative shrink-0 group transition-all duration-1000", isEditing ? "z-50 scale-[1.03]" : "")}>
-                    <div 
+                    <div
                         className={cn("absolute -inset-20 blur-[120px] rounded-full pointer-events-none transition-all duration-1000",
                             isEditing ? "bg-primary/30 scale-125 animate-pulse" : (ambientColor ? "" : "bg-primary/10 animate-pulse")
-                        )} 
+                        )}
                         style={{ backgroundColor: !isEditing ? (ambientColor || undefined) : undefined }}
                     />
                     <div className="relative">
-                        <FifaCard player={{ 
-                            ...displayPlayer, 
-                            name: (isEditing ? editedData.name : displayPlayer.name) as string, 
+                        <FifaCard player={{
+                            ...displayPlayer,
+                            name: (isEditing ? editedData.name : displayPlayer.name) as string,
                             position: (isEditing ? editedData.position : displayPlayer.position) as string,
                             image: avatarPreview || getField('avatar_url', undefined) as string | undefined,
                             mvpTrophies: mvpCount,
                             badges: userBadges.map(b => b.badge_type as string)
                         }} />
-                        
+
                         {isEditing && (
                             <label className="absolute inset-0 z-30 flex flex-col items-center justify-center bg-background/60 backdrop-blur-sm cursor-pointer opacity-0 group-hover:opacity-100 transition-all text-foreground border-4 border-dashed border-primary/20 rounded-[2rem] m-2">
                                 <Camera className="w-8 h-8 mb-2 text-primary" />
@@ -586,9 +586,9 @@ function ProfileContent() {
                             </label>
                         )}
                     </div>
-                    
+
                     {isEditing && (
-                        <motion.div 
+                        <motion.div
                             initial={{ opacity: 0, y: 10 }}
                             animate={{ opacity: 1, y: 0 }}
                             className="mt-6 glass-premium p-6 space-y-6 border border-primary/20 rounded-[2rem] shadow-xl"
@@ -618,7 +618,7 @@ function ProfileContent() {
                                             <span className="text-xs font-black text-foreground">{editedStats[key]}</span>
                                         </div>
                                         <div className="flex gap-1">
-                                            <button 
+                                            <button
                                                 onClick={() => {
                                                     if (editedStats[key] > resolveStats()[key]) {
                                                         setSkillPoints(prev => prev + 1);
@@ -630,7 +630,7 @@ function ProfileContent() {
                                             >
                                                 -
                                             </button>
-                                            <button 
+                                            <button
                                                 onClick={() => {
                                                     if (skillPoints > 0 && editedStats[key] < 99) {
                                                         setSkillPoints(prev => prev - 1);
@@ -689,24 +689,24 @@ function ProfileContent() {
                             { icon: History, label: 'Despliegues', value: displayMatches, color: 'text-blue-500', glow: 'from-blue-500/20 via-blue-500/5 to-transparent', unit: 'EXP' },
                             { icon: Target, label: 'Objetivos', value: displayGoals, color: 'text-accent', glow: 'from-accent/20 via-accent/5 to-transparent', unit: 'GOL' }
                         ].map((node, i) => (
-                            <motion.div 
+                            <motion.div
                                 initial={{ opacity: 0, y: 20 }}
                                 animate={{ opacity: 1, y: 0 }}
                                 transition={{ delay: 0.3 + (i * 0.1) }}
-                                key={i} 
+                                key={i}
                                 className="glass-premium p-8 lg:p-10 rounded-[2.5rem] border border-foreground/10 relative overflow-hidden group hover:border-foreground/20 transition-all duration-500 hover:-translate-y-2 hover:shadow-2xl"
                             >
                                 <div className={cn("absolute inset-0 bg-gradient-to-br opacity-0 group-hover:opacity-100 transition-opacity duration-700", node.glow)} />
-                                <div className={cn("absolute inset-x-0 top-0 h-1 bg-gradient-to-r hidden sm:block opacity-50", 
+                                <div className={cn("absolute inset-x-0 top-0 h-1 bg-gradient-to-r hidden sm:block opacity-50",
                                     i === 0 ? "from-primary to-transparent" : i === 1 ? "from-blue-500 to-transparent" : "from-accent to-transparent"
                                 )} />
                                 <div className="flex items-center justify-between mb-8 relative z-10">
-                                    <div className={cn("p-4 rounded-2xl bg-background/50 border border-foreground/5 backdrop-blur-xl group-hover:scale-110 transition-transform duration-500 shadow-xl", 
+                                    <div className={cn("p-4 rounded-2xl bg-background/50 border border-foreground/5 backdrop-blur-xl group-hover:scale-110 transition-transform duration-500 shadow-xl",
                                         i === 0 ? "shadow-primary/10" : i === 1 ? "shadow-blue-500/10" : "shadow-accent/10"
                                     )}>
                                         <node.icon className={cn("w-6 h-6", node.color)} />
                                     </div>
-                                    <span className="text-[10px] font-black text-foreground/20 uppercase tracking-widest italic group-hover:text-foreground/40 transition-colors">Mod_0{i+1}</span>
+                                    <span className="text-[10px] font-black text-foreground/20 uppercase tracking-widest italic group-hover:text-foreground/40 transition-colors"></span>
                                 </div>
                                 <div className="flex items-baseline gap-2 relative z-10">
                                     <span className="text-6xl font-black text-foreground italic tracking-tighter leading-none group-hover:scale-105 transition-transform origin-left">{node.value}</span>
@@ -718,7 +718,7 @@ function ProfileContent() {
                     </div>
 
                     {/* Navigation Tabs */}
-                    <motion.div 
+                    <motion.div
                         initial={{ opacity: 0, y: 10 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.5 }}
@@ -784,7 +784,7 @@ function ProfileContent() {
                                                     <span className="text-[9px] font-black text-primary uppercase tracking-widest">VERIFICADO</span>
                                                 </div>
                                             </div>
-                                            
+
                                             <div className="space-y-6 relative z-10">
                                                 {isEditing ? (
                                                     <div className="grid grid-cols-2 gap-6 bg-background/40 p-6 rounded-[2rem] border border-foreground/5 backdrop-blur-md">
@@ -870,7 +870,7 @@ function ProfileContent() {
                                                     </div>
                                                 </div>
                                             </div>
-                                            
+
                                             <div className="space-y-8 relative z-10 w-full">
                                                 {[
                                                     { label: 'Victorias Totales', value: '--', color: 'text-foreground' },
@@ -879,7 +879,7 @@ function ProfileContent() {
                                                 ].map((stat, idx) => (
                                                     <div key={idx} className="flex justify-between items-center group/item p-4 rounded-2xl hover:bg-foreground/[0.02] transition-colors border border-transparent hover:border-foreground/5">
                                                         <div className="flex items-center gap-4">
-                                                            <div className="font-mono text-[9px] text-foreground/20 italic font-bold">0{idx+1}</div>
+                                                            <div className="font-mono text-[9px] text-foreground/20 italic font-bold">0{idx + 1}</div>
                                                             <span className="text-[11px] font-black uppercase text-foreground/50 tracking-[0.3em] group-hover/item:text-foreground transition-colors">{stat.label}</span>
                                                         </div>
                                                         <span className={cn(
@@ -894,19 +894,19 @@ function ProfileContent() {
                                             </div>
                                         </div>
                                     </div>
-                                    
+
                                     {/* Team Section */}
                                     {userTeam && (
                                         <motion.div
                                             initial={{ opacity: 0, scale: 0.95 }}
                                             animate={{ opacity: 1, scale: 1 }}
-                                            className={cn("glass-premium p-10 lg:p-12 rounded-[3.5rem] border border-foreground/10 relative overflow-hidden group/team cursor-default transition-all duration-700 z-10", 
+                                            className={cn("glass-premium p-10 lg:p-12 rounded-[3.5rem] border border-foreground/10 relative overflow-hidden group/team cursor-default transition-all duration-700 z-10",
                                                 isEditing ? "opacity-30 blur-sm pointer-events-none grayscale" : "hover:border-primary/40 hover:shadow-[0_0_50px_rgba(16,185,129,0.1)] focus-within:border-primary/40"
                                             )}
                                         >
                                             <div className="absolute top-0 right-0 w-[150%] h-[150%] bg-gradient-radial from-primary/10 via-transparent to-transparent -translate-y-1/2 translate-x-1/4 opacity-0 group-hover/team:opacity-100 transition-opacity duration-1000 blur-3xl" />
                                             <div className="absolute inset-x-0 bottom-0 h-1 bg-gradient-to-r from-transparent via-primary/50 to-transparent opacity-0 group-hover/team:opacity-100 transition-opacity duration-1000" />
-                                            
+
                                             <div className="flex flex-col lg:flex-row items-center gap-12 relative z-10">
                                                 {/* Team Crest/Logo */}
                                                 <div className="relative shrink-0 perspective-1000">
@@ -914,9 +914,9 @@ function ProfileContent() {
                                                     <div className="w-36 h-36 md:w-48 md:h-48 rounded-[3rem] bg-background/80 border border-foreground/10 flex items-center justify-center overflow-hidden relative shadow-2xl group-hover/team:border-primary/50 transition-all duration-700 backdrop-blur-xl group-hover/team:-translate-y-2 group-hover/team:rotate-y-12">
                                                         <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent opacity-0 group-hover/team:opacity-100 transition-opacity" />
                                                         {userTeam.logo_url ? (
-                                                            <img 
-                                                                src={userTeam.logo_url} 
-                                                                alt={userTeam.name} 
+                                                            <img
+                                                                src={userTeam.logo_url}
+                                                                alt={userTeam.name}
                                                                 className="w-full h-full object-cover group-hover/team:scale-110 group-hover/team:rotate-3 transition-all duration-1000"
                                                             />
                                                         ) : (
@@ -962,7 +962,7 @@ function ProfileContent() {
                                                     </div>
 
                                                     <div className="flex flex-wrap justify-center lg:justify-start gap-4">
-                                                        <Link 
+                                                        <Link
                                                             href={`/team?id=${userTeam.id}`}
                                                             className="h-14 px-10 rounded-[1.5rem] bg-foreground hover:bg-white text-background font-black text-[11px] uppercase tracking-[0.3em] flex items-center justify-center gap-3 transition-all shadow-xl hover:shadow-2xl hover:scale-[1.02] active:scale-95 group/link"
                                                         >
@@ -1017,7 +1017,7 @@ function ProfileContent() {
                                                         className="glass-premium p-6 sm:p-8 rounded-[2.5rem] border border-foreground/10 flex flex-col sm:flex-row items-start sm:items-center justify-between group-hover:bg-foreground/[0.04] group-hover:border-primary/30 group-hover:-translate-y-1 transition-all duration-500 shadow-xl overflow-hidden relative z-10 gap-6 sm:gap-0"
                                                     >
                                                         <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 blur-[40px] opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
-                                                        
+
                                                         <div className="flex items-center gap-6 w-full sm:w-auto">
                                                             <div className="w-16 h-16 rounded-[1.5rem] bg-background border border-foreground/10 flex flex-col items-center justify-center shrink-0 shadow-inner group-hover:border-primary/40 group-hover:bg-primary/5 transition-colors">
                                                                 <span className="text-2xl font-black italic tracking-tighter text-foreground group-hover:text-primary transition-colors leading-none">{m.date.split('-')[2]}</span>
@@ -1033,7 +1033,7 @@ function ProfileContent() {
                                                                 </div>
                                                             </div>
                                                         </div>
-                                                        
+
                                                         <div className="flex items-center gap-5 w-full sm:w-auto justify-end bg-background/50 px-6 py-4 rounded-[1.5rem] border border-foreground/[0.03] group-hover:border-primary/20 shadow-inner transition-colors">
                                                             <span className="text-4xl font-black text-foreground italic tracking-tighter leading-none group-hover:text-primary group-hover:drop-shadow-[0_0_10px_rgba(16,185,129,0.3)] transition-all">{m.team_a_score ?? 0}</span>
                                                             <span className="text-sm font-black text-foreground/20 italic">-</span>
@@ -1053,7 +1053,7 @@ function ProfileContent() {
                                                 <p className="text-[10px] font-black uppercase text-foreground/20 tracking-[0.3em]">{isMe ? 'Tu historial de partidos está listo para ser escrito.' : 'Este jugador aún no tiene partidos registrados.'}</p>
                                             </div>
                                             <Link href="/search">
-                                                 <button className="h-14 px-10 bg-primary/5 hover:bg-primary text-primary hover:text-black font-black text-[10px] uppercase tracking-[0.3em] rounded-xl border border-primary/20 transition-all active:scale-95">INICIAR CONVOCATORIA</button>
+                                                <button className="h-14 px-10 bg-primary/5 hover:bg-primary text-primary hover:text-black font-black text-[10px] uppercase tracking-[0.3em] rounded-xl border border-primary/20 transition-all active:scale-95">INICIAR CONVOCATORIA</button>
                                             </Link>
                                         </div>
                                     )}
@@ -1195,7 +1195,7 @@ function ProfileContent() {
                     </div>
                 </div>
             </div>
-            
+
             <div className="pb-32 lg:pb-12" />
 
             {/* FOOTER ACTIONS SECTION */}
@@ -1269,7 +1269,7 @@ function ProfileContent() {
                             className="w-full max-w-md glass-premium rounded-[2.5rem] p-8 lg:p-10 border border-foreground/10 shadow-[0_50px_100px_rgba(0,0,0,0.5)] relative overflow-hidden bg-surface"
                         >
                             <div className="absolute top-0 right-0 w-32 h-32 bg-primary/10 blur-[50px] -mr-16 -mt-16 rounded-full" />
-                            
+
                             <form onSubmit={handleUpdatePassword} className="space-y-8 relative z-10">
                                 <div className="space-y-2">
                                     <h2 className="text-3xl font-black italic text-foreground uppercase tracking-tighter">Nueva <span className="text-primary">Clave</span></h2>
