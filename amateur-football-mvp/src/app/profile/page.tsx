@@ -689,7 +689,7 @@ function ProfileContent() {
                                 </button>
                             ))}
                         </div>
-                    </div>   </div>
+                    </div>
 
                     {/* Viewport Content */}
                     <div className="min-h-[500px] relative">
@@ -1111,7 +1111,7 @@ function ProfileContent() {
                     </div>
                 </div>
             </div>
-            
+
             <div className="pb-32 lg:pb-12" />
 
             {/* Footer Control Terminal */}
