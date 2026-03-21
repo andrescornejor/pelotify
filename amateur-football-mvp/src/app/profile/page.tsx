@@ -722,9 +722,9 @@ function ProfileContent() {
                         initial={{ opacity: 0, y: 10 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.5 }}
-                        className={cn("sticky top-0 z-30 py-6 bg-background/80 backdrop-blur-2xl -mx-4 px-4 lg:-mx-0 lg:px-0 border-b border-foreground/5 transition-all duration-700", isEditing && "opacity-30 blur-sm pointer-events-none grayscale")}
+                        className={cn("sticky top-0 z-30 py-4 lg:py-6 bg-background/80 backdrop-blur-2xl -mx-4 px-4 lg:-mx-0 lg:px-0 border-b border-foreground/5 transition-all duration-700", isEditing && "opacity-30 blur-sm pointer-events-none grayscale")}
                     >
-                        <div className="flex p-1.5 bg-foreground/[0.03] rounded-[2rem] border border-foreground/10 relative shadow-2xl backdrop-blur-3xl max-w-2xl">
+                        <div className="flex gap-2 relative max-w-2xl">
                             {[
                                 { id: 'overview', label: 'Biometría' },
                                 { id: 'history', label: 'Despliegues' },
@@ -734,8 +734,8 @@ function ProfileContent() {
                                     key={tab.id}
                                     onClick={() => setActiveTab(tab.id as any)}
                                     className={cn(
-                                        "flex-1 py-4 px-2 text-[10px] sm:text-[11px] font-black uppercase tracking-[0.2em] sm:tracking-[0.3em] rounded-[1.5rem] transition-all relative z-10 italic group outline-none",
-                                        activeTab === tab.id ? 'text-black' : 'text-foreground/40 hover:text-foreground'
+                                        "flex-1 py-3 lg:py-4 px-2 text-[10px] sm:text-[11px] font-black uppercase tracking-[0.2em] sm:tracking-[0.3em] rounded-[1.5rem] transition-all relative z-10 italic group outline-none",
+                                        activeTab === tab.id ? 'text-black' : 'text-foreground/40 hover:text-foreground hover:bg-foreground/[0.03]'
                                     )}
                                 >
                                     <span className="relative z-20 flex items-center justify-center gap-2">
