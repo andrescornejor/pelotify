@@ -541,7 +541,10 @@ function ProfileContent() {
                                     key="not-editing"
                                     initial={{ opacity: 0, scale: 0.9 }}
                                     animate={{ opacity: 1, scale: 1 }}
-                                    onClick={() => setIsEditing(true)}
+                                    onClick={() => {
+                                        setIsEditing(true);
+                                        setActiveTab('overview');
+                                    }}
                                     className="w-full md:w-auto h-14 px-10 rounded-[1.5rem] glass-premium bg-foreground/5 border border-foreground/10 text-[11px] font-black uppercase tracking-[0.3em] text-foreground hover:bg-foreground/10 hover:border-primary/40 focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all flex items-center justify-center gap-3 group active:scale-95 shadow-xl"
                                 >
                                     <div className="p-2 rounded-xl bg-primary/10 group-hover:bg-primary/20 transition-colors">
@@ -558,10 +561,12 @@ function ProfileContent() {
             {/* Profile Hero Section */}
             <div className="relative z-10 flex flex-col lg:flex-row gap-8 items-center lg:items-start pt-4">
                 {/* Left: FIFA Card */}
-                <div className="relative shrink-0 group">
+                <div className={cn("relative shrink-0 group transition-all duration-1000", isEditing ? "z-50 scale-[1.03]" : "")}>
                     <div 
-                        className={cn("absolute -inset-20 blur-[120px] rounded-full pointer-events-none animate-pulse", !ambientColor && "bg-primary/10")} 
-                        style={{ backgroundColor: ambientColor || undefined }}
+                        className={cn("absolute -inset-20 blur-[120px] rounded-full pointer-events-none transition-all duration-1000",
+                            isEditing ? "bg-primary/30 scale-125 animate-pulse" : (ambientColor ? "" : "bg-primary/10 animate-pulse")
+                        )} 
+                        style={{ backgroundColor: !isEditing ? (ambientColor || undefined) : undefined }}
                     />
                     <div className="relative">
                         <FifaCard player={{ 
@@ -678,7 +683,7 @@ function ProfileContent() {
                 {/* Right: Stats & Info */}
                 <div className="flex-1 w-full space-y-12">
                     {/* Stats Highlights */}
-                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+                    <div className={cn("grid grid-cols-1 sm:grid-cols-3 gap-6 transition-all duration-700", isEditing && "opacity-30 blur-sm pointer-events-none grayscale")}>
                         {[
                             { icon: Trophy, label: 'Estatus Card', value: displayElo, color: 'text-primary', glow: 'from-primary/20 via-primary/5 to-transparent', unit: 'ELO' },
                             { icon: History, label: 'Despliegues', value: displayMatches, color: 'text-blue-500', glow: 'from-blue-500/20 via-blue-500/5 to-transparent', unit: 'EXP' },
@@ -717,7 +722,7 @@ function ProfileContent() {
                         initial={{ opacity: 0, y: 10 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.5 }}
-                        className="sticky top-0 z-30 py-6 bg-background/80 backdrop-blur-2xl -mx-4 px-4 lg:-mx-0 lg:px-0 border-b border-foreground/5"
+                        className={cn("sticky top-0 z-30 py-6 bg-background/80 backdrop-blur-2xl -mx-4 px-4 lg:-mx-0 lg:px-0 border-b border-foreground/5 transition-all duration-700", isEditing && "opacity-30 blur-sm pointer-events-none grayscale")}
                     >
                         <div className="flex p-1.5 bg-foreground/[0.03] rounded-[2rem] border border-foreground/10 relative shadow-2xl backdrop-blur-3xl max-w-2xl">
                             {[
@@ -763,8 +768,8 @@ function ProfileContent() {
                                 >
                                     {/* Personal Data Grid */}
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                                        <div className="glass-premium p-10 lg:p-12 rounded-[3.5rem] border border-foreground/10 space-y-10 relative overflow-hidden group">
-                                            <div className="absolute top-0 right-0 w-64 h-64 bg-primary/10 blur-[80px] opacity-0 group-hover:opacity-100 transition-duration-700 pointer-events-none" />
+                                        <div className={cn("glass-premium p-10 lg:p-12 rounded-[3.5rem] border border-foreground/10 space-y-10 relative overflow-hidden group transition-all duration-700", isEditing ? "z-50 ring-4 ring-primary/30 shadow-[0_0_100px_rgba(16,185,129,0.2)] bg-background/80 scale-[1.02]" : "")}>
+                                            <div className="absolute top-0 right-0 w-64 h-64 bg-primary/10 blur-[80px] opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none" />
                                             <div className="flex items-center justify-between relative z-10 border-b border-foreground/5 pb-6">
                                                 <div className="flex items-center gap-5">
                                                     <div className="w-14 h-14 rounded-[1.5rem] bg-background/50 flex items-center justify-center border border-primary/20 shadow-[0_0_20px_rgba(16,185,129,0.1)] group-hover:scale-110 transition-transform">
@@ -852,8 +857,8 @@ function ProfileContent() {
                                             </div>
                                         </div>
 
-                                        <div className="glass-premium p-10 lg:p-12 rounded-[3.5rem] border border-foreground/10 space-y-10 relative overflow-hidden group">
-                                            <div className="absolute top-0 left-0 w-64 h-64 bg-accent/10 blur-[80px] opacity-0 group-hover:opacity-100 transition-duration-700 pointer-events-none" />
+                                        <div className={cn("glass-premium p-10 lg:p-12 rounded-[3.5rem] border border-foreground/10 space-y-10 relative overflow-hidden group transition-all duration-700", isEditing && "opacity-30 blur-sm pointer-events-none grayscale")}>
+                                            <div className="absolute top-0 left-0 w-64 h-64 bg-accent/10 blur-[80px] opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none" />
                                             <div className="flex items-center justify-between relative z-10 border-b border-foreground/5 pb-6">
                                                 <div className="flex items-center gap-5">
                                                     <div className="w-14 h-14 rounded-[1.5rem] bg-background/50 flex items-center justify-center border border-accent/20 shadow-[0_0_20px_rgba(245,158,11,0.1)] group-hover:scale-110 transition-transform">
@@ -895,7 +900,9 @@ function ProfileContent() {
                                         <motion.div
                                             initial={{ opacity: 0, scale: 0.95 }}
                                             animate={{ opacity: 1, scale: 1 }}
-                                            className="glass-premium p-10 lg:p-12 rounded-[3.5rem] border border-foreground/10 relative overflow-hidden group/team cursor-default transition-all duration-700 hover:border-primary/40 hover:shadow-[0_0_50px_rgba(16,185,129,0.1)] focus-within:border-primary/40 z-10"
+                                            className={cn("glass-premium p-10 lg:p-12 rounded-[3.5rem] border border-foreground/10 relative overflow-hidden group/team cursor-default transition-all duration-700 z-10", 
+                                                isEditing ? "opacity-30 blur-sm pointer-events-none grayscale" : "hover:border-primary/40 hover:shadow-[0_0_50px_rgba(16,185,129,0.1)] focus-within:border-primary/40"
+                                            )}
                                         >
                                             <div className="absolute top-0 right-0 w-[150%] h-[150%] bg-gradient-radial from-primary/10 via-transparent to-transparent -translate-y-1/2 translate-x-1/4 opacity-0 group-hover/team:opacity-100 transition-opacity duration-1000 blur-3xl" />
                                             <div className="absolute inset-x-0 bottom-0 h-1 bg-gradient-to-r from-transparent via-primary/50 to-transparent opacity-0 group-hover/team:opacity-100 transition-opacity duration-1000" />
