@@ -454,7 +454,7 @@ function ProfileContent() {
     }
 
     return (
-        <div className="flex flex-col gap-8 p-4 sm:p-6 lg:p-10 xl:p-14 2xl:p-16 max-w-full mx-auto min-h-screen bg-background relative selection:bg-primary/30 selection:text-primary">
+        <div className="flex flex-col gap-8 px-2 py-8 sm:p-6 lg:p-10 xl:p-14 2xl:p-16 max-w-full mx-auto min-h-screen bg-background relative selection:bg-primary/30 selection:text-primary">
             {/* Ambient Effects */}
             <div className="fixed inset-0 pointer-events-none -z-10 overflow-hidden">
                 <div
@@ -473,7 +473,7 @@ function ProfileContent() {
             </div>
 
             {/* Header / Actions */}
-            <div className="relative z-10 flex flex-col md:flex-row justify-between items-start md:items-center gap-6 group/header">
+            <div className="relative z-10 flex flex-col md:flex-row justify-between items-start md:items-center gap-6 group/header -mx-2 px-2 sm:mx-0 sm:px-0">
                 <div className="space-y-3">
                     <motion.div
                         initial={{ opacity: 0, x: -20 }}
@@ -725,7 +725,7 @@ function ProfileContent() {
                         initial={{ opacity: 0, y: 10 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.5 }}
-                        className={cn("sticky top-0 z-30 py-6 bg-background/80 backdrop-blur-2xl -mx-4 px-4 lg:-mx-0 lg:px-0 border-b border-foreground/5 transition-all duration-700", isEditing && "opacity-30 blur-sm pointer-events-none grayscale")}
+                        className={cn("sticky top-0 z-30 py-6 bg-background/80 backdrop-blur-2xl -mx-2 px-2 lg:-mx-0 lg:px-0 border-b border-foreground/5 transition-all duration-700", isEditing && "opacity-30 blur-sm pointer-events-none grayscale")}
                     >
                         <div className="flex p-1.5 bg-foreground/[0.03] rounded-[2rem] border border-foreground/10 relative shadow-2xl backdrop-blur-3xl w-full">
                             {[
