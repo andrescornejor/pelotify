@@ -97,6 +97,20 @@ export default function RanksPage() {
                     <p className="text-foreground/50 text-sm font-medium leading-relaxed">
                         En Pelotify, tu ELO no es solo un número, es tu estatus. Cada victoria, cada gol y cada voto de tus compañeros te acerca a convertirte en una Leyenda.
                     </p>
+
+                    {/* Scroll Indicator / Call to Action moved here */}
+                    <div className="flex flex-col items-center gap-4 pt-4">
+                        <motion.button
+                            onClick={() => document.getElementById('leaderboard')?.scrollIntoView({ behavior: 'smooth' })}
+                            whileHover={{ y: 5 }}
+                            className="group flex flex-col items-center gap-2 outline-none"
+                        >
+                            <span className="text-[10px] font-black uppercase tracking-[0.4em] text-foreground/30 group-hover:text-primary transition-colors text-center">Explorar Ranking Global</span>
+                            <div className="w-10 h-10 rounded-full bg-foreground/5 border border-foreground/10 flex items-center justify-center group-hover:bg-primary/10 group-hover:border-primary/20 transition-all">
+                                <ChevronDown className="w-5 h-5 text-foreground/40 group-hover:text-primary animate-bounce font-black" />
+                            </div>
+                        </motion.button>
+                    </div>
                 </section>
 
                 {/* Ranks Grid */}
@@ -164,20 +178,6 @@ export default function RanksPage() {
                         })}
                     </div>
                 </section>
-
-                {/* Scroll Indicator / Call to Action */}
-                <div className="flex flex-col items-center gap-4 py-8">
-                    <motion.button
-                        onClick={() => document.getElementById('leaderboard')?.scrollIntoView({ behavior: 'smooth' })}
-                        whileHover={{ y: 5 }}
-                        className="group flex flex-col items-center gap-2 outline-none"
-                    >
-                        <span className="text-[10px] font-black uppercase tracking-[0.4em] text-foreground/30 group-hover:text-primary transition-colors">Ver Ranking Global</span>
-                        <div className="w-10 h-10 rounded-full bg-foreground/5 border border-foreground/10 flex items-center justify-center group-hover:bg-primary/10 group-hover:border-primary/20 transition-all">
-                            <ChevronDown className="w-5 h-5 text-foreground/40 group-hover:text-primary animate-bounce" />
-                        </div>
-                    </motion.button>
-                </div>
 
                 {/* Leaderboard Section */}
                 <section id="leaderboard" className="space-y-12 scroll-mt-32">
