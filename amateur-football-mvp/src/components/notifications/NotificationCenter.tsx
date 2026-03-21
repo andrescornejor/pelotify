@@ -321,7 +321,7 @@ export function NotificationCenter({ isOpen, onClose }: NotificationCenterProps)
                                                                 <span className="text-[8px] font-black text-foreground/20 uppercase tracking-widest">{Object.keys(challenge.votes || {}).length} VOTOS</span>
                                                             </div>
                                                             <div className="grid grid-cols-1 gap-2">
-                                                                {challenge.venue_candidates!.map(venue => {
+                                                                {challenge.venue_candidates!.map((venue: string) => {
                                                                     const votes = voteCounts[venue] || 0;
                                                                     const isVoted = userVote === venue;
                                                                     const actionId = `${challenge.id}-vote-${venue}`;
