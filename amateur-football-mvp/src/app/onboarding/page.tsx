@@ -88,10 +88,10 @@ export default function OnboardingPage() {
     };
 
     const MOCK_STATS = {
-        'POR': { pac: 80, sho: 50, pas: 70, dri: 80, def: 85, phy: 80 },
-        'DFC': { pac: 70, sho: 40, pas: 65, dri: 60, def: 88, phy: 86 },
-        'MC':  { pac: 75, sho: 75, pas: 85, dri: 82, def: 70, phy: 75 },
-        'DC':  { pac: 88, sho: 86, pas: 70, dri: 84, def: 40, phy: 78 },
+        'POR': { pac: 0, sho: 0, pas: 0, dri: 0, def: 0, phy: 0 },
+        'DFC': { pac: 0, sho: 0, pas: 0, dri: 0, def: 0, phy: 0 },
+        'MC':  { pac: 0, sho: 0, pas: 0, dri: 0, def: 0, phy: 0 },
+        'DC':  { pac: 0, sho: 0, pas: 0, dri: 0, def: 0, phy: 0 },
     };
 
     const containerVariants = {
@@ -302,7 +302,7 @@ export default function OnboardingPage() {
                                     
                                     <FifaCard player={{
                                         name: formData.name,
-                                        overall: 1000,
+                                        overall: 0,
                                         position: formData.position || 'DC',
                                         image: user?.avatar_url || undefined,
                                         stats: MOCK_STATS[formData.position as keyof typeof MOCK_STATS] || MOCK_STATS['DC']
