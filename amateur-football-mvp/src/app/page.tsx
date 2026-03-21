@@ -129,7 +129,9 @@ export default function HomePage() {
 
   const metadata = user?.user_metadata || {};
   const elo = metadata?.elo || 0;
-  const totalMatches = userMatches.length > 0 ? userMatches.length : (metadata?.matches || 0);
+  const totalMatches = metadata?.matches || 0;
+  const matchesWon = metadata?.matches_won || 0;
+  const winRate = totalMatches > 0 ? Math.round((matchesWon / totalMatches) * 100) : 0;
   const userName = user?.name || 'Jugador';
 
   const rankInfo = getRankByElo(elo);
@@ -306,7 +308,7 @@ export default function HomePage() {
                 {[
                   { label: 'Rango Actual', value: rank.name, color: rank.color, icon: Trophy },
                   { label: 'Puntaje ELO', value: elo, color: 'text-primary', icon: Target },
-                  { label: 'Tasa de Éxito', value: `${metadata?.win_rate || 0}%`, color: 'text-accent', icon: TrendingUp },
+                  { label: 'Tasa de Éxito', value: `${winRate}%`, color: 'text-accent', icon: TrendingUp },
                 ].map((item, idx) => (
                   <div key={idx} className="space-y-1">
                     <p className="text-[9px] font-black text-foreground/40 uppercase tracking-[0.25em] flex items-center gap-1.5">
@@ -421,7 +423,7 @@ export default function HomePage() {
                 { icon: Trophy, label: 'ELO Rating', value: elo, color: '#2cfc7d', glow: 'rgba(44,252,125,0.2)' },
                 { icon: Activity, label: 'Partidos', value: totalMatches, color: '#6366f1', glow: 'rgba(99,102,241,0.2)' },
                 { icon: Star, label: 'MVPs', value: metadata?.mvp_count || 0, color: '#f59e0b', glow: 'rgba(245,158,11,0.2)' },
-                { icon: Flame, label: 'Win Rate', value: `${metadata?.win_rate || 0}%`, color: '#f43f5e', glow: 'rgba(244,63,94,0.2)' },
+                { icon: Flame, label: 'Win Rate', value: `${winRate}%`, color: '#f43f5e', glow: 'rgba(244,63,94,0.2)' },
               ].map((stat, i) => (
                 <motion.div
                   key={i}

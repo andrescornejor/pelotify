@@ -317,9 +317,10 @@ function ProfileContent() {
     const displayHeight = getField('height', '170');
     const displayFoot = getField('preferredFoot', 'Derecha', 'preferred_foot');
 
-    const displayMatches = getField('matches', 0);
-    const displayElo = getField('elo', 0);
-    const displayGoals = getField('goals', 0);
+    const displayMatches = parseInt(`${getField('matches', 0)}`) || 0;
+    const displayElo = parseInt(`${getField('elo', 0)}`) || 0;
+    const displayGoals = parseInt(`${getField('goals', 0)}`) || 0;
+    const displayMatchesWon = parseInt(`${getField('matches_won', 0)}`) || 0;
     const teamName = userTeam?.name || 'Sin equipo';
 
     const handleSaveProfile = async () => {
@@ -873,8 +874,8 @@ function ProfileContent() {
 
                                             <div className="space-y-8 relative z-10 w-full">
                                                 {[
-                                                    { label: 'Victorias Totales', value: '--', color: 'text-foreground' },
-                                                    { label: 'Gol Ratio', value: displayMatches > 0 ? (displayGoals / displayMatches).toFixed(1) : '--', color: 'text-foreground' },
+                                                    { label: 'Victorias Totales', value: displayMatchesWon, color: 'text-foreground' },
+                                                    { label: 'Win Rate', value: `${displayMatches > 0 ? Math.round((displayMatchesWon / displayMatches) * 100) : 0}%`, color: 'text-foreground' },
                                                     { label: 'MVP Frecuencia', value: `${displayMatches > 0 ? ((mvpCount / displayMatches) * 100).toFixed(1) : '0.0'}%`, color: 'text-accent', isLarge: true }
                                                 ].map((stat, idx) => (
                                                     <div key={idx} className="flex justify-between items-center group/item p-4 rounded-2xl hover:bg-foreground/[0.02] transition-colors border border-transparent hover:border-foreground/5">
