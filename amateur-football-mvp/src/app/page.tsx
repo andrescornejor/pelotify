@@ -843,8 +843,8 @@ export default function HomePage() {
             {/* Brand Column */}
             <div className="md:col-span-4 space-y-6">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center inner-glow shadow-[0_0_20px_rgba(16,185,129,0.3)]">
-                  <Hexagon className="w-6 h-6 text-black" fill="black" />
+                <div className="w-10 h-10 flex items-center justify-center shrink-0">
+                  <img src="/logo_pelotify.png" alt="Logo" className="w-full h-full object-contain drop-shadow-[0_0_15px_rgba(44,252,125,0.2)]" />
                 </div>
                 <h2 className="text-2xl font-black italic uppercase tracking-tighter text-foreground font-kanit">Pelotify</h2>
               </div>
