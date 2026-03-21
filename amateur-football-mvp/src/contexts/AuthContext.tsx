@@ -314,21 +314,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     const deleteAccount = async () => {
         try {
-            // Call a server-side API route to delete the user
             const { data: { session } } = await supabase.auth.getSession();
             if (!session) throw new Error('No hay sesión activa');
 
-            const res = await fetch('/api/delete-account', {
-                method: 'DELETE',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${session.access_token}`,
-                },
-            });
+            // --- MOBILE / CAPACITOR FIX ---
+            // Las API routes estáticas (Next.js output: export) de Vercel fallan fuera de node.js
+            // en cambio llamamos a un procedimiento interno en la Base de Datos RPC (Postgres)
+            const { error: rpcError } = await supabase.rpc('delete_my_account');
 
-            if (!res.ok) {
-                const data = await res.json();
-                throw new Error(data.error || 'Error al eliminar cuenta');
+            if (rpcError) {
+                throw new Error(rpcError.message || 'Error al eliminar cuenta desde la BD');
             }
 
             await supabase.auth.signOut();
