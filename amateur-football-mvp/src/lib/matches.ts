@@ -180,6 +180,7 @@ export async function getUserMatches(userId: string) {
         .from('match_participants')
         .select(`
             match_id,
+            team,
             matches:matches (*)
         `)
         .eq('user_id', userId);
@@ -193,9 +194,10 @@ export async function getUserMatches(userId: string) {
         // Defensive mapping for score fields to handle potential schema cache lag
         return {
             ...match,
+            user_team: (m as any).team,
             team_a_score: match.team_a_score ?? (match as any).score_a ?? 0,
             team_b_score: match.team_b_score ?? (match as any).score_b ?? 0
-        } as Match;
+        } as Match & { user_team?: 'A' | 'B' | null };
     }).filter(Boolean) as Match[];
 }
 

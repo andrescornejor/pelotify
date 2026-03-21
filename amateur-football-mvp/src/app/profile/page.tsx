@@ -1006,12 +1006,32 @@ function ProfileContent() {
                                                 const matchStart = new Date(`${m.date}T${m.time}`);
                                                 const matchEnd = new Date(matchStart.getTime() + 60 * 60 * 1000);
                                                 return new Date() > matchEnd;
-                                            }).map((m, i) => (
-                                                <Link
-                                                    key={m.id}
-                                                    href={`/match?id=${m.id}`}
-                                                    className="block group relative"
-                                                >
+                                            }).map((m, i) => {
+                                                const isCompleted = m.is_completed;
+                                                const scoreA = m.team_a_score ?? 0;
+                                                const scoreB = m.team_b_score ?? 0;
+                                                const userTeam = (m as any).user_team;
+
+                                                let result: 'win' | 'loss' | 'draw' | null = null;
+                                                if (isCompleted && userTeam) {
+                                                    if (scoreA === scoreB) result = 'draw';
+                                                    else if (userTeam === 'A' && scoreA > scoreB) result = 'win';
+                                                    else if (userTeam === 'B' && scoreB > scoreA) result = 'win';
+                                                    else result = 'loss';
+                                                }
+
+                                                const resultConfig = {
+                                                    win: { label: 'VICTORIA' },
+                                                    loss: { label: 'DERROTA' },
+                                                    draw: { label: 'EMPATE' }
+                                                }[result as any] || { label: '' };
+
+                                                return (
+                                                    <Link
+                                                        key={m.id}
+                                                        href={`/match?id=${m.id}`}
+                                                        className="block group relative"
+                                                    >
                                                     <div className="absolute inset-0 bg-primary/10 blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-[2.5rem]" />
                                                     <div className="absolute inset-0 bg-gradient-to-r from-transparent via-primary/40 to-transparent group-hover:animate-pulse opacity-0 group-hover:opacity-100 transition-opacity duration-1000 rounded-[2.5rem] p-[1px]" />
                                                     <motion.div
@@ -1024,7 +1044,13 @@ function ProfileContent() {
                                                         <div className="absolute inset-0 bg-[url('/noise.png')] opacity-[0.02] group-hover:opacity-[0.04] mix-blend-overlay pointer-events-none transition-opacity duration-700" />
                                                         
                                                         {/* Left Edge Neon Bar */}
-                                                        <div className="absolute top-0 left-0 w-1.5 h-full bg-gradient-to-b from-primary via-primary/40 to-transparent opacity-30 group-hover:opacity-100 group-hover:shadow-[0_0_15px_rgba(44,252,125,0.5)] transition-all duration-500" />
+                                                        <div className={cn(
+                                                            "absolute top-0 left-0 w-1.5 h-full transition-all duration-500",
+                                                            result === 'win' ? "bg-gradient-to-b from-primary via-primary/40 to-transparent opacity-30 group-hover:opacity-100 group-hover:shadow-[0_0_15px_rgba(44,252,125,0.5)]" :
+                                                            result === 'loss' ? "bg-gradient-to-b from-red-500 via-red-500/40 to-transparent opacity-30 group-hover:opacity-100 group-hover:shadow-[0_0_15px_rgba(239,68,68,0.5)]" :
+                                                            result === 'draw' ? "bg-gradient-to-b from-amber-500 via-amber-500/40 to-transparent opacity-30 group-hover:opacity-100 group-hover:shadow-[0_0_15px_rgba(251,191,36,0.5)]" :
+                                                            "bg-gradient-to-b from-primary via-primary/40 to-transparent opacity-30 group-hover:opacity-100"
+                                                        )} />
 
                                                         {/* Animated Hover Background FX */}
                                                         <div className="absolute -top-10 -right-20 w-64 h-64 bg-primary/10 blur-[60px] opacity-0 group-hover:opacity-100 transition-opacity duration-1000 pointer-events-none rounded-full" />
@@ -1044,17 +1070,30 @@ function ProfileContent() {
 
                                                             {/* Location & Title */}
                                                             <div className="space-y-2 flex-1 min-w-0">
-                                                                <h4 className="text-2xl sm:text-3xl font-black text-foreground italic uppercase tracking-tighter truncate group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-foreground group-hover:to-primary transition-all duration-500 leading-none pb-1">
+                                                                <h4 className="text-2xl sm:text-3xl font-black text-foreground italic uppercase tracking-tighter truncate group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-foreground group-hover:to-primary transition-all duration-500 leading-none">
                                                                     {(() => {
                                                                         const venue = findVenueByLocation(m.location);
                                                                         return venue?.displayName || venue?.name || m.location;
                                                                     })()}
                                                                 </h4>
+                                                                <p className="text-[10px] font-black text-foreground/30 uppercase tracking-[0.2em] italic -mt-1 group-hover:text-foreground/50 transition-colors">
+                                                                    {m.time} HS · {m.level || 'Nivel General'}
+                                                                </p>
                                                                 <div className="flex flex-wrap items-center gap-3">
                                                                     <div className="flex items-center gap-2 px-2.5 py-1 rounded-full bg-primary/10 border border-primary/20 shadow-[0_0_15px_rgba(44,252,125,0.1)]">
                                                                         <div className="w-1.5 h-1.5 rounded-full bg-primary/70 group-hover:bg-primary transition-colors animate-pulse shadow-[0_0_8px_rgba(44,252,125,1)]" />
                                                                         <span className="text-[9px] font-black uppercase tracking-[0.3em] text-primary">REPORTE OFICIAL</span>
                                                                     </div>
+                                                                    {result && (
+                                                                        <div className={cn(
+                                                                            "px-3 py-1 rounded-full border text-[9px] font-black uppercase tracking-[0.3em] shadow-sm transition-all duration-500",
+                                                                            result === 'win' ? "bg-primary/10 border-primary/30 text-primary shadow-[0_0_15px_rgba(44,252,125,0.1)]" :
+                                                                            result === 'loss' ? "bg-red-500/10 border-red-500/30 text-red-500 shadow-[0_0_15px_rgba(239,68,68,0.1)]" :
+                                                                            "bg-amber-500/10 border-amber-500/30 text-amber-500 shadow-[0_0_15px_rgba(251,191,36,0.1)]"
+                                                                        )}>
+                                                                            {resultConfig.label}
+                                                                        </div>
+                                                                    )}
                                                                     <span className="px-3 py-1 rounded-full bg-background border border-white/5 text-[9px] font-black uppercase tracking-[0.3em] text-foreground/50 shadow-inner">
                                                                         {m.type}
                                                                     </span>
@@ -1064,19 +1103,35 @@ function ProfileContent() {
 
                                                         {/* Score Block */}
                                                         <div className="flex items-center gap-6 w-full md:w-auto justify-end relative z-10 mt-4 md:mt-0">
-                                                            <div className="flex items-center justify-center gap-4 w-full sm:w-auto bg-black/40 group-hover:bg-primary/5 px-8 sm:px-10 py-5 sm:py-6 rounded-[2rem] border border-white/5 group-hover:border-primary/30 group-hover:shadow-[0_0_30px_rgba(44,252,125,0.1)] overflow-hidden transition-all duration-700 relative shadow-2xl">
+                                                            <div className={cn(
+                                                                "flex items-center justify-center gap-4 w-full sm:w-auto px-8 sm:px-10 py-5 sm:py-6 rounded-[2rem] border overflow-hidden transition-all duration-700 relative shadow-2xl",
+                                                                result === 'win' ? "bg-primary/10 border-primary/20 shadow-[0_0_40px_rgba(44,252,125,0.1)]" :
+                                                                result === 'loss' ? "bg-red-500/10 border-red-500/20 shadow-[0_0_40px_rgba(239,68,68,0.1)]" :
+                                                                result === 'draw' ? "bg-amber-500/10 border-amber-500/20 shadow-[0_0_40px_rgba(251,191,36,0.1)]" :
+                                                                "bg-black/40 border-white/5"
+                                                            )}>
                                                                 {/* Shine effect inside score box */}
                                                                 <div className="absolute top-0 left-[-100%] w-[50%] h-full bg-gradient-to-r from-transparent via-white/10 to-transparent group-hover:animate-shimmer pointer-events-none" />
                                                                 
-                                                                <span className="text-5xl sm:text-6xl font-black text-foreground italic tracking-tighter leading-none group-hover:text-white transition-colors duration-300 drop-shadow-[0_4px_15px_rgba(0,0,0,0.5)]">
-                                                                    {m.team_a_score ?? 0}
+                                                                <span className={cn(
+                                                                    "text-5xl sm:text-6xl font-black italic tracking-tighter leading-none transition-all duration-300 drop-shadow-[0_4px_15px_rgba(0,0,0,0.5)]",
+                                                                    result === 'win' && userTeam === 'A' ? "text-primary" : 
+                                                                    result === 'loss' && userTeam === 'A' ? "text-red-500" :
+                                                                    "text-foreground"
+                                                                )}>
+                                                                    {scoreA}
                                                                 </span>
-                                                                <div className="flex flex-col gap-1.5 items-center mx-3 md:mx-5">
-                                                                    <span className="w-5 h-[3px] rounded-full bg-foreground/20 group-hover:bg-primary/50 transition-colors" />
-                                                                    <span className="w-5 h-[3px] rounded-full bg-foreground/20 group-hover:bg-primary/50 transition-colors" />
+                                                                <div className="flex flex-col gap-1.5 items-center mx-3 md:mx-5 opacity-20">
+                                                                    <span className="w-5 h-[3px] rounded-full bg-foreground" />
+                                                                    <span className="w-5 h-[3px] rounded-full bg-foreground" />
                                                                 </div>
-                                                                <span className="text-5xl sm:text-6xl font-black text-foreground italic tracking-tighter leading-none group-hover:text-white transition-colors duration-300 drop-shadow-[0_4px_15px_rgba(0,0,0,0.5)]">
-                                                                    {m.team_b_score ?? 0}
+                                                                <span className={cn(
+                                                                    "text-5xl sm:text-6xl font-black italic tracking-tighter leading-none transition-all duration-300 drop-shadow-[0_4px_15px_rgba(0,0,0,0.5)]",
+                                                                    result === 'win' && userTeam === 'B' ? "text-primary" : 
+                                                                    result === 'loss' && userTeam === 'B' ? "text-red-500" :
+                                                                    "text-foreground"
+                                                                )}>
+                                                                    {scoreB}
                                                                 </span>
                                                             </div>
                                                             
@@ -1089,7 +1144,8 @@ function ProfileContent() {
                                                         </div>
                                                     </motion.div>
                                                 </Link>
-                                            ))}
+                                            );
+                                        })}
                                         </div>
                                     ) : (
                                         <div className="glass-premium p-20 rounded-[4rem] flex flex-col items-center justify-center text-center gap-10 border-dashed border-2 border-foreground/10 bg-foreground/[0.01]">
