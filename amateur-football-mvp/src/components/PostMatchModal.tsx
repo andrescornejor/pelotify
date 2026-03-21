@@ -128,7 +128,7 @@ export default function PostMatchModal({ matchId, match, participants, currentUs
                         />
                     </div>
 
-                    <div className="p-6 sm:p-8 flex justify-between items-center relative z-20 border-b border-foreground/5">
+                    <div className="p-4 sm:p-8 flex justify-between items-center relative z-20 border-b border-foreground/5">
                         <div className="flex items-center gap-3">
                             <div className="w-12 h-12 rounded-2xl bg-primary/10 border border-primary/20 flex items-center justify-center">
                                 {step === 'score' ? <Trophy className="w-6 h-6 text-primary" /> : step === 'ratings' ? <Flame className="w-6 h-6 text-primary" /> : <Star className="w-6 h-6 text-accent" />}
@@ -142,7 +142,7 @@ export default function PostMatchModal({ matchId, match, participants, currentUs
                         </button>
                     </div>
 
-                    <div className="flex-1 overflow-y-auto no-scrollbar relative z-10 w-full p-6 sm:p-8">
+                    <div className="flex-1 overflow-y-auto no-scrollbar relative z-10 w-full p-4 sm:p-8">
                         {step === 'score' && (
                             <motion.div key="score" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="flex flex-col h-full justify-between gap-10">
                                 <div className="text-center space-y-2">
