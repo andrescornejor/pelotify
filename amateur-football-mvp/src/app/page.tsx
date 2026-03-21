@@ -838,7 +838,7 @@ export default function HomePage() {
         ═══════════════════════════════════════ */}
         <footer className="mt-20 pt-16 pb-32 lg:pb-16 border-t border-foreground/[0.05] relative overflow-hidden">
           <div className="absolute inset-0 bg-gradient-to-t from-background via-surface/40 to-transparent pointer-events-none" />
-          
+
           <div className="relative z-10 grid grid-cols-1 md:grid-cols-12 gap-12 lg:gap-8">
             {/* Brand Column */}
             <div className="md:col-span-4 space-y-6">
@@ -849,14 +849,13 @@ export default function HomePage() {
                 <h2 className="text-2xl font-black italic uppercase tracking-tighter text-foreground font-kanit">Pelotify</h2>
               </div>
               <p className="text-[10px] font-black uppercase tracking-[0.2em] text-foreground/40 leading-relaxed max-w-sm">
-                El motor definitivo del fútbol amateur. Conectamos jugadores, formamos clubes profesionales y elevamos el nivel competitivo de tu ciudad cada semana.
+                La profesionalización del fútbol amateur.
               </p>
-              
+
               <div className="flex gap-4 pt-2">
                 {[
-                  { icon: Instagram, href: '#' },
-                  { icon: Twitter, href: '#' },
-                  { icon: Facebook, href: '#' }
+                  { icon: Instagram, href: 'https://www.instagram.com/pelotifyapp/' },
+                  { icon: Twitter, href: 'https://x.com/pelotify' },
                 ].map((social, i) => (
                   <a key={i} href={social.href} className="w-10 h-10 rounded-full glass border border-white/5 flex items-center justify-center text-foreground/40 hover:text-primary hover:border-primary/30 transition-all hover:scale-110">
                     <social.icon className="w-4 h-4" />
@@ -876,15 +875,6 @@ export default function HomePage() {
                 </ul>
               </div>
 
-              <div className="space-y-6">
-                <h4 className="text-foreground/80 tracking-[0.3em] border-l-2 border-accent pl-3">Comunidad</h4>
-                <ul className="space-y-4">
-                  <li><a href="#" className="hover:text-accent transition-colors flex items-center gap-2"><ArrowUpRight className="w-3 h-3" /> Reglas Oficiales</a></li>
-                  <li><a href="#" className="hover:text-accent transition-colors flex items-center gap-2"><ArrowUpRight className="w-3 h-3" /> Preguntas (FAQ)</a></li>
-                  <li><a href="#" className="hover:text-accent transition-colors flex items-center gap-2"><ArrowUpRight className="w-3 h-3" /> Soporte</a></li>
-                </ul>
-              </div>
-
               <div className="col-span-2 lg:col-span-1 space-y-6">
                 <h4 className="text-foreground/80 tracking-[0.3em] border-l-2 border-foreground/20 pl-3">Legal</h4>
                 <ul className="space-y-4">
@@ -894,7 +884,7 @@ export default function HomePage() {
                 </ul>
               </div>
             </div>
-            
+
             {/* Bottom Credit */}
             <div className="col-span-full pt-8 mt-8 border-t border-foreground/5 flex flex-col md:flex-row items-center justify-between gap-4 text-[9px] font-black uppercase tracking-[0.3em] text-foreground/30">
               <span>© {new Date().getFullYear()} Pelotify. Todos los derechos reservados.</span>
