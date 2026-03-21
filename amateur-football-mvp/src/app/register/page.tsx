@@ -16,10 +16,17 @@ export default function RegisterPage() {
     const [formData, setFormData] = useState({ 
         email: '', 
         password: '',
+        confirmPassword: ''
     });
 
     const handleRegister = async (e: React.FormEvent) => {
         e.preventDefault();
+        
+        if (formData.password !== formData.confirmPassword) {
+            alert("⚠️ Las contraseñas no coinciden. Revisá la táctica y probá de nuevo.");
+            return;
+        }
+
         setIsLoading(true);
         try {
             const result = await register(formData);
@@ -176,9 +183,36 @@ export default function RegisterPage() {
                                 </div>
                             </div>
 
+                            <div className="space-y-2">
+                                <label className="text-[10px] font-black text-foreground/40 uppercase tracking-widest ml-4">Confirmar Contraseña</label>
+                                <div className="relative group/input">
+                                    <div className="absolute inset-y-0 left-5 flex items-center pointer-events-none">
+                                        <Lock className="w-5 h-5 text-foreground/20 group-focus-within/input:text-primary transition-colors" />
+                                    </div>
+                                    <input
+                                        type="password"
+                                        placeholder="Repetir Contraseña"
+                                        value={formData.confirmPassword}
+                                        onChange={(e) => setFormData(prev => ({ ...prev, confirmPassword: e.target.value }))}
+                                        className={cn(
+                                            "w-full h-14 pl-14 pr-6 rounded-2xl bg-white/[0.03] border outline-none transition-all text-sm font-bold text-foreground",
+                                            formData.confirmPassword && formData.password !== formData.confirmPassword 
+                                                ? "border-red-500/50 focus:bg-white/[0.05] focus:border-red-500" 
+                                                : "border-white/5 focus:bg-white/[0.05] focus:border-primary/50"
+                                        )}
+                                        required
+                                    />
+                                </div>
+                                {formData.confirmPassword && formData.password !== formData.confirmPassword && (
+                                    <p className="text-[10px] font-black text-red-500 uppercase tracking-widest ml-4 animate-in fade-in slide-in-from-top-1">
+                                        Las contraseñas no coinciden
+                                    </p>
+                                )}
+                            </div>
+
                             <button
                                 type="submit"
-                                disabled={isLoading || !formData.email || !formData.password}
+                                disabled={isLoading || !formData.email || !formData.password || formData.password !== formData.confirmPassword}
                                 className="w-full h-16 mt-4 bg-primary text-black font-black text-[12px] uppercase tracking-[0.3em] rounded-2xl flex items-center justify-center gap-3 hover:bg-white transition-all active:scale-95 disabled:opacity-50 shadow-[0_20px_40px_rgba(16,185,129,0.2)] group"
                             >
                                 {isLoading ? 'FIRMANDO PRE-CONTRATO...' : (
