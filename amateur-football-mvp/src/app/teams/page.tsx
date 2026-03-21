@@ -20,7 +20,6 @@ export default function TeamsPage() {
     const { user, isLoading: authLoading } = useAuth();
     const { performanceMode: isPerfMode } = useSettings();
     const router = useRouter();
-    const [activeTab, setActiveTab] = useState<'my_team' | 'explore'>('explore');
 
     const [teams, setTeams] = useState<Team[]>([]);
     const [myTeam, setMyTeam] = useState<Team | null>(null);
@@ -50,7 +49,6 @@ export default function TeamsPage() {
 
             if (userTeam) {
                 setMyTeam(userTeam);
-                setActiveTab('my_team');
             }
 
             // Filter out user's team for explore view
@@ -162,121 +160,26 @@ export default function TeamsPage() {
                         <p className="text-[10px] font-black uppercase tracking-[0.3em] text-primary mt-2">Gestioná, Explorá, Desafiá</p>
                     </div>
 
-                    <div className="flex p-1 bg-foreground/[0.03] rounded-2xl border border-foreground/5 relative w-full md:w-auto h-14 items-center">
-                        {myTeam && (
-                            <button
-                                onClick={() => setActiveTab('my_team')}
-                                className={cn(
-                                    "flex-1 px-8 py-3 text-[10px] font-black uppercase tracking-[0.2em] rounded-xl transition-all relative z-10 italic",
-                                    activeTab === 'my_team' ? 'text-background' : 'text-foreground/50 hover:text-foreground/80'
-                                )}
-                            >
-                                Mi Institución
-                            </button>
-                        )}
-                        <button
-                            onClick={() => setActiveTab('explore')}
-                            className={cn(
-                                "flex-1 px-8 py-3 text-[10px] font-black uppercase tracking-[0.2em] rounded-xl transition-all relative z-10 italic",
-                                activeTab === 'explore' ? 'text-background' : 'text-foreground/50 hover:text-foreground/80'
-                            )}
-                        >
-                            Radar Global
-                        </button>
+                    <div className="flex items-center gap-3 w-full md:w-auto">
                         {!myTeam && (
                             <Link
                                 href="/team-builder"
-                                className="flex-1 px-8 py-3 text-[10px] text-center font-black uppercase tracking-[0.2em] rounded-xl transition-all relative z-10 italic text-foreground/50 hover:text-foreground/80 flex items-center justify-center gap-2"
+                                className="h-14 px-8 bg-primary text-background rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] flex items-center justify-center gap-2 hover:bg-foreground hover:text-background transition-all active:scale-95 shadow-lg shadow-primary/20 italic"
                             >
-                                Fundar Club <ArrowRight className="w-3 h-3" />
+                                <PlusCircle className="w-4 h-4" /> FUNDAR CLUB
                             </Link>
                         )}
-                        <motion.div
-                            layoutId="teams-tab-pill"
-                            className="absolute inset-y-1 bg-primary rounded-xl shadow-[0_5px_15px_rgba(16,185,129,0.2)]"
-                            initial={false}
-                            animate={{
-                                left: activeTab === 'my_team' ? '4px' : activeTab === 'explore' ? (myTeam ? 'calc(50% + 2px)' : '4px') : myTeam ? '100%' : 'calc(50% + 2px)',
-                                right: activeTab === 'my_team' ? '50%' : activeTab === 'explore' ? (myTeam ? '4px' : '50%') : '4px',
-                            }}
-                            transition={{ type: 'spring' as const, stiffness: 400, damping: 35 }}
-                        />
+                        {myTeam && (
+                            <div className="px-5 py-2.5 bg-foreground/[0.03] border border-foreground/5 rounded-2xl flex items-center gap-3">
+                                <div className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
+                                <span className="text-[10px] font-black uppercase tracking-widest text-foreground/40 italic">Club Oficial</span>
+                            </div>
+                        )}
                     </div>
                 </div>
             </div>
 
-            <AnimatePresence mode="wait">
-                {activeTab === 'my_team' && myTeam && (
-                    <motion.div
-                        key="my_team"
-                        initial={{ opacity: 0, y: 10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: -10 }}
-                        className="space-y-6"
-                    >
-                        <div className="relative overflow-hidden rounded-[3rem] p-8 md:p-12 border border-primary/20 shadow-2xl shadow-primary/5 group bg-surface">
-                            <div className="absolute inset-0 bg-gradient-to-br from-primary/10 to-transparent z-0 opacity-50" />
-                            <div className="absolute top-0 right-0 w-96 h-96 bg-primary/10 blur-[120px] rounded-full pointer-events-none" />
-
-                            <div className="relative z-10 flex flex-col md:flex-row items-center md:items-start gap-8">
-                                <Link href={`/team?id=${myTeam.id}`}>
-                                    <div className="w-32 h-32 md:w-48 md:h-48 rounded-[2rem] bg-surface-elevated border-4 border-foreground/5 shadow-2xl overflow-hidden flex items-center justify-center relative group-hover:border-primary/50 transition-colors">
-                                        <div className="absolute inset-0 bg-gradient-to-tr from-foreground/10 to-transparent z-10" />
-                                        {myTeam.logo_url ? (
-                                            <img src={myTeam.logo_url} alt={myTeam.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
-                                        ) : (
-                                            <Shield className="w-20 h-20 text-primary/40 group-hover:text-primary transition-colors duration-500" />
-                                        )}
-                                    </div>
-                                </Link>
-
-                                <div className="flex-1 text-center md:text-left space-y-4">
-                                    <div className="space-y-1">
-                                        <div className="flex flex-col md:flex-row items-center gap-3">
-                                            <h2 className="text-4xl md:text-6xl font-black italic text-foreground uppercase tracking-tighter leading-none">{myTeam.name}</h2>
-                                            {isCaptain && (
-                                                <div className="bg-primary text-background px-3 py-1 rounded-xl flex items-center gap-1.5 shadow-sm shadow-primary/20">
-                                                    <Trophy className="w-3.5 h-3.5" />
-                                                    <span className="text-[10px] font-black uppercase tracking-widest">Capitán</span>
-                                                </div>
-                                            )}
-                                        </div>
-                                        <p className="text-xs font-black uppercase tracking-[0.2em] text-foreground/50">{myTeam.description || "Institución Deportiva Federada"}</p>
-                                    </div>
-
-                                    <div className="flex items-center justify-center md:justify-start gap-4">
-                                        <div className="bg-foreground/[0.03] border border-foreground/5 px-4 py-2 rounded-2xl flex items-center justify-center flex-col">
-                                            <span className="text-2xl font-black text-primary italic">{myTeam.elo}</span>
-                                            <span className="text-[8px] font-black uppercase tracking-[0.2em] text-foreground/60">PUNTOS ELO</span>
-                                        </div>
-                                        <div className="bg-foreground/[0.03] border border-foreground/5 px-4 py-2 rounded-2xl flex items-center justify-center flex-col">
-                                            <span className="text-2xl font-black text-foreground italic">{myTeam.members_count}</span>
-                                            <span className="text-[8px] font-black uppercase tracking-[0.2em] text-foreground/60">PIBES</span>
-                                        </div>
-                                    </div>
-
-                                    <div className="pt-4 flex flex-col sm:flex-row gap-4">
-                                        <Link
-                                            href={`/team?id=${myTeam.id}`}
-                                            className="h-14 px-8 bg-primary text-background rounded-2xl text-[10px] font-black uppercase tracking-[0.3em] flex items-center justify-center gap-2 hover:bg-foreground hover:text-background transition-all active:scale-95 shadow-lg shadow-primary/20"
-                                        >
-                                            <Shield className="w-4 h-4" /> GESTIONAR CLUB
-                                        </Link>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </motion.div>
-                )}
-
-                {activeTab === 'explore' && (
-                    <motion.div
-                        key="explore"
-                        initial={{ opacity: 0, y: 10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: -10 }}
-                        className="space-y-12"
-                    >
+            <div className="space-y-12">
                         {/* Quick Access to My Team (if exists and on Explore tab) */}
                         <AnimatePresence>
                             {myTeam && (
