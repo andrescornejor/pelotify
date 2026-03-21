@@ -23,25 +23,52 @@ BEGIN
         RAISE EXCEPTION 'No autorizado. Debes iniciar sesión para eliminar tu cuenta.';
     END IF;
 
-    -- 2. Limpiar tablas asociadas manualmente (para evitar errores de llaves foráneas 'foreign keys')
-    DELETE FROM public.team_members WHERE user_id = v_user_id;
-    DELETE FROM public.team_invitations WHERE user_id = v_user_id;
-    DELETE FROM public.user_badges WHERE user_id = v_user_id;
-    DELETE FROM public.match_participants WHERE user_id = v_user_id;
-    DELETE FROM public.match_messages WHERE user_id = v_user_id;
-    DELETE FROM public.team_messages WHERE user_id = v_user_id;
+    -- 2. Limpiar tablas dinámicamente o chequeando si existen para no quebrar (safe-delete)
     
-    DELETE FROM public.friendships WHERE user_id = v_user_id OR friend_id = v_user_id;
-    DELETE FROM public.friend_requests WHERE sender_id = v_user_id OR receiver_id = v_user_id;
-    
-    DELETE FROM public.match_invitations WHERE sender_id = v_user_id OR receiver_id = v_user_id;
-    DELETE FROM public.match_reports WHERE reporter_id = v_user_id;
-    DELETE FROM public.player_ratings WHERE from_user_id = v_user_id OR to_user_id = v_user_id;
-    DELETE FROM public.mvp_votes WHERE voter_id = v_user_id OR voted_player_id = v_user_id;
+    -- Tablas con columna user_id
+    IF EXISTS (SELECT FROM information_schema.tables WHERE table_name='team_members') THEN
+        DELETE FROM public.team_members WHERE user_id = v_user_id; END IF;
+        
+    IF EXISTS (SELECT FROM information_schema.tables WHERE table_name='user_badges') THEN
+        DELETE FROM public.user_badges WHERE user_id = v_user_id; END IF;
+        
+    IF EXISTS (SELECT FROM information_schema.tables WHERE table_name='match_participants') THEN
+        DELETE FROM public.match_participants WHERE user_id = v_user_id; END IF;
+        
+    IF EXISTS (SELECT FROM information_schema.tables WHERE table_name='match_messages') THEN
+        DELETE FROM public.match_messages WHERE user_id = v_user_id; END IF;
+        
+    IF EXISTS (SELECT FROM information_schema.tables WHERE table_name='team_messages') THEN
+        DELETE FROM public.team_messages WHERE user_id = v_user_id; END IF;
+
+    -- Tablas de Relaciones Dobles o nombres específicos
+    IF EXISTS (SELECT FROM information_schema.tables WHERE table_name='friendships') THEN
+        DELETE FROM public.friendships WHERE user_id = v_user_id OR friend_id = v_user_id; END IF;
+        
+    IF EXISTS (SELECT FROM information_schema.tables WHERE table_name='friend_requests') THEN
+        DELETE FROM public.friend_requests WHERE sender_id = v_user_id OR receiver_id = v_user_id; END IF;
+        
+    IF EXISTS (SELECT FROM information_schema.tables WHERE table_name='match_invitations') THEN
+        DELETE FROM public.match_invitations WHERE sender_id = v_user_id OR receiver_id = v_user_id; END IF;
+        
+    IF EXISTS (SELECT FROM information_schema.tables WHERE table_name='match_reports') THEN
+        DELETE FROM public.match_reports WHERE reporter_id = v_user_id; END IF;
+        
+    IF EXISTS (SELECT FROM information_schema.tables WHERE table_name='player_ratings') THEN
+        DELETE FROM public.player_ratings WHERE from_user_id = v_user_id OR to_user_id = v_user_id; END IF;
+        
+    IF EXISTS (SELECT FROM information_schema.tables WHERE table_name='mvp_votes') THEN
+        DELETE FROM public.mvp_votes WHERE voter_id = v_user_id OR voted_player_id = v_user_id; END IF;
+
+    IF EXISTS (SELECT FROM information_schema.tables WHERE table_name='profile_comments') THEN
+        DELETE FROM public.profile_comments WHERE author_id = v_user_id OR profile_id = v_user_id; END IF;
 
     -- 3. Eliminar entidades padre que le pertenezcan
-    DELETE FROM public.matches WHERE creator_id = v_user_id;
-    DELETE FROM public.teams WHERE captain_id = v_user_id;
+    IF EXISTS (SELECT FROM information_schema.tables WHERE table_name='matches') THEN
+        DELETE FROM public.matches WHERE creator_id = v_user_id; END IF;
+        
+    IF EXISTS (SELECT FROM information_schema.tables WHERE table_name='teams') THEN
+        DELETE FROM public.teams WHERE captain_id = v_user_id; END IF;
 
     -- 4. Borrar su perfil público
     DELETE FROM public.profiles WHERE id = v_user_id;

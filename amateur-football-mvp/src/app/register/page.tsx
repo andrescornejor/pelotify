@@ -13,15 +13,9 @@ export default function RegisterPage() {
     const [isGoogleLoading, setIsGoogleLoading] = useState(false);
     const [showConfirmation, setShowConfirmation] = useState(false);
     const [registeredEmail, setRegisteredEmail] = useState('');
-    const [step, setStep] = useState(1);
     const [formData, setFormData] = useState({ 
-        name: '', 
-        age: '', 
-        height: '', 
         email: '', 
         password: '',
-        position: 'DC',
-        preferredFoot: 'Derecha' as 'Derecha' | 'Zurda'
     });
 
     const handleRegister = async (e: React.FormEvent) => {
@@ -49,8 +43,7 @@ export default function RegisterPage() {
         }
     };
 
-    const nextStep = () => setStep(s => s + 1);
-    const prevStep = () => setStep(s => s - 1);
+    // Removed step functions because it's now a single-step form for auth
 
     if (showConfirmation) {
         return (
@@ -119,261 +112,81 @@ export default function RegisterPage() {
                     
                     <div className="flex flex-col gap-8 relative z-10">
                         {/* Header */}
-                        <div className="flex items-center gap-2">
-                            <div className="w-32 h-32 flex items-center justify-center relative shrink-0">
-                                <div className="absolute inset-0 bg-primary/20 blur-[40px] rounded-full opacity-40 shrink-0" />
+                        <div className="flex items-center gap-2 mb-2">
+                            <div className="w-28 h-28 flex items-center justify-center relative shrink-0">
+                                <div className="absolute inset-0 bg-primary/20 blur-[30px] rounded-full opacity-40 shrink-0" />
                                 <img src="/logo_pelotify.png" alt="Logo" className="w-full h-full object-contain relative z-10 drop-shadow-[0_0_20px_rgba(44,252,125,0.3)]" />
                             </div>
                             <div className="space-y-1">
-                                <h1 className="text-4xl font-black italic text-foreground tracking-tighter uppercase leading-none font-kanit">Scouting <span className="text-primary">Report</span></h1>
-                                <p className="text-[10px] font-black text-foreground/40 uppercase tracking-[0.4em] italic font-kanit">Ficha Técnica de Jugador</p>
+                                <h1 className="text-4xl font-black italic text-foreground tracking-tighter uppercase leading-none font-kanit">Crear <span className="text-primary">Ficha</span></h1>
+                                <p className="text-[10px] font-black text-foreground/40 uppercase tracking-[0.4em] italic font-kanit">Agente Libre</p>
                             </div>
                         </div>
 
-                        {/* Progress Stepper */}
-                        <div className="flex items-center gap-2">
-                            {[1, 2, 3].map((s) => (
-                                <div key={s} className="flex-1 flex flex-col gap-2">
-                                    <div className={cn(
-                                        "h-1.5 rounded-full transition-all duration-700",
-                                        step >= s ? "bg-primary shadow-[0_0_10px_rgba(16,185,129,0.5)]" : "bg-white/5"
-                                    )} />
+                        <form onSubmit={handleRegister} className="space-y-6">
+                            <div className="space-y-4">
+                                <button
+                                    type="button"
+                                    onClick={handleGoogleLogin}
+                                    disabled={isGoogleLoading}
+                                    className="w-full h-14 bg-white text-zinc-950 font-black text-[11px] uppercase tracking-[0.2em] rounded-2xl flex items-center justify-center gap-4 hover:bg-zinc-100 transition-all active:scale-95 disabled:opacity-50"
+                                >
+                                    <img src="https://www.google.com/favicon.ico" className="w-5 h-5" alt="Google" />
+                                    {isGoogleLoading ? 'Conectando...' : 'Ficharse con Google'}
+                                </button>
+                                
+                                <div className="flex items-center gap-4">
+                                    <div className="h-px flex-1 bg-white/5" />
+                                    <span className="text-[9px] font-black text-white/20 uppercase tracking-[0.3em]">O Registro Manual</span>
+                                    <div className="h-px flex-1 bg-white/5" />
                                 </div>
-                            ))}
-                        </div>
+                            </div>
 
-                        <form onSubmit={handleRegister} className="space-y-8">
-                            <AnimatePresence mode="wait">
-                                {step === 1 && (
-                                    <motion.div
-                                        key="step1"
-                                        initial={{ opacity: 0, x: 20 }}
-                                        animate={{ opacity: 1, x: 0 }}
-                                        exit={{ opacity: 0, x: -20 }}
-                                        className="space-y-6"
-                                    >
-                                        <div className="space-y-4">
-                                            <button
-                                                type="button"
-                                                onClick={handleGoogleLogin}
-                                                disabled={isGoogleLoading}
-                                                className="w-full h-14 bg-white text-zinc-950 font-black text-[11px] uppercase tracking-[0.2em] rounded-2xl flex items-center justify-center gap-4 hover:bg-zinc-100 transition-all active:scale-95 disabled:opacity-50"
-                                            >
-                                                <img src="https://www.google.com/favicon.ico" className="w-5 h-5" alt="Google" />
-                                                {isGoogleLoading ? 'Conectando...' : 'Registrarse con Google'}
-                                            </button>
-                                            
-                                            <div className="flex items-center gap-4">
-                                                <div className="h-px flex-1 bg-white/5" />
-                                                <span className="text-[9px] font-black text-white/20 uppercase tracking-[0.3em]">O Registro Manual</span>
-                                                <div className="h-px flex-1 bg-white/5" />
-                                            </div>
-                                        </div>
+                            <div className="space-y-2 mt-4">
+                                <label className="text-[10px] font-black text-foreground/40 uppercase tracking-widest ml-4">Email Oficial</label>
+                                <div className="relative group/input">
+                                    <div className="absolute inset-y-0 left-5 flex items-center pointer-events-none">
+                                        <Mail className="w-5 h-5 text-foreground/20 group-focus-within/input:text-primary transition-colors" />
+                                    </div>
+                                    <input
+                                        type="email"
+                                        placeholder="jugador@ejemplo.com"
+                                        value={formData.email}
+                                        onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
+                                        className="w-full h-14 pl-14 pr-6 rounded-2xl bg-white/[0.03] border border-white/5 focus:bg-white/[0.05] focus:border-primary/50 outline-none transition-all text-sm font-bold text-foreground"
+                                        required
+                                    />
+                                </div>
+                            </div>
 
-                                        <div className="space-y-2">
-                                            <label className="text-[10px] font-black text-foreground/40 uppercase tracking-widest ml-4">Nombre Completo</label>
-                                            <div className="relative group/input">
-                                                <div className="absolute inset-y-0 left-5 flex items-center pointer-events-none">
-                                                    <User className="w-5 h-5 text-foreground/20 group-focus-within/input:text-primary transition-colors" />
-                                                </div>
-                                                <input
-                                                    type="text"
-                                                    placeholder="Ej: Lio Messi"
-                                                    value={formData.name}
-                                                    onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
-                                                    className="w-full h-14 pl-14 pr-6 rounded-2xl bg-white/[0.03] border border-white/5 focus:bg-white/[0.05] focus:border-primary/50 outline-none transition-all text-sm font-bold text-foreground"
-                                                    required
-                                                />
-                                            </div>
-                                        </div>
+                            <div className="space-y-2">
+                                <label className="text-[10px] font-black text-foreground/40 uppercase tracking-widest ml-4">Contraseña Segura</label>
+                                <div className="relative group/input">
+                                    <div className="absolute inset-y-0 left-5 flex items-center pointer-events-none">
+                                        <Lock className="w-5 h-5 text-foreground/20 group-focus-within/input:text-primary transition-colors" />
+                                    </div>
+                                    <input
+                                        type="password"
+                                        placeholder="••••••••"
+                                        value={formData.password}
+                                        onChange={(e) => setFormData(prev => ({ ...prev, password: e.target.value }))}
+                                        className="w-full h-14 pl-14 pr-6 rounded-2xl bg-white/[0.03] border border-white/5 focus:bg-white/[0.05] focus:border-primary/50 outline-none transition-all text-sm font-bold text-foreground"
+                                        required
+                                    />
+                                </div>
+                            </div>
 
-                                        <div className="grid grid-cols-2 gap-4">
-                                            <div className="space-y-2">
-                                                <label className="text-[10px] font-black text-foreground/40 uppercase tracking-widest ml-4">Edad</label>
-                                                <div className="relative group/input">
-                                                    <div className="absolute inset-y-0 left-5 flex items-center pointer-events-none">
-                                                        <Calendar className="w-4 h-4 text-foreground/20 group-focus-within/input:text-primary transition-colors" />
-                                                    </div>
-                                                    <input
-                                                        type="number"
-                                                        placeholder="Edad"
-                                                        value={formData.age}
-                                                        onChange={(e) => setFormData(prev => ({ ...prev, age: e.target.value }))}
-                                                        className="w-full h-14 pl-14 pr-6 rounded-2xl bg-white/[0.03] border border-white/5 focus:bg-white/[0.05] focus:border-primary/50 outline-none transition-all text-sm font-bold text-foreground"
-                                                        required
-                                                    />
-                                                </div>
-                                            </div>
-                                            <div className="space-y-2">
-                                                <label className="text-[10px] font-black text-foreground/40 uppercase tracking-widest ml-4">Altura (cm)</label>
-                                                <div className="relative group/input">
-                                                    <div className="absolute inset-y-0 left-5 flex items-center pointer-events-none">
-                                                        <Ruler className="w-4 h-4 text-foreground/20 group-focus-within/input:text-primary transition-colors" />
-                                                    </div>
-                                                    <input
-                                                        type="number"
-                                                        placeholder="170"
-                                                        value={formData.height}
-                                                        onChange={(e) => setFormData(prev => ({ ...prev, height: e.target.value }))}
-                                                        className="w-full h-14 pl-14 pr-6 rounded-2xl bg-white/[0.03] border border-white/5 focus:bg-white/[0.05] focus:border-primary/50 outline-none transition-all text-sm font-bold text-foreground"
-                                                        required
-                                                    />
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <button
-                                            type="button"
-                                            onClick={nextStep}
-                                            disabled={!formData.name || !formData.age || !formData.height}
-                                            className="w-full h-16 bg-white/[0.05] text-white font-black text-[12px] uppercase tracking-[0.3em] rounded-2xl flex items-center justify-center gap-3 hover:bg-white hover:text-black transition-all active:scale-95 disabled:opacity-30 group"
-                                        >
-                                            SIGUIENTE NIVEL <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                                        </button>
-                                    </motion.div>
+                            <button
+                                type="submit"
+                                disabled={isLoading || !formData.email || !formData.password}
+                                className="w-full h-16 mt-4 bg-primary text-black font-black text-[12px] uppercase tracking-[0.3em] rounded-2xl flex items-center justify-center gap-3 hover:bg-white transition-all active:scale-95 disabled:opacity-50 shadow-[0_20px_40px_rgba(16,185,129,0.2)] group"
+                            >
+                                {isLoading ? 'FIRMANDO PRE-CONTRATO...' : (
+                                    <>
+                                        CREAR CUENTA <UserPlus className="w-5 h-5 group-hover:scale-110 transition-transform" />
+                                    </>
                                 )}
-
-                                {step === 2 && (
-                                    <motion.div
-                                        key="step2"
-                                        initial={{ opacity: 0, x: 20 }}
-                                        animate={{ opacity: 1, x: 0 }}
-                                        exit={{ opacity: 0, x: -20 }}
-                                        className="space-y-6"
-                                    >
-                                        <div className="space-y-2">
-                                            <label className="text-[10px] font-black text-foreground/40 uppercase tracking-widest ml-4">Posición Dominante</label>
-                                            <div className="grid grid-cols-2 gap-3">
-                                                {[
-                                                    { id: 'POR', label: 'Arquero' },
-                                                    { id: 'DFC', label: 'Defensa' },
-                                                    { id: 'MC', label: 'Mediocampo' },
-                                                    { id: 'DC', label: 'Delantero' },
-                                                    { id: 'ED', label: 'Ext. Derecho' },
-                                                    { id: 'EI', label: 'Ext. Izquierdo' },
-                                                ].map((p) => (
-                                                    <button
-                                                        key={p.id}
-                                                        type="button"
-                                                        onClick={() => setFormData(prev => ({ ...prev, position: p.id }))}
-                                                        className={cn(
-                                                            "h-14 flex items-center justify-center rounded-2xl font-black text-[10px] uppercase tracking-widest transition-all border",
-                                                            formData.position === p.id 
-                                                                ? "bg-primary border-primary text-black" 
-                                                                : "bg-white/[0.03] border-white/5 text-foreground/40 hover:border-white/20"
-                                                        )}
-                                                    >
-                                                        {p.label}
-                                                    </button>
-                                                ))}
-                                            </div>
-                                        </div>
-
-                                        <div className="space-y-2">
-                                            <label className="text-[10px] font-black text-foreground/40 uppercase tracking-widest ml-4">Perfil Predilecto</label>
-                                            <div className="flex gap-3">
-                                                {['Derecha', 'Zurda'].map((foot) => (
-                                                    <button
-                                                        key={foot}
-                                                        type="button"
-                                                        onClick={() => setFormData(prev => ({ ...prev, preferredFoot: foot as any }))}
-                                                        className={cn(
-                                                            "flex-1 h-14 flex items-center justify-center rounded-2xl font-black text-[10px] uppercase tracking-widest transition-all border",
-                                                            formData.preferredFoot === foot 
-                                                                ? "bg-primary border-primary text-black shadow-[0_10px_20px_rgba(16,185,129,0.2)]" 
-                                                                : "bg-white/[0.03] border-white/5 text-foreground/40 hover:border-white/20"
-                                                        )}
-                                                    >
-                                                        {foot === 'Derecha' ? 'Derecho' : 'Zurdo'}
-                                                    </button>
-                                                ))}
-                                            </div>
-                                        </div>
-
-                                        <div className="flex gap-4">
-                                            <button
-                                                type="button"
-                                                onClick={prevStep}
-                                                className="w-16 h-16 bg-white/[0.03] border border-white/5 rounded-2xl flex items-center justify-center hover:bg-white/[0.06] transition-all"
-                                            >
-                                                <ChevronLeft className="w-6 h-6 text-foreground/40" />
-                                            </button>
-                                            <button
-                                                type="button"
-                                                onClick={nextStep}
-                                                className="flex-1 h-16 bg-white/[0.05] text-white font-black text-[12px] uppercase tracking-[0.3em] rounded-2xl flex items-center justify-center gap-3 hover:bg-white hover:text-black transition-all active:scale-95 group"
-                                            >
-                                                ÚLTIMO DETALLE <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                                            </button>
-                                        </div>
-                                    </motion.div>
-                                )}
-
-                                {step === 3 && (
-                                    <motion.div
-                                        key="step3"
-                                        initial={{ opacity: 0, x: 20 }}
-                                        animate={{ opacity: 1, x: 0 }}
-                                        exit={{ opacity: 0, x: -20 }}
-                                        className="space-y-6"
-                                    >
-                                        <div className="space-y-2">
-                                            <label className="text-[10px] font-black text-foreground/40 uppercase tracking-widest ml-4">Email Oficial</label>
-                                            <div className="relative group/input">
-                                                <div className="absolute inset-y-0 left-5 flex items-center pointer-events-none">
-                                                    <Mail className="w-5 h-5 text-foreground/20 group-focus-within/input:text-primary transition-colors" />
-                                                </div>
-                                                <input
-                                                    type="email"
-                                                    placeholder="jugador@ejemplo.com"
-                                                    value={formData.email}
-                                                    onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
-                                                    className="w-full h-14 pl-14 pr-6 rounded-2xl bg-white/[0.03] border border-white/5 focus:bg-white/[0.05] focus:border-primary/50 outline-none transition-all text-sm font-bold text-foreground"
-                                                    required
-                                                />
-                                            </div>
-                                        </div>
-
-                                        <div className="space-y-2">
-                                            <label className="text-[10px] font-black text-foreground/40 uppercase tracking-widest ml-4">Contraseña Segura</label>
-                                            <div className="relative group/input">
-                                                <div className="absolute inset-y-0 left-5 flex items-center pointer-events-none">
-                                                    <Lock className="w-5 h-5 text-foreground/20 group-focus-within/input:text-primary transition-colors" />
-                                                </div>
-                                                <input
-                                                    type="password"
-                                                    placeholder="••••••••"
-                                                    value={formData.password}
-                                                    onChange={(e) => setFormData(prev => ({ ...prev, password: e.target.value }))}
-                                                    className="w-full h-14 pl-14 pr-6 rounded-2xl bg-white/[0.03] border border-white/5 focus:bg-white/[0.05] focus:border-primary/50 outline-none transition-all text-sm font-bold text-foreground"
-                                                    required
-                                                />
-                                            </div>
-                                        </div>
-
-                                        <div className="flex gap-4">
-                                            <button
-                                                type="button"
-                                                onClick={prevStep}
-                                                className="w-16 h-16 bg-white/[0.03] border border-white/5 rounded-2xl flex items-center justify-center hover:bg-white/[0.06] transition-all"
-                                            >
-                                                <ChevronLeft className="w-6 h-6 text-foreground/40" />
-                                            </button>
-                                            <button
-                                                type="submit"
-                                                disabled={isLoading}
-                                                className="flex-1 h-16 bg-primary text-black font-black text-[12px] uppercase tracking-[0.3em] rounded-2xl flex items-center justify-center gap-3 hover:bg-white transition-all active:scale-95 disabled:opacity-50 shadow-[0_20px_40px_rgba(16,185,129,0.2)] group"
-                                            >
-                                                {isLoading ? 'ENVIANDO FICHA...' : (
-                                                    <>
-                                                        SALIR A LA CANCHA <UserPlus className="w-5 h-5 group-hover:scale-110 transition-transform" />
-                                                    </>
-                                                )}
-                                            </button>
-                                        </div>
-                                    </motion.div>
-                                )}
-                            </AnimatePresence>
+                            </button>
                         </form>
 
                         <div className="pt-2 text-center">
