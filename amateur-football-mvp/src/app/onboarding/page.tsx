@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/lib/supabase';
-import FifaCard from '@/components/FifaCard';
+import { FifaCard } from '@/components/FifaCard';
 import confetti from 'canvas-confetti';
 import { ChevronRight, Target, Activity, Shield, Crosshair, ArrowRight, Upload } from 'lucide-react';
 import { cn } from '@/lib/utils';
