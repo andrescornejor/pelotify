@@ -20,7 +20,7 @@ export default function TeamsPage() {
     const { user, isLoading: authLoading } = useAuth();
     const { performanceMode: isPerfMode } = useSettings();
     const router = useRouter();
-    const [activeTab, setActiveTab] = useState<'my_team' | 'explore' | 'create'>('explore');
+    const [activeTab, setActiveTab] = useState<'my_team' | 'explore'>('explore');
 
     const [teams, setTeams] = useState<Team[]>([]);
     const [myTeam, setMyTeam] = useState<Team | null>(null);
@@ -183,15 +183,12 @@ export default function TeamsPage() {
                             Radar Global
                         </button>
                         {!myTeam && (
-                            <button
-                                onClick={() => setActiveTab('create')}
-                                className={cn(
-                                    "flex-1 px-8 py-3 text-[10px] font-black uppercase tracking-[0.2em] rounded-xl transition-all relative z-10 italic",
-                                    activeTab === 'create' ? 'text-background' : 'text-foreground/50 hover:text-foreground/80'
-                                )}
+                            <Link
+                                href="/team-builder"
+                                className="flex-1 px-8 py-3 text-[10px] text-center font-black uppercase tracking-[0.2em] rounded-xl transition-all relative z-10 italic text-foreground/50 hover:text-foreground/80 flex items-center justify-center gap-2"
                             >
-                                Fundar Club
-                            </button>
+                                Fundar Club <ArrowRight className="w-3 h-3" />
+                            </Link>
                         )}
                         <motion.div
                             layoutId="teams-tab-pill"
@@ -361,99 +358,19 @@ export default function TeamsPage() {
                                     <p className="text-[10px] text-foreground/60 font-bold uppercase tracking-[0.2em] max-w-xs mx-auto">El ecosistema está vacío. Sé el pionero fundando tu club.</p>
                                 </div>
                                 {!myTeam && (
-                                    <button
-                                        onClick={() => setActiveTab('create')}
-                                        className="h-14 px-10 bg-primary text-background rounded-2xl text-[10px] font-black uppercase tracking-[0.3em] shadow-lg shadow-primary/20 hover:bg-foreground hover:text-background transition-all active:scale-95"
+                                    <Link
+                                        href="/team-builder"
+                                        className="h-14 px-10 bg-primary text-background rounded-2xl flex items-center justify-center gap-3 text-[10px] font-black uppercase tracking-[0.3em] shadow-lg shadow-primary/20 hover:bg-foreground hover:text-background transition-all active:scale-95"
                                     >
-                                        Fundar Club
-                                    </button>
+                                        <Shield className="w-4 h-4" /> Fundar Club
+                                    </Link>
                                 )}
                             </div>
                         )}
                     </motion.div>
                 )}
 
-                {activeTab === 'create' && (
-                    <motion.div
-                        key="create"
-                        initial={{ opacity: 0, scale: 0.98 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        exit={{ opacity: 0, scale: 0.98 }}
-                        className="max-w-2xl mx-auto w-full pt-4 relative z-10"
-                    >
-                        <form onSubmit={handleCreateTeam} className="glass-premium p-10 md:p-14 rounded-[3rem] border border-foreground/5 space-y-10 relative overflow-hidden bg-surface shadow-2xl">
-                            <div className="absolute top-0 right-0 p-8 opacity-10 pointer-events-none">
-                                <PlusCircle className="w-32 h-32 text-primary" />
-                            </div>
-
-                            <div className="flex flex-col items-center gap-6 relative z-10">
-                                <label className="group relative cursor-pointer">
-                                    <div className="w-40 h-40 bg-surface-elevated rounded-[2.5rem] border-2 border-dashed border-foreground/10 group-hover:border-primary/50 overflow-hidden flex flex-col items-center justify-center transition-all shadow-xl">
-                                        {logoPreview ? (
-                                            <img src={logoPreview} alt="Preview" className="w-full h-full object-cover group-hover:opacity-40 transition-opacity" />
-                                        ) : (
-                                            <div className="flex flex-col items-center gap-3 group-hover:scale-110 transition-transform">
-                                                <Camera className="w-10 h-10 text-foreground/50 group-hover:text-primary transition-colors" />
-                                                <span className="text-[8px] font-black text-foreground/50 uppercase tracking-[0.3em] text-center px-4">Subir Escudo Oficial</span>
-                                            </div>
-                                        )}
-
-                                        <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-black/60 backdrop-blur-sm">
-                                            <Sparkles className="w-8 h-8 text-primary animate-pulse" />
-                                        </div>
-                                    </div>
-                                    <input type="file" accept="image/*" onChange={handleFileChange} className="hidden" />
-                                </label>
-                                <div className="text-center space-y-1">
-                                    <h2 className="text-3xl font-black italic text-foreground uppercase tracking-tighter">Legalizar Institución</h2>
-                                    <p className="text-[9px] font-black text-foreground/50 uppercase tracking-[0.3em]">Crea el perfil oficial de tu equipo</p>
-                                </div>
-                            </div>
-
-                            <div className="space-y-8 relative z-10">
-                                <div className="space-y-3">
-                                    <label className="text-[9px] font-black uppercase text-primary tracking-[0.3em] pl-2">Denominación Oficial</label>
-                                    <input
-                                        type="text"
-                                        value={newTeamName}
-                                        onChange={(e) => setNewTeamName(e.target.value)}
-                                        placeholder="EJ: REAL MADRID ARG"
-                                        className="w-full h-16 bg-foreground/[0.01] border border-foreground/5 rounded-2xl px-6 text-sm font-black uppercase text-foreground outline-none focus:border-primary/50 focus:bg-foreground/[0.03] transition-all shadow-inner"
-                                        required
-                                    />
-                                </div>
-
-                                <div className="space-y-3">
-                                    <label className="text-[9px] font-black uppercase text-foreground/50 tracking-[0.3em] pl-2">Información Táctica (Opcional)</label>
-                                    <textarea
-                                        value={newTeamDesc}
-                                        onChange={(e) => setNewTeamDesc(e.target.value)}
-                                        placeholder="Visión, filosofía o días de entrenamiento..."
-                                        className="w-full h-32 bg-foreground/[0.01] border border-foreground/5 rounded-2xl p-6 text-xs text-foreground/60 font-bold uppercase tracking-[0.1em] outline-none focus:border-primary/50 focus:bg-foreground/[0.03] transition-all resize-none shadow-inner"
-                                    />
-                                </div>
-
-                                <button
-                                    type="submit"
-                                    disabled={isCreating || !newTeamName.trim()}
-                                    className="w-full h-16 bg-primary text-background font-black italic text-xs uppercase tracking-[0.3em] rounded-2xl shadow-xl shadow-primary/20 hover:bg-foreground hover:text-background transition-all active:scale-95 disabled:opacity-50 flex items-center justify-center gap-3"
-                                >
-                                    {isCreating ? (
-                                        <>
-                                            <Loader2 className="w-5 h-5 animate-spin" />
-                                            PROCESANDO FIRMAS...
-                                        </>
-                                    ) : (
-                                        <>
-                                            FUNDAR EQUIPO
-                                            <Shield className="w-5 h-5" />
-                                        </>
-                                    )}
-                                </button>
-                            </div>
-                        </form>
-                    </motion.div>
-                )}
+                {/* End of main tabs */}
             </AnimatePresence>
 
             {/* ── CHALLENGE MODAL ── */}
