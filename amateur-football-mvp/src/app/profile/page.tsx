@@ -554,7 +554,9 @@ function ProfileContent() {
                         </AnimatePresence>
                     </div>
                 )}
-            </div></            {/* Main Content Layout */}
+            </div>
+
+            {/* Main Content Layout */}
             <div className="relative z-20 flex flex-col lg:grid lg:grid-cols-[400px,1fr] xl:grid-cols-[450px,1fr] gap-12 lg:gap-16 pt-4">
                 
                 {/* Left: Identity Column */}
