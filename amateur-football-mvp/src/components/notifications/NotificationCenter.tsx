@@ -149,7 +149,7 @@ export function NotificationCenter({ isOpen, onClose }: NotificationCenterProps)
                         initial={{ opacity: 0, y: -20, scale: 0.95 }}
                         animate={{ opacity: 1, y: 0, scale: 1 }}
                         exit={{ opacity: 0, y: -20, scale: 0.95 }}
-                        className="fixed top-28 right-4 left-4 lg:left-auto lg:right-6 lg:top-36 lg:w-[400px] z-[101] glass-premium rounded-[2.5rem] overflow-hidden shadow-[0_25px_80px_rgba(0,0,0,0.6)] border border-white/5 bg-[#08080c]/95 backdrop-blur-3xl"
+                        className="fixed top-28 right-4 left-4 lg:left-auto lg:right-6 lg:top-24 lg:w-[400px] z-[101] glass-premium rounded-[2.5rem] overflow-hidden shadow-[0_25px_80px_rgba(0,0,0,0.6)] border border-white/5 bg-[#08080c]/95 backdrop-blur-3xl"
                     >
                         <div className="p-6 border-b border-white/[0.04] flex items-center justify-between bg-white/[0.01]">
                             <div className="flex items-center gap-3">
