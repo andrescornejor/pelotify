@@ -1012,34 +1012,65 @@ function ProfileContent() {
                                                     className="block group relative"
                                                 >
                                                     <div className="absolute inset-0 bg-primary/10 blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-[2.5rem]" />
+                                                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-primary/40 to-transparent group-hover:animate-pulse opacity-0 group-hover:opacity-100 transition-opacity duration-1000 rounded-[2.5rem] p-[1px]" />
                                                     <motion.div
                                                         initial={{ opacity: 0, scale: 0.95 }}
                                                         animate={{ opacity: 1, scale: 1 }}
                                                         transition={{ delay: i * 0.1 }}
-                                                        className="glass-premium p-6 sm:p-8 rounded-[2.5rem] border border-foreground/10 flex flex-col sm:flex-row items-start sm:items-center justify-between group-hover:bg-foreground/[0.04] group-hover:border-primary/30 group-hover:-translate-y-1 transition-all duration-500 shadow-xl overflow-hidden relative z-10 gap-6 sm:gap-0"
+                                                        className="glass-premium p-6 sm:p-8 rounded-[2.5rem] border border-white/5 flex flex-col sm:flex-row items-start sm:items-center justify-between group-hover:bg-foreground/[0.04] group-hover:border-primary/20 group-hover:-translate-y-1 transition-all duration-500 shadow-xl overflow-hidden relative z-10 gap-6 sm:gap-8 min-h-[140px]"
                                                     >
-                                                        <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 blur-[40px] opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
+                                                        {/* Animated Hover Background FX */}
+                                                        <div className="absolute -top-10 -right-10 w-48 h-48 bg-primary/10 blur-[50px] opacity-0 group-hover:opacity-100 transition-opacity duration-1000 pointer-events-none rounded-full" />
+                                                        <div className="absolute -bottom-10 -left-10 w-48 h-48 bg-accent/10 blur-[50px] opacity-0 group-hover:opacity-100 transition-opacity duration-1000 pointer-events-none rounded-full" />
 
-                                                        <div className="flex items-center gap-6 w-full sm:w-auto">
-                                                            <div className="w-16 h-16 rounded-[1.5rem] bg-background border border-foreground/10 flex flex-col items-center justify-center shrink-0 shadow-inner group-hover:border-primary/40 group-hover:bg-primary/5 transition-colors">
-                                                                <span className="text-2xl font-black italic tracking-tighter text-foreground group-hover:text-primary transition-colors leading-none">{m.date.split('-')[2]}</span>
-                                                                <span className="text-[9px] font-black uppercase tracking-[0.3em] text-foreground/40 italic mt-1 group-hover:text-primary/70 transition-colors">
+                                                        <div className="flex items-center gap-6 w-full sm:w-auto relative z-10">
+                                                            {/* Date Ticket Block */}
+                                                            <div className="w-16 h-16 rounded-[1.5rem] bg-foreground/[0.03] border border-white/10 flex flex-col items-center justify-center shrink-0 shadow-inner group-hover:border-primary/30 group-hover:bg-primary/10 group-hover:scale-105 transition-all duration-500 overflow-hidden relative">
+                                                                <div className="absolute inset-x-0 top-0 h-1/2 bg-gradient-to-b from-white/5 to-transparent pointer-events-none" />
+                                                                <span className="text-2xl font-black italic tracking-tighter text-foreground group-hover:text-primary transition-colors leading-none drop-shadow-md z-10">
+                                                                    {m.date.split('-')[2]}
+                                                                </span>
+                                                                <span className="text-[9px] font-black uppercase tracking-[0.3em] text-foreground/40 italic mt-1 group-hover:text-primary/70 transition-colors z-10">
                                                                     {['ENE', 'FEB', 'MAR', 'ABR', 'MAY', 'JUN', 'JUL', 'AGO', 'SEP', 'OCT', 'NOV', 'DIC'][parseInt(m.date.split('-')[1]) - 1]}
                                                                 </span>
                                                             </div>
-                                                            <div className="space-y-2 flex-1 min-w-0">
-                                                                <h4 className="text-2xl font-black text-foreground italic uppercase tracking-tighter truncate group-hover:text-primary transition-colors leading-none">{m.location}</h4>
+
+                                                            {/* Location & Title */}
+                                                            <div className="space-y-1.5 flex-1 min-w-0">
+                                                                <h4 className="text-xl sm:text-2xl font-black text-foreground italic uppercase tracking-tighter truncate group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-foreground group-hover:to-primary transition-all leading-none pb-1">
+                                                                    {m.location}
+                                                                </h4>
                                                                 <div className="flex items-center gap-2">
-                                                                    <div className="w-1.5 h-1.5 rounded-full bg-primary/50 group-hover:bg-primary transition-colors animate-pulse" />
-                                                                    <span className="text-[9px] font-black uppercase tracking-[0.3em] text-foreground/40">{m.type} · FINALIZADO</span>
+                                                                    <div className="flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-primary/10 border border-primary/20">
+                                                                        <div className="w-1.5 h-1.5 rounded-full bg-primary/70 group-hover:bg-primary transition-colors animate-pulse" />
+                                                                        <span className="text-[8px] font-black uppercase tracking-[0.3em] text-primary">FINALIZADO</span>
+                                                                    </div>
+                                                                    <span className="text-[9px] font-black uppercase tracking-[0.3em] text-foreground/30 hidden sm:block">· {m.type}</span>
                                                                 </div>
                                                             </div>
                                                         </div>
 
-                                                        <div className="flex items-center gap-5 w-full sm:w-auto justify-end bg-background/50 px-6 py-4 rounded-[1.5rem] border border-foreground/[0.03] group-hover:border-primary/20 shadow-inner transition-colors">
-                                                            <span className="text-4xl font-black text-foreground italic tracking-tighter leading-none group-hover:text-primary group-hover:drop-shadow-[0_0_10px_rgba(16,185,129,0.3)] transition-all">{m.team_a_score ?? 0}</span>
-                                                            <span className="text-sm font-black text-foreground/20 italic">-</span>
-                                                            <span className="text-4xl font-black text-foreground italic tracking-tighter leading-none group-hover:text-primary group-hover:drop-shadow-[0_0_10px_rgba(16,185,129,0.3)] transition-all">{m.team_b_score ?? 0}</span>
+                                                        {/* Score Block */}
+                                                        <div className="flex items-center gap-6 w-full sm:w-auto justify-end relative z-10">
+                                                            <div className="flex items-center justify-center gap-3 w-full sm:w-auto bg-background/50 group-hover:bg-primary/5 px-6 sm:px-8 py-4 sm:py-5 rounded-[1.5rem] border border-white/5 group-hover:border-primary/30 shadow-inner overflow-hidden transition-all duration-500">
+                                                                {/* Optional shine effect inside score box */}
+                                                                <div className="absolute top-0 left-[-100%] w-1/2 h-full bg-gradient-to-r from-transparent via-white/10 to-transparent group-hover:animate-shimmer pointer-events-none" />
+                                                                
+                                                                <span className="text-4xl sm:text-5xl font-black text-foreground italic tracking-tighter leading-none group-hover:text-white transition-colors duration-300 drop-shadow-[0_2px_10px_rgba(0,0,0,0.5)]">
+                                                                    {m.team_a_score ?? 0}
+                                                                </span>
+                                                                <div className="flex flex-col gap-1 items-center mx-1">
+                                                                    <span className="w-4 h-[3px] rounded-full bg-foreground/20 group-hover:bg-primary/50 transition-colors" />
+                                                                    <span className="w-4 h-[3px] rounded-full bg-foreground/20 group-hover:bg-primary/50 transition-colors" />
+                                                                </div>
+                                                                <span className="text-4xl sm:text-5xl font-black text-foreground italic tracking-tighter leading-none group-hover:text-white transition-colors duration-300 drop-shadow-[0_2px_10px_rgba(0,0,0,0.5)]">
+                                                                    {m.team_b_score ?? 0}
+                                                                </span>
+                                                            </div>
+                                                            
+                                                            <div className="hidden sm:flex items-center justify-center w-10 h-10 rounded-full bg-foreground/[0.02] border border-white/5 group-hover:border-primary/30 group-hover:bg-primary/10 transition-colors duration-300">
+                                                                <ChevronRight className="w-5 h-5 text-foreground/30 group-hover:text-primary transition-colors duration-300" />
+                                                            </div>
                                                         </div>
                                                     </motion.div>
                                                 </Link>
