@@ -448,7 +448,9 @@ function ProfileContent() {
     if (isMe && !user && !isLoading) {
         router.push('/login');
         return null;
-      return (
+    }
+
+    return (
         <div className="flex flex-col gap-8 p-4 sm:p-6 lg:p-10 xl:p-14 2xl:p-16 max-w-[1600px] mx-auto min-h-screen bg-background relative overflow-hidden">
             {/* Ambient Effects - More subtle and layered */}
             <div className="fixed inset-0 pointer-events-none -z-10">
