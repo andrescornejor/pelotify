@@ -11,6 +11,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { getPendingRequestsCount } from '@/lib/friends';
 import { getMatchInvitationsCount } from '@/lib/matches';
 import { getPendingJoinRequestsCountForCaptain, getTeamInvitationsCount } from '@/lib/teams';
+import { getPendingChallengesCountForCaptain } from '@/lib/teamChallenges';
 import { useTheme } from '@/contexts/ThemeContext';
 import { cn } from '@/lib/utils';
 import { getUnreadMessagesCount } from '@/lib/chat';
@@ -40,16 +41,17 @@ export function TopHeader() {
     const updateCount = async () => {
         if (!user) return;
         try {
-            const [f, m, t, ti, c] = await Promise.all([
+            const [f, m, t, ti, c, tc] = await Promise.all([
                 getPendingRequestsCount(user.id),
                 getMatchInvitationsCount(user.id),
                 getPendingJoinRequestsCountForCaptain(user.id),
                 getTeamInvitationsCount(user.id),
-                getUnreadMessagesCount(user.id)
+                getUnreadMessagesCount(user.id),
+                getPendingChallengesCountForCaptain(user.id)
             ]);
             setFriendsCount(f || 0);
             setUnreadChatCount(c || 0);
-            setNotifCount((f || 0) + (m || 0) + (t || 0) + (ti || 0));
+            setNotifCount((f || 0) + (m || 0) + (t || 0) + (ti || 0) + (tc || 0));
         } catch (err) {
             console.error(err);
         }

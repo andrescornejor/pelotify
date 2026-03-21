@@ -62,7 +62,106 @@ export async function getTeamChallenges(teamId: string, role: 'challenger' | 'ch
     return data as TeamChallenge[];
 }
 
+export async function getPendingChallengesForCaptain(userId: string) {
+    const { data, error } = await supabase
+        .from('team_challenges')
+        .select(`
+            *,
+            challenger_team:teams!challenger_team_id(*),
+            challenged_team:teams!challenged_team_id!inner(*)
+        `)
+        .eq('status', 'pending')
+        .eq('challenged_team.captain_id', userId);
+
+    if (error) throw error;
+    return data as TeamChallenge[];
+}
+
+export async function getPendingChallengesCountForCaptain(userId: string) {
+    const { count, error } = await supabase
+        .from('team_challenges')
+        .select(`
+            id,
+            challenged_team:teams!challenged_team_id!inner(captain_id)
+        `, { count: 'exact', head: true })
+        .eq('status', 'pending')
+        .eq('challenged_team.captain_id', userId);
+
+    if (error) throw error;
+    return count || 0;
+}
+
 export async function respondToChallenge(challengeId: string, status: 'accepted' | 'declined') {
+    if (status === 'accepted') {
+        // 1. Get challenge details
+        const { data: challenge, error: challengeError } = await supabase
+            .from('team_challenges')
+            .select(`
+                *,
+                challenger_team:teams!challenger_team_id(*),
+                challenged_team:teams!challenged_team_id(*)
+            `)
+            .eq('id', challengeId)
+            .single();
+
+        if (challengeError) throw challengeError;
+
+        // 2. Create the match
+        const { createMatch } = await import('./matches');
+        const matchData = {
+            location: challenge.location,
+            date: challenge.match_date,
+            time: challenge.match_time,
+            type: 'F5' as any, // Default to F5, or we could add type to challenge
+            level: 'Amateur',
+            missing_players: 0,
+            price: 0,
+            creator_id: challenge.challenger_team.captain_id,
+            team_a_id: challenge.challenger_team_id,
+            team_b_id: challenge.challenged_team_id,
+            team_a_name: challenge.challenger_team.name,
+            team_b_name: challenge.challenged_team.name,
+            is_private: true
+        };
+
+        const newMatch = await createMatch(matchData);
+
+        // 3. Add members of both teams as participants
+        const { getTeamMembers } = await import('./teams');
+        const [challengerMembers, challengedMembers] = await Promise.all([
+            getTeamMembers(challenge.challenger_team_id),
+            getTeamMembers(challenge.challenged_team_id)
+        ]);
+
+        const participantsToAdd = [
+            ...challengerMembers
+                .filter(m => m.status === 'confirmed')
+                .map(m => ({
+                    match_id: newMatch.id,
+                    user_id: m.user_id,
+                    status: 'confirmed',
+                    team: 'A'
+                })),
+            ...challengedMembers
+                .filter(m => m.status === 'confirmed')
+                .map(m => ({
+                    match_id: newMatch.id,
+                    user_id: m.user_id,
+                    status: 'confirmed',
+                    team: 'B'
+                }))
+        ];
+
+        // Bulk insert participants (ignoring duplicates if any)
+        if (participantsToAdd.length > 0) {
+            const { error: partError } = await supabase
+                .from('match_participants')
+                .upsert(participantsToAdd, { onConflict: 'match_id,user_id' });
+            
+            if (partError) console.error("Error adding team members to match:", partError);
+        }
+    }
+
     const { data, error } = await supabase
         .from('team_challenges')
         .update({ status })

@@ -5,8 +5,9 @@ import { useAuth } from '@/contexts/AuthContext';
 import { getPendingRequests, acceptFriendRequest, deleteFriendship, FriendshipData } from '@/lib/friends';
 import { getMatchInvitations, respondToInvitation } from '@/lib/matches';
 import { getPendingJoinRequestsForCaptain, respondToTeamInvitation, getTeamInvitations } from '@/lib/teams';
+import { getPendingChallengesForCaptain, respondToChallenge } from '@/lib/teamChallenges';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Bell, X, Check, XCircle, Users, Calendar, Loader2, Info, ArrowRight, Shield } from 'lucide-react';
+import { Bell, X, Check, XCircle, Users, Calendar, Loader2, Info, ArrowRight, Shield, Swords } from 'lucide-react';
 import Link from 'next/link';
 
 interface NotificationCenterProps {
@@ -20,6 +21,7 @@ export function NotificationCenter({ isOpen, onClose }: NotificationCenterProps)
     const [matchInvites, setMatchInvites] = useState<any[]>([]);
     const [teamRequests, setTeamRequests] = useState<any[]>([]);
     const [teamInvitations, setTeamInvitations] = useState<any[]>([]);
+    const [teamChallenges, setTeamChallenges] = useState<any[]>([]);
     const [isLoading, setIsLoading] = useState(false);
     const [actionLoading, setActionLoading] = useState<string | null>(null);
 
@@ -27,16 +29,18 @@ export function NotificationCenter({ isOpen, onClose }: NotificationCenterProps)
         if (!user) return;
         setIsLoading(true);
         try {
-            const [f, m, t, ti] = await Promise.all([
+            const [f, m, t, ti, tc] = await Promise.all([
                 getPendingRequests(user.id),
                 getMatchInvitations(user.id),
                 getPendingJoinRequestsForCaptain(user.id),
-                getTeamInvitations(user.id)
+                getTeamInvitations(user.id),
+                getPendingChallengesForCaptain(user.id)
             ]);
             setFriendRequests(f);
             setMatchInvites(m);
             setTeamRequests(t);
             setTeamInvitations(ti);
+            setTeamChallenges(tc);
         } catch (err) {
             console.error("Error fetching notifications:", err);
         } finally {
@@ -90,7 +94,23 @@ export function NotificationCenter({ isOpen, onClose }: NotificationCenterProps)
         }
     };
 
-    const hasNotifications = friendRequests.length > 0 || matchInvites.length > 0 || teamRequests.length > 0 || teamInvitations.length > 0;
+    const handleChallengeAction = async (challengeId: string, accept: boolean) => {
+        setActionLoading(challengeId);
+        try {
+            await respondToChallenge(challengeId, accept ? 'accepted' : 'declined');
+            setTeamChallenges(prev => prev.filter(c => c.id !== challengeId));
+            if (accept) {
+                alert('¡Desafío aceptado! El partido ha sido creado y los jugadores notificados.');
+            }
+        } catch (err: any) {
+            console.error(err);
+            alert(`Error: ${err.message}`);
+        } finally {
+            setActionLoading(null);
+        }
+    };
+
+    const hasNotifications = friendRequests.length > 0 || matchInvites.length > 0 || teamRequests.length > 0 || teamInvitations.length > 0 || teamChallenges.length > 0;
 
     return (
         <AnimatePresence>
@@ -213,6 +233,61 @@ export function NotificationCenter({ isOpen, onClose }: NotificationCenterProps)
                                                 </motion.div>
                                             );
                                         })}
+                                    </AnimatePresence>
+
+                                    {/* Team Challenges (Captain) */}
+                                    <AnimatePresence mode="popLayout">
+                                        {teamChallenges.map((challenge) => (
+                                            <motion.div 
+                                                key={challenge.id}
+                                                variants={{
+                                                    hidden: { opacity: 0, y: 15, scale: 0.96, filter: 'blur(4px)' },
+                                                    show: { opacity: 1, y: 0, scale: 1, filter: 'blur(0px)' }
+                                                }}
+                                                layout
+                                                transition={{ 
+                                                    type: "spring",
+                                                    stiffness: 400,
+                                                    damping: 30
+                                                }}
+                                                className="p-4 rounded-[2rem] bg-amber-500/[0.03] border border-amber-500/20 hover:bg-amber-500/5 hover:border-amber-500/40 transition-all flex flex-col gap-4 group"
+                                            >
+                                                <div className="flex items-center gap-4">
+                                                    <div className="w-12 h-12 rounded-2xl bg-amber-500/10 flex items-center justify-center shrink-0 border border-amber-500/20 shadow-lg group-hover:rotate-6 transition-transform">
+                                                        <Swords className="w-6 h-6 text-amber-500" />
+                                                    </div>
+                                                    <div className="flex-1 min-w-0">
+                                                        <div className="flex items-center gap-2 mb-1">
+                                                            <span className="text-[10px] text-amber-500 font-black uppercase tracking-widest italic animate-pulse">¡RETO RECIBIDO!</span>
+                                                        </div>
+                                                        <p className="text-[14px] font-black text-foreground italic uppercase tracking-tight truncate leading-tight">
+                                                            {challenge.challenger_team?.name}
+                                                        </p>
+                                                        <div className="flex items-center gap-2 mt-1">
+                                                            <span className="text-[9px] text-foreground/40 font-black uppercase tracking-widest leading-none">
+                                                                Para el {challenge.match_date} · {challenge.match_time} HS
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div className="flex gap-2">
+                                                    <button 
+                                                        onClick={() => handleChallengeAction(challenge.id, true)}
+                                                        disabled={actionLoading === challenge.id}
+                                                        className="flex-[2] py-3 bg-amber-500 text-background text-[10px] font-black uppercase tracking-widest rounded-xl hover:bg-white transition-all disabled:opacity-50 shadow-xl shadow-amber-500/10 active:scale-95"
+                                                    >
+                                                        {actionLoading === challenge.id ? <Loader2 className="w-4 h-4 animate-spin mx-auto" /> : 'Aceptar Desafío'}
+                                                    </button>
+                                                    <button 
+                                                        onClick={() => handleChallengeAction(challenge.id, false)}
+                                                        disabled={actionLoading === challenge.id}
+                                                        className="flex-1 py-3 bg-white/[0.03] border border-white/[0.05] text-foreground/30 text-[10px] font-black uppercase tracking-widest rounded-xl hover:text-foreground hover:bg-white/[0.08] transition-all disabled:opacity-50 active:scale-95"
+                                                    >
+                                                        Ignorar
+                                                    </button>
+                                                </div>
+                                            </motion.div>
+                                        ))}
                                     </AnimatePresence>
 
                                     {/* Team Invitations (Player) */}
