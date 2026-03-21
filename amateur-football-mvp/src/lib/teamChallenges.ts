@@ -116,7 +116,7 @@ export async function respondToChallenge(challengeId: string, status: 'accepted'
             level: 'Amateur',
             missing_players: 0,
             price: 0,
-            creator_id: challenge.challenger_team.captain_id,
+            creator_id: challenge.challenged_team.captain_id,
             team_a_id: challenge.challenger_team_id,
             team_b_id: challenge.challenged_team_id,
             team_a_name: challenge.challenger_team.name,
