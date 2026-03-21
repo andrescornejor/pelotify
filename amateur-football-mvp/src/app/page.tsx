@@ -25,6 +25,7 @@ import {
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
+import { FifaCard } from '@/components/FifaCard';
 import { RatingModal } from '@/components/RatingModal';
 import { getUserMatches, Match } from '@/lib/matches';
 import { getUserTeams, Team } from '@/lib/teams';
@@ -155,6 +156,21 @@ export default function HomePage() {
       opacity: 1, y: 0,
       transition: { type: 'spring' as const, stiffness: 280, damping: 24, delay: i * 0.07 }
     })
+  };
+
+  const playerData = {
+      name: userName,
+      overall: elo,
+      position: metadata?.position || 'MC',
+      stats: {
+          pac: metadata?.stats?.pac || 75,
+          sho: metadata?.stats?.sho || 70,
+          pas: metadata?.stats?.pas || 72,
+          dri: metadata?.stats?.dri || 78,
+          def: metadata?.stats?.def || 65,
+          phy: metadata?.stats?.phy || 70
+      },
+      mvpTrophies: metadata?.mvp_count || 0
   };
 
   return (
@@ -297,7 +313,7 @@ export default function HomePage() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.6 }}
-                className="grid grid-cols-2 sm:grid-cols-3 gap-6 pt-4"
+                className="grid grid-cols-2 sm:grid-cols-3 gap-6 pt-2"
               >
                 {[
                   { label: 'Rango Actual', value: rank.name, color: rank.color, icon: Trophy },
@@ -314,81 +330,52 @@ export default function HomePage() {
                   </div>
                 ))}
               </motion.div>
+
+              {/* Action Buttons */}
+              <motion.div 
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.7 }}
+                className="flex flex-col sm:flex-row gap-4 pt-4"
+              >
+                <Link href="/create" className="flex-1 sm:flex-none">
+                  <button className="w-full sm:w-auto px-8 h-14 rounded-full bg-primary text-background font-black uppercase text-[11px] tracking-[0.3em] shadow-[0_15px_40px_rgba(44,252,125,0.3)] flex items-center justify-center gap-3 hover:scale-105 active:scale-95 transition-all">
+                    <PlusCircle className="w-5 h-5" /> ARMAR PARTIDO
+                  </button>
+                </Link>
+                <Link href="/search" className="flex-1 sm:flex-none">
+                  <button className="w-full sm:w-auto px-8 h-14 rounded-full glass border-white/10 text-foreground/70 font-black uppercase text-[11px] tracking-widest flex items-center justify-center gap-2 hover:text-foreground hover:bg-foreground/5 active:scale-95 transition-all">
+                    <Search className="w-4 h-4" /> EXPLORAR MAPA
+                  </button>
+                </Link>
+              </motion.div>
             </div>
 
-            {/* Right: Modern CTA Cards */}
+            {/* Right: Personal 3D Card */}
             <motion.div
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: 0.4, duration: 0.7 }}
-              className="lg:shrink-0 w-full lg:w-[400px] space-y-4"
+              initial={{ opacity: 0, scale: 0.8, rotateY: 15 }}
+              animate={{ opacity: 1, scale: 1, rotateY: 0 }}
+              transition={{ delay: 0.4, duration: 1, type: "spring", stiffness: 100 }}
+              className="lg:shrink-0 w-full lg:w-auto flex justify-center lg:justify-end perspective-1000 mt-8 lg:mt-0"
             >
-              {/* Rank Progress Card */}
-              <div className="glass-premium p-6 rounded-[2rem] border-white/5 space-y-5">
-                <div className="flex justify-between items-end">
-                  <div>
-                    <p className="text-[10px] font-black text-foreground/40 uppercase tracking-widest">PROGRESO DE LIGA</p>
-                    <h3 className="text-xl font-black italic text-foreground leading-none font-kanit uppercase">
-                      Siguiente: <span style={{ color: nextRank.color }}>{nextRank.name}</span>
-                    </h3>
-                  </div>
-                  <span className="text-2xl font-black text-primary/80 italic font-kanit">{Math.round(progressToNextRank)}%</span>
-                </div>
-
-                <div className="relative h-6 bg-foreground/5 rounded-full p-1 overflow-hidden border border-white/5">
-                  <motion.div
-                    initial={{ width: 0 }}
-                    animate={{ width: `${progressToNextRank}%` }}
-                    transition={{ duration: 2, ease: "circOut", delay: 0.8 }}
-                    className="h-full rounded-full relative group"
-                    style={{
-                      background: `linear-gradient(90deg, ${rank.hex}, #5dfd9d)`,
-                      boxShadow: `0 0 20px ${rank.glow}`
-                    }}
-                  >
-                    <div className="absolute inset-0 animate-shimmer opacity-30" />
-                  </motion.div>
-                </div>
-
-                <div className="flex justify-between text-[8px] font-black text-foreground/30 uppercase tracking-[0.3em]">
-                  <span>{rank.name} ({rankInfo.minElo})</span>
-                  <span>{nextRank.minElo} XP REQUERIDOS</span>
-                </div>
-              </div>
-
-              {/* Action Buttons Column */}
-              <div className="grid grid-cols-2 gap-3">
-                <Link href="/create" className="col-span-2">
-                  <motion.button
-                    whileHover={{ scale: 1.02, y: -2 }}
-                    whileTap={{ scale: 0.98 }}
-                    className="w-full h-14 rounded-2xl bg-primary text-background font-black uppercase text-[11px] tracking-[0.3em] shadow-[0_15px_40px_rgba(44,252,125,0.3)] flex items-center justify-center gap-3 relative overflow-hidden group"
-                  >
-                    <div className="absolute inset-x-0 bottom-0 h-1/2 bg-white/10 group-hover:h-full transition-all duration-500" />
-                    <PlusCircle className="w-5 h-5 relative z-10 group-hover:rotate-180 transition-transform duration-700" />
-                    <span className="relative z-10">ARMAR PARTIDO</span>
-                  </motion.button>
-                </Link>
-                <Link href="/search">
-                  <motion.button
-                    whileHover={{ scale: 1.02, y: -2 }}
-                    whileTap={{ scale: 0.98 }}
-                    className="w-full h-12 rounded-2xl glass border-white/10 text-foreground/70 font-black uppercase text-[10px] tracking-widest flex items-center justify-center gap-2 hover:text-foreground transition-colors"
-                  >
-                    <Search className="w-4 h-4" />
-                    <span>EXPLORAR</span>
-                  </motion.button>
-                </Link>
-                <Link href="/ranks">
-                  <motion.button
-                    whileHover={{ scale: 1.02, y: -2 }}
-                    whileTap={{ scale: 0.98 }}
-                    className="w-full h-12 rounded-2xl glass border-white/10 text-foreground/70 font-black uppercase text-[10px] tracking-widest flex items-center justify-center gap-2 hover:text-foreground transition-colors"
-                  >
-                    <Trophy className="w-4 h-4" />
-                    <span>RANKINGS</span>
-                  </motion.button>
-                </Link>
+              <div className="relative group">
+                 {/* Intense ambient glow behind card */}
+                 <div className="absolute inset-0 bg-primary/20 blur-[100px] rounded-full opacity-50 group-hover:opacity-80 group-hover:bg-primary/30 transition-all duration-700 pointer-events-none" />
+                 
+                 {/* The Interactive Fifa Card */}
+                 <div className="relative z-10 scale-[0.85] sm:scale-100 transform origin-center lg:origin-right">
+                    <FifaCard player={playerData} />
+                 </div>
+                 
+                 {/* Floating Badges next to card */}
+                 <motion.div 
+                    animate={{ y: [0, -10, 0] }}
+                    transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+                    className="absolute -right-4 top-10 glass-premium p-3 rounded-2xl border-white/10 shadow-2xl z-20 hidden sm:flex items-center gap-2"
+                 >
+                    <Trophy className="w-5 h-5 text-primary" />
+                    <span className="font-black text-[10px] uppercase">{rank.name}</span>
+                 </motion.div>
               </div>
             </motion.div>
           </div>
