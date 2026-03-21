@@ -161,11 +161,22 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         if (isLoading) return;
 
         const isAuthRoute = pathname === '/login' || pathname === '/register' || pathname === '/update-password';
+        const isOnboardingRoute = pathname === '/onboarding';
 
         if (!user && !isAuthRoute) {
             router.push('/login');
-        } else if (user && isAuthRoute) {
-            router.push('/');
+        } else if (user) {
+            // Check if user has finished onboarding (we store this in user_metadata)
+            // Existing users without this flag will bypass if we assume they are already set 
+            // but for this MVP demo we will enforce onboarding unless they have 'onboarded: true'
+            // or if they have a custom 'avatar_url' maybe? Let's just use the flag.
+            const hasOnboarded = user.user_metadata?.onboarded === true;
+            
+            if (!hasOnboarded && pathname !== '/onboarding') {
+                router.push('/onboarding');
+            } else if (hasOnboarded && (isAuthRoute || pathname === '/onboarding')) {
+                router.push('/');
+            }
         }
     }, [user, isLoading, pathname, router]);
 
