@@ -3,6 +3,7 @@
 import { motion, Variants } from 'framer-motion';
 import { Trophy, ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { RANKS } from '@/lib/ranks';
 import { cn } from '@/lib/utils';
 import { RankBadge } from '@/components/RankBadge';
@@ -12,6 +13,7 @@ import { supabase } from '@/lib/supabase';
 import { getRankByElo } from '@/lib/ranks';
 
 export default function RanksPage() {
+    const router = useRouter();
     const [topPlayers, setTopPlayers] = useState<any[]>([]);
     const [isLoading, setIsLoading] = useState(true);
 
