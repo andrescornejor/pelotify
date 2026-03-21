@@ -451,106 +451,68 @@ function ProfileContent() {
     }
 
     return (
-        <div className="flex flex-col gap-8 p-4 sm:p-6 lg:p-10 xl:p-14 2xl:p-16 max-w-[1600px] mx-auto min-h-screen bg-background relative overflow-hidden">
-            {/* Ambient Effects - More subtle and layered */}
-            <div className="fixed inset-0 pointer-events-none -z-10">
+        <div className="flex flex-col gap-8 p-4 sm:p-6 lg:p-10 xl:p-14 2xl:p-16 max-w-full mx-auto min-h-screen bg-background relative">
+            {/* Ambient Effects */}
+            <div className="fixed inset-0 pointer-events-none -z-10 overflow-hidden">
                 <div 
-                    className="absolute top-0 left-0 w-full h-[70dvh] bg-gradient-to-b via-transparent to-transparent opacity-40 transition-all duration-1000" 
-                    style={{ backgroundImage: ambientColor ? `linear-gradient(to bottom, ${ambientColor}33, transparent)` : undefined }}
+                    className="absolute top-0 left-0 w-full h-[60dvh] bg-gradient-to-b via-transparent to-transparent opacity-30" 
+                    style={{ backgroundImage: ambientColor ? `linear-gradient(to bottom, ${ambientColor}, transparent)` : undefined }}
                 />
                 <div 
-                    className={cn("absolute top-[-10%] right-[-10%] w-[60%] h-[60%] blur-[120px] rounded-full animate-pulse transition-all duration-1000", !ambientColor && "bg-primary/5")} 
-                    style={{ backgroundColor: ambientColor ? `${ambientColor}22` : undefined }}
-                />
-                <div 
-                    className="absolute bottom-[-10%] left-[-10%] w-[50%] h-[50%] blur-[100px] rounded-full opacity-20" 
-                    style={{ backgroundColor: ambientColor ? `${ambientColor}11` : 'var(--primary-rgb)' }}
+                    className={cn("absolute top-[-15%] right-[-10%] w-[70%] h-[70%] blur-[140px] rounded-full animate-pulse", !ambientColor && "bg-primary/5")} 
+                    style={{ backgroundColor: ambientColor || undefined }}
                 />
             </div>
 
-            {/* Header Area */}
-            <div className="relative z-20 flex flex-col md:flex-row justify-between items-start md:items-end gap-6 pb-2 border-b border-foreground/5">
-                <div className="space-y-4">
-                    <motion.div 
-                        initial={{ opacity: 0, x: -20 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        className="flex items-center gap-3"
-                    >
-                        <div className="flex -space-x-1">
-                            <div className="w-1.5 h-1.5 rounded-full bg-primary shadow-[0_0_10px_rgba(var(--primary-rgb),0.8)]" />
-                            <div className="w-1.5 h-1.5 rounded-full bg-primary/40" />
-                            <div className="w-1.5 h-1.5 rounded-full bg-primary/20" />
-                        </div>
-                        <span className="text-[10px] font-black uppercase tracking-[0.5em] text-primary italic leading-none">Terminal de Atleta</span>
-                    </motion.div>
-                    
-                    <h1 className="text-5xl md:text-7xl lg:text-8xl font-black italic text-foreground uppercase tracking-tighter leading-[0.85] group">
-                        {isMe ? (
-                            <>
-                                <span className="text-foreground/20 group-hover:text-primary/20 transition-colors duration-700">Mi</span>
-                                <br />
-                                <span className="relative">
-                                    Perfil
-                                    <motion.span 
-                                        initial={{ width: 0 }}
-                                        animate={{ width: '100%' }}
-                                        className="absolute -bottom-2 left-0 h-4 bg-primary/10 -z-10 skew-x-[-20deg]"
-                                    />
-                                </span>
-                            </>
-                        ) : (
-                            <>
-                                <span className="text-foreground/20 group-hover:text-primary/20 transition-colors duration-700">Perfil</span>
-                                <br />
-                                <span className="relative">
-                                    Público
-                                    <motion.span 
-                                        initial={{ width: 0 }}
-                                        animate={{ width: '100%' }}
-                                        className="absolute -bottom-2 left-0 h-4 bg-primary/10 -z-10 skew-x-[-20deg]"
-                                    />
-                                </span>
-                            </>
-                        )}
+            {/* Header / Actions */}
+            <div className="relative z-10 flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+                <div className="space-y-2">
+                    <div className="flex items-center gap-3">
+                        <div className="w-2 h-2 rounded-full bg-primary animate-pulse" />
+                        <span className="text-[10px] font-black uppercase tracking-[0.4em] text-foreground/40 italic">Central de Jugador</span>
+                    </div>
+                    <h1 className="text-4xl md:text-6xl lg:text-7xl font-black italic text-foreground uppercase tracking-tighter leading-none group">
+                        {isMe ? 'Mi ' : ''}
+                        <span className="text-foreground/40 group-hover:text-primary transition-colors duration-500">Perfil</span>
+                        {!isMe && <span className="text-foreground/20 ml-4 group-hover:text-primary/40 transition-colors">Público</span>}
                     </h1>
                 </div>
 
                 {isMe && (
-                    <div className="flex items-center gap-4 self-end md:mb-2">
+                    <div className="flex items-center gap-4">
                         <AnimatePresence mode="wait">
                             {isEditing ? (
                                 <motion.div 
-                                    initial={{ opacity: 0, scale: 0.95 }}
-                                    animate={{ opacity: 1, scale: 1 }}
-                                    exit={{ opacity: 0, scale: 0.95 }}
-                                    className="flex gap-3"
+                                    initial={{ opacity: 0, x: 20 }}
+                                    animate={{ opacity: 1, x: 0 }}
+                                    exit={{ opacity: 0, x: 20 }}
+                                    className="flex gap-4"
                                 >
                                     <button
                                         onClick={() => setIsEditing(false)}
-                                        className="h-12 px-6 rounded-2xl bg-foreground/5 border border-foreground/10 text-[10px] font-black uppercase tracking-widest text-foreground/40 hover:text-foreground hover:bg-foreground/10 transition-all active:scale-95 disabled:opacity-50"
+                                        className="h-11 px-6 rounded-xl bg-foreground/5 border border-foreground/10 text-[10px] font-black uppercase tracking-widest text-foreground/50 hover:text-foreground transition-all disabled:opacity-50 active:scale-95"
                                         disabled={isSaving}
                                     >
                                         Cancelar
                                     </button>
                                     <button
                                         onClick={handleSaveProfile}
-                                        className="h-12 px-8 rounded-2xl bg-primary text-black text-[10px] font-black uppercase tracking-[0.2em] shadow-2xl shadow-primary/30 hover:bg-white hover:scale-105 active:scale-95 transition-all disabled:opacity-50 flex items-center gap-3"
+                                        className="h-11 px-6 rounded-xl bg-primary text-black text-[10px] font-black uppercase tracking-widest shadow-xl shadow-primary/20 hover:bg-white transition-all disabled:opacity-50 flex items-center gap-3 active:scale-95"
                                         disabled={isSaving}
                                     >
                                         {isSaving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
-                                        Sincronizar
+                                        Guardar
                                     </button>
                                 </motion.div>
                             ) : (
                                 <motion.button
-                                    initial={{ opacity: 0, y: 10 }}
-                                    animate={{ opacity: 1, y: 0 }}
+                                    initial={{ opacity: 0, scale: 0.9 }}
+                                    animate={{ opacity: 1, scale: 1 }}
                                     onClick={() => setIsEditing(true)}
-                                    className="h-14 px-10 rounded-2xl bg-foreground/5 border border-foreground/10 text-[11px] font-black uppercase tracking-[0.3em] text-foreground hover:bg-foreground/10 hover:border-primary/30 transition-all flex items-center gap-4 group active:scale-95 relative overflow-hidden"
+                                    className="h-11 px-8 rounded-xl bg-foreground/5 border border-foreground/10 text-[11px] font-black uppercase tracking-[0.2em] text-foreground hover:bg-foreground/10 transition-all flex items-center gap-3 group active:scale-95"
                                 >
-                                    <div className="absolute inset-0 bg-gradient-to-r from-primary/0 via-primary/5 to-primary/0 translate-x-[-200%] group-hover:translate-x-[200%] transition-transform duration-1000" />
                                     <Edit2 className="w-5 h-5 text-primary group-hover:rotate-12 transition-transform duration-500" />
-                                    <span>Modificar Perfil</span>
+                                    Editar Perfil
                                 </motion.button>
                             )}
                         </AnimatePresence>
@@ -558,176 +520,175 @@ function ProfileContent() {
                 )}
             </div>
 
-            {/* Hero Dashboard Area: Card on Left, Team & Data on Right */}
-            <div className="relative z-20 flex flex-col lg:grid lg:grid-cols-[400px,1fr] xl:grid-cols-[450px,1fr] gap-12 lg:gap-16 pt-4">
-                
-                {/* Left: Identity Column */}
-                <div className="space-y-10">
-                    <div className="relative group">
-                        {/* Glow behind card */}
-                        <div 
-                            className={cn("absolute -inset-10 blur-[100px] rounded-full pointer-events-none animate-pulse opacity-40 transition-all duration-1000", !ambientColor && "bg-primary/20")} 
-                            style={{ backgroundColor: ambientColor ? `${ambientColor}44` : undefined }}
-                        />
+            {/* Profile Hero Section */}
+            <div className="relative z-10 flex flex-col lg:flex-row gap-8 items-center lg:items-start pt-4">
+                {/* Left: FIFA Card */}
+                <div className="relative shrink-0 group">
+                    <div 
+                        className={cn("absolute -inset-20 blur-[120px] rounded-full pointer-events-none animate-pulse", !ambientColor && "bg-primary/10")} 
+                        style={{ backgroundColor: ambientColor || undefined }}
+                    />
+                    <div className="relative">
+                        <FifaCard player={{ 
+                            ...displayPlayer, 
+                            name: (isEditing ? editedData.name : displayPlayer.name) as string, 
+                            position: (isEditing ? editedData.position : displayPlayer.position) as string,
+                            image: avatarPreview || getField('avatar_url', undefined) as string | undefined,
+                            mvpTrophies: mvpCount,
+                            badges: userBadges.map(b => b.badge_type as string)
+                        }} />
                         
-                        <div className="relative perspective-1000">
-                            <FifaCard player={{ 
-                                ...displayPlayer, 
-                                name: (isEditing ? editedData.name : displayPlayer.name) as string, 
-                                position: (isEditing ? editedData.position : displayPlayer.position) as string,
-                                image: avatarPreview || getField('avatar_url', undefined) as string | undefined,
-                                mvpTrophies: mvpCount,
-                                badges: userBadges.map(b => b.badge_type as string)
-                            }} />
-                            
-                            {isEditing && (
-                                <label className="absolute inset-0 z-30 flex flex-col items-center justify-center bg-background/80 backdrop-blur-md cursor-pointer opacity-0 group-hover:opacity-100 transition-all duration-500 text-foreground border-4 border-dashed border-primary/30 rounded-[3rem] m-2">
-                                    <div className="w-16 h-16 rounded-full bg-primary/20 flex items-center justify-center mb-4 animate-bounce">
-                                        <Camera className="w-8 h-8 text-primary" />
-                                    </div>
-                                    <span className="text-[10px] font-black uppercase tracking-[0.3em] text-primary">Cargar Nueva Bio-Imagen</span>
-                                    <input type="file" accept="image/*" className="hidden" onChange={handleAvatarChange} />
-                                </label>
-                            )}
-                        </div>
+                        {isEditing && (
+                            <label className="absolute inset-0 z-30 flex flex-col items-center justify-center bg-background/60 backdrop-blur-sm cursor-pointer opacity-0 group-hover:opacity-100 transition-all text-foreground border-4 border-dashed border-primary/20 rounded-[2rem] m-2">
+                                <Camera className="w-8 h-8 mb-2 text-primary" />
+                                <span className="text-[10px] font-black uppercase tracking-widest leading-none">Cambiar Foto</span>
+                                <input type="file" accept="image/*" className="hidden" onChange={handleAvatarChange} />
+                            </label>
+                        )}
                     </div>
-
-                    {/* Hierarchy Stats (Visible on all screens under card) */}
-                    <div className="glass-premium p-8 rounded-[2.5rem] border border-foreground/5 flex items-center justify-between">
-                        <div className="space-y-1">
-                            <span className="text-[9px] font-black text-foreground/30 uppercase tracking-widest leading-none">Jerarquía de Atleta</span>
-                            <div className="flex items-center gap-2">
-                                <Trophy className="w-4 h-4 text-accent" />
-                                <span className="text-sm font-black text-foreground uppercase tracking-tighter">PRO Nivel 12</span>
-                            </div>
-                        </div>
-                        <div className="w-12 h-12 rounded-xl bg-accent/10 flex items-center justify-center">
-                            <span className="text-lg font-black text-accent italic">12</span>
-                        </div>
-                    </div>
-                </div>
-
-                {/* Right: Consolidated Team & Stats Panel */}
-                <div className="space-y-10 flex flex-col justify-center">
                     
-                    {/* Team Branding & Bio Info */}
-                    <div className="glass-premium p-10 lg:p-14 rounded-[4rem] border border-foreground/10 relative overflow-hidden group/team-hero shadow-[0_40px_80px_rgba(0,0,0,0.2)]">
-                        <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-primary/5 blur-[120px] -translate-y-1/2 translate-x-1/2 rounded-full pointer-events-none" />
-                        
-                        <div className="flex flex-col md:flex-row items-center gap-10 relative z-10">
-                            {/* Team Logo or Placeholder */}
-                            <div className="w-32 h-32 md:w-44 md:h-44 rounded-[2.5rem] bg-foreground/5 border border-foreground/10 flex items-center justify-center overflow-hidden relative shadow-2xl shrink-0 group-hover/team-hero:border-primary/30 transition-all duration-700">
-                                {userTeam?.logo_url ? (
-                                    <img src={userTeam.logo_url} className="w-full h-full object-cover" alt="Team" />
-                                ) : (
-                                    <Shield className="w-16 h-16 text-foreground/10" />
+                    {isEditing && (
+                        <motion.div 
+                            initial={{ opacity: 0, y: 10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            className="mt-6 glass-premium p-6 space-y-6 border border-primary/20 rounded-[2rem] shadow-xl"
+                        >
+                            {/* Skill Points Display */}
+                            <div className="flex items-center justify-between p-4 bg-primary/10 border border-primary/20 rounded-2xl">
+                                <div className="flex items-center gap-3">
+                                    <div className="w-10 h-10 rounded-xl bg-primary/20 flex items-center justify-center">
+                                        <Zap className="w-5 h-5 text-primary animate-pulse" />
+                                    </div>
+                                    <div className="flex flex-col">
+                                        <span className="text-[9px] font-black text-primary uppercase tracking-[0.2em] leading-tight">Puntos de Habilidad</span>
+                                        <span className="text-xl font-black text-foreground">{skillPoints}</span>
+                                    </div>
+                                </div>
+                                {skillPoints > 0 && (
+                                    <span className="text-[8px] font-black text-primary uppercase animate-bounce">¡Mejora tu carta!</span>
                                 )}
                             </div>
 
-                            <div className="flex-1 text-center md:text-left space-y-6">
-                                <div className="space-y-2">
-                                    <div className="flex items-center justify-center md:justify-start gap-4 mb-4">
-                                        <div className="px-4 py-1 bg-primary/10 border border-primary/20 rounded-full flex items-center gap-2">
-                                            <div className="w-1 h-1 rounded-full bg-primary animate-ping" />
-                                            <span className="text-[9px] font-black text-primary uppercase tracking-widest italic">Status Operativo</span>
+                            {/* Stat Editor Controls */}
+                            <div className="grid grid-cols-2 gap-4">
+                                {(Object.keys(editedStats) as Array<keyof PlayerStats>).map(key => (
+                                    <div key={key} className="flex flex-col gap-2">
+                                        <div className="flex justify-between items-center px-1">
+                                            <span className="text-[10px] font-black text-foreground/40 uppercase tracking-widest">{key}</span>
+                                            <span className="text-xs font-black text-foreground">{editedStats[key]}</span>
                                         </div>
-                                        <div className="px-4 py-1 bg-foreground/5 border border-foreground/10 rounded-full">
-                                            <span className="text-[9px] font-black text-foreground/40 uppercase tracking-widest italic">Activo desde {new Date().getFullYear()}</span>
+                                        <div className="flex gap-1">
+                                            <button 
+                                                onClick={() => {
+                                                    if (editedStats[key] > resolveStats()[key]) {
+                                                        setSkillPoints(prev => prev + 1);
+                                                        setEditedStats(prev => ({ ...prev, [key]: prev[key] - 1 }));
+                                                    }
+                                                }}
+                                                disabled={editedStats[key] <= (dbProfile.stats?.[key] || 0)}
+                                                className="flex-1 h-9 rounded-lg bg-foreground/5 border border-foreground/10 text-xs font-black disabled:opacity-30 flex items-center justify-center hover:bg-foreground/10 transition-all"
+                                            >
+                                                -
+                                            </button>
+                                            <button 
+                                                onClick={() => {
+                                                    if (skillPoints > 0 && editedStats[key] < 99) {
+                                                        setSkillPoints(prev => prev - 1);
+                                                        setEditedStats(prev => ({ ...prev, [key]: prev[key] + 1 }));
+                                                    }
+                                                }}
+                                                disabled={skillPoints === 0 || editedStats[key] >= 99}
+                                                className="flex-1 h-9 rounded-lg bg-primary/20 border border-primary/20 text-primary text-xs font-black disabled:opacity-30 flex items-center justify-center hover:bg-primary/30 transition-all"
+                                            >
+                                                +
+                                            </button>
                                         </div>
                                     </div>
-                                    <h2 className="text-4xl md:text-6xl font-black italic text-foreground uppercase tracking-tighter leading-none">
-                                        {userTeam?.name || 'Agente Independiente'}
-                                    </h2>
-                                    {userTeam?.motto && (
-                                        <p className="text-lg font-bold text-foreground/30 italic uppercase tracking-tight max-w-sm">"{userTeam.motto}"</p>
-                                    )}
-                                </div>
+                                ))}
+                            </div>
 
-                                {/* Bio Stats Strip Integrated Here */}
-                                <div className="flex flex-wrap items-center justify-center md:justify-start gap-8 pt-4 border-t border-foreground/5">
-                                    {[
-                                        { label: 'EDAD', value: displayAge, unit: 'Años' },
-                                        { label: 'ALTURA', value: displayHeight, unit: 'CM' },
-                                        { label: 'PERFIL', value: displayFoot, unit: 'Pie' },
-                                        { label: 'ELO EQUIPO', value: userTeam?.elo || '--', unit: 'Pts' }
-                                    ].map((s, i) => (
-                                        <div key={i} className="flex flex-col">
-                                            <span className="text-[8px] font-black text-foreground/20 uppercase tracking-[0.3em]">{s.label}</span>
-                                            <div className="flex items-baseline gap-1">
-                                                <span className="text-xl font-black text-foreground italic">{s.value}</span>
-                                                <span className="text-[7px] font-black text-foreground/10 uppercase italic">{s.unit}</span>
-                                            </div>
-                                        </div>
-                                    ))}
+                            <div className="space-y-4 pt-2">
+                                <div className="space-y-3">
+                                    <label className="text-[10px] font-black uppercase text-foreground/40 tracking-[0.3em] ml-1">Nombre en Carta</label>
+                                    <input
+                                        type="text"
+                                        className="w-full h-14 bg-background/40 border border-foreground/5 rounded-2xl px-6 text-foreground text-sm font-black outline-none focus:border-primary/50 transition-all uppercase placeholder:foreground/20"
+                                        value={editedData.name}
+                                        onChange={e => setEditedData({ ...editedData, name: e.target.value })}
+                                    />
+                                </div>
+                                <div className="space-y-3">
+                                    <label className="text-[10px] font-black uppercase text-foreground/40 tracking-[0.3em] ml-1">Posición Principal</label>
+                                    <div className="relative">
+                                        <select
+                                            className="w-full h-14 bg-background/40 border border-foreground/5 rounded-2xl px-6 text-foreground text-sm font-black outline-none focus:border-primary/50 appearance-none cursor-pointer uppercase transition-all"
+                                            value={editedData.position}
+                                            onChange={e => setEditedData({ ...editedData, position: e.target.value })}
+                                        >
+                                            <option value="POR">PORTERO (POR)</option>
+                                            <option value="DFC">DEFENSA (DFC)</option>
+                                            <option value="MC">MEDIOCAMPISTA (MC)</option>
+                                            <option value="DC">DELANTERO (DC)</option>
+                                            <option value="ED">EXTREMO DERECHO (ED)</option>
+                                            <option value="EI">EXTREMO IZQUIERDO (EI)</option>
+                                        </select>
+                                        <ChevronRight className="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-foreground/40 rotate-90 pointer-events-none" />
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    </div>
+                        </motion.div>
+                    )}
+                </div>
 
-                    {/* Core Performance Grid */}
+                {/* Right: Stats & Info */}
+                <div className="flex-1 w-full space-y-12">
+                    {/* Stats Highlights */}
                     <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
                         {[
-                            { icon: Zap, label: 'Estatus Radar', value: displayElo, color: 'text-primary', unit: 'ELO' },
+                            { icon: Trophy, label: 'Estatus Card', value: displayElo, color: 'text-primary', unit: 'ELO' },
                             { icon: History, label: 'Despliegues', value: displayMatches, color: 'text-blue-500', unit: 'EXP' },
-                            { icon: Target, label: 'Efectividad', value: displayGoals, color: 'text-accent', unit: 'GOL' }
+                            { icon: Target, label: 'Objetivos', value: displayGoals, color: 'text-accent', unit: 'GOL' }
                         ].map((node, i) => (
-                            <motion.div 
-                                key={i}
-                                initial={{ opacity: 0, y: 30 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                transition={{ delay: 0.2 + (i * 0.1) }}
-                                className="glass-premium-hover p-8 rounded-[3rem] border border-foreground/10 relative overflow-hidden group h-full flex flex-col justify-between bg-foreground/[0.01]"
-                            >
-                                <div className="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-all">
-                                    <node.icon className={cn("w-12 h-12", node.color)} />
+                            <div key={i} className="glass-premium p-8 rounded-[3rem] border border-foreground/10 relative overflow-hidden group transition-all duration-500 hover:y-[-8px]">
+                                <div className={cn("absolute inset-x-0 top-0 h-1 bg-gradient-to-r via-transparent opacity-50", 
+                                    i === 0 ? "from-primary" : i === 1 ? "from-blue-500" : "from-accent"
+                                )} />
+                                <div className="flex items-center justify-between mb-4">
+                                    <node.icon className={cn("w-6 h-6 opacity-40 group-hover:opacity-100 transition-opacity", node.color)} />
+                                    <span className="text-[10px] font-black text-foreground/20 uppercase tracking-widest italic">Node 0{i+1}</span>
                                 </div>
-                                <div className="flex items-center justify-between mb-6">
-                                    <div className={cn("w-10 h-10 rounded-xl flex items-center justify-center border", 
-                                        i === 0 ? "bg-primary/10 border-primary/20" : i === 1 ? "bg-blue-500/10 border-blue-500/20" : "bg-accent/10 border-accent/20"
-                                    )}>
-                                        <node.icon className="w-5 h-5" />
-                                    </div>
-                                    <span className="text-[9px] font-black text-foreground/10 uppercase tracking-widest italic">IDX-0{i+1}</span>
+                                <div className="flex items-baseline gap-2">
+                                    <span className="text-5xl font-black text-foreground italic tracking-tighter leading-none">{node.value}</span>
+                                    <span className="text-[10px] font-black text-foreground/40 uppercase tracking-[0.2em]">{node.unit}</span>
                                 </div>
-                                <div className="space-y-1">
-                                    <div className="flex items-baseline gap-2">
-                                        <span className="text-5xl font-black text-foreground italic tracking-tighter leading-none">{node.value}</span>
-                                        <span className={cn("text-[9px] font-black uppercase tracking-widest", node.color)}>{node.unit}</span>
-                                    </div>
-                                    <p className="text-[9px] font-black uppercase text-foreground/30 tracking-[0.3em]">{node.label}</p>
-                                </div>
-                            </motion.div>
+                                <p className="text-[9px] font-black uppercase text-foreground/40 tracking-[0.3em] mt-3 ml-0.5">{node.label}</p>
+                            </div>
                         ))}
                     </div>
-                </div>
-            </div>
 
-            {/* Content Tabs Section: Navigation + Tab Contents */}
-            <div className="mt-16 sm:mt-24 space-y-12 relative z-20">
-                <div className="sticky top-4 z-40 py-2">
-                    <div className="flex p-2 bg-foreground/5 rounded-[2.5rem] border border-foreground/10 backdrop-blur-2xl shadow-2xl relative">
+                    {/* Navigation Tabs */}
+                    <div className="sticky top-0 z-30 py-4 bg-background/80 backdrop-blur-xl -mx-4 px-4 lg:-mx-0 lg:px-0">
+                        <div className="flex p-1 bg-foreground/5 rounded-[2rem] border border-foreground/10 relative shadow-2xl backdrop-blur-3xl">
                             {[
-                                { id: 'overview', label: 'Resumen', icon: Info },
-                                { id: 'history', label: 'Cronología', icon: History },
-                                { id: 'wall', label: 'Muro', icon: MessageSquare }
+                                { id: 'overview', label: 'Resumen' },
+                                { id: 'history', label: 'Cronología' },
+                                { id: 'wall', label: 'Muro' }
                             ].map((tab) => (
                                 <button
                                     key={tab.id}
                                     onClick={() => setActiveTab(tab.id as any)}
                                     className={cn(
-                                        "flex-1 py-5 rounded-[2rem] transition-all relative z-10 flex items-center justify-center gap-3 overflow-hidden group/tab",
+                                        "flex-1 py-4 text-[11px] font-black uppercase tracking-[0.4em] rounded-2xl transition-all relative z-10 italic",
                                         activeTab === tab.id ? 'text-black' : 'text-foreground/40 hover:text-foreground'
                                     )}
                                 >
-                                    <tab.icon className={cn("w-4 h-4 transition-transform group-hover/tab:scale-110", activeTab === tab.id ? "text-black" : "text-foreground/40")} />
-                                    <span className="text-[11px] font-black uppercase tracking-[0.4em] italic hidden sm:block">{tab.label}</span>
-                                    
+                                    <span className="relative z-20">{tab.label}</span>
                                     {activeTab === tab.id && (
                                         <motion.div
-                                            layoutId="profile-tab-active-pill"
-                                            className="absolute inset-0 bg-primary rounded-[1.8rem] shadow-[0_0_40px_rgba(var(--primary-rgb),0.5)]"
+                                            layoutId="profile-tab-pill-premium"
+                                            className="absolute inset-0 bg-primary rounded-2xl shadow-[0_0_30px_rgba(16,185,129,0.4)]"
                                             initial={false}
-                                            transition={{ type: 'spring', stiffness: 400, damping: 30 }}
+                                            transition={{ type: 'spring' as const, stiffness: 400, damping: 30 }}
                                         />
                                     )}
                                 </button>
@@ -735,176 +696,210 @@ function ProfileContent() {
                         </div>
                     </div>
 
-                    {/* Viewport Content */}
-                    <div className="min-h-[500px] relative">
+                    {/* Tab Content */}
+                    <div className="min-h-[400px]">
                         <AnimatePresence mode="wait">
                             {activeTab === 'overview' && (
                                 <motion.div
                                     key="overview"
                                     initial={{ opacity: 0, y: 20 }}
                                     animate={{ opacity: 1, y: 0 }}
-                                    exit={{ opacity: 0, scale: 0.98 }}
-                                    className="space-y-12"
+                                    exit={{ opacity: 0, y: -20 }}
+                                    className="space-y-10"
                                 >
-                                    {/* Data Blocks */}
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
-                                        {/* Biometrics Block */}
-                                        <div className="glass-premium p-12 rounded-[3.5rem] border border-foreground/5 relative group overflow-hidden">
-                                            <div className="absolute top-0 right-0 w-64 h-64 bg-primary/5 blur-[80px] -translate-y-1/2 translate-x-1/2 rounded-full pointer-events-none" />
-                                            
-                                            <div className="flex items-center gap-5 mb-12">
-                                                <div className="w-14 h-14 rounded-2xl bg-primary/10 border border-primary/20 flex items-center justify-center transition-all group-hover:bg-primary group-hover:text-black">
-                                                    <Users className="w-7 h-7" />
+                                    {/* Personal Data Grid */}
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                                        <div className="glass-premium p-10 rounded-[3rem] border border-foreground/10 space-y-8 relative overflow-hidden group">
+                                            <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 blur-[50px] opacity-0 group-hover:opacity-100 transition-opacity" />
+                                            <div className="flex items-center gap-4">
+                                                <div className="w-10 h-10 rounded-2xl bg-primary/10 flex items-center justify-center border border-primary/20">
+                                                    <Info className="w-5 h-5 text-primary" />
                                                 </div>
                                                 <div className="flex flex-col">
-                                                    <h3 className="text-lg font-black uppercase tracking-[0.2em] italic text-foreground leading-none">Biometría</h3>
-                                                    <span className="text-[10px] font-black text-foreground/30 uppercase tracking-[0.3em] mt-1">Identificador de Atleta</span>
+                                                    <h3 className="text-sm font-black uppercase tracking-[0.2em] text-foreground italic">Biometría</h3>
+                                                    <span className="text-[9px] font-black text-foreground/70 uppercase tracking-widest leading-none">Identidad de Jugador</span>
                                                 </div>
                                             </div>
                                             
-                                            <div className="space-y-10">
+                                            <div className="space-y-6">
                                                 {isEditing ? (
-                                                    <div className="grid grid-cols-1 gap-8">
-                                                        <div className="grid grid-cols-2 gap-6">
-                                                            <div className="space-y-3">
-                                                                <label className="text-[10px] font-black uppercase text-foreground/40 tracking-[0.2em] ml-2">EDAD</label>
-                                                                <input
-                                                                    type="number"
-                                                                    className="w-full h-16 bg-foreground/[0.03] border border-foreground/10 rounded-2xl px-6 text-foreground font-black outline-none focus:border-primary/50 transition-all text-lg"
-                                                                    value={editedData.age}
-                                                                    onChange={e => setEditedData({ ...editedData, age: e.target.value })}
-                                                                />
-                                                            </div>
-                                                            <div className="space-y-3">
-                                                                <label className="text-[10px] font-black uppercase text-foreground/40 tracking-[0.2em] ml-2">ALTURA (CM)</label>
-                                                                <input
-                                                                    type="number"
-                                                                    className="w-full h-16 bg-foreground/[0.03] border border-foreground/10 rounded-2xl px-6 text-foreground font-black outline-none focus:border-primary/50 transition-all text-lg"
-                                                                    value={editedData.height}
-                                                                    onChange={e => setEditedData({ ...editedData, height: e.target.value })}
-                                                                />
-                                                            </div>
+                                                    <div className="grid grid-cols-2 gap-6">
+                                                        <div className="space-y-2">
+                                                            <label className="text-[10px] font-black uppercase text-foreground/70 tracking-[0.2em] ml-1">Edad</label>
+                                                            <input
+                                                                type="number"
+                                                                className="w-full h-12 bg-foreground/[0.02] border border-foreground/10 rounded-xl px-4 text-foreground text-sm font-black outline-none focus:border-primary/40 transition-all"
+                                                                value={editedData.age}
+                                                                onChange={e => setEditedData({ ...editedData, age: e.target.value })}
+                                                            />
                                                         </div>
-                                                        <div className="space-y-3">
-                                                            <label className="text-[10px] font-black uppercase text-foreground/40 tracking-[0.2em] ml-2">PERFIL DE PIERNA</label>
-                                                            <div className="grid grid-cols-3 gap-3">
-                                                                {['Derecha', 'Zurda', 'Ambidiestro'].map(foot => (
-                                                                    <button
-                                                                        key={foot}
-                                                                        onClick={() => setEditedData({ ...editedData, preferredFoot: foot })}
-                                                                        className={cn(
-                                                                            "h-14 rounded-2xl border font-black text-[10px] uppercase tracking-widest transition-all",
-                                                                            editedData.preferredFoot === foot 
-                                                                                ? "bg-primary border-primary text-black" 
-                                                                                : "bg-foreground/5 border-foreground/10 text-foreground/50 hover:bg-foreground/10"
-                                                                        )}
-                                                                    >
-                                                                        {foot}
-                                                                    </button>
-                                                                ))}
-                                                            </div>
+                                                        <div className="space-y-2">
+                                                            <label className="text-[10px] font-black uppercase text-foreground/70 tracking-[0.2em] ml-1">Altura (cm)</label>
+                                                            <input
+                                                                type="number"
+                                                                className="w-full h-12 bg-foreground/[0.02] border border-foreground/10 rounded-xl px-4 text-foreground text-sm font-black outline-none focus:border-primary/40 transition-all"
+                                                                value={editedData.height}
+                                                                onChange={e => setEditedData({ ...editedData, height: e.target.value })}
+                                                            />
+                                                        </div>
+                                                        <div className="col-span-full space-y-2">
+                                                            <label className="text-[10px] font-black uppercase text-foreground/70 tracking-[0.2em] ml-1">Perfil de Pierna</label>
+                                                            <select
+                                                                className="w-full h-12 bg-foreground/[0.02] border border-foreground/10 rounded-xl px-4 text-foreground text-sm font-black outline-none focus:border-primary/40 appearance-none transition-all uppercase"
+                                                                value={editedData.preferredFoot}
+                                                                onChange={e => setEditedData({ ...editedData, preferredFoot: e.target.value })}
+                                                            >
+                                                                <option value="Derecha">Derecha</option>
+                                                                <option value="Zurda">Zurda</option>
+                                                                <option value="Ambidiestro">Ambidiestro</option>
+                                                            </select>
                                                         </div>
                                                     </div>
                                                 ) : (
-                                                    <div className="grid grid-cols-2 gap-y-12">
-                                                        {[
-                                                            { label: 'Ciclos de Edad', value: `${displayAge} Años`, sub: 'Cronología' },
-                                                            { label: 'Envergadura Vert.', value: `${displayHeight} CM`, sub: 'Antropometría' },
-                                                            { label: 'Perfil Motriz', value: displayFoot, sub: 'Lateralidad' },
-                                                            { label: 'Afiliación Activa', value: teamName, sub: 'Colectivo', primary: true }
-                                                        ].map((item, i) => (
-                                                            <motion.div 
-                                                                key={i}
-                                                                initial={{ opacity: 0, x: -10 }}
-                                                                whileInView={{ opacity: 1, x: 0 }}
-                                                                transition={{ delay: i * 0.1 }}
-                                                                className="flex flex-col gap-2"
-                                                            >
-                                                                <span className="text-[10px] font-black uppercase text-foreground/30 tracking-[0.4em] mb-1">{item.label}</span>
-                                                                <div className="flex flex-col">
-                                                                    <p className={cn("text-2xl font-black italic uppercase tracking-tighter leading-none", item.primary ? "text-primary" : "text-foreground")}>
-                                                                        {item.value}
-                                                                    </p>
-                                                                    <span className="text-[9px] font-black text-foreground/20 uppercase tracking-widest mt-1">{item.sub}</span>
-                                                                </div>
-                                                            </motion.div>
-                                                        ))}
+                                                    <div className="grid grid-cols-2 gap-y-10">
+                                                        <div className="space-y-2">
+                                                            <span className="text-[10px] font-black uppercase text-foreground/60 tracking-[0.3em]">Edad Real</span>
+                                                            <p className="text-xl font-black text-foreground italic uppercase tracking-tighter">{displayAge} <span className="text-foreground/65 text-[11px] not-italic ml-1">Años</span></p>
+                                                        </div>
+                                                        <div className="space-y-2">
+                                                            <span className="text-[10px] font-black uppercase text-foreground/60 tracking-[0.3em]">Envergadura</span>
+                                                            <p className="text-xl font-black text-foreground italic uppercase tracking-tighter">{displayHeight} <span className="text-foreground/65 text-[11px] not-italic ml-1">cm</span></p>
+                                                        </div>
+                                                        <div className="space-y-2">
+                                                            <span className="text-[10px] font-black uppercase text-foreground/60 tracking-[0.3em]">Perfil Hábil</span>
+                                                            <p className="text-xl font-black text-foreground italic uppercase tracking-tighter">{displayFoot}</p>
+                                                        </div>
+                                                        <div className="space-y-2">
+                                                            <span className="text-[10px] font-black uppercase text-foreground/60 tracking-[0.3em]">Afiliación</span>
+                                                            <p className="text-xl font-black text-primary italic uppercase tracking-tighter group-hover:scale-110 transition-transform origin-left">{teamName}</p>
+                                                        </div>
                                                     </div>
                                                 )}
                                             </div>
                                         </div>
-                                    </div>
 
-                                    {/* Detailed Analytics Block */}
-                                    <div className="glass-premium p-12 rounded-[3.5rem] border border-foreground/5 relative group overflow-hidden">
-                                        <div className="absolute top-0 right-0 w-64 h-64 bg-accent/5 blur-[80px] -translate-y-1/2 translate-x-1/2 rounded-full pointer-events-none" />
-                                        
-                                        <div className="flex items-center gap-5 mb-12">
-                                            <div className="w-14 h-14 rounded-2xl bg-accent/10 border border-accent/20 flex items-center justify-center transition-all group-hover:bg-accent group-hover:text-black">
-                                                <Zap className="w-7 h-7" />
-                                            </div>
-                                            <div className="flex flex-col">
-                                                <h3 className="text-lg font-black uppercase tracking-[0.2em] italic text-foreground leading-none">Desempeño Analítico</h3>
-                                                <span className="text-[10px] font-black text-foreground/30 uppercase tracking-[0.3em] mt-1">Computación de Campo</span>
-                                            </div>
-                                        </div>
-
-                                        <div className="space-y-10">
-                                            {[
-                                                { label: 'Tasa de Conversión', value: displayMatches > 0 ? (displayGoals / displayMatches).toFixed(2) : '0.00', unit: 'GPG', sub: 'Efectividad Neta' },
-                                                { label: 'MVP Dominio', value: displayMatches > 0 ? ((mvpCount / displayMatches) * 100).toFixed(0) : '0', unit: 'PCT', sub: 'Votos de Elite' },
-                                                { label: 'Impacto Global', value: '--', unit: 'IDX', sub: 'Contribución Táctica' }
-                                            ].map((stat, i) => (
-                                                <div key={i} className="flex items-center justify-between border-b border-foreground/5 pb-6 group/stat last:border-0 last:pb-0">
-                                                    <div className="space-y-1">
-                                                        <span className="text-[11px] font-black uppercase text-foreground/40 tracking-[0.2em] group-hover/stat:text-foreground transition-colors duration-500">{stat.label}</span>
-                                                        <div className="text-[9px] font-black text-foreground/20 uppercase tracking-widest">{stat.sub}</div>
-                                                    </div>
-                                                    <div className="flex items-baseline gap-2">
-                                                        <span className="text-3xl font-black text-foreground italic">{stat.value}</span>
-                                                        <span className="text-[9px] font-black text-foreground/30 uppercase tracking-widest">{stat.unit}</span>
-                                                    </div>
+                                        <div className="glass-premium p-10 rounded-[3rem] border border-foreground/10 space-y-8 relative overflow-hidden group">
+                                            <div className="absolute top-0 right-0 w-32 h-32 bg-accent/5 blur-[50px] opacity-0 group-hover:opacity-100 transition-opacity" />
+                                            <div className="flex items-center gap-4">
+                                                <div className="w-10 h-10 rounded-2xl bg-accent/10 flex items-center justify-center border border-accent/20">
+                                                    <Zap className="w-5 h-5 text-accent" />
                                                 </div>
-                                            ))}
+                                                <div className="flex flex-col">
+                                                    <h3 className="text-sm font-black uppercase tracking-[0.2em] text-foreground italic">Performance</h3>
+                                                    <span className="text-[9px] font-black text-foreground/40 uppercase tracking-widest leading-none">Análisis de Despliegue</span>
+                                                </div>
+                                            </div>
+                                            
+                                            <div className="space-y-6">
+                                                <div className="flex justify-between items-end border-b border-foreground/5 pb-4 group/item">
+                                                    <span className="text-[10px] font-black uppercase text-foreground/40 tracking-[0.3em] group-hover/item:text-foreground transition-colors">Victorias Totales</span>
+                                                    <span className="text-2xl font-black text-foreground italic leading-none">--</span>
+                                                </div>
+                                                <div className="flex justify-between items-end border-b border-foreground/5 pb-4 group/item">
+                                                    <span className="text-[10px] font-black uppercase text-foreground/40 tracking-[0.3em] group-hover/item:text-foreground transition-colors">Goles Promedio</span>
+                                                    <span className="text-2xl font-black text-foreground italic leading-none">{displayMatches > 0 ? (displayGoals / displayMatches).toFixed(1) : '--'}</span>
+                                                </div>
+                                                <div className="flex justify-between items-end border-b border-foreground/5 pb-4 group/item">
+                                                    <span className="text-[10px] font-black uppercase text-foreground/40 tracking-[0.3em] group-hover/item:text-foreground transition-colors">MVP Ratio</span>
+                                                    <span className="text-3xl font-black text-accent italic leading-none drop-shadow-[0_0_15px_rgba(245,158,11,0.2)]">
+                                                        {displayMatches > 0 ? ((mvpCount / displayMatches) * 100).toFixed(1) : '0.0'}%
+                                                    </span>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                     
-                                    {/* Fast Link to Team Page (since branding is in hero) */}
+                                    {/* Team Section */}
                                     {userTeam && (
-                                        <Link href={`/team?id=${userTeam.id}`}>
-                                            <motion.div 
-                                                whileHover={{ scale: 1.02 }}
-                                                className="glass-premium p-8 rounded-[2.5rem] border border-primary/20 flex items-center justify-between group/teamlink"
-                                            >
-                                                <div className="flex items-center gap-6">
-                                                    <div className="w-16 h-16 rounded-2xl bg-primary/10 border border-primary/20 flex items-center justify-center overflow-hidden">
-                                                        {userTeam.logo_url ? <img src={userTeam.logo_url} className="w-full h-full object-cover" /> : <Shield className="w-8 h-8 text-primary" />}
-                                                    </div>
-                                                    <div className="flex flex-col">
-                                                        <span className="text-[10px] font-black text-primary uppercase tracking-[0.3em]">Perfil de Escuadra</span>
-                                                        <p className="text-xl font-black text-foreground italic uppercase tracking-tighter">Gestionar {userTeam.name}</p>
+                                        <motion.div
+                                            initial={{ opacity: 0, scale: 0.95 }}
+                                            animate={{ opacity: 1, scale: 1 }}
+                                            className="glass-premium p-10 rounded-[3rem] border border-foreground/10 relative overflow-hidden group/team cursor-default"
+                                        >
+                                            <div className="absolute top-0 right-0 w-64 h-64 bg-primary/10 blur-[80px] opacity-0 group-hover/team:opacity-100 transition-opacity duration-700" />
+                                            
+                                            <div className="flex flex-col md:flex-row items-center gap-10 relative z-10">
+                                                {/* Team Crest/Logo */}
+                                                <div className="relative shrink-0">
+                                                    <div className="absolute inset-0 bg-primary/20 blur-2xl rounded-full scale-110 group-hover/team:scale-150 transition-transform duration-700" />
+                                                    <div className="w-32 h-32 md:w-40 md:h-40 rounded-[2.5rem] bg-foreground/5 border border-foreground/10 flex items-center justify-center overflow-hidden relative shadow-2xl group-hover/team:border-primary/40 transition-colors">
+                                                        {userTeam.logo_url ? (
+                                                            <img 
+                                                                src={userTeam.logo_url} 
+                                                                alt={userTeam.name} 
+                                                                className="w-full h-full object-cover group-hover/team:scale-110 transition-transform duration-700"
+                                                            />
+                                                        ) : (
+                                                            <Shield className="w-16 h-16 md:w-24 md:h-24 text-primary/40 group-hover/team:text-primary transition-colors" />
+                                                        )}
                                                     </div>
                                                 </div>
-                                                <ChevronRight className="w-6 h-6 text-primary group-hover/teamlink:translate-x-1 transition-transform" />
-                                            </motion.div>
-                                        </Link>
+
+                                                <div className="flex-1 space-y-6 text-center md:text-left">
+                                                    <div className="space-y-2">
+                                                        <div className="flex items-center justify-center md:justify-start gap-4">
+                                                            <div className="px-3 py-1 bg-primary/10 border border-primary/20 rounded-full">
+                                                                <span className="text-[9px] font-black text-primary uppercase tracking-[0.2em] italic">EQUIPO ACTUAL</span>
+                                                            </div>
+                                                            <span className="text-[10px] font-black text-foreground/20 italic tracking-widest uppercase">ID #{userTeam.id.slice(0, 8)}</span>
+                                                        </div>
+                                                        <h2 className="text-4xl md:text-6xl font-black italic text-foreground uppercase tracking-tighter leading-none group-hover/team:text-primary transition-colors duration-500">
+                                                            {userTeam.name}
+                                                        </h2>
+                                                        {userTeam.motto && (
+                                                            <p className="text-sm md:text-lg font-bold text-foreground/40 italic uppercase tracking-tight">
+                                                                "{userTeam.motto}"
+                                                            </p>
+                                                        )}
+                                                    </div>
+
+                                                    <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
+                                                        {[
+                                                            { icon: Trophy, label: 'ELO Equipo', value: userTeam.elo, color: 'text-primary' },
+                                                            { icon: Users, label: 'Miembros', value: userTeam.members_count, color: 'text-blue-500' },
+                                                            { icon: Shield, label: 'Nivel', value: userTeam.level || 1, color: 'text-accent' },
+                                                            { icon: Zap, label: 'Victoria %', value: userTeam.wins + userTeam.losses > 0 ? ((userTeam.wins / (userTeam.wins + userTeam.losses + userTeam.draws)) * 100).toFixed(0) + '%' : '--', color: 'text-purple-500' }
+                                                        ].map((stat, i) => (
+                                                            <div key={i} className="space-y-1">
+                                                                <div className="flex items-center justify-center md:justify-start gap-2">
+                                                                    <stat.icon className={cn("w-4 h-4 opacity-40", stat.color)} />
+                                                                    <span className="text-[9px] font-black text-foreground/20 uppercase tracking-widest">{stat.label}</span>
+                                                                </div>
+                                                                <p className="text-2xl font-black text-foreground italic tracking-tighter uppercase">{stat.value}</p>
+                                                            </div>
+                                                        ))}
+                                                    </div>
+
+                                                    <div className="pt-4 flex flex-wrap justify-center md:justify-start gap-4">
+                                                        <Link 
+                                                            href={`/team?id=${userTeam.id}`}
+                                                            className="h-11 px-8 rounded-xl bg-primary text-black text-[10px] font-black uppercase tracking-[0.2em] flex items-center gap-3 hover:bg-white transition-all shadow-xl shadow-primary/20 hover:shadow-white/20 active:scale-95"
+                                                        >
+                                                            Visitar Sede
+                                                            <ExternalLink className="w-4 h-4" />
+                                                        </Link>
+                                                        {userTeam.captain_id === (id === 'me' || !id ? user?.id : id) && (
+                                                            <div className="h-11 px-6 rounded-xl border border-primary/20 bg-primary/5 flex items-center gap-3">
+                                                                <Star className="w-4 h-4 text-primary fill-primary" />
+                                                                <span className="text-[10px] font-black text-primary uppercase tracking-widest">Capitán</span>
+                                                            </div>
+                                                        )}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </motion.div>
                                     )}
+
                                 </motion.div>
                             )}
-
                             {activeTab === 'history' && (
                                 <motion.div
                                     key="history"
-                                    initial={{ opacity: 0, scale: 0.98 }}
-                                    animate={{ opacity: 1, scale: 1 }}
-                                    exit={{ opacity: 0, scale: 0.98 }}
-                                    className="space-y-8"
+                                    initial={{ opacity: 0, x: 50 }}
+                                    animate={{ opacity: 1, x: 0 }}
+                                    exit={{ opacity: 0, x: -50 }}
+                                    className="space-y-6"
                                 >
-                                    <div className="flex items-center gap-4 mb-4 px-2">
-                                        <div className="w-1.5 h-8 bg-blue-500 rounded-full" />
-                                        <h3 className="text-2xl font-black italic text-foreground uppercase tracking-tighter">Historial de Despliegues</h3>
-                                    </div>
-
                                     {userMatches.filter(m => {
                                         if (m.is_completed) return true;
                                         const matchStart = new Date(`${m.date}T${m.time}`);
@@ -918,52 +913,52 @@ function ProfileContent() {
                                                 const matchEnd = new Date(matchStart.getTime() + 60 * 60 * 1000);
                                                 return new Date() > matchEnd;
                                             }).map((m, i) => (
-                                                <Link key={m.id} href={`/match?id=${m.id}`}>
+                                                <Link
+                                                    key={m.id}
+                                                    href={`/match?id=${m.id}`}
+                                                    className="block group"
+                                                >
                                                     <motion.div
-                                                        initial={{ opacity: 0, y: 20 }}
-                                                        animate={{ opacity: 1, y: 0 }}
-                                                        transition={{ delay: i * 0.05 }}
-                                                        className="glass-premium p-10 rounded-[3rem] border border-foreground/10 group overflow-hidden relative"
+                                                        initial={{ opacity: 0, scale: 0.95 }}
+                                                        animate={{ opacity: 1, scale: 1 }}
+                                                        transition={{ delay: i * 0.1 }}
+                                                        className="glass-premium p-8 rounded-[2.5rem] border border-foreground/10 flex items-center justify-between group-hover:bg-foreground/[0.03] group-hover:border-primary/20 group-hover:scale-[1.02] transition-all duration-300 shadow-xl"
                                                     >
-                                                        <div className="absolute inset-0 bg-gradient-to-br from-blue-500/0 via-transparent to-blue-500/0 group-hover:from-blue-500/5 group-hover:to-blue-500/5 transition-all duration-700" />
-                                                        
-                                                        <div className="flex items-center justify-between gap-6 relative z-10">
-                                                            <div className="flex items-center gap-8">
-                                                                <div className="w-20 h-20 rounded-[1.8rem] bg-foreground/5 border border-foreground/10 flex flex-col items-center justify-center transition-all group-hover:border-blue-500/30 group-hover:bg-blue-500/5">
-                                                                    <span className="text-3xl font-black italic text-foreground leading-none group-hover:scale-110 transition-transform">{m.date.split('-')[2]}</span>
-                                                                    <span className="text-[10px] font-black uppercase text-foreground/20 italic group-hover:text-blue-400 transition-colors">
-                                                                        {['ENE', 'FEB', 'MAR', 'ABR', 'MAY', 'JUN', 'JUL', 'AGO', 'SEP', 'OCT', 'NOV', 'DIC'][parseInt(m.date.split('-')[1]) - 1]}
-                                                                    </span>
-                                                                </div>
-                                                                <div className="space-y-1">
-                                                                    <h4 className="text-2xl font-black text-foreground italic uppercase tracking-tighter truncate w-32 group-hover:text-blue-400 transition-colors">{m.location}</h4>
-                                                                    <div className="flex items-center gap-2">
-                                                                        <div className="w-1.5 h-1.5 rounded-full bg-blue-500" />
-                                                                        <span className="text-[10px] font-black uppercase tracking-widest text-foreground/30">{m.type} · FINALIZADO</span>
-                                                                    </div>
+                                                        <div className="flex items-center gap-6">
+                                                            <div className="w-16 h-16 rounded-2xl bg-foreground/5 flex flex-col items-center justify-center border border-foreground/10 group-hover:border-primary/40 transition-colors">
+                                                                <span className="text-xl font-black italic tracking-tighter text-foreground">{m.date.split('-')[2]}</span>
+                                                                <span className="text-[9px] font-black uppercase tracking-widest text-foreground/40 italic">
+                                                                    {['ENE', 'FEB', 'MAR', 'ABR', 'MAY', 'JUN', 'JUL', 'AGO', 'SEP', 'OCT', 'NOV', 'DIC'][parseInt(m.date.split('-')[1]) - 1]}
+                                                                </span>
+                                                            </div>
+                                                            <div className="space-y-1">
+                                                                <h4 className="text-xl font-black text-foreground italic uppercase tracking-tighter truncate w-32 group-hover:text-primary transition-colors">{m.location}</h4>
+                                                                <div className="flex items-center gap-2">
+                                                                    <div className="w-1.5 h-1.5 rounded-full bg-primary" />
+                                                                    <span className="text-[10px] font-black uppercase tracking-widest text-foreground/40">{m.type} · FINALIZADO</span>
                                                                 </div>
                                                             </div>
-                                                            <div className="flex items-center gap-5 px-8 py-5 bg-background shadow-2xl rounded-[2rem] border border-foreground/5 group-hover:border-blue-500/20 transition-all">
-                                                                <span className="text-4xl font-black text-foreground italic group-hover:text-blue-500 transition-colors">{m.team_a_score ?? 0}</span>
-                                                                <span className="text-lg font-black text-foreground/10 italic">-</span>
-                                                                <span className="text-4xl font-black text-foreground italic group-hover:text-blue-500 transition-colors">{m.team_b_score ?? 0}</span>
-                                                            </div>
+                                                        </div>
+                                                        <div className="flex items-center gap-4 bg-foreground/5 px-6 py-3 rounded-2xl border border-foreground/5 group-hover:border-primary/20 transition-all">
+                                                            <span className="text-3xl font-black text-foreground italic tracking-tighter group-hover:text-primary transition-colors">{m.team_a_score ?? 0}</span>
+                                                            <span className="text-sm font-black text-foreground/20 italic">-</span>
+                                                            <span className="text-3xl font-black text-foreground italic tracking-tighter group-hover:text-primary transition-colors">{m.team_b_score ?? 0}</span>
                                                         </div>
                                                     </motion.div>
                                                 </Link>
                                             ))}
                                         </div>
                                     ) : (
-                                        <div className="glass-premium p-24 rounded-[4rem] text-center space-y-10 bg-foreground/[0.01] border-dashed border-2 border-foreground/10">
-                                            <div className="w-28 h-28 rounded-[2.5rem] bg-foreground/5 flex items-center justify-center mx-auto transition-all group-hover:scale-110">
-                                                <History className="w-12 h-12 text-foreground/5" />
+                                        <div className="glass-premium p-20 rounded-[4rem] flex flex-col items-center justify-center text-center gap-10 border-dashed border-2 border-foreground/10 bg-foreground/[0.01]">
+                                            <div className="w-24 h-24 rounded-[2.5rem] bg-foreground/5 border border-foreground/10 flex items-center justify-center shadow-2xl">
+                                                <History className="w-10 h-10 text-foreground/10" />
                                             </div>
-                                            <div className="space-y-4">
-                                                <p className="text-3xl font-black text-foreground italic uppercase tracking-tighter leading-none">Cero Despliegues</p>
-                                                <p className="text-[11px] font-black uppercase text-foreground/20 tracking-[0.4em] italic">{isMe ? 'Tu historia de campo aún no ha sido escrita.' : 'Este atleta no registra misiones completadas.'}</p>
+                                            <div className="space-y-3">
+                                                <p className="text-2xl font-black text-foreground italic uppercase tracking-tighter">Sin Despliegues Registrados</p>
+                                                <p className="text-[10px] font-black uppercase text-foreground/20 tracking-[0.3em]">{isMe ? 'Tu historial de partidos está listo para ser escrito.' : 'Este jugador aún no tiene partidos registrados.'}</p>
                                             </div>
-                                            <Link href="/search" className="inline-flex h-16 px-12 rounded-[2rem] bg-blue-500 text-black text-[11px] font-black uppercase tracking-[0.3em] items-center gap-4 hover:bg-white transition-all shadow-2xl shadow-blue-500/20">
-                                                INICIAR CONTRATO
+                                            <Link href="/search">
+                                                 <button className="h-14 px-10 bg-primary/5 hover:bg-primary text-primary hover:text-black font-black text-[10px] uppercase tracking-[0.3em] rounded-xl border border-primary/20 transition-all active:scale-95">INICIAR CONVOCATORIA</button>
                                             </Link>
                                         </div>
                                     )}
@@ -972,175 +967,180 @@ function ProfileContent() {
                             {activeTab === 'wall' && (
                                 <motion.div
                                     key="wall"
-                                    initial={{ opacity: 0, y: 20 }}
+                                    initial={{ opacity: 0, y: 30 }}
                                     animate={{ opacity: 1, y: 0 }}
-                                    exit={{ opacity: 0, scale: 0.98 }}
-                                    className="grid grid-cols-1 lg:grid-cols-12 gap-12"
+                                    exit={{ opacity: 0, scale: 0.95 }}
+                                    className="max-w-7xl mx-auto pb-20"
                                 >
-                                    {/* Wall Feed */}
-                                    <div className="lg:col-span-12 xl:col-span-8 space-y-10 order-2 xl:order-1">
-                                        <div className="flex items-center justify-between px-2">
-                                            <div className="flex items-center gap-4">
-                                                <div className="w-1.5 h-8 bg-primary rounded-full" />
-                                                <h3 className="text-2xl font-black italic text-foreground uppercase tracking-tighter">Muro de Notificaciones</h3>
+                                    <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12">
+                                        {/* Main Content: Comments List */}
+                                        <div className="lg:col-span-7 xl:col-span-8 order-2 lg:order-1 space-y-8">
+                                            <div className="flex items-center justify-between mb-8">
+                                                <div className="flex items-center gap-4">
+                                                    <div className="w-1.5 h-8 bg-primary rounded-full shadow-[0_0_15px_rgba(16,185,129,0.5)]" />
+                                                    <h3 className="text-2xl font-black italic text-foreground uppercase tracking-tighter">Cronología de Mensajes</h3>
+                                                </div>
+                                                <span className="text-[10px] font-black text-foreground/20 uppercase tracking-[0.3em] italic">{comments.length} Comentarios</span>
                                             </div>
-                                            <span className="text-[10px] font-black text-foreground/20 uppercase tracking-[0.4em] italic">{comments.length} REGISTROS</span>
-                                        </div>
 
-                                        <div className="space-y-6">
-                                            {isLoadingComments ? (
-                                                <div className="py-24 flex flex-col items-center gap-6 opacity-40">
-                                                    <Loader2 className="w-12 h-12 animate-spin text-primary" />
-                                                    <span className="text-[10px] font-black uppercase tracking-[0.4em]">Sincronizando Feed...</span>
-                                                </div>
-                                            ) : comments.length > 0 ? (
-                                                comments.map((comment, i) => (
-                                                    <motion.div
-                                                        key={comment.id}
-                                                        initial={{ opacity: 0, x: -20 }}
-                                                        animate={{ opacity: 1, x: 0 }}
-                                                        transition={{ delay: i * 0.05 }}
-                                                        className="glass-premium p-10 rounded-[3rem] border border-foreground/5 flex gap-8 group relative hover:border-primary/20 transition-all duration-500 overflow-hidden"
-                                                    >
-                                                        <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 blur-[40px] opacity-0 group-hover:opacity-100 transition-opacity" />
-                                                        
-                                                        <div className="shrink-0 w-20 h-20 rounded-[1.8rem] bg-foreground/5 overflow-hidden border border-foreground/10 group-hover:border-primary/30 transition-all duration-500 p-1">
-                                                            <div className="w-full h-full rounded-[1.4rem] overflow-hidden bg-background">
-                                                                {comment.author?.avatar_url ? (
-                                                                    <img src={comment.author.avatar_url} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
-                                                                ) : (
-                                                                    <div className="w-full h-full flex items-center justify-center text-[11px] font-black text-foreground/20 italic">ID</div>
-                                                                )}
-                                                            </div>
-                                                        </div>
-
-                                                        <div className="flex-1 space-y-4">
-                                                            <div className="flex items-center justify-between">
-                                                                <div className="flex flex-col">
-                                                                    <span className="text-xl font-black italic uppercase tracking-tight text-foreground group-hover:text-primary transition-colors">{comment.author?.name || 'Veterano'}</span>
-                                                                    <span className="text-[9px] font-black text-foreground/20 italic uppercase tracking-[0.2em]">{new Date(comment.created_at).toLocaleDateString('es-ES', { day: 'numeric', month: 'long', year: 'numeric' })}</span>
-                                                                </div>
-                                                                {(isMe || user?.id === comment.author_id) && (
-                                                                    <button
-                                                                        onClick={() => handleDeleteComment(comment.id)}
-                                                                        className="w-10 h-10 rounded-xl flex items-center justify-center text-foreground/10 hover:text-red-500 hover:bg-red-500/10 transition-all opacity-0 group-hover:opacity-100"
-                                                                    >
-                                                                        <Trash className="w-5 h-5" />
-                                                                    </button>
-                                                                )}
-                                                            </div>
-                                                            <p className="text-lg text-foreground/70 leading-relaxed font-kanit">
-                                                                {comment.content}
-                                                            </p>
-                                                        </div>
-                                                    </motion.div>
-                                                ))
-                                            ) : (
-                                                <div className="glass-premium p-24 rounded-[4rem] text-center space-y-10 bg-foreground/[0.01] border-dashed border-2 border-foreground/10">
-                                                    <div className="w-28 h-28 rounded-[2.5rem] bg-foreground/5 flex items-center justify-center mx-auto opacity-20">
-                                                        <MessageSquare className="w-12 h-12" />
+                                            <div className="space-y-6">
+                                                {isLoadingComments ? (
+                                                    <div className="flex flex-col items-center justify-center py-20 gap-4 opacity-40">
+                                                        <Loader2 className="w-10 h-10 animate-spin text-primary" />
+                                                        <span className="text-[10px] font-black uppercase tracking-[0.4em]">Sincronizando Muro...</span>
                                                     </div>
-                                                    <div className="space-y-4">
-                                                        <p className="text-3xl font-black text-foreground italic uppercase tracking-tighter leading-none">Frecuencia Silenciosa</p>
-                                                        <p className="text-[11px] font-black uppercase text-foreground/20 tracking-[0.4em] italic leading-relaxed">Transmisor listo. Sé el primero en emitir un mensaje.</p>
-                                                    </div>
-                                                </div>
-                                            )}
-                                        </div>
-                                    </div>
-
-                                    {/* Submit Section */}
-                                    <div className="xl:col-span-4 space-y-8 order-1 xl:order-2">
-                                        <div className="sticky top-24 space-y-8">
-                                            {/* Submit Widget */}
-                                            {user && (
-                                                <div className="glass-premium p-10 rounded-[4rem] border border-primary/20 relative overflow-hidden group/submit shadow-[0_50px_100px_rgba(0,0,0,0.3)] bg-background/40">
-                                                    <div className="absolute top-0 right-0 w-64 h-64 bg-primary/10 blur-[80px] -translate-y-1/2 translate-x-1/2 rounded-full pointer-events-none" />
-                                                    
-                                                    <div className="flex items-center gap-5 mb-10">
-                                                        <div className="w-16 h-16 rounded-[1.8rem] bg-primary/10 border border-primary/20 flex items-center justify-center">
-                                                            <Send className="w-7 h-7 text-primary" />
-                                                        </div>
-                                                        <div className="flex flex-col">
-                                                            <h4 className="text-2xl font-black italic uppercase tracking-tighter text-foreground leading-none">Transmitir</h4>
-                                                            <span className="text-[10px] font-black text-foreground/30 uppercase tracking-[0.3em] mt-1">Mensajería de Campo</span>
-                                                        </div>
-                                                    </div>
-
-                                                    <div className="space-y-6 relative z-10">
-                                                        <textarea
-                                                            value={newComment}
-                                                            onChange={(e) => setNewComment(e.target.value)}
-                                                            placeholder="Dejar mensaje táctico..."
-                                                            className="w-full min-h-[160px] bg-foreground/5 border border-foreground/10 rounded-[2.5rem] p-8 text-foreground font-kanit text-lg outline-none focus:border-primary/50 transition-all resize-none placeholder:text-foreground/10"
-                                                            disabled={isPostingComment}
-                                                        />
-                                                        <button
-                                                            onClick={handlePostComment}
-                                                            disabled={isPostingComment || !newComment.trim()}
-                                                            className="w-full h-16 rounded-[2.5rem] bg-primary text-black text-[12px] font-black uppercase tracking-[0.4em] italic shadow-2xl shadow-primary/20 hover:bg-white transition-all disabled:opacity-50 disabled:grayscale flex items-center justify-center gap-4 active:scale-95 group/btn"
+                                                ) : comments.length > 0 ? (
+                                                    comments.map((comment, i) => (
+                                                        <motion.div
+                                                            key={comment.id}
+                                                            initial={{ opacity: 0, x: -20 }}
+                                                            animate={{ opacity: 1, x: 0 }}
+                                                            transition={{ delay: i * 0.05 }}
+                                                            className="glass-premium p-8 rounded-[2.5rem] border border-foreground/10 flex gap-6 group relative hover:bg-foreground/[0.02] transition-all duration-300"
                                                         >
-                                                            {isPostingComment ? <Loader2 className="w-5 h-5 animate-spin" /> : <Send className="w-5 h-5 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />}
-                                                            ENVIAR MENSAJE
-                                                        </button>
+                                                            <div className="shrink-0 w-14 h-14 rounded-2xl bg-foreground/5 overflow-hidden border border-foreground/10 group-hover:border-primary/20 transition-colors">
+                                                                {comment.author?.avatar_url ? (
+                                                                    <img src={comment.author.avatar_url} className="w-full h-full object-cover" />
+                                                                ) : (
+                                                                    <div className="w-full h-full flex items-center justify-center text-[10px] font-black text-foreground/20 italic">Player</div>
+                                                                )}
+                                                            </div>
+                                                            <div className="flex-1 space-y-2">
+                                                                <div className="flex items-center justify-between">
+                                                                    <div className="flex items-center gap-3">
+                                                                        <span className="text-sm font-black italic uppercase tracking-tight text-foreground">{comment.author?.name || 'Veterano'}</span>
+                                                                        <span className="text-[9px] font-black text-foreground/20 italic uppercase tracking-widest">• {new Date(comment.created_at).toLocaleDateString('es-ES', { day: 'numeric', month: 'short' })}</span>
+                                                                    </div>
+                                                                    {(isMe || user?.id === comment.author_id) && (
+                                                                        <button
+                                                                            onClick={() => handleDeleteComment(comment.id)}
+                                                                            className="p-2 rounded-lg text-foreground/10 hover:text-red-500 hover:bg-red-500/10 transition-all opacity-0 group-hover:opacity-100"
+                                                                        >
+                                                                            <Trash className="w-4 h-4" />
+                                                                        </button>
+                                                                    )}
+                                                                </div>
+                                                                <p className="text-sm text-foreground/70 leading-relaxed font-medium">
+                                                                    {comment.content}
+                                                                </p>
+                                                            </div>
+                                                        </motion.div>
+                                                    ))
+                                                ) : (
+                                                    <div className="glass-premium p-20 rounded-[4rem] flex flex-col items-center justify-center text-center gap-10 border-dashed border-2 border-foreground/10 bg-foreground/[0.01] opacity-50">
+                                                        <div className="w-20 h-20 rounded-[2.5rem] bg-foreground/5 border border-foreground/10 flex items-center justify-center">
+                                                            <MessageSquare className="w-10 h-10 text-foreground/5" />
+                                                        </div>
+                                                        <div className="space-y-3">
+                                                            <p className="text-xl font-black text-foreground italic uppercase tracking-tighter">Silencio en el Campo</p>
+                                                            <p className="text-[10px] font-black uppercase text-foreground/20 tracking-[0.3em]">Sé el primero en dejar tu marca en este muro.</p>
+                                                        </div>
+                                                    </div>
+                                                )}
+                                            </div>
+                                        </div>
+
+                                        {/* Sidebar: Header + Submit Form */}
+                                        <div className="lg:col-span-5 xl:col-span-4 order-1 lg:order-2">
+                                            <div className="lg:sticky lg:top-24 space-y-8">
+                                                {/* Wall Header Card */}
+                                                <div className="glass-premium p-8 rounded-[3rem] border border-foreground/10 space-y-6 relative overflow-hidden group/header text-center lg:text-left">
+                                                    <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 blur-[50px] opacity-0 group-hover/header:opacity-100 transition-opacity" />
+                                                    <div className="w-16 h-16 rounded-2xl bg-primary/10 border border-primary/20 flex items-center justify-center mx-auto lg:mx-0 shadow-2xl">
+                                                        <MessageSquare className="w-8 h-8 text-primary" />
+                                                    </div>
+                                                    <div className="space-y-1">
+                                                        <h3 className="text-3xl font-black italic text-foreground uppercase tracking-tighter leading-tight">Muro de <span className="text-primary">Honor</span></h3>
+                                                        <p className="text-[10px] font-black uppercase text-foreground/40 tracking-[0.3em] leading-relaxed">Deja un mensaje para la posteridad en el perfil de este jugador.</p>
                                                     </div>
                                                 </div>
-                                            )}
+
+                                                {/* Submit Comment Card */}
+                                                {user && (
+                                                    <form onSubmit={handlePostComment} className="glass-premium p-8 rounded-[3rem] border border-primary/20 space-y-6 relative overflow-hidden group/form shadow-[0_20px_50px_rgba(16,185,129,0.1)]">
+                                                        <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 blur-[50px] opacity-100 transition-opacity" />
+                                                        <div className="flex items-center gap-4 mb-2">
+                                                            <div className="w-10 h-10 rounded-xl bg-foreground/5 border border-foreground/10 overflow-hidden shrink-0">
+                                                                {user.user_metadata?.avatar_url ? (
+                                                                    <img src={user.user_metadata.avatar_url} className="w-full h-full object-cover" />
+                                                                ) : (
+                                                                    <div className="w-full h-full flex items-center justify-center text-[10px] font-black">{user.name?.slice(0, 2).toUpperCase()}</div>
+                                                                )}
+                                                            </div>
+                                                            <div className="flex flex-col">
+                                                                <span className="text-[10px] font-black uppercase tracking-widest text-foreground/60 italic leading-none">Publicar como</span>
+                                                                <span className="text-sm font-black text-primary italic uppercase tracking-tight">{user.name}</span>
+                                                            </div>
+                                                        </div>
+                                                        <div className="relative space-y-4">
+                                                            <textarea
+                                                                value={newComment}
+                                                                onChange={(e) => setNewComment(e.target.value)}
+                                                                placeholder="Escribe algo épico..."
+                                                                className="w-full min-h-[140px] bg-background/50 border border-foreground/10 rounded-2xl p-5 text-foreground text-sm font-medium outline-none focus:border-primary/40 transition-all resize-none placeholder:text-foreground/10"
+                                                                disabled={isPostingComment}
+                                                            />
+                                                            <button
+                                                                type="submit"
+                                                                disabled={isPostingComment || !newComment.trim()}
+                                                                className="w-full h-14 rounded-2xl bg-primary text-black text-[11px] font-black uppercase tracking-widest shadow-xl shadow-primary/20 hover:bg-white transition-all disabled:opacity-50 disabled:grayscale flex items-center justify-center gap-3 active:scale-95"
+                                                            >
+                                                                {isPostingComment ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
+                                                                Enviar Mensaje
+                                                            </button>
+                                                        </div>
+                                                    </form>
+                                                )}
+                                            </div>
                                         </div>
                                     </div>
                                 </motion.div>
                             )}
                         </AnimatePresence>
+                    </div>
                 </div>
             </div>
-
+            
             <div className="pb-32 lg:pb-12" />
 
-            {/* Footer Control Terminal */}
+            {/* FOOTER ACTIONS SECTION */}
             {isMe && (
-                <div className="relative z-30 flex flex-wrap gap-10 items-center justify-center lg:justify-start px-2 py-12 border-t border-foreground/5">
+                <div className="relative z-10 border-t border-foreground/10 pt-8 pb-8 flex flex-wrap gap-8 items-center">
                     <button
                         onClick={() => setShowPasswordModal(true)}
-                        className="flex items-center gap-4 text-foreground/20 hover:text-primary transition-all text-[11px] font-black uppercase tracking-[0.4em] italic group"
+                        className="flex items-center gap-3 text-foreground/30 hover:text-primary transition-colors text-[11px] font-black uppercase tracking-widest group"
                     >
-                        <div className="w-10 h-10 rounded-xl bg-foreground/5 flex items-center justify-center group-hover:bg-primary group-hover:text-black transition-all">
-                            <Lock className="w-4 h-4" />
-                        </div>
-                        Seguridad de Acceso
+                        <Lock className="w-4 h-4 group-hover:scale-110 transition-transform" />
+                        Cambiar Contraseña
                     </button>
 
                     {!showDeleteConfirm ? (
                         <button
                             onClick={() => setShowDeleteConfirm(true)}
-                            className="flex items-center gap-4 text-foreground/20 hover:text-red-500 transition-all text-[11px] font-black uppercase tracking-[0.4em] italic group"
+                            className="flex items-center gap-3 text-foreground/30 hover:text-red-500 transition-colors text-[11px] font-black uppercase tracking-widest group"
                         >
-                            <div className="w-10 h-10 rounded-xl bg-foreground/5 flex items-center justify-center group-hover:bg-red-500 group-hover:text-white transition-all">
-                                <Trash2 className="w-4 h-4" />
-                            </div>
-                            Terminar Servicio
+                            <Trash2 className="w-4 h-4 group-hover:scale-110 transition-transform" />
+                            Eliminar Cuenta
                         </button>
                     ) : (
                         <motion.div
-                            initial={{ opacity: 0, x: 20 }}
-                            animate={{ opacity: 1, x: 0 }}
-                            className="p-8 rounded-[2.5rem] bg-red-500/5 border border-red-500/20 backdrop-blur-xl flex flex-col md:flex-row items-center gap-8 max-w-4xl"
+                            initial={{ opacity: 0, y: 10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            className="p-6 rounded-2xl bg-red-500/5 border border-red-500/20 space-y-4 max-w-md w-full"
                         >
-                            <div className="flex items-center gap-4 text-red-500 shrink-0">
-                                <AlertTriangle className="w-10 h-10" />
-                                <div className="flex flex-col">
-                                    <h3 className="text-xl font-black uppercase tracking-tighter italic">¿Confirmar Borrado?</h3>
-                                    <span className="text-[10px] font-black uppercase tracking-widest opacity-60">Esta acción es irreversible</span>
-                                </div>
+                            <div className="flex items-center gap-3 text-red-500">
+                                <AlertTriangle className="w-5 h-5" />
+                                <h3 className="text-sm font-black uppercase tracking-widest">¿Estás seguro?</h3>
                             </div>
-                            <p className="text-xs text-foreground/40 font-medium leading-relaxed max-w-md text-center md:text-left">
-                                Se eliminarán todos tus despliegues, registros de equipo y datos biométricos de la plataforma Pelotify de forma permanente.
+                            <p className="text-xs text-foreground/40 leading-relaxed">
+                                Esta acción es irreversible. Se van a borrar todos tus datos: partidos, equipos, amigos y estadísticas.
                             </p>
-                            <div className="flex gap-4 shrink-0">
+                            <div className="flex gap-3">
                                 <button
                                     onClick={() => setShowDeleteConfirm(false)}
-                                    className="h-14 px-8 rounded-2xl bg-foreground/5 border border-foreground/10 text-[10px] font-black uppercase tracking-widest text-foreground/40 hover:text-foreground transition-all"
+                                    className="h-10 px-6 rounded-xl bg-foreground/5 border border-foreground/10 text-xs font-bold text-foreground/40 hover:text-foreground transition-all"
                                 >
-                                    ABORTAR
+                                    No, cancelar
                                 </button>
                                 <button
                                     onClick={async () => {
@@ -1152,10 +1152,10 @@ function ProfileContent() {
                                         }
                                     }}
                                     disabled={isDeleting}
-                                    className="h-14 px-8 rounded-2xl bg-red-600 hover:bg-red-500 text-white text-[10px] font-black uppercase tracking-widest flex items-center gap-3 transition-all active:scale-95"
+                                    className="h-10 px-6 rounded-xl bg-red-600 hover:bg-red-500 text-white text-xs font-bold uppercase tracking-widest transition-all disabled:opacity-50 flex items-center gap-2"
                                 >
                                     {isDeleting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Trash2 className="w-4 h-4" />}
-                                    ELIMINAR TODO
+                                    Sí, eliminar todo
                                 </button>
                             </div>
                         </motion.div>
@@ -1163,68 +1163,57 @@ function ProfileContent() {
                 </div>
             )}
 
-            {/* PASSWORD SECURITY MODAL */}
+            {/* PASSWORD MODAL */}
             <AnimatePresence>
                 {showPasswordModal && (
-                    <div className="fixed inset-0 z-[100] flex items-center justify-center p-6 sm:p-12">
-                        <motion.div 
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            exit={{ opacity: 0 }}
-                            onClick={() => setShowPasswordModal(false)}
-                            className="absolute inset-0 bg-background/60 backdrop-blur-2xl"
-                        />
+                    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-background/80 backdrop-blur-md">
                         <motion.div
-                            initial={{ opacity: 0, scale: 0.95, y: 40 }}
+                            initial={{ opacity: 0, scale: 0.95, y: 20 }}
                             animate={{ opacity: 1, scale: 1, y: 0 }}
-                            exit={{ opacity: 0, scale: 0.95, y: 40 }}
-                            className="w-full max-w-xl glass-premium rounded-[4rem] p-12 md:p-16 border border-foreground/10 shadow-[0_100px_200px_rgba(0,0,0,0.8)] relative overflow-hidden bg-surface/80"
+                            exit={{ opacity: 0, scale: 0.95, y: 20 }}
+                            className="w-full max-w-md glass-premium rounded-[2.5rem] p-8 lg:p-10 border border-foreground/10 shadow-[0_50px_100px_rgba(0,0,0,0.5)] relative overflow-hidden bg-surface"
                         >
-                            <div className="absolute top-0 right-0 w-80 h-80 bg-primary/10 blur-[100px] -mr-32 -mt-32 rounded-full pointer-events-none" />
+                            <div className="absolute top-0 right-0 w-32 h-32 bg-primary/10 blur-[50px] -mr-16 -mt-16 rounded-full" />
                             
-                            <form onSubmit={handleUpdatePassword} className="space-y-12 relative z-10">
-                                <div className="space-y-4">
-                                    <div className="w-20 h-20 rounded-[1.8rem] bg-primary/10 border border-primary/20 flex items-center justify-center mb-8">
-                                        <Lock className="w-8 h-8 text-primary" />
-                                    </div>
-                                    <h2 className="text-5xl font-black italic text-foreground uppercase tracking-tighter leading-none">Nueva <span className="text-primary">Credencial</span></h2>
-                                    <p className="text-[11px] font-black text-foreground/30 uppercase tracking-[0.5em] italic">Seguimiento de Seguridad de Atleta</p>
+                            <form onSubmit={handleUpdatePassword} className="space-y-8 relative z-10">
+                                <div className="space-y-2">
+                                    <h2 className="text-3xl font-black italic text-foreground uppercase tracking-tighter">Nueva <span className="text-primary">Clave</span></h2>
+                                    <p className="text-[10px] font-black text-foreground/40 uppercase tracking-[0.4em] italic">Seguridad de Jugador</p>
                                 </div>
 
-                                <div className="space-y-4">
-                                    <label className="text-[11px] font-black uppercase text-foreground/40 tracking-[0.3em] ml-2">Asignar Nueva Contraseña</label>
-                                    <div className="relative">
+                                <div className="space-y-3">
+                                    <label className="text-[10px] font-black uppercase text-foreground/40 tracking-[0.3em] ml-1">Escribí tu nueva contraseña</label>
+                                    <div className="relative group/input">
+                                        <div className="absolute inset-y-0 left-5 flex items-center pointer-events-none">
+                                            <Lock className="w-5 h-5 text-foreground/20 group-focus-within/input:text-primary transition-colors" />
+                                        </div>
                                         <input
                                             type="password"
-                                            className="w-full h-20 pl-8 bg-foreground/[0.03] border border-foreground/10 rounded-[2.5rem] text-foreground text-xl font-black outline-none focus:border-primary/50 transition-all placeholder:text-foreground/5 shadow-inner"
-                                            placeholder="••••••••••••"
+                                            className="w-full h-14 pl-14 pr-6 bg-foreground/[0.02] border border-foreground/5 rounded-2xl text-foreground text-sm font-black outline-none focus:border-primary/50 transition-all placeholder:text-foreground/20"
+                                            placeholder="••••••••"
                                             value={newPassword}
                                             onChange={e => setNewPassword(e.target.value)}
                                             required
                                             minLength={6}
                                         />
                                     </div>
-                                    <div className="flex items-center gap-3 ml-2">
-                                        <div className="w-1.5 h-1.5 rounded-full bg-primary" />
-                                        <span className="text-[10px] font-black text-foreground/20 uppercase tracking-[0.2em]">Mínimo 6 caracteres alfanuméricos</span>
-                                    </div>
+                                    <p className="text-[9px] font-black text-foreground/20 uppercase tracking-widest ml-1">Mínimo 6 caracteres</p>
                                 </div>
 
-                                <div className="flex flex-col sm:flex-row gap-6">
+                                <div className="flex gap-4">
                                     <button
                                         type="button"
                                         onClick={() => setShowPasswordModal(false)}
-                                        className="flex-1 h-16 rounded-[2rem] bg-foreground/5 border border-foreground/5 text-[11px] font-black uppercase tracking-[0.4em] text-foreground/40 hover:text-foreground transition-all active:scale-95"
+                                        className="flex-1 h-14 rounded-2xl bg-foreground/5 border border-foreground/5 text-[10px] font-black uppercase tracking-[0.2em] text-foreground/40 hover:text-foreground transition-all active:scale-95 flex items-center justify-center"
                                     >
                                         CANCELAR
                                     </button>
                                     <button
                                         type="submit"
                                         disabled={isUpdatingPassword}
-                                        className="flex-[1.5] h-16 bg-primary text-black font-black text-[11px] uppercase tracking-[0.4em] rounded-[2rem] flex items-center justify-center gap-3 hover:bg-white transition-all active:scale-95 disabled:opacity-50 shadow-2xl shadow-primary/20"
+                                        className="flex-[2] h-14 bg-primary text-background font-black text-[10px] uppercase tracking-[0.3em] rounded-2xl flex items-center justify-center gap-2 hover:bg-foreground hover:text-background transition-all active:scale-95 disabled:opacity-50 shadow-xl shadow-primary/20"
                                     >
-                                        {isUpdatingPassword ? <Loader2 className="w-5 h-5 animate-spin" /> : <Save className="w-5 h-5" />}
-                                        ACTUALIZAR
+                                        {isUpdatingPassword ? <Loader2 className="w-4 h-4 animate-spin" /> : "ACTUALIZAR"}
                                     </button>
                                 </div>
                             </form>
