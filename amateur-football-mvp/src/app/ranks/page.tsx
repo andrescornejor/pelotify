@@ -5,6 +5,7 @@ import { Trophy, ArrowLeft, Star, TrendingUp, Sparkles, Award, Zap } from 'lucid
 import Link from 'next/link';
 import { RANKS } from '@/lib/ranks';
 import { cn } from '@/lib/utils';
+import { RankBadge } from '@/components/RankBadge';
 
 export default function RanksPage() {
     const fadeUp: Variants = {
@@ -21,16 +22,6 @@ export default function RanksPage() {
         })
     };
 
-    const getRankIcon = (name: string) => {
-        switch (name) {
-            case 'HIERRO': return TrendingUp;
-            case 'LEYENDA': return Star;
-            case 'ELITE': return Award;
-            case 'DIAMANTE': return Sparkles;
-            case 'ORO': return Trophy;
-            default: return Zap;
-        }
-    };
 
     const getRankDesc = (name: string) => {
         switch (name) {
@@ -92,59 +83,49 @@ export default function RanksPage() {
                                 animate="visible"
                                 variants={fadeUp}
                                 whileHover={{ y: -10 }}
-                                className="group relative overflow-hidden rounded-[2.5rem] p-8 glass-premium border border-foreground/5 flex flex-col items-center text-center gap-6"
+                                className="group relative overflow-hidden rounded-[3rem] p-10 glass-premium border border-foreground/5 flex flex-col items-center text-center gap-8 transition-all duration-500 hover:shadow-2xl hover:shadow-primary/5"
                             >
                                 {/* Background Glow */}
                                 <div
-                                    className="absolute inset-0 opacity-0 group-hover:opacity-20 transition-opacity duration-700"
+                                    className="absolute inset-0 opacity-0 group-hover:opacity-10 transition-opacity duration-700 blur-3xl pointer-events-none"
                                     style={{ background: `radial-gradient(circle at 50% 50%, ${rank.color} 0%, transparent 70%)` }}
                                 />
 
-                                {/* Icon Circle */}
-                                <div
-                                    className={cn(
-                                        "w-20 h-20 rounded-[2rem] flex items-center justify-center relative",
-                                        "transition-all duration-500 group-hover:scale-110 group-hover:rotate-6"
-                                    )}
-                                    style={{
-                                        background: `${rank.color}15`,
-                                        border: `2px solid ${rank.color}30`,
-                                        boxShadow: `0 0 30px ${rank.color}15`
-                                    }}
-                                >
-                                    <Icon className="w-10 h-10" style={{ color: rank.color }} />
-                                    {isHighRank && (
-                                        <div className="absolute -top-1 -right-1">
-                                            <Sparkles className="w-5 h-5 animate-pulse" style={{ color: rank.color }} />
-                                        </div>
-                                    )}
+                                {/* Badge */}
+                                <div className="relative z-10">
+                                    <RankBadge rankName={rank.name} size="lg" />
                                 </div>
 
                                 {/* Rank Name & ELO */}
-                                <div className="space-y-2 relative z-10">
-                                    <h3 className="text-2xl font-black italic uppercase tracking-tighter" style={{ color: rank.color }}>
+                                <div className="space-y-3 relative z-10 w-full">
+                                    <h3 className="text-3xl font-black italic uppercase tracking-tighter" style={{ color: rank.color }}>
                                         {rank.name}
                                     </h3>
-                                    <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-foreground/5 border border-foreground/10">
-                                        <span className="text-[10px] font-black uppercase tracking-widest text-foreground/40">Min. ELO</span>
-                                        <span className="text-xs font-black text-foreground">{rank.minElo.toLocaleString()}</span>
+                                    <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-foreground/[0.03] border border-foreground/5 shadow-inner">
+                                        <span className="text-[9px] font-black uppercase tracking-widest text-foreground/30">MÍNIMO</span>
+                                        <span className="text-sm font-black text-foreground">{rank.minElo.toLocaleString()} XP</span>
                                     </div>
                                 </div>
 
                                 {/* Description */}
-                                <p className="text-[11px] font-black uppercase tracking-widest text-foreground/50 leading-relaxed italic relative z-10">
-                                    "{getRankDesc(rank.name)}"
-                                </p>
+                                <div className="relative z-10 flex-1 flex flex-col justify-center">
+                                    <p className="text-xs font-black uppercase tracking-[0.1em] text-foreground/50 leading-relaxed italic">
+                                        "{getRankDesc(rank.name)}"
+                                    </p>
+                                </div>
 
                                 {/* Footer Progress Simulation */}
-                                <div className="w-full h-1 bg-foreground/5 rounded-full overflow-hidden mt-2 relative z-10">
-                                    <motion.div
-                                        initial={{ width: 0 }}
-                                        animate={{ width: '100%' }}
-                                        transition={{ duration: 1.5, delay: i * 0.15 }}
-                                        className="h-full rounded-full opacity-60"
-                                        style={{ background: `linear-gradient(90deg, transparent, ${rank.color}, transparent)` }}
-                                    />
+                                <div className="w-full space-y-3 relative z-10 pt-4">
+                                    <div className="w-full h-1 bg-foreground/5 rounded-full overflow-hidden relative">
+                                        <motion.div
+                                            initial={{ width: 0 }}
+                                            animate={{ width: '100%' }}
+                                            transition={{ duration: 1.5, delay: i * 0.15 }}
+                                            className="h-full rounded-full opacity-40"
+                                            style={{ background: `linear-gradient(90deg, transparent, ${rank.color}, transparent)` }}
+                                        />
+                                    </div>
+                                    <p className="text-[8px] font-black uppercase tracking-[0.4em] text-foreground/20">ESTATUS REGISTRADO</p>
                                 </div>
                             </motion.div>
                         );

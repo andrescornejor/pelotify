@@ -5,6 +5,7 @@ import { Star, Award } from 'lucide-react';
 import { useRef } from 'react';
 import { cn } from '@/lib/utils';
 import { getRankByElo } from '@/lib/ranks';
+import { RankBadge } from './RankBadge';
 
 interface FifaCardProps {
     player: {
@@ -139,15 +140,7 @@ export function FifaCard({ player }: FifaCardProps) {
                             style={{ textShadow: '0 2px 4px rgba(0,0,0,0.8)' }}>
                             {player.position}
                         </span>
-                        <span className="text-[7px] font-black uppercase tracking-[0.2em] px-2 py-0.5 rounded shadow-lg"
-                            style={{ 
-                                background: 'rgba(0,0,0,0.6)', 
-                                border: `1px solid ${rank.color}66`, 
-                                color: rank.color,
-                                backdropFilter: 'blur(4px)'
-                            }}>
-                            {rank.name === 'HIERRO' ? 'HIERRO' : `PRO ${rank.name}`}
-                        </span>
+                    <RankBadge rankName={rank.name} size="sm" className="scale-75 -mt-1" />
                     </div>
 
                     {/* MVP trophies */}

@@ -42,6 +42,8 @@ import { ProfileSkeleton } from '@/components/Skeletons';
 import { getDominantColor } from '@/lib/colorUtils';
 import { uploadUserAvatar } from '@/lib/storage';
 import { compressImage, blobToFile } from '@/lib/imageUtils';
+import { RankBadge } from '@/components/RankBadge';
+import { getRankByElo } from '@/lib/ranks';
 
 interface PlayerStats {
     pac: number;
@@ -688,7 +690,7 @@ function ProfileContent() {
                     {/* Stats Highlights */}
                     <div className={cn("grid grid-cols-1 sm:grid-cols-3 gap-6 transition-all duration-700", isEditing && "opacity-30 blur-sm pointer-events-none grayscale")}>
                         {[
-                            { icon: Trophy, label: 'Estatus Card', value: displayElo, color: 'text-primary', glow: 'from-primary/20 via-primary/5 to-transparent', unit: 'ELO' },
+                            { icon: () => <RankBadge rankName={getRankByElo(displayElo).name} size="md" />, label: 'Rango Actual', value: getRankByElo(displayElo).name, color: 'text-primary', glow: 'from-primary/20 via-primary/5 to-transparent', unit: '' },
                             { icon: History, label: 'Despliegues', value: displayMatches, color: 'text-blue-500', glow: 'from-blue-500/20 via-blue-500/5 to-transparent', unit: 'EXP' },
                             { icon: Target, label: 'Objetivos', value: displayGoals, color: 'text-accent', glow: 'from-accent/20 via-accent/5 to-transparent', unit: 'GOL' }
                         ].map((node, i) => (
@@ -707,13 +709,13 @@ function ProfileContent() {
                                     <div className={cn("p-4 rounded-2xl bg-background/50 border border-foreground/5 backdrop-blur-xl group-hover:scale-110 transition-transform duration-500 shadow-xl",
                                         i === 0 ? "shadow-primary/10" : i === 1 ? "shadow-blue-500/10" : "shadow-accent/10"
                                     )}>
-                                        <node.icon className={cn("w-6 h-6", node.color)} />
+                                        {typeof node.icon === 'function' ? <node.icon /> : <node.icon className={cn("w-6 h-6", node.color)} />}
                                     </div>
                                     <span className="text-[10px] font-black text-foreground/20 uppercase tracking-widest italic group-hover:text-foreground/40 transition-colors"></span>
                                 </div>
                                 <div className="flex items-baseline gap-2 relative z-10">
-                                    <span className="text-6xl font-black text-foreground italic tracking-tighter leading-none group-hover:scale-105 transition-transform origin-left">{node.value}</span>
-                                    <span className={cn("text-[11px] font-black uppercase tracking-[0.2em] -mt-2", node.color)}>{node.unit}</span>
+                                    <span className="text-4xl sm:text-6xl font-black text-foreground italic tracking-tighter leading-none group-hover:scale-105 transition-transform origin-left truncate">{node.value}</span>
+                                    {node.unit && <span className={cn("text-[11px] font-black uppercase tracking-[0.2em] -mt-2", node.color)}>{node.unit}</span>}
                                 </div>
                                 <p className="text-[10px] font-black uppercase text-foreground/40 tracking-[0.4em] mt-4 ml-1 relative z-10">{node.label}</p>
                             </motion.div>

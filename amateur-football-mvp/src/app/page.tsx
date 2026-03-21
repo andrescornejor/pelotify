@@ -36,6 +36,7 @@ import { cn } from '@/lib/utils';
 import { findVenueByLocation } from '@/lib/venues';
 import { getRankByElo, RANKS } from '@/lib/ranks';
 import { useSettings } from '@/contexts/SettingsContext';
+import { RankBadge } from '@/components/RankBadge';
 
 export default function HomePage() {
   const { user } = useAuth();
@@ -330,35 +331,51 @@ export default function HomePage() {
               className="lg:shrink-0 w-full lg:w-[400px] space-y-4"
             >
               {/* Rank Progress Card */}
-              <div className="glass-premium p-6 rounded-[2rem] border-white/5 space-y-5">
-                <div className="flex justify-between items-end">
-                  <div>
-                    <p className="text-[10px] font-black text-foreground/40 uppercase tracking-widest">PROGRESO DE LIGA</p>
-                    <h3 className="text-xl font-black italic text-foreground leading-none font-kanit uppercase">
-                      Siguiente: <span style={{ color: nextRank.color }}>{nextRank.name}</span>
+              <div className="glass-premium p-6 rounded-[2.5rem] border-white/5 space-y-6 relative overflow-hidden group">
+                {/* Background Rank Glow */}
+                <div 
+                  className="absolute -top-20 -right-20 w-40 h-40 blur-[80px] opacity-20 transition-opacity group-hover:opacity-40"
+                  style={{ backgroundColor: rankInfo.color }}
+                />
+
+                <div className="flex items-center gap-6 relative z-10">
+                  <RankBadge rankName={rankInfo.name} size="lg" />
+                  <div className="flex-1 space-y-2">
+                    <p className="text-[10px] font-black text-foreground/40 uppercase tracking-widest leading-none">PROGRESO DE LIGA</p>
+                    <h3 className="text-2xl font-black italic text-foreground leading-none font-kanit uppercase tracking-tighter">
+                      {rankInfo.name}
                     </h3>
+                    <div className="flex items-center gap-2">
+                      <div className="h-1 w-1 rounded-full bg-primary" />
+                      <span className="text-[9px] font-black text-primary uppercase tracking-[0.2em]">{elo} ELO PERSONAL</span>
+                    </div>
                   </div>
-                  <span className="text-2xl font-black text-primary/80 italic font-kanit">{Math.round(progressToNextRank)}%</span>
+                  <div className="text-right">
+                    <span className="text-3xl font-black text-foreground italic font-kanit leading-none">{Math.round(progressToNextRank)}%</span>
+                    <p className="text-[8px] font-black text-foreground/30 uppercase mt-1">PARA {nextRank.name}</p>
+                  </div>
                 </div>
 
-                <div className="relative h-6 bg-foreground/5 rounded-full p-1 overflow-hidden border border-white/5">
-                  <motion.div
-                    initial={{ width: 0 }}
-                    animate={{ width: `${progressToNextRank}%` }}
-                    transition={{ duration: 2, ease: "circOut", delay: 0.8 }}
-                    className="h-full rounded-full relative group"
-                    style={{
-                      background: `linear-gradient(90deg, ${rank.hex}, #5dfd9d)`,
-                      boxShadow: `0 0 20px ${rank.glow}`
-                    }}
-                  >
-                    <div className="absolute inset-0 animate-shimmer opacity-30" />
-                  </motion.div>
-                </div>
+                <div className="space-y-3 relative z-10">
+                  <div className="relative h-3 bg-foreground/5 rounded-full p-0.5 overflow-hidden border border-white/5">
+                    <motion.div
+                      initial={{ width: 0 }}
+                      animate={{ width: `${progressToNextRank}%` }}
+                      transition={{ duration: 2, ease: "circOut", delay: 0.8 }}
+                      className="h-full rounded-full relative"
+                      style={{
+                        background: `linear-gradient(90deg, ${rankInfo.color}, #5dfd9d)`,
+                        boxShadow: `0 0 15px ${rankInfo.color}40`
+                      }}
+                    >
+                      <div className="absolute inset-0 animate-shimmer opacity-30 bg-gradient-to-r from-transparent via-white/40 to-transparent" />
+                    </motion.div>
+                  </div>
 
-                <div className="flex justify-between text-[8px] font-black text-foreground/30 uppercase tracking-[0.3em]">
-                  <span>{rank.name} ({rankInfo.minElo})</span>
-                  <span>{nextRank.minElo} XP REQUERIDOS</span>
+                  <div className="flex justify-between text-[8px] font-black text-foreground/30 uppercase tracking-[0.3em]">
+                    <span>{rankInfo.minElo} XP</span>
+                    <span>{nextRank.minElo} XP REQUERIDOS</span>
+                  </div>
                 </div>
               </div>
 
@@ -506,74 +523,128 @@ export default function HomePage() {
               <div className="flex items-end justify-between px-1">
                 <div className="flex flex-col gap-1">
                   <h2 className="text-xl lg:text-2xl font-black italic text-foreground uppercase tracking-tighter leading-none font-kanit">
-                    Progreso & Ranking
+                    Road to Glory
                   </h2>
-                  <span className="text-[9px] font-black text-primary uppercase tracking-[0.4em] font-outfit">¿CÓMO ESCALAR EN LA LIGA?</span>
+                  <span className="text-[9px] font-black text-primary uppercase tracking-[0.4em] font-outfit">TU CAMINO HACIA LA LEYENDA</span>
                 </div>
-                <Sparkles className="w-5 h-5 text-primary/30 shrink-0 mb-1 animate-pulse" />
+                <div className="flex items-center gap-2 text-foreground/30">
+                  <span className="text-[9px] font-black uppercase tracking-widest hidden sm:inline">Nivel de Sistema</span>
+                  <Sparkles className="w-5 h-5 text-primary/30 shrink-0 mb-1 animate-pulse" />
+                </div>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-                {[
-                  { icon: Zap, color: '#2cfc7d', glow: 'rgba(44,252,125,0.15)', label: 'Victoria Inicial', points: '+1000', desc: 'Bono masivo por ganar tu primer partido registrado.' },
-                  { icon: Target, color: '#f59e0b', glow: 'rgba(245,158,11,0.15)', label: 'Goles Anotados', points: '+100', desc: 'Cada gol informado y validado suma a tu ELO personal.' },
-                  { icon: Award, color: '#6366f1', glow: 'rgba(99,102,241,0.15)', label: 'MVP del Partido', points: '+200', desc: 'Ser el más votado por tus compañeros tiene recompensa.' },
-                ].map((item, i) => (
-                  <motion.div
-                    key={i}
-                    whileHover={{ y: -8, scale: 1.02 }}
-                    className="group relative overflow-hidden rounded-[2.5rem] p-8 flex flex-col gap-6 cursor-default glass-premium bg-surface/20"
-                  >
-                    <div className="absolute inset-0 rounded-[2.5rem] opacity-0 group-hover:opacity-100 transition-opacity duration-700"
-                      style={{ background: `radial-gradient(circle at 10% 10%, ${item.glow} 0%, transparent 80%)` }} />
+              {/* League Road Visualization */}
+              <div className="glass-premium p-8 rounded-[2.5rem] border-white/5 relative overflow-hidden">
+                <div className="absolute inset-0 opacity-5 pointer-events-none">
+                  <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_center,_var(--primary)_0%,_transparent_70%)]" />
+                </div>
 
-                    <div className="relative z-10 w-14 h-14 rounded-2xl flex items-center justify-center group-hover:rotate-12 transition-all duration-500 shadow-2xl"
-                      style={{ background: item.glow, border: `1px solid ${item.color}40` }}>
-                      <item.icon className="w-7 h-7" style={{ color: item.color }} />
-                    </div>
+                <div className="relative z-10 space-y-10">
+                  {/* The Road */}
+                  <div className="relative flex items-center justify-between px-4 sm:px-10">
+                    <div className="absolute left-0 right-0 h-1 bg-foreground/5 top-1/2 -translate-y-1/2" />
+                    <motion.div 
+                      initial={{ width: 0 }}
+                      whileInView={{ width: '100%' }}
+                      transition={{ duration: 2, ease: "circOut" }}
+                      className="absolute left-0 h-1 bg-gradient-to-r from-primary/20 via-primary to-primary-light top-1/2 -translate-y-1/2"
+                      style={{ width: `${(RANKS.findIndex(r => r.name === rankInfo.name) / (RANKS.length - 1)) * 100}%` }}
+                    />
 
-                    <div className="space-y-3 relative z-10">
-                      <div className="flex items-baseline justify-between gap-2">
-                        <h3 className="text-lg font-black text-foreground italic uppercase tracking-tighter leading-none font-kanit">{item.label}</h3>
-                        <span className="text-2xl font-black italic font-kanit" style={{ color: item.color }}>{item.points}</span>
+                    {RANKS.map((r, i) => {
+                      const isReached = elo >= r.minElo;
+                      const isCurrent = rankInfo.name === r.name;
+                      
+                      return (
+                        <div key={r.name} className="relative flex flex-col items-center group">
+                          <motion.div
+                            whileHover={{ scale: 1.2 }}
+                            className={cn(
+                              "w-10 h-10 rounded-xl flex items-center justify-center border-2 transition-all duration-500",
+                              isReached 
+                                ? "bg-background border-primary shadow-[0_0_15px_rgba(44,252,125,0.3)]" 
+                                : "bg-surface/50 border-white/5 opacity-40 group-hover:opacity-100"
+                            )}
+                          >
+                            <RankBadge rankName={r.name} size="sm" className="scale-75" />
+                          </motion.div>
+                          
+                          <div className={cn(
+                            "absolute -bottom-8 whitespace-nowrap text-[8px] font-black uppercase tracking-tighter transition-all duration-300",
+                            isCurrent ? "text-primary opacity-100 scale-110" : "text-foreground/20 opacity-0 group-hover:opacity-100 group-hover:-bottom-6"
+                          )}>
+                            {r.name}
+                          </div>
+
+                          {isCurrent && (
+                            <motion.div
+                              layoutId="current-rank-indicator"
+                              className="absolute -top-12"
+                            >
+                              <div className="px-2 py-1 rounded bg-primary text-background text-[7px] font-black uppercase tracking-widest whitespace-nowrap relative">
+                                TU RANGO
+                                <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-2 h-2 bg-primary rotate-45" />
+                              </div>
+                            </motion.div>
+                          )}
+                        </div>
+                      );
+                    })}
+                  </div>
+
+                  {/* XP Boosters */}
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-4">
+                    {[
+                      { icon: Zap, color: '#2cfc7d', label: 'Victorias', value: metadata?.matches_won || 0, desc: 'Motor principal de subida.' },
+                      { icon: Target, color: '#f59e0b', label: 'Goles', value: metadata?.goals || 0, desc: 'Bono por efectividad.' },
+                      { icon: Award, color: '#6366f1', label: 'Honores', value: metadata?.mvp_count || 0, desc: 'Reconocimiento MVP.' },
+                    ].map((item, i) => (
+                      <div key={i} className="flex items-center gap-4 p-4 rounded-2xl bg-foreground/[0.02] border border-white/5 group hover:bg-foreground/[0.04] transition-colors">
+                        <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0" style={{ backgroundColor: `${item.color}15` }}>
+                          <item.icon className="w-5 h-5" style={{ color: item.color }} />
+                        </div>
+                        <div>
+                          <p className="text-[10px] font-black text-foreground/40 uppercase tracking-widest">{item.label}</p>
+                          <p className="text-xl font-black italic font-kanit text-foreground">{item.value}</p>
+                        </div>
                       </div>
-                      <p className="text-[10px] text-foreground/50 font-black uppercase tracking-widest leading-relaxed font-outfit">{item.desc}</p>
-                    </div>
-
-                    <div className="relative z-10 h-1 bg-foreground/5 rounded-full overflow-hidden">
-                      <motion.div
-                        initial={{ width: 0 }}
-                        whileInView={{ width: '100%' }}
-                        transition={{ duration: 1.5, delay: i * 0.2, ease: 'circOut' }}
-                        className="h-full rounded-full opacity-60"
-                        style={{ background: `linear-gradient(90deg, ${item.color}, transparent)` }}
-                      />
-                    </div>
-                  </motion.div>
-                ))}
+                    ))}
+                  </div>
+                </div>
               </div>
 
-              {/* Rank banner */}
+              {/* Rank Detail Banner */}
               <motion.div
                 whileHover={{ scale: 1.005 }}
-                className="relative overflow-hidden rounded-[2rem] p-6 flex flex-col sm:flex-row items-center justify-between gap-6 glass-premium border-primary/10"
+                className="relative overflow-hidden rounded-[2.5rem] p-8 flex flex-col sm:flex-row items-center justify-between gap-8 glass-premium border-primary/10 group"
               >
-                <div className="flex items-center gap-5 relative z-10">
-                  <div className="w-12 h-12 rounded-2xl glass flex items-center justify-center shrink-0 border-white/5 shadow-inner">
-                    <TrendingUp className="w-6 h-6 text-primary" />
+                <div className="absolute inset-0 bg-gradient-to-r from-primary/5 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                
+                <div className="flex items-center gap-6 relative z-10">
+                  <div className="relative">
+                    <div className="absolute inset-0 bg-primary/20 blur-xl rounded-full animate-pulse" />
+                    <RankBadge rankName={rankInfo.name} size="md" />
                   </div>
-                  <div>
-                    <h4 className="text-lg font-black text-foreground italic uppercase tracking-tighter leading-none font-kanit">Tu Carrera Arranca en Hierro</h4>
-                    <p className="text-[10px] text-foreground/45 font-black uppercase tracking-[0.2em] mt-1 font-outfit">
-                      Subí de nivel dominando el campo de juego.
+                  <div className="space-y-1">
+                    <h4 className="text-2xl font-black text-foreground italic uppercase tracking-tighter leading-none font-kanit">
+                      Dominio de la Liga {rankInfo.name}
+                    </h4>
+                    <p className="text-[10px] text-foreground/40 font-black uppercase tracking-[0.2em] max-w-sm">
+                      Estás en el top <span className="text-primary">{Math.max(1, 100 - winRate)}%</span> de jugadores en tu categoría. Seguí ganando para desbloquear <span style={{ color: nextRank.color }}>{nextRank.name}</span>.
                     </p>
                   </div>
                 </div>
+                
                 <Link href="/ranks">
-                  <button className="h-12 px-8 rounded-full flex items-center justify-center gap-3 transition-all hover:scale-[1.05] text-white shadow-2xl shadow-primary/20 bg-gradient-to-r from-primary to-primary-dark group">
-                    <span className="text-[10px] font-black uppercase tracking-widest italic group-hover:translate-x-[-2px] transition-transform">VER ESCALA</span>
-                    <Trophy className="w-4 h-4 text-white fill-white" />
-                  </button>
+                  <motion.button 
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    className="h-14 px-10 rounded-2xl flex items-center justify-center gap-4 transition-all text-white shadow-2xl shadow-primary/20 bg-gradient-to-br from-primary to-primary-dark group overflow-hidden relative"
+                  >
+                    <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-500" />
+                    <span className="text-[11px] font-black uppercase tracking-[0.2em] italic relative z-10">VER RANKING GLOBAL</span>
+                    <Trophy className="w-5 h-5 text-white/90 relative z-10 group-hover:rotate-12 transition-transform" />
+                  </motion.button>
                 </Link>
               </motion.div>
             </motion.section>
