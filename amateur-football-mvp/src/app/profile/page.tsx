@@ -833,6 +833,7 @@ function ProfileContent() {
                                                 )}
                                             </div>
                                         </div>
+                                    </div>
 
                                     {/* Detailed Analytics Block */}
                                     <div className="glass-premium p-12 rounded-[3.5rem] border border-foreground/5 relative group overflow-hidden">
@@ -867,7 +868,7 @@ function ProfileContent() {
                                             ))}
                                         </div>
                                     </div>
-
+                                    
                                     {/* Fast Link to Team Page (since branding is in hero) */}
                                     {userTeam && (
                                         <Link href={`/team?id=${userTeam.id}`}>
@@ -890,6 +891,7 @@ function ProfileContent() {
                                     )}
                                 </motion.div>
                             )}
+
                             {activeTab === 'history' && (
                                 <motion.div
                                     key="history"
