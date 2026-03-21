@@ -444,7 +444,7 @@ function ProfileContent() {
         }
     };
 
-    if (isLoading || (isLoadingProfile && !isMe)) {
+    if (isLoading || isLoadingProfile) {
         return <ProfileSkeleton />;
     }
 

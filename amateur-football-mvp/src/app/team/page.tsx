@@ -267,9 +267,47 @@ function TeamProfileContent() {
 
     if (isLoading) {
         return (
-            <div className="flex flex-col items-center justify-center min-h-[60vh] text-zinc-400">
-                <div className="w-12 h-12 border-4 border-primary/20 border-t-primary rounded-full animate-spin mb-4" />
-                <p>Cargando información del equipo...</p>
+            <div className="flex flex-col items-center justify-center min-h-[80vh] bg-background relative overflow-hidden">
+                {/* Ambient Effects */}
+                <div className="absolute inset-0 pointer-events-none -z-10">
+                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-primary/10 blur-[120px] rounded-full animate-pulse" />
+                </div>
+
+                <div className="relative flex flex-col items-center gap-10">
+                    {/* Animated Shield */}
+                    <motion.div
+                        animate={{ 
+                            scale: [1, 1.05, 1],
+                            rotateY: [0, 180, 360]
+                        }}
+                        transition={{ 
+                            scale: { duration: 2, repeat: Infinity, ease: "easeInOut" },
+                            rotateY: { duration: 3, repeat: Infinity, ease: "linear" }
+                        }}
+                        className="relative"
+                    >
+                        <div className="absolute inset-0 bg-primary/30 blur-3xl rounded-full animate-pulse" />
+                        <div className="w-28 h-28 bg-surface-elevated rounded-[2rem] border-4 border-primary/20 flex items-center justify-center relative z-10 shadow-2xl shadow-primary/20">
+                            <Shield className="w-14 h-14 text-primary" />
+                        </div>
+                    </motion.div>
+
+                    <div className="flex flex-col items-center gap-4 text-center">
+                        <div className="relative w-16 h-1 bg-foreground/5 rounded-full overflow-hidden">
+                            <motion.div 
+                                initial={{ x: "-100%" }}
+                                animate={{ x: "100%" }}
+                                transition={{ repeat: Infinity, duration: 1.5, ease: "linear" }}
+                                className="absolute inset-0 bg-gradient-to-r from-transparent via-primary to-transparent"
+                            />
+                        </div>
+                        
+                        <div className="space-y-1">
+                            <h2 className="text-3xl font-black italic text-foreground uppercase tracking-tighter">Accediendo al Club</h2>
+                            <p className="text-[10px] font-black text-primary uppercase tracking-[0.5em] italic animate-pulse">Consultando el historial del plantel...</p>
+                        </div>
+                    </div>
+                </div>
             </div>
         );
     }
