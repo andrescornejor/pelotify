@@ -12,6 +12,7 @@ import { cn } from '@/lib/utils';
 import { supabase } from '@/lib/supabase';
 import { TeamsSkeleton } from '@/components/Skeletons';
 import Link from 'next/link';
+import { AVAILABLE_TIMES } from '@/lib/constants';
 import { ROSARIO_VENUES } from '@/lib/venues';
 import { useSettings } from '@/contexts/SettingsContext';
 
