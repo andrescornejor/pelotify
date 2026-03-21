@@ -451,7 +451,7 @@ function ProfileContent() {
     }
 
     return (
-        <div className="flex flex-col gap-8 p-4 sm:p-6 lg:p-10 xl:p-14 2xl:p-16 max-w-[1600px] mx-auto min-h-screen bg-background relative overflow-hidden">
+        <div className="flex flex-col gap-8 p-4 sm:p-6 lg:p-14 xl:p-20 max-w-[1800px] mx-auto min-h-screen bg-background relative overflow-hidden">
             {/* Ambient Effects - More subtle and layered */}
             <div className="fixed inset-0 pointer-events-none -z-10">
                 <div 
@@ -559,10 +559,10 @@ function ProfileContent() {
             </div>
 
             {/* Main Content Layout */}
-            <div className="relative z-20 flex flex-col lg:grid lg:grid-cols-[400px,1fr] xl:grid-cols-[450px,1fr] gap-12 lg:gap-16 pt-4">
+            <div className="relative z-20 flex flex-col lg:grid lg:grid-cols-[400px,1fr] xl:grid-cols-[450px,1fr] gap-12 lg:gap-20 pt-10">
                 
-                {/* Left: Identity Column */}
-                <div className="space-y-10">
+                {/* Left: Identity Column - Sticky on Large Screens */}
+                <div className="lg:sticky lg:top-12 self-start space-y-12">
                     <div className="relative group">
                         {/* Glow behind card */}
                         <div 
