@@ -1,7 +1,7 @@
 'use client';
 
 import { motion, Variants } from 'framer-motion';
-import { Trophy, ArrowLeft, Star, TrendingUp, Sparkles, Award, Zap } from 'lucide-react';
+import { Trophy, ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
 import { RANKS } from '@/lib/ranks';
 import { cn } from '@/lib/utils';
@@ -72,9 +72,6 @@ export default function RanksPage() {
                 {/* Ranks Grid */}
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                     {RANKS.map((rank, i) => {
-                        const Icon = getRankIcon(rank.name);
-                        const isHighRank = i >= 4; // Platino and above
-
                         return (
                             <motion.div
                                 key={rank.name}
