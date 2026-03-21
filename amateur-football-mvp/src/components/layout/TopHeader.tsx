@@ -96,7 +96,7 @@ export function TopHeader() {
 
     return (
         <>
-            <header className="fixed top-0 left-0 right-0 z-[60] pt-3 sm:pt-4 px-3 sm:px-5 lg:px-10 xl:px-16 pointer-events-none">
+            <header className="fixed top-0 left-0 right-0 z-[60] pt-4 sm:pt-5 px-3 sm:px-5 lg:px-10 xl:px-16 pointer-events-none">
                 <div className="max-w-screen-2xl mx-auto w-full pointer-events-auto">
                     <motion.div
                         initial={{ y: -24, opacity: 0 }}
@@ -114,13 +114,13 @@ export function TopHeader() {
                         {/* Background subtle light beam */}
                         <div className="absolute top-0 left-[-10%] w-[40%] h-full bg-gradient-to-r from-primary/5 via-transparent to-transparent -skew-x-12 pointer-events-none" />
 
-                        <div className="grid grid-cols-[1fr_auto_1fr] items-center h-[58px] sm:h-[68px] lg:h-[76px] px-4 sm:px-6 lg:px-8 w-full">
+                        <div className="grid grid-cols-[1fr_auto_1fr] items-center h-[80px] sm:h-[88px] lg:h-[94px] px-4 sm:px-6 lg:px-8 w-full">
                             {/* Left: Menu + Logo */}
                             <div className="flex items-center gap-3 sm:gap-4 lg:gap-3 xl:gap-6 min-w-0">
                                 <motion.button
                                     onClick={toggleSidebar}
                                     whileTap={{ scale: 0.92 }}
-                                    className="relative w-10 h-10 lg:w-11 lg:h-11 flex items-center justify-center rounded-2xl bg-foreground/[0.04] hover:bg-foreground/[0.08] border border-foreground/[0.06] transition-all group"
+                                    className="relative w-12 h-12 sm:w-14 sm:h-14 lg:w-[56px] lg:h-[56px] flex items-center justify-center rounded-2xl bg-foreground/[0.04] hover:bg-foreground/[0.08] border border-foreground/[0.06] transition-all group"
                                     aria-label="Menu"
                                 >
                                     <div className="flex flex-col gap-[5px] w-[19px] items-end">
@@ -146,7 +146,7 @@ export function TopHeader() {
                                 </motion.button>
 
                                 <Link href="/" className="flex items-center gap-2 select-none hover:opacity-90 transition-all group/logo">
-                                    <div className="w-12 h-12 sm:w-16 sm:h-16 lg:w-14 lg:h-14 xl:w-20 xl:h-20 flex items-center justify-center relative transition-transform duration-500 group-hover/logo:scale-110 shrink-0">
+                                    <div className="w-16 h-16 sm:w-[72px] sm:h-[72px] lg:w-[76px] lg:h-[76px] xl:w-[84px] xl:h-[84px] flex items-center justify-center relative transition-transform duration-500 group-hover/logo:scale-110 shrink-0">
                                         <div className="absolute inset-0 bg-primary/15 blur-[20px] rounded-full opacity-40 shrink-0" />
                                         <img src="/logo_pelotify.png" alt="Logo" className="w-full h-full object-contain relative z-10 drop-shadow-[0_0_15px_rgba(44,252,125,0.2)]" />
                                     </div>
@@ -246,7 +246,7 @@ export function TopHeader() {
                                         whileHover={{ scale: 1.08 }}
                                         whileTap={{ scale: 0.88, rotate: 20 }}
                                         onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
-                                        className="w-10 h-10 sm:w-11 sm:h-11 flex items-center justify-center rounded-2xl bg-foreground/[0.04] hover:bg-foreground/[0.08] text-foreground/45 hover:text-foreground/70 transition-all border border-foreground/[0.04]"
+                                        className="w-12 h-12 sm:w-14 sm:h-14 lg:w-[56px] lg:h-[56px] flex items-center justify-center rounded-2xl bg-foreground/[0.04] hover:bg-foreground/[0.08] text-foreground/45 hover:text-foreground/70 transition-all border border-foreground/[0.04]"
                                         title="Cambiar Tema"
                                     >
                                         <AnimatePresence mode="wait">
@@ -273,7 +273,7 @@ export function TopHeader() {
                                             setNotificationsOpen(true);
                                             setNotifCount(0);
                                         }}
-                                        className="relative w-10 h-10 sm:w-11 sm:h-11 flex items-center justify-center rounded-2xl bg-foreground/[0.04] hover:bg-foreground/[0.08] text-foreground/45 hover:text-foreground/70 transition-all border border-foreground/[0.04]"
+                                        className="relative w-12 h-12 sm:w-14 sm:h-14 lg:w-[56px] lg:h-[56px] flex items-center justify-center rounded-2xl bg-foreground/[0.04] hover:bg-foreground/[0.08] text-foreground/45 hover:text-foreground/70 transition-all border border-foreground/[0.04]"
                                     >
                                         <Bell className="w-4 h-4 sm:w-[1.1rem] sm:h-[1.1rem]" />
                                         <AnimatePresence>
@@ -296,7 +296,7 @@ export function TopHeader() {
                                         <motion.div
                                             whileHover={{ scale: 1.08 }}
                                             whileTap={{ scale: 0.92 }}
-                                            className="w-10 h-10 sm:w-11 sm:h-11 rounded-2xl p-0.5 bg-foreground/[0.04] border border-foreground/[0.08] hover:border-primary/30 transition-all"
+                                            className="w-12 h-12 sm:w-14 sm:h-14 lg:w-[56px] lg:h-[56px] rounded-2xl p-0.5 bg-foreground/[0.04] border border-foreground/[0.08] hover:border-primary/30 transition-all"
                                         >
                                             <div className="w-full h-full rounded-[0.85rem] overflow-hidden bg-primary/5 flex items-center justify-center">
                                                 {user?.avatar_url ? (
