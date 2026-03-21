@@ -131,7 +131,7 @@ export default function HomePage() {
   const elo = metadata?.elo || 0;
   const totalMatches = metadata?.matches || 0;
   const matchesWon = metadata?.matches_won || 0;
-  const winRate = totalMatches > 0 ? Math.round((matchesWon / totalMatches) * 100) : 0;
+  const winRate = totalMatches > 0 ? Math.min(100, Math.round((matchesWon / totalMatches) * 100)) : 0;
   const userName = user?.name || 'Jugador';
 
   const rankInfo = getRankByElo(elo);

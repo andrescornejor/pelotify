@@ -321,6 +321,7 @@ function ProfileContent() {
     const displayElo = parseInt(`${getField('elo', 0)}`) || 0;
     const displayGoals = parseInt(`${getField('goals', 0)}`) || 0;
     const displayMatchesWon = parseInt(`${getField('matches_won', 0)}`) || 0;
+    const displayMvpCount = parseInt(`${getField('mvp_count', 0)}`) || 0;
     const teamName = userTeam?.name || 'Sin equipo';
 
     const handleSaveProfile = async () => {
@@ -575,7 +576,7 @@ function ProfileContent() {
                             name: (isEditing ? editedData.name : displayPlayer.name) as string,
                             position: (isEditing ? editedData.position : displayPlayer.position) as string,
                             image: avatarPreview || getField('avatar_url', undefined) as string | undefined,
-                            mvpTrophies: mvpCount,
+                            mvpTrophies: displayMvpCount,
                             badges: userBadges.map(b => b.badge_type as string)
                         }} />
 
@@ -875,8 +876,8 @@ function ProfileContent() {
                                             <div className="space-y-8 relative z-10 w-full">
                                                 {[
                                                     { label: 'Victorias Totales', value: displayMatchesWon, color: 'text-foreground' },
-                                                    { label: 'Win Rate', value: `${displayMatches > 0 ? Math.round((displayMatchesWon / displayMatches) * 100) : 0}%`, color: 'text-foreground' },
-                                                    { label: 'MVP Frecuencia', value: `${displayMatches > 0 ? ((mvpCount / displayMatches) * 100).toFixed(1) : '0.0'}%`, color: 'text-accent', isLarge: true }
+                                                    { label: 'Win Rate', value: `${displayMatches > 0 ? Math.min(100, Math.round((displayMatchesWon / displayMatches) * 100)) : 0}%`, color: 'text-foreground' },
+                                                    { label: 'MVP Frecuencia', value: `${displayMatches > 0 ? Math.min(100, ((displayMvpCount / displayMatches) * 100)).toFixed(1) : '0.0'}%`, color: 'text-accent', isLarge: true }
                                                 ].map((stat, idx) => (
                                                     <div key={idx} className="flex justify-between items-center group/item p-4 rounded-2xl hover:bg-foreground/[0.02] transition-colors border border-transparent hover:border-foreground/5">
                                                         <div className="flex items-center gap-4">
