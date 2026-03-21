@@ -451,72 +451,107 @@ function ProfileContent() {
     }
 
     return (
-        <div className="flex flex-col gap-8 p-4 sm:p-6 lg:p-10 xl:p-14 2xl:p-16 max-w-full mx-auto min-h-screen bg-background relative">
+        <div className="flex flex-col gap-8 p-4 sm:p-6 lg:p-10 xl:p-14 2xl:p-16 max-w-full mx-auto min-h-screen bg-background relative selection:bg-primary/30 selection:text-primary">
             {/* Ambient Effects */}
             <div className="fixed inset-0 pointer-events-none -z-10 overflow-hidden">
                 <div 
-                    className="absolute top-0 left-0 w-full h-[60dvh] bg-gradient-to-b via-transparent to-transparent opacity-30" 
-                    style={{ backgroundImage: ambientColor ? `linear-gradient(to bottom, ${ambientColor}, transparent)` : undefined }}
+                    className="absolute top-0 left-0 w-full h-[80dvh] opacity-40 transition-colors duration-1000" 
+                    style={{ backgroundImage: ambientColor ? `radial-gradient(ellipse at 50% 0%, ${ambientColor}40, transparent 70%)` : 'radial-gradient(ellipse at 50% 0%, rgba(16,185,129,0.15), transparent 70%)' }}
                 />
                 <div 
-                    className={cn("absolute top-[-15%] right-[-10%] w-[70%] h-[70%] blur-[140px] rounded-full animate-pulse", !ambientColor && "bg-primary/5")} 
-                    style={{ backgroundColor: ambientColor || undefined }}
+                    className={cn("absolute top-[-20%] right-[-10%] w-[90%] h-[90%] blur-[160px] rounded-full animate-pulse opacity-50", !ambientColor && "bg-primary/5")} 
+                    style={{ backgroundColor: ambientColor || undefined, animationDuration: '8s' }}
                 />
+                <div 
+                    className={cn("absolute bottom-[-10%] left-[-20%] w-[60%] h-[60%] blur-[120px] rounded-full opacity-30 animate-pulse delay-1000", !ambientColor && "bg-accent/5")} 
+                    style={{ backgroundColor: ambientColor ? `${ambientColor}80` : undefined, animationDuration: '6s' }}
+                />
+                <div className="absolute inset-0 bg-[url('/noise.png')] opacity-[0.03] mix-blend-overlay" />
             </div>
 
             {/* Header / Actions */}
-            <div className="relative z-10 flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
-                <div className="space-y-2">
-                    <div className="flex items-center gap-3">
-                        <div className="w-2 h-2 rounded-full bg-primary animate-pulse" />
-                        <span className="text-[10px] font-black uppercase tracking-[0.4em] text-foreground/40 italic">Central de Jugador</span>
-                    </div>
-                    <h1 className="text-4xl md:text-6xl lg:text-7xl font-black italic text-foreground uppercase tracking-tighter leading-none group">
+            <div className="relative z-10 flex flex-col md:flex-row justify-between items-start md:items-center gap-6 group/header">
+                <div className="space-y-3">
+                    <motion.div 
+                        initial={{ opacity: 0, x: -20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        className="flex items-center gap-3"
+                    >
+                        <div className="relative flex items-center justify-center w-6 h-6 rounded-full bg-primary/10 border border-primary/30">
+                            <div className="w-2 h-2 rounded-full bg-primary animate-ping absolute" />
+                            <div className="w-2 h-2 rounded-full bg-primary" />
+                        </div>
+                        <span className="text-[10px] font-black uppercase tracking-[0.5em] text-foreground/40 italic bg-clip-text text-transparent bg-gradient-to-r from-foreground/50 to-foreground/20">Identidad Digital</span>
+                    </motion.div>
+                    <motion.h1 
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.1 }}
+                        className="text-5xl md:text-7xl lg:text-8xl font-black italic text-foreground uppercase tracking-tighter leading-none"
+                    >
                         {isMe ? 'Mi ' : ''}
-                        <span className="text-foreground/40 group-hover:text-primary transition-colors duration-500">Perfil</span>
-                        {!isMe && <span className="text-foreground/20 ml-4 group-hover:text-primary/40 transition-colors">Público</span>}
-                    </h1>
+                        <span className="relative inline-block">
+                            <span className="relative z-10 text-transparent bg-clip-text bg-gradient-to-br from-foreground to-foreground/50">Perfil</span>
+                            <span className="absolute -bottom-2 -right-8 w-24 h-24 bg-primary/20 blur-[30px] rounded-full group-hover/header:bg-primary/40 transition-colors duration-700" />
+                        </span>
+                        {!isMe && <span className="text-foreground/20 ml-6 tracking-normal">Público</span>}
+                    </motion.h1>
                 </div>
 
                 {isMe && (
-                    <div className="flex items-center gap-4">
+                    <motion.div 
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ delay: 0.2 }}
+                        className="flex items-center gap-4 w-full md:w-auto mt-4 md:mt-0"
+                    >
                         <AnimatePresence mode="wait">
                             {isEditing ? (
                                 <motion.div 
-                                    initial={{ opacity: 0, x: 20 }}
-                                    animate={{ opacity: 1, x: 0 }}
-                                    exit={{ opacity: 0, x: 20 }}
-                                    className="flex gap-4"
+                                    key="editing"
+                                    initial={{ opacity: 0, scale: 0.95 }}
+                                    animate={{ opacity: 1, scale: 1 }}
+                                    exit={{ opacity: 0, scale: 0.95 }}
+                                    className="flex w-full gap-4"
                                 >
                                     <button
                                         onClick={() => setIsEditing(false)}
-                                        className="h-11 px-6 rounded-xl bg-foreground/5 border border-foreground/10 text-[10px] font-black uppercase tracking-widest text-foreground/50 hover:text-foreground transition-all disabled:opacity-50 active:scale-95"
+                                        className="flex-1 md:flex-none h-14 px-8 rounded-[1.5rem] bg-foreground/5 border border-foreground/10 text-[11px] font-black uppercase tracking-[0.2em] text-foreground/50 hover:text-foreground hover:bg-foreground/10 hover:border-foreground/20 transition-all disabled:opacity-50 active:scale-95 group/btn"
                                         disabled={isSaving}
                                     >
-                                        Cancelar
+                                        <div className="flex items-center justify-center gap-2">
+                                            <X className="w-4 h-4 group-hover/btn:rotate-90 transition-transform duration-300" />
+                                            <span>Cancelar</span>
+                                        </div>
                                     </button>
                                     <button
                                         onClick={handleSaveProfile}
-                                        className="h-11 px-6 rounded-xl bg-primary text-black text-[10px] font-black uppercase tracking-widest shadow-xl shadow-primary/20 hover:bg-white transition-all disabled:opacity-50 flex items-center gap-3 active:scale-95"
+                                        className="flex-[2] md:flex-none h-14 px-10 rounded-[1.5rem] bg-gradient-to-r from-primary to-emerald-400 text-black text-[11px] font-black uppercase tracking-[0.2em] shadow-[0_0_40px_rgba(16,185,129,0.3)] hover:shadow-[0_0_60px_rgba(16,185,129,0.5)] transition-all disabled:opacity-50 active:scale-95 relative overflow-hidden group/btn"
                                         disabled={isSaving}
                                     >
-                                        {isSaving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
-                                        Guardar
+                                        <div className="absolute inset-0 flex translate-x-[-100%] group-hover/btn:animate-[shimmer_1.5s_infinite] bg-gradient-to-r from-transparent via-white/40 to-transparent" />
+                                        <div className="flex items-center justify-center gap-3 relative z-10">
+                                            {isSaving ? <Loader2 className="w-5 h-5 animate-spin" /> : <Save className="w-5 h-5" />}
+                                            <span className="drop-shadow-md">Guardar Data</span>
+                                        </div>
                                     </button>
                                 </motion.div>
                             ) : (
                                 <motion.button
+                                    key="not-editing"
                                     initial={{ opacity: 0, scale: 0.9 }}
                                     animate={{ opacity: 1, scale: 1 }}
                                     onClick={() => setIsEditing(true)}
-                                    className="h-11 px-8 rounded-xl bg-foreground/5 border border-foreground/10 text-[11px] font-black uppercase tracking-[0.2em] text-foreground hover:bg-foreground/10 transition-all flex items-center gap-3 group active:scale-95"
+                                    className="w-full md:w-auto h-14 px-10 rounded-[1.5rem] glass-premium bg-foreground/5 border border-foreground/10 text-[11px] font-black uppercase tracking-[0.3em] text-foreground hover:bg-foreground/10 hover:border-primary/40 focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all flex items-center justify-center gap-3 group active:scale-95 shadow-xl"
                                 >
-                                    <Edit2 className="w-5 h-5 text-primary group-hover:rotate-12 transition-transform duration-500" />
-                                    Editar Perfil
+                                    <div className="p-2 rounded-xl bg-primary/10 group-hover:bg-primary/20 transition-colors">
+                                        <Edit2 className="w-4 h-4 text-primary group-hover:rotate-12 transition-transform duration-500" />
+                                    </div>
+                                    Modificar Specs
                                 </motion.button>
                             )}
                         </AnimatePresence>
-                    </div>
+                    </motion.div>
                 )}
             </div>
 
@@ -645,48 +680,67 @@ function ProfileContent() {
                     {/* Stats Highlights */}
                     <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
                         {[
-                            { icon: Trophy, label: 'Estatus Card', value: displayElo, color: 'text-primary', unit: 'ELO' },
-                            { icon: History, label: 'Despliegues', value: displayMatches, color: 'text-blue-500', unit: 'EXP' },
-                            { icon: Target, label: 'Objetivos', value: displayGoals, color: 'text-accent', unit: 'GOL' }
+                            { icon: Trophy, label: 'Estatus Card', value: displayElo, color: 'text-primary', glow: 'from-primary/20 via-primary/5 to-transparent', unit: 'ELO' },
+                            { icon: History, label: 'Despliegues', value: displayMatches, color: 'text-blue-500', glow: 'from-blue-500/20 via-blue-500/5 to-transparent', unit: 'EXP' },
+                            { icon: Target, label: 'Objetivos', value: displayGoals, color: 'text-accent', glow: 'from-accent/20 via-accent/5 to-transparent', unit: 'GOL' }
                         ].map((node, i) => (
-                            <div key={i} className="glass-premium p-8 rounded-[3rem] border border-foreground/10 relative overflow-hidden group transition-all duration-500 hover:y-[-8px]">
-                                <div className={cn("absolute inset-x-0 top-0 h-1 bg-gradient-to-r via-transparent opacity-50", 
-                                    i === 0 ? "from-primary" : i === 1 ? "from-blue-500" : "from-accent"
+                            <motion.div 
+                                initial={{ opacity: 0, y: 20 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ delay: 0.3 + (i * 0.1) }}
+                                key={i} 
+                                className="glass-premium p-8 lg:p-10 rounded-[2.5rem] border border-foreground/10 relative overflow-hidden group hover:border-foreground/20 transition-all duration-500 hover:-translate-y-2 hover:shadow-2xl"
+                            >
+                                <div className={cn("absolute inset-0 bg-gradient-to-br opacity-0 group-hover:opacity-100 transition-opacity duration-700", node.glow)} />
+                                <div className={cn("absolute inset-x-0 top-0 h-1 bg-gradient-to-r hidden sm:block opacity-50", 
+                                    i === 0 ? "from-primary to-transparent" : i === 1 ? "from-blue-500 to-transparent" : "from-accent to-transparent"
                                 )} />
-                                <div className="flex items-center justify-between mb-4">
-                                    <node.icon className={cn("w-6 h-6 opacity-40 group-hover:opacity-100 transition-opacity", node.color)} />
-                                    <span className="text-[10px] font-black text-foreground/20 uppercase tracking-widest italic">Node 0{i+1}</span>
+                                <div className="flex items-center justify-between mb-8 relative z-10">
+                                    <div className={cn("p-4 rounded-2xl bg-background/50 border border-foreground/5 backdrop-blur-xl group-hover:scale-110 transition-transform duration-500 shadow-xl", 
+                                        i === 0 ? "shadow-primary/10" : i === 1 ? "shadow-blue-500/10" : "shadow-accent/10"
+                                    )}>
+                                        <node.icon className={cn("w-6 h-6", node.color)} />
+                                    </div>
+                                    <span className="text-[10px] font-black text-foreground/20 uppercase tracking-widest italic group-hover:text-foreground/40 transition-colors">Mod_0{i+1}</span>
                                 </div>
-                                <div className="flex items-baseline gap-2">
-                                    <span className="text-5xl font-black text-foreground italic tracking-tighter leading-none">{node.value}</span>
-                                    <span className="text-[10px] font-black text-foreground/40 uppercase tracking-[0.2em]">{node.unit}</span>
+                                <div className="flex items-baseline gap-2 relative z-10">
+                                    <span className="text-6xl font-black text-foreground italic tracking-tighter leading-none group-hover:scale-105 transition-transform origin-left">{node.value}</span>
+                                    <span className={cn("text-[11px] font-black uppercase tracking-[0.2em] -mt-2", node.color)}>{node.unit}</span>
                                 </div>
-                                <p className="text-[9px] font-black uppercase text-foreground/40 tracking-[0.3em] mt-3 ml-0.5">{node.label}</p>
-                            </div>
+                                <p className="text-[10px] font-black uppercase text-foreground/40 tracking-[0.4em] mt-4 ml-1 relative z-10">{node.label}</p>
+                            </motion.div>
                         ))}
                     </div>
 
                     {/* Navigation Tabs */}
-                    <div className="sticky top-0 z-30 py-4 bg-background/80 backdrop-blur-xl -mx-4 px-4 lg:-mx-0 lg:px-0">
-                        <div className="flex p-1 bg-foreground/5 rounded-[2rem] border border-foreground/10 relative shadow-2xl backdrop-blur-3xl">
+                    <motion.div 
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.5 }}
+                        className="sticky top-0 z-30 py-6 bg-background/80 backdrop-blur-2xl -mx-4 px-4 lg:-mx-0 lg:px-0 border-b border-foreground/5"
+                    >
+                        <div className="flex p-1.5 bg-foreground/[0.03] rounded-[2rem] border border-foreground/10 relative shadow-2xl backdrop-blur-3xl max-w-2xl">
                             {[
-                                { id: 'overview', label: 'Resumen' },
-                                { id: 'history', label: 'Cronología' },
-                                { id: 'wall', label: 'Muro' }
+                                { id: 'overview', label: 'Biometría' },
+                                { id: 'history', label: 'Despliegues' },
+                                { id: 'wall', label: 'Muro Social' }
                             ].map((tab) => (
                                 <button
                                     key={tab.id}
                                     onClick={() => setActiveTab(tab.id as any)}
                                     className={cn(
-                                        "flex-1 py-4 text-[11px] font-black uppercase tracking-[0.4em] rounded-2xl transition-all relative z-10 italic",
+                                        "flex-1 py-4 px-2 text-[10px] sm:text-[11px] font-black uppercase tracking-[0.2em] sm:tracking-[0.3em] rounded-[1.5rem] transition-all relative z-10 italic group outline-none",
                                         activeTab === tab.id ? 'text-black' : 'text-foreground/40 hover:text-foreground'
                                     )}
                                 >
-                                    <span className="relative z-20">{tab.label}</span>
+                                    <span className="relative z-20 flex items-center justify-center gap-2">
+                                        {activeTab === tab.id && <div className="w-1.5 h-1.5 rounded-full bg-black animate-pulse" />}
+                                        {tab.label}
+                                    </span>
                                     {activeTab === tab.id && (
                                         <motion.div
-                                            layoutId="profile-tab-pill-premium"
-                                            className="absolute inset-0 bg-primary rounded-2xl shadow-[0_0_30px_rgba(16,185,129,0.4)]"
+                                            layoutId="profile-tab-indicator"
+                                            className="absolute inset-0 bg-gradient-to-r from-primary to-emerald-400 rounded-[1.5rem] shadow-[0_0_30px_rgba(16,185,129,0.3)]"
                                             initial={false}
                                             transition={{ type: 'spring' as const, stiffness: 400, damping: 30 }}
                                         />
@@ -694,7 +748,7 @@ function ProfileContent() {
                                 </button>
                             ))}
                         </div>
-                    </div>
+                    </motion.div>
 
                     {/* Tab Content */}
                     <div className="min-h-[400px]">
@@ -709,102 +763,129 @@ function ProfileContent() {
                                 >
                                     {/* Personal Data Grid */}
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                                        <div className="glass-premium p-10 rounded-[3rem] border border-foreground/10 space-y-8 relative overflow-hidden group">
-                                            <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 blur-[50px] opacity-0 group-hover:opacity-100 transition-opacity" />
-                                            <div className="flex items-center gap-4">
-                                                <div className="w-10 h-10 rounded-2xl bg-primary/10 flex items-center justify-center border border-primary/20">
-                                                    <Info className="w-5 h-5 text-primary" />
+                                        <div className="glass-premium p-10 lg:p-12 rounded-[3.5rem] border border-foreground/10 space-y-10 relative overflow-hidden group">
+                                            <div className="absolute top-0 right-0 w-64 h-64 bg-primary/10 blur-[80px] opacity-0 group-hover:opacity-100 transition-duration-700 pointer-events-none" />
+                                            <div className="flex items-center justify-between relative z-10 border-b border-foreground/5 pb-6">
+                                                <div className="flex items-center gap-5">
+                                                    <div className="w-14 h-14 rounded-[1.5rem] bg-background/50 flex items-center justify-center border border-primary/20 shadow-[0_0_20px_rgba(16,185,129,0.1)] group-hover:scale-110 transition-transform">
+                                                        <Info className="w-6 h-6 text-primary" />
+                                                    </div>
+                                                    <div className="flex flex-col">
+                                                        <h3 className="text-xl font-black uppercase tracking-tighter text-foreground italic leading-none">Biometría</h3>
+                                                        <span className="text-[10px] font-black text-foreground/40 uppercase tracking-[0.3em] mt-1">Identidad Core</span>
+                                                    </div>
                                                 </div>
-                                                <div className="flex flex-col">
-                                                    <h3 className="text-sm font-black uppercase tracking-[0.2em] text-foreground italic">Biometría</h3>
-                                                    <span className="text-[9px] font-black text-foreground/70 uppercase tracking-widest leading-none">Identidad de Jugador</span>
+                                                <div className="hidden sm:flex px-4 py-2 rounded-full bg-primary/10 border border-primary/20">
+                                                    <span className="text-[9px] font-black text-primary uppercase tracking-widest">VERIFICADO</span>
                                                 </div>
                                             </div>
                                             
-                                            <div className="space-y-6">
+                                            <div className="space-y-6 relative z-10">
                                                 {isEditing ? (
-                                                    <div className="grid grid-cols-2 gap-6">
-                                                        <div className="space-y-2">
-                                                            <label className="text-[10px] font-black uppercase text-foreground/70 tracking-[0.2em] ml-1">Edad</label>
+                                                    <div className="grid grid-cols-2 gap-6 bg-background/40 p-6 rounded-[2rem] border border-foreground/5 backdrop-blur-md">
+                                                        <div className="space-y-3">
+                                                            <div className="flex items-center gap-2 ml-2">
+                                                                <div className="w-1.5 h-1.5 rounded-full bg-primary" />
+                                                                <label className="text-[10px] font-black uppercase text-foreground/70 tracking-[0.2em] leading-none">Edad (Años)</label>
+                                                            </div>
                                                             <input
                                                                 type="number"
-                                                                className="w-full h-12 bg-foreground/[0.02] border border-foreground/10 rounded-xl px-4 text-foreground text-sm font-black outline-none focus:border-primary/40 transition-all"
+                                                                className="w-full h-14 bg-foreground/[0.03] border border-foreground/10 rounded-2xl px-5 text-foreground text-lg font-black outline-none focus:border-primary focus:bg-primary/5 transition-all shadow-inner"
                                                                 value={editedData.age}
                                                                 onChange={e => setEditedData({ ...editedData, age: e.target.value })}
                                                             />
                                                         </div>
-                                                        <div className="space-y-2">
-                                                            <label className="text-[10px] font-black uppercase text-foreground/70 tracking-[0.2em] ml-1">Altura (cm)</label>
+                                                        <div className="space-y-3">
+                                                            <div className="flex items-center gap-2 ml-2">
+                                                                <div className="w-1.5 h-1.5 rounded-full bg-primary" />
+                                                                <label className="text-[10px] font-black uppercase text-foreground/70 tracking-[0.2em] leading-none">Altura (cm)</label>
+                                                            </div>
                                                             <input
                                                                 type="number"
-                                                                className="w-full h-12 bg-foreground/[0.02] border border-foreground/10 rounded-xl px-4 text-foreground text-sm font-black outline-none focus:border-primary/40 transition-all"
+                                                                className="w-full h-14 bg-foreground/[0.03] border border-foreground/10 rounded-2xl px-5 text-foreground text-lg font-black outline-none focus:border-primary focus:bg-primary/5 transition-all shadow-inner"
                                                                 value={editedData.height}
                                                                 onChange={e => setEditedData({ ...editedData, height: e.target.value })}
                                                             />
                                                         </div>
-                                                        <div className="col-span-full space-y-2">
-                                                            <label className="text-[10px] font-black uppercase text-foreground/70 tracking-[0.2em] ml-1">Perfil de Pierna</label>
-                                                            <select
-                                                                className="w-full h-12 bg-foreground/[0.02] border border-foreground/10 rounded-xl px-4 text-foreground text-sm font-black outline-none focus:border-primary/40 appearance-none transition-all uppercase"
-                                                                value={editedData.preferredFoot}
-                                                                onChange={e => setEditedData({ ...editedData, preferredFoot: e.target.value })}
-                                                            >
-                                                                <option value="Derecha">Derecha</option>
-                                                                <option value="Zurda">Zurda</option>
-                                                                <option value="Ambidiestro">Ambidiestro</option>
-                                                            </select>
+                                                        <div className="col-span-full space-y-3 mt-2">
+                                                            <div className="flex items-center gap-2 ml-2">
+                                                                <div className="w-1.5 h-1.5 rounded-full bg-primary" />
+                                                                <label className="text-[10px] font-black uppercase text-foreground/70 tracking-[0.2em] leading-none">Pie Dominante</label>
+                                                            </div>
+                                                            <div className="relative">
+                                                                <select
+                                                                    className="w-full h-14 bg-foreground/[0.03] border border-foreground/10 rounded-2xl px-5 text-foreground text-sm font-black outline-none focus:border-primary focus:bg-primary/5 appearance-none cursor-pointer transition-all uppercase shadow-inner"
+                                                                    value={editedData.preferredFoot}
+                                                                    onChange={e => setEditedData({ ...editedData, preferredFoot: e.target.value })}
+                                                                >
+                                                                    <option value="Derecha">Diestro</option>
+                                                                    <option value="Zurda">Zurdo</option>
+                                                                    <option value="Ambidiestro">Ambidiestro</option>
+                                                                </select>
+                                                                <ChevronRight className="absolute right-5 top-1/2 -translate-y-1/2 w-5 h-5 text-foreground/40 rotate-90 pointer-events-none" />
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 ) : (
-                                                    <div className="grid grid-cols-2 gap-y-10">
-                                                        <div className="space-y-2">
-                                                            <span className="text-[10px] font-black uppercase text-foreground/60 tracking-[0.3em]">Edad Real</span>
-                                                            <p className="text-xl font-black text-foreground italic uppercase tracking-tighter">{displayAge} <span className="text-foreground/65 text-[11px] not-italic ml-1">Años</span></p>
-                                                        </div>
-                                                        <div className="space-y-2">
-                                                            <span className="text-[10px] font-black uppercase text-foreground/60 tracking-[0.3em]">Envergadura</span>
-                                                            <p className="text-xl font-black text-foreground italic uppercase tracking-tighter">{displayHeight} <span className="text-foreground/65 text-[11px] not-italic ml-1">cm</span></p>
-                                                        </div>
-                                                        <div className="space-y-2">
-                                                            <span className="text-[10px] font-black uppercase text-foreground/60 tracking-[0.3em]">Perfil Hábil</span>
-                                                            <p className="text-xl font-black text-foreground italic uppercase tracking-tighter">{displayFoot}</p>
-                                                        </div>
-                                                        <div className="space-y-2">
-                                                            <span className="text-[10px] font-black uppercase text-foreground/60 tracking-[0.3em]">Afiliación</span>
-                                                            <p className="text-xl font-black text-primary italic uppercase tracking-tighter group-hover:scale-110 transition-transform origin-left">{teamName}</p>
-                                                        </div>
+                                                    <div className="grid grid-cols-2 gap-y-10 gap-x-6">
+                                                        {[
+                                                            { label: 'Ciclos', value: displayAge, unit: 'Años', dot: 'bg-primary' },
+                                                            { label: 'Estatura', value: displayHeight, unit: 'cm', dot: 'bg-blue-400' },
+                                                            { label: 'Eje Hábil', value: displayFoot, unit: '', dot: 'bg-accent' },
+                                                            { label: 'Alineación', value: teamName, unit: '', dot: 'bg-purple-400', isTeam: true }
+                                                        ].map((item, idx) => (
+                                                            <div key={idx} className="space-y-3 bg-background/30 p-5 rounded-[2rem] border border-foreground/[0.03] hover:border-foreground/10 transition-colors">
+                                                                <div className="flex items-center gap-2">
+                                                                    <div className={cn("w-1.5 h-1.5 rounded-full", item.dot)} />
+                                                                    <span className="text-[10px] font-black uppercase text-foreground/50 tracking-[0.3em] leading-none">{item.label}</span>
+                                                                </div>
+                                                                <p className={cn(
+                                                                    "text-2xl lg:text-3xl font-black italic uppercase tracking-tighter truncate",
+                                                                    item.isTeam ? "text-primary hover:text-white transition-colors cursor-pointer" : "text-foreground"
+                                                                )}>
+                                                                    {item.value} <span className="text-foreground/40 text-sm not-italic ml-1 tracking-normal font-bold">{item.unit}</span>
+                                                                </p>
+                                                            </div>
+                                                        ))}
                                                     </div>
                                                 )}
                                             </div>
                                         </div>
 
-                                        <div className="glass-premium p-10 rounded-[3rem] border border-foreground/10 space-y-8 relative overflow-hidden group">
-                                            <div className="absolute top-0 right-0 w-32 h-32 bg-accent/5 blur-[50px] opacity-0 group-hover:opacity-100 transition-opacity" />
-                                            <div className="flex items-center gap-4">
-                                                <div className="w-10 h-10 rounded-2xl bg-accent/10 flex items-center justify-center border border-accent/20">
-                                                    <Zap className="w-5 h-5 text-accent" />
-                                                </div>
-                                                <div className="flex flex-col">
-                                                    <h3 className="text-sm font-black uppercase tracking-[0.2em] text-foreground italic">Performance</h3>
-                                                    <span className="text-[9px] font-black text-foreground/40 uppercase tracking-widest leading-none">Análisis de Despliegue</span>
+                                        <div className="glass-premium p-10 lg:p-12 rounded-[3.5rem] border border-foreground/10 space-y-10 relative overflow-hidden group">
+                                            <div className="absolute top-0 left-0 w-64 h-64 bg-accent/10 blur-[80px] opacity-0 group-hover:opacity-100 transition-duration-700 pointer-events-none" />
+                                            <div className="flex items-center justify-between relative z-10 border-b border-foreground/5 pb-6">
+                                                <div className="flex items-center gap-5">
+                                                    <div className="w-14 h-14 rounded-[1.5rem] bg-background/50 flex items-center justify-center border border-accent/20 shadow-[0_0_20px_rgba(245,158,11,0.1)] group-hover:scale-110 transition-transform">
+                                                        <Zap className="w-6 h-6 text-accent" />
+                                                    </div>
+                                                    <div className="flex flex-col">
+                                                        <h3 className="text-xl font-black uppercase tracking-tighter text-foreground italic leading-none">Rendimiento</h3>
+                                                        <span className="text-[10px] font-black text-foreground/40 uppercase tracking-[0.3em] mt-1">Métricas de Juego</span>
+                                                    </div>
                                                 </div>
                                             </div>
                                             
-                                            <div className="space-y-6">
-                                                <div className="flex justify-between items-end border-b border-foreground/5 pb-4 group/item">
-                                                    <span className="text-[10px] font-black uppercase text-foreground/40 tracking-[0.3em] group-hover/item:text-foreground transition-colors">Victorias Totales</span>
-                                                    <span className="text-2xl font-black text-foreground italic leading-none">--</span>
-                                                </div>
-                                                <div className="flex justify-between items-end border-b border-foreground/5 pb-4 group/item">
-                                                    <span className="text-[10px] font-black uppercase text-foreground/40 tracking-[0.3em] group-hover/item:text-foreground transition-colors">Goles Promedio</span>
-                                                    <span className="text-2xl font-black text-foreground italic leading-none">{displayMatches > 0 ? (displayGoals / displayMatches).toFixed(1) : '--'}</span>
-                                                </div>
-                                                <div className="flex justify-between items-end border-b border-foreground/5 pb-4 group/item">
-                                                    <span className="text-[10px] font-black uppercase text-foreground/40 tracking-[0.3em] group-hover/item:text-foreground transition-colors">MVP Ratio</span>
-                                                    <span className="text-3xl font-black text-accent italic leading-none drop-shadow-[0_0_15px_rgba(245,158,11,0.2)]">
-                                                        {displayMatches > 0 ? ((mvpCount / displayMatches) * 100).toFixed(1) : '0.0'}%
-                                                    </span>
-                                                </div>
+                                            <div className="space-y-8 relative z-10 w-full">
+                                                {[
+                                                    { label: 'Victorias Totales', value: '--', color: 'text-foreground' },
+                                                    { label: 'Gol Ratio', value: displayMatches > 0 ? (displayGoals / displayMatches).toFixed(1) : '--', color: 'text-foreground' },
+                                                    { label: 'MVP Frecuencia', value: `${displayMatches > 0 ? ((mvpCount / displayMatches) * 100).toFixed(1) : '0.0'}%`, color: 'text-accent', isLarge: true }
+                                                ].map((stat, idx) => (
+                                                    <div key={idx} className="flex justify-between items-center group/item p-4 rounded-2xl hover:bg-foreground/[0.02] transition-colors border border-transparent hover:border-foreground/5">
+                                                        <div className="flex items-center gap-4">
+                                                            <div className="font-mono text-[9px] text-foreground/20 italic font-bold">0{idx+1}</div>
+                                                            <span className="text-[11px] font-black uppercase text-foreground/50 tracking-[0.3em] group-hover/item:text-foreground transition-colors">{stat.label}</span>
+                                                        </div>
+                                                        <span className={cn(
+                                                            "font-black italic tracking-tighter leading-none text-right",
+                                                            stat.isLarge ? "text-4xl lg:text-5xl drop-shadow-[0_0_20px_rgba(245,158,11,0.3)]" : "text-3xl lg:text-4xl",
+                                                            stat.color
+                                                        )}>
+                                                            {stat.value}
+                                                        </span>
+                                                    </div>
+                                                ))}
                                             </div>
                                         </div>
                                     </div>
@@ -814,74 +895,77 @@ function ProfileContent() {
                                         <motion.div
                                             initial={{ opacity: 0, scale: 0.95 }}
                                             animate={{ opacity: 1, scale: 1 }}
-                                            className="glass-premium p-10 rounded-[3rem] border border-foreground/10 relative overflow-hidden group/team cursor-default"
+                                            className="glass-premium p-10 lg:p-12 rounded-[3.5rem] border border-foreground/10 relative overflow-hidden group/team cursor-default transition-all duration-700 hover:border-primary/40 hover:shadow-[0_0_50px_rgba(16,185,129,0.1)] focus-within:border-primary/40 z-10"
                                         >
-                                            <div className="absolute top-0 right-0 w-64 h-64 bg-primary/10 blur-[80px] opacity-0 group-hover/team:opacity-100 transition-opacity duration-700" />
+                                            <div className="absolute top-0 right-0 w-[150%] h-[150%] bg-gradient-radial from-primary/10 via-transparent to-transparent -translate-y-1/2 translate-x-1/4 opacity-0 group-hover/team:opacity-100 transition-opacity duration-1000 blur-3xl" />
+                                            <div className="absolute inset-x-0 bottom-0 h-1 bg-gradient-to-r from-transparent via-primary/50 to-transparent opacity-0 group-hover/team:opacity-100 transition-opacity duration-1000" />
                                             
-                                            <div className="flex flex-col md:flex-row items-center gap-10 relative z-10">
+                                            <div className="flex flex-col lg:flex-row items-center gap-12 relative z-10">
                                                 {/* Team Crest/Logo */}
-                                                <div className="relative shrink-0">
-                                                    <div className="absolute inset-0 bg-primary/20 blur-2xl rounded-full scale-110 group-hover/team:scale-150 transition-transform duration-700" />
-                                                    <div className="w-32 h-32 md:w-40 md:h-40 rounded-[2.5rem] bg-foreground/5 border border-foreground/10 flex items-center justify-center overflow-hidden relative shadow-2xl group-hover/team:border-primary/40 transition-colors">
+                                                <div className="relative shrink-0 perspective-1000">
+                                                    <div className="absolute inset-0 bg-primary/20 blur-[40px] rounded-full scale-110 group-hover/team:scale-150 transition-transform duration-1000" />
+                                                    <div className="w-36 h-36 md:w-48 md:h-48 rounded-[3rem] bg-background/80 border border-foreground/10 flex items-center justify-center overflow-hidden relative shadow-2xl group-hover/team:border-primary/50 transition-all duration-700 backdrop-blur-xl group-hover/team:-translate-y-2 group-hover/team:rotate-y-12">
+                                                        <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent opacity-0 group-hover/team:opacity-100 transition-opacity" />
                                                         {userTeam.logo_url ? (
                                                             <img 
                                                                 src={userTeam.logo_url} 
                                                                 alt={userTeam.name} 
-                                                                className="w-full h-full object-cover group-hover/team:scale-110 transition-transform duration-700"
+                                                                className="w-full h-full object-cover group-hover/team:scale-110 group-hover/team:rotate-3 transition-all duration-1000"
                                                             />
                                                         ) : (
-                                                            <Shield className="w-16 h-16 md:w-24 md:h-24 text-primary/40 group-hover/team:text-primary transition-colors" />
+                                                            <Shield className="w-20 h-20 md:w-28 md:h-28 text-foreground/20 group-hover/team:text-primary transition-colors duration-700 drop-shadow-md" />
                                                         )}
                                                     </div>
                                                 </div>
 
-                                                <div className="flex-1 space-y-6 text-center md:text-left">
-                                                    <div className="space-y-2">
-                                                        <div className="flex items-center justify-center md:justify-start gap-4">
-                                                            <div className="px-3 py-1 bg-primary/10 border border-primary/20 rounded-full">
-                                                                <span className="text-[9px] font-black text-primary uppercase tracking-[0.2em] italic">EQUIPO ACTUAL</span>
+                                                <div className="flex-1 space-y-8 text-center lg:text-left w-full">
+                                                    <div className="space-y-3">
+                                                        <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4">
+                                                            <div className="px-4 py-1.5 bg-primary/10 border border-primary/20 rounded-full flex items-center gap-2 group-hover/team:bg-primary/20 transition-colors">
+                                                                <div className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
+                                                                <span className="text-[10px] font-black text-primary uppercase tracking-[0.3em] italic">AFILIACIÓN ACTIVA</span>
                                                             </div>
-                                                            <span className="text-[10px] font-black text-foreground/20 italic tracking-widest uppercase">ID #{userTeam.id.slice(0, 8)}</span>
+                                                            <span className="text-[10px] font-black text-foreground/30 italic tracking-widest uppercase">NODE #{userTeam.id.slice(0, 8)}</span>
                                                         </div>
-                                                        <h2 className="text-4xl md:text-6xl font-black italic text-foreground uppercase tracking-tighter leading-none group-hover/team:text-primary transition-colors duration-500">
+                                                        <h2 className="text-5xl md:text-7xl font-black italic text-foreground uppercase tracking-tighter leading-none group-hover/team:text-transparent group-hover/team:bg-clip-text group-hover/team:bg-gradient-to-r group-hover/team:from-foreground group-hover/team:to-primary transition-all duration-700">
                                                             {userTeam.name}
                                                         </h2>
                                                         {userTeam.motto && (
-                                                            <p className="text-sm md:text-lg font-bold text-foreground/40 italic uppercase tracking-tight">
+                                                            <p className="text-base md:text-xl font-bold text-foreground/40 italic uppercase tracking-tight max-w-2xl mx-auto lg:mx-0">
                                                                 "{userTeam.motto}"
                                                             </p>
                                                         )}
                                                     </div>
 
-                                                    <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
+                                                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 bg-background/30 p-6 rounded-[2.5rem] border border-foreground/[0.03]">
                                                         {[
-                                                            { icon: Trophy, label: 'ELO Equipo', value: userTeam.elo, color: 'text-primary' },
-                                                            { icon: Users, label: 'Miembros', value: userTeam.members_count, color: 'text-blue-500' },
-                                                            { icon: Shield, label: 'Nivel', value: userTeam.level || 1, color: 'text-accent' },
-                                                            { icon: Zap, label: 'Victoria %', value: userTeam.wins + userTeam.losses > 0 ? ((userTeam.wins / (userTeam.wins + userTeam.losses + userTeam.draws)) * 100).toFixed(0) + '%' : '--', color: 'text-purple-500' }
+                                                            { icon: Trophy, label: 'ELO Rango', value: userTeam.elo, color: 'text-primary' },
+                                                            { icon: Users, label: 'Squad', value: userTeam.members_count, color: 'text-blue-500' },
+                                                            { icon: Shield, label: 'Tier', value: userTeam.level || 1, color: 'text-accent' },
+                                                            { icon: Zap, label: 'Win Rate', value: userTeam.wins + userTeam.losses > 0 ? ((userTeam.wins / (userTeam.wins + userTeam.losses + userTeam.draws)) * 100).toFixed(0) + '%' : '--', color: 'text-purple-500' }
                                                         ].map((stat, i) => (
-                                                            <div key={i} className="space-y-1">
-                                                                <div className="flex items-center justify-center md:justify-start gap-2">
-                                                                    <stat.icon className={cn("w-4 h-4 opacity-40", stat.color)} />
-                                                                    <span className="text-[9px] font-black text-foreground/20 uppercase tracking-widest">{stat.label}</span>
+                                                            <div key={i} className="flex flex-col items-center lg:items-start gap-2 group/stat">
+                                                                <div className="flex items-center gap-2">
+                                                                    <stat.icon className={cn("w-4 h-4 opacity-50 group-hover/stat:opacity-100 transition-opacity", stat.color)} />
+                                                                    <span className="text-[9px] font-black text-foreground/40 uppercase tracking-[0.2em]">{stat.label}</span>
                                                                 </div>
-                                                                <p className="text-2xl font-black text-foreground italic tracking-tighter uppercase">{stat.value}</p>
+                                                                <p className="text-3xl font-black text-foreground italic tracking-tighter uppercase group-hover/stat:scale-105 transition-transform origin-left">{stat.value}</p>
                                                             </div>
                                                         ))}
                                                     </div>
 
-                                                    <div className="pt-4 flex flex-wrap justify-center md:justify-start gap-4">
+                                                    <div className="flex flex-wrap justify-center lg:justify-start gap-4">
                                                         <Link 
                                                             href={`/team?id=${userTeam.id}`}
-                                                            className="h-11 px-8 rounded-xl bg-primary text-black text-[10px] font-black uppercase tracking-[0.2em] flex items-center gap-3 hover:bg-white transition-all shadow-xl shadow-primary/20 hover:shadow-white/20 active:scale-95"
+                                                            className="h-14 px-10 rounded-[1.5rem] bg-foreground hover:bg-white text-background font-black text-[11px] uppercase tracking-[0.3em] flex items-center justify-center gap-3 transition-all shadow-xl hover:shadow-2xl hover:scale-[1.02] active:scale-95 group/link"
                                                         >
-                                                            Visitar Sede
-                                                            <ExternalLink className="w-4 h-4" />
+                                                            Acceder Sede
+                                                            <ExternalLink className="w-5 h-5 group-hover/link:rotate-12 transition-transform" />
                                                         </Link>
                                                         {userTeam.captain_id === (id === 'me' || !id ? user?.id : id) && (
-                                                            <div className="h-11 px-6 rounded-xl border border-primary/20 bg-primary/5 flex items-center gap-3">
-                                                                <Star className="w-4 h-4 text-primary fill-primary" />
-                                                                <span className="text-[10px] font-black text-primary uppercase tracking-widest">Capitán</span>
+                                                            <div className="h-14 px-8 rounded-[1.5rem] border-2 border-primary bg-primary/10 flex items-center gap-3 shadow-[0_0_20px_rgba(16,185,129,0.2)]">
+                                                                <Star className="w-5 h-5 text-primary fill-primary animate-pulse" />
+                                                                <span className="text-[11px] font-black text-primary uppercase tracking-[0.3em]">Capitán</span>
                                                             </div>
                                                         )}
                                                     </div>
@@ -916,33 +1000,37 @@ function ProfileContent() {
                                                 <Link
                                                     key={m.id}
                                                     href={`/match?id=${m.id}`}
-                                                    className="block group"
+                                                    className="block group relative"
                                                 >
+                                                    <div className="absolute inset-0 bg-primary/10 blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-[2.5rem]" />
                                                     <motion.div
                                                         initial={{ opacity: 0, scale: 0.95 }}
                                                         animate={{ opacity: 1, scale: 1 }}
                                                         transition={{ delay: i * 0.1 }}
-                                                        className="glass-premium p-8 rounded-[2.5rem] border border-foreground/10 flex items-center justify-between group-hover:bg-foreground/[0.03] group-hover:border-primary/20 group-hover:scale-[1.02] transition-all duration-300 shadow-xl"
+                                                        className="glass-premium p-6 sm:p-8 rounded-[2.5rem] border border-foreground/10 flex flex-col sm:flex-row items-start sm:items-center justify-between group-hover:bg-foreground/[0.04] group-hover:border-primary/30 group-hover:-translate-y-1 transition-all duration-500 shadow-xl overflow-hidden relative z-10 gap-6 sm:gap-0"
                                                     >
-                                                        <div className="flex items-center gap-6">
-                                                            <div className="w-16 h-16 rounded-2xl bg-foreground/5 flex flex-col items-center justify-center border border-foreground/10 group-hover:border-primary/40 transition-colors">
-                                                                <span className="text-xl font-black italic tracking-tighter text-foreground">{m.date.split('-')[2]}</span>
-                                                                <span className="text-[9px] font-black uppercase tracking-widest text-foreground/40 italic">
+                                                        <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 blur-[40px] opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
+                                                        
+                                                        <div className="flex items-center gap-6 w-full sm:w-auto">
+                                                            <div className="w-16 h-16 rounded-[1.5rem] bg-background border border-foreground/10 flex flex-col items-center justify-center shrink-0 shadow-inner group-hover:border-primary/40 group-hover:bg-primary/5 transition-colors">
+                                                                <span className="text-2xl font-black italic tracking-tighter text-foreground group-hover:text-primary transition-colors leading-none">{m.date.split('-')[2]}</span>
+                                                                <span className="text-[9px] font-black uppercase tracking-[0.3em] text-foreground/40 italic mt-1 group-hover:text-primary/70 transition-colors">
                                                                     {['ENE', 'FEB', 'MAR', 'ABR', 'MAY', 'JUN', 'JUL', 'AGO', 'SEP', 'OCT', 'NOV', 'DIC'][parseInt(m.date.split('-')[1]) - 1]}
                                                                 </span>
                                                             </div>
-                                                            <div className="space-y-1">
-                                                                <h4 className="text-xl font-black text-foreground italic uppercase tracking-tighter truncate w-32 group-hover:text-primary transition-colors">{m.location}</h4>
+                                                            <div className="space-y-2 flex-1 min-w-0">
+                                                                <h4 className="text-2xl font-black text-foreground italic uppercase tracking-tighter truncate group-hover:text-primary transition-colors leading-none">{m.location}</h4>
                                                                 <div className="flex items-center gap-2">
-                                                                    <div className="w-1.5 h-1.5 rounded-full bg-primary" />
-                                                                    <span className="text-[10px] font-black uppercase tracking-widest text-foreground/40">{m.type} · FINALIZADO</span>
+                                                                    <div className="w-1.5 h-1.5 rounded-full bg-primary/50 group-hover:bg-primary transition-colors animate-pulse" />
+                                                                    <span className="text-[9px] font-black uppercase tracking-[0.3em] text-foreground/40">{m.type} · FINALIZADO</span>
                                                                 </div>
                                                             </div>
                                                         </div>
-                                                        <div className="flex items-center gap-4 bg-foreground/5 px-6 py-3 rounded-2xl border border-foreground/5 group-hover:border-primary/20 transition-all">
-                                                            <span className="text-3xl font-black text-foreground italic tracking-tighter group-hover:text-primary transition-colors">{m.team_a_score ?? 0}</span>
+                                                        
+                                                        <div className="flex items-center gap-5 w-full sm:w-auto justify-end bg-background/50 px-6 py-4 rounded-[1.5rem] border border-foreground/[0.03] group-hover:border-primary/20 shadow-inner transition-colors">
+                                                            <span className="text-4xl font-black text-foreground italic tracking-tighter leading-none group-hover:text-primary group-hover:drop-shadow-[0_0_10px_rgba(16,185,129,0.3)] transition-all">{m.team_a_score ?? 0}</span>
                                                             <span className="text-sm font-black text-foreground/20 italic">-</span>
-                                                            <span className="text-3xl font-black text-foreground italic tracking-tighter group-hover:text-primary transition-colors">{m.team_b_score ?? 0}</span>
+                                                            <span className="text-4xl font-black text-foreground italic tracking-tighter leading-none group-hover:text-primary group-hover:drop-shadow-[0_0_10px_rgba(16,185,129,0.3)] transition-all">{m.team_b_score ?? 0}</span>
                                                         </div>
                                                     </motion.div>
                                                 </Link>
