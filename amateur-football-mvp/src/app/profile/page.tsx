@@ -1018,62 +1018,73 @@ function ProfileContent() {
                                                         initial={{ opacity: 0, scale: 0.95 }}
                                                         animate={{ opacity: 1, scale: 1 }}
                                                         transition={{ delay: i * 0.1 }}
-                                                        className="glass-premium p-6 sm:p-8 rounded-[2.5rem] border border-white/5 flex flex-col sm:flex-row items-start sm:items-center justify-between group-hover:bg-foreground/[0.04] group-hover:border-primary/20 group-hover:-translate-y-1 transition-all duration-500 shadow-xl overflow-hidden relative z-10 gap-6 sm:gap-8 min-h-[140px]"
+                                                        className="glass-premium p-6 sm:p-8 md:p-10 rounded-[2.5rem] border border-white/5 flex flex-col md:flex-row items-start md:items-center justify-between bg-gradient-to-br from-surface/40 via-background/40 to-surface/40 group-hover:bg-foreground/[0.04] group-hover:border-primary/20 transition-all duration-700 shadow-2xl overflow-hidden relative z-10 gap-6 sm:gap-10 min-h-[160px] transform-gpu group-hover:-translate-y-1"
                                                     >
-                                                        {/* Animated Hover Background FX */}
-                                                        <div className="absolute -top-10 -right-10 w-48 h-48 bg-primary/10 blur-[50px] opacity-0 group-hover:opacity-100 transition-opacity duration-1000 pointer-events-none rounded-full" />
-                                                        <div className="absolute -bottom-10 -left-10 w-48 h-48 bg-accent/10 blur-[50px] opacity-0 group-hover:opacity-100 transition-opacity duration-1000 pointer-events-none rounded-full" />
+                                                        {/* Subtle Noise Layer */}
+                                                        <div className="absolute inset-0 bg-[url('/noise.png')] opacity-[0.02] group-hover:opacity-[0.04] mix-blend-overlay pointer-events-none transition-opacity duration-700" />
+                                                        
+                                                        {/* Left Edge Neon Bar */}
+                                                        <div className="absolute top-0 left-0 w-1.5 h-full bg-gradient-to-b from-primary via-primary/40 to-transparent opacity-30 group-hover:opacity-100 group-hover:shadow-[0_0_15px_rgba(44,252,125,0.5)] transition-all duration-500" />
 
-                                                        <div className="flex items-center gap-6 w-full sm:w-auto relative z-10">
+                                                        {/* Animated Hover Background FX */}
+                                                        <div className="absolute -top-10 -right-20 w-64 h-64 bg-primary/10 blur-[60px] opacity-0 group-hover:opacity-100 transition-opacity duration-1000 pointer-events-none rounded-full" />
+                                                        <div className="absolute bottom-10 left-10 w-48 h-48 bg-accent/5 blur-[50px] opacity-0 group-hover:opacity-100 transition-opacity duration-1000 pointer-events-none rounded-full" />
+
+                                                        <div className="flex items-center gap-6 sm:gap-8 w-full md:w-auto relative z-10 pl-2">
                                                             {/* Date Ticket Block */}
-                                                            <div className="w-16 h-16 rounded-[1.5rem] bg-foreground/[0.03] border border-white/10 flex flex-col items-center justify-center shrink-0 shadow-inner group-hover:border-primary/30 group-hover:bg-primary/10 group-hover:scale-105 transition-all duration-500 overflow-hidden relative">
+                                                            <div className="w-20 h-20 rounded-[1.8rem] bg-background/80 border border-white/10 flex flex-col items-center justify-center shrink-0 shadow-inner group-hover:border-primary/30 group-hover:bg-primary/5 group-hover:scale-105 transition-all duration-500 overflow-hidden relative">
                                                                 <div className="absolute inset-x-0 top-0 h-1/2 bg-gradient-to-b from-white/5 to-transparent pointer-events-none" />
-                                                                <span className="text-2xl font-black italic tracking-tighter text-foreground group-hover:text-primary transition-colors leading-none drop-shadow-md z-10">
+                                                                <span className="text-3xl font-black italic tracking-tighter text-foreground group-hover:text-primary transition-colors leading-none drop-shadow-md z-10 mt-1">
                                                                     {m.date.split('-')[2]}
                                                                 </span>
-                                                                <span className="text-[9px] font-black uppercase tracking-[0.3em] text-foreground/40 italic mt-1 group-hover:text-primary/70 transition-colors z-10">
+                                                                <span className="text-[10px] font-black uppercase tracking-[0.4em] text-foreground/40 italic mt-1 group-hover:text-primary/70 transition-colors z-10">
                                                                     {['ENE', 'FEB', 'MAR', 'ABR', 'MAY', 'JUN', 'JUL', 'AGO', 'SEP', 'OCT', 'NOV', 'DIC'][parseInt(m.date.split('-')[1]) - 1]}
                                                                 </span>
                                                             </div>
 
                                                             {/* Location & Title */}
-                                                            <div className="space-y-1.5 flex-1 min-w-0">
-                                                                <h4 className="text-xl sm:text-2xl font-black text-foreground italic uppercase tracking-tighter truncate group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-foreground group-hover:to-primary transition-all leading-none pb-1">
+                                                            <div className="space-y-2 flex-1 min-w-0">
+                                                                <h4 className="text-2xl sm:text-3xl font-black text-foreground italic uppercase tracking-tighter truncate group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-foreground group-hover:to-primary transition-all duration-500 leading-none pb-1">
                                                                     {(() => {
                                                                         const venue = findVenueByLocation(m.location);
                                                                         return venue?.displayName || venue?.name || m.location;
                                                                     })()}
                                                                 </h4>
-                                                                <div className="flex items-center gap-2">
-                                                                    <div className="flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-primary/10 border border-primary/20">
-                                                                        <div className="w-1.5 h-1.5 rounded-full bg-primary/70 group-hover:bg-primary transition-colors animate-pulse" />
-                                                                        <span className="text-[8px] font-black uppercase tracking-[0.3em] text-primary">FINALIZADO</span>
+                                                                <div className="flex flex-wrap items-center gap-3">
+                                                                    <div className="flex items-center gap-2 px-2.5 py-1 rounded-full bg-primary/10 border border-primary/20 shadow-[0_0_15px_rgba(44,252,125,0.1)]">
+                                                                        <div className="w-1.5 h-1.5 rounded-full bg-primary/70 group-hover:bg-primary transition-colors animate-pulse shadow-[0_0_8px_rgba(44,252,125,1)]" />
+                                                                        <span className="text-[9px] font-black uppercase tracking-[0.3em] text-primary">REPORTE OFICIAL</span>
                                                                     </div>
-                                                                    <span className="text-[9px] font-black uppercase tracking-[0.3em] text-foreground/30 hidden sm:block">· {m.type}</span>
+                                                                    <span className="px-3 py-1 rounded-full bg-background border border-white/5 text-[9px] font-black uppercase tracking-[0.3em] text-foreground/50 shadow-inner">
+                                                                        {m.type}
+                                                                    </span>
                                                                 </div>
                                                             </div>
                                                         </div>
 
                                                         {/* Score Block */}
-                                                        <div className="flex items-center gap-6 w-full sm:w-auto justify-end relative z-10">
-                                                            <div className="flex items-center justify-center gap-3 w-full sm:w-auto bg-background/50 group-hover:bg-primary/5 px-6 sm:px-8 py-4 sm:py-5 rounded-[1.5rem] border border-white/5 group-hover:border-primary/30 shadow-inner overflow-hidden transition-all duration-500">
-                                                                {/* Optional shine effect inside score box */}
-                                                                <div className="absolute top-0 left-[-100%] w-1/2 h-full bg-gradient-to-r from-transparent via-white/10 to-transparent group-hover:animate-shimmer pointer-events-none" />
+                                                        <div className="flex items-center gap-6 w-full md:w-auto justify-end relative z-10 mt-4 md:mt-0">
+                                                            <div className="flex items-center justify-center gap-4 w-full sm:w-auto bg-black/40 group-hover:bg-primary/5 px-8 sm:px-10 py-5 sm:py-6 rounded-[2rem] border border-white/5 group-hover:border-primary/30 group-hover:shadow-[0_0_30px_rgba(44,252,125,0.1)] overflow-hidden transition-all duration-700 relative shadow-2xl">
+                                                                {/* Shine effect inside score box */}
+                                                                <div className="absolute top-0 left-[-100%] w-[50%] h-full bg-gradient-to-r from-transparent via-white/10 to-transparent group-hover:animate-shimmer pointer-events-none" />
                                                                 
-                                                                <span className="text-4xl sm:text-5xl font-black text-foreground italic tracking-tighter leading-none group-hover:text-white transition-colors duration-300 drop-shadow-[0_2px_10px_rgba(0,0,0,0.5)]">
+                                                                <span className="text-5xl sm:text-6xl font-black text-foreground italic tracking-tighter leading-none group-hover:text-white transition-colors duration-300 drop-shadow-[0_4px_15px_rgba(0,0,0,0.5)]">
                                                                     {m.team_a_score ?? 0}
                                                                 </span>
-                                                                <div className="flex flex-col gap-1 items-center mx-1">
-                                                                    <span className="w-4 h-[3px] rounded-full bg-foreground/20 group-hover:bg-primary/50 transition-colors" />
-                                                                    <span className="w-4 h-[3px] rounded-full bg-foreground/20 group-hover:bg-primary/50 transition-colors" />
+                                                                <div className="flex flex-col gap-1.5 items-center mx-3 md:mx-5">
+                                                                    <span className="w-5 h-[3px] rounded-full bg-foreground/20 group-hover:bg-primary/50 transition-colors" />
+                                                                    <span className="w-5 h-[3px] rounded-full bg-foreground/20 group-hover:bg-primary/50 transition-colors" />
                                                                 </div>
-                                                                <span className="text-4xl sm:text-5xl font-black text-foreground italic tracking-tighter leading-none group-hover:text-white transition-colors duration-300 drop-shadow-[0_2px_10px_rgba(0,0,0,0.5)]">
+                                                                <span className="text-5xl sm:text-6xl font-black text-foreground italic tracking-tighter leading-none group-hover:text-white transition-colors duration-300 drop-shadow-[0_4px_15px_rgba(0,0,0,0.5)]">
                                                                     {m.team_b_score ?? 0}
                                                                 </span>
                                                             </div>
                                                             
-                                                            <div className="hidden sm:flex items-center justify-center w-10 h-10 rounded-full bg-foreground/[0.02] border border-white/5 group-hover:border-primary/30 group-hover:bg-primary/10 transition-colors duration-300">
-                                                                <ChevronRight className="w-5 h-5 text-foreground/30 group-hover:text-primary transition-colors duration-300" />
+                                                            <div className="hidden md:flex flex-col items-center justify-center group/btn pl-3">
+                                                                <div className="w-14 h-14 rounded-full bg-foreground/[0.02] border border-white/5 group-hover:border-primary/30 group-hover:bg-primary/10 flex items-center justify-center transition-all duration-500 shadow-inner overflow-hidden relative">
+                                                                    <div className="absolute inset-0 bg-gradient-to-tr from-primary/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                                                                    <ChevronRight className="w-6 h-6 text-foreground/30 group-hover:text-primary group-hover:translate-x-1 transition-all duration-500 relative z-10" />
+                                                                </div>
                                                             </div>
                                                         </div>
                                                     </motion.div>
