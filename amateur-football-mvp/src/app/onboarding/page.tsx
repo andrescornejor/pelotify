@@ -20,8 +20,8 @@ export default function OnboardingPage() {
 
     const [formData, setFormData] = useState({
         name: user?.name || '',
-        age: '25',
-        height: '175',
+        age: '',
+        height: '',
         foot: 'Derecha',
         position: '' as Position,
     });
@@ -155,8 +155,9 @@ export default function OnboardingPage() {
                                             type="number"
                                             required
                                             value={formData.age}
+                                            placeholder="Ej: 25"
                                             onChange={e => setFormData({ ...formData, age: e.target.value })}
-                                            className="w-full h-14 px-6 rounded-2xl bg-foreground/[0.03] border border-foreground/10 focus:border-primary/50 text-lg font-black outline-none transition-all text-center"
+                                            className="w-full h-14 px-6 rounded-2xl bg-foreground/[0.03] border border-foreground/10 focus:border-primary/50 text-lg font-black outline-none transition-all text-center placeholder:text-foreground/20 placeholder:font-normal"
                                         />
                                     </div>
                                     <div className="space-y-2">
@@ -165,8 +166,9 @@ export default function OnboardingPage() {
                                             type="number"
                                             required
                                             value={formData.height}
+                                            placeholder="Ej: 175"
                                             onChange={e => setFormData({ ...formData, height: e.target.value })}
-                                            className="w-full h-14 px-6 rounded-2xl bg-foreground/[0.03] border border-foreground/10 focus:border-primary/50 text-lg font-black outline-none transition-all text-center"
+                                            className="w-full h-14 px-6 rounded-2xl bg-foreground/[0.03] border border-foreground/10 focus:border-primary/50 text-lg font-black outline-none transition-all text-center placeholder:text-foreground/20 placeholder:font-normal"
                                         />
                                     </div>
                                 </motion.div>
@@ -195,7 +197,7 @@ export default function OnboardingPage() {
                                 <motion.button
                                     variants={itemVariants}
                                     type="submit"
-                                    disabled={!formData.name}
+                                    disabled={!formData.name || !formData.age || !formData.height}
                                     className="w-full h-16 mt-4 bg-foreground text-background font-black text-[12px] uppercase tracking-[0.3em] rounded-2xl flex items-center justify-center gap-3 hover:scale-[1.02] active:scale-95 transition-all disabled:opacity-50"
                                 >
                                     Siguiente Fase <ArrowRight className="w-4 h-4" />
