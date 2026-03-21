@@ -23,6 +23,7 @@ export interface Match {
     team_b_name?: string;
     is_private?: boolean;
     participants?: { count: number }[];
+    user_team?: 'A' | 'B' | null;
 }
 
 export async function updateMatch(matchId: string, updates: Partial<Match>) {

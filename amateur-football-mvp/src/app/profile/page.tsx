@@ -1010,7 +1010,7 @@ function ProfileContent() {
                                                 const isCompleted = m.is_completed;
                                                 const scoreA = m.team_a_score ?? 0;
                                                 const scoreB = m.team_b_score ?? 0;
-                                                const userTeam = (m as any).user_team;
+                                                const userTeam = m.user_team;
 
                                                 let result: 'win' | 'loss' | 'draw' | null = null;
                                                 if (isCompleted && userTeam) {
@@ -1020,11 +1020,9 @@ function ProfileContent() {
                                                     else result = 'loss';
                                                 }
 
-                                                const resultConfig = {
-                                                    win: { label: 'VICTORIA' },
-                                                    loss: { label: 'DERROTA' },
-                                                    draw: { label: 'EMPATE' }
-                                                }[result as any] || { label: '' };
+                                                const resultConfig = result === 'win' ? { label: 'VICTORIA' } : 
+                                                                    result === 'loss' ? { label: 'DERROTA' } : 
+                                                                    result === 'draw' ? { label: 'EMPATE' } : { label: '' };
 
                                                 return (
                                                     <Link
