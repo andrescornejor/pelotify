@@ -47,8 +47,8 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
           'flex-1 w-full relative',
           showNav
             ? pathname.startsWith('/match')
-              ? 'pb-24 lg:pb-12'
-              : 'pt-24 lg:pt-24 pb-24 lg:pb-12'
+              ? 'pb-24 lg:pb-0'
+              : 'pt-24 lg:pt-24 pb-24 lg:pb-0'
             : ''
         )}>
           {children}
