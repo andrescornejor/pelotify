@@ -115,7 +115,7 @@ export async function searchUsers(userId: string, query: string) {
     // 1. Find users matching the query
     const { data: users, error } = await supabase
         .from('profiles')
-        .select('id, name, avatar_url, position')
+        .select('id, name, avatar_url, position, elo')
         .ilike('name', `%${query}%`)
         .neq('id', userId)
         .limit(10);
@@ -162,7 +162,59 @@ export async function searchUsers(userId: string, query: string) {
     });
 }
 
-// 4. Send a friend request
+// 4. Get recommended players (before search)
+export async function getRecommendedPlayers(userId: string) {
+    // 1. Fetch top or recent users (excluding current user)
+    const { data: users, error } = await supabase
+        .from('profiles')
+        .select('id, name, avatar_url, position, elo')
+        .neq('id', userId)
+        .order('elo', { ascending: false })
+        .limit(20);
+
+    if (error) {
+        console.error("Profiles fetch error:", error);
+        throw error;
+    }
+    if (!users || users.length === 0) return [];
+
+    const userIds = users.map(u => u.id);
+
+    // 2. Find existing any relationships with these users
+    const { data: friendships } = await supabase
+        .from('friendships')
+        .select('*')
+        .or(`user_id.eq.${userId},friend_id.eq.${userId}`)
+        .in('user_id', [userId, ...userIds])
+        .in('friend_id', [userId, ...userIds]);
+
+    // 3. Map status
+    return users.map(u => {
+        const rel = friendships?.find(f => 
+            (f.user_id === userId && f.friend_id === u.id) || 
+            (f.user_id === u.id && f.friend_id === userId)
+        );
+
+        let status: SearchResult['relationshipStatus'] = 'none';
+        if (rel) {
+            if (rel.status === 'accepted') {
+                status = 'accepted';
+            } else if (rel.user_id === userId) {
+                status = 'pending_sent';
+            } else {
+                status = 'pending_received';
+            }
+        }
+
+        return {
+            ...u,
+            relationshipStatus: status,
+            friendshipId: rel?.id
+        } as SearchResult;
+    });
+}
+
+// 5. Send a friend request
 export async function sendFriendRequest(userId: string, friendId: string) {
     const { error } = await supabase
         .from('friendships')

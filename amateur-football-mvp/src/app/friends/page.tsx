@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
-import { getFriends, getPendingRequests, searchUsers, sendFriendRequest, acceptFriendRequest, deleteFriendship, FriendshipData, Profile, SearchResult } from '@/lib/friends';
+import { getFriends, getPendingRequests, searchUsers, sendFriendRequest, acceptFriendRequest, deleteFriendship, FriendshipData, Profile, SearchResult, getRecommendedPlayers } from '@/lib/friends';
 import { getMatchInvitations, respondToInvitation } from '@/lib/matches';
 import { getTeamInvitations, respondToTeamInvitation } from '@/lib/teams';
 import { SocialHubSkeleton } from '@/components/Skeletons';
@@ -14,6 +14,100 @@ import Link from 'next/link';
 import ChatModal from '@/components/ChatModal';
 import { MessageSquare } from 'lucide-react';
 
+const PlayerCard = ({ p, i, actionLoading, handleAcceptRequest, handleSendRequest, setSearchResults }: { 
+    p: SearchResult, 
+    i: number, 
+    actionLoading: string | null, 
+    handleAcceptRequest: (id: string) => void, 
+    handleSendRequest: (id: string) => void,
+    setSearchResults: React.Dispatch<React.SetStateAction<SearchResult[]>>
+}) => (
+    <motion.div
+        key={p.id}
+        layout
+        initial={{ opacity: 0, scale: 0.9, y: 30 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        exit={{ opacity: 0, scale: 0.9 }}
+        transition={{ 
+            type: "spring" as const,
+            stiffness: 260,
+            damping: 20,
+            delay: i * 0.05 
+        }}
+        className="glass-premium-hover p-10 rounded-[4rem] flex flex-col items-center text-center gap-8 border border-foreground/5 bg-surface group relative overflow-hidden shadow-2xl transition-all duration-500 hover:border-primary/20 hover:bg-foreground/[0.02]"
+    >
+        <div className="absolute top-0 right-0 w-48 h-48 bg-primary/5 blur-[80px] rounded-full group-hover:bg-primary/10 transition-all pointer-events-none" />
+        
+        <Link href={`/profile?id=${p.id}`} className="flex flex-col items-center gap-6 group/link w-full">
+            <div className="w-32 h-32 rounded-[2.5rem] bg-surface-elevated border-2 border-foreground/10 shrink-0 overflow-hidden relative shadow-2xl group-hover/link:scale-110 transition-transform duration-700 group-hover/link:border-primary/40">
+                {p.avatar_url ? (
+                    <img src={p.avatar_url} alt="" className="w-full h-full object-cover grayscale-[0.2] group-hover:grayscale-0 transition-all duration-700" />
+                ) : (
+                    <div className="w-full h-full flex items-center justify-center text-primary/40 font-black text-4xl italic bg-primary/5">{p.name?.charAt(0)}</div>
+                )}
+                <div className="absolute top-3 right-3 w-8 h-8 rounded-xl bg-primary/80 backdrop-blur flex items-center justify-center shadow-lg border border-white/10 group-hover:scale-110 transition-transform">
+                    <Zap className="w-4 h-4 text-background" />
+                </div>
+            </div>
+            
+            <div className="space-y-2 w-full">
+                <p className="font-black text-2xl text-foreground italic uppercase truncate tracking-tighter group-hover/link:text-primary transition-colors leading-none">{p.name}</p>
+                <div className="flex flex-col items-center gap-2">
+                    <span className="text-[10px] font-black uppercase tracking-[0.3em] text-foreground/40 italic">{p.position || 'LÍBERO'}</span>
+                    <div className="flex items-center gap-2 px-4 py-1.5 bg-accent/10 rounded-full border border-accent/20">
+                        <Trophy className="w-3.5 h-3.5 text-accent" />
+                        <span className="text-xs font-black text-accent tracking-widest">{p.elo || 0} XP</span>
+                    </div>
+                </div>
+            </div>
+        </Link>
+
+        <div className="w-full pt-6 border-t border-foreground/5 relative z-20">
+            {p.relationshipStatus === 'accepted' ? (
+                <div className="w-full h-14 rounded-2xl bg-primary/10 text-primary flex items-center justify-center gap-3 border border-primary/20 shadow-inner">
+                    <UserCheck className="w-5 h-5" />
+                    <span className="text-[10px] font-black uppercase tracking-widest">AMIGO CONFIRMADO</span>
+                </div>
+            ) : p.relationshipStatus === 'pending_sent' ? (
+                <div className="w-full h-14 rounded-2xl bg-foreground/[0.03] text-foreground/30 flex items-center justify-center gap-3 border border-foreground/5 italic">
+                    <Clock className="w-5 h-5 animate-pulse" />
+                    <span className="text-[10px] font-black uppercase tracking-widest">ESPERANDO SEÑAL</span>
+                </div>
+            ) : p.relationshipStatus === 'pending_received' ? (
+                <button
+                    onClick={(e) => {
+                        e.preventDefault();
+                        if (p.friendshipId) handleAcceptRequest(p.friendshipId);
+                        setSearchResults(prev => prev.map(item => item.id === p.id ? { ...item, relationshipStatus: 'accepted' } : item));
+                    }}
+                    disabled={actionLoading === p.friendshipId}
+                    className="w-full h-14 rounded-2xl bg-primary text-background text-[11px] font-black uppercase tracking-[0.3em] shadow-xl shadow-primary/20 active:scale-95 transition-all hover:bg-foreground hover:text-background flex items-center justify-center gap-3 italic"
+                >
+                    {actionLoading === p.friendshipId ? <Loader2 className="w-4 h-4 animate-spin" /> : <><Check className="w-5 h-5" /> ACEPTAR CONTRATO</>}
+                </button>
+            ) : (
+                <button
+                    onClick={(e) => {
+                        e.preventDefault();
+                        handleSendRequest(p.id);
+                    }}
+                    disabled={actionLoading === p.id}
+                    className="w-full h-14 rounded-2xl bg-primary text-background flex items-center justify-center gap-3 hover:bg-white hover:text-black hover:scale-[1.02] shadow-[0_10px_30px_rgba(16,185,129,0.3)] transition-all active:scale-95 border-2 border-primary group/btn"
+                >
+                    {actionLoading === p.id ? (
+                        <Loader2 className="w-5 h-5 animate-spin" />
+                    ) : (
+                        <>
+                            <UserPlus className="w-5 h-5 group-hover/btn:rotate-12 transition-transform" />
+                            <span className="text-[11px] font-black uppercase tracking-[0.3em] italic">SOLICITAR ALIANZA</span>
+                        </>
+                    )}
+                </button>
+            )}
+        </div>
+    </motion.div>
+);
+
 export default function FriendsPage() {
     const { user } = useAuth();
     const [activeTab, setActiveTab] = useState<'friends' | 'requests' | 'search'>('friends');
@@ -24,6 +118,7 @@ export default function FriendsPage() {
     const [matchInvites, setMatchInvites] = useState<any[]>([]);
     const [teamInvites, setTeamInvites] = useState<any[]>([]);
     const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
+    const [recommendedPlayers, setRecommendedPlayers] = useState<SearchResult[]>([]);
     const [searchQuery, setSearchQuery] = useState('');
     const [chatRecipient, setChatRecipient] = useState<{ id: string; name: string } | null>(null);
 
@@ -37,16 +132,18 @@ export default function FriendsPage() {
         if (!user) return;
         const fetchInitialData = async () => {
             try {
-                const [f, r, mi, ti] = await Promise.all([
+                const [f, r, mi, ti, rec] = await Promise.all([
                     getFriends(user.id),
                     getPendingRequests(user.id),
                     getMatchInvitations(user.id),
-                    getTeamInvitations(user.id)
+                    getTeamInvitations(user.id),
+                    getRecommendedPlayers(user.id)
                 ]);
                 setFriends(f);
                 setRequests(r);
                 setMatchInvites(mi);
                 setTeamInvites(ti);
+                setRecommendedPlayers(rec);
             } catch (err) {
                 console.error("Error loading friends:", err);
             } finally {
@@ -178,6 +275,30 @@ export default function FriendsPage() {
                 <p className="text-[11px] font-bold uppercase tracking-[0.4em] text-foreground/40 max-w-lg mx-auto">
                     Conecta con otros jugadores, gestiona tus convocatorias y expande tu red
                 </p>
+            </div>
+
+            {/* ── QUICK STATS ── */}
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 px-4 w-full max-w-7xl mx-auto relative z-20">
+                <div className="glass-premium p-4 md:p-6 rounded-[2rem] border border-foreground/5 flex flex-col items-center justify-center gap-2 group hover:border-primary/20 transition-all">
+                    <Users className="w-5 h-5 text-primary opacity-60 group-hover:opacity-100 transition-opacity" />
+                    <div className="text-2xl font-black text-foreground italic uppercase tracking-tighter leading-none">{friends.length}</div>
+                    <div className="text-[8px] font-black text-foreground/40 uppercase tracking-[0.2em]">AMIGOS</div>
+                </div>
+                <div className="glass-premium p-4 md:p-6 rounded-[2rem] border border-foreground/5 flex flex-col items-center justify-center gap-2 group hover:border-primary/20 transition-all">
+                    <UserPlus className="w-5 h-5 text-primary opacity-60 group-hover:opacity-100 transition-opacity" />
+                    <div className="text-2xl font-black text-foreground italic uppercase tracking-tighter leading-none">{requests.length}</div>
+                    <div className="text-[8px] font-black text-foreground/40 uppercase tracking-[0.2em]">SOLICITUDES</div>
+                </div>
+                <div className="glass-premium p-4 md:p-6 rounded-[2rem] border border-foreground/5 flex flex-col items-center justify-center gap-2 group hover:border-accent/20 transition-all text-accent">
+                    <Calendar className="w-5 h-5 opacity-60 group-hover:opacity-100 transition-opacity" />
+                    <div className="text-2xl font-black text-foreground italic uppercase tracking-tighter leading-none">{matchInvites.length}</div>
+                    <div className="text-[8px] font-black text-foreground/40 uppercase tracking-[0.2em]">PARTIDOS</div>
+                </div>
+                <div className="glass-premium p-4 md:p-6 rounded-[2rem] border border-foreground/5 flex flex-col items-center justify-center gap-2 group hover:border-blue-500/20 transition-all text-blue-500">
+                    <Shield className="w-5 h-5 opacity-60 group-hover:opacity-100 transition-opacity" />
+                    <div className="text-2xl font-black text-foreground italic uppercase tracking-tighter leading-none">{teamInvites.length}</div>
+                    <div className="text-[8px] font-black text-foreground/40 uppercase tracking-[0.2em]">EQUIPOS</div>
+                </div>
             </div>
 
             {/* ── TABS ── */}
@@ -625,7 +746,7 @@ export default function FriendsPage() {
                                     </div>
                                 </div>
                             </div>
-                        ) : searchQuery.length >= 2 ? (
+                        ) : searchQuery.length > 0 ? (
                             searchResults.length === 0 ? (
                                 <motion.div
                                     initial={{ opacity: 0 }}
@@ -637,115 +758,34 @@ export default function FriendsPage() {
                                 </motion.div>
                             ) : (
                                 <div className="relative max-w-full mx-auto py-10">
-                                    {/* Laser scan line in background */}
                                     <div className="absolute inset-0 bg-gradient-to-b from-transparent via-primary/5 to-transparent h-40 w-full animate-scan-line pointer-events-none z-0" />
                                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 relative z-10 px-4">
                                     <AnimatePresence mode="popLayout">
                                         {searchResults.map((p, i) => (
-                                            <motion.div
-                                                key={p.id}
-                                                layout
-                                                initial={{ opacity: 0, scale: 0.9, y: 30 }}
-                                                animate={{ opacity: 1, scale: 1, y: 0 }}
-                                                exit={{ opacity: 0, scale: 0.9 }}
-                                                transition={{ 
-                                                    type: "spring" as const,
-                                                    stiffness: 260,
-                                                    damping: 20,
-                                                    delay: i * 0.05 
-                                                }}
-                                                className="glass-premium-hover p-10 rounded-[4rem] flex flex-col items-center text-center gap-8 border border-foreground/5 bg-surface group relative overflow-hidden shadow-2xl transition-all duration-500 hover:border-primary/20 hover:bg-foreground/[0.02]"
-                                            >
-                                                <div className="absolute top-0 right-0 w-48 h-48 bg-primary/5 blur-[80px] rounded-full group-hover:bg-primary/10 transition-all pointer-events-none" />
-                                                
-                                                <Link href={`/profile?id=${p.id}`} className="flex flex-col items-center gap-6 group/link w-full">
-                                                    <div className="w-32 h-32 rounded-[2.5rem] bg-surface-elevated border-2 border-foreground/10 shrink-0 overflow-hidden relative shadow-2xl group-hover/link:scale-110 transition-transform duration-700 group-hover/link:border-primary/40">
-                                                        {p.avatar_url ? (
-                                                            <img src={p.avatar_url} alt="" className="w-full h-full object-cover grayscale-[0.2] group-hover:grayscale-0 transition-all duration-700" />
-                                                        ) : (
-                                                            <div className="w-full h-full flex items-center justify-center text-primary/40 font-black text-4xl italic bg-primary/5">{p.name?.charAt(0)}</div>
-                                                        )}
-                                                        <div className="absolute top-3 right-3 w-8 h-8 rounded-xl bg-primary/80 backdrop-blur flex items-center justify-center shadow-lg border border-white/10 group-hover:scale-110 transition-transform">
-                                                            <Zap className="w-4 h-4 text-background" />
-                                                        </div>
-                                                    </div>
-                                                    
-                                                    <div className="space-y-2 w-full">
-                                                        <p className="font-black text-2xl text-foreground italic uppercase truncate tracking-tighter group-hover/link:text-primary transition-colors leading-none">{p.name}</p>
-                                                        <div className="flex flex-col items-center gap-2">
-                                                            <span className="text-[10px] font-black uppercase tracking-[0.3em] text-foreground/40 italic">{p.position || 'LÍBERO'}</span>
-                                                            <div className="flex items-center gap-2 px-4 py-1.5 bg-accent/10 rounded-full border border-accent/20">
-                                                                <Trophy className="w-3.5 h-3.5 text-accent" />
-                                                                <span className="text-xs font-black text-accent tracking-widest">{p.elo || 0} XP</span>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </Link>
-
-                                                <div className="w-full pt-6 border-t border-foreground/5 relative z-20">
-                                                    {p.relationshipStatus === 'accepted' ? (
-                                                        <div className="w-full h-14 rounded-2xl bg-primary/10 text-primary flex items-center justify-center gap-3 border border-primary/20 shadow-inner">
-                                                            <UserCheck className="w-5 h-5" />
-                                                            <span className="text-[10px] font-black uppercase tracking-widest">AMIGO CONFIRMADO</span>
-                                                        </div>
-                                                    ) : p.relationshipStatus === 'pending_sent' ? (
-                                                        <div className="w-full h-14 rounded-2xl bg-foreground/[0.03] text-foreground/30 flex items-center justify-center gap-3 border border-foreground/5 italic">
-                                                            <Clock className="w-5 h-5 animate-pulse" />
-                                                            <span className="text-[10px] font-black uppercase tracking-widest">ESPERANDO SEÑAL</span>
-                                                        </div>
-                                                    ) : p.relationshipStatus === 'pending_received' ? (
-                                                        <button
-                                                            onClick={(e) => {
-                                                                e.preventDefault();
-                                                                if (p.friendshipId) handleAcceptRequest(p.friendshipId);
-                                                                setSearchResults(prev => prev.map(item => item.id === p.id ? { ...item, relationshipStatus: 'accepted' } : item));
-                                                            }}
-                                                            disabled={actionLoading === p.friendshipId}
-                                                            className="w-full h-14 rounded-2xl bg-primary text-background text-[11px] font-black uppercase tracking-[0.3em] shadow-xl shadow-primary/20 active:scale-95 transition-all hover:bg-foreground hover:text-background flex items-center justify-center gap-3 italic"
-                                                        >
-                                                            {actionLoading === p.friendshipId ? <Loader2 className="w-4 h-4 animate-spin" /> : <><Check className="w-5 h-5" /> ACEPTAR CONTRATO</>}
-                                                        </button>
-                                                    ) : (
-                                                        <button
-                                                            onClick={(e) => {
-                                                                e.preventDefault();
-                                                                handleSendRequest(p.id);
-                                                            }}
-                                                            disabled={actionLoading === p.id}
-                                                            className="w-full h-14 rounded-2xl bg-primary text-background flex items-center justify-center gap-3 hover:bg-white hover:text-black hover:scale-[1.02] shadow-[0_10px_30px_rgba(16,185,129,0.3)] transition-all active:scale-95 border-2 border-primary group/btn"
-                                                        >
-                                                            {actionLoading === p.id ? (
-                                                                <Loader2 className="w-5 h-5 animate-spin" />
-                                                            ) : (
-                                                                <>
-                                                                    <UserPlus className="w-5 h-5 group-hover/btn:rotate-12 transition-transform" />
-                                                                    <span className="text-[11px] font-black uppercase tracking-[0.3em] italic">SOLICITAR ALIANZA</span>
-                                                                </>
-                                                            )}
-                                                        </button>
-                                                    )}
-                                                </div>
-                                            </motion.div>
+                                            <PlayerCard key={p.id} p={p} i={i} actionLoading={actionLoading} handleAcceptRequest={handleAcceptRequest} handleSendRequest={handleSendRequest} setSearchResults={setSearchResults} />
                                         ))}
                                     </AnimatePresence>
                                     </div>
                                 </div>
                             )
                         ) : (
-                            <div className="text-center py-40 flex flex-col items-center gap-12 opacity-40 group max-w-xl mx-auto">
-                                <div className="relative">
-                                    <div className="absolute inset-0 border-[1px] border-primary/20 rounded-full animate-radar-pulse" />
-                                    <div className="w-32 h-32 rounded-full bg-foreground/[0.02] border border-foreground/10 flex items-center justify-center shadow-2xl relative overflow-hidden group-hover:scale-105 transition-transform duration-700">
-                                        <div className="absolute inset-0 bg-gradient-to-t from-primary/10 to-transparent pointer-events-none" />
-                                        <Search className="w-12 h-12 text-primary group-hover:rotate-12 transition-transform duration-700" />
+                            <div className="space-y-12">
+                                <div className="flex flex-col items-center gap-4 text-center">
+                                    <div className="flex items-center gap-4">
+                                        <div className="h-[1px] w-8 bg-primary/30" />
+                                        <span className="text-[9px] font-black text-primary uppercase tracking-[0.4em] italic">Jugadores Destacados</span>
+                                        <div className="h-[1px] w-8 bg-primary/30" />
                                     </div>
+                                    <h2 className="text-3xl font-black text-foreground italic uppercase tracking-tighter">Radar <span className="text-primary">Global</span></h2>
+                                    <p className="text-[10px] text-foreground/40 font-bold uppercase tracking-widest max-w-sm">Explora la comunidad y encuentra nuevos aliados para tu próximo partido</p>
                                 </div>
-                                <div className="space-y-4">
-                                    <p className="text-[12px] font-black uppercase tracking-[0.6em] text-foreground italic">Esperando señal de búsqueda...</p>
-                                    <div className="h-[2px] w-24 bg-foreground/10 mx-auto rounded-full overflow-hidden">
-                                        <div className="h-full w-full bg-primary/40 animate-loading-bar" />
-                                    </div>
-                                    <p className="text-[9px] font-bold text-foreground/40 uppercase tracking-[0.2em]">Ingresá un nombre para iniciar el rastreo</p>
+
+                                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 relative z-10 px-4">
+                                    <AnimatePresence mode="popLayout">
+                                        {recommendedPlayers.map((p, i) => (
+                                            <PlayerCard key={p.id} p={p} i={i} actionLoading={actionLoading} handleAcceptRequest={handleAcceptRequest} handleSendRequest={handleSendRequest} setSearchResults={setRecommendedPlayers} />
+                                        ))}
+                                    </AnimatePresence>
                                 </div>
                             </div>
                         )}
