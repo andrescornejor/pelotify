@@ -1,7 +1,7 @@
 'use client';
 
 import { motion, Variants } from 'framer-motion';
-import { Trophy, ArrowLeft } from 'lucide-react';
+import { Trophy, ArrowLeft, ChevronDown } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { RANKS } from '@/lib/ranks';
@@ -165,8 +165,22 @@ export default function RanksPage() {
                     </div>
                 </section>
 
+                {/* Scroll Indicator / Call to Action */}
+                <div className="flex flex-col items-center gap-4 py-8">
+                    <motion.button
+                        onClick={() => document.getElementById('leaderboard')?.scrollIntoView({ behavior: 'smooth' })}
+                        whileHover={{ y: 5 }}
+                        className="group flex flex-col items-center gap-2 outline-none"
+                    >
+                        <span className="text-[10px] font-black uppercase tracking-[0.4em] text-foreground/30 group-hover:text-primary transition-colors">Ver Ranking Global</span>
+                        <div className="w-10 h-10 rounded-full bg-foreground/5 border border-foreground/10 flex items-center justify-center group-hover:bg-primary/10 group-hover:border-primary/20 transition-all">
+                            <ChevronDown className="w-5 h-5 text-foreground/40 group-hover:text-primary animate-bounce" />
+                        </div>
+                    </motion.button>
+                </div>
+
                 {/* Leaderboard Section */}
-                <section className="space-y-12">
+                <section id="leaderboard" className="space-y-12 scroll-mt-32">
                     <div className="flex items-center gap-4">
                         <h2 className="text-2xl font-black italic uppercase tracking-tighter">Radar Global</h2>
                         <div className="h-px flex-1 bg-foreground/5" />
