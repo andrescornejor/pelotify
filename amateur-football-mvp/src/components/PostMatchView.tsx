@@ -56,7 +56,7 @@ export default function PostMatchView({ match, participants, stats }: PostMatchV
                 {/* Background Effects */}
                 <div className="absolute inset-x-0 -top-20 h-64 bg-primary/10 blur-[120px] rounded-full pointer-events-none opacity-50 group-hover:opacity-100 transition-opacity duration-1000" />
                 
-                <div className="glass-premium rounded-[3rem] sm:rounded-[4rem] p-6 sm:p-12 border border-white/10 relative overflow-hidden shadow-[0_40px_100px_rgba(0,0,0,0.5)]">
+                <div className="glass-premium rounded-[4rem] p-12 border border-white/10 relative overflow-hidden shadow-[0_40px_100px_rgba(0,0,0,0.5)]">
                     <div className="absolute top-0 right-0 w-full h-full bg-gradient-to-br from-primary/5 via-transparent to-blue-500/5 pointer-events-none" />
                     
                     <div className="flex flex-col md:flex-row items-center justify-between gap-16 relative z-10">
