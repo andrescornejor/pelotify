@@ -132,10 +132,10 @@ export function TopHeader() {
                 <motion.button
                   onClick={toggleSidebar}
                   whileTap={{ scale: 0.92 }}
-                  className="relative w-12 h-12 lg:w-11 lg:h-11 flex items-center justify-center rounded-2xl bg-foreground/[0.04] hover:bg-foreground/[0.08] border border-foreground/[0.06] transition-all group"
+                  className="relative w-[64px] h-12 lg:w-11 lg:h-11 flex items-center justify-center rounded-2xl bg-foreground/[0.04] hover:bg-foreground/[0.08] border border-foreground/[0.06] transition-all group"
                   aria-label="Menu"
                 >
-                  <div className="flex flex-col gap-[5px] w-[19px] items-end">
+                  <div className="flex flex-col gap-[5px] w-[22px] items-center">
                     <motion.span
                       animate={
                         useSidebar().isOpen
