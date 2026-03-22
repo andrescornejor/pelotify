@@ -97,7 +97,7 @@ function TeamProfileContent() {
   const [isJoining, setIsJoining] = useState(false);
 
   // Navigation State
-  const [activeTab, setActiveTab] = useState<'squad' | 'tactics' | 'history'>('squad');
+  const [activeTab, setActiveTab] = useState<'squad' | 'tactics' | 'history' | 'settings'>('squad');
 
   const isCaptain = user?.id === team?.captain_id;
 
@@ -444,51 +444,19 @@ function TeamProfileContent() {
 
           <div className="flex gap-3">
             {isCaptain && (
-              <div className="flex gap-3">
-                {isEditing ? (
-                  <div className="flex gap-2 md:gap-3">
-                    <button
-                      onClick={handleDeleteTeam}
-                      className="h-12 md:h-14 lg:h-16 px-4 md:px-5 bg-red-500/10 text-red-500 rounded-2xl lg:rounded-3xl font-black uppercase tracking-widest text-[10px] md:text-xs hover:bg-red-500/20 transition-all active:scale-95 border border-red-500/20 flex items-center gap-2"
-                      title="Eliminar Equipo"
-                    >
-                      <Trash2 className="w-4 h-4 md:w-5 md:h-5" />
-                      <span className="hidden md:inline">ELIMINAR</span>
-                    </button>
-                    <button
-                      onClick={() => setIsEditing(false)}
-                      className="h-12 md:h-14 lg:h-16 px-6 lg:px-8 bg-foreground/5 text-foreground/40 rounded-2xl lg:rounded-3xl font-black uppercase tracking-widest text-[10px] md:text-xs hover:text-foreground transition-all active:scale-95 border border-foreground/5"
-                    >
-                      CANCELAR
-                    </button>
-                    <button
-                      onClick={handleSaveTeam}
-                      disabled={isSaving}
-                      className="h-12 md:h-14 lg:h-16 px-6 md:px-8 lg:px-10 bg-primary text-background rounded-2xl lg:rounded-3xl font-black uppercase tracking-[0.2em] md:tracking-[0.3em] text-[10px] md:text-xs hover:scale-105 hover:bg-foreground hover:text-background transition-all active:scale-95 shadow-xl shadow-primary/20 flex items-center gap-2 md:gap-3"
-                    >
-                      {isSaving ? (
-                        <Loader2 className="w-4 h-4 animate-spin" />
-                      ) : (
-                        <>
-                          <Save className="w-4 h-4 lg:w-5 lg:h-5" /> GUARDAR
-                        </>
-                      )}
-                    </button>
-                  </div>
-                ) : (
-                  <button
-                    onClick={() => setIsEditing(true)}
-                    className={cn(
-                      'w-12 h-12 md:w-14 md:h-14 lg:w-16 lg:h-16 flex items-center justify-center rounded-2xl lg:rounded-3xl border transition-all active:scale-90 shadow-xl',
-                      isPerfMode
-                        ? 'bg-foreground/10 border-foreground/20 text-foreground'
-                        : 'bg-foreground/5 backdrop-blur-2xl border-foreground/10 text-foreground hover:bg-foreground/10 hover:border-primary/50'
-                    )}
-                  >
-                    <Settings className="w-5 h-5 lg:w-6 lg:h-6" />
-                  </button>
+              <button
+                onClick={() => setActiveTab('settings')}
+                className={cn(
+                  'w-12 h-12 md:w-14 md:h-14 lg:w-16 lg:h-16 flex items-center justify-center rounded-2xl lg:rounded-3xl border transition-all active:scale-90 shadow-xl',
+                  activeTab === 'settings'
+                    ? 'bg-primary text-background border-primary'
+                    : isPerfMode
+                      ? 'bg-foreground/10 border-foreground/20 text-foreground'
+                      : 'bg-foreground/5 backdrop-blur-2xl border-foreground/10 text-foreground hover:bg-foreground/10 hover:border-primary/50'
                 )}
-              </div>
+              >
+                <Settings className="w-5 h-5 lg:w-6 lg:h-6" />
+              </button>
             )}
             {!isCaptain && members.some((m) => m.user_id === user?.id) && (
               <button
@@ -547,58 +515,33 @@ function TeamProfileContent() {
           </div>
 
           <div className="text-center space-y-4 max-w-2xl px-6">
-            {isEditing ? (
-              <div className="flex flex-col gap-3">
-                <input
-                  type="text"
-                  value={editName}
-                  onChange={(e) => setEditName(e.target.value)}
-                  className="h-16 bg-foreground/[0.03] border border-foreground/10 rounded-2xl px-6 text-2xl font-black text-foreground italic uppercase tracking-tighter text-center focus:border-primary/50 outline-none w-full shadow-inner"
-                  placeholder="Nombre del club"
-                />
-                <input
-                  type="text"
-                  value={editMotto}
-                  onChange={(e) => setEditMotto(e.target.value)}
-                  className="bg-foreground/[0.03] border border-foreground/10 rounded-2xl px-6 py-3 text-primary text-xs font-black uppercase tracking-widest text-center focus:border-primary/30 outline-none w-full shadow-inner"
-                  placeholder="Lema del equipo..."
-                />
-                <textarea
-                  value={editDesc}
-                  onChange={(e) => setEditDesc(e.target.value)}
-                  className="bg-foreground/[0.03] border border-foreground/10 rounded-2xl px-6 py-4 text-foreground/50 text-sm italic text-center focus:border-primary/30 outline-none min-h-[100px] shadow-inner"
-                  placeholder="Descripción del club..."
-                />
-              </div>
-            ) : (
-              <div className="space-y-2">
-                <motion.h1
-                  initial={{ y: 20, opacity: 0 }}
-                  animate={{ y: 0, opacity: 1 }}
-                  className="text-5xl md:text-7xl font-black text-foreground italic uppercase tracking-[-0.05em] leading-[0.85] drop-shadow-lg"
-                >
-                  {team.name}
-                </motion.h1>
-                <motion.p
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ delay: 0.2 }}
-                  className="text-xs md:text-sm text-foreground/50 flex flex-col items-center justify-center gap-2 uppercase font-black tracking-[0.3em] italic"
-                >
-                  {team.motto && (
-                    <span className="text-primary text-[10px] mb-1 tracking-[0.5em]">
-                      "{team.motto}"
-                    </span>
-                  )}
-                  <div className="flex flex-wrap items-center justify-center gap-2">
-                    <span className="inline-block w-2 h-2 rounded-full bg-primary animate-pulse" />
-                    <span className="text-center">
-                      {team.description || 'Institución Deportiva Federada'}
-                    </span>
-                  </div>
-                </motion.p>
-              </div>
-            )}
+            <div className="space-y-2">
+              <motion.h1
+                initial={{ y: 20, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                className="text-5xl md:text-7xl font-black text-foreground italic uppercase tracking-[-0.05em] leading-[0.85] drop-shadow-lg"
+              >
+                {team.name}
+              </motion.h1>
+              <motion.p
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.2 }}
+                className="text-xs md:text-sm text-foreground/50 flex flex-col items-center justify-center gap-2 uppercase font-black tracking-[0.3em] italic"
+              >
+                {team.motto && (
+                  <span className="text-primary text-[10px] mb-1 tracking-[0.5em]">
+                    "{team.motto}"
+                  </span>
+                )}
+                <div className="flex flex-wrap items-center justify-center gap-2">
+                  <span className="inline-block w-2 h-2 rounded-full bg-primary animate-pulse" />
+                  <span className="text-center">
+                    {team.description || 'Institución Deportiva Federada'}
+                  </span>
+                </div>
+              </motion.p>
+            </div>
           </div>
         </div>
       </div>
@@ -645,7 +588,8 @@ function TeamProfileContent() {
           {[
             { id: 'squad', label: 'Plantel', icon: Users },
             { id: 'tactics', label: 'Alineación', icon: Layout },
-            { id: 'history', label: 'Historial', icon: Calendar },
+            { id: 'history', label: 'Historial', icon: History },
+            ...(isCaptain ? [{ id: 'settings', label: 'Ajustes', icon: Settings }] : []),
           ].map((tab) => (
             <button
               key={tab.id}
@@ -918,8 +862,25 @@ function TeamProfileContent() {
                           </div>
                         </div>
                       </div>
-                      <div className="w-10 h-10 rounded-2xl bg-foreground/[0.02] flex items-center justify-center border border-foreground/5 group-hover:border-primary/30 transition-all">
-                        <ChevronRight className="w-4 h-4 text-foreground/50 group-hover:text-primary" />
+                      <div className="flex items-center gap-3">
+                        {isCaptain && member.user_id !== user?.id && (
+                          <button
+                            onClick={(e) => {
+                              e.preventDefault();
+                              e.stopPropagation();
+                              if (confirm(`¿Estás seguro de que quieres expulsar a ${member.profiles?.name}?`)) {
+                                leaveTeam(team.id, member.user_id).then(() => fetchData());
+                              }
+                            }}
+                            className="w-10 h-10 rounded-2xl bg-red-500/10 flex items-center justify-center border border-red-500/20 text-red-500 hover:bg-red-500/20 transition-all active:scale-95"
+                            title="Expulsar del equipo"
+                          >
+                            <User2 className="w-4 h-4" />
+                          </button>
+                        )}
+                        <div className="w-10 h-10 rounded-2xl bg-foreground/[0.02] flex items-center justify-center border border-foreground/5 group-hover:border-primary/30 transition-all">
+                          <ChevronRight className="w-4 h-4 text-foreground/50 group-hover:text-primary" />
+                        </div>
                       </div>
                     </motion.div>
                   </Link>
@@ -932,7 +893,162 @@ function TeamProfileContent() {
           <TeamTactics teamId={team.id} isCaptain={isCaptain} members={members} />
         )}
 
-        {activeTab === 'history' && (
+        {activeTab === 'settings' && isCaptain && (
+          <section className="space-y-10 pb-20">
+            <div className="flex items-center gap-4 px-2">
+              <div className="w-10 h-10 rounded-2xl bg-primary/10 flex items-center justify-center border border-primary/20 text-primary">
+                <Settings className="w-5 h-5" />
+              </div>
+              <div className="flex flex-col">
+                <h2 className="text-2xl font-black text-foreground italic uppercase tracking-tighter leading-none">
+                  Gestión del Club
+                </h2>
+                <span className="text-[9px] font-black text-foreground/40 uppercase tracking-widest mt-1">
+                  CONFIGURACIÓN DE IDENTIDAD Y PERMISOS
+                </span>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              {/* Branding Card */}
+              <div className="glass-premium p-8 rounded-[3rem] border border-foreground/5 space-y-8 h-fit">
+                <div className="flex items-center gap-4">
+                  <div className="w-10 h-10 rounded-xl bg-primary/5 flex items-center justify-center text-primary">
+                    <Camera className="w-5 h-5" />
+                  </div>
+                  <h3 className="text-lg font-black text-foreground italic uppercase tracking-tighter">
+                    Identidad Visual
+                  </h3>
+                </div>
+
+                <div className="space-y-6">
+                  {/* Logo Upload Preview */}
+                  <div className="flex items-center gap-6">
+                    <div className="relative w-24 h-24 rounded-[2rem] bg-surface-elevated border-2 border-primary/20 flex items-center justify-center overflow-hidden">
+                      {logoPreview || editLogoUrl ? (
+                        <img
+                          src={logoPreview || editLogoUrl}
+                          alt="Preview"
+                          className="w-full h-full object-cover"
+                        />
+                      ) : (
+                        <Shield className="w-10 h-10 text-primary/30" />
+                      )}
+                      <label className="absolute inset-0 bg-black/60 opacity-0 hover:opacity-100 transition-opacity flex items-center justify-center cursor-pointer">
+                        <Camera className="w-6 h-6 text-white" />
+                        <input
+                          type="file"
+                          accept="image/*"
+                          className="hidden"
+                          onChange={(e) => {
+                            const file = e.target.files?.[0];
+                            if (file) {
+                              setLogoFile(file);
+                              const reader = new FileReader();
+                              reader.onloadend = () => setLogoPreview(reader.result as string);
+                              reader.readAsDataURL(file);
+                            }
+                          }}
+                        />
+                      </label>
+                    </div>
+                    <div className="flex-1 space-y-1">
+                      <p className="text-[10px] font-black uppercase tracking-widest text-foreground">
+                        Escudo Oficial
+                      </p>
+                      <p className="text-[9px] text-foreground/40 font-bold uppercase leading-relaxed max-w-[150px]">
+                        Recomendado: 512x512px. JPG o PNG.
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="space-y-4">
+                    <div className="space-y-2">
+                      <label className="text-[9px] font-black uppercase tracking-[0.3em] text-foreground/40 ml-2">
+                        Nombre del Equipo
+                      </label>
+                      <input
+                        type="text"
+                        value={editName}
+                        onChange={(e) => setEditName(e.target.value)}
+                        className="w-full h-14 bg-foreground/[0.03] border border-foreground/5 rounded-2xl px-6 text-base font-black italic uppercase tracking-tighter text-foreground focus:border-primary/50 outline-none transition-all"
+                        placeholder="ej: GALACTICOS FC"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <label className="text-[9px] font-black uppercase tracking-[0.3em] text-foreground/40 ml-2">
+                        Lema del Club
+                      </label>
+                      <input
+                        type="text"
+                        value={editMotto}
+                        onChange={(e) => setEditMotto(e.target.value)}
+                        className="w-full h-14 bg-foreground/[0.03] border border-foreground/5 rounded-2xl px-6 text-xs font-black uppercase tracking-widest text-primary focus:border-primary/30 outline-none transition-all"
+                        placeholder="ej: MÁS QUE UN EQUIPO..."
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Bio & Actions */}
+              <div className="space-y-8">
+                <div className="glass-premium p-8 rounded-[3rem] border border-foreground/5 space-y-6">
+                  <div className="flex items-center gap-4">
+                    <div className="w-10 h-10 rounded-xl bg-primary/5 flex items-center justify-center text-primary">
+                      <Layout className="w-5 h-5" />
+                    </div>
+                    <h3 className="text-lg font-black text-foreground italic uppercase tracking-tighter">
+                      Biografía
+                    </h3>
+                  </div>
+                  <textarea
+                    value={editDesc}
+                    onChange={(e) => setEditDesc(e.target.value)}
+                    className="w-full min-h-[160px] bg-foreground/[0.03] border border-foreground/5 rounded-2xl px-6 py-5 text-sm font-medium text-foreground/60 focus:border-primary/30 outline-none resize-none transition-all"
+                    placeholder="Contanos la historia del club..."
+                  />
+                </div>
+
+                <div className="flex gap-4">
+                  <button
+                    onClick={handleSaveTeam}
+                    disabled={isSaving}
+                    className="flex-1 h-16 bg-primary text-background rounded-2xl font-black uppercase tracking-[0.3em] text-[10px] hover:scale-[1.02] shadow-xl shadow-primary/10 transition-all active:scale-95 flex items-center justify-center gap-3 disabled:opacity-50"
+                  >
+                    {isSaving ? (
+                      <Loader2 className="w-5 h-5 animate-spin" />
+                    ) : (
+                      <>
+                        <Save className="w-5 h-5" /> GUARDAR CAMBIOS
+                      </>
+                    )}
+                  </button>
+                </div>
+
+                <div className="p-8 rounded-[3rem] border border-red-500/10 bg-red-500/[0.02] space-y-6">
+                  <div className="flex items-center gap-4">
+                    <div className="w-10 h-10 rounded-xl bg-red-500/10 flex items-center justify-center text-red-500">
+                      <Trash2 className="w-5 h-5" />
+                    </div>
+                    <h3 className="text-lg font-black text-red-500 italic uppercase tracking-tighter">
+                      Zona de Peligro
+                    </h3>
+                  </div>
+                  <p className="text-[10px] text-red-500/40 font-bold uppercase leading-relaxed">
+                    Si eliminas el equipo, se perderá todo el historial, ELO y miembros vinculados. Esta acción es irreversible.
+                  </p>
+                  <button
+                    onClick={handleDeleteTeam}
+                    className="w-full h-14 bg-red-500/10 border border-red-500/20 text-red-500 rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-red-500 hover:text-white transition-all active:scale-95"
+                  >
+                    DISOLVER EQUIPO DEFINITIVAMENTE
+                  </button>
+                </div>
+              </div>
+            </div>
+          </section>
+        )}
           <section className="space-y-12 pb-20">
             {/* Upcoming Section */}
             <div className="space-y-6">
