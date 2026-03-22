@@ -100,10 +100,10 @@ const LeaderboardRow = memo(
         )}
         onClick={() => onClick(player.id)}
       >
-        <td className="px-8 py-6">
+        <td className="px-4 sm:px-8 py-4 sm:py-6">
           <div
             className={cn(
-              'w-10 h-10 rounded-xl flex items-center justify-center font-black italic text-lg',
+              'w-8 h-8 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl flex items-center justify-center font-black italic text-sm sm:text-lg',
               isTop3
                 ? `${colors[idx]} bg-foreground/5 border border-current shadow-[0_0_15px_rgba(0,0,0,0.2)]`
                 : 'text-foreground/20'
@@ -112,16 +112,16 @@ const LeaderboardRow = memo(
             #{idx + 1}
           </div>
         </td>
-        <td className="px-8 py-6">
-          <div className="flex items-center gap-4">
-            <div className="relative">
+        <td className="px-4 sm:px-8 py-4 sm:py-6">
+          <div className="flex items-center gap-3 sm:gap-4">
+            <div className="relative shrink-0">
               <img
                 src={
                   player.avatar_url ||
                   `https://api.dicebear.com/7.x/notionists/svg?seed=${player.name}&backgroundColor=transparent`
                 }
                 alt={player.name}
-                className="w-12 h-12 rounded-2xl object-cover bg-foreground/5 border border-foreground/10 group-hover:scale-110 transition-transform duration-500"
+                className="w-14 h-14 sm:w-16 sm:h-16 rounded-[1.25rem] sm:rounded-2xl object-cover bg-foreground/5 border border-foreground/10 group-hover:scale-110 transition-transform duration-500"
               />
               {isTop3 && (
                 <div
@@ -132,30 +132,30 @@ const LeaderboardRow = memo(
                 />
               )}
             </div>
-            <div className="flex flex-col gap-0.5">
-              <span className="font-black italic uppercase tracking-tighter text-foreground group-hover:text-primary transition-colors text-lg">
+            <div className="flex flex-col gap-0.5 min-w-0">
+              <span className="font-black italic uppercase tracking-tighter text-foreground group-hover:text-primary transition-colors text-base sm:text-lg truncate">
                 {player.name}
               </span>
-              <span className="text-[9px] font-black uppercase tracking-widest text-foreground/40">
+              <span className="text-[8px] sm:text-[9px] font-black uppercase tracking-widest text-foreground/40 truncate">
                 {player.position}
               </span>
             </div>
           </div>
         </td>
-        <td className="px-8 py-6">
+        <td className="px-4 sm:px-8 py-4 sm:py-6">
           <div className="flex justify-center group-hover:scale-110 transition-transform duration-500">
-            <RankBadge rankName={rank.name} size="sm" />
+            <RankBadge rankName={rank.name} size="sm" className="scale-90 sm:scale-100" />
           </div>
         </td>
-        <td className="px-8 py-6 text-center">
+        <td className="hidden md:table-cell px-8 py-6 text-center">
           <span className="font-black italic text-foreground/40">{player.matches}</span>
         </td>
-        <td className="px-8 py-6 text-right">
+        <td className="px-4 sm:px-8 py-4 sm:py-6 text-right">
           <div className="flex flex-col items-end gap-1">
-            <span className="text-xl font-black italic tracking-tighter text-foreground tabular-nums group-hover:scale-110 transition-transform origin-right">
+            <span className="text-lg sm:text-xl font-black italic tracking-tighter text-foreground tabular-nums group-hover:scale-110 transition-transform origin-right">
               {player.elo.toLocaleString()}
             </span>
-            <div className="w-16 h-1 bg-foreground/5 rounded-full overflow-hidden">
+            <div className="w-12 sm:w-16 h-1 bg-foreground/5 rounded-full overflow-hidden">
               <div
                 className="h-full bg-primary/40 rounded-full"
                 style={{ width: `${Math.min(100, (player.elo / 5000) * 100)}%` }}
@@ -342,19 +342,19 @@ export default function RanksPage() {
                 <table className="w-full border-collapse">
                   <thead>
                     <tr className="border-b border-foreground/5 bg-foreground/[0.02]">
-                      <th className="px-8 py-6 text-left text-[10px] font-black uppercase tracking-[0.3em] text-foreground/30">
+                      <th className="px-4 sm:px-8 py-6 text-left text-[10px] font-black uppercase tracking-[0.3em] text-foreground/30">
                         Pos
                       </th>
-                      <th className="px-8 py-6 text-left text-[10px] font-black uppercase tracking-[0.3em] text-foreground/30">
+                      <th className="px-4 sm:px-8 py-6 text-left text-[10px] font-black uppercase tracking-[0.3em] text-foreground/30">
                         Jugador
                       </th>
-                      <th className="px-8 py-6 text-center text-[10px] font-black uppercase tracking-[0.3em] text-foreground/30">
+                      <th className="px-4 sm:px-8 py-6 text-center text-[10px] font-black uppercase tracking-[0.3em] text-foreground/30">
                         Rango
                       </th>
-                      <th className="px-8 py-6 text-center text-[10px] font-black uppercase tracking-[0.3em] text-foreground/30">
+                      <th className="hidden md:table-cell px-8 py-6 text-center text-[10px] font-black uppercase tracking-[0.3em] text-foreground/30">
                         Partidos
                       </th>
-                      <th className="px-8 py-6 text-right text-[10px] font-black uppercase tracking-[0.3em] text-foreground/30">
+                      <th className="px-4 sm:px-8 py-6 text-right text-[10px] font-black uppercase tracking-[0.3em] text-foreground/30">
                         Puntos XP
                       </th>
                     </tr>
