@@ -188,7 +188,7 @@ export default function CreateMatchPage() {
                 <div className="absolute inset-0 bg-[repeating-linear-gradient(0deg,transparent,transparent_2px,rgba(255,255,255,0.01)_2px,rgba(255,255,255,0.01)_4px)]" />
             </div>
 
-            <div className="relative z-10 flex flex-col max-w-4xl mx-auto p-4 pt-6 pb-52 lg:pb-32 min-h-screen">
+            <div className="relative z-10 flex flex-col max-w-4xl mx-auto p-4 pt-6 pb-28 min-h-screen">
                 
                 {/* ── HEADER ── */}
                 <motion.div
@@ -636,66 +636,61 @@ export default function CreateMatchPage() {
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.4 }}
-                    className="fixed bottom-24 lg:bottom-0 left-0 right-0 z-50 p-4 pt-4"
+                    className="mt-8 flex gap-3"
                 >
-                    {/* Blur backdrop */}
-                    <div className="absolute inset-0 backdrop-blur-xl bg-background/70 border-t border-foreground/5" />
+                    {step > 0 && (
+                        <button
+                            type="button"
+                            onClick={() => setStep(s => s - 1)}
+                            className="h-14 px-6 rounded-2xl border border-foreground/10 bg-foreground/[0.03] text-foreground/40 font-black text-xs uppercase tracking-widest hover:border-foreground/20 hover:text-foreground/60 transition-all flex items-center gap-2"
+                        >
+                            <ArrowLeft className="w-4 h-4" />
+                            Volver
+                        </button>
+                    )}
 
-                    <div className="relative max-w-4xl mx-auto flex gap-3">
-                        {step > 0 && (
-                            <button
-                                type="button"
-                                onClick={() => setStep(s => s - 1)}
-                                className="h-14 px-6 rounded-2xl border border-foreground/10 bg-foreground/[0.03] text-foreground/40 font-black text-xs uppercase tracking-widest hover:border-foreground/20 hover:text-foreground/60 transition-all flex items-center gap-2"
-                            >
-                                <ArrowLeft className="w-4 h-4" />
-                                Volver
-                            </button>
-                        )}
-
-                        {step < STEPS.length - 1 ? (
-                            <motion.button
-                                type="button"
-                                onClick={() => canProceed() && setStep(s => s + 1)}
-                                disabled={!canProceed()}
-                                whileHover={canProceed() ? { scale: 1.01 } : {}}
-                                whileTap={canProceed() ? { scale: 0.98 } : {}}
-                                className={`flex-1 h-14 rounded-2xl font-black text-xs uppercase tracking-widest flex items-center justify-center gap-3 transition-all relative overflow-hidden ${
-                                    canProceed()
-                                        ? 'bg-primary text-black shadow-[0_8px_32px_rgba(16,185,129,0.25)]'
-                                        : 'bg-foreground/[0.04] text-foreground/20 cursor-not-allowed'
-                                }`}
-                            >
-                                {canProceed() && (
-                                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full hover:translate-x-full transition-transform duration-700" />
-                                )}
-                                Continuar
-                                <ArrowRight className="w-4 h-4" />
-                            </motion.button>
-                        ) : (
-                            <motion.button
-                                type="button"
-                                onClick={handleCreate}
-                                disabled={isCreating}
-                                whileHover={{ scale: 1.01 }}
-                                whileTap={{ scale: 0.98 }}
-                                className="flex-1 h-14 rounded-2xl bg-primary text-black font-black text-xs uppercase tracking-widest flex items-center justify-center gap-3 shadow-[0_8px_32px_rgba(16,185,129,0.3)] disabled:opacity-50 transition-all relative overflow-hidden"
-                            >
-                                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/15 to-transparent -translate-x-full hover:translate-x-full transition-transform duration-700" />
-                                {isCreating ? (
-                                    <>
-                                        <Loader2 className="w-5 h-5 animate-spin" />
-                                        Creando partido...
-                                    </>
-                                ) : (
-                                    <>
-                                        <Zap className="w-5 h-5" />
-                                        ¡Crear Partido!
-                                    </>
-                                )}
-                            </motion.button>
-                        )}
-                    </div>
+                    {step < STEPS.length - 1 ? (
+                        <motion.button
+                            type="button"
+                            onClick={() => canProceed() && setStep(s => s + 1)}
+                            disabled={!canProceed()}
+                            whileHover={canProceed() ? { scale: 1.01 } : {}}
+                            whileTap={canProceed() ? { scale: 0.98 } : {}}
+                            className={`flex-1 h-14 rounded-2xl font-black text-xs uppercase tracking-widest flex items-center justify-center gap-3 transition-all relative overflow-hidden ${
+                                canProceed()
+                                    ? 'bg-primary text-black shadow-[0_8px_32px_rgba(16,185,129,0.25)]'
+                                    : 'bg-foreground/[0.04] text-foreground/20 cursor-not-allowed'
+                            }`}
+                        >
+                            {canProceed() && (
+                                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full hover:translate-x-full transition-transform duration-700" />
+                            )}
+                            Continuar
+                            <ArrowRight className="w-4 h-4" />
+                        </motion.button>
+                    ) : (
+                        <motion.button
+                            type="button"
+                            onClick={handleCreate}
+                            disabled={isCreating}
+                            whileHover={{ scale: 1.01 }}
+                            whileTap={{ scale: 0.98 }}
+                            className="flex-1 h-14 rounded-2xl bg-primary text-black font-black text-xs uppercase tracking-widest flex items-center justify-center gap-3 shadow-[0_8px_32px_rgba(16,185,129,0.3)] disabled:opacity-50 transition-all relative overflow-hidden"
+                        >
+                            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/15 to-transparent -translate-x-full hover:translate-x-full transition-transform duration-700" />
+                            {isCreating ? (
+                                <>
+                                    <Loader2 className="w-5 h-5 animate-spin" />
+                                    Creando partido...
+                                </>
+                            ) : (
+                                <>
+                                    <Zap className="w-5 h-5" />
+                                    ¡Crear Partido!
+                                </>
+                            )}
+                        </motion.button>
+                    )}
                 </motion.div>
             </div>
         </div>
