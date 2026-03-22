@@ -92,7 +92,7 @@ export default function MessagesPage() {
                 staggerChildren: 0.1
             }
         }
-    };
+    } as const;
 
     const itemVariants = {
         hidden: { opacity: 0, x: -20 },
@@ -105,7 +105,7 @@ export default function MessagesPage() {
                 damping: 15
             }
         }
-    };
+    } as const;
 
     if (!user) return null;
 
