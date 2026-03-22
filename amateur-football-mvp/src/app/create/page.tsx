@@ -188,7 +188,7 @@ export default function CreateMatchPage() {
                 <div className="absolute inset-0 bg-[repeating-linear-gradient(0deg,transparent,transparent_2px,rgba(255,255,255,0.01)_2px,rgba(255,255,255,0.01)_4px)]" />
             </div>
 
-            <div className="relative z-10 flex flex-col max-w-4xl mx-auto p-4 pt-6 pb-32 min-h-screen">
+            <div className="relative z-10 flex flex-col max-w-4xl mx-auto p-4 pt-6 pb-52 lg:pb-32 min-h-screen">
                 
                 {/* ── HEADER ── */}
                 <motion.div
@@ -636,7 +636,7 @@ export default function CreateMatchPage() {
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.4 }}
-                    className="fixed bottom-0 left-0 right-0 z-50 p-4 pt-4"
+                    className="fixed bottom-24 lg:bottom-0 left-0 right-0 z-50 p-4 pt-4"
                 >
                     {/* Blur backdrop */}
                     <div className="absolute inset-0 backdrop-blur-xl bg-background/70 border-t border-foreground/5" />
