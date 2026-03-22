@@ -173,7 +173,7 @@ export function TopHeader() {
                   </div>
                   <div className="flex-1 min-w-0 flex flex-col lg:gap-0.5">
                     <div className="flex items-center gap-2">
-                      <span className="text-[20px] sm:text-[24px] lg:text-[24px] 2xl:text-[32px] font-[900] tracking-[-0.02em] font-kanit uppercase italic leading-tight flex items-center gap-0 pr-4">
+                      <span className="hidden min-[400px]:flex text-[20px] sm:text-[24px] lg:text-[24px] 2xl:text-[32px] font-[900] tracking-[-0.02em] font-kanit uppercase italic leading-tight items-center gap-0 pr-4">
                         <span className="text-foreground">PELOTI</span>
                         <span
                           className="bg-clip-text text-transparent px-2 -mx-2"
