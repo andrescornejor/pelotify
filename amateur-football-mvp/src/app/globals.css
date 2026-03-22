@@ -449,3 +449,25 @@
     filter: none !important;
   }
 }
+
+/* ══════════════════════════════════════════
+   MONOCHROME MODE (MODO MONOCROMÁTICO)
+══════════════════════════════════════════ */
+.monochrome {
+  filter: grayscale(100%) contrast(110%) !important;
+}
+
+/* Specific overrides for monochrome to improve legibility on bad devices */
+.monochrome .glass,
+.monochrome .glass-premium,
+.monochrome .glass-card,
+.monochrome .premium-card {
+  border-color: rgba(0, 0, 0, 0.2) !important;
+}
+
+.dark.monochrome .glass,
+.dark.monochrome .glass-premium,
+.dark.monochrome .glass-card,
+.dark.monochrome .premium-card {
+  border-color: rgba(255, 255, 255, 0.2) !important;
+}

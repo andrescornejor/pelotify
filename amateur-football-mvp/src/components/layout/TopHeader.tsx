@@ -11,6 +11,7 @@ import {
   PlusCircle,
   User2,
   MessageSquare,
+  Ghost,
 } from 'lucide-react';
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
@@ -96,7 +97,7 @@ export function TopHeader() {
     };
   }, [user, pathname]);
 
-  const { performanceMode } = useSettings();
+  const { performanceMode, monochromeMode, setMonochromeMode } = useSettings();
 
   if (['/login', '/register'].includes(pathname)) {
     return null;
@@ -289,6 +290,30 @@ export function TopHeader() {
                         )}
                       </motion.div>
                     </AnimatePresence>
+                  </motion.button>
+
+                  <motion.button
+                    whileHover={{ scale: 1.08 }}
+                    whileTap={{ scale: 0.88 }}
+                    onClick={() => setMonochromeMode(!monochromeMode)}
+                    className={cn(
+                      'w-12 h-12 lg:w-11 lg:h-11 flex items-center justify-center rounded-2xl transition-all border',
+                      monochromeMode
+                        ? 'bg-primary/20 text-primary border-primary/30'
+                        : 'bg-foreground/[0.04] hover:bg-foreground/[0.08] text-foreground/45 hover:text-foreground/70 border-foreground/[0.04]'
+                    )}
+                    title={
+                      monochromeMode
+                        ? 'Desactivar Modo Monocromático'
+                        : 'Activar Modo Monocromático (Bajo Rendimiento)'
+                    }
+                  >
+                    <Ghost
+                      className={cn(
+                        'w-4 h-4 sm:w-[1.1rem] sm:h-[1.1rem]',
+                        monochromeMode && 'animate-pulse'
+                      )}
+                    />
                   </motion.button>
 
                   {/* Notification Bell */}
