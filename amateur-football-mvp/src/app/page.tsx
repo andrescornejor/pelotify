@@ -774,7 +774,6 @@ export default function HomePage() {
 
             {/* ── ELO SYSTEM (Road to Glory) ──────── */}
             <motion.section
-              id="ranking-stats"
               variants={fadeUp}
               initial="hidden"
               whileInView="visible"
@@ -946,16 +945,7 @@ export default function HomePage() {
                   </div>
                 </div>
 
-                <button
-                  onClick={() => {
-                    const el = document.getElementById('ranking-stats');
-                    if (el) {
-                      el.scrollIntoView({ behavior: 'smooth' });
-                    } else {
-                      window.location.href = '/ranks';
-                    }
-                  }}
-                >
+                <Link href="/ranks#leaderboard">
                   <motion.button
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
@@ -967,7 +957,7 @@ export default function HomePage() {
                     </span>
                     <Trophy className="w-5 h-5 text-white/90 relative z-10 group-hover:rotate-12 transition-transform" />
                   </motion.button>
-                </button>
+                </Link>
               </motion.div>
             </motion.section>
 
