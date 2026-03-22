@@ -21,6 +21,7 @@ import {
   Loader2,
   PlusCircle,
   Plus,
+  User2,
   Search,
   Swords,
   Layout,
