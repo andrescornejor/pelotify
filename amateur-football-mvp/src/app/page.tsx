@@ -470,8 +470,8 @@ export default function HomePage() {
             />
             {!isPerfMode && (
               <>
-                <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-transparent to-accent/5" />
-                <div className="absolute inset-0 backdrop-blur-[2px] opacity-40 mix-blend-overlay" />
+                <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-transparent to-accent/5 pointer-events-none" />
+                <div className="absolute inset-0 backdrop-blur-[2px] opacity-40 mix-blend-overlay pointer-events-none" />
 
                 {/* Animated "Beam" light effect */}
                 <motion.div
@@ -646,7 +646,7 @@ export default function HomePage() {
                         boxShadow: `0 0 15px ${rankCalculation.info.color}40`,
                       }}
                     >
-                      <div className="absolute inset-0 animate-shimmer opacity-30 bg-gradient-to-r from-transparent via-white/40 to-transparent" />
+                      <div className="absolute inset-0 animate-shimmer opacity-30 bg-gradient-to-r from-transparent via-white/40 to-transparent pointer-events-none" />
                     </motion.div>
                   </div>
 
@@ -919,11 +919,11 @@ export default function HomePage() {
                 whileHover={{ scale: 1.005 }}
                 className="relative overflow-hidden rounded-[2.5rem] p-8 flex flex-col sm:flex-row items-center justify-between gap-8 glass-premium border-primary/10 group"
               >
-                <div className="absolute inset-0 bg-gradient-to-r from-primary/5 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                <div className="absolute inset-0 bg-gradient-to-r from-primary/5 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
 
                 <div className="flex items-center gap-6 relative z-10">
                   <div className="relative">
-                    <div className="absolute inset-0 bg-primary/20 blur-xl rounded-full animate-pulse" />
+                    <div className="absolute inset-0 bg-primary/20 blur-xl rounded-full animate-pulse pointer-events-none" />
                     <RankBadge rankName={rankCalculation.info.name} size="md" />
                   </div>
                   <div className="space-y-1">
@@ -944,13 +944,13 @@ export default function HomePage() {
                   </div>
                 </div>
 
-                <Link href="/ranks">
+                <Link href="/ranks" className="z-10 block">
                   <motion.button
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
                     className="h-14 px-10 rounded-2xl flex items-center justify-center gap-4 transition-all text-white shadow-2xl shadow-primary/20 bg-gradient-to-br from-primary to-primary-dark group overflow-hidden relative"
                   >
-                    <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-500" />
+                    <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-500 pointer-events-none" />
                     <span className="text-[11px] font-black uppercase tracking-[0.2em] italic relative z-10">
                       VER RANKING GLOBAL
                     </span>
