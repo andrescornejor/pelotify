@@ -270,7 +270,6 @@ export default function ChatRoom({ matchId, recipientId, className, title }: Cha
                     </motion.button>
                 )}
             </AnimatePresence>
->
 
             <div className="p-8 pt-0 relative z-20">
                 <form 
