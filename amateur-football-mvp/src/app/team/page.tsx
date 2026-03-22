@@ -1049,6 +1049,8 @@ function TeamProfileContent() {
             </div>
           </section>
         )}
+
+        {activeTab === 'history' && (
           <section className="space-y-12 pb-20">
             {/* Upcoming Section */}
             <div className="space-y-6">
