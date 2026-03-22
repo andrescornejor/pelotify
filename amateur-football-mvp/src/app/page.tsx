@@ -487,9 +487,9 @@ export default function HomePage() {
           </div>
 
           {/* Content Wrapper */}
-          <div className="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-10 p-8 sm:p-12 lg:p-16 xl:p-20">
+          <div className="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-6 lg:gap-10 p-6 sm:p-12 lg:p-16 xl:p-20">
             {/* Left: Text & Branding */}
-            <div className="flex-1 space-y-8 max-w-2xl">
+            <div className="flex-1 space-y-6 lg:space-y-8 max-w-2xl">
               <motion.div
                 initial={isPerfMode ? { opacity: 1 } : { x: -20, opacity: 0 }}
                 animate={{ x: 0, opacity: 1 }}
@@ -554,7 +554,7 @@ export default function HomePage() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.6 }}
-                className="grid grid-cols-2 sm:grid-cols-3 gap-6 pt-4"
+                className="grid grid-cols-2 sm:grid-cols-3 gap-4 lg:gap-6 pt-2 lg:pt-4"
               >
                 {[
                   {
@@ -576,7 +576,7 @@ export default function HomePage() {
                     icon: TrendingUp,
                   },
                 ].map((item, idx) => (
-                  <div key={idx} className="space-y-1">
+                  <div key={idx} className={cn("space-y-1", idx === 2 && "hidden sm:block")}>
                     <p className="text-[9px] font-black text-foreground/40 uppercase tracking-[0.25em] flex items-center gap-1.5">
                       <item.icon className="w-2.5 h-2.5" /> {item.label}
                     </p>
