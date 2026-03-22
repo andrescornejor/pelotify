@@ -5,36 +5,22 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 interface SettingsContextType {
   performanceMode: boolean;
   setPerformanceMode: (enabled: boolean) => void;
-  monochromeMode: boolean;
-  setMonochromeMode: (enabled: boolean) => void;
 }
 
 const SettingsContext = createContext<SettingsContextType | undefined>(undefined);
 
 export const SettingsProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [performanceMode, setPerformanceMode] = useState<boolean>(false);
-  const [monochromeMode, setMonochromeMode] = useState<boolean>(false);
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
     setMounted(true);
-    // Performance Mode
-    const savedPerf = localStorage.getItem('performance-mode');
-    if (savedPerf !== null) {
-      const isEnabled = savedPerf === 'true';
+    const saved = localStorage.getItem('performance-mode');
+    if (saved !== null) {
+      const isEnabled = saved === 'true';
       setPerformanceMode(isEnabled);
       if (isEnabled) {
         document.documentElement.classList.add('perf-mode');
-      }
-    }
-
-    // Monochrome Mode
-    const savedMono = localStorage.getItem('monochrome-mode');
-    if (savedMono !== null) {
-      const isEnabled = savedMono === 'true';
-      setMonochromeMode(isEnabled);
-      if (isEnabled) {
-        document.documentElement.classList.add('monochrome');
       }
     }
   }, []);
@@ -50,25 +36,9 @@ export const SettingsProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     }
   };
 
-  const updateMonochromeMode = (enabled: boolean) => {
-    setMonochromeMode(enabled);
-    localStorage.setItem('monochrome-mode', enabled.toString());
-
-    if (enabled) {
-      document.documentElement.classList.add('monochrome');
-    } else {
-      document.documentElement.classList.remove('monochrome');
-    }
-  };
-
   return (
     <SettingsContext.Provider
-      value={{
-        performanceMode,
-        setPerformanceMode: updatePerformanceMode,
-        monochromeMode,
-        setMonochromeMode: updateMonochromeMode,
-      }}
+      value={{ performanceMode, setPerformanceMode: updatePerformanceMode }}
     >
       {children}
     </SettingsContext.Provider>
