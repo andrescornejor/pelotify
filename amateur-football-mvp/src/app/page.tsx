@@ -1288,7 +1288,7 @@ export default function HomePage() {
             </div>
 
             {/* Links Columns */}
-            <div className="md:col-span-8 grid grid-cols-2 lg:grid-cols-3 gap-8 text-[10px] font-black uppercase tracking-[0.2em] text-foreground/40">
+            <div className="hidden md:grid md:col-span-8 grid-cols-2 lg:grid-cols-3 gap-8 text-[10px] font-black uppercase tracking-[0.2em] text-foreground/40">
               <div className="space-y-6">
                 <h4 className="text-foreground/80 tracking-[0.3em] border-l-2 border-primary pl-3">
                   Plataforma
