@@ -1,6 +1,6 @@
 'use client';
 
-import { memo, useMemo, useState, useEffect } from 'react';
+import { memo, useMemo, useState, useEffect, useCallback } from 'react';
 import { motion, Variants } from 'framer-motion';
 import { Trophy, ArrowLeft, ChevronDown } from 'lucide-react';
 import Link from 'next/link';
