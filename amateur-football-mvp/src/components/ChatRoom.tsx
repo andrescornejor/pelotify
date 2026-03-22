@@ -120,19 +120,23 @@ export default function ChatRoom({ matchId, recipientId, className, title }: Cha
     if (!user) return null;
 
     return (
-        <div className={cn("flex flex-col h-full bg-surface/40 backdrop-blur-3xl border border-foreground/5 rounded-[2.5rem] overflow-hidden shadow-2xl relative group", className)}>
-            {/* Ambient Background Light */}
-            <div className="absolute top-0 left-[-20%] w-[60%] h-[40%] bg-primary/5 blur-[120px] rounded-full pointer-events-none opacity-50" />
+        <div className={cn("flex flex-col h-full bg-surface/20 backdrop-blur-3xl border border-foreground/5 rounded-[2.5rem] overflow-hidden shadow-2xl relative group", className)}>
+            {/* Ambient Background Light - More dynamic */}
+            <motion.div 
+                animate={{ 
+                    opacity: [0.3, 0.6, 0.3],
+                    scale: [1, 1.2, 1],
+                }}
+                transition={{ duration: 10, repeat: Infinity }}
+                className="absolute top-0 left-[-20%] w-[60%] h-[40%] bg-primary/10 blur-[120px] rounded-full pointer-events-none" 
+            />
             
             {title && (
-                <div className="px-8 py-5 border-b border-foreground/5 bg-foreground/[0.02] backdrop-blur-xl relative z-20">
+                <div className="px-8 py-6 border-b border-foreground/5 bg-foreground/[0.02] backdrop-blur-2xl relative z-20">
                     <div className="flex items-center justify-between">
                         <div className="flex items-center gap-3">
-                            <div className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse shadow-[0_0_10px_rgba(44,252,125,0.5)]" />
-                            <h3 className="text-[10px] font-black uppercase tracking-[0.4em] text-foreground/60 italic">{title}</h3>
-                        </div>
-                        <div className="flex -space-x-2 overflow-hidden">
-                             {/* Placeholder for participant avatars if needed */}
+                            <div className="w-2 h-2 rounded-full bg-primary animate-pulse shadow-[0_0_15px_rgba(85,250,134,0.6)]" />
+                            <h3 className="text-[11px] font-black uppercase tracking-[0.5em] text-foreground/70 italic">{title}</h3>
                         </div>
                     </div>
                 </div>
@@ -141,134 +145,152 @@ export default function ChatRoom({ matchId, recipientId, className, title }: Cha
             <div 
                 ref={scrollRef}
                 onScroll={handleScroll}
-                className="flex-1 overflow-y-auto p-6 sm:px-10 py-8 space-y-8 no-scrollbar relative z-10"
+                className="flex-1 overflow-y-auto p-6 sm:px-10 py-10 space-y-10 no-scrollbar relative z-10"
             >
                 {isLoading ? (
-                    <div className="flex flex-col items-center justify-center h-full gap-5 text-foreground/20">
+                    <div className="flex flex-col items-center justify-center h-full gap-6 text-foreground/20">
                         <div className="relative">
-                            <Loader2 className="w-10 h-10 animate-spin" />
-                            <div className="absolute inset-0 bg-primary/10 blur-xl rounded-full" />
+                            <Loader2 className="w-12 h-12 animate-spin text-primary" />
+                            <div className="absolute inset-0 bg-primary/20 blur-2xl rounded-full" />
                         </div>
-                        <span className="text-[10px] font-black uppercase tracking-[0.4em] animate-pulse">Estableciendo Enlace...</span>
+                        <span className="text-[11px] font-black uppercase tracking-[0.5em] animate-pulse text-primary/60">Sincronizando...</span>
                     </div>
                 ) : messages.length === 0 ? (
-                    <div className="flex flex-col items-center justify-center h-full text-center space-y-8 opacity-20">
-                        <div className="w-24 h-24 bg-foreground/[0.05] rounded-[2.5rem] border border-foreground/10 flex items-center justify-center shadow-inner relative overflow-hidden group/empty">
+                    <div className="flex flex-col items-center justify-center h-full text-center space-y-10 opacity-30">
+                        <motion.div 
+                            initial={{ scale: 0.9, opacity: 0 }}
+                            animate={{ scale: 1, opacity: 1 }}
+                            className="w-28 h-28 bg-foreground/[0.03] rounded-[3rem] border border-foreground/5 flex items-center justify-center shadow-inner relative overflow-hidden group/empty"
+                        >
                             <motion.div 
-                                animate={{ rotate: [0, -10, 10, 0] }}
-                                transition={{ duration: 5, repeat: Infinity }}
+                                animate={{ rotate: [0, -15, 15, 0], y: [0, -5, 5, 0] }}
+                                transition={{ duration: 6, repeat: Infinity }}
                             >
-                                <Send className="w-10 h-10 -rotate-12 transition-transform duration-500 group-hover/empty:scale-110" />
+                                <Send className="w-12 h-12 -rotate-12 text-primary drop-shadow-[0_0_15px_rgba(85,250,134,0.4)]" />
                             </motion.div>
-                            <div className="absolute inset-0 bg-primary/5 opacity-0 group-hover/empty:opacity-100 transition-opacity" />
-                        </div>
-                        <div className="space-y-3">
-                             <p className="text-lg font-black uppercase italic tracking-tighter text-foreground">Canal Silencioso</p>
-                             <p className="text-[10px] font-black uppercase tracking-[0.3em] text-foreground/60 max-w-[220px]">Rompé el hielo y coordiná el partido con el equipo</p>
+                        </motion.div>
+                        <div className="space-y-4">
+                             <p className="text-xl font-black uppercase italic tracking-tighter text-foreground">Canal Abierto</p>
+                             <p className="text-[11px] font-bold uppercase tracking-[0.4em] text-foreground/50 max-w-[260px] leading-relaxed mx-auto">Conecta con los demás para definir los detalles del partido</p>
                         </div>
                     </div>
                 ) : (
-                    <div className="flex flex-col gap-1">
-                        {messages.map((msg, i) => {
-                            const isMine = msg.sender_id === user.id;
-                            const prevMsg = messages[i - 1];
-                            const nextMsg = messages[i + 1];
-                            const sameAuthorAsPrev = prevMsg?.sender_id === msg.sender_id;
-                            const sameAuthorAsNext = nextMsg?.sender_id === msg.sender_id;
-                            
-                            return (
-                                <motion.div
-                                    initial={{ opacity: 0, y: 10, scale: 0.95 }}
-                                    animate={{ opacity: 1, y: 0, scale: 1 }}
-                                    key={msg.id}
-                                    className={cn(
-                                        "flex gap-4",
-                                        isMine ? "flex-row-reverse" : "flex-row",
-                                        sameAuthorAsPrev ? "mt-1" : "mt-6"
-                                    )}
-                                >
-                                    <div className="w-10 shrink-0 flex items-end">
-                                        {!isMine && !sameAuthorAsNext && (
-                                            <div className="w-10 h-10 rounded-2xl border border-foreground/10 bg-surface shadow-lg overflow-hidden flex items-center justify-center relative group/avatar">
-                                                {msg.profiles?.avatar_url ? (
-                                                    <img src={msg.profiles.avatar_url} alt="" className="w-full h-full object-cover" />
-                                                ) : (
-                                                    <UserIcon className="w-5 h-5 text-foreground/30" />
-                                                )}
-                                                <div className="absolute inset-0 bg-primary/10 opacity-0 group-hover/avatar:opacity-100 transition-opacity" />
-                                            </div>
+                    <div className="flex flex-col gap-2 pb-4">
+                        <AnimatePresence initial={false}>
+                            {messages.map((msg, i) => {
+                                const isMine = msg.sender_id === user.id;
+                                const prevMsg = messages[i - 1];
+                                const nextMsg = messages[i + 1];
+                                const sameAuthorAsPrev = prevMsg?.sender_id === msg.sender_id;
+                                const sameAuthorAsNext = nextMsg?.sender_id === msg.sender_id;
+                                
+                                return (
+                                    <motion.div
+                                        initial={{ opacity: 0, x: isMine ? 20 : -20, scale: 0.9 }}
+                                        animate={{ opacity: 1, x: 0, scale: 1 }}
+                                        transition={{ type: "spring", stiffness: 200, damping: 20 }}
+                                        layout
+                                        key={msg.id}
+                                        className={cn(
+                                            "flex gap-3",
+                                            isMine ? "flex-row-reverse" : "flex-row",
+                                            sameAuthorAsPrev ? "mt-1" : "mt-8"
                                         )}
-                                    </div>
-
-                                    <div className={cn(
-                                        "flex flex-col max-w-[80%] sm:max-w-[70%]",
-                                        isMine ? "items-end" : "items-start"
-                                    )}>
-                                        {!isMine && !sameAuthorAsPrev && (
-                                            <span className="text-[10px] font-black uppercase tracking-widest text-foreground/30 mb-2 ml-1 italic">
-                                                {msg.profiles?.name}
-                                            </span>
-                                        )}
-                                        <div className={cn(
-                                            "px-6 py-4 text-[13px] font-bold relative transition-all duration-300 shadow-sm",
-                                            isMine 
-                                                ? "bg-gradient-to-br from-primary via-primary to-primary-600 text-black rounded-[1.8rem] rounded-tr-[0.4rem] hover:shadow-primary/20" 
-                                                : "bg-foreground/[0.03] border border-foreground/5 text-foreground rounded-[1.8rem] rounded-tl-[0.4rem] hover:bg-foreground/[0.05]",
-                                            sameAuthorAsPrev && (isMine ? "rounded-tr-[1.8rem]" : "rounded-tl-[1.8rem]"),
-                                            sameAuthorAsNext && (isMine ? "rounded-br-[0.4rem]" : "rounded-bl-[0.4rem]")
-                                        )}>
-                                            {msg.content}
-                                            <div className={cn(
-                                                "text-[8px] font-black opacity-30 mt-2 flex items-center gap-1.5",
-                                                isMine ? "text-black justify-end" : "text-foreground justify-start"
-                                            )}>
-                                                {new Date(msg.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                                            </div>
+                                    >
+                                        <div className="w-10 shrink-0 flex items-end">
+                                            {!isMine && !sameAuthorAsNext && (
+                                                <motion.div 
+                                                    whileHover={{ scale: 1.1, rotate: 5 }}
+                                                    className="w-10 h-10 rounded-2xl border-2 border-primary/20 bg-surface shadow-2xl overflow-hidden flex items-center justify-center relative group/avatar"
+                                                >
+                                                    {msg.profiles?.avatar_url ? (
+                                                        <img src={msg.profiles.avatar_url} alt="" className="w-full h-full object-cover" />
+                                                    ) : (
+                                                        <UserIcon className="w-5 h-5 text-primary/40" />
+                                                    )}
+                                                </motion.div>
+                                            )}
                                         </div>
-                                    </div>
-                                </motion.div>
-                            );
-                        })}
+
+                                        <div className={cn(
+                                            "flex flex-col max-w-[85%] sm:max-w-[75%]",
+                                            isMine ? "items-end" : "items-start"
+                                        )}>
+                                            {!isMine && !sameAuthorAsPrev && (
+                                                <span className="text-[10px] font-black uppercase tracking-widest text-primary/60 mb-2 ml-1 italic drop-shadow-sm">
+                                                    {msg.profiles?.name}
+                                                </span>
+                                            )}
+                                            <motion.div 
+                                                layout
+                                                className={cn(
+                                                    "px-6 py-4 text-[14px] font-bold relative transition-all duration-300 shadow-lg group/bubble",
+                                                    isMine 
+                                                        ? "bg-gradient-to-br from-primary via-primary to-primary-dark text-black rounded-[2rem] rounded-tr-[0.5rem] hover:shadow-primary/30" 
+                                                        : "bg-foreground/[0.04] border border-foreground/5 text-foreground rounded-[2rem] rounded-tl-[0.5rem] hover:bg-foreground/[0.08] backdrop-blur-md",
+                                                    sameAuthorAsPrev && (isMine ? "rounded-tr-[2rem]" : "rounded-tl-[2rem]"),
+                                                    sameAuthorAsNext && (isMine ? "rounded-br-[0.5rem]" : "rounded-bl-[0.5rem]")
+                                                )}
+                                            >
+                                                <div className="leading-relaxed tracking-tight">
+                                                    {msg.content}
+                                                </div>
+                                                <div className={cn(
+                                                    "text-[8px] font-black opacity-40 mt-2 flex items-center gap-1.5 transition-opacity group-hover/bubble:opacity-100",
+                                                    isMine ? "text-black justify-end" : "text-foreground justify-start"
+                                                )}>
+                                                    <Clock className="w-2.5 h-2.5" />
+                                                    {new Date(msg.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                                                </div>
+                                            </motion.div>
+                                        </div>
+                                    </motion.div>
+                                );
+                            })}
+                        </AnimatePresence>
                     </div>
                 )}
             </div>
 
-            {/* Scroll to Bottom Button */}
+            {/* Scroll to Bottom Button - Premium Style */}
             <AnimatePresence>
                 {showScrollBottom && (
                     <motion.button
-                        initial={{ opacity: 0, y: 10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: 10 }}
+                        initial={{ opacity: 0, y: 20, scale: 0.8 }}
+                        animate={{ opacity: 1, y: 0, scale: 1 }}
+                        exit={{ opacity: 0, y: 20, scale: 0.8 }}
+                        whileHover={{ scale: 1.1, y: -4 }}
+                        whileTap={{ scale: 0.9 }}
                         onClick={() => scrollToBottom()}
-                        className="absolute bottom-32 right-10 w-12 h-12 rounded-2xl bg-primary text-black flex items-center justify-center shadow-2xl z-30 hover:scale-110 active:scale-90 transition-all border-4 border-background"
+                        className="absolute bottom-36 right-10 w-14 h-14 rounded-2xl bg-primary text-black flex items-center justify-center shadow-[0_0_30px_rgba(85,250,134,0.4)] z-30 transition-all border-4 border-background"
                     >
-                        <motion.div animate={{ y: [0, 3, 0] }} transition={{ repeat: Infinity, duration: 1.5 }}>
-                            <ChevronRight className="w-6 h-6 rotate-90" />
+                        <motion.div animate={{ y: [0, 4, 0] }} transition={{ repeat: Infinity, duration: 1.5 }}>
+                            <ChevronRight className="w-8 h-8 rotate-90" />
                         </motion.div>
                     </motion.button>
                 )}
             </AnimatePresence>
+>
 
             <div className="p-8 pt-0 relative z-20">
                 <form 
                     onSubmit={handleSend} 
-                    className="p-1 pr-1 bg-foreground/[0.04] backdrop-blur-3xl border border-foreground/10 rounded-[2.2rem] flex gap-2 items-center focus-within:border-primary/40 focus-within:shadow-[0_0_20px_rgba(44,252,125,0.1)] transition-all shadow-inner relative group/form"
+                    className="p-1.5 pr-1.5 bg-foreground/[0.04] backdrop-blur-3xl border border-foreground/10 rounded-[2.5rem] flex gap-3 items-center focus-within:border-primary/40 focus-within:shadow-[0_0_30px_rgba(85,250,134,0.1)] transition-all shadow-inner relative group/form"
                 >
                     <input
                         type="text"
                         value={newMessage}
                         onChange={(e) => setNewMessage(e.target.value)}
-                        placeholder={matchId ? "Escribí al equipo..." : "Mensaje Privado..."}
-                        className="flex-1 h-16 px-8 bg-transparent outline-none text-[14px] font-bold text-foreground placeholder:text-foreground/20 placeholder:italic transition-all uppercase tracking-tight"
+                        placeholder={matchId ? "Escribe al equipo..." : "Mensaje Privado..."}
+                        className="flex-1 h-14 sm:h-16 px-8 bg-transparent outline-none text-[15px] font-bold text-foreground placeholder:text-foreground/20 transition-all uppercase tracking-tight"
                     />
                     <motion.button
                         type="submit"
-                        whileHover={{ scale: 1.02 }}
+                        whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.95 }}
                         disabled={!newMessage.trim() || isSending}
                         className={cn(
-                            "w-16 h-16 rounded-[1.8rem] flex items-center justify-center transition-all shadow-2xl overflow-hidden relative group/send",
+                            "w-14 h-14 sm:w-16 sm:h-16 rounded-[1.8rem] flex items-center justify-center transition-all shadow-2xl overflow-hidden relative group/send",
                             newMessage.trim() 
                                 ? "bg-primary text-black shadow-primary/30" 
                                 : "bg-foreground/5 text-foreground/20"

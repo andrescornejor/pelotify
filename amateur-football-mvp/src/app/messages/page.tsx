@@ -84,11 +84,56 @@ export default function MessagesPage() {
         f.name.toLowerCase().includes(searchQuery.toLowerCase())
     );
 
+    const containerVariants = {
+        hidden: { opacity: 0 },
+        visible: {
+            opacity: 1,
+            transition: {
+                staggerChildren: 0.1
+            }
+        }
+    };
+
+    const itemVariants = {
+        hidden: { opacity: 0, x: -20 },
+        visible: {
+            opacity: 1,
+            x: 0,
+            transition: {
+                type: 'spring',
+                stiffness: 100,
+                damping: 15
+            }
+        }
+    };
+
     if (!user) return null;
 
     return (
-        <div className="min-h-screen bg-background pt-32 lg:pt-36 pb-32 px-4 sm:px-6 lg:px-12 xl:px-24">
-            <div className="max-w-7xl mx-auto h-[80vh] grid grid-cols-1 lg:grid-cols-12 gap-6">
+        <div className="min-h-screen bg-background pt-32 lg:pt-36 pb-32 px-4 sm:px-6 lg:px-12 xl:px-24 relative overflow-hidden">
+            {/* Animated Background Blobs */}
+            <div className="absolute inset-0 overflow-hidden pointer-events-none">
+                <motion.div 
+                    animate={{ 
+                        scale: [1, 1.2, 1],
+                        x: [0, 50, 0],
+                        y: [0, 30, 0],
+                    }}
+                    transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+                    className="absolute -top-[10%] -left-[10%] w-[40%] h-[40%] bg-primary/10 blur-[120px] rounded-full"
+                />
+                <motion.div 
+                    animate={{ 
+                        scale: [1, 1.3, 1],
+                        x: [0, -70, 0],
+                        y: [0, 50, 0],
+                    }}
+                    transition={{ duration: 25, repeat: Infinity, ease: "linear" }}
+                    className="absolute top-[20%] -right-[15%] w-[50%] h-[50%] bg-primary/5 blur-[150px] rounded-full"
+                />
+            </div>
+
+            <div className="max-w-7xl mx-auto h-[80vh] grid grid-cols-1 lg:grid-cols-12 gap-8 relative z-10">
                 
                 {/* Conversations List */}
                 <div className={cn(
@@ -98,32 +143,37 @@ export default function MessagesPage() {
                     <div className="flex flex-col gap-5">
                         <div className="flex items-center justify-between">
                             <div className="flex flex-col gap-1">
-                                <h1 className="text-4xl font-black text-foreground italic uppercase tracking-tighter leading-none">Mensajes</h1>
-                                <span className="text-[10px] font-black text-primary uppercase tracking-[0.4em]">Central de Comunicaciones</span>
+                                <h1 className="text-4xl font-black text-foreground italic uppercase tracking-tighter leading-none text-gradient">Mensajes</h1>
+                                <span className="text-[10px] font-black text-primary uppercase tracking-[0.4em] drop-shadow-[0_0_8px_rgba(85,250,134,0.3)]">Central de Comunicaciones</span>
                             </div>
                             <motion.button
-                                whileHover={{ scale: 1.05 }}
+                                whileHover={{ scale: 1.05, rotate: 90 }}
                                 whileTap={{ scale: 0.95 }}
                                 onClick={() => setIsSearchOpen(true)}
-                                className="w-12 h-12 rounded-[1.25rem] bg-primary text-black flex items-center justify-center shadow-lg shadow-primary/20"
+                                className="w-12 h-12 rounded-[1.25rem] bg-primary text-black flex items-center justify-center shadow-lg shadow-primary/20 transition-all hover:shadow-primary/40"
                             >
                                 <Plus className="w-6 h-6" />
                             </motion.button>
                         </div>
                         
                         <div className="relative group">
-                            <Search className="absolute left-6 top-1/2 -translate-y-1/2 w-4 h-4 text-foreground/20 group-focus-within:text-primary transition-colors" />
+                            <Search className="absolute left-6 top-1/2 -translate-y-1/2 w-4 h-4 text-foreground/20 group-focus-within:text-primary transition-all duration-300" />
                             <input
                                 type="text"
                                 value={searchQuery}
                                 onChange={(e) => setSearchQuery(e.target.value)}
                                 placeholder="Filtrar Mensajes..."
-                                className="w-full h-14 pl-14 pr-6 bg-foreground/[0.03] border border-foreground/5 rounded-[1.5rem] outline-none text-sm font-bold placeholder:text-foreground/20 focus:border-primary/20 transition-all shadow-inner"
+                                className="w-full h-14 pl-14 pr-6 bg-foreground/[0.03] border border-foreground/5 rounded-[1.5rem] outline-none text-sm font-bold placeholder:text-foreground/20 focus:border-primary/20 focus:bg-foreground/[0.05] transition-all shadow-inner"
                             />
                         </div>
                     </div>
 
-                    <div className="flex-1 overflow-y-auto space-y-2 pr-2 no-scrollbar">
+                    <motion.div 
+                        variants={containerVariants}
+                        initial="hidden"
+                        animate="visible"
+                        className="flex-1 overflow-y-auto space-y-3 pr-2 no-scrollbar pb-6"
+                    >
                         {isLoading ? (
                             Array(5).fill(0).map((_, i) => (
                                 <div key={i} className="w-full h-24 rounded-[1.5rem] bg-foreground/[0.03] border border-foreground/5 animate-pulse" />
@@ -140,7 +190,8 @@ export default function MessagesPage() {
                                         {filteredConversations.map((chat) => (
                                             <motion.button
                                                 key={chat.userId}
-                                                whileHover={{ x: 4, scale: 1.01 }}
+                                                variants={itemVariants}
+                                                whileHover={{ x: 8, scale: 1.02 }}
                                                 whileTap={{ scale: 0.98 }}
                                                 onClick={async () => {
                                                     setSelectedChat(chat);
@@ -150,14 +201,14 @@ export default function MessagesPage() {
                                                     if (user) await markAllDirectMessagesAsRead(user.id);
                                                 }}
                                                 className={cn(
-                                                    "w-full p-4 rounded-[1.5rem] border transition-all flex items-center gap-4 group text-left",
+                                                    "w-full p-4 rounded-[1.8rem] border transition-all duration-300 flex items-center gap-4 group text-left",
                                                     selectedChat?.userId === chat.userId
-                                                        ? "bg-primary text-black border-primary shadow-xl shadow-primary/10"
-                                                        : "bg-surface border-foreground/5 hover:border-foreground/10"
+                                                        ? "bg-primary text-black border-primary shadow-2xl shadow-primary/20"
+                                                        : "bg-surface/50 backdrop-blur-sm border-foreground/5 hover:border-primary/30 hover:bg-foreground/[0.04]"
                                                 )}
                                             >
                                                 <div className={cn(
-                                                    "w-14 h-14 rounded-[1.1rem] overflow-hidden shrink-0 border-2",
+                                                    "w-14 h-14 rounded-[1.2rem] overflow-hidden shrink-0 border-2 transition-transform duration-500 group-hover:scale-110",
                                                     selectedChat?.userId === chat.userId ? "border-black/20" : "border-foreground/5 ring-4 ring-foreground/[0.02]"
                                                 )}>
                                                     {chat.avatar_url ? (
@@ -176,34 +227,43 @@ export default function MessagesPage() {
                                                         </h4>
                                                         <div className="flex items-center gap-2">
                                                             {chat.isUnread && (
-                                                                <span className="w-1.5 h-1.5 rounded-full bg-primary shadow-[0_0_8px_rgba(16,185,129,0.8)]" />
+                                                                <span className="w-2 h-2 rounded-full bg-primary shadow-[0_0_12px_rgba(85,250,134,1)] animate-pulse" />
                                                             )}
                                                             <span className={cn(
-                                                                "text-[8px] font-black uppercase tracking-widest",
-                                                                selectedChat?.userId === chat.userId ? "text-black/40" : "text-foreground/20"
+                                                                "text-[8px] font-black uppercase tracking-widest opacity-40",
+                                                                selectedChat?.userId === chat.userId ? "text-black" : "text-foreground"
                                                             )}>
                                                                 {new Date(chat.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                                                             </span>
                                                         </div>
                                                     </div>
                                                     <p className={cn(
-                                                        "text-[11px] font-bold truncate tracking-tight mb-1",
-                                                        selectedChat?.userId === chat.userId ? "text-black/60" : "text-foreground/45"
+                                                        "text-[11px] font-bold truncate tracking-tight mb-1 opacity-60",
+                                                        selectedChat?.userId === chat.userId ? "text-black" : "text-foreground"
                                                     )}>
                                                         {chat.lastMessage}
                                                     </p>
                                                 </div>
+                                                <ChevronRight className={cn(
+                                                    "w-4 h-4 transition-all duration-300 opacity-0 group-hover:opacity-100 group-hover:translate-x-1",
+                                                    selectedChat?.userId === chat.userId ? "text-black" : "text-primary"
+                                                )} />
                                             </motion.button>
                                         ))}
                                         
                                         {/* Show Friends in Search */}
                                         {searchQuery && availableFriends.length > 0 && (
-                                            <div className="pt-4 space-y-3">
-                                                <span className="text-[10px] font-black uppercase tracking-[0.3em] text-foreground/20 pl-4">Amigos Sugeridos</span>
+                                            <div className="pt-6 space-y-4">
+                                                <div className="flex items-center gap-3 px-4">
+                                                    <div className="h-px flex-1 bg-foreground/5" />
+                                                    <span className="text-[10px] font-black uppercase tracking-[0.3em] text-foreground/30">Amigos Sugeridos</span>
+                                                    <div className="h-px flex-1 bg-foreground/5" />
+                                                </div>
                                                 {availableFriends.map((friend) => (
                                                     <motion.button
                                                         key={friend.userId}
-                                                        whileHover={{ x: 4, scale: 1.01 }}
+                                                        variants={itemVariants}
+                                                        whileHover={{ x: 8, scale: 1.02 }}
                                                         whileTap={{ scale: 0.98 }}
                                                         onClick={() => {
                                                             setSelectedChat({
@@ -215,9 +275,9 @@ export default function MessagesPage() {
                                                             });
                                                             setSearchQuery('');
                                                         }}
-                                                        className="w-full p-4 rounded-[1.5rem] border border-dashed border-primary/20 bg-primary/5 hover:bg-primary/10 transition-all flex items-center gap-4 group text-left"
+                                                        className="w-full p-4 rounded-[1.8rem] border border-dashed border-primary/20 bg-primary/[0.02] hover:bg-primary/[0.05] hover:border-primary/40 transition-all flex items-center gap-4 group text-left"
                                                     >
-                                                        <div className="w-14 h-14 rounded-[1.1rem] overflow-hidden shrink-0 border-2 border-primary/20 relative">
+                                                        <div className="w-14 h-14 rounded-[1.2rem] overflow-hidden shrink-0 border-2 border-primary/20 relative group-hover:scale-110 transition-transform duration-500">
                                                             {friend.avatar_url ? (
                                                                 <img src={friend.avatar_url} alt="" className="w-full h-full object-cover" />
                                                             ) : (
@@ -231,7 +291,9 @@ export default function MessagesPage() {
                                                             <h4 className="font-black text-[13px] uppercase tracking-tighter text-foreground italic">{friend.name}</h4>
                                                             <p className="text-[9px] font-black uppercase tracking-widest text-primary italic">Enviar primer mensaje</p>
                                                         </div>
-                                                        <Plus className="w-5 h-5 text-primary opacity-0 group-hover:opacity-100 transition-opacity" />
+                                                        <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center group-hover:bg-primary group-hover:text-black transition-all">
+                                                            <Plus className="w-5 h-5" />
+                                                        </div>
                                                     </motion.button>
                                                 ))}
                                             </div>
@@ -240,7 +302,7 @@ export default function MessagesPage() {
                                 )}
                             </>
                         )}
-                    </div>
+                    </motion.div>
                 </div>
 
                 {/* Chat Area */}
@@ -249,18 +311,25 @@ export default function MessagesPage() {
                     !selectedChat ? "hidden lg:flex" : "flex"
                 )}>
                     {selectedChat ? (
-                        <div className="flex flex-col h-full glass-premium border border-foreground/5 rounded-[2.5rem] overflow-hidden relative">
+                        <motion.div 
+                            initial={{ opacity: 0, scale: 0.98 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            className="flex flex-col h-full glass-premium border border-foreground/5 rounded-[2.5rem] overflow-hidden relative shadow-2xl shadow-black/20"
+                        >
                             {/* Chat Header */}
-                            <div className="px-6 sm:px-10 py-5 bg-foreground/[0.03] backdrop-blur-xl border-b border-foreground/5 flex items-center justify-between relative z-20">
+                            <div className="px-6 sm:px-10 py-6 bg-foreground/[0.03] backdrop-blur-2xl border-b border-foreground/5 flex items-center justify-between relative z-20">
                                 <div className="flex items-center gap-4">
                                     <button 
                                         onClick={() => setSelectedChat(null)}
-                                        className="lg:hidden p-3 bg-foreground/5 rounded-2xl"
+                                        className="lg:hidden p-3 bg-foreground/5 rounded-2xl hover:bg-foreground/10 transition-colors"
                                     >
                                         <X className="w-4 h-4" />
                                     </button>
                                     <div className="flex items-center gap-4">
-                                        <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl overflow-hidden border-2 border-primary/20 shadow-xl shadow-primary/5">
+                                        <motion.div 
+                                            whileHover={{ scale: 1.05 }}
+                                            className="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl overflow-hidden border-2 border-primary/20 shadow-xl shadow-primary/5"
+                                        >
                                             {selectedChat.avatar_url ? (
                                                 <img src={selectedChat.avatar_url} alt="" className="w-full h-full object-cover" />
                                             ) : (
@@ -268,16 +337,21 @@ export default function MessagesPage() {
                                                     <UserIcon className="w-5 h-5" />
                                                 </div>
                                             )}
-                                        </div>
+                                        </motion.div>
                                         <div>
-                                            <h3 className="font-black uppercase italic tracking-tighter text-foreground leading-none">{selectedChat.name}</h3>
-                                            <span className="text-[8px] font-black uppercase tracking-[0.3em] text-primary">Conexión Segura</span>
+                                            <h3 className="font-black uppercase italic tracking-tighter text-foreground leading-none text-lg">{selectedChat.name}</h3>
+                                            <div className="flex items-center gap-2 mt-1">
+                                                <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
+                                                <span className="text-[8px] font-black uppercase tracking-[0.3em] text-primary">Conexión Segura</span>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                                <div className="flex items-center gap-2">
-                                    <div className="w-2 h-2 rounded-full bg-primary animate-pulse" />
-                                    <span className="text-[9px] font-black text-foreground/30 uppercase tracking-[0.2em] hidden sm:block">Activo Ahora</span>
+                                <div className="flex items-center gap-3">
+                                    <div className="hidden sm:flex flex-col items-end">
+                                        <span className="text-[9px] font-black text-foreground uppercase tracking-[0.2em]">Activo Ahora</span>
+                                        <span className="text-[7px] font-black text-primary/60 uppercase tracking-[0.1em]">Línea Encriptada</span>
+                                    </div>
                                 </div>
                             </div>
 
@@ -285,12 +359,16 @@ export default function MessagesPage() {
                                 recipientId={selectedChat.userId} 
                                 className="flex-1 !bg-transparent !border-0 !rounded-none !shadow-none"
                             />
-                        </div>
+                        </motion.div>
                     ) : (
-                        <div className="flex-1 flex flex-col items-center justify-center text-center space-y-10 glass-premium border border-foreground/5 rounded-[2.5rem] relative overflow-hidden group">
+                        <div className="flex-1 flex flex-col items-center justify-center text-center space-y-12 glass-premium border border-foreground/5 rounded-[3rem] relative overflow-hidden group shadow-2xl">
                             <div className="absolute inset-0 bg-primary/5 opacity-0 group-hover:opacity-100 transition-all duration-1000"
-                                style={{ background: 'radial-gradient(circle at 50% 50%, rgba(44,252,125,0.08) 0%, transparent 70%)' }} />
+                                style={{ background: 'radial-gradient(circle at 50% 50%, rgba(85,250,134,0.1) 0%, transparent 70%)' }} />
                             
+                            {/* Decorative background elements */}
+                            <div className="absolute top-10 left-10 w-32 h-32 bg-primary/5 blur-3xl rounded-full" />
+                            <div className="absolute bottom-10 right-10 w-40 h-40 bg-primary/5 blur-3xl rounded-full" />
+
                              <div className="relative">
                                 <motion.div 
                                     animate={{ 
@@ -298,27 +376,31 @@ export default function MessagesPage() {
                                         rotate: [0, 5, -5, 0]
                                     }}
                                     transition={{ duration: 10, repeat: Infinity, ease: 'easeInOut' }}
-                                    className="w-40 h-40 rounded-[3.5rem] bg-foreground/[0.02] border border-foreground/5 flex items-center justify-center relative shadow-2xl"
+                                    className="w-48 h-48 rounded-[4rem] bg-foreground/[0.02] border border-foreground/5 flex items-center justify-center relative shadow-2xl backdrop-blur-sm"
                                 >
-                                    <MessageSquare className="w-16 h-16 text-primary drop-shadow-[0_4px_20px_rgba(44,252,125,0.4)]" />
-                                    <div className="absolute -top-2 -right-2 w-10 h-10 bg-primary rounded-2xl border-4 border-background flex items-center justify-center shadow-xl">
-                                        <Plus className="w-5 h-5 text-black" />
-                                    </div>
+                                    <MessageSquare className="w-20 h-20 text-primary drop-shadow-[0_0_20px_rgba(85,250,134,0.4)]" />
+                                    <motion.div 
+                                        animate={{ y: [0, -10, 0] }}
+                                        transition={{ duration: 4, repeat: Infinity }}
+                                        className="absolute -top-4 -right-4 w-14 h-14 bg-primary rounded-3xl border-4 border-background flex items-center justify-center shadow-2xl"
+                                    >
+                                        <Plus className="w-6 h-6 text-black" />
+                                    </motion.div>
                                 </motion.div>
                              </div>
 
-                             <div className="space-y-4 relative z-10">
-                                <h3 className="text-3xl font-black uppercase tracking-tighter italic text-foreground leading-none">Inicia la <br/> Jugada</h3>
-                                <p className="text-[10px] font-black uppercase tracking-[0.5em] text-foreground/30 max-w-xs mx-auto leading-relaxed">
-                                    Conecta con otros jugadores <br/> para organizar el próximo partido
+                             <div className="space-y-6 relative z-10">
+                                <h3 className="text-4xl font-black uppercase tracking-tighter italic text-foreground leading-none text-gradient">Inicia la <br/> Jugada</h3>
+                                <p className="text-[11px] font-bold uppercase tracking-[0.4em] text-foreground/40 max-w-sm mx-auto leading-relaxed">
+                                    Conecta con otros jugadores de la <br/> comunidad para organizar tu próximo partido
                                 </p>
                              </div>
 
                              <motion.button
-                                whileHover={{ scale: 1.05, y: -2 }}
+                                whileHover={{ scale: 1.05, y: -4, boxShadow: "0 20px 40px rgba(85,250,134,0.2)" }}
                                 whileTap={{ scale: 0.95 }}
                                 onClick={() => setIsSearchOpen(true)}
-                                className="px-8 h-14 bg-foreground text-background font-black italic text-xs uppercase tracking-[0.3em] rounded-2xl relative z-10 shadow-2xl hover:bg-primary hover:text-black transition-all"
+                                className="px-10 h-16 bg-primary text-black font-black italic text-sm uppercase tracking-[0.3em] rounded-2xl relative z-10 shadow-2xl transition-all"
                              >
                                 NUEVO MENSAJE
                              </motion.button>
@@ -335,54 +417,61 @@ export default function MessagesPage() {
                                 animate={{ opacity: 1 }}
                                 exit={{ opacity: 0 }}
                                 onClick={() => setIsSearchOpen(false)}
-                                className="absolute inset-0 bg-background/80 backdrop-blur-2xl"
+                                className="absolute inset-0 bg-background/60 backdrop-blur-3xl"
                             />
+                            {/* Ambient background glow for modal */}
+                            <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
+                                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-primary/5 blur-[120px] rounded-full" />
+                            </div>
+
                             <motion.div
                                 initial={{ opacity: 0, y: 100, scale: 0.95 }}
                                 animate={{ opacity: 1, y: 0, scale: 1 }}
                                 exit={{ opacity: 0, y: 100, scale: 0.95 }}
-                                className="relative w-full max-w-lg bg-surface border border-foreground/10 rounded-t-[2.5rem] sm:rounded-[2.5rem] p-8 sm:p-10 shadow-2xl overflow-hidden"
+                                className="relative w-full max-w-lg bg-surface/40 backdrop-blur-2xl border border-foreground/10 rounded-t-[3rem] sm:rounded-[3rem] p-8 sm:p-12 shadow-[0_32px_64px_rgba(0,0,0,0.4)] overflow-hidden z-10"
                             >
-                                <div className="absolute top-0 right-0 p-8 opacity-5">
-                                    <MessageSquare className="w-32 h-32" />
+                                <div className="absolute top-0 right-0 p-12 opacity-[0.03] pointer-events-none">
+                                    <MessageSquare className="w-48 h-48" />
                                 </div>
 
-                                <div className="flex items-center justify-between mb-8 relative z-10">
-                                    <div className="space-y-1">
-                                        <h3 className="text-3xl font-black italic text-foreground uppercase tracking-tighter leading-none">Nueva Conversación</h3>
-                                        <p className="text-[9px] font-black uppercase tracking-[0.4em] text-primary">Tus Amigos de Pelotify</p>
+                                <div className="flex items-center justify-between mb-10 relative z-10">
+                                    <div className="space-y-2">
+                                        <h3 className="text-4xl font-black italic text-foreground uppercase tracking-tighter leading-none text-gradient">Nuevo Canal</h3>
+                                        <p className="text-[10px] font-black uppercase tracking-[0.4em] text-primary drop-shadow-[0_0_8px_rgba(85,250,134,0.3)]">Tus Amigos de Pelotify</p>
                                     </div>
-                                    <button 
+                                    <motion.button 
+                                        whileHover={{ scale: 1.1, rotate: 90 }}
+                                        whileTap={{ scale: 0.9 }}
                                         onClick={() => setIsSearchOpen(false)}
-                                        className="w-12 h-12 rounded-2xl bg-foreground/5 flex items-center justify-center hover:bg-foreground/10 transition-colors"
+                                        className="w-12 h-12 rounded-2xl bg-foreground/5 flex items-center justify-center hover:bg-foreground/10 transition-colors border border-foreground/5"
                                     >
                                         <X className="w-5 h-5" />
-                                    </button>
+                                    </motion.button>
                                 </div>
 
-                                <div className="space-y-6 relative z-10">
+                                <div className="space-y-8 relative z-10">
                                     <div className="relative group">
-                                        <Search className="absolute left-6 top-1/2 -translate-y-1/2 w-4 h-4 text-foreground/40" />
+                                        <Search className="absolute left-6 top-1/2 -translate-y-1/2 w-4 h-4 text-foreground/20 group-focus-within:text-primary transition-all duration-300" />
                                         <input
                                             type="text"
                                             autoFocus
                                             placeholder="BUSCAR EN TUS AMIGOS..."
-                                            className="w-full h-16 pl-14 pr-6 bg-foreground/[0.04] border border-foreground/10 rounded-[1.5rem] outline-none text-sm font-black uppercase tracking-wider text-foreground placeholder:text-foreground/20 focus:border-primary/40 transition-all"
+                                            className="w-full h-16 pl-14 pr-6 bg-foreground/[0.04] border border-foreground/10 rounded-[1.8rem] outline-none text-sm font-black uppercase tracking-wider text-foreground placeholder:text-foreground/20 focus:border-primary/40 focus:bg-foreground/[0.06] transition-all shadow-inner"
                                             onChange={(e) => setSearchQuery(e.target.value)}
                                         />
                                     </div>
 
-                                    <div className="max-h-[40vh] overflow-y-auto space-y-3 no-scrollbar pr-2">
+                                    <div className="max-h-[45vh] overflow-y-auto space-y-3 no-scrollbar pr-2 pb-4">
                                         {friends.filter(f => f.name.toLowerCase().includes(searchQuery.toLowerCase())).length === 0 ? (
-                                            <div className="text-center py-12 space-y-3 opacity-20">
-                                                <UserPlus className="w-10 h-10 mx-auto" />
-                                                <p className="text-[10px] font-black uppercase tracking-[0.3em]">No se encontraron amigos</p>
+                                            <div className="text-center py-20 space-y-4 opacity-20">
+                                                <UserPlus className="w-12 h-12 mx-auto" />
+                                                <p className="text-[11px] font-black uppercase tracking-[0.4em]">Sin coincidencias</p>
                                             </div>
                                         ) : (
                                             friends.filter(f => f.name.toLowerCase().includes(searchQuery.toLowerCase())).map((friend) => (
                                                 <motion.button
                                                     key={friend.userId}
-                                                    whileHover={{ scale: 1.02, x: 5 }}
+                                                    whileHover={{ scale: 1.02, x: 6 }}
                                                     whileTap={{ scale: 0.98 }}
                                                     onClick={() => {
                                                         const existing = conversations.find(c => c.userId === friend.userId);
@@ -396,22 +485,27 @@ export default function MessagesPage() {
                                                         setIsSearchOpen(false);
                                                         setSearchQuery('');
                                                     }}
-                                                    className="w-full p-4 rounded-[1.5rem] bg-foreground/[0.03] border border-foreground/5 hover:bg-primary hover:border-primary transition-all flex items-center gap-4 group text-left shadow-sm"
+                                                    className="w-full p-4 rounded-[1.8rem] bg-foreground/[0.03] border border-foreground/5 hover:bg-primary hover:border-primary transition-all flex items-center gap-4 group text-left shadow-sm"
                                                 >
-                                                    <div className="w-12 h-12 rounded-xl border-2 border-foreground/5 group-hover:border-black/20 overflow-hidden shrink-0">
+                                                    <div className="w-14 h-14 rounded-[1.2rem] border-2 border-foreground/5 group-hover:border-black/20 overflow-hidden shrink-0 transition-all duration-500 group-hover:scale-110">
                                                         {friend.avatar_url ? (
                                                             <img src={friend.avatar_url} alt="" className="w-full h-full object-cover" />
                                                         ) : (
                                                             <div className="w-full h-full bg-foreground/10 flex items-center justify-center">
-                                                                <UserIcon className="w-5 h-5 opacity-40 group-hover:text-black" />
+                                                                <UserIcon className="w-6 h-6 opacity-40 group-hover:text-black" />
                                                             </div>
                                                         )}
                                                     </div>
                                                     <div className="flex-1">
-                                                        <h4 className="font-black text-[13px] uppercase tracking-tighter text-foreground group-hover:text-black italic leading-none">{friend.name}</h4>
-                                                        <p className="text-[8px] font-black uppercase tracking-widest text-foreground/30 group-hover:text-black/50 mt-1">Conectar ahora</p>
+                                                        <h4 className="font-black text-[14px] uppercase tracking-tighter text-foreground group-hover:text-black italic leading-none">{friend.name}</h4>
+                                                        <div className="flex items-center gap-2 mt-1.5">
+                                                            <div className="w-1 h-1 rounded-full bg-primary group-hover:bg-black opacity-40" />
+                                                            <p className="text-[8px] font-black uppercase tracking-widest text-foreground/30 group-hover:text-black/60">Conectar ahora</p>
+                                                        </div>
                                                     </div>
-                                                    <ChevronRight className="w-4 h-4 text-foreground/20 group-hover:text-black/40" />
+                                                    <div className="w-10 h-10 rounded-xl bg-foreground/5 flex items-center justify-center group-hover:bg-black/10 transition-all">
+                                                        <ChevronRight className="w-4 h-4 text-foreground/20 group-hover:text-black" />
+                                                    </div>
                                                 </motion.button>
                                             ))
                                         )}
