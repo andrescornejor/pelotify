@@ -27,6 +27,7 @@ import {
   Hexagon,
 } from 'lucide-react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { useState, useEffect, useMemo, useCallback, memo } from 'react';
 import dynamic from 'next/dynamic';
 import { useAuth } from '@/contexts/AuthContext';
@@ -205,6 +206,7 @@ const TeamCard = memo(({ team }: { team: Team & { role?: string } }) => {
 TeamCard.displayName = 'TeamCard';
 
 export default function HomePage() {
+  const router = useRouter();
   const { user } = useAuth();
   const { performanceMode: isPerfMode, setPerformanceMode } = useSettings();
   const [isRatingOpen, setIsRatingOpen] = useState(false);
@@ -659,37 +661,34 @@ export default function HomePage() {
 
               {/* Action Buttons Column */}
               <div className="grid grid-cols-2 gap-3">
-                <Link href="/create" className="col-span-2">
-                  <motion.button
-                    whileHover={{ scale: 1.02, y: -2 }}
-                    whileTap={{ scale: 0.98 }}
-                    className="w-full h-14 rounded-2xl bg-primary text-background font-black uppercase text-[11px] tracking-[0.3em] shadow-[0_15px_40px_rgba(44,252,125,0.3)] flex items-center justify-center gap-3 relative overflow-hidden group"
-                  >
-                    <div className="absolute inset-x-0 bottom-0 h-1/2 bg-white/10 group-hover:h-full transition-all duration-500" />
-                    <PlusCircle className="w-5 h-5 relative z-10 group-hover:rotate-180 transition-transform duration-700" />
-                    <span className="relative z-10">ARMAR PARTIDO</span>
-                  </motion.button>
-                </Link>
-                <Link href="/search">
-                  <motion.button
-                    whileHover={{ scale: 1.02, y: -2 }}
-                    whileTap={{ scale: 0.98 }}
-                    className="w-full h-12 rounded-2xl glass border-white/10 text-foreground/70 font-black uppercase text-[10px] tracking-widest flex items-center justify-center gap-2 hover:text-foreground transition-colors"
-                  >
-                    <Search className="w-4 h-4" />
-                    <span>EXPLORAR</span>
-                  </motion.button>
-                </Link>
-                <Link href="/ranks">
-                  <motion.button
-                    whileHover={{ scale: 1.02, y: -2 }}
-                    whileTap={{ scale: 0.98 }}
-                    className="w-full h-12 rounded-2xl glass border-white/10 text-foreground/70 font-black uppercase text-[10px] tracking-widest flex items-center justify-center gap-2 hover:text-foreground transition-colors"
-                  >
-                    <Trophy className="w-4 h-4" />
-                    <span>RANKINGS</span>
-                  </motion.button>
-                </Link>
+                <motion.button
+                  whileHover={{ scale: 1.02, y: -2 }}
+                  whileTap={{ scale: 0.98 }}
+                  onClick={() => router.push('/create')}
+                  className="w-full h-14 rounded-2xl bg-primary text-background font-black uppercase text-[11px] tracking-[0.3em] shadow-[0_15px_40px_rgba(44,252,125,0.3)] flex items-center justify-center gap-3 relative overflow-hidden group"
+                >
+                  <div className="absolute inset-x-0 bottom-0 h-1/2 bg-white/10 group-hover:h-full transition-all duration-500" />
+                  <PlusCircle className="w-5 h-5 relative z-10 group-hover:rotate-180 transition-transform duration-700" />
+                  <span className="relative z-10">ARMAR PARTIDO</span>
+                </motion.button>
+                <motion.button
+                  whileHover={{ scale: 1.02, y: -2 }}
+                  whileTap={{ scale: 0.98 }}
+                  onClick={() => router.push('/search')}
+                  className="w-full h-12 rounded-2xl glass border-white/10 text-foreground/70 font-black uppercase text-[10px] tracking-widest flex items-center justify-center gap-2 hover:text-foreground transition-colors"
+                >
+                  <Search className="w-4 h-4" />
+                  <span>EXPLORAR</span>
+                </motion.button>
+                <motion.button
+                  whileHover={{ scale: 1.02, y: -2 }}
+                  whileTap={{ scale: 0.98 }}
+                  onClick={() => router.push('/ranks')}
+                  className="w-full h-12 rounded-2xl glass border-white/10 text-foreground/70 font-black uppercase text-[10px] tracking-widest flex items-center justify-center gap-2 hover:text-foreground transition-colors"
+                >
+                  <Trophy className="w-4 h-4" />
+                  <span>RANKINGS</span>
+                </motion.button>
               </div>
             </motion.div>
           </div>
@@ -944,19 +943,18 @@ export default function HomePage() {
                   </div>
                 </div>
 
-                <Link href="/ranks" className="z-10 block">
-                  <motion.button
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                    className="h-14 px-10 rounded-2xl flex items-center justify-center gap-4 transition-all text-white shadow-2xl shadow-primary/20 bg-gradient-to-br from-primary to-primary-dark group overflow-hidden relative"
-                  >
-                    <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-500 pointer-events-none" />
-                    <span className="text-[11px] font-black uppercase tracking-[0.2em] italic relative z-10">
-                      VER RANKING GLOBAL
-                    </span>
-                    <Trophy className="w-5 h-5 text-white/90 relative z-10 group-hover:rotate-12 transition-transform" />
-                  </motion.button>
-                </Link>
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={() => router.push('/ranks')}
+                  className="h-14 px-10 rounded-2xl flex items-center justify-center gap-4 transition-all text-white shadow-2xl shadow-primary/20 bg-gradient-to-br from-primary to-primary-dark group overflow-hidden relative z-10"
+                >
+                  <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-500 pointer-events-none" />
+                  <span className="text-[11px] font-black uppercase tracking-[0.2em] italic relative z-10">
+                    VER RANKING GLOBAL
+                  </span>
+                  <Trophy className="w-5 h-5 text-white/90 relative z-10 group-hover:rotate-12 transition-transform" />
+                </motion.button>
               </motion.div>
             </motion.section>
 
