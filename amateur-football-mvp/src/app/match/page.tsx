@@ -285,7 +285,7 @@ function MatchLobbyContent() {
             {/* ═══════════════════════════════════════════════════════════
                 HERO — cinematic full-bleed header
             ═══════════════════════════════════════════════════════════ */}
-            <div className="relative w-full h-[50dvh] lg:h-[60dvh] shrink-0 overflow-hidden bg-zinc-950">
+            <div className="relative w-full h-[42dvh] lg:h-[50dvh] shrink-0 overflow-hidden bg-zinc-950">
 
                 {/* Background image */}
                 <motion.img
@@ -309,7 +309,7 @@ function MatchLobbyContent() {
                 <div className="absolute inset-0 bg-gradient-to-r from-background/30 via-transparent to-transparent" />
 
                 {/* ── TOP BAR ── */}
-                <div className="absolute top-0 left-0 right-0 z-20 px-5 lg:px-12 pt-5 flex items-center justify-between">
+                <div className="absolute top-0 left-0 right-0 z-20 px-5 lg:px-12 pt-28 lg:pt-24 flex items-center justify-between">
                     <motion.button
                         initial={{ opacity: 0, x: -10 }}
                         animate={{ opacity: 1, x: 0 }}
