@@ -282,13 +282,9 @@ export default function RanksPage() {
           {/* Scroll Indicator / Call to Action moved here */}
           <div className="flex flex-col items-center gap-4 pt-4">
             <motion.button
-              type="button"
-              onClick={() => {
-                const el = document.getElementById('leaderboard');
-                if (el) {
-                  el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                }
-              }}
+              onClick={() =>
+                document.getElementById('leaderboard')?.scrollIntoView({ behavior: 'smooth' })
+              }
               whileHover={{ y: 5 }}
               className="group flex flex-col items-center gap-2 outline-none"
             >

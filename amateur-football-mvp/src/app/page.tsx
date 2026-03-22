@@ -772,12 +772,11 @@ export default function HomePage() {
               </div>
             </motion.div>
 
-            {/* ── ELO SYSTEM (Road to Glory) ──────── */}
+            {/* ── ELO SYSTEM ─────────────────── */}
             <motion.section
               variants={fadeUp}
               initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true }}
+              animate="visible"
               custom={2}
               className="space-y-6 snap-start scroll-mt-26"
             >
@@ -945,7 +944,7 @@ export default function HomePage() {
                   </div>
                 </div>
 
-                <Link href="/ranks#leaderboard">
+                <Link href="/ranks">
                   <motion.button
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
