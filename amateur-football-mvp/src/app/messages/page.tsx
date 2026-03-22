@@ -110,7 +110,7 @@ export default function MessagesPage() {
     if (!user) return null;
 
     return (
-        <div className="min-h-screen bg-background pb-32 px-4 sm:px-6 lg:px-12 xl:px-24 relative overflow-hidden">
+        <div className="min-h-screen bg-background pt-20 lg:pt-24 pb-32 px-4 sm:px-6 lg:px-12 xl:px-24 relative overflow-hidden">
             {/* Animated Background Blobs */}
             <div className="absolute inset-0 overflow-hidden pointer-events-none">
                 <motion.div 
