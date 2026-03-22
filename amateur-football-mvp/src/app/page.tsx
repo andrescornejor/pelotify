@@ -414,15 +414,15 @@ export default function HomePage() {
       <button
         onClick={togglePerfMode}
         className={cn(
-          'fixed bottom-24 right-6 z-[100] w-12 h-12 rounded-2xl md:hidden glass border-primary/20 flex flex-col items-center justify-center transition-all active:scale-90',
+          'fixed bottom-24 right-6 z-[100] w-12 h-12 rounded-2xl md:hidden flex flex-col items-center justify-center transition-all active:scale-90 border',
           isPerfMode
-            ? 'bg-primary text-background border-primary'
-            : 'text-primary shadow-lg shadow-primary/10'
+            ? 'bg-primary text-black border-primary shadow-[0_0_20px_rgba(44,252,125,0.4)]'
+            : 'glass border-white/10 text-primary shadow-lg shadow-primary/10'
         )}
       >
         <Zap className={cn('w-5 h-5', isPerfMode && 'fill-current')} />
-        <span className="text-[6px] font-black uppercase mt-0.5 tracking-tighter">
-          {isPerfMode ? 'ALTO' : 'LITE'}
+        <span className="text-[7px] font-black uppercase mt-0.5 tracking-tighter">
+          {isPerfMode ? 'LITE ON' : 'FX ON'}
         </span>
       </button>
 
@@ -1206,7 +1206,7 @@ export default function HomePage() {
                   { label: 'Mi Perfil', href: '/profile/me', icon: User2 },
                   { label: 'Ranking', href: '/ranks', icon: Trophy },
                   {
-                    label: isPerfMode ? 'MODO: ALTO' : 'MODO: LITE',
+                    label: isPerfMode ? 'MODO LITE: ON' : 'MODO LITE: OFF',
                     onClick: togglePerfMode,
                     icon: Zap,
                     active: isPerfMode,
@@ -1221,8 +1221,8 @@ export default function HomePage() {
                       className={cn(
                         'w-full h-14 rounded-xl text-[9px] font-black uppercase tracking-wider transition-all glass border-white/10 flex flex-col items-center justify-center gap-1.5 font-outfit',
                         link.active
-                          ? 'bg-primary/10 border-primary/20 text-primary'
-                          : 'text-foreground/50 hover:text-foreground'
+                          ? 'bg-primary/20 border-primary/40 text-primary shadow-[0_0_15px_rgba(44,252,125,0.15)] shadow-inner'
+                          : 'text-foreground/50 hover:text-foreground hover:bg-white/5'
                       )}
                     >
                       <link.icon className="w-3.5 h-3.5" />
