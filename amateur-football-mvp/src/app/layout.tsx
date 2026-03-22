@@ -9,16 +9,17 @@ import PostMatchManager from '@/components/PostMatchManager';
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-inter' });
 const outfit = Outfit({ subsets: ['latin'], variable: '--font-outfit' });
-const kanit = Kanit({ subsets: ['latin'], weight: ['400', '700', '900'], variable: '--font-kanit' });
+const kanit = Kanit({
+  subsets: ['latin'],
+  weight: ['400', '700', '900'],
+  variable: '--font-kanit',
+});
 
 export const metadata: Metadata = {
   title: 'Pelotify - Fútbol Amateur',
   description: 'Gestiona tus partidos de fútbol amateur. Crea tu carta FIFA y sube de nivel.',
   icons: {
-    icon: [
-      { url: '/icon.png' },
-      { url: '/logo_pelotify.png' }
-    ],
+    icon: [{ url: '/icon.png' }, { url: '/logo_pelotify.png' }],
     apple: '/logo_pelotify.png',
   },
   manifest: '/manifest.json',

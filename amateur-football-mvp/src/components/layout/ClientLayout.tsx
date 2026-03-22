@@ -24,7 +24,11 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
     window.scrollTo(0, 0);
   }, [pathname]);
 
-  const isAuthPage = pathname === '/login' || pathname === '/register' || pathname === '/onboarding' || pathname === '/team-builder';
+  const isAuthPage =
+    pathname === '/login' ||
+    pathname === '/register' ||
+    pathname === '/onboarding' ||
+    pathname === '/team-builder';
   const showNav = !isAuthPage && !!user;
 
   if (isAuthPage) {
@@ -33,24 +37,24 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
 
   return (
     <div className="flex min-h-[100dvh] w-full relative bg-background">
-
-
-      <div 
+      <div
         ref={scrollContainerRef}
         className={cn(
-          'flex-1 flex flex-col min-w-0 transition-[padding] duration-300 ease-in-out overflow-y-auto max-h-[100dvh]',
+          'flex-1 flex flex-col min-w-0 transition-[padding] duration-300 ease-in-out overflow-y-auto max-h-[100dvh]'
         )}
       >
         {showNav && <TopHeader />}
 
-        <main className={cn(
-          'flex-1 w-full relative',
-          showNav
-            ? pathname.startsWith('/match')
-              ? 'pb-24 lg:pb-0'
-              : 'pt-32 lg:pt-24 pb-24 lg:pb-0'
-            : ''
-        )}>
+        <main
+          className={cn(
+            'flex-1 w-full relative',
+            showNav
+              ? pathname.startsWith('/match')
+                ? 'pb-24 lg:pb-0'
+                : 'pt-32 lg:pt-24 pb-24 lg:pb-0'
+              : ''
+          )}
+        >
           {children}
         </main>
 

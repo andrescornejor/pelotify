@@ -32,7 +32,9 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     root.classList.remove('light', 'dark');
 
     if (theme === 'system') {
-      const systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+      const systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches
+        ? 'dark'
+        : 'light';
       root.classList.add(systemTheme);
     } else {
       root.classList.add(theme);
@@ -44,11 +46,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   // Hydration mismatch is prevented by defaulting to 'dark' which matches the HTML class
   // We MUST render the provider during SSR so children don't crash when calling useTheme
 
-  return (
-    <ThemeContext.Provider value={{ theme, setTheme }}>
-      {children}
-    </ThemeContext.Provider>
-  );
+  return <ThemeContext.Provider value={{ theme, setTheme }}>{children}</ThemeContext.Provider>;
 }
 
 export function useTheme() {

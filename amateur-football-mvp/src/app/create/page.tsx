@@ -3,9 +3,21 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import { useRouter } from 'next/navigation';
 import {
-    MapPin, Calendar, Clock, Zap, Shield, Globe,
-    ArrowRight, ArrowLeft, Loader2, CheckCircle2,
-    DollarSign, Users, Lock, Unlock, ChevronRight
+  MapPin,
+  Calendar,
+  Clock,
+  Zap,
+  Shield,
+  Globe,
+  ArrowRight,
+  ArrowLeft,
+  Loader2,
+  CheckCircle2,
+  DollarSign,
+  Users,
+  Lock,
+  Unlock,
+  ChevronRight,
 } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { createMatch } from '@/lib/matches';
@@ -17,682 +29,882 @@ import { AVAILABLE_TIMES } from '@/lib/constants';
 const STEPS = ['Cancha', 'Cuándo', 'Detalles', 'Confirmar'];
 
 const FORMAT_DATA = {
-    F5: {
-        label: 'Fútbol 5',
-        players: '5 vs 5',
-        emoji: '⚽',
-        desc: 'Velocidad y precisión',
-        color: 'from-emerald-500 to-teal-400',
-        glow: 'shadow-emerald-500/30',
-    },
-    F7: {
-        label: 'Fútbol 7',
-        players: '7 vs 7',
-        emoji: '🏟️',
-        desc: 'Equilibrio y táctica',
-        color: 'from-violet-500 to-purple-400',
-        glow: 'shadow-violet-500/30',
-    },
-    F11: {
-        label: 'Fútbol 11',
-        players: '11 vs 11',
-        emoji: '🏆',
-        desc: 'El clásico completo',
-        color: 'from-amber-500 to-orange-400',
-        glow: 'shadow-amber-500/30',
-    },
+  F5: {
+    label: 'Fútbol 5',
+    players: '5 vs 5',
+    emoji: '⚽',
+    desc: 'Velocidad y precisión',
+    color: 'from-emerald-500 to-teal-400',
+    glow: 'shadow-emerald-500/30',
+  },
+  F7: {
+    label: 'Fútbol 7',
+    players: '7 vs 7',
+    emoji: '🏟️',
+    desc: 'Equilibrio y táctica',
+    color: 'from-violet-500 to-purple-400',
+    glow: 'shadow-violet-500/30',
+  },
+  F11: {
+    label: 'Fútbol 11',
+    players: '11 vs 11',
+    emoji: '🏆',
+    desc: 'El clásico completo',
+    color: 'from-amber-500 to-orange-400',
+    glow: 'shadow-amber-500/30',
+  },
 } as const;
 
 function PitchSVG({ type }: { type: 'F5' | 'F7' | 'F11' }) {
-    const isF5 = type === 'F5';
-    const isF11 = type === 'F11';
-    return (
-        <svg viewBox="0 0 200 130" className="w-full h-full opacity-20" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <rect x="2" y="2" width="196" height="126" rx="4" stroke="currentColor" strokeWidth="1.5" />
-            <line x1="100" y1="2" x2="100" y2="128" stroke="currentColor" strokeWidth="1" />
-            <circle cx="100" cy="65" r="18" stroke="currentColor" strokeWidth="1" />
-            <circle cx="100" cy="65" r="2" fill="currentColor" />
-            {/* Goals */}
-            <rect x="2" y="47" width={isF5 ? 8 : isF11 ? 12 : 10} height="36" stroke="currentColor" strokeWidth="1" />
-            <rect x={isF5 ? 190 : isF11 ? 186 : 188} y="47" width={isF5 ? 8 : isF11 ? 12 : 10} height="36" stroke="currentColor" strokeWidth="1" />
-            {/* Penalty areas */}
-            {!isF5 && (
-                <>
-                    <rect x="2" y="32" width={isF11 ? 35 : 28} height="66" stroke="currentColor" strokeWidth="1" />
-                    <rect x={isF11 ? 163 : 170} y="32" width={isF11 ? 35 : 28} height="66" stroke="currentColor" strokeWidth="1" />
-                </>
-            )}
-            {isF11 && (
-                <>
-                    <rect x="2" y="48" width="14" height="34" stroke="currentColor" strokeWidth="1" />
-                    <rect x="184" y="48" width="14" height="34" stroke="currentColor" strokeWidth="1" />
-                    <circle cx="27" cy="65" r="1.5" fill="currentColor" />
-                    <circle cx="173" cy="65" r="1.5" fill="currentColor" />
-                    {/* Corner arcs */}
-                    <path d="M2 2 Q8 2 8 8" stroke="currentColor" strokeWidth="1" />
-                    <path d="M198 2 Q192 2 192 8" stroke="currentColor" strokeWidth="1" />
-                    <path d="M2 128 Q8 128 8 122" stroke="currentColor" strokeWidth="1" />
-                    <path d="M198 128 Q192 128 192 122" stroke="currentColor" strokeWidth="1" />
-                </>
-            )}
-        </svg>
-    );
+  const isF5 = type === 'F5';
+  const isF11 = type === 'F11';
+  return (
+    <svg
+      viewBox="0 0 200 130"
+      className="w-full h-full opacity-20"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <rect x="2" y="2" width="196" height="126" rx="4" stroke="currentColor" strokeWidth="1.5" />
+      <line x1="100" y1="2" x2="100" y2="128" stroke="currentColor" strokeWidth="1" />
+      <circle cx="100" cy="65" r="18" stroke="currentColor" strokeWidth="1" />
+      <circle cx="100" cy="65" r="2" fill="currentColor" />
+      {/* Goals */}
+      <rect
+        x="2"
+        y="47"
+        width={isF5 ? 8 : isF11 ? 12 : 10}
+        height="36"
+        stroke="currentColor"
+        strokeWidth="1"
+      />
+      <rect
+        x={isF5 ? 190 : isF11 ? 186 : 188}
+        y="47"
+        width={isF5 ? 8 : isF11 ? 12 : 10}
+        height="36"
+        stroke="currentColor"
+        strokeWidth="1"
+      />
+      {/* Penalty areas */}
+      {!isF5 && (
+        <>
+          <rect
+            x="2"
+            y="32"
+            width={isF11 ? 35 : 28}
+            height="66"
+            stroke="currentColor"
+            strokeWidth="1"
+          />
+          <rect
+            x={isF11 ? 163 : 170}
+            y="32"
+            width={isF11 ? 35 : 28}
+            height="66"
+            stroke="currentColor"
+            strokeWidth="1"
+          />
+        </>
+      )}
+      {isF11 && (
+        <>
+          <rect x="2" y="48" width="14" height="34" stroke="currentColor" strokeWidth="1" />
+          <rect x="184" y="48" width="14" height="34" stroke="currentColor" strokeWidth="1" />
+          <circle cx="27" cy="65" r="1.5" fill="currentColor" />
+          <circle cx="173" cy="65" r="1.5" fill="currentColor" />
+          {/* Corner arcs */}
+          <path d="M2 2 Q8 2 8 8" stroke="currentColor" strokeWidth="1" />
+          <path d="M198 2 Q192 2 192 8" stroke="currentColor" strokeWidth="1" />
+          <path d="M2 128 Q8 128 8 122" stroke="currentColor" strokeWidth="1" />
+          <path d="M198 128 Q192 128 192 122" stroke="currentColor" strokeWidth="1" />
+        </>
+      )}
+    </svg>
+  );
 }
 
 function StepIndicator({ current, total }: { current: number; total: number }) {
-    return (
-        <div className="flex items-center gap-2">
-            {STEPS.map((label, i) => (
-                <div key={i} className="flex items-center gap-2">
-                    <div className="flex flex-col items-center gap-1">
-                        <motion.div
-                            animate={{
-                                scale: i === current ? 1.1 : 1,
-                                backgroundColor: i < current ? 'rgb(16 185 129)' : i === current ? 'rgb(16 185 129)' : 'rgba(255,255,255,0.05)',
-                                borderColor: i <= current ? 'rgb(16 185 129)' : 'rgba(255,255,255,0.1)',
-                            }}
-                            transition={{ duration: 0.3 }}
-                            className="w-8 h-8 rounded-full border flex items-center justify-center"
-                        >
-                            {i < current ? (
-                                <CheckCircle2 className="w-4 h-4 text-black" />
-                            ) : (
-                                <span className={`text-[10px] font-black ${i === current ? 'text-black' : 'text-foreground/20'}`}>{i + 1}</span>
-                            )}
-                        </motion.div>
-                        <span className={`text-[8px] font-black uppercase tracking-widest transition-colors ${i === current ? 'text-primary' : i < current ? 'text-primary/60' : 'text-foreground/20'}`}>
-                            {label}
-                        </span>
-                    </div>
-                    {i < total - 1 && (
-                        <motion.div
-                            animate={{ opacity: i < current ? 1 : 0.15 }}
-                            className="w-8 h-0.5 bg-primary mb-5"
-                        />
-                    )}
-                </div>
-            ))}
+  return (
+    <div className="flex items-center gap-2">
+      {STEPS.map((label, i) => (
+        <div key={i} className="flex items-center gap-2">
+          <div className="flex flex-col items-center gap-1">
+            <motion.div
+              animate={{
+                scale: i === current ? 1.1 : 1,
+                backgroundColor:
+                  i < current
+                    ? 'rgb(16 185 129)'
+                    : i === current
+                      ? 'rgb(16 185 129)'
+                      : 'rgba(255,255,255,0.05)',
+                borderColor: i <= current ? 'rgb(16 185 129)' : 'rgba(255,255,255,0.1)',
+              }}
+              transition={{ duration: 0.3 }}
+              className="w-8 h-8 rounded-full border flex items-center justify-center"
+            >
+              {i < current ? (
+                <CheckCircle2 className="w-4 h-4 text-black" />
+              ) : (
+                <span
+                  className={`text-[10px] font-black ${i === current ? 'text-black' : 'text-foreground/20'}`}
+                >
+                  {i + 1}
+                </span>
+              )}
+            </motion.div>
+            <span
+              className={`text-[8px] font-black uppercase tracking-widest transition-colors ${i === current ? 'text-primary' : i < current ? 'text-primary/60' : 'text-foreground/20'}`}
+            >
+              {label}
+            </span>
+          </div>
+          {i < total - 1 && (
+            <motion.div
+              animate={{ opacity: i < current ? 1 : 0.15 }}
+              className="w-8 h-0.5 bg-primary mb-5"
+            />
+          )}
         </div>
-    );
+      ))}
+    </div>
+  );
 }
 
 export default function CreateMatchPage() {
-    const router = useRouter();
-    const { user } = useAuth();
-    const [step, setStep] = useState(0);
-    const [isCreating, setIsCreating] = useState(false);
-    const [formData, setFormData] = useState({
-        location: '',
-        date: '',
-        time: '',
-        type: 'F5' as 'F5' | 'F7' | 'F11',
-        price: 0,
-        level: 'Amateur',
-        is_private: false
-    });
+  const router = useRouter();
+  const { user } = useAuth();
+  const [step, setStep] = useState(0);
+  const [isCreating, setIsCreating] = useState(false);
+  const [formData, setFormData] = useState({
+    location: '',
+    date: '',
+    time: '',
+    type: 'F5' as 'F5' | 'F7' | 'F11',
+    price: 0,
+    level: 'Amateur',
+    is_private: false,
+  });
 
-    const handleCreate = async () => {
-        if (!user) return;
-        setIsCreating(true);
-        try {
-            const match = await createMatch({
-                ...formData,
-                missing_players: 0,
-                creator_id: user.id
-            });
-            router.push(`/match?id=${match.id}`);
-        } catch (error: any) {
-            console.error('Error creating match:', error);
-            alert(`Error al crear el partido: ${error.message}`);
-        } finally {
-            setIsCreating(false);
-        }
-    };
+  const handleCreate = async () => {
+    if (!user) return;
+    setIsCreating(true);
+    try {
+      const match = await createMatch({
+        ...formData,
+        missing_players: 0,
+        creator_id: user.id,
+      });
+      router.push(`/match?id=${match.id}`);
+    } catch (error: any) {
+      console.error('Error creating match:', error);
+      alert(`Error al crear el partido: ${error.message}`);
+    } finally {
+      setIsCreating(false);
+    }
+  };
 
-    const canProceed = () => {
-        if (step === 0) return !!formData.location;
-        if (step === 1) return !!formData.date && !!formData.time;
-        return true;
-    };
+  const canProceed = () => {
+    if (step === 0) return !!formData.location;
+    if (step === 1) return !!formData.date && !!formData.time;
+    return true;
+  };
 
-    const getSelectedDateLabel = () => {
-        if (!formData.date) return null;
-        const d = new Date(formData.date + 'T00:00:00');
-        return d.toLocaleDateString('es-ES', { weekday: 'long', day: 'numeric', month: 'long' });
-    };
+  const getSelectedDateLabel = () => {
+    if (!formData.date) return null;
+    const d = new Date(formData.date + 'T00:00:00');
+    return d.toLocaleDateString('es-ES', { weekday: 'long', day: 'numeric', month: 'long' });
+  };
 
-    const getTimeLabel = () => {
-        if (!formData.time) return null;
-        const [h, m] = formData.time.split(':');
-        const hour = parseInt(h);
-        const displayHour = hour % 12 === 0 ? 12 : hour % 12;
-        const ampm = hour >= 12 ? 'PM' : 'AM';
-        return `${displayHour}:${m} ${ampm}`;
-    };
+  const getTimeLabel = () => {
+    if (!formData.time) return null;
+    const [h, m] = formData.time.split(':');
+    const hour = parseInt(h);
+    const displayHour = hour % 12 === 0 ? 12 : hour % 12;
+    const ampm = hour >= 12 ? 'PM' : 'AM';
+    return `${displayHour}:${m} ${ampm}`;
+  };
 
-    return (
-        <div className="min-h-screen bg-background relative overflow-hidden">
-            {/* ── AMBIENT LAYERS ── */}
-            <div className="pointer-events-none fixed inset-0 overflow-hidden">
-                <motion.div
-                    animate={{ scale: [1, 1.05, 1], opacity: [0.04, 0.07, 0.04] }}
-                    transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }}
-                    className="absolute -top-32 -right-32 w-[600px] h-[600px] rounded-full bg-primary blur-[120px]"
-                />
-                <motion.div
-                    animate={{ scale: [1, 1.08, 1], opacity: [0.03, 0.06, 0.03] }}
-                    transition={{ duration: 11, repeat: Infinity, ease: 'easeInOut', delay: 2 }}
-                    className="absolute -bottom-32 -left-32 w-[500px] h-[500px] rounded-full bg-violet-500 blur-[120px]"
-                />
-                {/* Scanlines */}
-                <div className="absolute inset-0 bg-[repeating-linear-gradient(0deg,transparent,transparent_2px,rgba(255,255,255,0.01)_2px,rgba(255,255,255,0.01)_4px)]" />
+  return (
+    <div className="min-h-screen bg-background relative overflow-hidden">
+      {/* ── AMBIENT LAYERS ── */}
+      <div className="pointer-events-none fixed inset-0 overflow-hidden">
+        <motion.div
+          animate={{ scale: [1, 1.05, 1], opacity: [0.04, 0.07, 0.04] }}
+          transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }}
+          className="absolute -top-32 -right-32 w-[600px] h-[600px] rounded-full bg-primary blur-[120px]"
+        />
+        <motion.div
+          animate={{ scale: [1, 1.08, 1], opacity: [0.03, 0.06, 0.03] }}
+          transition={{ duration: 11, repeat: Infinity, ease: 'easeInOut', delay: 2 }}
+          className="absolute -bottom-32 -left-32 w-[500px] h-[500px] rounded-full bg-violet-500 blur-[120px]"
+        />
+        {/* Scanlines */}
+        <div className="absolute inset-0 bg-[repeating-linear-gradient(0deg,transparent,transparent_2px,rgba(255,255,255,0.01)_2px,rgba(255,255,255,0.01)_4px)]" />
+      </div>
+
+      <div className="relative z-10 flex flex-col max-w-4xl mx-auto p-4 pt-6 pb-28 min-h-screen">
+        {/* ── HEADER ── */}
+        <motion.div
+          initial={{ opacity: 0, y: -16 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="flex flex-col gap-6 mb-8"
+        >
+          <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2">
+              <div className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
+              <span className="text-[9px] font-black uppercase tracking-[0.6em] text-primary">
+                Crear Partido
+              </span>
             </div>
+          </div>
 
-            <div className="relative z-10 flex flex-col max-w-4xl mx-auto p-4 pt-6 pb-28 min-h-screen">
-                
-                {/* ── HEADER ── */}
-                <motion.div
-                    initial={{ opacity: 0, y: -16 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    className="flex flex-col gap-6 mb-8"
-                >
-                    <div className="flex items-center gap-3">
-                        <div className="flex items-center gap-2">
-                            <div className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
-                            <span className="text-[9px] font-black uppercase tracking-[0.6em] text-primary">Crear Partido</span>
-                        </div>
-                    </div>
+          <div>
+            <h1 className="text-[clamp(2.5rem,8vw,5rem)] font-black italic uppercase leading-none tracking-tighter text-foreground">
+              Armá el
+            </h1>
+            <h1 className="text-[clamp(2.5rem,8vw,5rem)] font-black italic uppercase leading-none tracking-tighter">
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary via-emerald-400 to-teal-300">
+                Partido
+              </span>
+            </h1>
+          </div>
 
-                    <div>
-                        <h1 className="text-[clamp(2.5rem,8vw,5rem)] font-black italic uppercase leading-none tracking-tighter text-foreground">
-                            Armá el
-                        </h1>
-                        <h1 className="text-[clamp(2.5rem,8vw,5rem)] font-black italic uppercase leading-none tracking-tighter">
-                            <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary via-emerald-400 to-teal-300">
-                                Partido
-                            </span>
-                        </h1>
-                    </div>
+          <StepIndicator current={step} total={STEPS.length} />
+        </motion.div>
 
-                    <StepIndicator current={step} total={STEPS.length} />
-                </motion.div>
-
-                {/* ── STEP CONTENT ── */}
-                <div className="flex-1">
-                    <AnimatePresence mode="wait">
-                        
-                        {/* ── STEP 0: CANCHA ── */}
-                        {step === 0 && (
-                            <motion.div
-                                key="step-0"
-                                initial={{ opacity: 0, x: 40 }}
-                                animate={{ opacity: 1, x: 0 }}
-                                exit={{ opacity: 0, x: -40 }}
-                                transition={{ duration: 0.35, ease: [0.25, 0.46, 0.45, 0.94] }}
-                                className="space-y-6"
-                            >
-                                <div className="space-y-2">
-                                    <h2 className="text-2xl font-black italic uppercase tracking-tighter text-foreground">¿Dónde se juega?</h2>
-                                    <p className="text-[11px] text-foreground/40 font-bold uppercase tracking-widest">Elegí la cancha o escribí una dirección</p>
-                                </div>
-
-                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                    {ROSARIO_VENUES.map((venue, i) => {
-                                        const isSelected = formData.location === venue.address;
-                                        return (
-                                            <motion.button
-                                                key={venue.id}
-                                                initial={{ opacity: 0, y: 20 }}
-                                                animate={{ opacity: 1, y: 0 }}
-                                                transition={{ delay: i * 0.07 }}
-                                                type="button"
-                                                onClick={() => setFormData({ ...formData, location: venue.address })}
-                                                className={`group relative p-5 rounded-3xl border text-left transition-all duration-500 overflow-hidden ${
-                                                    isSelected
-                                                        ? 'border-primary bg-primary/[0.08]'
-                                                        : 'border-foreground/[0.06] bg-foreground/[0.02] hover:border-foreground/20 hover:bg-foreground/[0.04]'
-                                                }`}
-                                            >
-                                                {/* Selected glow */}
-                                                {isSelected && (
-                                                    <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-transparent to-transparent" />
-                                                )}
-                                                {/* Hover shimmer */}
-                                                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/[0.03] to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700" />
-
-                                                <div className="relative flex flex-col gap-3">
-                                                    <div className="flex items-start justify-between">
-                                                        <div className={`w-10 h-10 rounded-2xl flex items-center justify-center transition-all duration-500 ${
-                                                            isSelected ? 'bg-primary text-black' : 'bg-foreground/[0.04] text-foreground/20'
-                                                        }`}>
-                                                            <MapPin className="w-5 h-5" />
-                                                        </div>
-                                                        <AnimatePresence>
-                                                            {isSelected && (
-                                                                <motion.div
-                                                                    initial={{ scale: 0, opacity: 0 }}
-                                                                    animate={{ scale: 1, opacity: 1 }}
-                                                                    exit={{ scale: 0, opacity: 0 }}
-                                                                    className="w-6 h-6 rounded-full bg-primary flex items-center justify-center"
-                                                                >
-                                                                    <CheckCircle2 className="w-4 h-4 text-black" />
-                                                                </motion.div>
-                                                            )}
-                                                        </AnimatePresence>
-                                                    </div>
-                                                    <div>
-                                                        <span className={`text-base font-black italic uppercase tracking-tight block transition-colors ${
-                                                            isSelected ? 'text-foreground' : 'text-foreground/40'
-                                                        }`}>{venue.displayName || venue.name}</span>
-                                                        <span className="text-[10px] font-bold uppercase tracking-widest text-foreground/25 block mt-0.5 truncate">{venue.address}</span>
-                                                    </div>
-                                                </div>
-                                            </motion.button>
-                                        );
-                                    })}
-                                </div>
-
-                                {/* Custom location search */}
-                                <motion.div
-                                    initial={{ opacity: 0, y: 10 }}
-                                    animate={{ opacity: 1, y: 0 }}
-                                    transition={{ delay: 0.35 }}
-                                    className="relative"
-                                >
-                                    <div className="flex items-center gap-3 mb-3 px-1">
-                                        <div className="h-px flex-1 bg-foreground/5" />
-                                        <span className="text-[9px] font-black text-foreground/20 uppercase tracking-[0.5em]">O buscá otra</span>
-                                        <div className="h-px flex-1 bg-foreground/5" />
-                                    </div>
-                                    <LocationSearch
-                                        value={formData.location}
-                                        onChange={(addr) => setFormData({ ...formData, location: addr })}
-                                        placeholder="Buscá otra cancha o dirección..."
-                                    />
-                                </motion.div>
-                            </motion.div>
-                        )}
-
-                        {/* ── STEP 1: CUÁNDO ── */}
-                        {step === 1 && (
-                            <motion.div
-                                key="step-1"
-                                initial={{ opacity: 0, x: 40 }}
-                                animate={{ opacity: 1, x: 0 }}
-                                exit={{ opacity: 0, x: -40 }}
-                                transition={{ duration: 0.35, ease: [0.25, 0.46, 0.45, 0.94] }}
-                                className="space-y-8"
-                            >
-                                <div className="space-y-2">
-                                    <h2 className="text-2xl font-black italic uppercase tracking-tighter text-foreground">¿Cuándo se juega?</h2>
-                                    <p className="text-[11px] text-foreground/40 font-bold uppercase tracking-widest">Elegí fecha y horario</p>
-                                </div>
-
-                                {/* Date picker */}
-                                <div className="space-y-4">
-                                    <span className="text-[10px] font-black text-foreground/30 uppercase tracking-[0.4em] px-1">Fecha</span>
-                                    <div className="flex gap-3 overflow-x-auto no-scrollbar pb-2 -mx-4 px-4">
-                                        {Array.from({ length: 14 }).map((_, i) => {
-                                            const d = new Date();
-                                            d.setDate(d.getDate() + i);
-                                            const dateStr = d.toISOString().split('T')[0];
-                                            const dayName = d.toLocaleDateString('es-ES', { weekday: 'short' }).replace('.', '').toUpperCase();
-                                            const dayNumber = d.getDate();
-                                            const monthName = d.toLocaleDateString('es-ES', { month: 'short' }).replace('.', '').toUpperCase();
-                                            const isSelected = formData.date === dateStr;
-                                            const isToday = i === 0;
-
-                                            return (
-                                                <motion.button
-                                                    key={dateStr}
-                                                    initial={{ opacity: 0, scale: 0.85 }}
-                                                    animate={{ opacity: 1, scale: 1 }}
-                                                    transition={{ delay: i * 0.03 }}
-                                                    type="button"
-                                                    onClick={() => setFormData({ ...formData, date: dateStr })}
-                                                    className={`flex-shrink-0 w-[72px] h-24 rounded-2xl border transition-all duration-300 flex flex-col items-center justify-center gap-0.5 relative overflow-hidden ${
-                                                        isSelected
-                                                            ? 'border-primary bg-primary shadow-lg shadow-primary/20 scale-105'
-                                                            : 'border-foreground/[0.06] bg-foreground/[0.02] hover:border-foreground/20 hover:bg-foreground/[0.04]'
-                                                    }`}
-                                                >
-                                                    {isToday && !isSelected && (
-                                                        <div className="absolute top-2 right-2 w-1.5 h-1.5 rounded-full bg-primary/60" />
-                                                    )}
-                                                    <span className={`text-[8px] font-black tracking-widest ${isSelected ? 'text-black/70' : 'text-foreground/25'}`}>{monthName}</span>
-                                                    <span className={`text-3xl font-black italic tracking-tighter leading-none ${isSelected ? 'text-black' : 'text-foreground/70'}`}>{dayNumber}</span>
-                                                    <span className={`text-[8px] font-black tracking-widest ${isSelected ? 'text-black/70' : 'text-foreground/25'}`}>{dayName}</span>
-                                                </motion.button>
-                                            );
-                                        })}
-                                        <div className="relative flex-shrink-0">
-                                            <input
-                                                type="date"
-                                                value={formData.date}
-                                                onChange={(e) => setFormData({ ...formData, date: e.target.value })}
-                                                className="absolute inset-0 opacity-0 cursor-pointer z-10 w-full"
-                                            />
-                                            <div className={`w-[72px] h-24 rounded-2xl border transition-all duration-300 flex flex-col items-center justify-center gap-1 ${
-                                                formData.date && !Array.from({ length: 14 }).some((_, i) => {
-                                                    const d = new Date();
-                                                    d.setDate(d.getDate() + i);
-                                                    return d.toISOString().split('T')[0] === formData.date;
-                                                })
-                                                    ? 'border-primary bg-primary text-black scale-105'
-                                                    : 'border-foreground/[0.06] bg-foreground/[0.02] text-foreground/20 hover:border-foreground/20'
-                                            }`}>
-                                                <Calendar className="w-5 h-5" />
-                                                <span className="text-[8px] font-black tracking-widest uppercase">Otro</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                {/* Time picker */}
-                                <div className="space-y-4">
-                                    <span className="text-[10px] font-black text-foreground/30 uppercase tracking-[0.4em] px-1">Horario</span>
-                                    <div className="relative group">
-                                        <Clock className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-foreground/20 group-focus-within:text-primary transition-colors z-10 pointer-events-none" />
-                                        <select
-                                            value={formData.time}
-                                            onChange={(e) => setFormData({ ...formData, time: e.target.value })}
-                                            className="w-full h-16 pl-14 pr-12 rounded-2xl bg-foreground/[0.03] border border-foreground/10 focus:bg-foreground/[0.05] focus:border-primary/40 outline-none text-lg font-black italic text-foreground appearance-none cursor-pointer transition-all"
-                                        >
-                                            <option value="" disabled className="bg-background">¿A qué hora?</option>
-                                            {AVAILABLE_TIMES.map(t => {
-                                                const [h, m] = t.split(':');
-                                                const hour = parseInt(h);
-                                                const displayHour = hour % 12 === 0 ? 12 : hour % 12;
-                                                const ampm = hour >= 12 ? 'PM' : 'AM';
-                                                return (
-                                                    <option key={t} value={t} className="bg-background text-foreground font-bold">
-                                                        {displayHour}:{m} {ampm}
-                                                    </option>
-                                                );
-                                            })}
-                                        </select>
-                                        <div className="absolute right-5 top-1/2 -translate-y-1/2 pointer-events-none text-foreground/20">
-                                            <svg width="12" height="8" viewBox="0 0 12 8" fill="none">
-                                                <path d="M1 1L6 6L11 1" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-                                            </svg>
-                                        </div>
-                                    </div>
-                                </div>
-                            </motion.div>
-                        )}
-
-                        {/* ── STEP 2: DETALLES ── */}
-                        {step === 2 && (
-                            <motion.div
-                                key="step-2"
-                                initial={{ opacity: 0, x: 40 }}
-                                animate={{ opacity: 1, x: 0 }}
-                                exit={{ opacity: 0, x: -40 }}
-                                transition={{ duration: 0.35, ease: [0.25, 0.46, 0.45, 0.94] }}
-                                className="space-y-8"
-                            >
-                                <div className="space-y-2">
-                                    <h2 className="text-2xl font-black italic uppercase tracking-tighter text-foreground">Detalles del Partido</h2>
-                                    <p className="text-[11px] text-foreground/40 font-bold uppercase tracking-widest">Formato, cuota y privacidad</p>
-                                </div>
-
-                                {/* Format selector */}
-                                <div className="space-y-4">
-                                    <span className="text-[10px] font-black text-foreground/30 uppercase tracking-[0.4em] px-1">Formato</span>
-                                    <div className="grid grid-cols-3 gap-4">
-                                        {(Object.entries(FORMAT_DATA) as [keyof typeof FORMAT_DATA, typeof FORMAT_DATA[keyof typeof FORMAT_DATA]][]).map(([key, data], i) => {
-                                            const isSelected = formData.type === key;
-                                            return (
-                                                <motion.button
-                                                    key={key}
-                                                    initial={{ opacity: 0, y: 20 }}
-                                                    animate={{ opacity: 1, y: 0 }}
-                                                    transition={{ delay: i * 0.08 }}
-                                                    type="button"
-                                                    onClick={() => setFormData({ ...formData, type: key })}
-                                                    className={`group relative p-5 rounded-3xl border text-left transition-all duration-400 overflow-hidden flex flex-col gap-3 ${
-                                                        isSelected
-                                                            ? `border-primary bg-primary/[0.08] shadow-2xl ${data.glow}`
-                                                            : 'border-foreground/[0.06] bg-foreground/[0.02] hover:border-foreground/15 hover:bg-foreground/[0.04]'
-                                                    }`}
-                                                >
-                                                    {isSelected && (
-                                                        <div className={`absolute inset-0 bg-gradient-to-br ${data.color} opacity-5`} />
-                                                    )}
-                                                    {/* Pitch diagram */}
-                                                    <div className={`w-full aspect-video rounded-xl overflow-hidden flex items-center justify-center transition-colors ${
-                                                        isSelected ? 'text-primary' : 'text-foreground/10'
-                                                    }`}>
-                                                        <PitchSVG type={key} />
-                                                    </div>
-                                                    <div className="relative space-y-0.5">
-                                                        <span className={`block text-sm font-black italic uppercase tracking-tight transition-colors ${
-                                                            isSelected ? 'text-foreground' : 'text-foreground/30'
-                                                        }`}>{data.label}</span>
-                                                        <span className={`block text-[9px] font-bold uppercase tracking-widest transition-colors ${
-                                                            isSelected ? 'text-primary' : 'text-foreground/20'
-                                                        }`}>{data.players}</span>
-                                                        <span className={`block text-[9px] tracking-wide transition-colors ${
-                                                            isSelected ? 'text-foreground/50' : 'text-foreground/15'
-                                                        }`}>{data.desc}</span>
-                                                    </div>
-                                                    {isSelected && (
-                                                        <motion.div
-                                                            initial={{ scale: 0 }}
-                                                            animate={{ scale: 1 }}
-                                                            className="absolute top-3 right-3 w-5 h-5 rounded-full bg-primary flex items-center justify-center"
-                                                        >
-                                                            <CheckCircle2 className="w-3 h-3 text-black" />
-                                                        </motion.div>
-                                                    )}
-                                                </motion.button>
-                                            );
-                                        })}
-                                    </div>
-                                </div>
-
-                                {/* Price */}
-                                <div className="space-y-4">
-                                    <span className="text-[10px] font-black text-foreground/30 uppercase tracking-[0.4em] px-1">Cuota por jugador</span>
-                                    <div className="relative group">
-                                        <DollarSign className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-foreground/20 group-focus-within:text-primary transition-colors z-10 pointer-events-none" />
-                                        <input
-                                            type="number"
-                                            min="0"
-                                            placeholder="0 · Partido libre"
-                                            value={formData.price || ''}
-                                            onChange={(e) => setFormData({ ...formData, price: parseInt(e.target.value) || 0 })}
-                                            className="w-full h-16 pl-14 pr-4 rounded-2xl bg-foreground/[0.03] border border-foreground/10 focus:bg-foreground/[0.05] focus:border-primary/40 outline-none text-2xl font-black italic text-foreground tracking-tighter transition-all"
-                                        />
-                                        <span className="absolute right-5 top-1/2 -translate-y-1/2 text-[10px] font-black text-foreground/20 uppercase tracking-widest">ARS</span>
-                                    </div>
-                                </div>
-
-                                {/* Privacy */}
-                                <div className="space-y-4">
-                                    <span className="text-[10px] font-black text-foreground/30 uppercase tracking-[0.4em] px-1">Privacidad</span>
-                                    <div className="grid grid-cols-2 gap-4">
-                                        {[
-                                            { value: false, label: 'Público', desc: 'Cualquiera puede unirse', icon: <Globe className="w-5 h-5" />, color: 'primary' },
-                                            { value: true, label: 'Privado', desc: 'Solo con invitación', icon: <Lock className="w-5 h-5" />, color: 'accent' },
-                                        ].map(({ value, label, desc, icon, color }) => {
-                                            const isSelected = formData.is_private === value;
-                                            return (
-                                                <button
-                                                    key={label}
-                                                    type="button"
-                                                    onClick={() => setFormData({ ...formData, is_private: value })}
-                                                    className={`p-5 rounded-3xl border text-left transition-all duration-300 flex flex-col gap-3 relative overflow-hidden ${
-                                                        isSelected
-                                                            ? color === 'primary'
-                                                                ? 'border-primary bg-primary/[0.08]'
-                                                                : 'border-violet-500 bg-violet-500/[0.08]'
-                                                            : 'border-foreground/[0.06] bg-foreground/[0.02] hover:border-foreground/15'
-                                                    }`}
-                                                >
-                                                    <div className={`w-10 h-10 rounded-2xl flex items-center justify-center transition-all ${
-                                                        isSelected
-                                                            ? color === 'primary' ? 'bg-primary text-black' : 'bg-violet-500 text-white'
-                                                            : 'bg-foreground/[0.04] text-foreground/20'
-                                                    }`}>
-                                                        {icon}
-                                                    </div>
-                                                    <div>
-                                                        <span className={`block text-sm font-black italic uppercase tracking-tight ${isSelected ? 'text-foreground' : 'text-foreground/30'}`}>{label}</span>
-                                                        <span className={`block text-[10px] font-bold tracking-wide mt-0.5 ${isSelected ? 'text-foreground/50' : 'text-foreground/15'}`}>{desc}</span>
-                                                    </div>
-                                                    {isSelected && (
-                                                        <motion.div
-                                                            initial={{ scale: 0 }}
-                                                            animate={{ scale: 1 }}
-                                                            className={`absolute top-3 right-3 w-5 h-5 rounded-full flex items-center justify-center ${color === 'primary' ? 'bg-primary' : 'bg-violet-500'}`}
-                                                        >
-                                                            <CheckCircle2 className="w-3 h-3 text-black" />
-                                                        </motion.div>
-                                                    )}
-                                                </button>
-                                            );
-                                        })}
-                                    </div>
-                                </div>
-                            </motion.div>
-                        )}
-
-                        {/* ── STEP 3: CONFIRMAR ── */}
-                        {step === 3 && (
-                            <motion.div
-                                key="step-3"
-                                initial={{ opacity: 0, x: 40 }}
-                                animate={{ opacity: 1, x: 0 }}
-                                exit={{ opacity: 0, x: -40 }}
-                                transition={{ duration: 0.35, ease: [0.25, 0.46, 0.45, 0.94] }}
-                                className="space-y-6"
-                            >
-                                <div className="space-y-2">
-                                    <h2 className="text-2xl font-black italic uppercase tracking-tighter text-foreground">Resumen del Partido</h2>
-                                    <p className="text-[11px] text-foreground/40 font-bold uppercase tracking-widest">Revisá los detalles antes de confirmar</p>
-                                </div>
-
-                                {/* Big match card */}
-                                <motion.div
-                                    initial={{ opacity: 0, scale: 0.97 }}
-                                    animate={{ opacity: 1, scale: 1 }}
-                                    transition={{ delay: 0.1 }}
-                                    className="relative rounded-[2rem] overflow-hidden border border-foreground/10 bg-foreground/[0.02]"
-                                >
-                                    {/* Pitch hero */}
-                                    <div className="relative h-40 bg-gradient-to-br from-primary/10 via-emerald-900/20 to-teal-900/10 flex items-center justify-center overflow-hidden">
-                                        <div className="absolute inset-0 text-primary/30">
-                                            <PitchSVG type={formData.type} />
-                                        </div>
-                                        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-background/60" />
-                                        {/* Format badge */}
-                                        <div className="relative z-10 px-6 py-2 rounded-full bg-primary/20 border border-primary/30 backdrop-blur-sm">
-                                            <span className="text-primary font-black text-sm uppercase tracking-widest italic">
-                                                {FORMAT_DATA[formData.type].label}
-                                            </span>
-                                        </div>
-                                    </div>
-
-                                    {/* Details grid */}
-                                    <div className="p-6 grid grid-cols-2 gap-4">
-                                        {[
-                                            { icon: <MapPin className="w-4 h-4" />, label: 'Cancha', value: formData.location || '—' },
-                                            { icon: <Calendar className="w-4 h-4" />, label: 'Fecha', value: getSelectedDateLabel() || '—' },
-                                            { icon: <Clock className="w-4 h-4" />, label: 'Horario', value: getTimeLabel() || '—' },
-                                            { icon: <Users className="w-4 h-4" />, label: 'Formato', value: `${FORMAT_DATA[formData.type].players}` },
-                                            { icon: <DollarSign className="w-4 h-4" />, label: 'Cuota', value: formData.price > 0 ? `$${formData.price.toLocaleString('es-AR')} ARS` : 'Libre' },
-                                            { icon: formData.is_private ? <Lock className="w-4 h-4" /> : <Globe className="w-4 h-4" />, label: 'Privacidad', value: formData.is_private ? 'Solo invitados' : 'Público' },
-                                        ].map(({ icon, label, value }) => (
-                                            <div key={label} className="flex items-start gap-3">
-                                                <div className="w-7 h-7 rounded-xl bg-primary/10 flex items-center justify-center text-primary flex-shrink-0 mt-0.5">
-                                                    {icon}
-                                                </div>
-                                                <div>
-                                                    <span className="text-[9px] font-black text-foreground/25 uppercase tracking-widest block">{label}</span>
-                                                    <span className="text-sm font-black italic text-foreground tracking-tight leading-tight line-clamp-2">{value}</span>
-                                                </div>
-                                            </div>
-                                        ))}
-                                    </div>
-
-                                    {/* Bottom decoration */}
-                                    <div className="mx-6 mb-6 p-4 rounded-2xl bg-foreground/[0.03] border border-foreground/5 flex items-center gap-3">
-                                        <div className="w-8 h-8 rounded-xl bg-foreground/5 flex items-center justify-center">
-                                            <Zap className="w-4 h-4 text-foreground/20" />
-                                        </div>
-                                        <p className="text-[10px] text-foreground/30 font-bold uppercase tracking-wider leading-relaxed flex-1">
-                                            Serás el organizador con control total sobre los jugadores
-                                        </p>
-                                    </div>
-                                </motion.div>
-                            </motion.div>
-                        )}
-                    </AnimatePresence>
+        {/* ── STEP CONTENT ── */}
+        <div className="flex-1">
+          <AnimatePresence mode="wait">
+            {/* ── STEP 0: CANCHA ── */}
+            {step === 0 && (
+              <motion.div
+                key="step-0"
+                initial={{ opacity: 0, x: 40 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -40 }}
+                transition={{ duration: 0.35, ease: [0.25, 0.46, 0.45, 0.94] }}
+                className="space-y-6"
+              >
+                <div className="space-y-2">
+                  <h2 className="text-2xl font-black italic uppercase tracking-tighter text-foreground">
+                    ¿Dónde se juega?
+                  </h2>
+                  <p className="text-[11px] text-foreground/40 font-bold uppercase tracking-widest">
+                    Elegí la cancha o escribí una dirección
+                  </p>
                 </div>
 
-                {/* ── NAVIGATION ── */}
-                <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.4 }}
-                    className="mt-8 flex gap-3"
-                >
-                    {step > 0 && (
-                        <button
-                            type="button"
-                            onClick={() => setStep(s => s - 1)}
-                            className="h-14 px-6 rounded-2xl border border-foreground/10 bg-foreground/[0.03] text-foreground/40 font-black text-xs uppercase tracking-widest hover:border-foreground/20 hover:text-foreground/60 transition-all flex items-center gap-2"
-                        >
-                            <ArrowLeft className="w-4 h-4" />
-                            Volver
-                        </button>
-                    )}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  {ROSARIO_VENUES.map((venue, i) => {
+                    const isSelected = formData.location === venue.address;
+                    return (
+                      <motion.button
+                        key={venue.id}
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: i * 0.07 }}
+                        type="button"
+                        onClick={() => setFormData({ ...formData, location: venue.address })}
+                        className={`group relative p-5 rounded-3xl border text-left transition-all duration-500 overflow-hidden ${
+                          isSelected
+                            ? 'border-primary bg-primary/[0.08]'
+                            : 'border-foreground/[0.06] bg-foreground/[0.02] hover:border-foreground/20 hover:bg-foreground/[0.04]'
+                        }`}
+                      >
+                        {/* Selected glow */}
+                        {isSelected && (
+                          <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-transparent to-transparent" />
+                        )}
+                        {/* Hover shimmer */}
+                        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/[0.03] to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700" />
 
-                    {step < STEPS.length - 1 ? (
-                        <motion.button
-                            type="button"
-                            onClick={() => canProceed() && setStep(s => s + 1)}
-                            disabled={!canProceed()}
-                            whileHover={canProceed() ? { scale: 1.01 } : {}}
-                            whileTap={canProceed() ? { scale: 0.98 } : {}}
-                            className={`flex-1 h-14 rounded-2xl font-black text-xs uppercase tracking-widest flex items-center justify-center gap-3 transition-all relative overflow-hidden ${
-                                canProceed()
-                                    ? 'bg-primary text-black shadow-[0_8px_32px_rgba(16,185,129,0.25)]'
-                                    : 'bg-foreground/[0.04] text-foreground/20 cursor-not-allowed'
-                            }`}
-                        >
-                            {canProceed() && (
-                                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full hover:translate-x-full transition-transform duration-700" />
-                            )}
-                            Continuar
-                            <ArrowRight className="w-4 h-4" />
-                        </motion.button>
-                    ) : (
-                        <motion.button
-                            type="button"
-                            onClick={handleCreate}
-                            disabled={isCreating}
-                            whileHover={{ scale: 1.01 }}
-                            whileTap={{ scale: 0.98 }}
-                            className="flex-1 h-14 rounded-2xl bg-primary text-black font-black text-xs uppercase tracking-widest flex items-center justify-center gap-3 shadow-[0_8px_32px_rgba(16,185,129,0.3)] disabled:opacity-50 transition-all relative overflow-hidden"
-                        >
-                            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/15 to-transparent -translate-x-full hover:translate-x-full transition-transform duration-700" />
-                            {isCreating ? (
-                                <>
-                                    <Loader2 className="w-5 h-5 animate-spin" />
-                                    Creando partido...
-                                </>
-                            ) : (
-                                <>
-                                    <Zap className="w-5 h-5" />
-                                    ¡Crear Partido!
-                                </>
-                            )}
-                        </motion.button>
-                    )}
+                        <div className="relative flex flex-col gap-3">
+                          <div className="flex items-start justify-between">
+                            <div
+                              className={`w-10 h-10 rounded-2xl flex items-center justify-center transition-all duration-500 ${
+                                isSelected
+                                  ? 'bg-primary text-black'
+                                  : 'bg-foreground/[0.04] text-foreground/20'
+                              }`}
+                            >
+                              <MapPin className="w-5 h-5" />
+                            </div>
+                            <AnimatePresence>
+                              {isSelected && (
+                                <motion.div
+                                  initial={{ scale: 0, opacity: 0 }}
+                                  animate={{ scale: 1, opacity: 1 }}
+                                  exit={{ scale: 0, opacity: 0 }}
+                                  className="w-6 h-6 rounded-full bg-primary flex items-center justify-center"
+                                >
+                                  <CheckCircle2 className="w-4 h-4 text-black" />
+                                </motion.div>
+                              )}
+                            </AnimatePresence>
+                          </div>
+                          <div>
+                            <span
+                              className={`text-base font-black italic uppercase tracking-tight block transition-colors ${
+                                isSelected ? 'text-foreground' : 'text-foreground/40'
+                              }`}
+                            >
+                              {venue.displayName || venue.name}
+                            </span>
+                            <span className="text-[10px] font-bold uppercase tracking-widest text-foreground/25 block mt-0.5 truncate">
+                              {venue.address}
+                            </span>
+                          </div>
+                        </div>
+                      </motion.button>
+                    );
+                  })}
+                </div>
+
+                {/* Custom location search */}
+                <motion.div
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.35 }}
+                  className="relative"
+                >
+                  <div className="flex items-center gap-3 mb-3 px-1">
+                    <div className="h-px flex-1 bg-foreground/5" />
+                    <span className="text-[9px] font-black text-foreground/20 uppercase tracking-[0.5em]">
+                      O buscá otra
+                    </span>
+                    <div className="h-px flex-1 bg-foreground/5" />
+                  </div>
+                  <LocationSearch
+                    value={formData.location}
+                    onChange={(addr) => setFormData({ ...formData, location: addr })}
+                    placeholder="Buscá otra cancha o dirección..."
+                  />
                 </motion.div>
-            </div>
+              </motion.div>
+            )}
+
+            {/* ── STEP 1: CUÁNDO ── */}
+            {step === 1 && (
+              <motion.div
+                key="step-1"
+                initial={{ opacity: 0, x: 40 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -40 }}
+                transition={{ duration: 0.35, ease: [0.25, 0.46, 0.45, 0.94] }}
+                className="space-y-8"
+              >
+                <div className="space-y-2">
+                  <h2 className="text-2xl font-black italic uppercase tracking-tighter text-foreground">
+                    ¿Cuándo se juega?
+                  </h2>
+                  <p className="text-[11px] text-foreground/40 font-bold uppercase tracking-widest">
+                    Elegí fecha y horario
+                  </p>
+                </div>
+
+                {/* Date picker */}
+                <div className="space-y-4">
+                  <span className="text-[10px] font-black text-foreground/30 uppercase tracking-[0.4em] px-1">
+                    Fecha
+                  </span>
+                  <div className="flex gap-3 overflow-x-auto no-scrollbar pb-2 -mx-4 px-4">
+                    {Array.from({ length: 14 }).map((_, i) => {
+                      const d = new Date();
+                      d.setDate(d.getDate() + i);
+                      const dateStr = d.toISOString().split('T')[0];
+                      const dayName = d
+                        .toLocaleDateString('es-ES', { weekday: 'short' })
+                        .replace('.', '')
+                        .toUpperCase();
+                      const dayNumber = d.getDate();
+                      const monthName = d
+                        .toLocaleDateString('es-ES', { month: 'short' })
+                        .replace('.', '')
+                        .toUpperCase();
+                      const isSelected = formData.date === dateStr;
+                      const isToday = i === 0;
+
+                      return (
+                        <motion.button
+                          key={dateStr}
+                          initial={{ opacity: 0, scale: 0.85 }}
+                          animate={{ opacity: 1, scale: 1 }}
+                          transition={{ delay: i * 0.03 }}
+                          type="button"
+                          onClick={() => setFormData({ ...formData, date: dateStr })}
+                          className={`flex-shrink-0 w-[72px] h-24 rounded-2xl border transition-all duration-300 flex flex-col items-center justify-center gap-0.5 relative overflow-hidden ${
+                            isSelected
+                              ? 'border-primary bg-primary shadow-lg shadow-primary/20 scale-105'
+                              : 'border-foreground/[0.06] bg-foreground/[0.02] hover:border-foreground/20 hover:bg-foreground/[0.04]'
+                          }`}
+                        >
+                          {isToday && !isSelected && (
+                            <div className="absolute top-2 right-2 w-1.5 h-1.5 rounded-full bg-primary/60" />
+                          )}
+                          <span
+                            className={`text-[8px] font-black tracking-widest ${isSelected ? 'text-black/70' : 'text-foreground/25'}`}
+                          >
+                            {monthName}
+                          </span>
+                          <span
+                            className={`text-3xl font-black italic tracking-tighter leading-none ${isSelected ? 'text-black' : 'text-foreground/70'}`}
+                          >
+                            {dayNumber}
+                          </span>
+                          <span
+                            className={`text-[8px] font-black tracking-widest ${isSelected ? 'text-black/70' : 'text-foreground/25'}`}
+                          >
+                            {dayName}
+                          </span>
+                        </motion.button>
+                      );
+                    })}
+                    <div className="relative flex-shrink-0">
+                      <input
+                        type="date"
+                        value={formData.date}
+                        onChange={(e) => setFormData({ ...formData, date: e.target.value })}
+                        className="absolute inset-0 opacity-0 cursor-pointer z-10 w-full"
+                      />
+                      <div
+                        className={`w-[72px] h-24 rounded-2xl border transition-all duration-300 flex flex-col items-center justify-center gap-1 ${
+                          formData.date &&
+                          !Array.from({ length: 14 }).some((_, i) => {
+                            const d = new Date();
+                            d.setDate(d.getDate() + i);
+                            return d.toISOString().split('T')[0] === formData.date;
+                          })
+                            ? 'border-primary bg-primary text-black scale-105'
+                            : 'border-foreground/[0.06] bg-foreground/[0.02] text-foreground/20 hover:border-foreground/20'
+                        }`}
+                      >
+                        <Calendar className="w-5 h-5" />
+                        <span className="text-[8px] font-black tracking-widest uppercase">
+                          Otro
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Time picker */}
+                <div className="space-y-4">
+                  <span className="text-[10px] font-black text-foreground/30 uppercase tracking-[0.4em] px-1">
+                    Horario
+                  </span>
+                  <div className="relative group">
+                    <Clock className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-foreground/20 group-focus-within:text-primary transition-colors z-10 pointer-events-none" />
+                    <select
+                      value={formData.time}
+                      onChange={(e) => setFormData({ ...formData, time: e.target.value })}
+                      className="w-full h-16 pl-14 pr-12 rounded-2xl bg-foreground/[0.03] border border-foreground/10 focus:bg-foreground/[0.05] focus:border-primary/40 outline-none text-lg font-black italic text-foreground appearance-none cursor-pointer transition-all"
+                    >
+                      <option value="" disabled className="bg-background">
+                        ¿A qué hora?
+                      </option>
+                      {AVAILABLE_TIMES.map((t) => {
+                        const [h, m] = t.split(':');
+                        const hour = parseInt(h);
+                        const displayHour = hour % 12 === 0 ? 12 : hour % 12;
+                        const ampm = hour >= 12 ? 'PM' : 'AM';
+                        return (
+                          <option
+                            key={t}
+                            value={t}
+                            className="bg-background text-foreground font-bold"
+                          >
+                            {displayHour}:{m} {ampm}
+                          </option>
+                        );
+                      })}
+                    </select>
+                    <div className="absolute right-5 top-1/2 -translate-y-1/2 pointer-events-none text-foreground/20">
+                      <svg width="12" height="8" viewBox="0 0 12 8" fill="none">
+                        <path
+                          d="M1 1L6 6L11 1"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                        />
+                      </svg>
+                    </div>
+                  </div>
+                </div>
+              </motion.div>
+            )}
+
+            {/* ── STEP 2: DETALLES ── */}
+            {step === 2 && (
+              <motion.div
+                key="step-2"
+                initial={{ opacity: 0, x: 40 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -40 }}
+                transition={{ duration: 0.35, ease: [0.25, 0.46, 0.45, 0.94] }}
+                className="space-y-8"
+              >
+                <div className="space-y-2">
+                  <h2 className="text-2xl font-black italic uppercase tracking-tighter text-foreground">
+                    Detalles del Partido
+                  </h2>
+                  <p className="text-[11px] text-foreground/40 font-bold uppercase tracking-widest">
+                    Formato, cuota y privacidad
+                  </p>
+                </div>
+
+                {/* Format selector */}
+                <div className="space-y-4">
+                  <span className="text-[10px] font-black text-foreground/30 uppercase tracking-[0.4em] px-1">
+                    Formato
+                  </span>
+                  <div className="grid grid-cols-3 gap-4">
+                    {(
+                      Object.entries(FORMAT_DATA) as [
+                        keyof typeof FORMAT_DATA,
+                        (typeof FORMAT_DATA)[keyof typeof FORMAT_DATA],
+                      ][]
+                    ).map(([key, data], i) => {
+                      const isSelected = formData.type === key;
+                      return (
+                        <motion.button
+                          key={key}
+                          initial={{ opacity: 0, y: 20 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          transition={{ delay: i * 0.08 }}
+                          type="button"
+                          onClick={() => setFormData({ ...formData, type: key })}
+                          className={`group relative p-5 rounded-3xl border text-left transition-all duration-400 overflow-hidden flex flex-col gap-3 ${
+                            isSelected
+                              ? `border-primary bg-primary/[0.08] shadow-2xl ${data.glow}`
+                              : 'border-foreground/[0.06] bg-foreground/[0.02] hover:border-foreground/15 hover:bg-foreground/[0.04]'
+                          }`}
+                        >
+                          {isSelected && (
+                            <div
+                              className={`absolute inset-0 bg-gradient-to-br ${data.color} opacity-5`}
+                            />
+                          )}
+                          {/* Pitch diagram */}
+                          <div
+                            className={`w-full aspect-video rounded-xl overflow-hidden flex items-center justify-center transition-colors ${
+                              isSelected ? 'text-primary' : 'text-foreground/10'
+                            }`}
+                          >
+                            <PitchSVG type={key} />
+                          </div>
+                          <div className="relative space-y-0.5">
+                            <span
+                              className={`block text-sm font-black italic uppercase tracking-tight transition-colors ${
+                                isSelected ? 'text-foreground' : 'text-foreground/30'
+                              }`}
+                            >
+                              {data.label}
+                            </span>
+                            <span
+                              className={`block text-[9px] font-bold uppercase tracking-widest transition-colors ${
+                                isSelected ? 'text-primary' : 'text-foreground/20'
+                              }`}
+                            >
+                              {data.players}
+                            </span>
+                            <span
+                              className={`block text-[9px] tracking-wide transition-colors ${
+                                isSelected ? 'text-foreground/50' : 'text-foreground/15'
+                              }`}
+                            >
+                              {data.desc}
+                            </span>
+                          </div>
+                          {isSelected && (
+                            <motion.div
+                              initial={{ scale: 0 }}
+                              animate={{ scale: 1 }}
+                              className="absolute top-3 right-3 w-5 h-5 rounded-full bg-primary flex items-center justify-center"
+                            >
+                              <CheckCircle2 className="w-3 h-3 text-black" />
+                            </motion.div>
+                          )}
+                        </motion.button>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                {/* Price */}
+                <div className="space-y-4">
+                  <span className="text-[10px] font-black text-foreground/30 uppercase tracking-[0.4em] px-1">
+                    Cuota por jugador
+                  </span>
+                  <div className="relative group">
+                    <DollarSign className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-foreground/20 group-focus-within:text-primary transition-colors z-10 pointer-events-none" />
+                    <input
+                      type="number"
+                      min="0"
+                      placeholder="0 · Partido libre"
+                      value={formData.price || ''}
+                      onChange={(e) =>
+                        setFormData({ ...formData, price: parseInt(e.target.value) || 0 })
+                      }
+                      className="w-full h-16 pl-14 pr-4 rounded-2xl bg-foreground/[0.03] border border-foreground/10 focus:bg-foreground/[0.05] focus:border-primary/40 outline-none text-2xl font-black italic text-foreground tracking-tighter transition-all"
+                    />
+                    <span className="absolute right-5 top-1/2 -translate-y-1/2 text-[10px] font-black text-foreground/20 uppercase tracking-widest">
+                      ARS
+                    </span>
+                  </div>
+                </div>
+
+                {/* Privacy */}
+                <div className="space-y-4">
+                  <span className="text-[10px] font-black text-foreground/30 uppercase tracking-[0.4em] px-1">
+                    Privacidad
+                  </span>
+                  <div className="grid grid-cols-2 gap-4">
+                    {[
+                      {
+                        value: false,
+                        label: 'Público',
+                        desc: 'Cualquiera puede unirse',
+                        icon: <Globe className="w-5 h-5" />,
+                        color: 'primary',
+                      },
+                      {
+                        value: true,
+                        label: 'Privado',
+                        desc: 'Solo con invitación',
+                        icon: <Lock className="w-5 h-5" />,
+                        color: 'accent',
+                      },
+                    ].map(({ value, label, desc, icon, color }) => {
+                      const isSelected = formData.is_private === value;
+                      return (
+                        <button
+                          key={label}
+                          type="button"
+                          onClick={() => setFormData({ ...formData, is_private: value })}
+                          className={`p-5 rounded-3xl border text-left transition-all duration-300 flex flex-col gap-3 relative overflow-hidden ${
+                            isSelected
+                              ? color === 'primary'
+                                ? 'border-primary bg-primary/[0.08]'
+                                : 'border-violet-500 bg-violet-500/[0.08]'
+                              : 'border-foreground/[0.06] bg-foreground/[0.02] hover:border-foreground/15'
+                          }`}
+                        >
+                          <div
+                            className={`w-10 h-10 rounded-2xl flex items-center justify-center transition-all ${
+                              isSelected
+                                ? color === 'primary'
+                                  ? 'bg-primary text-black'
+                                  : 'bg-violet-500 text-white'
+                                : 'bg-foreground/[0.04] text-foreground/20'
+                            }`}
+                          >
+                            {icon}
+                          </div>
+                          <div>
+                            <span
+                              className={`block text-sm font-black italic uppercase tracking-tight ${isSelected ? 'text-foreground' : 'text-foreground/30'}`}
+                            >
+                              {label}
+                            </span>
+                            <span
+                              className={`block text-[10px] font-bold tracking-wide mt-0.5 ${isSelected ? 'text-foreground/50' : 'text-foreground/15'}`}
+                            >
+                              {desc}
+                            </span>
+                          </div>
+                          {isSelected && (
+                            <motion.div
+                              initial={{ scale: 0 }}
+                              animate={{ scale: 1 }}
+                              className={`absolute top-3 right-3 w-5 h-5 rounded-full flex items-center justify-center ${color === 'primary' ? 'bg-primary' : 'bg-violet-500'}`}
+                            >
+                              <CheckCircle2 className="w-3 h-3 text-black" />
+                            </motion.div>
+                          )}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              </motion.div>
+            )}
+
+            {/* ── STEP 3: CONFIRMAR ── */}
+            {step === 3 && (
+              <motion.div
+                key="step-3"
+                initial={{ opacity: 0, x: 40 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -40 }}
+                transition={{ duration: 0.35, ease: [0.25, 0.46, 0.45, 0.94] }}
+                className="space-y-6"
+              >
+                <div className="space-y-2">
+                  <h2 className="text-2xl font-black italic uppercase tracking-tighter text-foreground">
+                    Resumen del Partido
+                  </h2>
+                  <p className="text-[11px] text-foreground/40 font-bold uppercase tracking-widest">
+                    Revisá los detalles antes de confirmar
+                  </p>
+                </div>
+
+                {/* Big match card */}
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.97 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ delay: 0.1 }}
+                  className="relative rounded-[2rem] overflow-hidden border border-foreground/10 bg-foreground/[0.02]"
+                >
+                  {/* Pitch hero */}
+                  <div className="relative h-40 bg-gradient-to-br from-primary/10 via-emerald-900/20 to-teal-900/10 flex items-center justify-center overflow-hidden">
+                    <div className="absolute inset-0 text-primary/30">
+                      <PitchSVG type={formData.type} />
+                    </div>
+                    <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-background/60" />
+                    {/* Format badge */}
+                    <div className="relative z-10 px-6 py-2 rounded-full bg-primary/20 border border-primary/30 backdrop-blur-sm">
+                      <span className="text-primary font-black text-sm uppercase tracking-widest italic">
+                        {FORMAT_DATA[formData.type].label}
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Details grid */}
+                  <div className="p-6 grid grid-cols-2 gap-4">
+                    {[
+                      {
+                        icon: <MapPin className="w-4 h-4" />,
+                        label: 'Cancha',
+                        value: formData.location || '—',
+                      },
+                      {
+                        icon: <Calendar className="w-4 h-4" />,
+                        label: 'Fecha',
+                        value: getSelectedDateLabel() || '—',
+                      },
+                      {
+                        icon: <Clock className="w-4 h-4" />,
+                        label: 'Horario',
+                        value: getTimeLabel() || '—',
+                      },
+                      {
+                        icon: <Users className="w-4 h-4" />,
+                        label: 'Formato',
+                        value: `${FORMAT_DATA[formData.type].players}`,
+                      },
+                      {
+                        icon: <DollarSign className="w-4 h-4" />,
+                        label: 'Cuota',
+                        value:
+                          formData.price > 0
+                            ? `$${formData.price.toLocaleString('es-AR')} ARS`
+                            : 'Libre',
+                      },
+                      {
+                        icon: formData.is_private ? (
+                          <Lock className="w-4 h-4" />
+                        ) : (
+                          <Globe className="w-4 h-4" />
+                        ),
+                        label: 'Privacidad',
+                        value: formData.is_private ? 'Solo invitados' : 'Público',
+                      },
+                    ].map(({ icon, label, value }) => (
+                      <div key={label} className="flex items-start gap-3">
+                        <div className="w-7 h-7 rounded-xl bg-primary/10 flex items-center justify-center text-primary flex-shrink-0 mt-0.5">
+                          {icon}
+                        </div>
+                        <div>
+                          <span className="text-[9px] font-black text-foreground/25 uppercase tracking-widest block">
+                            {label}
+                          </span>
+                          <span className="text-sm font-black italic text-foreground tracking-tight leading-tight line-clamp-2">
+                            {value}
+                          </span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+
+                  {/* Bottom decoration */}
+                  <div className="mx-6 mb-6 p-4 rounded-2xl bg-foreground/[0.03] border border-foreground/5 flex items-center gap-3">
+                    <div className="w-8 h-8 rounded-xl bg-foreground/5 flex items-center justify-center">
+                      <Zap className="w-4 h-4 text-foreground/20" />
+                    </div>
+                    <p className="text-[10px] text-foreground/30 font-bold uppercase tracking-wider leading-relaxed flex-1">
+                      Serás el organizador con control total sobre los jugadores
+                    </p>
+                  </div>
+                </motion.div>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
-    );
+
+        {/* ── NAVIGATION ── */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.4 }}
+          className="mt-8 flex gap-3"
+        >
+          {step > 0 && (
+            <button
+              type="button"
+              onClick={() => setStep((s) => s - 1)}
+              className="h-14 px-6 rounded-2xl border border-foreground/10 bg-foreground/[0.03] text-foreground/40 font-black text-xs uppercase tracking-widest hover:border-foreground/20 hover:text-foreground/60 transition-all flex items-center gap-2"
+            >
+              <ArrowLeft className="w-4 h-4" />
+              Volver
+            </button>
+          )}
+
+          {step < STEPS.length - 1 ? (
+            <motion.button
+              type="button"
+              onClick={() => canProceed() && setStep((s) => s + 1)}
+              disabled={!canProceed()}
+              whileHover={canProceed() ? { scale: 1.01 } : {}}
+              whileTap={canProceed() ? { scale: 0.98 } : {}}
+              className={`flex-1 h-14 rounded-2xl font-black text-xs uppercase tracking-widest flex items-center justify-center gap-3 transition-all relative overflow-hidden ${
+                canProceed()
+                  ? 'bg-primary text-black shadow-[0_8px_32px_rgba(16,185,129,0.25)]'
+                  : 'bg-foreground/[0.04] text-foreground/20 cursor-not-allowed'
+              }`}
+            >
+              {canProceed() && (
+                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full hover:translate-x-full transition-transform duration-700" />
+              )}
+              Continuar
+              <ArrowRight className="w-4 h-4" />
+            </motion.button>
+          ) : (
+            <motion.button
+              type="button"
+              onClick={handleCreate}
+              disabled={isCreating}
+              whileHover={{ scale: 1.01 }}
+              whileTap={{ scale: 0.98 }}
+              className="flex-1 h-14 rounded-2xl bg-primary text-black font-black text-xs uppercase tracking-widest flex items-center justify-center gap-3 shadow-[0_8px_32px_rgba(16,185,129,0.3)] disabled:opacity-50 transition-all relative overflow-hidden"
+            >
+              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/15 to-transparent -translate-x-full hover:translate-x-full transition-transform duration-700" />
+              {isCreating ? (
+                <>
+                  <Loader2 className="w-5 h-5 animate-spin" />
+                  Creando partido...
+                </>
+              ) : (
+                <>
+                  <Zap className="w-5 h-5" />
+                  ¡Crear Partido!
+                </>
+              )}
+            </motion.button>
+          )}
+        </motion.div>
+      </div>
+    </div>
+  );
 }

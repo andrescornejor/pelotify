@@ -12,11 +12,13 @@ export default function AuthCallbackPage() {
     const handleAuthCallback = async () => {
       // The Supabase client automatically handles the code exchange
       // when it detects the code in the URL on the client side
-      const { data: { session } } = await supabase.auth.getSession();
-      
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+
       if (session?.user) {
         const { id, user_metadata, email } = session.user;
-        
+
         // Check if profile exists
         const { data: profile } = await supabase
           .from('profiles')
@@ -28,18 +30,19 @@ export default function AuthCallbackPage() {
           // Create default profile for OAuth users
           await supabase.from('profiles').insert({
             id: id,
-            name: user_metadata?.full_name || user_metadata?.name || email?.split('@')[0] || 'Jugador',
+            name:
+              user_metadata?.full_name || user_metadata?.name || email?.split('@')[0] || 'Jugador',
             position: 'DC',
             avatar_url: user_metadata?.avatar_url || user_metadata?.picture,
             matches: 0,
             matches_won: 0,
             goals: 0,
             elo: 0,
-            mvp_count: 0
+            mvp_count: 0,
           });
         }
       }
-      
+
       // Redirect to home
       router.push('/');
     };
