@@ -100,7 +100,7 @@ const TeamCard = memo(({ team }: { team: Team & { role?: string } }) => {
   const isCaptain = team.role === 'captain';
 
   return (
-    <Link href={`/team?id=${team.id}`} className="w-full lg:min-w-0 snap-center">
+    <Link href={`/team?id=${team.id}`} className="block w-full lg:min-w-0 snap-center">
       <motion.div
         whileHover={{ scale: 1.01, y: -4 }}
         whileTap={{ scale: 0.98 }}
@@ -980,14 +980,14 @@ export default function HomePage() {
             </div>
 
             {/* Responsive Horizontal Scroll on Mobile, Grid on Desktop */}
-            <div className="flex flex-col lg:grid lg:grid-cols-2 xl:grid-cols-3 gap-5 pb-6 lg:pb-0">
+            <div className="flex flex-col gap-5 pb-6 lg:pb-0">
               {isLoading ? (
                 Array(3)
                   .fill(0)
                   .map((_, i) => (
                     <div
                       key={i}
-                      className="min-w-[280px] lg:min-w-0 h-28 rounded-[2rem] animate-pulse glass border-white/5"
+                      className="w-full h-28 rounded-[2rem] animate-pulse glass border-white/5"
                     />
                   ))
               ) : userTeams.length > 0 ? (
