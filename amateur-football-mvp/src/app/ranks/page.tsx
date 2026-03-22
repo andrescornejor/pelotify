@@ -8,6 +8,7 @@ import { useRouter } from 'next/navigation';
 import { RANKS, getRankByElo } from '@/lib/ranks';
 import { cn } from '@/lib/utils';
 import { RankBadge } from '@/components/RankBadge';
+import { supabase } from '@/lib/supabase';
 
 const RankCard = memo(
   ({ rank, i, fadeUp, desc }: { rank: any; i: number; fadeUp: any; desc: string }) => (
