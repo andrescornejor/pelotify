@@ -96,43 +96,111 @@ const StatCard = memo(
 
 StatCard.displayName = 'StatCard';
 
-const TeamCard = memo(({ team }: { team: Team }) => (
-  <Link href={`/team?id=${team.id}`} className="min-w-[280px] lg:min-w-0 snap-center">
-    <motion.div
-      whileHover={{ scale: 1.025, y: -4 }}
-      whileTap={{ scale: 0.98 }}
-      className="group relative overflow-hidden rounded-[2rem] p-5 glass-premium-hover bg-surface/40"
-    >
-      <div className="flex items-center gap-4">
-        <div className="w-14 h-14 rounded-2xl flex items-center justify-center shrink-0 overflow-hidden border-2 border-white/10 group-hover:border-primary/40 transition-all duration-500 shadow-xl">
+const TeamCard = memo(({ team }: { team: Team & { role?: string } }) => {
+  const isCaptain = team.role === 'captain';
+
+  return (
+    <Link href={`/team?id=${team.id}`} className="w-full lg:min-w-0 snap-center">
+      <motion.div
+        whileHover={{ scale: 1.01, y: -4 }}
+        whileTap={{ scale: 0.98 }}
+        className="group relative overflow-hidden rounded-[2.5rem] p-6 lg:p-7 glass-premium-hover bg-surface/40 border border-white/5"
+      >
+        {/* Cinematic Watermark Logo */}
+        <div className="absolute -right-12 -bottom-12 w-48 h-48 opacity-[0.03] group-hover:opacity-[0.06] transition-opacity duration-700 pointer-events-none grayscale group-hover:grayscale-0">
           {team.logo_url ? (
-            <img
-              src={team.logo_url}
-              alt={team.name}
-              className="w-full h-full object-cover group-hover:scale-115 transition-transform duration-700"
-            />
+            <img src={team.logo_url} alt="" className="w-full h-full object-contain rotate-12" />
           ) : (
-            <Shield className="w-6 h-6 text-foreground/30 group-hover:text-primary transition-colors" />
+            <Shield className="w-full h-full rotate-12" />
           )}
         </div>
-        <div className="flex-1 min-w-0">
-          <h3 className="font-black text-foreground text-lg leading-none tracking-tight uppercase truncate font-kanit">
-            {team.name}
-          </h3>
-          <div className="flex items-center gap-3 mt-3">
-            <span className="flex items-center gap-1.5 text-[9px] font-black uppercase text-foreground/40">
-              <Users className="w-3 h-3 text-primary/60" /> {team.members_count}
-            </span>
-            <span className="flex items-center gap-1.5 text-[9px] font-black uppercase text-primary">
-              <Trophy className="w-3 h-3" /> {team.elo} XP
-            </span>
+
+        {/* Top Header Row */}
+        <div className="flex items-start justify-between relative z-10 mb-6">
+          <div className="flex items-center gap-5">
+            <div className="w-16 h-16 rounded-[1.5rem] flex items-center justify-center shrink-0 overflow-hidden border-2 border-white/10 group-hover:border-primary/40 transition-all duration-500 shadow-2xl relative">
+              {team.logo_url ? (
+                <img
+                  src={team.logo_url}
+                  alt={team.name}
+                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                />
+              ) : (
+                <Shield className="w-7 h-7 text-foreground/20 group-hover:text-primary transition-colors" />
+              )}
+              {/* Captain Badge Overlay */}
+              {isCaptain && (
+                <div className="absolute bottom-0 inset-x-0 bg-primary/90 text-background text-[7px] font-black uppercase py-0.5 text-center tracking-tighter">
+                  CAPITÁN
+                </div>
+              )}
+            </div>
+            <div className="min-w-0">
+              <div className="flex items-center gap-2 mb-1">
+                <span className="text-[8px] font-black uppercase tracking-[0.3em] text-primary/60">
+                  NIVEL {team.level || 1}
+                </span>
+                <div className="h-1 w-1 rounded-full bg-white/10" />
+                <span className="text-[8px] font-black uppercase tracking-[0.3em] text-foreground/20">
+                  {team.members_count} INTEGRANTES
+                </span>
+              </div>
+              <h3 className="font-black text-foreground text-2xl leading-none tracking-tighter uppercase truncate font-kanit">
+                {team.name}
+              </h3>
+            </div>
+          </div>
+          <div className="w-10 h-10 rounded-full glass border-white/5 flex items-center justify-center group-hover:bg-primary group-hover:text-background transition-all duration-500">
+            <ArrowUpRight className="w-5 h-5 transition-transform group-hover:rotate-12" />
           </div>
         </div>
-        <ArrowUpRight className="w-4 h-4 text-foreground/20 group-hover:text-primary transition-all duration-500 group-hover:rotate-12" />
-      </div>
-    </motion.div>
-  </Link>
-));
+
+        {/* Level Progress Bar */}
+        <div className="relative z-10 space-y-2 mb-6">
+          <div className="flex justify-between items-end">
+            <span className="text-[8px] font-black uppercase tracking-widest text-foreground/30">
+              EXPERIENCIA DEL CLUB
+            </span>
+            <span className="text-[10px] font-black text-primary font-kanit italic">
+              {team.xp || 0} / 1000 XP
+            </span>
+          </div>
+          <div className="h-1.5 w-full bg-white/5 rounded-full overflow-hidden border border-white/5">
+            <motion.div
+              initial={{ width: 0 }}
+              animate={{ width: `${Math.min(100, ((team.xp || 0) / 1000) * 100)}%` }}
+              className="h-full bg-gradient-to-r from-primary to-emerald-400 rounded-full shadow-[0_0_10px_rgba(44,252,125,0.3)]"
+            />
+          </div>
+        </div>
+
+        {/* Stats Grid */}
+        <div className="grid grid-cols-4 gap-3 relative z-10">
+          {[
+            { label: 'ELO', value: team.elo, color: 'text-primary' },
+            { label: 'W', value: team.wins, color: 'text-emerald-500' },
+            { label: 'D', value: team.draws, color: 'text-orange-400' },
+            { label: 'L', value: team.losses, color: 'text-rose-500' },
+          ].map((stat, i) => (
+            <div key={i} className="glass rounded-2xl p-3 flex flex-col items-center justify-center">
+              <span className="text-[7px] font-black text-foreground/20 uppercase tracking-widest mb-1">
+                {stat.label}
+              </span>
+              <span
+                className={`text-sm font-black italic font-kanit leading-none ${stat.color || 'text-foreground'}`}
+              >
+                {stat.value}
+              </span>
+            </div>
+          ))}
+        </div>
+
+        {/* Subtle Decorative Elements */}
+        <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-primary/5 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none" />
+      </motion.div>
+    </Link>
+  );
+});
 
 TeamCard.displayName = 'TeamCard';
 
@@ -912,7 +980,7 @@ export default function HomePage() {
             </div>
 
             {/* Responsive Horizontal Scroll on Mobile, Grid on Desktop */}
-            <div className="flex lg:grid lg:grid-cols-2 xl:grid-cols-3 gap-5 overflow-x-auto pb-6 lg:pb-0 no-scrollbar snap-x snap-mandatory lg:overflow-x-visible -mx-4 px-4 lg:mx-0 lg:px-0">
+            <div className="flex flex-col lg:grid lg:grid-cols-2 xl:grid-cols-3 gap-5 pb-6 lg:pb-0">
               {isLoading ? (
                 Array(3)
                   .fill(0)
