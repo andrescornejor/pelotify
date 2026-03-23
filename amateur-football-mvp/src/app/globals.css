@@ -395,6 +395,161 @@
 }
 
 /* ══════════════════════════════════════════
+   SHIMMER SKELETONS
+══════════════════════════════════════════ */
+.skeleton-shimmer {
+  position: relative;
+  overflow: hidden;
+  background: rgba(var(--foreground-rgb), 0.04);
+  border-radius: 1rem;
+}
+
+.skeleton-shimmer::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  transform: translateX(-100%);
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(var(--foreground-rgb), 0.04) 30%,
+    rgba(var(--foreground-rgb), 0.08) 50%,
+    rgba(var(--foreground-rgb), 0.04) 70%,
+    transparent 100%
+  );
+  animation: skeleton-sweep 1.8s ease-in-out infinite;
+}
+
+@keyframes skeleton-sweep {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+/* ══════════════════════════════════════════
+   BOUNCING BALL (EMPTY STATES)
+══════════════════════════════════════════ */
+.bounce-ball {
+  animation: bounce-ball 1.2s ease-in-out infinite;
+}
+
+.bounce-ball-shadow {
+  animation: bounce-shadow 1.2s ease-in-out infinite;
+}
+
+@keyframes bounce-ball {
+  0%, 100% { transform: translateY(0) scale(1, 1); }
+  10% { transform: translateY(0) scale(1.1, 0.9); }
+  30% { transform: translateY(-28px) scale(0.95, 1.05); }
+  50% { transform: translateY(-40px) scale(1, 1); }
+  70% { transform: translateY(-28px) scale(0.95, 1.05); }
+  90% { transform: translateY(0) scale(1.1, 0.9); }
+}
+
+@keyframes bounce-shadow {
+  0%, 100% { transform: scale(1); opacity: 0.25; }
+  50% { transform: scale(0.5); opacity: 0.08; }
+}
+
+/* ══════════════════════════════════════════
+   SECTION DIVIDERS
+══════════════════════════════════════════ */
+.section-divider {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem 0;
+}
+
+.section-divider::before,
+.section-divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(var(--primary-rgb), 0.15), transparent);
+}
+
+.section-divider-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: rgba(var(--primary-rgb), 0.3);
+  margin: 0 1rem;
+  box-shadow: 0 0 10px rgba(var(--primary-rgb), 0.2);
+}
+
+/* ══════════════════════════════════════════
+   SCROLL PROGRESS BAR
+══════════════════════════════════════════ */
+.scroll-progress-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 3px;
+  z-index: 9999;
+  background: linear-gradient(90deg, var(--primary-dark), var(--primary), var(--primary-light));
+  box-shadow: 0 0 10px rgba(var(--primary-rgb), 0.5), 0 0 20px rgba(var(--primary-rgb), 0.2);
+  transform-origin: left;
+  transition: transform 0.1s linear;
+  pointer-events: none;
+}
+
+/* ══════════════════════════════════════════
+   AURORA FOOTER
+══════════════════════════════════════════ */
+.aurora-footer {
+  position: relative;
+  overflow: hidden;
+}
+
+.aurora-footer::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -20%;
+  width: 140%;
+  height: 100%;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse 40% 50% at 20% 20%, rgba(var(--primary-rgb), 0.06), transparent),
+    radial-gradient(ellipse 35% 40% at 70% 10%, rgba(var(--accent-rgb), 0.04), transparent),
+    radial-gradient(ellipse 50% 60% at 50% 80%, rgba(99, 102, 241, 0.03), transparent);
+  animation: aurora-drift 12s ease-in-out infinite alternate;
+}
+
+@keyframes aurora-drift {
+  0% { transform: translateX(-5%) rotate(-1deg); }
+  50% { transform: translateX(5%) rotate(1deg); }
+  100% { transform: translateX(-3%) rotate(-0.5deg); }
+}
+
+/* ══════════════════════════════════════════
+   SPARKLE PARTICLES
+══════════════════════════════════════════ */
+.sparkle-container {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.sparkle {
+  position: absolute;
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: var(--primary);
+  opacity: 0;
+  animation: sparkle-float 2s ease-out forwards;
+}
+
+@keyframes sparkle-float {
+  0% { opacity: 0; transform: translateY(0) scale(0); }
+  20% { opacity: 1; transform: translateY(-8px) scale(1); }
+  100% { opacity: 0; transform: translateY(-30px) scale(0.3); }
+}
+
+/* ══════════════════════════════════════════
    HOVER PREMIUM CARD
 ══════════════════════════════════════════ */
 .glass-premium-hover {

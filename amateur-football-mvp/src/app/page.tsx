@@ -27,7 +27,7 @@ import {
   Hexagon,
 } from 'lucide-react';
 import Link from 'next/link';
-import { useState, useEffect, useMemo, useCallback, memo } from 'react';
+import { useState, useEffect, useMemo, useCallback, useRef, memo } from 'react';
 import dynamic from 'next/dynamic';
 import { useAuth } from '@/contexts/AuthContext';
 import { getUserMatches, Match } from '@/lib/matches';
@@ -48,51 +48,147 @@ const RatingModal = dynamic(
   }
 );
 
-const StatCard = memo(
-  ({ stat, i, isPerfMode, fadeUp }: { stat: any; i: number; isPerfMode: boolean; fadeUp: any }) => (
-    <motion.div
-      variants={isPerfMode ? {} : fadeUp}
-      initial={isPerfMode ? 'visible' : 'hidden'}
-      whileInView="visible"
-      viewport={{ once: true }}
-      custom={i}
-      className="glass-premium-hover relative overflow-hidden rounded-[2rem] p-6 cursor-default group border border-white/5"
-    >
-      {/* Top highlight line */}
-      <div
-        className="absolute top-0 inset-x-0 h-[3px] opacity-40 group-hover:opacity-100 transition-opacity"
-        style={{ background: `linear-gradient(90deg, transparent, ${stat.color}, transparent)` }}
-      />
-      {/* Subtle background glow */}
-      {!isPerfMode && (
-        <div
-          className="absolute top-0 right-0 w-16 h-16 opacity-5 blur-2xl group-hover:opacity-20 transition-opacity"
+// ── Custom Hook: Animated Counter ──
+function useCountUp(target: number | string, duration = 1200) {
+  const [count, setCount] = useState(0);
+  const [hasAnimated, setHasAnimated] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+  const numericTarget = typeof target === 'string' ? parseFloat(target) || 0 : target;
+  const isPercentage = typeof target === 'string' && target.includes('%');
+
+  useEffect(() => {
+    if (!ref.current || hasAnimated) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting && !hasAnimated) {
+          setHasAnimated(true);
+          const start = performance.now();
+          const animate = (now: number) => {
+            const elapsed = now - start;
+            const progress = Math.min(elapsed / duration, 1);
+            // Ease-out cubic
+            const eased = 1 - Math.pow(1 - progress, 3);
+            setCount(Math.round(numericTarget * eased));
+            if (progress < 1) requestAnimationFrame(animate);
+          };
+          requestAnimationFrame(animate);
+        }
+      },
+      { threshold: 0.3 }
+    );
+    observer.observe(ref.current);
+    return () => observer.disconnect();
+  }, [numericTarget, duration, hasAnimated]);
+
+  return { ref, displayValue: isPercentage ? `${count}%` : count };
+}
+
+// ── Custom Hook: Scroll Progress ──
+function useScrollProgress() {
+  const [progress, setProgress] = useState(0);
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrollTop = window.scrollY;
+      const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+      setProgress(docHeight > 0 ? scrollTop / docHeight : 0);
+    };
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+  return progress;
+}
+
+// ── Section Divider Component ──
+const SectionDivider = memo(() => (
+  <div className="section-divider">
+    <div className="section-divider-dot" />
+  </div>
+));
+SectionDivider.displayName = 'SectionDivider';
+
+// ── Sparkle Effect Component ──
+const SparkleEffect = memo(({ active }: { active: boolean }) => {
+  if (!active) return null;
+  return (
+    <div className="sparkle-container">
+      {Array.from({ length: 5 }).map((_, i) => (
+        <span
+          key={i}
+          className="sparkle"
           style={{
-            backgroundImage: `linear-gradient(to bottom right, ${stat.color}, transparent)`,
+            left: `${15 + Math.random() * 70}%`,
+            top: `${20 + Math.random() * 60}%`,
+            animationDelay: `${i * 0.15}s`,
           }}
         />
-      )}
+      ))}
+    </div>
+  );
+});
+SparkleEffect.displayName = 'SparkleEffect';
 
-      <div className="relative z-10 flex flex-col items-start gap-4">
+const StatCard = memo(
+  ({ stat, i, isPerfMode, fadeUp }: { stat: any; i: number; isPerfMode: boolean; fadeUp: any }) => {
+    const { ref, displayValue } = useCountUp(stat.value, 1200);
+    const [isHovered, setIsHovered] = useState(false);
+
+    return (
+      <motion.div
+        ref={ref}
+        variants={isPerfMode ? {} : fadeUp}
+        initial={isPerfMode ? 'visible' : 'hidden'}
+        whileInView="visible"
+        viewport={{ once: true }}
+        custom={i}
+        className="glass-premium-hover relative overflow-hidden rounded-[2rem] p-6 cursor-default group border border-white/5"
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
+      >
+        {/* Top highlight line */}
         <div
-          className="w-10 h-10 rounded-xl flex items-center justify-center transition-transform group-hover:scale-110 duration-500"
-          style={{ background: `${stat.color}15`, border: `1px solid ${stat.color}30` }}
-        >
-          <stat.icon className="w-5 h-5" style={{ color: stat.color }} />
-        </div>
-        <div>
-          <div className="flex items-baseline gap-2">
-            <p className="text-3xl font-black tracking-tighter italic leading-none text-foreground font-kanit">
-              {stat.value}
+          className="absolute top-0 inset-x-0 h-[3px] opacity-40 group-hover:opacity-100 transition-opacity"
+          style={{ background: `linear-gradient(90deg, transparent, ${stat.color}, transparent)` }}
+        />
+        {/* Subtle background glow */}
+        {!isPerfMode && (
+          <div
+            className="absolute top-0 right-0 w-16 h-16 opacity-5 blur-2xl group-hover:opacity-20 transition-opacity"
+            style={{
+              backgroundImage: `linear-gradient(to bottom right, ${stat.color}, transparent)`,
+            }}
+          />
+        )}
+
+        {/* Sparkle particles on hover */}
+        {!isPerfMode && <SparkleEffect active={isHovered} />}
+
+        <div className="relative z-10 flex flex-col items-start gap-4">
+          <div
+            className="w-10 h-10 rounded-xl flex items-center justify-center transition-transform group-hover:scale-110 duration-500"
+            style={{ background: `${stat.color}15`, border: `1px solid ${stat.color}30` }}
+          >
+            <stat.icon className="w-5 h-5" style={{ color: stat.color }} />
+          </div>
+          <div>
+            <div className="flex items-baseline gap-2">
+              <p className="text-3xl font-black tracking-tighter italic leading-none text-foreground font-kanit">
+                {displayValue}
+              </p>
+            </div>
+            <p className="text-[10px] font-black text-foreground/40 uppercase tracking-[0.2em] mt-2 font-outfit">
+              {stat.label}
             </p>
           </div>
-          <p className="text-[10px] font-black text-foreground/40 uppercase tracking-[0.2em] mt-2 font-outfit">
-            {stat.label}
-          </p>
         </div>
-      </div>
-    </motion.div>
-  )
+
+        {/* Hover tooltip */}
+        <div className="absolute -top-10 left-1/2 -translate-x-1/2 px-3 py-1.5 rounded-lg bg-surface-elevated border border-white/10 text-[9px] font-black uppercase tracking-wider text-primary whitespace-nowrap opacity-0 group-hover:opacity-100 group-hover:-top-12 transition-all duration-300 pointer-events-none shadow-xl z-20">
+          {stat.tooltip || stat.label}
+          <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-2 h-2 bg-surface-elevated border-b border-r border-white/10 rotate-45" />
+        </div>
+      </motion.div>
+    );
+  }
 );
 
 StatCard.displayName = 'StatCard';
@@ -226,6 +322,7 @@ export default function HomePage() {
   const [userTeams, setUserTeams] = useState<Team[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [totalPlayers, setTotalPlayers] = useState(0);
+  const scrollProgress = useScrollProgress();
   const [greeting, setGreeting] = useState('Buen día');
 
   const togglePerfMode = useCallback(() => {
@@ -375,6 +472,7 @@ export default function HomePage() {
         value: statsSummary.elo,
         color: '#2cfc7d',
         glow: 'rgba(44,252,125,0.2)',
+        tooltip: 'Tu puntaje competitivo',
       },
       {
         icon: Activity,
@@ -382,6 +480,7 @@ export default function HomePage() {
         value: statsSummary.totalMatches,
         color: '#6366f1',
         glow: 'rgba(99,102,241,0.2)',
+        tooltip: 'Partidos jugados',
       },
       {
         icon: Star,
@@ -389,6 +488,7 @@ export default function HomePage() {
         value: metadata?.mvp_count || 0,
         color: '#f59e0b',
         glow: 'rgba(245,158,11,0.2)',
+        tooltip: 'Veces elegido MVP',
       },
       {
         icon: Flame,
@@ -396,6 +496,7 @@ export default function HomePage() {
         value: `${statsSummary.winRate}%`,
         color: '#f43f5e',
         glow: 'rgba(244,63,94,0.2)',
+        tooltip: 'Tasa de victorias',
       },
     ],
     [statsSummary, metadata?.mvp_count]
@@ -408,6 +509,12 @@ export default function HomePage() {
         isPerfMode && 'perf-mode'
       )}
     >
+      {/* ── SCROLL PROGRESS BAR ── */}
+      <div
+        className="scroll-progress-bar"
+        style={{ transform: `scaleX(${scrollProgress})` }}
+      />
+
       {/* ── AMBIENT — Simplified for Performance ── */}
       {!isPerfMode && (
         <div className="fixed inset-0 pointer-events-none -z-10 overflow-hidden hidden md:block">
@@ -555,6 +662,23 @@ export default function HomePage() {
                   className="flex items-center gap-4 py-2"
                 >
                   <div className="h-[2px] w-12 bg-primary/30" />
+                  {/* Avatar with rank glow */}
+                  <div className="relative">
+                    <div
+                      className="absolute inset-0 rounded-full blur-md opacity-50"
+                      style={{ backgroundColor: rankCalculation.info.color }}
+                    />
+                    <div
+                      className="relative w-10 h-10 rounded-full border-2 overflow-hidden flex items-center justify-center bg-surface"
+                      style={{ borderColor: rankCalculation.info.color }}
+                    >
+                      {metadata?.avatar_url ? (
+                        <img src={metadata.avatar_url} alt="" className="w-full h-full object-cover" />
+                      ) : (
+                        <User2 className="w-5 h-5 text-foreground/40" />
+                      )}
+                    </div>
+                  </div>
                   <p className="text-foreground/60 text-lg font-medium font-outfit">
                     Bienvenido,{' '}
                     <span className="text-foreground font-black uppercase">{userName}</span>
@@ -735,6 +859,9 @@ export default function HomePage() {
               ))}
             </motion.div>
 
+            {/* ── SECTION DIVIDER ────────────── */}
+            <SectionDivider />
+
             {/* ── COMMUNITY BANNER ───────────── */}
             <motion.div
               variants={fadeUp}
@@ -784,6 +911,9 @@ export default function HomePage() {
                 </Link>
               </div>
             </motion.div>
+
+            {/* ── SECTION DIVIDER ────────────── */}
+            <SectionDivider />
 
             {/* ── ELO SYSTEM ─────────────────── */}
             <motion.section
@@ -973,6 +1103,9 @@ export default function HomePage() {
               </motion.div>
             </motion.section>
 
+            {/* ── SECTION DIVIDER ────────────── */}
+            <SectionDivider />
+
             {/* ── TEAMS ──────────────────────── */}
             <div className="flex items-center justify-between px-1">
               <div className="flex flex-col gap-1">
@@ -998,24 +1131,42 @@ export default function HomePage() {
                 Array(3)
                   .fill(0)
                   .map((_, i) => (
-                    <div
-                      key={i}
-                      className="w-full h-28 rounded-[2rem] animate-pulse glass border-white/5"
-                    />
+                    <div key={i} className="skeleton-shimmer rounded-[2rem] p-6 space-y-4">
+                      <div className="flex items-center gap-5">
+                        <div className="w-16 h-16 rounded-[1.5rem] skeleton-shimmer" />
+                        <div className="flex-1 space-y-2">
+                          <div className="h-3 w-20 rounded-full skeleton-shimmer" />
+                          <div className="h-6 w-40 rounded-full skeleton-shimmer" />
+                        </div>
+                        <div className="w-10 h-10 rounded-full skeleton-shimmer" />
+                      </div>
+                      <div className="h-2 w-full rounded-full skeleton-shimmer" />
+                      <div className="grid grid-cols-4 gap-3">
+                        {Array(4).fill(0).map((_, j) => (
+                          <div key={j} className="h-14 rounded-2xl skeleton-shimmer" />
+                        ))}
+                      </div>
+                    </div>
                   ))
               ) : userTeams.length > 0 ? (
                 userTeams.map((team) => <TeamCard key={team.id} team={team} />)
               ) : (
                 <div className="w-full col-span-full py-14 rounded-[2.5rem] flex flex-col items-center justify-center text-center gap-6 border-2 border-dashed border-foreground/5 bg-foreground/[0.01]">
-                  <div className="w-20 h-20 rounded-[2rem] glass flex items-center justify-center shadow-inner">
-                    <Users className="w-8 h-8 text-foreground/20" />
+                  {/* Bouncing Ball Animation */}
+                  <div className="relative w-20 h-24 flex flex-col items-center justify-end">
+                    <div className="bounce-ball">
+                      <div className="w-12 h-12 rounded-full bg-gradient-to-br from-foreground/10 to-foreground/5 flex items-center justify-center border border-white/10 shadow-lg">
+                        <span className="text-2xl">⚽</span>
+                      </div>
+                    </div>
+                    <div className="bounce-ball-shadow w-10 h-2 rounded-full bg-foreground/10 mt-2 blur-sm" />
                   </div>
                   <div className="space-y-2 max-w-xs">
                     <h3 className="text-xl font-black text-foreground italic uppercase font-kanit">
                       ¿Sin Gremio?
                     </h3>
                     <p className="text-[10px] text-foreground/40 font-black uppercase tracking-[0.2em] leading-relaxed">
-                      Unite a una legión o fundá tu propio club hoy mismo.
+                      Unite a una legión o fundá tu propio club. <span className="text-primary">¡Tu aventura empieza ahora!</span>
                     </p>
                   </div>
                   <Link href="/teams">
@@ -1057,7 +1208,17 @@ export default function HomePage() {
                 Array(3)
                   .fill(0)
                   .map((_, i) => (
-                    <div key={i} className="h-24 rounded-2xl animate-pulse glass border-white/5" />
+                    <div key={i} className="skeleton-shimmer rounded-2xl p-4">
+                      <div className="flex items-center gap-4">
+                        <div className="w-14 h-14 rounded-xl skeleton-shimmer" />
+                        <div className="flex-1 space-y-2">
+                          <div className="h-3 w-24 rounded-full skeleton-shimmer" />
+                          <div className="h-4 w-36 rounded-full skeleton-shimmer" />
+                          <div className="h-2 w-28 rounded-full skeleton-shimmer" />
+                        </div>
+                        <div className="w-8 h-8 rounded-full skeleton-shimmer" />
+                      </div>
+                    </div>
                   ))
               ) : userMatches.length > 0 ? (
                 userMatches.map((match, idx) => (
@@ -1188,15 +1349,21 @@ export default function HomePage() {
                 ))
               ) : (
                 <div className="rounded-[2.5rem] p-10 flex flex-col items-center justify-center text-center gap-6 glass border-white/5 border-dashed bg-foreground/[0.01]">
-                  <div className="w-16 h-16 rounded-2xl glass flex items-center justify-center shadow-lg transform rotate-3">
-                    <Calendar className="w-8 h-8 text-accent/20" />
+                  {/* Bouncing Ball Animation */}
+                  <div className="relative w-16 h-20 flex flex-col items-center justify-end">
+                    <div className="bounce-ball">
+                      <div className="w-10 h-10 rounded-full bg-gradient-to-br from-accent/20 to-accent/5 flex items-center justify-center border border-accent/20">
+                        <Calendar className="w-5 h-5 text-accent/60" />
+                      </div>
+                    </div>
+                    <div className="bounce-ball-shadow w-8 h-1.5 rounded-full bg-accent/10 mt-1.5 blur-sm" />
                   </div>
                   <div className="space-y-1">
                     <h3 className="text-base font-black text-foreground italic uppercase font-kanit">
                       Agenda Vacía
                     </h3>
                     <p className="text-[9px] text-foreground/40 font-black uppercase tracking-[0.2em] leading-relaxed">
-                      No tenés partidos confirmados aún.
+                      No tenés partidos confirmados. <span className="text-accent">¡Armá uno ya!</span>
                     </p>
                   </div>
                   <Link href="/search" className="w-full">
@@ -1262,7 +1429,7 @@ export default function HomePage() {
         {/* ═══════════════════════════════════════
             FOOTER — Socials & Essential Links
         ═══════════════════════════════════════ */}
-        <footer className="mt-20 pt-16 pb-24 lg:pb-6 border-t border-foreground/[0.05] relative overflow-hidden">
+        <footer className="aurora-footer mt-20 pt-16 pb-24 lg:pb-6 border-t border-foreground/[0.05] relative overflow-hidden">
           <div className="absolute inset-0 bg-gradient-to-t from-background via-surface/40 to-transparent pointer-events-none" />
 
           <div className="relative z-10 grid grid-cols-1 md:grid-cols-12 gap-12 lg:gap-8">
