@@ -25,6 +25,8 @@ import {
   Twitter,
   Facebook,
   Hexagon,
+  MessageSquare,
+  Swords,
 } from 'lucide-react';
 import Link from 'next/link';
 import { useState, useEffect, useMemo, useCallback, useRef, memo } from 'react';
@@ -38,6 +40,7 @@ import { getRankByElo, RANKS } from '@/lib/ranks';
 import { useSettings } from '@/contexts/SettingsContext';
 import { RankBadge } from '@/components/RankBadge';
 import { JerseyVisualizer, JerseyPattern } from '@/components/JerseyVisualizer';
+import { getRecentChats, getUnreadMessagesCount } from '@/lib/chat';
 
 // Lazy load the RatingModal since it's only shown under specific conditions
 const RatingModal = dynamic(
@@ -324,6 +327,10 @@ export default function HomePage() {
   const [totalPlayers, setTotalPlayers] = useState(0);
   const scrollProgress = useScrollProgress();
   const [greeting, setGreeting] = useState('Buen día');
+  const [recentChats, setRecentChats] = useState<any[]>([]);
+  const [unreadCount, setUnreadCount] = useState(0);
+  const [activityFeed, setActivityFeed] = useState<any[]>([]);
+  const [allUserMatches, setAllUserMatches] = useState<Match[]>([]);
 
   const togglePerfMode = useCallback(() => {
     setPerformanceMode(!isPerfMode);
@@ -334,11 +341,15 @@ export default function HomePage() {
       if (!user?.id) return;
       try {
         const { getTotalPlayersCount } = await import('@/lib/teams');
-        const [matchesData, teamsData, playersCount] = await Promise.all([
+        const [matchesData, teamsData, playersCount, chats, unread] = await Promise.all([
           getUserMatches(user.id),
           getUserTeams(user.id),
           getTotalPlayersCount(),
+          getRecentChats(user.id).catch(() => []),
+          getUnreadMessagesCount(user.id).catch(() => 0),
         ]);
+
+        setAllUserMatches(matchesData);
 
         const upcomingMatches = matchesData
           .filter((m) => {
@@ -356,6 +367,33 @@ export default function HomePage() {
         setNextMatch(upcomingMatches[0] || null);
         setUserTeams(teamsData);
         setTotalPlayers(playersCount);
+        setRecentChats(chats.slice(0, 3));
+        setUnreadCount(unread);
+
+        // Build activity feed from completed matches
+        const completed = matchesData
+          .filter((m) => m.is_completed)
+          .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+          .slice(0, 5);
+        const feed = completed.map((m) => {
+          const userTeam = (m as any).user_team;
+          const isWin = userTeam === 'A'
+            ? (m.team_a_score ?? 0) > (m.team_b_score ?? 0)
+            : (m.team_b_score ?? 0) > (m.team_a_score ?? 0);
+          const isDraw = (m.team_a_score ?? 0) === (m.team_b_score ?? 0);
+          return {
+            id: m.id,
+            type: isDraw ? 'draw' : isWin ? 'win' : 'loss',
+            scoreA: m.team_a_score ?? 0,
+            scoreB: m.team_b_score ?? 0,
+            location: m.location,
+            date: m.date,
+            matchType: m.type,
+            teamAName: m.team_a_name,
+            teamBName: m.team_b_name,
+          };
+        });
+        setActivityFeed(feed);
       } catch (err) {
         console.error('Error fetching dashboard data:', err);
       } finally {
@@ -1177,10 +1215,206 @@ export default function HomePage() {
                 </div>
               )}
             </div>
+
+            {/* ── SECTION DIVIDER ────────────── */}
+            <SectionDivider />
+
+            {/* ── ACTIVITY FEED ──────────────── */}
+            {activityFeed.length > 0 && (
+              <div className="space-y-4">
+                <div className="flex items-center justify-between px-1">
+                  <div className="flex flex-col gap-1">
+                    <h2 className="text-xl lg:text-2xl font-black text-foreground italic uppercase tracking-tighter font-kanit">
+                      Actividad Reciente
+                    </h2>
+                    <span className="text-[9px] font-black text-primary uppercase tracking-[0.4em]">
+                      TUS ÚLTIMOS RESULTADOS
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-1 text-foreground/20">
+                    <Activity className="w-4 h-4" />
+                  </div>
+                </div>
+
+                <div className="space-y-3">
+                  {activityFeed.map((item, idx) => {
+                    const isWin = item.type === 'win';
+                    const isDraw = item.type === 'draw';
+                    const venue = findVenueByLocation(item.location);
+                    const displayName = venue?.displayName || venue?.name || item.location;
+                    const relativeDate = (() => {
+                      const now = new Date();
+                      const d = new Date(item.date);
+                      const diff = Math.floor((now.getTime() - d.getTime()) / (1000 * 60 * 60 * 24));
+                      if (diff === 0) return 'Hoy';
+                      if (diff === 1) return 'Ayer';
+                      if (diff < 7) return `Hace ${diff} días`;
+                      return d.toLocaleDateString('es-AR', { day: 'numeric', month: 'short' });
+                    })();
+
+                    return (
+                      <Link key={item.id} href={`/match?id=${item.id}`}>
+                        <motion.div
+                          initial={isPerfMode ? { opacity: 1 } : { opacity: 0, x: -10 }}
+                          whileInView={{ opacity: 1, x: 0 }}
+                          viewport={{ once: true }}
+                          transition={{ delay: idx * 0.05 }}
+                          whileHover={isPerfMode ? {} : { scale: 1.01, x: 4 }}
+                          className="group flex items-center gap-4 p-4 rounded-2xl glass-premium border-white/5 hover:border-primary/20 transition-all cursor-pointer"
+                        >
+                          {/* Result badge */}
+                          <div
+                            className={cn(
+                              'w-12 h-12 rounded-xl flex items-center justify-center shrink-0 font-kanit font-black italic text-sm',
+                              isWin
+                                ? 'bg-emerald-500/10 text-emerald-500 border border-emerald-500/20'
+                                : isDraw
+                                  ? 'bg-orange-400/10 text-orange-400 border border-orange-400/20'
+                                  : 'bg-rose-500/10 text-rose-500 border border-rose-500/20'
+                            )}
+                          >
+                            {isWin ? 'W' : isDraw ? 'D' : 'L'}
+                          </div>
+
+                          {/* Info */}
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-center gap-2 mb-1">
+                              <span className="text-[8px] font-black uppercase tracking-widest text-foreground/30">
+                                {relativeDate}
+                              </span>
+                              <div className="h-1 w-1 rounded-full bg-white/10" />
+                              <span className="text-[8px] font-black uppercase tracking-widest text-primary/50">
+                                {item.matchType}
+                              </span>
+                            </div>
+                            <p className="text-sm font-black uppercase tracking-tight truncate italic font-kanit text-foreground group-hover:text-primary transition-colors">
+                              {item.teamAName && item.teamBName
+                                ? `${item.teamAName} vs ${item.teamBName}`
+                                : displayName}
+                            </p>
+                          </div>
+
+                          {/* Score */}
+                          <div className="flex items-center gap-1.5 shrink-0">
+                            <span className={cn(
+                              'text-xl font-black italic font-kanit',
+                              isWin ? 'text-emerald-500' : isDraw ? 'text-orange-400' : 'text-rose-500'
+                            )}>
+                              {item.scoreA}
+                            </span>
+                            <span className="text-[10px] font-black text-foreground/20">-</span>
+                            <span className={cn(
+                              'text-xl font-black italic font-kanit',
+                              isWin ? 'text-emerald-500' : isDraw ? 'text-orange-400' : 'text-rose-500'
+                            )}>
+                              {item.scoreB}
+                            </span>
+                          </div>
+
+                          <ChevronRight className="w-4 h-4 text-foreground/10 group-hover:text-primary transition-colors" />
+                        </motion.div>
+                      </Link>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
           </div>
 
-          {/* ═══════════ RIGHT: AGENDA ═══════════ */}
+          {/* ═══════════ RIGHT: SIDEBAR ═══════════ */}
           <aside className="lg:col-span-4 xl:col-span-4 space-y-4 lg:sticky lg:top-8">
+
+            {/* ── FEATURED MATCH (PARTIDO DESTACADO) ── */}
+            {nextMatch && (
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="relative overflow-hidden rounded-[2rem] p-6 glass-premium border-primary/15 group"
+              >
+                {/* Background glow */}
+                <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-accent/5 opacity-60 group-hover:opacity-100 transition-opacity pointer-events-none" />
+                {!isPerfMode && (
+                  <div className="absolute -top-10 -right-10 w-32 h-32 bg-primary/10 blur-[60px] rounded-full" />
+                )}
+
+                {/* Header */}
+                <div className="relative z-10 flex items-center justify-between mb-4">
+                  <div className="flex items-center gap-2">
+                    <div className="relative flex h-2 w-2">
+                      <span className={cn(
+                        'absolute inline-flex h-full w-full rounded-full bg-primary opacity-75',
+                        !isPerfMode && 'animate-ping'
+                      )} />
+                      <span className="relative inline-flex rounded-full h-2 w-2 bg-primary" />
+                    </div>
+                    <span className="text-[9px] font-black text-primary uppercase tracking-[0.3em]">
+                      PRÓXIMO PARTIDO
+                    </span>
+                  </div>
+                  <span className="px-2 py-1 rounded-lg bg-primary/10 text-primary text-[8px] font-black uppercase tracking-widest border border-primary/15">
+                    {nextMatch.type}
+                  </span>
+                </div>
+
+                {/* VS Card */}
+                <Link href={`/match?id=${nextMatch.id}`} className="block">
+                  <div className="relative z-10 flex items-center justify-center gap-4 py-5">
+                    {/* Team A */}
+                    <div className="flex-1 text-center">
+                      <div className="w-14 h-14 mx-auto rounded-2xl bg-foreground/[0.03] border border-white/5 flex items-center justify-center mb-2">
+                        <Shield className="w-7 h-7 text-foreground/20" />
+                      </div>
+                      <p className="text-[10px] font-black text-foreground uppercase tracking-tight truncate font-kanit italic">
+                        {nextMatch.team_a_name || 'Equipo A'}
+                      </p>
+                    </div>
+
+                    {/* VS */}
+                    <div className="flex flex-col items-center gap-1">
+                      <div className="w-12 h-12 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center">
+                        <Swords className="w-5 h-5 text-primary" />
+                      </div>
+                      {countdownText && (
+                        <span className="text-[8px] font-black text-primary uppercase tracking-widest whitespace-nowrap mt-1">
+                          {countdownText}
+                        </span>
+                      )}
+                    </div>
+
+                    {/* Team B */}
+                    <div className="flex-1 text-center">
+                      <div className="w-14 h-14 mx-auto rounded-2xl bg-foreground/[0.03] border border-white/5 flex items-center justify-center mb-2">
+                        <Shield className="w-7 h-7 text-foreground/20" />
+                      </div>
+                      <p className="text-[10px] font-black text-foreground uppercase tracking-tight truncate font-kanit italic">
+                        {nextMatch.team_b_name || 'Equipo B'}
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Venue + Time */}
+                  <div className="relative z-10 flex items-center justify-between p-3 rounded-xl bg-foreground/[0.02] border border-white/5 mt-2">
+                    <div className="flex items-center gap-2 min-w-0">
+                      <MapPin className="w-3 h-3 text-primary/50 shrink-0" />
+                      <span className="text-[9px] font-black text-foreground/40 uppercase tracking-wider truncate">
+                        {(() => {
+                          const venue = findVenueByLocation(nextMatch.location);
+                          return venue?.displayName || venue?.name || nextMatch.location;
+                        })()}
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-1.5 shrink-0">
+                      <Clock className="w-3 h-3 text-foreground/30" />
+                      <span className="text-[9px] font-black text-foreground/40 uppercase tracking-wider">
+                        {nextMatch.time?.split(':').slice(0, 2).join(':')}
+                      </span>
+                    </div>
+                  </div>
+                </Link>
+              </motion.div>
+            )}
+
+            {/* ── AGENDA ── */}
             <div className="flex items-center justify-between px-1">
               <div className="flex flex-col gap-1">
                 <h2 className="text-xl lg:text-2xl font-black italic text-foreground uppercase tracking-tighter leading-none">
@@ -1422,6 +1656,79 @@ export default function HomePage() {
                   )
                 )}
               </div>
+            </div>
+
+            {/* ── QUICK MESSAGES WIDGET ── */}
+            <div className="glass-premium p-5 rounded-[2rem] space-y-4 border-white/5">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="w-9 h-9 rounded-xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center">
+                    <MessageSquare className="w-4 h-4 text-indigo-400" />
+                  </div>
+                  <div>
+                    <p className="text-sm font-black text-foreground uppercase tracking-tight italic font-kanit leading-none">
+                      Mensajes
+                    </p>
+                    <p className="text-[8px] font-black text-foreground/30 uppercase tracking-[0.2em] mt-0.5">
+                      CHATS RECIENTES
+                    </p>
+                  </div>
+                </div>
+                <Link href="/messages">
+                  <div className="relative">
+                    <div className="w-9 h-9 rounded-xl glass border-white/10 flex items-center justify-center hover:bg-indigo-500/10 hover:border-indigo-500/20 transition-all">
+                      <ArrowUpRight className="w-4 h-4 text-foreground/40 hover:text-indigo-400" />
+                    </div>
+                    {unreadCount > 0 && (
+                      <span className="absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full bg-indigo-500 text-white text-[8px] font-black flex items-center justify-center shadow-lg shadow-indigo-500/30">
+                        {unreadCount > 9 ? '9+' : unreadCount}
+                      </span>
+                    )}
+                  </div>
+                </Link>
+              </div>
+
+              {recentChats.length > 0 ? (
+                <div className="space-y-2">
+                  {recentChats.map((chat, i) => (
+                    <Link key={chat.userId || i} href="/messages">
+                      <div className="flex items-center gap-3 p-3 rounded-xl hover:bg-foreground/[0.03] transition-colors group cursor-pointer">
+                        <div className="w-9 h-9 rounded-full overflow-hidden shrink-0 border border-white/10">
+                          {chat.avatar_url ? (
+                            <img src={chat.avatar_url} alt="" className="w-full h-full object-cover" />
+                          ) : (
+                            <div className="w-full h-full bg-foreground/5 flex items-center justify-center">
+                              <User2 className="w-4 h-4 text-foreground/20" />
+                            </div>
+                          )}
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <p className="text-[11px] font-black text-foreground uppercase tracking-tight truncate italic font-kanit group-hover:text-indigo-400 transition-colors">
+                            {chat.name}
+                          </p>
+                          <p className="text-[9px] text-foreground/30 font-bold truncate mt-0.5">
+                            {chat.lastMessage}
+                          </p>
+                        </div>
+                        {chat.isUnread && (
+                          <span className="w-2 h-2 rounded-full bg-indigo-400 shadow-[0_0_8px_rgba(99,102,241,0.6)] shrink-0" />
+                        )}
+                      </div>
+                    </Link>
+                  ))}
+                </div>
+              ) : (
+                <div className="py-6 text-center">
+                  <p className="text-[9px] font-black text-foreground/20 uppercase tracking-[0.2em]">
+                    Sin mensajes recientes
+                  </p>
+                  <Link href="/messages">
+                    <button className="mt-3 h-9 px-5 text-[9px] font-black uppercase tracking-widest rounded-xl bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 hover:bg-indigo-500/20 transition-colors">
+                      IR A MENSAJES
+                    </button>
+                  </Link>
+                </div>
+              )}
             </div>
           </aside>
         </div>
