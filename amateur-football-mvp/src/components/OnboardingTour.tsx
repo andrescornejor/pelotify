@@ -96,15 +96,75 @@ export function OnboardingTour() {
 
   const step = TOUR_STEPS[currentStep];
 
+  // Helper to calculate smart position
+  const getTooltipStyle = () => {
+    if (!targetRect) return {};
+
+    const padding = 20;
+    const tooltipWidth = 320; // Matches w-80
+    const tooltipHeight = 250; // Approximated
+
+    let left = 0;
+    let top = 0;
+
+    // Mobile: Center at bottom
+    if (typeof window !== 'undefined' && window.innerWidth < 768) {
+      return {
+        left: '50%',
+        bottom: '40px',
+        transform: 'translateX(-50%)',
+        width: 'calc(100% - 40px)',
+        maxWidth: '400px',
+      };
+    }
+
+    // Desktop: Initial position based on step preference
+    switch (step.position) {
+      case 'left':
+        left = targetRect.left - tooltipWidth - padding;
+        top = targetRect.top + targetRect.height / 2 - tooltipHeight / 2;
+        break;
+      case 'right':
+        left = targetRect.right + padding;
+        top = targetRect.top + targetRect.height / 2 - tooltipHeight / 2;
+        break;
+      case 'top':
+        left = targetRect.left + targetRect.width / 2 - tooltipWidth / 2;
+        top = targetRect.top - tooltipHeight - padding;
+        break;
+      case 'bottom':
+        left = targetRect.left + targetRect.width / 2 - tooltipWidth / 2;
+        top = targetRect.bottom + padding;
+        break;
+      default:
+        left = window.innerWidth / 2 - tooltipWidth / 2;
+        top = window.innerHeight / 2 - tooltipHeight / 2;
+    }
+
+    // Clamp to screen edges
+    const maxLeft = window.innerWidth - tooltipWidth - padding;
+    const maxTop = window.innerHeight - tooltipHeight - padding;
+
+    left = Math.max(padding, Math.min(left, maxLeft));
+    top = Math.max(padding, Math.min(top, maxTop));
+
+    return {
+      left: `${left}px`,
+      top: `${top}px`,
+    };
+  };
+
+  const tooltipStyle = getTooltipStyle();
+
   return (
     <div className="fixed inset-0 z-[100] pointer-events-none overflow-hidden">
-      <AnimatePresence>
+      <AnimatePresence mode="wait">
         {/* Backdrop with Spotlight Mask */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className="absolute inset-0 bg-black/60 pointer-events-auto"
+          className="absolute inset-0 bg-black/80 pointer-events-auto backdrop-blur-sm"
           style={{
             maskImage: targetRect
               ? `radial-gradient(circle ${Math.max(targetRect.width, targetRect.height) / 1.5 + 40}px at ${targetRect.left + targetRect.width / 2}px ${targetRect.top + targetRect.height / 2}px, transparent 100%, black 100%)`
@@ -121,7 +181,7 @@ export function OnboardingTour() {
             key={`ring-${currentStep}`}
             initial={{ opacity: 0, scale: 1.2 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="absolute border-2 border-primary rounded-2xl shadow-[0_0_50px_rgba(44,252,125,0.5)]"
+            className="absolute border-2 border-primary rounded-2xl shadow-[0_0_50px_rgba(44,252,125,0.5)] z-[101]"
             style={{
               left: targetRect.left - 10,
               top: targetRect.top - 10,
@@ -139,15 +199,11 @@ export function OnboardingTour() {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, scale: 0.95 }}
             className={cn(
-              "absolute pointer-events-auto w-80",
-              "glass-premium-dark p-8 rounded-[2rem] border border-primary/30 shadow-[0_30px_60px_rgba(0,0,0,0.5)]",
-              "flex flex-col gap-6"
+              "absolute pointer-events-auto",
+              "glass-premium-dark p-6 sm:p-8 rounded-[2rem] border border-primary/30 shadow-[0_30px_60px_rgba(0,0,0,0.5)]",
+              "flex flex-col gap-4 sm:gap-6 z-[102]"
             )}
-            style={{
-              // Intelligent positioning based on step.position and screen bounds
-              left: step.position === 'left' ? targetRect.left - 340 : step.position === 'right' ? targetRect.right + 20 : targetRect.left + targetRect.width / 2 - 160,
-              top: step.position === 'top' ? targetRect.top - 200 : step.position === 'bottom' ? targetRect.bottom + 20 : targetRect.top + targetRect.height / 2 - 100,
-            }}
+            style={tooltipStyle}
           >
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-xl bg-primary/20 flex items-center justify-center">
