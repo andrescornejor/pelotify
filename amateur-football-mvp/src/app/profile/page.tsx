@@ -583,6 +583,7 @@ function ProfileContent() {
                     </div>
                   </button>
                 </motion.div>
+                ) : (
                 <div className="flex flex-col sm:flex-row gap-4 w-full md:w-auto">
                   <ShareStory
                     type="profile"
