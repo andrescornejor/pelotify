@@ -21,6 +21,7 @@ import PlayerSlot from './PlayerSlot';
 import { findVenueByLocation } from '@/lib/venues';
 import dynamic from 'next/dynamic';
 import { Loader2 } from 'lucide-react';
+import { ShareStory } from './ShareStory';
 
 const VenueMap = dynamic(() => import('./VenueMap'), {
   ssr: false,
@@ -191,6 +192,27 @@ export default function PostMatchView({ match, participants, stats }: PostMatchV
             </div>
           </div>
         </div>
+      </motion.div>
+
+      {/* ── SHARE ACTION ── */}
+      <motion.div
+        initial={{ opacity: 0, scale: 0.9 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ delay: 0.8 }}
+        className="flex justify-center -mt-6 relative z-20"
+      >
+        <ShareStory
+          type="match"
+          data={{
+            location: (() => {
+              const venue = findVenueByLocation(match.location);
+              return venue?.displayName || venue?.name || match.location;
+            })(),
+            score_a: scoreA,
+            score_b: scoreB,
+          }}
+          className="h-20 px-12 rounded-[2.5rem] text-sm shadow-[0_20px_50px_rgba(16,185,129,0.3)] hover:scale-105"
+        />
       </motion.div>
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">

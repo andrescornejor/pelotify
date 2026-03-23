@@ -44,6 +44,7 @@ import { uploadUserAvatar } from '@/lib/storage';
 import { compressImage, blobToFile } from '@/lib/imageUtils';
 import { RankBadge } from '@/components/RankBadge';
 import { getRankByElo } from '@/lib/ranks';
+import { ShareStory } from '@/components/ShareStory';
 
 interface PlayerStats {
   pac: number;
@@ -582,22 +583,34 @@ function ProfileContent() {
                     </div>
                   </button>
                 </motion.div>
-              ) : (
-                <motion.button
-                  key="not-editing"
-                  initial={{ opacity: 0, scale: 0.9 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  onClick={() => {
-                    setIsEditing(true);
-                    setActiveTab('overview');
-                  }}
-                  className="w-full md:w-auto h-14 px-10 rounded-[1.5rem] glass-premium bg-foreground/5 border border-foreground/10 text-[11px] font-black uppercase tracking-[0.3em] text-foreground hover:bg-foreground/10 hover:border-primary/40 focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all flex items-center justify-center gap-3 group active:scale-95 shadow-xl"
-                >
-                  <div className="p-2 rounded-xl bg-primary/10 group-hover:bg-primary/20 transition-colors">
-                    <Edit2 className="w-4 h-4 text-primary group-hover:rotate-12 transition-transform duration-500" />
-                  </div>
-                  Modificar Specs
-                </motion.button>
+                <div className="flex flex-col sm:flex-row gap-4 w-full md:w-auto">
+                  <ShareStory
+                    type="profile"
+                    data={{
+                      ...displayPlayer,
+                      name: displayPlayer.name,
+                      overall: displayPlayer.overall,
+                      position: displayPlayer.position,
+                      image: getField('avatar_url', undefined) as string | undefined,
+                    }}
+                    className="w-full md:w-auto"
+                  />
+                  <motion.button
+                    key="not-editing"
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    onClick={() => {
+                      setIsEditing(true);
+                      setActiveTab('overview');
+                    }}
+                    className="w-full md:w-auto h-14 px-10 rounded-[1.5rem] glass-premium bg-foreground/5 border border-foreground/10 text-[11px] font-black uppercase tracking-[0.3em] text-foreground hover:bg-foreground/10 hover:border-primary/40 focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all flex items-center justify-center gap-3 group active:scale-95 shadow-xl"
+                  >
+                    <div className="p-2 rounded-xl bg-primary/10 group-hover:bg-primary/20 transition-colors">
+                      <Edit2 className="w-4 h-4 text-primary group-hover:rotate-12 transition-transform duration-500" />
+                    </div>
+                    Modificar Specs
+                  </motion.button>
+                </div>
               )}
             </AnimatePresence>
           </motion.div>

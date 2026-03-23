@@ -11,6 +11,9 @@ export function useMatchSearch() {
   const [joinedIds, setJoinedIds] = useState<Set<string>>(new Set());
   const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
+  const [typeFilter, setTypeFilter] = useState<'All' | 'F5' | 'F7' | 'F11'>('All');
+  const [maxPrice, setMaxPrice] = useState<number>(Infinity);
+  const [onlyAvailable, setOnlyAvailable] = useState(false);
 
   useEffect(() => {
     const fetchMatches = async () => {
@@ -35,6 +38,20 @@ export function useMatchSearch() {
       if (match.is_completed) return false;
       if (match.is_private) return false;
 
+      // Type Filter
+      if (typeFilter !== 'All' && match.type !== typeFilter) return false;
+
+      // Price Filter
+      if (match.price > maxPrice) return false;
+
+      // Availability Filter
+      if (onlyAvailable) {
+        const maxPlayers = match.type === 'F5' ? 10 : match.type === 'F7' ? 14 : 22;
+        const countObj = match.participants?.[0];
+        const currentPlayers = typeof countObj === 'number' ? countObj : countObj?.count || 0;
+        if (currentPlayers >= maxPlayers) return false;
+      }
+
       // Hide past matches from radar
       const matchStart = new Date(`${match.date}T${match.time}`);
       const matchEnd = new Date(matchStart.getTime() + 60 * 60 * 1000);
@@ -57,7 +74,7 @@ export function useMatchSearch() {
 
       return false;
     });
-  }, [matches, searchQuery]);
+  }, [matches, searchQuery, typeFilter, maxPrice, onlyAvailable]);
 
   return {
     matches,
@@ -66,5 +83,11 @@ export function useMatchSearch() {
     isLoading,
     searchQuery,
     setSearchQuery,
+    typeFilter,
+    setTypeFilter,
+    maxPrice,
+    setMaxPrice,
+    onlyAvailable,
+    setOnlyAvailable,
   };
 }

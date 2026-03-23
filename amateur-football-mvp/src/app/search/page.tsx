@@ -31,7 +31,17 @@ const MapSearch = dynamic(() => import('@/components/MapSearch'), {
 
 export default function SearchPage() {
   const [activeTab, setActiveTab] = useState<'list' | 'map'>('list');
-  const { filteredMatches, joinedIds, isLoading, searchQuery, setSearchQuery } = useMatchSearch();
+  const {
+    filteredMatches,
+    joinedIds,
+    isLoading,
+    searchQuery,
+    setSearchQuery,
+    typeFilter,
+    setTypeFilter,
+    onlyAvailable,
+    setOnlyAvailable,
+  } = useMatchSearch();
   const { performanceMode: isPerfMode } = useSettings();
 
   return (
@@ -90,7 +100,7 @@ export default function SearchPage() {
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-end">
-            <div className="lg:col-span-8 space-y-4">
+            <div className="lg:col-span-8 space-y-6">
               <div className="relative group">
                 <div className="absolute inset-y-0 left-7 flex items-center pointer-events-none">
                   <Search className="w-6 h-6 text-foreground/20 group-focus-within:text-primary transition-all duration-500" />
@@ -103,8 +113,46 @@ export default function SearchPage() {
                   className="w-full h-16 lg:h-20 pl-16 lg:pl-20 pr-10 rounded-[1.8rem] lg:rounded-[2.5rem] bg-foreground/[0.03] border border-foreground/10 focus:bg-foreground/[0.05] focus:border-primary/30 outline-none transition-all text-lg lg:text-xl font-black text-foreground placeholder:text-foreground/20 placeholder:italic shadow-2xl focus:shadow-primary/5"
                 />
                 <div className="absolute inset-y-0 right-10 flex items-center">
-                  <Filter className="w-6 h-6 text-foreground/10 cursor-pointer hover:text-primary transition-colors" />
+                  <Filter className="w-6 h-6 text-primary cursor-pointer hover:text-primary transition-colors" />
                 </div>
+              </div>
+
+              {/* Advanced Filters */}
+              <div className="flex flex-wrap items-center gap-3 px-2">
+                <div className="flex items-center p-1 bg-foreground/5 rounded-2xl border border-foreground/5 gap-1">
+                  {(['All', 'F5', 'F7', 'F11'] as const).map((type) => (
+                    <button
+                      key={type}
+                      onClick={() => setTypeFilter(type)}
+                      className={cn(
+                        'px-5 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest italic transition-all',
+                        typeFilter === type
+                          ? 'bg-primary text-black shadow-lg shadow-primary/20'
+                          : 'text-foreground/40 hover:text-foreground/60 hover:bg-foreground/5'
+                      )}
+                    >
+                      {type === 'All' ? 'TODOS' : type}
+                    </button>
+                  ))}
+                </div>
+
+                <div className="h-8 w-px bg-foreground/10 mx-1 hidden sm:block" />
+
+                <button
+                  onClick={() => setOnlyAvailable(!onlyAvailable)}
+                  className={cn(
+                    'flex items-center gap-3 px-6 py-3.5 rounded-2xl border transition-all text-[10px] font-black uppercase tracking-widest italic',
+                    onlyAvailable
+                      ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400 shadow-lg shadow-emerald-500/5'
+                      : 'bg-foreground/5 border-foreground/5 text-foreground/40 hover:border-foreground/10'
+                  ) + ' active:scale-95'}
+                >
+                  <div className={cn(
+                    'w-1.5 h-1.5 rounded-full',
+                    onlyAvailable ? 'bg-emerald-400 animate-pulse' : 'bg-foreground/20'
+                  )} />
+                  Solo con cupo
+                </button>
               </div>
             </div>
 

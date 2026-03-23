@@ -40,6 +40,7 @@ import { getRankByElo, RANKS } from '@/lib/ranks';
 import { useSettings } from '@/contexts/SettingsContext';
 import { RankBadge } from '@/components/RankBadge';
 import { JerseyVisualizer, JerseyPattern } from '@/components/JerseyVisualizer';
+import { OnboardingTour } from '@/components/OnboardingTour';
 import { getRecentChats, getUnreadMessagesCount } from '@/lib/chat';
 
 // Lazy load the RatingModal since it's only shown under specific conditions
@@ -547,6 +548,7 @@ export default function HomePage() {
         isPerfMode && 'perf-mode'
       )}
     >
+      <OnboardingTour />
       {/* ── SCROLL PROGRESS BAR ── */}
       <div
         className="scroll-progress-bar"
@@ -701,10 +703,10 @@ export default function HomePage() {
                 >
                   <div className="h-[2px] w-12 bg-primary/30" />
                   {/* Avatar with rank glow */}
-                  <div className="relative">
+                  <div id="hero-avatar" className="relative group/avatar">
                     <div
-                      className="absolute inset-0 rounded-full blur-md opacity-50"
-                      style={{ backgroundColor: rankCalculation.info.color }}
+                      className="absolute -inset-4 blur-2xl rounded-full opacity-40 group-hover/avatar:opacity-70 transition-opacity"
+                      style={{ backgroundColor: rankCalculation.rank.glow }}
                     />
                     <div
                       className="relative w-10 h-10 rounded-full border-2 overflow-hidden flex items-center justify-center bg-surface"
@@ -766,7 +768,7 @@ export default function HomePage() {
                   </div>
                 ))}
               </motion.div>
-            </div>
+            </motion.div>
 
             {/* Right: Modern CTA Cards */}
             <motion.div
@@ -880,7 +882,8 @@ export default function HomePage() {
           {/* ═══════════ LEFT COLUMN ═══════════ */}
           <div className="lg:col-span-8 xl:col-span-8 space-y-6">
             {/* ── STAT CARDS ─────────────────── */}
-            <motion.div
+            <section
+              id="stat-cards"
               initial="hidden"
               animate="visible"
               variants={{ visible: { transition: { staggerChildren: 0.08 } } }}
@@ -895,7 +898,7 @@ export default function HomePage() {
                   fadeUp={fadeUp}
                 />
               ))}
-            </motion.div>
+            </section>
 
             {/* ── SECTION DIVIDER ────────────── */}
             <SectionDivider />
@@ -1221,7 +1224,7 @@ export default function HomePage() {
 
             {/* ── ACTIVITY FEED ──────────────── */}
             {activityFeed.length > 0 && (
-              <div className="space-y-4">
+              <section id="activity-feed" className="space-y-4">
                 <div className="flex items-center justify-between px-1">
                   <div className="flex flex-col gap-1">
                     <h2 className="text-xl lg:text-2xl font-black text-foreground italic uppercase tracking-tighter font-kanit">

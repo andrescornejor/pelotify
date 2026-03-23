@@ -23,6 +23,7 @@ interface AuthContextType {
   register: (data: any) => Promise<{ needsConfirmation: boolean }>;
   logout: () => Promise<void>;
   deleteAccount: () => Promise<void>;
+  completeTour: () => Promise<void>;
   isLoading: boolean;
 }
 
@@ -367,6 +368,19 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         register,
         logout,
         deleteAccount,
+        completeTour: async () => {
+          if (!user) return;
+          console.log('Completing tour for user:', user.id);
+          const { error } = await supabase.auth.updateUser({
+            data: { tour_completed: true }
+          });
+          if (!error) {
+            setUser({
+              ...user,
+              user_metadata: { ...user.user_metadata, tour_completed: true }
+            });
+          }
+        },
         isLoading,
       }}
     >
