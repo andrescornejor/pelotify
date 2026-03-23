@@ -112,7 +112,7 @@ export const RankBadge = memo(
           className={cn(
             'relative flex items-center justify-center rounded-2xl overflow-hidden transition-all duration-500',
             SIZES[size],
-            isLight ? 'bg-white shadow-sm border-zinc-200' : 'glass-premium border',
+            isLight ? 'bg-white/80 backdrop-blur-md shadow-sm border-zinc-200' : 'glass-premium border',
             !isLight && config.border
           )}
           style={{

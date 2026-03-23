@@ -173,36 +173,21 @@ export function FifaCard({ player }: FifaCardProps) {
 
         {/* Top-left: Rating & Position */}
         <div className="absolute top-5 left-5 flex flex-col items-center z-30 gap-1 drop-shadow-2xl">
-          <motion.span
-            animate={{
-              textShadow: isLight
-                ? [
-                    '0 0 10px rgba(16,185,129,0.1)',
-                    '0 0 15px rgba(16,185,129,0.2)',
-                    '0 0 10px rgba(16,185,129,0.1)',
-                  ]
-                : [
-                    '0 0 15px rgba(255,255,255,0.3)',
-                    '0 0 25px rgba(255,255,255,0.5)',
-                    '0 0 15px rgba(255,255,255,0.3)',
-                  ],
-            }}
-            transition={{ duration: 3, repeat: Infinity }}
-            className="text-[2.8rem] font-black italic leading-none"
-            style={{
-              backgroundImage: isLight
-                ? 'linear-gradient(180deg, #10b981 0%, #059669 100%)'
-                : 'linear-gradient(180deg, #ffffff 0%, #c8d8d0 70%, #8ab0a0 100%)',
-              backgroundClip: 'text',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-              filter: isLight 
-                ? 'drop-shadow(0 2px 4px rgba(0,0,0,0.1))' 
-                : 'drop-shadow(0 4px 8px rgba(0,0,0,0.8))',
-            }}
-          >
-            {player.overall}
-          </motion.span>
+          <div className="relative group filter drop-shadow-[0_2px_8px_rgba(16,185,129,0.15)]">
+            <span
+              className="text-[2.8rem] font-black italic leading-none inline-block"
+              style={{
+                backgroundImage: isLight
+                  ? 'linear-gradient(180deg, #10b981 0%, #059669 100%)'
+                  : 'linear-gradient(180deg, #ffffff 0%, #c8d8d0 70%, #8ab0a0 100%)',
+                backgroundClip: 'text',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+              }}
+            >
+              {player.overall}
+            </span>
+          </div>
           <div className="flex flex-col items-center gap-1">
             <span
               className={cn(
