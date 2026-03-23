@@ -190,9 +190,10 @@ export function FifaCard({ player }: FifaCardProps) {
             transition={{ duration: 3, repeat: Infinity }}
             className="text-[2.8rem] font-black italic leading-none"
             style={{
-              background: isLight
+              backgroundImage: isLight
                 ? 'linear-gradient(180deg, #10b981 0%, #059669 100%)'
                 : 'linear-gradient(180deg, #ffffff 0%, #c8d8d0 70%, #8ab0a0 100%)',
+              backgroundClip: 'text',
               WebkitBackgroundClip: 'text',
               WebkitTextFillColor: 'transparent',
               filter: isLight 
