@@ -183,14 +183,14 @@ export function OnboardingTour() {
 
     if (typeof window === 'undefined') return {};
 
-    // Mobile: Floating Card Above Nav
+    // Mobile: Floating Card Above Nav (Robust Centering)
     if (window.innerWidth < 768) {
       return {
-        left: '50%',
+        left: '20px',
+        right: '20px',
         bottom: '120px', // Above BottomNav (96px + margin)
         top: 'auto',
-        transform: 'translateX(-50%)',
-        width: 'calc(100% - 48px)',
+        width: 'auto',
         maxWidth: '400px',
         borderRadius: '2.5rem',
       };
