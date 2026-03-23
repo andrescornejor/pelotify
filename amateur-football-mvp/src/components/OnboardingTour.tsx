@@ -129,8 +129,22 @@ export function OnboardingTour() {
 
     if (typeof window === 'undefined') return {};
 
-    // Mobile or Center variant
-    if (window.innerWidth < 768 || step.position === 'center') {
+    // Mobile: Bottom Sheet Style
+    if (window.innerWidth < 768) {
+      return {
+        left: '0px',
+        bottom: '0px',
+        top: 'auto',
+        transform: 'none',
+        width: '100%',
+        maxWidth: 'none',
+        borderRadius: '2.5rem 2.5rem 0 0',
+        paddingBottom: 'max(24px, env(safe-area-inset-bottom))',
+      };
+    }
+
+    // Center variant (Desktop)
+    if (step.position === 'center') {
       return {
         left: '50%',
         top: '50%',
@@ -227,12 +241,15 @@ export function OnboardingTour() {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, scale: 0.95 }}
             className={cn(
-              "absolute pointer-events-auto",
-              "glass-premium-dark p-6 sm:p-8 rounded-[2.5rem] border border-primary/30 shadow-[0_40px_80px_rgba(0,0,0,0.6)]",
-              "flex flex-col gap-5 sm:gap-6 z-[102]"
+              "absolute pointer-events-auto transition-[left,top,bottom,width] duration-500",
+              "glass-premium-dark p-6 sm:p-8 border border-primary/30 shadow-[0_40px_80px_rgba(0,0,0,0.6)]",
+              "flex flex-col gap-5 sm:gap-6 z-[102]",
+              window.innerWidth < 768 ? "rounded-t-[3rem] border-x-0 border-b-0" : "rounded-[2.5rem] border"
             )}
             style={tooltipStyle}
           >
+            {/* Mobile Drag Handle */}
+            <div className="w-12 h-1.5 bg-white/10 rounded-full mx-auto mb-2 sm:hidden" />
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-4">
                 <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center border border-primary/20">
