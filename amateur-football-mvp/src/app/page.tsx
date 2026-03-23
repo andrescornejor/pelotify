@@ -215,12 +215,21 @@ export default function HomePage() {
         if (matchesRes.data?.[0]) setNextMatch(matchesRes.data[0]);
         if (playersCountRes.count) setTotalPlayers(playersCountRes.count);
 
-        // Simulated activities for MVP
-        setActivities([
-          { type: 'RANK_UP', user: 'Carlos M.', detail: 'Bronce -> Plata', time: '2m' },
-          { type: 'MATCH_WIN', user: 'Los Galacticos', detail: 'Vencieron 5-3 a Inter', time: '15m' },
-          { type: 'MVP', user: 'Andres C.', detail: 'Elegido jugador del partido', time: '1h' },
-        ]);
+        // Fetch Recent Members as real activity
+        const { data: recentProfiles } = await supabase
+          .from('profiles')
+          .select('full_name, created_at, elo')
+          .order('created_at', { ascending: false })
+          .limit(5);
+
+        if (recentProfiles) {
+          setActivities(recentProfiles.map(p => ({
+            type: 'RANK_UP',
+            user: p.full_name || 'Nuevo Jugador',
+            detail: `se ha unido a la liga con ${p.elo || 1000} ELO`,
+            time: 'Reciente'
+          })));
+        }
       } catch (err) {
         console.error(err);
       } finally {
@@ -1101,11 +1110,11 @@ export default function HomePage() {
           <div className="grid grid-cols-1 md:grid-cols-12 gap-12 lg:gap-8">
             <div className="md:col-span-4 space-y-6">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-primary rounded-xl flex items-center justify-center font-black italic text-background text-lg">P</div>
+                <img src="/logo_pelotify.png" alt="Pelotify Logo" className="w-12 h-12 object-contain" />
                 <span className="text-xl font-black italic uppercase tracking-tighter text-foreground font-kanit">PELOTIFY</span>
               </div>
               <p className="text-[10px] text-foreground/40 font-black uppercase tracking-[0.2em] leading-relaxed max-w-sm">
-                LA PLATAFORMA DEFINITIVA PARA EL FTBOL AMATEUR COMPETITIVO. DOMINA LA CANCHA.
+                LA PLATAFORMA DEFINITIVA PARA EL FÚTBOL AMATEUR COMPETITIVO. DOMINA LA CANCHA.
               </p>
             </div>
           </div>
