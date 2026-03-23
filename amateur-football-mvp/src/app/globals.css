@@ -107,14 +107,7 @@
   }
 
   body {
-    @apply text-foreground overflow-x-hidden;
-    background: 
-      linear-gradient(rgba(2, 2, 5, 0.94), rgba(2, 2, 5, 0.94)),
-      url('/app_bg.png');
-    background-size: cover;
-    background-position: center bottom;
-    background-attachment: fixed;
-    background-repeat: no-repeat;
+    @apply bg-background text-foreground overflow-x-hidden;
     -webkit-overflow-scrolling: touch;
   }
 
