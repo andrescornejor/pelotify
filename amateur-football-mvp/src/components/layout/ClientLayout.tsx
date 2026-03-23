@@ -36,7 +36,10 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
   }
 
   return (
-    <div className="flex min-h-[100dvh] w-full relative bg-background">
+    <div className={cn(
+      "flex min-h-[100dvh] w-full relative bg-background",
+      !isAuthPage && "app-bg-pitch"
+    )}>
       <div
         ref={scrollContainerRef}
         className={cn(

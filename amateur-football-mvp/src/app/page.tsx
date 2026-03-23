@@ -404,24 +404,13 @@ export default function HomePage() {
   return (
     <div
       className={cn(
-        'relative min-h-screen font-sans selection:bg-primary selection:text-background',
+        'relative min-h-screen bg-background font-sans selection:bg-primary selection:text-background',
         isPerfMode && 'perf-mode'
       )}
     >
-      {/* ── PREMIUM BACKGROUND IMAGE ── */}
-      <div 
-        className="fixed inset-0 z-0 pointer-events-none opacity-[0.15] grayscale-[0.2]"
-        style={{
-          backgroundImage: "url('/main_bg.png')",
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-          backgroundAttachment: 'fixed'
-        }}
-      />
-
       {/* ── AMBIENT — Simplified for Performance ── */}
       {!isPerfMode && (
-        <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden hidden md:block">
+        <div className="fixed inset-0 pointer-events-none -z-10 overflow-hidden hidden md:block">
           <div
             className="absolute top-[-5%] right-[-5%] w-[40%] h-[40%] opacity-[0.05]"
             style={{ background: 'radial-gradient(circle, #2cfc7d 0%, transparent 70%)' }}
