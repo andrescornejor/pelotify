@@ -3,6 +3,8 @@
 import React, { useRef, useState } from 'react';
 import { toBlob } from 'html-to-image';
 import { Share2, Loader2, Trophy, Zap, MapPin, Calendar } from 'lucide-react';
+import { Share } from '@capacitor/share';
+import { Filesystem, Directory } from '@capacitor/filesystem';
 import { cn } from '@/lib/utils';
 import { FifaCard } from './FifaCard';
 
@@ -26,35 +28,57 @@ export function ShareStory({ type, data, trigger, className }: ShareStoryProps) 
       const blob = await toBlob(containerRef.current, {
         quality: 0.95,
         cacheBust: true,
-        pixelRatio: 2, // Retína quality
+        pixelRatio: 1.5, // Reduced for mobile memory safety
       });
 
       if (!blob) throw new Error('Generation failed');
 
-      // 2. Prepare file for sharing
       const fileName = `pelotify-${type}-${Date.now()}.png`;
-      const file = new File([blob], fileName, { type: 'image/png' });
 
-      // 3. Check if sharing is supported
-      if (navigator.share && navigator.canShare({ files: [file] })) {
-        await navigator.share({
-          files: [file],
-          title: type === 'profile' ? `Ficha de ${data.name}` : `Resultado: ${data.location}`,
-          text: 'Mirá mi progreso en Pelotify 🏟️',
-        });
-      } else {
-        // Fallback: Download the image
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = fileName;
-        a.click();
-        URL.revokeObjectURL(url);
-        alert('Imagen descargada. ¡Compártela en tus historias!');
-      }
+      // 2. Prepare file & SHARE via Capacitor (Native Android)
+      const reader = new FileReader();
+      reader.readAsDataURL(blob);
+      reader.onloadend = async () => {
+        const base64data = (reader.result as string).split(',')[1];
+        
+        try {
+          // Write to temporary file
+          const result = await Filesystem.writeFile({
+            path: fileName,
+            data: base64data,
+            directory: Directory.Cache,
+          });
+
+          // Share native file
+          await Share.share({
+            title: type === 'profile' ? `Ficha de ${data.name}` : `Resultado: ${data.location}`,
+            text: 'Mirá mi progreso en Pelotify 🏟️',
+            url: result.uri,
+          });
+        } catch (shareErr) {
+          console.error('Native sharing failed, falling back to Web Share:', shareErr);
+          
+          // Fallback to Web Share or Download if Filesystem fails
+          const file = new File([blob], fileName, { type: 'image/png' });
+          if (navigator.share && navigator.canShare({ files: [file] })) {
+            await navigator.share({
+              files: [file],
+              title: type === 'profile' ? `Ficha de ${data.name}` : `Resultado: ${data.location}`,
+              text: 'Mirá mi progreso en Pelotify 🏟️',
+            });
+          } else {
+             const url = URL.createObjectURL(blob);
+             const a = document.createElement('a');
+             a.href = url;
+             a.download = fileName;
+             a.click();
+             URL.revokeObjectURL(url);
+          }
+        }
+      };
     } catch (err) {
       console.error('Sharing error:', err);
-      alert('Error generisando la imagen.');
+      alert('Error generando la imagen.');
     } finally {
       setIsGenerating(false);
     }
@@ -84,8 +108,8 @@ export function ShareStory({ type, data, trigger, className }: ShareStoryProps) 
         )}
       </button>
 
-      {/* Hidden container for image generation (9:16 Aspect Ratio) */}
-      <div className="fixed left-[-9999px] top-[-9999px] pointer-events-none">
+      {/* Rendering target (Transparent, not off-screen) */}
+      <div className="fixed inset-0 pointer-events-none opacity-0 z-[-50] overflow-hidden">
         <div
           ref={containerRef}
           className="w-[1080px] h-[1920px] bg-background relative flex flex-col items-center justify-between p-24 overflow-hidden"
