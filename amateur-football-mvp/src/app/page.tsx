@@ -98,6 +98,7 @@ StatCard.displayName = 'StatCard';
 
 const TeamCard = memo(({ team }: { team: Team & { role?: string } }) => {
   const isCaptain = team.role === 'captain';
+  const { performanceMode: isPerfMode } = useSettings();
 
   return (
     <Link href={`/team?id=${team.id}`} className="block w-full lg:min-w-0 snap-center">
