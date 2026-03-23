@@ -1110,14 +1110,43 @@ export default function HomePage() {
                    </Link>
                  </div>
                ) : (
-                 <div className="py-2">
-                   <EmptyState 
-                    icon={Calendar}
-                    title="Agenda Libre"
-                    description="No tenés partidos confirmados para hoy. ¿Te animás a armar uno?"
-                    actionText="BUSCAR MATCH"
-                    actionHref="/search"
-                  />
+                 <div className="relative group/agenda overflow-hidden rounded-[2rem] p-8 flex flex-col items-center text-center gap-6 border border-white/5 bg-gradient-to-b from-surface/50 to-transparent">
+                    {/* Cinematic Spotlight */}
+                    <div className="absolute top-0 left-1/2 -translate-x-1/2 w-48 h-48 bg-primary/10 blur-[60px] rounded-full pointer-events-none opacity-0 group-hover/agenda:opacity-100 transition-opacity duration-700" />
+                    
+                    <div className="relative">
+                      <div className="absolute inset-0 bg-primary/20 blur-xl rounded-full scale-0 group-hover/agenda:scale-150 transition-transform duration-1000 opacity-20" />
+                      <Calendar className="w-12 h-12 text-foreground/10 group-hover/agenda:text-primary/30 transition-colors duration-500" />
+                    </div>
+
+                    <div className="space-y-1 relative z-10">
+                      <h4 className="text-xl font-black italic uppercase tracking-tighter text-foreground font-kanit">Agenda Libre</h4>
+                      <p className="text-[10px] font-black text-foreground/30 uppercase tracking-[0.2em] leading-relaxed">
+                        No tenés partidos para hoy.<br/>Es el momento ideal para reclutar.
+                      </p>
+                    </div>
+
+                    <Link href="/search" className="w-full relative z-10">
+                      <motion.button 
+                        whileHover={{ scale: 1.02 }}
+                        whileTap={{ scale: 0.98 }}
+                        className="w-full h-12 rounded-2xl bg-primary text-black font-black uppercase text-[11px] tracking-[0.3em] flex items-center justify-center gap-3 relative overflow-hidden group/btn shadow-[0_0_20px_rgba(44,252,125,0.15)] hover:shadow-[0_0_30px_rgba(44,252,125,0.3)] transition-all"
+                      >
+                        <div className="absolute inset-0 bg-white/20 translate-y-full group-hover/btn:translate-y-0 transition-transform duration-300" />
+                        <Search className="w-4 h-4 relative z-10" />
+                        <span className="relative z-10">BUSCAR MATCH</span>
+                        {/* Pulse effect */}
+                        <div className="absolute w-full h-full animate-pulse bg-white/5 rounded-full" />
+                      </motion.button>
+                    </Link>
+
+                    {/* Tip of the day */}
+                    <div className="mt-2 pt-4 border-t border-white/5 w-full flex flex-col gap-2 opacity-60 group-hover/agenda:opacity-100 transition-opacity">
+                      <span className="text-[8px] font-black text-primary uppercase tracking-[0.4em]">PRO-TIP</span>
+                      <p className="text-[9px] font-medium text-foreground/40 italic">
+                        "Un buen pase al hueco rompe cualquier defensa cerrada. Usá el radar para anticipar."
+                      </p>
+                    </div>
                  </div>
                )}
             </div>
