@@ -1,11 +1,10 @@
-'use client';
-
 import { motion, useMotionValue, useTransform, useSpring } from 'framer-motion';
 import { Star, Award } from 'lucide-react';
 import { useRef } from 'react';
 import { cn } from '@/lib/utils';
 import { getRankByElo } from '@/lib/ranks';
 import { RankBadge } from './RankBadge';
+import { useTheme } from '@/contexts/ThemeContext';
 
 interface FifaCardProps {
   player: {
@@ -30,7 +29,12 @@ interface FifaCardProps {
 
 export function FifaCard({ player }: FifaCardProps) {
   const ref = useRef<HTMLDivElement>(null);
+  const { theme } = useTheme();
   const rank = getRankByElo(player.overall);
+  
+  // Determine if we should use light mode styles
+  // We check for 'light' theme explicitly
+  const isLight = theme === 'light';
 
   const x = useMotionValue(0);
   const y = useMotionValue(0);
@@ -69,26 +73,40 @@ export function FifaCard({ player }: FifaCardProps) {
       animate={{ opacity: 1, y: 0, scale: 1 }}
       transition={{ type: 'spring', stiffness: 200, damping: 22 }}
       style={{ rotateX, rotateY, transformStyle: 'preserve-3d', perspective: '1000px' }}
-      className="relative w-72 h-[430px] mx-auto cursor-default select-none"
+      className="relative w-72 h-[430px] mx-auto cursor-default select-none group"
     >
       {/* Card shadow */}
       <div
-        className="absolute -bottom-6 left-1/2 -translate-x-1/2 w-52 h-6 rounded-full"
-        style={{ background: 'rgba(16,185,129,0.25)', filter: 'blur(16px)' }}
+        className="absolute -bottom-6 left-1/2 -translate-x-1/2 w-52 h-6 rounded-full transition-all duration-500"
+        style={{ 
+          background: isLight ? 'rgba(16,185,129,0.15)' : 'rgba(16,185,129,0.3)', 
+          filter: 'blur(16px)',
+          opacity: isLight ? 0.4 : 1
+        }}
       />
 
       <div
-        className="w-full h-full rounded-[2.5rem] overflow-hidden relative"
+        className={cn(
+          "w-full h-full rounded-[2.5rem] overflow-hidden relative transition-all duration-500",
+          isLight ? "border-zinc-200/80 shadow-2xl" : "border-primary/25 shadow-black/60"
+        )}
         style={{
-          background: 'linear-gradient(145deg, #081a12 0%, #031309 50%, #010d06 100%)',
-          border: '1.5px solid rgba(16,185,129,0.25)',
-          boxShadow:
-            '0 30px 70px rgba(0,0,0,0.6), 0 0 0 1px rgba(16,185,129,0.1), inset 0 1px 0 rgba(16,185,129,0.15)',
+          background: isLight 
+            ? 'linear-gradient(145deg, #ffffff 0%, #f1f5f9 50%, #e2e8f0 100%)'
+            : 'linear-gradient(145deg, #081a12 0%, #031309 50%, #010d06 100%)',
+          borderWidth: '1.5px',
+          borderStyle: 'solid',
+          boxShadow: isLight
+            ? '0 30px 60px -12px rgba(0,0,0,0.15), inset 0 1px 0 rgba(255,255,255,1)'
+            : '0 30px 70px rgba(0,0,0,0.6), 0 0 0 1px rgba(16,185,129,0.1), inset 0 1px 0 rgba(16,185,129,0.15)',
         }}
       >
         {/* Texture overlay */}
         <div
-          className="absolute inset-0 opacity-15 mix-blend-overlay"
+          className={cn(
+            "absolute inset-0 transition-opacity duration-500 mix-blend-overlay",
+            isLight ? "opacity-[0.03]" : "opacity-15"
+          )}
           style={{
             backgroundImage: "url('https://www.transparenttextures.com/patterns/carbon-fibre.png')",
           }}
@@ -96,12 +114,13 @@ export function FifaCard({ player }: FifaCardProps) {
 
         {/* Top radial glow */}
         <motion.div
-          animate={{ opacity: [0.12, 0.22, 0.12] }}
+          animate={{ opacity: isLight ? [0.05, 0.1, 0.05] : [0.12, 0.22, 0.12] }}
           transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
           className="absolute inset-0"
           style={{
-            background:
-              'radial-gradient(ellipse at 60% 30%, rgba(16,185,129,0.2) 0%, transparent 65%)',
+            background: isLight
+              ? 'radial-gradient(ellipse at 60% 30%, rgba(16,185,129,0.1) 0%, transparent 65%)'
+              : 'radial-gradient(ellipse at 60% 30%, rgba(16,185,129,0.2) 0%, transparent 65%)',
           }}
         />
 
@@ -111,7 +130,7 @@ export function FifaCard({ player }: FifaCardProps) {
           style={
             {
               background: `radial-gradient(ellipse at ${glareX} ${glareY}, rgba(255,255,255,0.12) 0%, transparent 60%)`,
-              opacity: 0.6,
+              opacity: isLight ? 0.3 : 0.6,
             } as any
           }
         />
@@ -123,8 +142,9 @@ export function FifaCard({ player }: FifaCardProps) {
             transition={{ duration: 4, repeat: Infinity, ease: 'linear', repeatDelay: 2 }}
             className="absolute inset-y-0 w-1/3"
             style={{
-              background:
-                'linear-gradient(90deg, transparent, rgba(255,255,255,0.08), transparent)',
+              background: isLight
+                ? 'linear-gradient(90deg, transparent, rgba(16,185,129,0.1), transparent)'
+                : 'linear-gradient(90deg, transparent, rgba(255,255,255,0.08), transparent)',
               transform: 'skewX(-20deg)',
             }}
           />
@@ -134,48 +154,65 @@ export function FifaCard({ player }: FifaCardProps) {
         <div
           className="absolute top-0 left-0 right-0 h-[2px]"
           style={{
-            background: 'linear-gradient(90deg, transparent, rgba(16,185,129,0.5), transparent)',
+            background: isLight
+              ? 'linear-gradient(90deg, transparent, rgba(16,185,129,0.3), transparent)'
+              : 'linear-gradient(90deg, transparent, rgba(16,185,129,0.5), transparent)',
           }}
         />
 
         {/* Contrast Helper for Top Info (Rating/Position) */}
-        <div
-          className="absolute inset-y-0 left-0 w-1/3 z-10 pointer-events-none"
-          style={{
-            background:
-              'linear-gradient(to right, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0.3) 50%, transparent 100%)',
-          }}
-        />
+        {!isLight && (
+          <div
+            className="absolute inset-y-0 left-0 w-1/3 z-10 pointer-events-none"
+            style={{
+              background:
+                'linear-gradient(to right, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0.3) 50%, transparent 100%)',
+            }}
+          />
+        )}
 
         {/* Top-left: Rating & Position */}
         <div className="absolute top-5 left-5 flex flex-col items-center z-30 gap-1 drop-shadow-2xl">
           <motion.span
             animate={{
-              textShadow: [
-                '0 0 15px rgba(255,255,255,0.3)',
-                '0 0 25px rgba(255,255,255,0.5)',
-                '0 0 15px rgba(255,255,255,0.3)',
-              ],
+              textShadow: isLight
+                ? [
+                    '0 0 10px rgba(16,185,129,0.1)',
+                    '0 0 15px rgba(16,185,129,0.2)',
+                    '0 0 10px rgba(16,185,129,0.1)',
+                  ]
+                : [
+                    '0 0 15px rgba(255,255,255,0.3)',
+                    '0 0 25px rgba(255,255,255,0.5)',
+                    '0 0 15px rgba(255,255,255,0.3)',
+                  ],
             }}
             transition={{ duration: 3, repeat: Infinity }}
             className="text-[2.8rem] font-black italic leading-none"
             style={{
-              background: 'linear-gradient(180deg, #ffffff 0%, #c8d8d0 70%, #8ab0a0 100%)',
+              background: isLight
+                ? 'linear-gradient(180deg, #10b981 0%, #059669 100%)'
+                : 'linear-gradient(180deg, #ffffff 0%, #c8d8d0 70%, #8ab0a0 100%)',
               WebkitBackgroundClip: 'text',
               WebkitTextFillColor: 'transparent',
-              filter: 'drop-shadow(0 4px 8px rgba(0,0,0,0.8))',
+              filter: isLight 
+                ? 'drop-shadow(0 2px 4px rgba(0,0,0,0.1))' 
+                : 'drop-shadow(0 4px 8px rgba(0,0,0,0.8))',
             }}
           >
             {player.overall}
           </motion.span>
           <div className="flex flex-col items-center gap-1">
             <span
-              className="text-[9px] font-black text-primary uppercase tracking-[0.3em] border-t border-primary/50 pt-1 w-full text-center"
-              style={{ textShadow: '0 2px 4px rgba(0,0,0,0.8)' }}
+              className={cn(
+                "text-[9px] font-black uppercase tracking-[0.3em] border-t pt-1 w-full text-center transition-all duration-500",
+                isLight ? "text-slate-900 border-zinc-200" : "text-primary border-primary/50"
+              )}
+              style={isLight ? {} : { textShadow: '0 2px 4px rgba(0,0,0,0.8)' }}
             >
               {player.position}
             </span>
-            <RankBadge rankName={rank.name} size="sm" className="scale-75 -mt-1" />
+            <RankBadge rankName={rank.name} size="sm" className={cn("scale-75 -mt-1", isLight && "grayscale-[0.2]")} />
           </div>
 
           {/* MVP trophies */}
@@ -189,14 +226,14 @@ export function FifaCard({ player }: FifaCardProps) {
                     style={{
                       color: '#f59e0b',
                       fill: '#f59e0b',
-                      filter: 'drop-shadow(0 0 4px rgba(0,0,0,0.8))',
+                      filter: isLight ? 'none' : 'drop-shadow(0 0 4px rgba(0,0,0,0.8))',
                     }}
                   />
                 ))}
               </div>
               <span
                 className="text-[6px] font-black uppercase tracking-widest text-[#f59e0b]"
-                style={{ textShadow: '0 2px 4px rgba(0,0,0,0.8)' }}
+                style={isLight ? {} : { textShadow: '0 2px 4px rgba(0,0,0,0.8)' }}
               >
                 MVP
               </span>
@@ -208,14 +245,19 @@ export function FifaCard({ player }: FifaCardProps) {
             {player.badges?.map((badge, i) => (
               <div
                 key={i}
-                className="w-6 h-6 rounded-lg flex items-center justify-center relative hover:bg-black/40 transition-colors group/badge cursor-help shadow-lg"
+                className={cn(
+                  "w-6 h-6 rounded-lg flex items-center justify-center relative transition-all duration-300 group/badge cursor-help shadow-sm",
+                  isLight 
+                    ? "bg-white border-zinc-200 hover:bg-slate-50" 
+                    : "bg-black/50 border-white/10 hover:bg-black/40"
+                )}
                 style={{
-                  background: 'rgba(0,0,0,0.5)',
-                  border: '1px solid rgba(255,255,255,0.1)',
+                  borderWidth: '1px',
+                  borderStyle: 'solid',
                   backdropFilter: 'blur(4px)',
                 }}
               >
-                <Award className="w-3.5 h-3.5 text-primary-light" />
+                <Award className={cn("w-3.5 h-3.5", isLight ? "text-primary" : "text-primary-light")} />
                 <div
                   className="absolute left-full ml-1.5 px-2 py-1 rounded text-[7px] font-black text-white uppercase tracking-wider opacity-0 group-hover/badge:opacity-100 transition-opacity whitespace-nowrap pointer-events-none z-50 shadow-2xl"
                   style={{ background: 'rgba(0,0,0,0.9)', backdropFilter: 'blur(8px)' }}
@@ -243,19 +285,21 @@ export function FifaCard({ player }: FifaCardProps) {
               }
               alt={player.name}
               className={cn(
-                'w-full h-full object-bottom',
-                player.image ? 'object-cover scale-100' : 'object-contain scale-90 translate-x-10'
+                'w-full h-full object-bottom transition-all duration-700',
+                player.image ? 'object-cover scale-100' : 'object-contain scale-90 translate-x-10',
+                isLight && !player.image && 'filter saturate-150 brightness-95'
               )}
               style={{
-                filter: 'brightness(1.1) contrast(1.05)',
+                filter: isLight ? 'brightness(1) contrast(1.05)' : 'brightness(1.1) contrast(1.05)',
               }}
             />
             {/* Soft glow behind player to separate stats */}
             <div
               className="absolute inset-0 z-[-1]"
               style={{
-                background:
-                  'radial-gradient(circle at 60% 40%, rgba(0,0,0,0.4) 0%, transparent 70%)',
+                background: isLight
+                  ? 'radial-gradient(circle at 60% 40%, rgba(16,185,129,0.05) 0%, transparent 70%)'
+                  : 'radial-gradient(circle at 60% 40%, rgba(0,0,0,0.4) 0%, transparent 70%)',
               }}
             />
           </div>
@@ -264,17 +308,26 @@ export function FifaCard({ player }: FifaCardProps) {
         {/* Name bar */}
         <div className="absolute z-20" style={{ bottom: '108px', left: 0, right: 0 }}>
           <div
-            className="mx-5 py-2 text-center"
+            className={cn(
+               "mx-5 py-2 text-center transition-all duration-500",
+               isLight ? "bg-white/40 border-slate-200" : "bg-black/40 border-primary/30"
+            )}
             style={{
-              background: 'linear-gradient(90deg, transparent, rgba(0,0,0,0.8), transparent)',
-              borderTop: '1px solid rgba(16,185,129,0.3)',
-              borderBottom: '1px solid rgba(16,185,129,0.3)',
+              background: isLight 
+                ? 'linear-gradient(90deg, transparent, rgba(255,255,255,0.9), transparent)'
+                : 'linear-gradient(90deg, transparent, rgba(0,0,0,0.8), transparent)',
+              borderTopWidth: '1px',
+              borderBottomWidth: '1px',
+              borderStyle: 'solid',
               backdropFilter: 'blur(8px)',
             }}
           >
             <h3
-              className="text-base font-black italic text-white uppercase tracking-[0.1em] truncate px-2"
-              style={{ textShadow: '0 2px 10px rgba(0,0,0,1)' }}
+              className={cn(
+                "text-base font-black italic uppercase tracking-[0.1em] truncate px-2 transition-colors duration-500",
+                isLight ? "text-slate-900" : "text-white"
+              )}
+              style={isLight ? {} : { textShadow: '0 2px 10px rgba(0,0,0,1)' }}
             >
               {player.name}
             </h3>
@@ -294,15 +347,20 @@ export function FifaCard({ player }: FifaCardProps) {
             ].map((stat, i) => (
               <div
                 key={i}
-                className="flex justify-between items-end pb-0.5 group/stat"
-                style={{ borderBottom: '1px solid rgba(16,185,129,0.1)' }}
+                className={cn(
+                  "flex justify-between items-end pb-0.5 group/stat transition-all duration-500 border-b",
+                  isLight ? "border-slate-200" : "border-primary/10"
+                )}
               >
-                <span className="text-sm font-black italic text-white group-hover/stat:text-primary transition-colors">
+                <span className={cn(
+                  "text-sm font-black italic transition-colors duration-500",
+                  isLight ? "text-slate-900 group-hover/stat:text-primary" : "text-white group-hover/stat:text-primary"
+                )}>
                   {statBoost(stat.val)}
                 </span>
                 <span
-                  className="text-[7px] font-black uppercase tracking-widest mb-0.5"
-                  style={{ color: 'rgba(16,185,129,0.5)' }}
+                  className="text-[7px] font-black uppercase tracking-widest mb-0.5 transition-colors duration-500"
+                  style={{ color: isLight ? 'rgba(0,0,0,0.4)' : 'rgba(16,185,129,0.5)' }}
                 >
                   {stat.label}
                 </span>
@@ -313,8 +371,12 @@ export function FifaCard({ player }: FifaCardProps) {
 
         {/* Bottom graded overlay */}
         <div
-          className="absolute bottom-0 left-0 right-0 h-28 pointer-events-none"
-          style={{ background: 'linear-gradient(to top, rgba(0,0,0,0.7) 0%, transparent 100%)' }}
+          className="absolute bottom-0 left-0 right-0 h-28 pointer-events-none transition-all duration-500"
+          style={{ 
+            background: isLight
+              ? 'linear-gradient(to top, rgba(255,255,255,0.7) 0%, transparent 100%)'
+              : 'linear-gradient(to top, rgba(0,0,0,0.7) 0%, transparent 100%)' 
+          }}
         />
       </div>
     </motion.div>

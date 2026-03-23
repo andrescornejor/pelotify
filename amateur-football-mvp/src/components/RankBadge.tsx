@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { Hexagon, Shield, Trophy, Star, Crown, Zap, Flame, Award } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { RankName } from '@/lib/ranks';
+import { useTheme } from '@/contexts/ThemeContext';
 
 interface RankBadgeProps {
   rankName: RankName;
@@ -96,9 +97,11 @@ const ICON_SIZES = {
 
 export const RankBadge = memo(
   ({ rankName, size = 'md', className, showLabel = false }: RankBadgeProps) => {
+    const { theme } = useTheme();
     const config = RANK_CONFIG[rankName];
     if (!config) return null;
     const Icon = config.icon;
+    const isLight = theme === 'light';
 
     return (
       <div className={cn('flex flex-col items-center gap-2', className)}>
@@ -107,17 +110,22 @@ export const RankBadge = memo(
           animate={{ scale: 1, opacity: 1 }}
           whileHover={{ scale: 1.1, rotate: 5 }}
           className={cn(
-            'relative flex items-center justify-center rounded-2xl overflow-hidden',
+            'relative flex items-center justify-center rounded-2xl overflow-hidden transition-all duration-500',
             SIZES[size],
-            'glass-premium border',
-            config.border
+            isLight ? 'bg-white shadow-sm border-zinc-200' : 'glass-premium border',
+            !isLight && config.border
           )}
           style={{
-            boxShadow: `0 0 30px ${config.glow}`,
+            boxShadow: isLight 
+              ? `0 4px 12px ${config.glow.replace('0.', '0.1')}` 
+              : `0 0 30px ${config.glow}`,
           }}
         >
           {/* Background Gradient */}
-          <div className={cn('absolute inset-0 opacity-20 bg-gradient-to-br', config.gradient)} />
+          <div className={cn('absolute inset-0 bg-gradient-to-br transition-opacity duration-500', 
+            isLight ? 'opacity-10' : 'opacity-20',
+            config.gradient
+          )} />
 
           {/* Shimmer Effect for high ranks */}
           {(rankName === 'LEYENDA' || rankName === 'ELITE' || rankName === 'DIAMANTE') && (
@@ -130,7 +138,10 @@ export const RankBadge = memo(
                 repeat: Infinity,
                 ease: 'linear',
               }}
-              className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent skew-x-[-20deg] pointer-events-none"
+              className={cn(
+                "absolute inset-0 skew-x-[-20deg] pointer-events-none transition-opacity duration-500",
+                isLight ? "bg-gradient-to-r from-transparent via-primary/10 to-transparent opacity-40" : "bg-gradient-to-r from-transparent via-white/30 to-transparent"
+              )}
             />
           )}
 
@@ -148,7 +159,10 @@ export const RankBadge = memo(
             <motion.div
               animate={{ rotate: 360 }}
               transition={{ duration: 10, repeat: Infinity, ease: 'linear' }}
-              className="absolute inset-0 border-2 border-dashed border-yellow-500/30 rounded-full scale-90"
+              className={cn(
+                "absolute inset-0 border-2 border-dashed rounded-full scale-90 transition-all duration-500",
+                isLight ? "border-yellow-500/20" : "border-yellow-500/30"
+              )}
             />
           )}
         </motion.div>
@@ -156,9 +170,10 @@ export const RankBadge = memo(
         {showLabel && (
           <span
             className={cn(
-              'text-[10px] font-black uppercase tracking-[0.2em] italic font-kanit',
+              'text-[10px] font-black uppercase tracking-[0.2em] italic font-kanit transition-all duration-500',
               'bg-clip-text text-transparent bg-gradient-to-r',
-              config.gradient
+              config.gradient,
+              isLight && 'brightness-75 saturate-150'
             )}
           >
             {rankName}
