@@ -121,52 +121,53 @@ export function OnboardingTour() {
 
   // Helper to calculate smart position
   const getTooltipStyle = () => {
-    if (!targetRect) return {};
+    if (!targetRect && step.position !== 'center') return {};
 
-    const padding = 20;
-    const tooltipWidth = 320; // Matches w-80
-    const tooltipHeight = 250; // Approximated
+    const padding = 24;
+    const tooltipWidth = 320;
+    const tooltipHeight = 220; // Reduced approximation
 
-    let left = 0;
-    let top = 0;
+    if (typeof window === 'undefined') return {};
 
-    // Mobile: Center at bottom
-    if (typeof window !== 'undefined' && window.innerWidth < 768) {
+    // Mobile or Center variant
+    if (window.innerWidth < 768 || step.position === 'center') {
       return {
         left: '50%',
-        bottom: '40px',
-        transform: 'translateX(-50%)',
-        width: 'calc(100% - 40px)',
+        top: '50%',
+        transform: 'translate(-50%, -50%)',
+        width: 'calc(100% - 48px)',
         maxWidth: '400px',
       };
     }
 
-    // Desktop: Initial position based on step preference
+    let left = 0;
+    let top = 0;
+
     switch (step.position) {
       case 'left':
-        left = targetRect.left - tooltipWidth - padding;
-        top = targetRect.top + targetRect.height / 2 - tooltipHeight / 2;
+        left = targetRect!.left - tooltipWidth - padding * 2;
+        top = targetRect!.top + targetRect!.height / 2 - tooltipHeight / 2;
         break;
       case 'right':
-        left = targetRect.right + padding;
-        top = targetRect.top + targetRect.height / 2 - tooltipHeight / 2;
+        left = targetRect!.right + padding * 2;
+        top = targetRect!.top + targetRect!.height / 2 - tooltipHeight / 2;
         break;
       case 'top':
-        left = targetRect.left + targetRect.width / 2 - tooltipWidth / 2;
-        top = targetRect.top - tooltipHeight - padding;
+        left = targetRect!.left + targetRect!.width / 2 - tooltipWidth / 2;
+        top = targetRect!.top - tooltipHeight - padding * 2;
         break;
       case 'bottom':
-        left = targetRect.left + targetRect.width / 2 - tooltipWidth / 2;
-        top = targetRect.bottom + padding;
+        left = targetRect!.left + targetRect!.width / 2 - tooltipWidth / 2;
+        top = targetRect!.bottom + padding * 2;
         break;
       default:
         left = window.innerWidth / 2 - tooltipWidth / 2;
         top = window.innerHeight / 2 - tooltipHeight / 2;
     }
 
-    // Clamp to screen edges
-    const maxLeft = window.innerWidth - tooltipWidth - padding;
-    const maxTop = window.innerHeight - tooltipHeight - padding;
+    // Clamp to screen edges with more breathing room
+    const maxLeft = window.innerWidth - tooltipWidth - padding * 2;
+    const maxTop = window.innerHeight - tooltipHeight - padding * 2;
 
     left = Math.max(padding, Math.min(left, maxLeft));
     top = Math.max(padding, Math.min(top, maxTop));
@@ -187,29 +188,33 @@ export function OnboardingTour() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className="absolute inset-0 bg-black/80 pointer-events-auto backdrop-blur-sm"
+          className="absolute inset-0 bg-black/90 pointer-events-auto backdrop-blur-md"
           style={{
-            maskImage: targetRect
-              ? `radial-gradient(circle ${Math.max(targetRect.width, targetRect.height) / 1.5 + 40}px at ${targetRect.left + targetRect.width / 2}px ${targetRect.top + targetRect.height / 2}px, transparent 100%, black 100%)`
+            maskImage: (targetRect && step.position !== 'center')
+              ? `radial-gradient(circle ${Math.max(targetRect.width, targetRect.height) / 1.5 + 60}px at ${targetRect.left + targetRect.width / 2}px ${targetRect.top + targetRect.height / 2}px, transparent 100%, black 100%)`
               : 'none',
-            WebkitMaskImage: targetRect
-              ? `radial-gradient(circle ${Math.max(targetRect.width, targetRect.height) / 1.5 + 40}px at ${targetRect.left + targetRect.width / 2}px ${targetRect.top + targetRect.height / 2}px, transparent 100%, black 100%)`
+            WebkitMaskImage: (targetRect && step.position !== 'center')
+              ? `radial-gradient(circle ${Math.max(targetRect.width, targetRect.height) / 1.5 + 60}px at ${targetRect.left + targetRect.width / 2}px ${targetRect.top + targetRect.height / 2}px, transparent 100%, black 100%)`
               : 'none',
           }}
         />
 
         {/* Highlight Ring */}
-        {targetRect && (
+        {targetRect && step.position !== 'center' && (
           <motion.div
             key={`ring-${currentStep}`}
             initial={{ opacity: 0, scale: 1.2 }}
-            animate={{ opacity: 1, scale: 1 }}
-            className="absolute border-2 border-primary rounded-2xl shadow-[0_0_50px_rgba(44,252,125,0.5)] z-[101]"
+            animate={{ 
+              opacity: [0.3, 0.6, 0.3],
+              scale: [1, 1.05, 1],
+            }}
+            transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+            className="absolute border-2 border-primary/50 rounded-2xl shadow-[0_0_60px_rgba(44,252,125,0.4)] z-[101]"
             style={{
-              left: targetRect.left - 10,
-              top: targetRect.top - 10,
-              width: targetRect.width + 20,
-              height: targetRect.height + 20,
+              left: targetRect.left - 15,
+              top: targetRect.top - 15,
+              width: targetRect.width + 30,
+              height: targetRect.height + 30,
             }}
           />
         )}
