@@ -2,7 +2,18 @@
 
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronRight, X, Zap } from 'lucide-react';
+import { 
+  ChevronRight, 
+  ChevronLeft,
+  X, 
+  Zap, 
+  Trophy, 
+  User2, 
+  Activity, 
+  Calendar, 
+  Star,
+  Target
+} from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useAuth } from '@/contexts/AuthContext';
 
@@ -11,39 +22,45 @@ interface TourStep {
   title: string;
   content: string;
   position: 'top' | 'bottom' | 'left' | 'right' | 'center';
+  icon: any;
 }
 
 const TOUR_STEPS: TourStep[] = [
   {
     target: '#hero-avatar',
-    title: 'Tu Identidad Digital',
-    content: 'Este es tu avatar. El resplandor cambia según tu rango actual. ¡Mantenlo encendido ganando partidos!',
+    title: 'Tu Legado Digital',
+    content: 'Este es tu perfil. El brillo de tu avatar evoluciona con tu rango. ¡Ganar partidos lo hace brillar con más fuerza!',
     position: 'bottom',
+    icon: User2
   },
   {
     target: '#stat-cards',
-    title: 'Tus Métricas',
-    content: 'Aquí ves tu ELO, partidos, MVPs y Win Rate. Pasa el cursor para ver detalles y micro-animaciones.',
+    title: 'Poder Competitivo',
+    content: 'Tu ELO, MVPs y Win Rate definen tu estatus en la liga. Analizá cada métrica para mejorar tu juego.',
     position: 'bottom',
+    icon: Trophy
   },
   {
     target: '#activity-feed',
-    title: 'Feed de Actividad',
-    content: 'Tus últimos resultados aparecen aquí en tiempo real. ¡Analizá tu progreso!',
+    title: 'Pulso de la Liga',
+    content: 'Mantenete al tanto de los ascensos y victorias de la comunidad en tiempo real. ¡La competencia no descansa!',
     position: 'right',
+    icon: Activity
   },
   {
     target: '#featured-match',
-    title: 'Partido Destacado',
-    content: 'El próximo gran desafío. No te pierdas el countdown para llegar a tiempo.',
+    title: 'Cita con la Gloria',
+    content: 'Tu próximo gran desafío. El cronómetro no miente: preparate para dar lo mejor en la cancha.',
     position: 'left',
+    icon: Calendar
   },
   {
-    target: '#quick-messages',
-    title: 'Comunicaciones Rápidas',
-    content: 'Tus chats más recientes siempre a mano. ¡No dejes a nadie esperando!',
-    position: 'left',
-  },
+    target: '#stat-cards', // Using same for final step as it's a good overview area
+    title: '¡Todo Listo!',
+    content: 'Ya conocés los fundamentos. Ahora es momento de entrar a la cancha y empezar a escribir tu historia.',
+    position: 'center',
+    icon: Star
+  }
 ];
 
 export function OnboardingTour() {
@@ -84,6 +101,12 @@ export function OnboardingTour() {
       setCurrentStep(currentStep + 1);
     } else {
       handleClose();
+    }
+  };
+
+  const handleBack = () => {
+    if (currentStep > 0) {
+      setCurrentStep(currentStep - 1);
     }
   };
 
@@ -200,39 +223,46 @@ export function OnboardingTour() {
             exit={{ opacity: 0, scale: 0.95 }}
             className={cn(
               "absolute pointer-events-auto",
-              "glass-premium-dark p-6 sm:p-8 rounded-[2rem] border border-primary/30 shadow-[0_30px_60px_rgba(0,0,0,0.5)]",
-              "flex flex-col gap-4 sm:gap-6 z-[102]"
+              "glass-premium-dark p-6 sm:p-8 rounded-[2.5rem] border border-primary/30 shadow-[0_40px_80px_rgba(0,0,0,0.6)]",
+              "flex flex-col gap-5 sm:gap-6 z-[102]"
             )}
             style={tooltipStyle}
           >
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-primary/20 flex items-center justify-center">
-                <Zap className="w-5 h-5 text-primary animate-pulse" />
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-4">
+                <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center border border-primary/20">
+                  <step.icon className="w-6 h-6 text-primary" />
+                </div>
+                <div className="flex flex-col">
+                  <span className="text-[10px] font-black text-primary uppercase tracking-[0.3em] leading-none">
+                    PASO {currentStep + 1} DE {TOUR_STEPS.length}
+                  </span>
+                  <h3 className="text-xl font-black text-white italic uppercase tracking-tighter mt-1">
+                    {step.title}
+                  </h3>
+                </div>
               </div>
-              <div className="flex flex-col">
-                <span className="text-[10px] font-black text-primary uppercase tracking-widest leading-none">
-                  Tutorial Paso {currentStep + 1}
-                </span>
-                <h3 className="text-xl font-black text-white italic uppercase tracking-tighter">
-                  {step.title}
-                </h3>
-              </div>
+              <button 
+                onClick={handleClose}
+                className="w-8 h-8 rounded-full flex items-center justify-center hover:bg-white/10 text-white/40 transition-colors"
+              >
+                <X className="w-4 h-4" />
+              </button>
             </div>
 
-            <p className="text-[13px] text-zinc-400 font-medium leading-relaxed">
+            <p className="text-[14px] text-zinc-300 font-medium leading-relaxed max-w-sm">
               {step.content}
             </p>
 
-            <div className="flex items-center justify-between pt-2">
-              <button
-                onClick={handleClose}
-                className="text-[10px] font-black text-white/20 hover:text-white transition-colors uppercase tracking-[0.2em]"
-              >
-                Saltar
-              </button>
-
-              <div className="flex items-center gap-4">
-                <div className="flex gap-1.5">
+            <div className="flex items-center justify-between pt-4 border-t border-white/5">
+              <div className="flex items-center gap-6">
+                <button
+                  onClick={handleClose}
+                  className="text-[10px] font-black text-white/20 hover:text-white transition-colors uppercase tracking-[0.2em]"
+                >
+                  Saltar
+                </button>
+                <div className="hidden sm:flex gap-1.5">
                   {TOUR_STEPS.map((_, i) => (
                     <div
                       key={i}
@@ -243,12 +273,29 @@ export function OnboardingTour() {
                     />
                   ))}
                 </div>
+              </div>
 
+              <div className="flex items-center gap-3">
+                {currentStep > 0 && (
+                  <button
+                    onClick={handleBack}
+                    className="h-14 px-6 rounded-2xl glass border-white/10 text-white flex items-center justify-center hover:bg-white/5 transition-all"
+                  >
+                    <ChevronLeft className="w-5 h-5" />
+                  </button>
+                )}
+                
                 <button
                   onClick={handleNext}
-                  className="w-14 h-14 rounded-2xl bg-primary text-black flex items-center justify-center shadow-xl shadow-primary/20 hover:scale-110 active:scale-95 transition-all group"
+                  className={cn(
+                    "h-14 px-8 rounded-2xl bg-primary text-black font-black uppercase text-[11px] tracking-widest flex items-center justify-center gap-3 shadow-xl shadow-primary/20 hover:scale-105 active:scale-95 transition-all group",
+                    currentStep === TOUR_STEPS.length - 1 && "px-10 bg-white"
+                  )}
                 >
-                  <ChevronRight className="w-6 h-6 group-hover:translate-x-0.5 transition-transform" />
+                  <span>
+                    {currentStep === TOUR_STEPS.length - 1 ? 'COMENZAR LEGADO' : 'SIGUIENTE'}
+                  </span>
+                  <ChevronRight className="w-5 h-5 group-hover:translate-x-0.5 transition-transform" />
                 </button>
               </div>
             </div>
