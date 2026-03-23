@@ -195,95 +195,61 @@ export function OnboardingTour() {
         {targetRect && (
           <motion.div
             key={`tooltip-${currentStep}`}
-            initial={{ opacity: 0, y: 30, scale: 0.9 }}
-            animate={{ 
-              opacity: 1, 
-              y: [0, -6, 0], 
-              scale: 1 
-            }}
-            transition={{ 
-              y: { duration: 4, repeat: Infinity, ease: 'easeInOut' },
-              default: { type: 'spring', stiffness: 260, damping: 20 }
-            }}
-            exit={{ opacity: 0, scale: 0.95, y: 20 }}
+            initial={{ opacity: 0, y: 20, scale: 0.95 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.95 }}
             className={cn(
               "absolute pointer-events-auto",
-              "glass-premium-dark p-6 sm:p-10 rounded-[3rem] border border-white/10 shadow-[0_40px_100px_rgba(0,0,0,0.8)]",
-              "flex flex-col gap-4 sm:gap-8 z-[102] overflow-hidden"
+              "glass-premium-dark p-6 sm:p-8 rounded-[2rem] border border-primary/30 shadow-[0_30px_60px_rgba(0,0,0,0.5)]",
+              "flex flex-col gap-4 sm:gap-6 z-[102]"
             )}
             style={tooltipStyle}
           >
-            {/* Inner Glow Decorative Element */}
-            <div className="absolute -top-10 -right-10 w-32 h-32 bg-primary/10 blur-3xl rounded-full" />
-
-            {/* Progress Top Bar */}
-            <div className="absolute top-0 left-0 w-full h-1.5 bg-white/5 overflow-hidden">
-              <motion.div 
-                initial={{ width: 0 }}
-                animate={{ width: `${((currentStep + 1) / TOUR_STEPS.length) * 100}%` }}
-                className="h-full bg-primary shadow-[0_0_10px_var(--primary)]"
-              />
-            </div>
-
-            <div className="flex items-start justify-between">
-              <div className="flex items-center gap-4">
-                <div className="w-12 h-12 rounded-2xl bg-primary/20 flex items-center justify-center border border-primary/20 shadow-inner">
-                  <Zap className="w-6 h-6 text-primary fill-primary/20 animate-pulse" />
-                </div>
-                <div className="flex flex-col">
-                  <span className="text-[10px] font-black text-primary uppercase tracking-[0.4em] leading-none mb-1">
-                    PELOTIFY GUIDE
-                  </span>
-                  <h3 className="text-2xl font-black italic uppercase tracking-tighter bg-clip-text text-transparent bg-gradient-to-br from-white via-white to-primary/40 leading-none py-1">
-                    {step.title}
-                  </h3>
-                </div>
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-primary/20 flex items-center justify-center">
+                <Zap className="w-5 h-5 text-primary animate-pulse" />
               </div>
-              <button 
-                onClick={handleClose}
-                className="w-10 h-10 rounded-full glass border-white/5 flex items-center justify-center text-white/30 hover:text-white hover:bg-white/5 transition-all"
-              >
-                <X className="w-5 h-5" />
-              </button>
+              <div className="flex flex-col">
+                <span className="text-[10px] font-black text-primary uppercase tracking-widest leading-none">
+                  Tutorial Paso {currentStep + 1}
+                </span>
+                <h3 className="text-xl font-black text-white italic uppercase tracking-tighter">
+                  {step.title}
+                </h3>
+              </div>
             </div>
 
-            <div className="relative">
-              <div className="absolute -left-4 top-0 bottom-0 w-1 bg-primary/20 rounded-full" />
-              <p className="text-[14px] text-zinc-400 font-medium leading-[1.6] pl-2">
-                {step.content}
-              </p>
-            </div>
+            <p className="text-[13px] text-zinc-400 font-medium leading-relaxed">
+              {step.content}
+            </p>
 
-            <div className="flex items-center justify-between pt-4 border-t border-white/5">
+            <div className="flex items-center justify-between pt-2">
               <button
                 onClick={handleClose}
-                className="px-5 py-2 rounded-xl text-[10px] font-black text-white/40 hover:text-white hover:bg-white/5 transition-all uppercase tracking-widest border border-transparent hover:border-white/5"
+                className="text-[10px] font-black text-white/20 hover:text-white transition-colors uppercase tracking-[0.2em]"
               >
-                Saltar Tour
+                Saltar
               </button>
 
-              <div className="flex items-center gap-6">
-                <div className="flex gap-2">
+              <div className="flex items-center gap-4">
+                <div className="flex gap-1.5">
                   {TOUR_STEPS.map((_, i) => (
                     <div
                       key={i}
                       className={cn(
-                        "w-1.5 h-1.5 rounded-full transition-all duration-500",
-                        i === currentStep ? "w-8 bg-primary shadow-[0_0_10px_var(--primary)]" : "bg-white/10"
+                        "w-1.5 h-1.5 rounded-full transition-all duration-300",
+                        i === currentStep ? "w-6 bg-primary" : "bg-white/10"
                       )}
                     />
                   ))}
                 </div>
 
-                <motion.button
-                  whileHover={{ scale: 1.05, x: 5 }}
-                  whileTap={{ scale: 0.95 }}
+                <button
                   onClick={handleNext}
-                  className="px-8 h-14 rounded-2xl bg-primary text-black flex items-center justify-center gap-3 shadow-2xl shadow-primary/30 font-black uppercase text-[11px] tracking-widest transition-all group"
+                  className="w-14 h-14 rounded-2xl bg-primary text-black flex items-center justify-center shadow-xl shadow-primary/20 hover:scale-110 active:scale-95 transition-all group"
                 >
-                  <span>{currentStep === TOUR_STEPS.length - 1 ? 'FINALIZAR' : 'SIGUIENTE'}</span>
-                  <ChevronRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-                </motion.button>
+                  <ChevronRight className="w-6 h-6 group-hover:translate-x-0.5 transition-transform" />
+                </button>
               </div>
             </div>
           </motion.div>
