@@ -169,6 +169,32 @@ const TeamCard = ({ team, isPerfMode }: any) => (
   </motion.div>
 );
 
+const EmptyState = ({ icon: Icon, title, description, actionText, actionHref }: any) => (
+  <motion.div
+    initial={{ opacity: 0, scale: 0.95 }}
+    whileInView={{ opacity: 1, scale: 1 }}
+    className="w-full py-12 px-6 rounded-[2.5rem] flex flex-col items-center justify-center text-center gap-6 glass-premium border-white/5 bg-foreground/[0.01] relative overflow-hidden group"
+  >
+    <div className="absolute inset-0 bg-gradient-to-b from-primary/5 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+    <div className="w-16 h-16 rounded-[2rem] bg-surface flex items-center justify-center border border-white/10 shadow-inner group-hover:scale-110 transition-transform">
+      <Icon className="w-8 h-8 text-foreground/20 group-hover:text-primary/40 transition-colors" />
+    </div>
+    <div className="space-y-2 relative z-10">
+      <h5 className="text-lg font-black italic uppercase tracking-tighter text-foreground font-kanit">{title}</h5>
+      <p className="text-[10px] font-black text-foreground/30 uppercase tracking-[0.2em] max-w-[240px] leading-relaxed">
+        {description}
+      </p>
+    </div>
+    {actionText && actionHref && (
+      <Link href={actionHref}>
+        <button className="px-8 h-10 rounded-xl bg-foreground/[0.03] hover:bg-primary hover:text-background border border-white/10 text-[9px] font-black uppercase tracking-[0.2em] transition-all">
+          {actionText}
+        </button>
+      </Link>
+    )}
+  </motion.div>
+);
+
 export default function HomePage() {
   const { user } = useAuth();
   const [userTeams, setUserTeams] = useState<any[]>([]);
@@ -989,13 +1015,13 @@ export default function HomePage() {
               ) : userTeams.length > 0 ? (
                 userTeams.map((team) => <TeamCard key={team.id} team={team} isPerfMode={isPerfMode} />)
               ) : (
-                <div className="w-full col-span-full py-14 rounded-[2.5rem] flex flex-col items-center justify-center text-center gap-6 border-2 border-dashed border-foreground/5 bg-foreground/[0.01]">
-                  <Users className="w-12 h-12 text-foreground/10" />
-                  <div>
-                    <p className="text-sm font-black uppercase tracking-widest text-foreground/40">Sin Equipos</p>
-                    <Link href="/teams" className="text-primary text-[10px] font-black uppercase tracking-[0.2em] hover:underline mt-2 inline-block">DESCUBRIR CLUBES</Link>
-                  </div>
-                </div>
+                <EmptyState 
+                  icon={Users}
+                  title="Sin Equipos"
+                  description="Aún no eres parte de ninguna leyenda. Crea tu equipo o únete a uno existente."
+                  actionText="DESCUBRIR CLUBES"
+                  actionHref="/teams"
+                />
               )}
             </div>
 
@@ -1014,25 +1040,33 @@ export default function HomePage() {
               </div>
 
               <div className="space-y-4">
-                {activities.map((activity, idx) => (
-                  <motion.div
-                    key={idx}
-                    initial={{ opacity: 0, x: -10 }}
-                    whileInView={{ opacity: 1, x: 0 }}
-                    transition={{ delay: idx * 0.1 }}
-                    className="p-4 rounded-2xl glass-premium border-white/5 flex items-center gap-4 group"
-                  >
-                    <div className="w-10 h-10 rounded-full bg-surface border border-white/5 flex items-center justify-center shrink-0">
-                      {activity.type === 'RANK_UP' ? <TrendingUp className="w-4 h-4 text-primary" /> : <Star className="w-4 h-4 text-accent" />}
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <p className="text-[10px] font-bold text-foreground">
-                        {activity.user} <span className="text-foreground/40 font-medium tracking-tight"> {activity.detail}</span>
-                      </p>
-                      <p className="text-[8px] font-black text-primary/60 uppercase mt-0.5 tracking-tighter">hace {activity.time}</p>
-                    </div>
-                  </motion.div>
-                ))}
+                {activities.length > 0 ? (
+                  activities.map((activity, idx) => (
+                    <motion.div
+                      key={idx}
+                      initial={{ opacity: 0, x: -10 }}
+                      whileInView={{ opacity: 1, x: 0 }}
+                      transition={{ delay: idx * 0.1 }}
+                      className="p-4 rounded-2xl glass-premium border-white/5 flex items-center gap-4 group"
+                    >
+                      <div className="w-10 h-10 rounded-full bg-surface border border-white/5 flex items-center justify-center shrink-0">
+                        {activity.type === 'RANK_UP' ? <TrendingUp className="w-4 h-4 text-primary" /> : <Star className="w-4 h-4 text-accent" />}
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-[10px] font-bold text-foreground">
+                          {activity.user} <span className="text-foreground/40 font-medium tracking-tight"> {activity.detail}</span>
+                        </p>
+                        <p className="text-[8px] font-black text-primary/60 uppercase mt-0.5 tracking-tighter">hace {activity.time}</p>
+                      </div>
+                    </motion.div>
+                  ))
+                ) : (
+                  <EmptyState 
+                    icon={Activity}
+                    title="Silencio en la Cancha"
+                    description="No hay actividad reciente en tu zona. ¡Sé el primero en hacer historia hoy!"
+                  />
+                )}
               </div>
             </section>
           </div>
@@ -1076,9 +1110,14 @@ export default function HomePage() {
                    </Link>
                  </div>
                ) : (
-                 <div className="py-8 text-center space-y-3">
-                   <Calendar className="w-8 h-8 text-foreground/10 mx-auto" />
-                   <p className="text-[10px] font-black text-foreground/30 uppercase tracking-widest">Sin partidos próximos</p>
+                 <div className="py-2">
+                   <EmptyState 
+                    icon={Calendar}
+                    title="Agenda Libre"
+                    description="No tenés partidos confirmados para hoy. ¿Te animás a armar uno?"
+                    actionText="BUSCAR MATCH"
+                    actionHref="/search"
+                  />
                  </div>
                )}
             </div>
