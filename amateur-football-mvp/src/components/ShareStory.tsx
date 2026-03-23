@@ -28,7 +28,9 @@ export function ShareStory({ type, data, trigger, className }: ShareStoryProps) 
       const blob = await toBlob(containerRef.current, {
         quality: 0.95,
         cacheBust: true,
-        pixelRatio: 1.5, // Reduced for mobile memory safety
+        pixelRatio: 1.5,
+        skipFonts: true, // Rule out font timeouts
+        fontEmbedCSS: '',
       });
 
       if (!blob) throw new Error('Generation failed');
@@ -76,9 +78,9 @@ export function ShareStory({ type, data, trigger, className }: ShareStoryProps) 
           }
         }
       };
-    } catch (err) {
+    } catch (err: any) {
       console.error('Sharing error:', err);
-      alert('Error generando la imagen.');
+      alert(`Error generando la imagen: ${err.message || 'Error técnico'}`);
     } finally {
       setIsGenerating(false);
     }
@@ -108,8 +110,8 @@ export function ShareStory({ type, data, trigger, className }: ShareStoryProps) 
         )}
       </button>
 
-      {/* Rendering target (Transparent, not off-screen) */}
-      <div className="fixed inset-0 pointer-events-none opacity-0 z-[-50] overflow-hidden">
+      {/* Robust Rendering target (Absolute instead of fixed inset-0) */}
+      <div className="absolute left-0 top-0 pointer-events-none opacity-0 z-[-100] overflow-hidden">
         <div
           ref={containerRef}
           className="w-[1080px] h-[1920px] bg-background relative flex flex-col items-center justify-between p-24 overflow-hidden"

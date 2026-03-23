@@ -270,6 +270,7 @@ export function FifaCard({ player }: FifaCardProps) {
                 `https://api.dicebear.com/7.x/notionists/svg?seed=${player.name}&backgroundColor=transparent`
               }
               alt={player.name}
+              crossOrigin="anonymous"
               className={cn(
                 'w-full h-full object-bottom transition-all duration-700',
                 player.image ? 'object-cover scale-100' : 'object-contain scale-90 translate-x-10',
