@@ -54,7 +54,7 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="flex min-h-[100dvh] bg-background selection:bg-primary selection:text-background overflow-hidden relative">
+    <div className="flex min-h-[100dvh] selection:bg-primary selection:text-background overflow-hidden relative">
       {/* ── LEFT PANEL: AUTH FORM ── */}
       <div className="flex-1 flex flex-col items-center justify-center p-6 lg:p-12 relative z-10 transition-all duration-1000">
         <motion.div
