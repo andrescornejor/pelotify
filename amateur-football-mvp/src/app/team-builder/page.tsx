@@ -18,6 +18,7 @@ import { createTeam } from '@/lib/teams';
 import { uploadTeamLogo } from '@/lib/storage';
 import { cn } from '@/lib/utils';
 import confetti from 'canvas-confetti';
+import { JerseyVisualizer, JERSEY_PATTERNS, JerseyPattern } from '@/components/JerseyVisualizer';
 
 const COLORS = [
   { id: 'zinc', value: '#18181b', label: 'Dark' },
@@ -41,6 +42,7 @@ export default function TeamBuilderPage() {
     description: '',
     primaryColor: '#18181b', // Default dark
     secondaryColor: '#10b981', // Default emerald/primary
+    jerseyPattern: 'solid' as JerseyPattern,
   });
 
   const [logoFile, setLogoFile] = useState<File | null>(null);
@@ -76,8 +78,16 @@ export default function TeamBuilderPage() {
         // To keep it simple, we use the name to generate the storage path inside the function
         logoUrl = await uploadTeamLogo(logoFile, formData.name);
       }
-
-      const team = await createTeam(formData.name, formData.description, user.id, logoUrl);
+      
+      const team = await createTeam(
+        formData.name,
+        formData.description,
+        user.id,
+        logoUrl,
+        formData.primaryColor,
+        formData.secondaryColor,
+        formData.jerseyPattern
+      );
 
       // Celebration
       confetti({
@@ -97,58 +107,14 @@ export default function TeamBuilderPage() {
     }
   };
 
-  const JerseySVG = () => (
-    <svg
-      viewBox="0 0 200 200"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-      className="w-full h-full drop-shadow-2xl"
-    >
-      {/* Base Jersey (Primary Color) */}
-      <path
-        d="M50 40 C 80 20, 120 20, 150 40 L 190 80 L 170 100 L 150 80 L 150 180 L 50 180 L 50 80 L 30 100 L 10 80 Z"
-        fill={formData.primaryColor}
-      />
-      {/* Sleeves Stripes (Secondary Color) */}
-      <path
-        d="M30 100 L 10 80 L 50 40 C 60 30, 70 25, 80 22 C 60 40, 50 60, 50 80 Z"
-        fill={formData.secondaryColor}
-        opacity="0.8"
-      />
-      <path
-        d="M170 100 L 190 80 L 150 40 C 140 30, 130 25, 120 22 C 140 40, 150 60, 150 80 Z"
-        fill={formData.secondaryColor}
-        opacity="0.8"
-      />
-      {/* Collar */}
-      <path
-        d="M80 22 C 90 35, 110 35, 120 22 C 110 15, 90 15, 80 22 Z"
-        fill={formData.secondaryColor}
-      />
-      {/* Center Chest (Logo Area) */}
-      {logoPreview ? (
-        <image
-          href={logoPreview}
-          x="75"
-          y="60"
-          width="50"
-          height="50"
-          preserveAspectRatio="xMidYMid slice"
-          clipPath="url(#hex-clip)"
-        />
-      ) : (
-        <path
-          d="M100 60 L 115 70 L 115 90 L 100 100 L 85 90 L 85 70 Z"
-          fill={formData.secondaryColor}
-          className="animate-pulse"
-        />
-      )}
-      <defs>
-        <clipPath id="hex-clip">
-          <path d="M100 60 L 115 70 L 115 90 L 100 100 L 85 90 L 85 70 Z" />
-        </clipPath>
-      </defs>
-    </svg>
+  const JerseyPreview = ({ className = "" }: { className?: string }) => (
+    <JerseyVisualizer
+      primaryColor={formData.primaryColor}
+      secondaryColor={formData.secondaryColor}
+      pattern={formData.jerseyPattern}
+      logoUrl={logoPreview || undefined}
+      className={className}
+    />
   );
 
   return (
@@ -184,7 +150,7 @@ export default function TeamBuilderPage() {
             animate={{ y: [0, -10, 0] }}
             transition={{ repeat: Infinity, duration: 4, ease: 'easeInOut' }}
           >
-            <JerseySVG />
+            <JerseyPreview />
           </motion.div>
 
           {/* Shadow underneath jersey */}
@@ -325,6 +291,41 @@ export default function TeamBuilderPage() {
                     </div>
                   </div>
 
+                  <div className="space-y-4">
+                    <label className="text-[10px] font-black text-foreground/40 uppercase tracking-widest flex items-center gap-2">
+                       Diseño de Camiseta
+                    </label>
+                    <div className="grid grid-cols-4 gap-3">
+                        {JERSEY_PATTERNS.map((p) => (
+                            <button
+                                key={p.id}
+                                onClick={() => setFormData({ ...formData, jerseyPattern: p.id })}
+                                className={cn(
+                                    "relative aspect-square rounded-2xl border-2 transition-all p-2 overflow-hidden",
+                                    formData.jerseyPattern === p.id 
+                                        ? "border-primary bg-primary/5 shadow-lg shadow-primary/10"
+                                        : "border-foreground/5 bg-foreground/[0.02] opacity-60 hover:opacity-100"
+                                )}
+                            >
+                                <JerseyVisualizer 
+                                    primaryColor={formData.primaryColor} 
+                                    secondaryColor={formData.secondaryColor} 
+                                    pattern={p.id}
+                                    showShadow={false}
+                                />
+                                <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-end justify-center pb-1">
+                                    <span className="text-[7px] font-black uppercase text-white truncate px-1">{p.label}</span>
+                                </div>
+                                {formData.jerseyPattern === p.id && (
+                                     <div className="absolute top-1 right-1 w-3 h-3 rounded-full bg-primary flex items-center justify-center">
+                                         <CheckCircle2 className="w-2 h-2 text-background" />
+                                     </div>
+                                )}
+                            </button>
+                        ))}
+                    </div>
+                  </div>
+
                   <div className="flex gap-4">
                     <button
                       onClick={prevStep}
@@ -429,7 +430,7 @@ export default function TeamBuilderPage() {
         {/* Mobile visualizer preview */}
         <div className="lg:hidden flex justify-center pb-8">
           <div className="w-48 h-48 opacity-50 relative pointer-events-none">
-            <JerseySVG />
+            <JerseyPreview />
           </div>
         </div>
       </motion.div>

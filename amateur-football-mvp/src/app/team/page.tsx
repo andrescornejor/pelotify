@@ -49,6 +49,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { uploadTeamLogo } from '@/lib/storage';
 import { getFriends } from '@/lib/friends';
 import { cn } from '@/lib/utils';
+import { JerseyVisualizer, JERSEY_PATTERNS, JerseyPattern } from '@/components/JerseyVisualizer';
 import TeamTactics from '@/components/TeamTactics';
 import { getDominantColor } from '@/lib/colorUtils';
 import { useSettings } from '@/contexts/SettingsContext';
@@ -77,6 +78,10 @@ function TeamProfileContent() {
   const [logoFile, setLogoFile] = useState<File | null>(null);
   const [logoPreview, setLogoPreview] = useState<string | null>(null);
   const [isSaving, setIsSaving] = useState(false);
+
+  const [editPrimaryColor, setEditPrimaryColor] = useState('#18181b');
+  const [editSecondaryColor, setEditSecondaryColor] = useState('#10b981');
+  const [editJerseyPattern, setEditJerseyPattern] = useState<JerseyPattern>('solid');
 
   // Advanced Data
   const [trophies, setTrophies] = useState<any[]>([]);
@@ -116,6 +121,9 @@ function TeamProfileContent() {
         setEditDesc(teamData.description || '');
         setEditMotto(teamData.motto || '');
         setEditLogoUrl(teamData.logo_url || '');
+        setEditPrimaryColor(teamData.primary_color || '#18181b');
+        setEditSecondaryColor(teamData.secondary_color || '#10b981');
+        setEditJerseyPattern((teamData.jersey_pattern as JerseyPattern) || 'solid');
       } catch (teamErr: any) {
         console.error('Error fetching team core data:', teamErr);
         throw new Error(`No se pudo encontrar el equipo: ${teamErr.message}`);
@@ -266,6 +274,9 @@ function TeamProfileContent() {
         description: editDesc,
         motto: editMotto,
         logo_url: finalLogoUrl,
+        primary_color: editPrimaryColor,
+        secondary_color: editSecondaryColor,
+        jersey_pattern: editJerseyPattern,
       });
       await fetchData();
       setLogoFile(null);
@@ -486,7 +497,12 @@ function TeamProfileContent() {
                   className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
                 />
               ) : (
-                <Shield className="w-16 h-16 text-primary group-hover:rotate-12 transition-transform duration-500" />
+                <JerseyVisualizer 
+                  primaryColor={team.primary_color || '#18181b'} 
+                  secondaryColor={team.secondary_color || '#10b981'} 
+                  pattern={(team.jersey_pattern as JerseyPattern) || 'solid'}
+                  className="w-24 h-24"
+                />
               )}
 
               {isEditing && (
@@ -1009,6 +1025,107 @@ function TeamProfileContent() {
                     className="w-full min-h-[160px] bg-foreground/[0.03] border border-foreground/5 rounded-2xl px-6 py-5 text-sm font-medium text-foreground/60 focus:border-primary/30 outline-none resize-none transition-all"
                     placeholder="Contanos la historia del club..."
                   />
+                </div>
+
+                {/* Jersey Customization in Settings */}
+                <div className="glass-premium p-8 rounded-[3rem] border border-foreground/5 space-y-8">
+                  <div className="flex items-center gap-4">
+                    <div className="w-10 h-10 rounded-xl bg-primary/5 flex items-center justify-center text-primary">
+                      <Zap className="w-5 h-5" />
+                    </div>
+                    <h3 className="text-lg font-black text-foreground italic uppercase tracking-tighter">
+                      Personalización de Camiseta
+                    </h3>
+                  </div>
+
+                  <div className="space-y-6">
+                    <div className="grid grid-cols-2 gap-6">
+                      <div className="space-y-2">
+                        <label className="text-[9px] font-black uppercase tracking-[0.3em] text-foreground/40 ml-2">
+                          Color Primario
+                        </label>
+                        <div className="flex flex-wrap gap-2">
+                           {['#18181b', '#10b981', '#6366f1', '#f59e0b', '#ef4444', '#3b82f6'].map(c => (
+                             <button
+                               key={c}
+                               onClick={() => setEditPrimaryColor(c)}
+                               className={cn(
+                                 "w-8 h-8 rounded-full border-2 transition-all",
+                                 editPrimaryColor === c ? "border-primary scale-110" : "border-transparent opacity-50"
+                               )}
+                               style={{ backgroundColor: c }}
+                             />
+                           ))}
+                        </div>
+                      </div>
+                      <div className="space-y-2">
+                        <label className="text-[9px] font-black uppercase tracking-[0.3em] text-foreground/40 ml-2">
+                          Color Detalles
+                        </label>
+                        <div className="flex flex-wrap gap-2">
+                           {['#18181b', '#10b981', '#6366f1', '#f59e0b', '#ef4444', '#3b82f6'].map(c => (
+                             <button
+                               key={c}
+                               onClick={() => setEditSecondaryColor(c)}
+                               className={cn(
+                                 "w-8 h-8 rounded-full border-2 transition-all",
+                                 editSecondaryColor === c ? "border-primary scale-110" : "border-transparent opacity-50"
+                               )}
+                               style={{ backgroundColor: c }}
+                             />
+                           ))}
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="space-y-4">
+                      <label className="text-[9px] font-black uppercase tracking-[0.3em] text-foreground/40 ml-2">
+                        Patrón de Camiseta
+                      </label>
+                      <div className="grid grid-cols-4 gap-3">
+                        {JERSEY_PATTERNS.map((p) => (
+                          <button
+                            key={p.id}
+                            onClick={() => setEditJerseyPattern(p.id)}
+                            className={cn(
+                              "relative aspect-square rounded-2xl border-2 transition-all p-2 overflow-hidden",
+                              editJerseyPattern === p.id 
+                                ? "border-primary bg-primary/5"
+                                : "border-foreground/5 bg-foreground/[0.02] opacity-60 hover:opacity-100"
+                            )}
+                          >
+                            <JerseyVisualizer 
+                              primaryColor={editPrimaryColor} 
+                              secondaryColor={editSecondaryColor} 
+                              pattern={p.id}
+                              showShadow={false}
+                            />
+                            <div className="absolute inset-x-0 bottom-0 bg-black/60 py-0.5">
+                               <span className="text-[6px] font-black uppercase text-white truncate px-1 block text-center">
+                                 {p.label}
+                               </span>
+                            </div>
+                            {editJerseyPattern === p.id && (
+                              <div className="absolute top-1 right-1 w-3 h-3 rounded-full bg-primary flex items-center justify-center">
+                                <Check className="w-2 h-2 text-background" />
+                              </div>
+                            )}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div className="flex justify-center py-4 bg-foreground/[0.02] rounded-[2rem] border border-foreground/5">
+                        <div className="w-32 h-32">
+                           <JerseyVisualizer 
+                              primaryColor={editPrimaryColor} 
+                              secondaryColor={editSecondaryColor} 
+                              pattern={editJerseyPattern}
+                              logoUrl={logoPreview || editLogoUrl}
+                           />
+                        </div>
+                    </div>
+                  </div>
                 </div>
 
                 <div className="flex gap-4">

@@ -37,6 +37,7 @@ import { findVenueByLocation } from '@/lib/venues';
 import { getRankByElo, RANKS } from '@/lib/ranks';
 import { useSettings } from '@/contexts/SettingsContext';
 import { RankBadge } from '@/components/RankBadge';
+import { JerseyVisualizer, JerseyPattern } from '@/components/JerseyVisualizer';
 
 // Lazy load the RatingModal since it's only shown under specific conditions
 const RatingModal = dynamic(
@@ -108,11 +109,16 @@ const TeamCard = memo(({ team }: { team: Team & { role?: string } }) => {
         className="group relative overflow-hidden rounded-[2.5rem] p-6 lg:p-7 glass-premium-hover bg-surface/40 border border-white/5"
       >
         {/* Cinematic Watermark Logo */}
-        <div className="absolute -right-12 -bottom-12 w-48 h-48 opacity-[0.03] group-hover:opacity-[0.06] transition-opacity duration-700 pointer-events-none grayscale group-hover:grayscale-0">
+        <div className="absolute -right-12 -bottom-12 w-48 h-48 opacity-[0.03] group-hover:opacity-[0.06] transition-opacity duration-700 pointer-events-none grayscale group-hover:grayscale-0 flex items-center justify-center">
           {team.logo_url ? (
             <img src={team.logo_url} alt="" className="w-full h-full object-contain rotate-12" />
           ) : (
-            <Shield className="w-full h-full rotate-12" />
+            <JerseyVisualizer 
+              primaryColor={team.primary_color || '#18181b'} 
+              secondaryColor={team.secondary_color || '#10b981'} 
+              pattern={(team.jersey_pattern as JerseyPattern) || 'solid'}
+              className="w-full h-full rotate-12"
+            />
           )}
         </div>
 
@@ -127,7 +133,12 @@ const TeamCard = memo(({ team }: { team: Team & { role?: string } }) => {
                   className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
                 />
               ) : (
-                <Shield className="w-7 h-7 text-foreground/20 group-hover:text-primary transition-colors" />
+                <JerseyVisualizer 
+                  primaryColor={team.primary_color || '#18181b'} 
+                  secondaryColor={team.secondary_color || '#10b981'} 
+                  pattern={(team.jersey_pattern as JerseyPattern) || 'solid'}
+                  className="w-10 h-10"
+                />
               )}
               {/* Captain Badge Overlay */}
               {isCaptain && (

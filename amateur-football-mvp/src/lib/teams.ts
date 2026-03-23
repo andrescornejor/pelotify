@@ -18,6 +18,9 @@ export interface Team {
   xp: number;
   created_at: string;
   logo_url?: string;
+  primary_color?: string;
+  secondary_color?: string;
+  jersey_pattern?: string;
   has_requested?: boolean; // Any relation (pending, requested, confirmed)
   is_member?: boolean; // Only confirmed
   role?: 'captain' | 'member'; // Virtual field for UI state
@@ -97,7 +100,10 @@ export async function createTeam(
   name: string,
   description: string,
   captainId: string,
-  logoUrl?: string
+  logoUrl?: string,
+  primaryColor?: string,
+  secondaryColor?: string,
+  jerseyPattern?: string
 ) {
   const { data, error } = await supabase
     .from('teams')
@@ -107,6 +113,9 @@ export async function createTeam(
         description,
         captain_id: captainId,
         logo_url: logoUrl,
+        primary_color: primaryColor,
+        secondary_color: secondaryColor,
+        jersey_pattern: jerseyPattern,
         members_count: 0, // Trigger will set it to 1 when adding captain
         elo: 0,
       },
