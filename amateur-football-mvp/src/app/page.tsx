@@ -522,7 +522,7 @@ export default function HomePage() {
                   <span className="relative inline-flex rounded-full h-2 w-2 bg-primary" />
                 </div>
                 <span className="text-[10px] font-black uppercase tracking-[0.4em] text-primary/90 font-outfit">
-                  {greeting} •
+                  {greeting}
                 </span>
               </motion.div>
 
