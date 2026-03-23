@@ -32,6 +32,7 @@ import Link from 'next/link';
 import { AVAILABLE_TIMES } from '@/lib/constants';
 import { ROSARIO_VENUES } from '@/lib/venues';
 import { useSettings } from '@/contexts/SettingsContext';
+import { JerseyVisualizer } from '@/components/JerseyVisualizer';
 
 export default function TeamsPage() {
   const { user, isLoading: authLoading } = useAuth();
@@ -227,13 +228,28 @@ export default function TeamsPage() {
                     <div className="absolute inset-0 bg-primary blur-lg rounded-full opacity-20 group-hover/link:opacity-40 transition-opacity" />
                     <div className="w-16 h-16 rounded-2xl bg-surface-elevated border-2 border-primary/20 flex items-center justify-center overflow-hidden relative">
                       {myTeam.logo_url ? (
-                        <img
-                          src={myTeam.logo_url}
-                          alt={myTeam.name}
-                          className="w-full h-full object-cover"
-                        />
+                        <div className="relative w-full h-full">
+                          <img
+                            src={myTeam.logo_url}
+                            alt={myTeam.name}
+                            className="w-full h-full object-cover relative z-10"
+                          />
+                          <div className="absolute inset-0 bg-surface-elevated flex items-center justify-center opacity-20">
+                            <JerseyVisualizer 
+                              primaryColor={myTeam.primary_color || '#18181b'} 
+                              secondaryColor={myTeam.secondary_color || '#10b981'} 
+                              pattern={(myTeam.jersey_pattern as any) || 'solid'}
+                              className="w-8 h-8 opacity-40"
+                            />
+                          </div>
+                        </div>
                       ) : (
-                        <Shield className="w-8 h-8 text-primary" />
+                        <JerseyVisualizer 
+                          primaryColor={myTeam.primary_color || '#18181b'} 
+                          secondaryColor={myTeam.secondary_color || '#10b981'} 
+                          pattern={(myTeam.jersey_pattern as any) || 'solid'}
+                          className="w-10 h-10"
+                        />
                       )}
                     </div>
                   </div>
@@ -292,13 +308,28 @@ export default function TeamsPage() {
                   <div className="w-20 h-20 bg-surface-elevated rounded-[1.5rem] border border-foreground/5 flex items-center justify-center overflow-hidden group-hover:scale-110 shadow-2xl transition-transform duration-700 relative">
                     <div className="absolute inset-0 bg-gradient-to-tr from-foreground/10 to-transparent z-10" />
                     {team.logo_url ? (
-                      <img
-                        src={team.logo_url}
-                        alt={team.name}
-                        className="w-full h-full object-cover"
-                      />
+                      <div className="relative w-full h-full">
+                        <img
+                          src={team.logo_url}
+                          alt={team.name}
+                          className="w-full h-full object-cover relative z-10"
+                        />
+                        <div className="absolute inset-0 flex items-center justify-center">
+                          <JerseyVisualizer 
+                            primaryColor={team.primary_color || '#18181b'} 
+                            secondaryColor={team.secondary_color || '#10b981'} 
+                            pattern={(team.jersey_pattern as any) || 'solid'}
+                            className="w-12 h-12 opacity-20"
+                          />
+                        </div>
+                      </div>
                     ) : (
-                      <Shield className="w-10 h-10 text-primary/30 group-hover:text-primary transition-colors" />
+                      <JerseyVisualizer 
+                        primaryColor={team.primary_color || '#18181b'} 
+                        secondaryColor={team.secondary_color || '#10b981'} 
+                        pattern={(team.jersey_pattern as any) || 'solid'}
+                        className="w-12 h-12"
+                      />
                     )}
                   </div>
                   <div className="bg-surface-elevated border border-foreground/5 rounded-2xl px-4 py-2 flex flex-col items-center">

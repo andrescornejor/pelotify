@@ -726,6 +726,53 @@ function TeamProfileContent() {
           </motion.div>
         )}
 
+        {activeTab === 'squad' && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12"
+          >
+            {/* Main Elo Card */}
+            <div className="md:col-span-2 glass-premium p-8 rounded-[3rem] border border-foreground/5 bg-surface relative overflow-hidden group">
+               <div className="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-full blur-[80px] -mr-16 -mt-16" />
+               <div className="relative z-10 flex flex-col h-full justify-between">
+                  <div className="flex items-center gap-4">
+                    <div className="w-10 h-10 rounded-2xl bg-primary/10 flex items-center justify-center text-primary border border-primary/20">
+                      <Zap className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <h3 className="text-xl font-black italic text-foreground uppercase tracking-tighter leading-none">Status del Club</h3>
+                      <p className="text-[9px] font-black uppercase tracking-widest text-foreground/40 mt-1">REPUTACIÓN Y PODERÍO EN CANCHA</p>
+                    </div>
+                  </div>
+                  <div className="mt-8 flex items-baseline gap-2">
+                    <span className="text-6xl font-black italic text-primary tracking-tighter">{team.elo}</span>
+                    <span className="text-xs font-black uppercase tracking-widest text-foreground/20">PUNTOS ELO</span>
+                  </div>
+               </div>
+            </div>
+
+            {/* Official Kit Card */}
+            <div className="glass-premium p-6 rounded-[3rem] border border-primary/20 bg-primary/[0.02] relative overflow-hidden group flex flex-col items-center justify-center text-center">
+               <div className="absolute inset-x-0 top-0 py-3 bg-primary/10 border-b border-primary/10">
+                  <span className="text-[9px] font-black uppercase tracking-[0.4em] text-primary italic">Kit Oficial</span>
+               </div>
+               <div className="w-32 h-32 mt-6 mb-2 group-hover:scale-110 transition-transform duration-500">
+                  <JerseyVisualizer 
+                    primaryColor={team.primary_color || '#18181b'} 
+                    secondaryColor={team.secondary_color || '#10b981'} 
+                    pattern={(team.jersey_pattern as any) || 'solid'}
+                    logoUrl={team.logo_url}
+                  />
+               </div>
+               <div className="space-y-1">
+                  <h4 className="text-xs font-black text-foreground uppercase tracking-widest italic">{team.name}</h4>
+                  <p className="text-[8px] font-black text-foreground/40 uppercase tracking-widest">TEMPORADA 2024</p>
+               </div>
+            </div>
+          </motion.div>
+        )}
+
         {activeTab === 'squad' && teamMatches.some((m) => !m.is_completed) && (
           <div className="space-y-6">
             <div className="flex items-center gap-4 px-2">
