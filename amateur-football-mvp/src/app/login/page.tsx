@@ -196,13 +196,6 @@ export default function LoginPage() {
             </motion.div>
          </div>
 
-         {/* Animated badges or stats overlay */}
-         <div className="absolute top-12 right-12 z-20 flex flex-col gap-4 items-end opacity-40">
-            <div className="px-6 py-2 bg-white/5 backdrop-blur-md rounded-xl border border-white/10 flex items-center gap-3">
-               <div className="w-2 h-2 rounded-full bg-primary animate-pulse" />
-               <span className="text-[10px] font-black uppercase tracking-widest text-white">+5,200 PARTIDOS ESTA SEMANA</span>
-            </div>
-         </div>
       </div>
 
       {/* FORGOT PASSWORD MODAL */}

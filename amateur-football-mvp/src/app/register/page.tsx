@@ -286,13 +286,6 @@ export default function RegisterPage() {
           </motion.div>
         </div>
 
-        {/* Animated badges or stats overlay */}
-        <div className="absolute top-12 right-12 z-20 flex flex-col gap-4 items-end opacity-40">
-          <div className="px-6 py-4 bg-white/5 backdrop-blur-md rounded-2xl border border-white/10 flex flex-col items-end gap-1">
-            <span className="text-[9px] font-black uppercase tracking-widest text-primary italic">SISTEMA ANTI-CHEAT</span>
-            <span className="text-[10px] font-black uppercase tracking-tight text-white">IDENTIDAD 100% VALIDADA</span>
-          </div>
-        </div>
       </div>
     </div>
   );
