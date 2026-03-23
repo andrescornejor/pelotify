@@ -81,19 +81,36 @@ export function OnboardingTour() {
   useEffect(() => {
     if (!isVisible) return;
 
+    let rafId: number;
     const updateRect = () => {
       const step = TOUR_STEPS[currentStep];
       const el = document.querySelector(step.target);
       if (el) {
-        setTargetRect(el.getBoundingClientRect());
-        // Scroll to element
-        el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        const rect = el.getBoundingClientRect();
+        // Update state only if values change meaningfully to avoid over-rendering
+        setTargetRect(prev => {
+          if (!prev || 
+              Math.abs(prev.left - rect.left) > 0.5 || 
+              Math.abs(prev.top - rect.top) > 0.5 ||
+              prev.width !== rect.width ||
+              prev.height !== rect.height) {
+            return rect;
+          }
+          return prev;
+        });
       }
+      rafId = requestAnimationFrame(updateRect);
     };
 
-    updateRect();
-    window.addEventListener('resize', updateRect);
-    return () => window.removeEventListener('resize', updateRect);
+    // Initial scroll
+    const step = TOUR_STEPS[currentStep];
+    const el = document.querySelector(step.target);
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+
+    rafId = requestAnimationFrame(updateRect);
+    return () => cancelAnimationFrame(rafId);
   }, [currentStep, isVisible]);
 
   const handleNext = () => {
