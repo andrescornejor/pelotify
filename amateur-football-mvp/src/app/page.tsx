@@ -113,9 +113,9 @@ const TeamCard = memo(({ team }: { team: Team & { role?: string } }) => {
           {team.logo_url ? (
             <img src={team.logo_url} alt="" className="w-full h-full object-contain rotate-12" />
           ) : (
-            <JerseyVisualizer 
-              primaryColor={team.primary_color || '#18181b'} 
-              secondaryColor={team.secondary_color || '#10b981'} 
+            <JerseyVisualizer
+              primaryColor={team.primary_color || '#18181b'}
+              secondaryColor={team.secondary_color || '#10b981'}
               pattern={(team.jersey_pattern as JerseyPattern) || 'solid'}
               className="w-full h-full rotate-12"
             />
@@ -133,9 +133,9 @@ const TeamCard = memo(({ team }: { team: Team & { role?: string } }) => {
                   className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
                 />
               ) : (
-                <JerseyVisualizer 
-                  primaryColor={team.primary_color || '#18181b'} 
-                  secondaryColor={team.secondary_color || '#10b981'} 
+                <JerseyVisualizer
+                  primaryColor={team.primary_color || '#18181b'}
+                  secondaryColor={team.secondary_color || '#10b981'}
                   pattern={(team.jersey_pattern as JerseyPattern) || 'solid'}
                   className="w-10 h-10"
                 />
@@ -461,9 +461,9 @@ export default function HomePage() {
                 isPerfMode
                   ? { scale: 1, rotate: 0 }
                   : {
-                      scale: [1.02, 1.08, 1.02],
-                      rotate: [0, 1, 0],
-                    }
+                    scale: [1.02, 1.08, 1.02],
+                    rotate: [0, 1, 0],
+                  }
               }
               transition={{ duration: 25, repeat: Infinity, ease: 'linear' }}
               src="https://images.unsplash.com/photo-1574629810360-7efbbe195018?auto=format&fit=crop&q=60&w=1200"
@@ -522,7 +522,7 @@ export default function HomePage() {
                   <span className="relative inline-flex rounded-full h-2 w-2 bg-primary" />
                 </div>
                 <span className="text-[10px] font-black uppercase tracking-[0.4em] text-primary/90 font-outfit">
-                  {greeting} • SERVER STATUS: OPTIMAL
+                  {greeting} •
                 </span>
               </motion.div>
 
