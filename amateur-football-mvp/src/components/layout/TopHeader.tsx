@@ -115,8 +115,8 @@ export function TopHeader() {
               background: performanceMode
                 ? 'var(--surface-elevated)'
                 : 'rgba(var(--foreground-rgb), 0.04)',
-              backdropFilter: performanceMode ? 'none' : 'blur(28px) saturate(180%)',
-              WebkitBackdropFilter: performanceMode ? 'none' : 'blur(28px) saturate(180%)',
+              backdropFilter: performanceMode ? 'none' : 'blur(12px) saturate(180%)',
+              WebkitBackdropFilter: performanceMode ? 'none' : 'blur(12px) saturate(180%)',
               border: '1px solid rgba(var(--foreground-rgb), 0.08)',
               boxShadow: performanceMode
                 ? '0 10px 30px rgba(0,0,0,0.2)'

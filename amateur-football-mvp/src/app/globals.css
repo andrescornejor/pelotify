@@ -145,13 +145,13 @@
 @layer utilities {
   /* ── Glassmorphism ── */
   .glass {
-    @apply bg-background/80 backdrop-blur-xl border border-foreground/[0.05] shadow-2xl;
+    @apply bg-background/80 backdrop-blur-md border border-foreground/[0.05] shadow-2xl;
   }
 
   .glass-premium {
     background: rgba(var(--foreground-rgb), 0.025);
-    backdrop-filter: blur(24px) saturate(180%);
-    -webkit-backdrop-filter: blur(24px) saturate(180%);
+    backdrop-filter: blur(12px) saturate(180%);
+    -webkit-backdrop-filter: blur(12px) saturate(180%);
     border: 1px solid rgba(var(--foreground-rgb), 0.07);
     box-shadow:
       0 8px 32px rgba(0, 0, 0, 0.12),
@@ -165,7 +165,7 @@
   }
 
   .glass-card {
-    @apply bg-surface-elevated/60 backdrop-blur-3xl border border-foreground/[0.06] rounded-2xl shadow-2xl;
+    @apply bg-surface-elevated/60 backdrop-blur-xl border border-foreground/[0.06] rounded-2xl shadow-2xl;
   }
 
   /* ── Premium Card ── */

@@ -22,6 +22,12 @@ export const SettingsProvider: React.FC<{ children: React.ReactNode }> = ({ chil
       if (isEnabled) {
         document.documentElement.classList.add('perf-mode');
       }
+    } else {
+      // Default to performance mode (Lite Mode) on mobile if no preference is saved
+      const isMobile = window.matchMedia('(max-width: 768px)').matches;
+      if (isMobile) {
+        updatePerformanceMode(true);
+      }
     }
   }, []);
 

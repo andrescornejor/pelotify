@@ -50,8 +50,8 @@ const RatingModal = dynamic(
 const StatCard = memo(
   ({ stat, i, isPerfMode, fadeUp }: { stat: any; i: number; isPerfMode: boolean; fadeUp: any }) => (
     <motion.div
-      variants={fadeUp}
-      initial="hidden"
+      variants={isPerfMode ? {} : fadeUp}
+      initial={isPerfMode ? 'visible' : 'hidden'}
       whileInView="visible"
       viewport={{ once: true }}
       custom={i}
@@ -102,8 +102,8 @@ const TeamCard = memo(({ team }: { team: Team & { role?: string } }) => {
   return (
     <Link href={`/team?id=${team.id}`} className="block w-full lg:min-w-0 snap-center">
       <motion.div
-        whileHover={{ scale: 1.01, y: -4 }}
-        whileTap={{ scale: 0.98 }}
+        whileHover={isPerfMode ? {} : { scale: 1.01, y: -4 }}
+        whileTap={isPerfMode ? {} : { scale: 0.98 }}
         className="group relative overflow-hidden rounded-[2.5rem] p-6 lg:p-7 glass-premium-hover bg-surface/40 border border-white/5"
       >
         {/* Cinematic Watermark Logo */}
@@ -456,6 +456,7 @@ export default function HomePage() {
               transition={{ duration: 25, repeat: Infinity, ease: 'linear' }}
               src="https://images.unsplash.com/photo-1574629810360-7efbbe195018?auto=format&fit=crop&q=60&w=1200"
               alt=""
+              fetchPriority="high"
               className={cn(
                 'w-full h-full object-cover grayscale opacity-[0.08] dark:opacity-[0.12] scale-110 transition-opacity',
                 isPerfMode && 'grayscale-0 opacity-20 scale-100'
