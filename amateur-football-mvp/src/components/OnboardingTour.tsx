@@ -17,6 +17,17 @@ import {
 import { cn } from '@/lib/utils';
 import { useAuth } from '@/contexts/AuthContext';
 
+// Helper to find scrollable parent
+const getScrollParent = (node: HTMLElement | null): HTMLElement | null => {
+  if (node == null) return null;
+  if (node.scrollHeight > node.clientHeight && 
+      (window.getComputedStyle(node).overflowY === 'auto' || 
+       window.getComputedStyle(node).overflowY === 'scroll')) {
+    return node;
+  }
+  return getScrollParent(node.parentElement);
+};
+
 interface TourStep {
   target: string; // CSS selector
   title: string;
@@ -84,10 +95,9 @@ export function OnboardingTour() {
     let rafId: number;
     const updateRect = () => {
       const step = TOUR_STEPS[currentStep];
-      const el = document.querySelector(step.target);
+      const el = document.querySelector(step.target) as HTMLElement;
       if (el) {
         const rect = el.getBoundingClientRect();
-        // Update state only if values change meaningfully to avoid over-rendering
         setTargetRect(prev => {
           if (!prev || 
               Math.abs(prev.left - rect.left) > 0.5 || 
@@ -102,15 +112,42 @@ export function OnboardingTour() {
       rafId = requestAnimationFrame(updateRect);
     };
 
-    // Initial scroll
-    const step = TOUR_STEPS[currentStep];
-    const el = document.querySelector(step.target);
-    if (el) {
-      el.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    }
+    // Robust Manual Scroll Engine
+    const scrollStep = () => {
+      const step = TOUR_STEPS[currentStep];
+      const el = document.querySelector(step.target) as HTMLElement;
+      if (!el) return;
+
+      const scrollParent = getScrollParent(el) || document.documentElement;
+      const headerHeight = 100; // Safe margin for TopHeader
+      
+      // Calculate top position relative to scroll parent
+      let targetTop = 0;
+      let curr = el;
+      while (curr && curr !== scrollParent) {
+        targetTop += curr.offsetTop;
+        curr = curr.offsetParent as HTMLElement;
+      }
+      
+      // Center the element in the viewport minus header/nav impact
+      const viewportHeight = window.innerHeight;
+      const scrollPos = targetTop - (viewportHeight / 2) + (el.offsetHeight / 2) + (headerHeight / 2);
+      
+      scrollParent.scrollTo({
+        top: Math.max(0, scrollPos),
+        behavior: 'smooth'
+      });
+    };
+
+    scrollStep();
+    // Re-check after a small delay to ensure page rendering finished
+    const timer = setTimeout(scrollStep, 100);
 
     rafId = requestAnimationFrame(updateRect);
-    return () => cancelAnimationFrame(rafId);
+    return () => {
+      cancelAnimationFrame(rafId);
+      clearTimeout(timer);
+    };
   }, [currentStep, isVisible]);
 
   const handleNext = () => {
