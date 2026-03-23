@@ -130,15 +130,15 @@ export default function RegisterPage() {
         >
           {/* Header */}
           <div className="flex flex-col items-center lg:items-start gap-4 mb-10">
-             <Link href="/" className="w-20 h-20 mb-2 block lg:hidden">
-               <img src="/logo_pelotify.png" alt="Logo" className="w-full h-full object-contain" />
-             </Link>
-             <h1 className="text-4xl lg:text-7xl font-black italic text-foreground tracking-tighter uppercase leading-[0.8] text-center lg:text-left font-kanit">
-               Crear tu <br /> <span className="text-primary">Ficha</span>
-             </h1>
-             <p className="text-[10px] font-black text-foreground/40 uppercase tracking-[0.4em] italic lg:ml-1 text-center lg:text-left w-full">
-               Agente Libre / Temporada 2024
-             </p>
+            <Link href="/" className="w-20 h-20 mb-2 block lg:hidden">
+              <img src="/logo_pelotify.png" alt="Logo" className="w-full h-full object-contain" />
+            </Link>
+            <h1 className="text-4xl lg:text-7xl font-black italic text-foreground tracking-tighter uppercase leading-[0.8] text-center lg:text-left font-kanit">
+              Crear tu <br /> <span className="text-primary">Ficha</span>
+            </h1>
+            <p className="text-[10px] font-black text-foreground/40 uppercase tracking-[0.4em] italic lg:ml-1 text-center lg:text-left w-full">
+              Agente Libre / Temporada 2026
+            </p>
           </div>
 
           <div className="flex flex-col gap-8">
@@ -251,48 +251,48 @@ export default function RegisterPage() {
 
       {/* ── RIGHT PANEL: CINEMATIC HERO ── */}
       <div className="hidden lg:flex flex-[1.2] relative overflow-hidden bg-zinc-950">
-         <motion.div 
-           initial={{ scale: 1.1, opacity: 0 }}
-           animate={{ scale: 1, opacity: 1 }}
-           transition={{ duration: 1.5 }}
-           className="absolute inset-0"
-         >
-           <img 
-             src="/login_hero.png" 
-             className="w-full h-full object-cover opacity-60 grayscale-[0.2] hover:grayscale-0 transition-all duration-[3000ms]" 
-             alt="Hero" 
-           />
-           <div className="absolute inset-0 bg-gradient-to-r from-background via-background/20 to-transparent" />
-           <div className="absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t from-background via-transparent to-transparent" />
-         </motion.div>
+        <motion.div
+          initial={{ scale: 1.1, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{ duration: 1.5 }}
+          className="absolute inset-0"
+        >
+          <img
+            src="/login_hero.png"
+            className="w-full h-full object-cover opacity-60 grayscale-[0.2] hover:grayscale-0 transition-all duration-[3000ms]"
+            alt="Hero"
+          />
+          <div className="absolute inset-0 bg-gradient-to-r from-background via-background/20 to-transparent" />
+          <div className="absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t from-background via-transparent to-transparent" />
+        </motion.div>
 
-         <div className="relative z-20 flex flex-col justify-end p-20 w-full">
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.5 }}
-              className="space-y-6"
-            >
-               <div className="flex items-center gap-4">
-                 <div className="w-12 h-1 bg-primary rounded-full" />
-                 <span className="text-xs font-black uppercase tracking-[0.5em] text-primary italic">Registración Única</span>
-               </div>
-               <h2 className="text-8xl font-black italic text-white uppercase tracking-tighter leading-[0.8] drop-shadow-2xl">
-                 EL SUEÑO <br /> DEL PIBE <br /> <span className="text-primary">EMPIEZA HOY.</span>
-               </h2>
-               <p className="text-lg text-white/50 font-bold uppercase tracking-widest max-w-md leading-relaxed">
-                 Cargá tus estadísticas, subí de ELO y demostrá que sos el mejor en la red de fútbol amateur más competitiva.
-               </p>
-            </motion.div>
-         </div>
-
-         {/* Animated badges or stats overlay */}
-         <div className="absolute top-12 right-12 z-20 flex flex-col gap-4 items-end opacity-40">
-            <div className="px-6 py-4 bg-white/5 backdrop-blur-md rounded-2xl border border-white/10 flex flex-col items-end gap-1">
-               <span className="text-[9px] font-black uppercase tracking-widest text-primary italic">SISTEMA ANTI-CHEAT</span>
-               <span className="text-[10px] font-black uppercase tracking-tight text-white">IDENTIDAD 100% VALIDADA</span>
+        <div className="relative z-20 flex flex-col justify-end p-20 w-full">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.5 }}
+            className="space-y-6"
+          >
+            <div className="flex items-center gap-4">
+              <div className="w-12 h-1 bg-primary rounded-full" />
+              <span className="text-xs font-black uppercase tracking-[0.5em] text-primary italic">Registración Única</span>
             </div>
-         </div>
+            <h2 className="text-8xl font-black italic text-white uppercase tracking-tighter leading-[0.8] drop-shadow-2xl">
+              EL SUEÑO <br /> DEL PIBE <br /> <span className="text-primary">EMPIEZA HOY.</span>
+            </h2>
+            <p className="text-lg text-white/50 font-bold uppercase tracking-widest max-w-md leading-relaxed">
+              Cargá tus estadísticas, subí de ELO y demostrá que sos el mejor en la red de fútbol amateur más competitiva.
+            </p>
+          </motion.div>
+        </div>
+
+        {/* Animated badges or stats overlay */}
+        <div className="absolute top-12 right-12 z-20 flex flex-col gap-4 items-end opacity-40">
+          <div className="px-6 py-4 bg-white/5 backdrop-blur-md rounded-2xl border border-white/10 flex flex-col items-end gap-1">
+            <span className="text-[9px] font-black uppercase tracking-widest text-primary italic">SISTEMA ANTI-CHEAT</span>
+            <span className="text-[10px] font-black uppercase tracking-tight text-white">IDENTIDAD 100% VALIDADA</span>
+          </div>
+        </div>
       </div>
     </div>
   );
