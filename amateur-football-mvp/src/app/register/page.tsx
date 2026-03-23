@@ -278,7 +278,7 @@ export default function RegisterPage() {
               <span className="text-xs font-black uppercase tracking-[0.5em] text-primary italic">Registración Única</span>
             </div>
             <h2 className="text-8xl font-black italic text-white uppercase tracking-tighter leading-[0.8] drop-shadow-2xl">
-              EL SUEÑO <br /> DEL PIBE <br /> <span className="text-primary">EMPIEZA HOY.</span>
+              LA GLORIA <br /> SE ESCRIBE <br /> <span className="text-primary">EN LA CANCHA.</span>
             </h2>
             <p className="text-lg text-white/50 font-bold uppercase tracking-widest max-w-md leading-relaxed">
               Cargá tus estadísticas, subí de ELO y demostrá que sos el mejor en la red de fútbol amateur más competitiva.

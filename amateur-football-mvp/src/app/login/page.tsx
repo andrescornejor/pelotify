@@ -188,7 +188,7 @@ export default function LoginPage() {
                  <span className="text-xs font-black uppercase tracking-[0.5em] text-primary italic">Pelotify Official</span>
                </div>
                <h2 className="text-8xl font-black italic text-white uppercase tracking-tighter leading-[0.8] drop-shadow-2xl">
-                 LA GLORIA <br /> SE ESCRIBE <br /> <span className="text-primary">EN EL BARRO.</span>
+                 LA GLORIA <br /> SE ESCRIBE <br /> <span className="text-primary">EN LA CANCHA.</span>
                </h2>
                <p className="text-lg text-white/50 font-bold uppercase tracking-widest max-w-md leading-relaxed">
                  Unite a la red de fútbol amateur más grande del país. Armá tu equipo, desafiá rivales y dominá el ranking.
