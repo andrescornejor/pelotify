@@ -1,14 +1,15 @@
 import { useEffect, useRef, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Heart, MessageCircle, Share2, User2, Play, Pause, Trash2, AlertTriangle } from 'lucide-react';
+import { Heart, MessageCircle, Share2, User2, Play, Pause, Trash2, ChevronLeft } from 'lucide-react';
 import { useInView } from 'react-intersection-observer';
 import { useAuth } from '@/contexts/AuthContext';
-import { deleteHighlight } from '@/lib/highlights';
+import { deleteHighlight, toggleLike, checkIfLiked } from '@/lib/highlights';
+import CommentsModal from './CommentsModal';
 
 interface VideoPlayerProps {
   id: string;
   url: string;
-  userId: string; // The owner of the highlight
+  userId: string;
   thumbnail?: string;
   description?: string;
   userName?: string;
@@ -38,14 +39,15 @@ export default function VideoPlayer({
   const [isMuted, setIsMuted] = useState(true);
   const [showPlayIcon, setShowPlayIcon] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
+  
+  // Engagement States
+  const [isLiked, setIsLiked] = useState(false);
+  const [localLikes, setLocalLikes] = useState(likes);
+  const [showComments, setShowComments] = useState(false);
 
-  const { ref: inViewRef, inView } = useInView({
-    threshold: 0.7,
-  });
+  const { ref: inViewRef, inView } = useInView({ threshold: 0.7 });
 
-  const setRefs = (node: HTMLDivElement) => {
-    inViewRef(node);
-  };
+  const setRefs = (node: HTMLDivElement) => { inViewRef(node); };
 
   useEffect(() => {
     if (inView && isActive) {
@@ -57,6 +59,12 @@ export default function VideoPlayer({
     }
   }, [inView, isActive]);
 
+  useEffect(() => {
+    if (user && id) {
+      checkIfLiked(id, user.id).then(setIsLiked);
+    }
+  }, [id, user]);
+
   const togglePlay = () => {
     if (videoRef.current) {
       if (isPlaying) videoRef.current.pause();
@@ -64,6 +72,23 @@ export default function VideoPlayer({
       setIsPlaying(!isPlaying);
       setShowPlayIcon(true);
       setTimeout(() => setShowPlayIcon(false), 500);
+    }
+  };
+
+  const handleLike = async (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (!user) return;
+    
+    const newLiked = !isLiked;
+    setIsLiked(newLiked);
+    setLocalLikes(prev => newLiked ? prev + 1 : prev - 1);
+    
+    try {
+      await toggleLike(id, user.id, isLiked);
+    } catch (err) {
+      console.error('Like error:', err);
+      setIsLiked(!newLiked);
+      setLocalLikes(prev => !newLiked ? prev + 1 : prev - 1);
     }
   };
 
@@ -89,10 +114,29 @@ export default function VideoPlayer({
     <div 
       ref={setRefs}
       className="relative w-full h-[100dvh] bg-black snap-start overflow-hidden flex items-center justify-center overscroll-none"
-      onClick={togglePlay}
     >
-      {/* 9:16 Aspect Ratio Wrapper for Desktop */}
-      <div className="relative h-full aspect-[9/16] bg-zinc-950 shadow-2xl flex items-center justify-center overflow-hidden">
+      {/* Background Blur (Desktop Aesthetics) */}
+      <div className="absolute inset-0 hidden sm:block pointer-events-none">
+        <video src={url} className="w-full h-full object-cover blur-3xl opacity-20" muted loop playsInline autoPlay />
+      </div>
+
+      {/* 9:16 Aspect Ratio Wrapper */}
+      <div className="relative h-full aspect-[9/16] bg-zinc-950 shadow-[0_0_80px_rgba(0,0,0,0.8)] flex items-center justify-center overflow-hidden z-10 border-x border-white/5">
+        
+        {/* Top Header Overlay (Para Ti / Clubes) */}
+        <div className="absolute top-0 left-0 w-full p-8 z-30 flex justify-center items-center gap-6 pointer-events-none">
+           <button className="text-white font-black text-xs tracking-[0.3em] uppercase opacity-100 relative pointer-events-auto shadow-sm">
+             PARA TI
+             <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-8 h-[2.5px] bg-emerald-500 shadow-[0_0_10px_#10b981]" />
+           </button>
+           <button className="text-white/40 font-black text-xs tracking-[0.3em] uppercase hover:text-white/60 transition-colors pointer-events-auto">
+             CLUBES
+           </button>
+        </div>
+
+        {/* Click Area for Play/Pause */}
+        <div className="absolute inset-0 z-10" onClick={togglePlay} />
+
         {/* Video Element */}
         <video
           ref={videoRef}
@@ -104,11 +148,10 @@ export default function VideoPlayer({
           className="w-full h-full object-cover"
           preload="metadata"
           onError={(e) => console.error('Video error:', e)}
-          onLoadedData={() => console.log('Video loaded:', url)}
         />
 
         {/* Visual Overlays */}
-        <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-transparent to-black/60 pointer-events-none" />
+        <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-transparent to-black/80 pointer-events-none z-20" />
 
         {/* Play/Pause Icon */}
         <AnimatePresence>
@@ -117,45 +160,47 @@ export default function VideoPlayer({
               initial={{ scale: 0.5, opacity: 0 }}
               animate={{ scale: 1.5, opacity: 1 }}
               exit={{ scale: 2, opacity: 0 }}
-              className="absolute z-20 pointer-events-none"
+              className="absolute z-30 pointer-events-none top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
             >
-              {isPlaying ? (
-                <Play className="w-16 h-16 text-white/50 fill-white/50" />
-              ) : (
-                <Pause className="w-16 h-16 text-white/50 fill-white/50" />
-              )}
+              <Pause className="w-16 h-16 text-white/40 fill-white/40" />
             </motion.div>
           )}
         </AnimatePresence>
 
         {/* Right Action Bar */}
-        <div className="absolute right-4 bottom-28 flex flex-col gap-6 items-center z-10">
+        <div className="absolute right-4 bottom-32 flex flex-col gap-6 items-center z-30">
           <div className="flex flex-col items-center group/action">
             <motion.div 
               whileHover={{ scale: 1.15 }}
               whileTap={{ scale: 0.9 }}
-              className="p-3.5 bg-white/10 backdrop-blur-xl rounded-full border border-white/20 shadow-lg cursor-pointer group-hover/action:bg-rose-500/20 group-hover/action:border-rose-500/40 transition-all duration-300"
+              onClick={handleLike}
+              className={`p-3.5 backdrop-blur-3xl rounded-full border transition-all duration-300 cursor-pointer ${
+                isLiked 
+                  ? 'bg-rose-500 border-rose-400 shadow-[0_0_20px_rgba(244,63,94,0.4)]' 
+                  : 'bg-white/10 border-white/20 group-hover/action:border-rose-500/50 shadow-lg'
+              }`}
             >
-              <Heart className="w-6 h-6 text-white group-hover/action:text-rose-500 group-hover/action:fill-rose-500 transition-colors" />
+              <Heart className={`w-6 h-6 transition-colors ${isLiked ? 'text-white fill-white' : 'text-white group-hover/action:text-rose-500'}`} />
             </motion.div>
-            <span className="text-white text-[10px] mt-1.5 font-black uppercase tracking-widest font-outfit opacity-80">{likes}</span>
+            <span className="text-white text-[10px] mt-1.5 font-black tracking-widest font-outfit shadow-sm">{localLikes}</span>
           </div>
 
           <div className="flex flex-col items-center group/action">
             <motion.div 
               whileHover={{ scale: 1.15 }}
               whileTap={{ scale: 0.9 }}
-              className="p-3.5 bg-white/10 backdrop-blur-xl rounded-full border border-white/20 shadow-lg cursor-pointer group-hover/action:bg-primary/20 group-hover/action:border-primary/40 transition-all duration-300"
+              onClick={(e) => { e.stopPropagation(); setShowComments(true); }}
+              className="p-3.5 bg-white/10 backdrop-blur-3xl rounded-full border border-white/20 shadow-lg cursor-pointer group-hover/action:bg-primary/20 group-hover/action:border-primary/40 transition-all duration-300"
             >
               <MessageCircle className="w-6 h-6 text-white group-hover/action:text-primary transition-colors" />
             </motion.div>
-            <span className="text-white text-[10px] mt-1.5 font-black uppercase tracking-widest font-outfit opacity-80">{comments}</span>
+            <span className="text-white text-[10px] mt-1.5 font-black tracking-widest font-outfit shadow-sm">{comments}</span>
           </div>
 
           <motion.div 
             whileHover={{ scale: 1.15 }}
             whileTap={{ scale: 0.9 }}
-            className="p-3.5 bg-white/10 backdrop-blur-xl rounded-full border border-white/20 shadow-lg cursor-pointer hover:bg-white/20 transition-all duration-300"
+            className="p-3.5 bg-white/10 backdrop-blur-3xl rounded-full border border-white/20 shadow-lg cursor-pointer hover:bg-white/20 transition-all duration-300"
           >
             <Share2 className="w-6 h-6 text-white" />
           </motion.div>
@@ -166,7 +211,7 @@ export default function VideoPlayer({
               whileTap={{ scale: 0.9 }}
               onClick={handleDelete}
               disabled={isDeleting}
-              className="p-3.5 bg-rose-500/10 backdrop-blur-xl rounded-full border border-rose-500/20 shadow-lg cursor-pointer hover:bg-rose-500 text-rose-500 hover:text-white transition-all duration-300 group/delete"
+              className="p-3.5 bg-rose-500/10 backdrop-blur-3xl rounded-full border border-rose-500/20 shadow-lg cursor-pointer hover:bg-rose-500 text-rose-500 hover:text-white transition-all duration-300 group/delete"
             >
               <Trash2 className="w-6 h-6" />
             </motion.button>
@@ -174,7 +219,7 @@ export default function VideoPlayer({
         </div>
 
         {/* Bottom Info Section */}
-        <div className="absolute left-6 bottom-10 right-20 z-10 space-y-3">
+        <div className="absolute left-6 bottom-12 right-20 z-30 space-y-4">
           <motion.div 
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
@@ -182,7 +227,7 @@ export default function VideoPlayer({
           >
             <div className="relative group/avatar">
               <div className="absolute -inset-1 bg-emerald-500/50 rounded-full blur-sm opacity-0 group-hover/avatar:opacity-100 transition-opacity" />
-              <div className="relative w-11 h-11 rounded-full border-2 border-emerald-500 overflow-hidden bg-emerald-100 flex items-center justify-center shadow-lg">
+              <div className="relative w-12 h-12 rounded-full border-2 border-emerald-500 overflow-hidden bg-emerald-100 flex items-center justify-center shadow-xl">
                 {userAvatar ? (
                   <img src={userAvatar} alt={userName} className="w-full h-full object-cover" />
                 ) : (
@@ -191,35 +236,41 @@ export default function VideoPlayer({
               </div>
             </div>
             <div className="flex flex-col">
-              <span className="text-white font-black text-lg italic tracking-tight font-kanit drop-shadow-lg leading-tight">
+              <span className="text-white font-black text-xl italic tracking-tight font-kanit drop-shadow-2xl leading-none">
                 @{userName || 'crack_anonimo'}
               </span>
-              <div className="flex items-center gap-1.5 text-[8px] font-black text-emerald-400 uppercase tracking-[0.2em]">
+              <div className="flex items-center gap-1.5 text-[8px] font-black text-emerald-400 uppercase tracking-[0.2em] mt-1 shadow-sm">
                 <div className="w-1 h-1 rounded-full bg-emerald-400 animate-pulse" />
-                VERIFICADO
+                DESTACADO
               </div>
             </div>
           </motion.div>
           
-          <p className="text-white/90 text-sm font-medium leading-relaxed max-w-sm drop-shadow-sm font-outfit">
-            {description || '🔥 Tremenda jugada de mi equipo! #Pelotify #FutbolAmateur'}
+          <p className="text-white/90 text-sm font-medium leading-relaxed max-w-[280px] drop-shadow-lg font-outfit line-clamp-2">
+            {description || '🔥 Mirá esta tremenda jugada en Pelotify! #FutbolAmateur'}
           </p>
         </div>
 
         {/* Progress Bar */}
-        <div className="absolute bottom-0 left-0 w-full h-[3px] bg-white/10">
+        <div className="absolute bottom-0 left-0 w-full h-[4px] bg-white/5 z-40">
           <motion.div 
-            className="h-full bg-emerald-500 shadow-[0_0_10px_rgba(44,252,125,0.6)]"
+            className="h-full bg-emerald-400 shadow-[0_0_15px_#10b981]"
             initial={{ width: "0%" }}
             animate={{ width: isPlaying ? "100%" : "0%" }}
-            transition={{ 
-              duration: 15,
-              ease: "linear",
-              repeat: Infinity
-            }}
+            transition={{ duration: 15, ease: "linear", repeat: Infinity }}
           />
         </div>
       </div>
+
+      {/* Interactions (Modals) */}
+      <AnimatePresence>
+        {showComments && (
+          <CommentsModal 
+            highlightId={id} 
+            onClose={() => setShowComments(false)}
+          />
+        )}
+      </AnimatePresence>
     </div>
   );
 }

@@ -70,7 +70,54 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
 
--- 6. Performance Indexes
+-- 6. Likes System (Table + Trigger)
+CREATE TABLE IF NOT EXISTS public.match_highlight_likes (
+    highlight_id UUID REFERENCES public.match_highlights(id) ON DELETE CASCADE,
+    user_id UUID REFERENCES public.profiles(id) ON DELETE CASCADE,
+    created_at TIMESTAMPTZ DEFAULT now(),
+    PRIMARY KEY (highlight_id, user_id)
+);
+
+ALTER TABLE public.match_highlight_likes ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Allow public select" ON public.match_highlight_likes FOR SELECT USING (true);
+CREATE POLICY "Allow authenticated insert" ON public.match_highlight_likes FOR INSERT WITH CHECK (auth.uid() = user_id);
+CREATE POLICY "Allow owner delete" ON public.match_highlight_likes FOR DELETE USING (auth.uid() = user_id);
+
+-- Trigger to update likes_count
+CREATE OR REPLACE FUNCTION public.update_highlight_likes_count()
+RETURNS TRIGGER AS $$
+BEGIN
+    IF (TG_OP = 'INSERT') THEN
+        UPDATE public.match_highlights SET likes_count = likes_count + 1 WHERE id = NEW.highlight_id;
+    ELSIF (TG_OP = 'DELETE') THEN
+        UPDATE public.match_highlights SET likes_count = likes_count - 1 WHERE id = OLD.highlight_id;
+    END IF;
+    RETURN NULL;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+CREATE TRIGGER on_highlight_like_change
+AFTER INSERT OR DELETE ON public.match_highlight_likes
+FOR EACH ROW EXECUTE FUNCTION public.update_highlight_likes_count();
+
+-- 7. Comments System (Table)
+CREATE TABLE IF NOT EXISTS public.match_highlight_comments (
+    id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+    highlight_id UUID REFERENCES public.match_highlights(id) ON DELETE CASCADE,
+    user_id UUID REFERENCES public.profiles(id) ON DELETE CASCADE,
+    content TEXT NOT NULL,
+    created_at TIMESTAMPTZ DEFAULT now()
+);
+
+ALTER TABLE public.match_highlight_comments ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Allow public select" ON public.match_highlight_comments FOR SELECT USING (true);
+CREATE POLICY "Allow authenticated insert" ON public.match_highlight_comments FOR INSERT WITH CHECK (auth.uid() = user_id);
+CREATE POLICY "Allow owner delete" ON public.match_highlight_comments FOR DELETE USING (auth.uid() = user_id);
+
+-- 8. Performance Indexes
 CREATE INDEX IF NOT EXISTS idx_highlights_match ON public.match_highlights(match_id);
 CREATE INDEX IF NOT EXISTS idx_highlights_user ON public.match_highlights(user_id);
 CREATE INDEX IF NOT EXISTS idx_highlights_created ON public.match_highlights(created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_highlight_comments_id ON public.match_highlight_comments(highlight_id);

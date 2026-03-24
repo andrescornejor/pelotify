@@ -55,18 +55,17 @@ export default function VideoFeed() {
         )}
       </AnimatePresence>
 
-      {/* Top Header Overlay */}
-      <div className="absolute top-0 left-0 w-full z-20 px-6 py-10 flex items-center justify-between">
-        <Link href="/" className="p-3 bg-black/40 backdrop-blur-xl rounded-2xl border border-white/10 text-white hover:bg-black/60 transition-all">
+      {/* Global Navigation Controls */}
+      <div className="fixed top-6 left-6 z-[100] flex items-center gap-4">
+        <Link href="/" className="p-3 bg-black/40 backdrop-blur-xl rounded-2xl border border-white/10 text-white hover:bg-black/60 transition-all shadow-xl">
           <ArrowLeft className="w-6 h-6" />
         </Link>
-        <div className="flex gap-8">
-          <button className="text-white font-black italic uppercase tracking-widest border-b-2 border-emerald-500 pb-1 font-kanit text-lg shadow-[0_4px_10px_rgba(44,252,125,0.3)]">Para ti</button>
-          <button className="text-white/40 font-black italic uppercase tracking-widest hover:text-white/80 transition-colors pb-1 font-kanit text-lg">Clubes</button>
-        </div>
+      </div>
+
+      <div className="fixed top-6 right-6 z-[100]">
         <button 
           onClick={() => setIsUploadOpen(true)}
-          className="p-3 bg-emerald-500 rounded-2xl text-background shadow-[0_10px_20px_rgba(44,252,125,0.3)] hover:scale-110 active:scale-95 transition-all"
+          className="p-3 bg-emerald-500 rounded-2xl text-background shadow-[0_10px_30px_rgba(44,252,125,0.4)] hover:scale-110 active:scale-95 transition-all"
         >
           <Plus className="w-6 h-6" />
         </button>
