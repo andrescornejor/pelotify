@@ -24,6 +24,10 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
     window.scrollTo(0, 0);
   }, [pathname]);
 
+  const isAuthPage =
+    pathname === '/login' ||
+    pathname === '/register' ||
+    pathname === '/onboarding' ||
     pathname === '/team-builder';
   
   const isHighlightsPage = pathname === '/highlights';
