@@ -135,9 +135,6 @@ const TeamCard = ({ team, isPerfMode }: any) => (
         <div className="w-16 h-16 rounded-[2rem] bg-surface flex items-center justify-center overflow-hidden border-2 border-white/5 group-hover:border-primary/30 transition-colors">
           <Users className="w-7 h-7 text-foreground/20" />
         </div>
-        <div className="absolute -bottom-1 -right-1 w-6 h-6 rounded-lg bg-background border border-white/10 flex items-center justify-center font-black text-[9px] text-primary">
-          F5
-        </div>
       </div>
       <div className="flex-1">
         <h4 className="text-xl font-black italic uppercase tracking-tighter text-foreground font-kanit leading-none">
@@ -153,17 +150,6 @@ const TeamCard = ({ team, isPerfMode }: any) => (
             +{team.members_count || 12} miembros
           </span>
         </div>
-      </div>
-    </div>
-
-    <div className="flex items-center gap-3 w-full sm:w-auto relative z-10">
-      <div className="flex-1 sm:flex-none py-2 px-5 rounded-xl bg-foreground/[0.03] border border-white/5 flex flex-col items-center justify-center">
-        <span className="text-[8px] font-black text-foreground/30 uppercase tracking-widest">W/L</span>
-        <span className="text-sm font-black text-foreground uppercase italic px-1">12-4</span>
-      </div>
-      <div className="flex-1 sm:flex-none py-2 px-5 rounded-xl bg-primary/10 border border-primary/20 flex flex-col items-center justify-center group-hover:bg-primary transition-colors">
-        <span className="text-[8px] font-black text-primary/60 uppercase tracking-widest group-hover:text-background/60">ELO</span>
-        <span className="text-sm font-black text-primary uppercase italic group-hover:text-background">1840</span>
       </div>
     </div>
   </motion.div>
@@ -252,7 +238,7 @@ export default function HomePage() {
           setActivities(recentProfiles.map(p => ({
             type: 'RANK_UP',
             user: p.full_name || 'Nuevo Jugador',
-            detail: `se ha unido a la liga con ${p.elo || 1000} ELO`,
+            detail: `se ha unido a la liga`,
             time: 'Reciente'
           })));
         }
@@ -368,11 +354,11 @@ export default function HomePage() {
     () => [
       {
         icon: Trophy,
-        label: 'ELO Rating',
-        value: statsSummary.elo,
-        color: '#2cfc7d',
-        glow: 'rgba(44,252,125,0.2)',
-        tooltip: 'Tu puntaje competitivo',
+        label: 'Rango Actual',
+        value: rankCalculation.rank.name,
+        color: rankCalculation.rank.hex,
+        glow: rankCalculation.rank.glow,
+        tooltip: 'Tu rango competitivo',
       },
       {
         icon: Activity,
@@ -391,12 +377,12 @@ export default function HomePage() {
         tooltip: 'Veces elegido MVP',
       },
       {
-        icon: Flame,
-        label: 'Win Rate',
-        value: `${statsSummary.winRate}%`,
+        icon: Target,
+        label: 'Precisión',
+        value: '78%',
         color: '#f43f5e',
         glow: 'rgba(244,63,94,0.2)',
-        tooltip: 'Tasa de victorias',
+        tooltip: 'Efectividad en cancha',
       },
     ],
     [statsSummary, metadata?.mvp_count]
@@ -602,16 +588,10 @@ export default function HomePage() {
                     icon: Trophy,
                   },
                   {
-                    label: 'Puntaje ELO',
-                    value: statsSummary.elo,
-                    color: 'text-primary',
-                    icon: Target,
-                  },
-                  {
-                    label: 'Tasa de exito',
-                    value: `${statsSummary.winRate}%`,
+                    label: 'Partidos Jugados',
+                    value: statsSummary.totalMatches,
                     color: 'text-accent',
-                    icon: TrendingUp,
+                    icon: Calendar,
                   },
                 ].map((item, idx) => (
                   <div key={idx} className={cn("space-y-1", idx === 2 && "hidden sm:block")}>
@@ -655,12 +635,9 @@ export default function HomePage() {
                     <h3 className="text-2xl font-black italic text-foreground leading-none font-kanit uppercase tracking-tighter">
                       {rankCalculation.info.name}
                     </h3>
-                    <div className="flex items-center gap-2">
-                      <div className="h-1 w-1 rounded-full bg-primary" />
-                      <span className="text-[9px] font-black text-primary uppercase tracking-[0.2em]">
-                        {statsSummary.elo} ELO PERSONAL
-                      </span>
-                    </div>
+                    <span className="text-[9px] font-black text-primary uppercase tracking-[0.2em]">
+                      ESTADO DE TEMPORADA
+                    </span>
                   </div>
                   <div className="text-right">
                     <span className="text-3xl font-black text-foreground italic font-kanit leading-none">
@@ -689,8 +666,8 @@ export default function HomePage() {
                   </div>
 
                   <div className="flex justify-between text-[8px] font-black text-foreground/30 uppercase tracking-[0.3em]">
-                    <span>{rankCalculation.info.minElo} XP</span>
-                    <span>{rankCalculation.nextRank.minElo} XP REQUERIDOS</span>
+                    <span>PROGRESO DE TEMPORADA</span>
+                    <span>SIGUIENTE NIVEL</span>
                   </div>
                 </div>
               </div>
@@ -899,11 +876,11 @@ export default function HomePage() {
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-4">
                     {[
                       {
-                        icon: Zap,
+                        icon: Activity,
                         color: '#2cfc7d',
-                        label: 'Victorias',
-                        value: statsSummary.matchesWon,
-                        desc: 'Motor principal de subida.',
+                        label: 'Partidos',
+                        value: statsSummary.totalMatches,
+                        desc: 'Experiencia acumulada.',
                       },
                       {
                         icon: Target,
@@ -1014,15 +991,7 @@ export default function HomePage() {
                 ))
               ) : userTeams.length > 0 ? (
                 userTeams.map((team) => <TeamCard key={team.id} team={team} isPerfMode={isPerfMode} />)
-              ) : (
-                <EmptyState 
-                  icon={Users}
-                  title="Sin Equipos"
-                  description="Aún no eres parte de ninguna leyenda. Crea tu equipo o únete a uno existente."
-                  actionText="DESCUBRIR CLUBES"
-                  actionHref="/teams"
-                />
-              )}
+              ) : null}
             </div>
 
             <SectionDivider />
