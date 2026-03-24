@@ -820,26 +820,6 @@ export default function HomePage() {
                   </motion.button>
                 </Link>
               </div>
-                  <motion.button
-                    whileHover={{ scale: 1.02, y: -2 }}
-                    whileTap={{ scale: 0.98 }}
-                    className="w-full h-12 rounded-2xl glass border-white/10 text-foreground/70 font-black uppercase text-[10px] tracking-widest flex items-center justify-center gap-2 hover:text-foreground transition-colors"
-                  >
-                    <Search className="w-4 h-4" />
-                    <span>EXPLORAR</span>
-                  </motion.button>
-                </Link>
-                <Link href="/ranks">
-                  <motion.button
-                    whileHover={{ scale: 1.02, y: -2 }}
-                    whileTap={{ scale: 0.98 }}
-                    className="w-full h-12 rounded-2xl glass border-white/10 text-foreground/70 font-black uppercase text-[10px] tracking-widest flex items-center justify-center gap-2 hover:text-foreground transition-colors"
-                  >
-                    <Trophy className="w-4 h-4" />
-                    <span>RANKINGS</span>
-                  </motion.button>
-                </Link>
-              </div>
             </motion.div>
           </div>
         </motion.section>

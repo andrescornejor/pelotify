@@ -36,7 +36,17 @@ CREATE POLICY "Users can delete their own highlights" ON public.match_highlights
 -- These must be applied to the 'storage.objects' table for the 'match-highlights' bucket.
 -- Assuming the bucket is called 'match-highlights'
 
--- 5. Performance Indexes
+-- 5. RPC to Increment Views
+CREATE OR REPLACE FUNCTION public.increment_highlight_views(h_id UUID)
+RETURNS VOID AS $$
+BEGIN
+    UPDATE public.match_highlights
+    SET views_count = views_count + 1
+    WHERE id = h_id;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+-- 6. Performance Indexes
 CREATE INDEX IF NOT EXISTS idx_highlights_match ON public.match_highlights(match_id);
 CREATE INDEX IF NOT EXISTS idx_highlights_user ON public.match_highlights(user_id);
 CREATE INDEX IF NOT EXISTS idx_highlights_created ON public.match_highlights(created_at DESC);
