@@ -33,7 +33,7 @@ export async function getHighlights(limit = 10) {
     .from('match_highlights')
     .select(`
       *,
-      profiles (
+      profiles:user_id (
         name,
         avatar_url
       )
@@ -111,7 +111,7 @@ export async function getComments(highlightId: string) {
     .from('match_highlight_comments')
     .select(`
       *,
-      profiles (
+      profiles:user_id (
         name,
         avatar_url
       )
@@ -133,7 +133,7 @@ export async function addComment(highlightId: string, userId: string, content: s
     })
     .select(`
       *,
-      profiles (
+      profiles:user_id (
         name,
         avatar_url
       )
