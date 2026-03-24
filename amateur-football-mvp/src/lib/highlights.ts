@@ -20,7 +20,7 @@ export async function getHighlights(limit = 10) {
     .from('match_highlights')
     .select(`
       *,
-      profiles:user_id (
+      profiles (
         username,
         avatar_url
       )
@@ -32,6 +32,8 @@ export async function getHighlights(limit = 10) {
     console.error('Error fetching highlights:', error);
     return [];
   }
+
+  console.log('Highlights fetched:', data);
 
   return data as unknown as Highlight[];
 }

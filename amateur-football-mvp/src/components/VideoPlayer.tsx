@@ -83,6 +83,8 @@ export default function VideoPlayer({
         muted={isMuted}
         className="w-full h-full object-cover"
         preload="metadata"
+        onError={(e) => console.error('Video error:', e)}
+        onLoadedData={() => console.log('Video loaded:', url)}
       />
 
       {/* Visual Overlays (Premium Look) */}

@@ -21,20 +21,44 @@ CREATE TABLE IF NOT EXISTS public.match_highlights (
 -- 3. RLS Policies for Highlights Table
 ALTER TABLE public.match_highlights ENABLE ROW LEVEL SECURITY;
 
-CREATE POLICY "Everyone can view highlights" ON public.match_highlights
-    FOR SELECT TO authenticated USING (true);
+-- Cleanup existing policies to avoid duplicates
+DROP POLICY IF EXISTS "Everyone can view highlights" ON public.match_highlights;
+DROP POLICY IF EXISTS "Users can upload their own highlights" ON public.match_highlights;
+DROP POLICY IF EXISTS "Users can delete their own highlights" ON public.match_highlights;
 
-CREATE POLICY "Users can upload their own highlights" ON public.match_highlights
-    FOR INSERT TO authenticated 
-    WITH CHECK (auth.uid() = user_id);
+-- Allow public view (essential for the feed)
+CREATE POLICY "Allow public select" ON public.match_highlights
+    FOR SELECT USING (true);
 
-CREATE POLICY "Users can delete their own highlights" ON public.match_highlights
-    FOR DELETE TO authenticated 
-    USING (auth.uid() = user_id);
+-- Allow authenticated users to insert their own clips
+CREATE POLICY "Allow auth insert" ON public.match_highlights
+    FOR INSERT WITH CHECK (auth.uid() = user_id);
+
+-- Allow owners to delete
+CREATE POLICY "Allow owner delete" ON public.match_highlights
+    FOR DELETE USING (auth.uid() = user_id);
 
 -- 4. Storage Policies (Supabase Bucket)
--- These must be applied to the 'storage.objects' table for the 'match-highlights' bucket.
--- Assuming the bucket is called 'match-highlights'
+-- These must be executed to allow the 'match-highlights' bucket to work.
+-- NOTE: The bucket MUST exist first.
+
+-- Public Read
+CREATE POLICY "Public Read Access" ON storage.objects
+    FOR SELECT USING (bucket_id = 'match-highlights');
+
+-- Authenticated Upload
+CREATE POLICY "Authenticated Upload" ON storage.objects
+    FOR INSERT WITH CHECK (
+        bucket_id = 'match-highlights' 
+        AND auth.role() = 'authenticated'
+    );
+
+-- Delete Support (Only owner)
+CREATE POLICY "Owner Delete Access" ON storage.objects
+    FOR DELETE USING (
+        bucket_id = 'match-highlights' 
+        AND auth.uid()::text = (storage.foldername(name))[1]
+    );
 
 -- 5. RPC to Increment Views
 CREATE OR REPLACE FUNCTION public.increment_highlight_views(h_id UUID)
