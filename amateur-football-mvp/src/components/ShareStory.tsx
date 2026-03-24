@@ -5,6 +5,7 @@ import { toBlob } from 'html-to-image';
 import { Share2, Loader2, Trophy, Zap, MapPin, Calendar } from 'lucide-react';
 import { Share } from '@capacitor/share';
 import { Filesystem, Directory } from '@capacitor/filesystem';
+import { Capacitor } from '@capacitor/core';
 import { cn } from '@/lib/utils';
 import { FifaCard } from './FifaCard';
 
@@ -37,37 +38,23 @@ export function ShareStory({ type, data, trigger, className }: ShareStoryProps) 
 
       const fileName = `pelotify-${type}-${Date.now()}.png`;
 
-      // 2. Prepare file & SHARE via Capacitor (Native Android)
+      // 2. Prepare file & SHARE via Capacitor (Native Android/iOS)
       const reader = new FileReader();
       reader.readAsDataURL(blob);
       reader.onloadend = async () => {
-        const base64data = (reader.result as string).split(',')[1];
         
-        try {
-          // Write to temporary file
-          const result = await Filesystem.writeFile({
-            path: fileName,
-            data: base64data,
-            directory: Directory.Cache,
-          });
-
-          // Share native file
-          await Share.share({
-            title: type === 'profile' ? `Ficha de ${data.name}` : `Resultado: ${data.location}`,
-            text: 'Mirá mi progreso en Pelotify 🏟️',
-            url: result.uri,
-          });
-        } catch (shareErr) {
-          console.error('Native sharing failed, falling back to Web Share:', shareErr);
-          
-          // Fallback to Web Share or Download if Filesystem fails
+        const fallbackWebShare = async () => {
           const file = new File([blob], fileName, { type: 'image/png' });
-          if (navigator.share && navigator.canShare({ files: [file] })) {
-            await navigator.share({
-              files: [file],
-              title: type === 'profile' ? `Ficha de ${data.name}` : `Resultado: ${data.location}`,
-              text: 'Mirá mi progreso en Pelotify 🏟️',
-            });
+          if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
+            try {
+              await navigator.share({
+                 files: [file],
+                 title: type === 'profile' ? `Ficha de ${data.name}` : `Resultado: ${data.location}`,
+                 text: 'Mirá mi progreso en Pelotify 🏟️',
+              });
+            } catch (e) {
+              console.log('Web share cancelled or failed', e);
+            }
           } else {
              const url = URL.createObjectURL(blob);
              const a = document.createElement('a');
@@ -76,6 +63,31 @@ export function ShareStory({ type, data, trigger, className }: ShareStoryProps) 
              a.click();
              URL.revokeObjectURL(url);
           }
+        };
+
+        if (Capacitor.isNativePlatform()) {
+          const base64data = (reader.result as string).split(',')[1];
+          try {
+            // Write to temporary file
+            const result = await Filesystem.writeFile({
+              path: fileName,
+              data: base64data,
+              directory: Directory.Cache,
+            });
+
+            // Share native file
+            await Share.share({
+              title: type === 'profile' ? `Ficha de ${data.name}` : `Resultado: ${data.location}`,
+              text: 'Mirá mi progreso en Pelotify 🏟️',
+              url: result.uri,
+            });
+          } catch (shareErr) {
+            console.error('Native sharing failed, falling back to Web Share:', shareErr);
+            await fallbackWebShare();
+          }
+        } else {
+           // Direct web fallback without touching fake filesystem
+           await fallbackWebShare();
         }
       };
     } catch (err: any) {

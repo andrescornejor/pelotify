@@ -5,6 +5,7 @@ import { toBlob } from 'html-to-image';
 import { Loader2, Instagram, MapPin, Clock, Calendar } from 'lucide-react';
 import { Share } from '@capacitor/share';
 import { Filesystem, Directory } from '@capacitor/filesystem';
+import { Capacitor } from '@capacitor/core';
 import { cn } from '@/lib/utils';
 import { Match } from '@/lib/matches';
 
@@ -47,30 +48,18 @@ export function MatchPromotionShare({ match, teamALogo, teamBLogo, className }: 
       const reader = new FileReader();
       reader.readAsDataURL(blob);
       reader.onloadend = async () => {
-        const base64data = (reader.result as string).split(',')[1];
-        
-        try {
-          const result = await Filesystem.writeFile({
-            path: fileName,
-            data: base64data,
-            directory: Directory.Cache,
-          });
-
-          await Share.share({
-            title: `¡Se viene un partidazo! ${teamAName} vs ${teamBName}`,
-            text: 'Descargá Pelotify y sumate al partido ⚽🔥',
-            url: result.uri,
-          });
-        } catch (shareErr) {
-          console.error('Native sharing failed, falling back to Web:', shareErr);
-          
+        const fallbackWebShare = async () => {
           const file = new File([blob], fileName, { type: 'image/png' });
-          if (navigator.share && navigator.canShare({ files: [file] })) {
-            await navigator.share({
-              files: [file],
-              title: `¡Se viene un partidazo! ${teamAName} vs ${teamBName}`,
-              text: 'Descargá Pelotify y sumate al partido ⚽🔥',
-            });
+          if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
+            try {
+              await navigator.share({
+                 files: [file],
+                 title: `¡Se viene un partidazo! ${teamAName} vs ${teamBName}`,
+                 text: 'Descargá Pelotify y sumate al partido ⚽🔥',
+              });
+            } catch (e) {
+              console.log('Web share cancelled or failed', e);
+            }
           } else {
              const url = URL.createObjectURL(blob);
              const a = document.createElement('a');
@@ -79,6 +68,29 @@ export function MatchPromotionShare({ match, teamALogo, teamBLogo, className }: 
              a.click();
              URL.revokeObjectURL(url);
           }
+        };
+
+        if (Capacitor.isNativePlatform()) {
+          const base64data = (reader.result as string).split(',')[1];
+          try {
+            const result = await Filesystem.writeFile({
+              path: fileName,
+              data: base64data,
+              directory: Directory.Cache,
+            });
+
+            await Share.share({
+              title: `¡Se viene un partidazo! ${teamAName} vs ${teamBName}`,
+              text: 'Descargá Pelotify y sumate al partido ⚽🔥',
+              url: result.uri,
+            });
+          } catch (shareErr) {
+            console.error('Native sharing failed, falling back to Web:', shareErr);
+            await fallbackWebShare();
+          }
+        } else {
+          // On Web, skip fake Capacitor Filesystem write and directly use Web Share API or download
+          await fallbackWebShare();
         }
       };
     } catch (err: any) {
