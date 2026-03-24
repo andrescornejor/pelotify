@@ -52,6 +52,7 @@ import PostMatchModal from '@/components/PostMatchModal';
 import { MatchSkeleton } from '@/components/Skeletons';
 import dynamic from 'next/dynamic';
 import ChatRoom from '@/components/ChatRoom';
+import { MatchPromotionShare } from '@/components/MatchPromotionShare';
 
 const VenueMap = dynamic(() => import('@/components/VenueMap'), {
   ssr: false,
@@ -467,6 +468,10 @@ function MatchLobbyContent() {
                   Finalizado
                 </span>
               </div>
+            )}
+            
+            {!match.is_private && !isCompleted && (
+              <MatchPromotionShare match={match} />
             )}
           </motion.div>
         </div>
