@@ -119,7 +119,7 @@ export default function VideoFeed() {
                 url={h.video_url}
                 thumbnail={h.thumbnail_url}
                 description={h.description}
-                userName={h.profiles?.username}
+                userName={h.profiles?.name}
                 userAvatar={h.profiles?.avatar_url}
                 likes={h.likes_count}
                 isActive={activeId === h.id}

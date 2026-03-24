@@ -10,7 +10,7 @@ export interface Highlight {
   views_count: number;
   likes_count: number;
   profiles: {
-    username: string;
+    name: string;
     avatar_url: string;
   };
 }
@@ -21,7 +21,7 @@ export async function getHighlights(limit = 10) {
     .select(`
       *,
       profiles (
-        username,
+        name,
         avatar_url
       )
     `)

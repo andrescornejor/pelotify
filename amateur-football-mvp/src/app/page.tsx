@@ -1124,7 +1124,7 @@ export default function HomePage() {
                             <User2 className="w-3 h-3 text-white/40" />
                           )}
                         </div>
-                        <span className="text-[7px] font-black text-white truncate">@{h.profiles?.username || 'user'}</span>
+                        <span className="text-[7px] font-black text-white truncate">@{h.profiles?.name || 'user'}</span>
                       </div>
                       <div className="flex items-center gap-1">
                         <Flame className="w-2.5 h-2.5 text-orange-400" />
