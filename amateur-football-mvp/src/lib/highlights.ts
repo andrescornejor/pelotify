@@ -65,9 +65,12 @@ export async function deleteHighlight(id: string, videoUrl: string) {
     .eq('id', id);
   
   if (dbError) throw dbError;
-
+  
   // 2. Delete from Storage
-  const path = videoUrl.split('/public/match-highlights/')[1];
+  // Extract path: everything after the bucket name 'match-highlights/'
+  const urlParts = videoUrl.split('/match-highlights/');
+  const path = urlParts.length > 1 ? urlParts[1] : null;
+
   if (path) {
     const { error: storageError } = await supabase.storage
       .from('match-highlights')

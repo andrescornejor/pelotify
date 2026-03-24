@@ -15,6 +15,14 @@ CREATE TABLE IF NOT EXISTS public.match_highlights (
     created_at TIMESTAMPTZ DEFAULT now()
 );
 
+-- Migration: Add comments_count column if it doesn't exist
+DO $$ 
+BEGIN 
+    IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='match_highlights' AND column_name='comments_count') THEN
+        ALTER TABLE public.match_highlights ADD COLUMN comments_count INT DEFAULT 0;
+    END IF;
+END $$;
+
 -- 2. Storage Bucket for Videos
 -- Note: You'll need to create a bucket named 'match-highlights' in the Supabase Dashboard
 -- with 'Public' access enabled for optimized delivery.
@@ -46,11 +54,19 @@ DROP POLICY IF EXISTS "Owner Delete Access" ON storage.objects;
 -- Public Read
 CREATE POLICY "Public Read Access" ON storage.objects FOR SELECT USING (bucket_id = 'match-highlights');
 
--- Authenticated Upload
-CREATE POLICY "Authenticated Upload" ON storage.objects FOR INSERT WITH CHECK (bucket_id = 'match-highlights' AND auth.role() = 'authenticated');
+-- Authenticated Upload (Must be in their own folder under highlights/)
+CREATE POLICY "Authenticated Upload" ON storage.objects FOR INSERT WITH CHECK (
+    bucket_id = 'match-highlights' 
+    AND auth.role() = 'authenticated'
+    AND (storage.foldername(name))[1] = 'highlights'
+    AND (storage.foldername(name))[2] = auth.uid()::text
+);
 
 -- Delete Support (Only owner)
-CREATE POLICY "Owner Delete Access" ON storage.objects FOR DELETE USING (bucket_id = 'match-highlights' AND auth.uid()::text = (storage.foldername(name))[1]);
+CREATE POLICY "Owner Delete Access" ON storage.objects FOR DELETE USING (
+    bucket_id = 'match-highlights' 
+    AND (storage.foldername(name))[2] = auth.uid()::text
+);
 
 -- 5. RPC to Increment Views
 CREATE OR REPLACE FUNCTION public.increment_highlight_views(h_id UUID)
