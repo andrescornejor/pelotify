@@ -11,6 +11,7 @@ import {
   PlusCircle,
   User2,
   MessageSquare,
+  Play,
 } from 'lucide-react';
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
@@ -29,7 +30,7 @@ import { supabase } from '@/lib/supabase';
 import { useSettings } from '@/contexts/SettingsContext';
 
 const DESKTOP_NAV = [
-  { href: '/', icon: Home, label: 'Inicio' },
+  { href: '/highlights', icon: Play, label: 'FutTok' },
   { href: '/search', icon: Search, label: 'Buscar' },
   { href: '/friends', icon: Users, label: 'Amigos', id: 'friends' },
   { href: '/messages', icon: MessageSquare, label: 'Mensajes' },

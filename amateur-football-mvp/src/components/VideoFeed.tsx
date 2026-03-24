@@ -34,7 +34,7 @@ export default function VideoFeed() {
           <div className="absolute inset-0 bg-emerald-500/20 blur-3xl rounded-full animate-pulse" />
           <div className="relative text-center">
             <Loader2 className="w-14 h-14 text-emerald-500 animate-spin mx-auto mb-6" />
-            <p className="text-white font-black italic uppercase tracking-[0.3em] font-kanit">Sincronizando Jugadas</p>
+            <p className="text-white font-black italic uppercase tracking-[0.3em] font-kanit">Sincronizando FutTok</p>
           </div>
         </div>
       </div>
@@ -92,9 +92,9 @@ export default function VideoFeed() {
               </div>
 
               <div className="space-y-3">
-                <h2 className="text-white text-3xl font-black italic uppercase tracking-tighter font-kanit">Sin Jugadas Aún</h2>
+                <h2 className="text-white text-3xl font-black italic uppercase tracking-tighter font-kanit">Sin Clips en FutTok</h2>
                 <p className="text-white/40 font-medium max-w-xs mx-auto text-sm font-outfit leading-relaxed">
-                  Sé el primero en subir un clip de 15 segundos y conviértete en la leyenda de la semana.
+                  Sé el primero en subir un clip de 15 segundos y conviértete en la leyenda de FutTok.
                 </p>
               </div>
 

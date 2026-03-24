@@ -806,7 +806,7 @@ export default function HomePage() {
                   <motion.button
                     whileHover={{ scale: 1.02, y: -2 }}
                     whileTap={{ scale: 0.98 }}
-                    className="w-full h-14 rounded-2xl bg-zinc-900 border border-white/10 text-white font-black uppercase text-[10px] tracking-[0.3em] flex items-center justify-center gap-3 relative overflow-hidden group shadow-2xl"
+                    className="w-full h-14 rounded-2xl bg-zinc-900 border border-emerald-500/20 text-white font-black uppercase text-[10px] tracking-[0.3em] flex items-center justify-center gap-3 relative overflow-hidden group shadow-2xl shadow-emerald-500/10"
                   >
                     {/* Background Layer: Video or Gradient */}
                     {highlights.length > 0 ? (
@@ -819,25 +819,20 @@ export default function HomePage() {
                           loop 
                           playsInline 
                         />
-                        <div className="absolute inset-0 bg-gradient-to-r from-violet-600/80 to-indigo-600/80 mix-blend-multiply" />
+                        <div className="absolute inset-0 bg-gradient-to-r from-emerald-600/80 to-teal-600/80 mix-blend-multiply" />
                       </div>
                     ) : (
-                      <div className="absolute inset-0 bg-gradient-to-r from-violet-600 to-indigo-600 opacity-80" />
+                      <div className="absolute inset-0 bg-gradient-to-r from-emerald-600 to-teal-600 opacity-80" />
                     )}
 
                     <div className="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-colors" />
                     
-                    <Flame className="w-5 h-5 relative z-10 text-orange-400 group-hover:scale-125 transition-transform drop-shadow-[0_0_8px_rgba(251,191,36,0.5)]" />
-                    <span className="relative z-10 italic drop-shadow-md">NUEVAS JUGADAS</span>
+                    <Play className="w-5 h-5 relative z-10 text-emerald-400 fill-emerald-400/20 group-hover:scale-125 transition-transform drop-shadow-[0_0_8px_rgba(44,252,125,0.5)]" />
+                    <span className="relative z-10 italic drop-shadow-md">FutTok</span>
                     
                     <div className="absolute top-1.5 right-1.5 flex items-center gap-1 z-10">
                       <div className="w-1.5 h-1.5 bg-red-500 rounded-full animate-ping" />
                       <div className="px-1.5 py-0.5 bg-red-500 text-[6px] rounded-full font-black border border-white/20">LIVE</div>
-                    </div>
-                    
-                    {/* Glass Shine Effect */}
-                    <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none">
-                      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />
                     </div>
                   </motion.button>
                 </Link>
@@ -1124,9 +1119,9 @@ export default function HomePage() {
               </div>
                 <Link
                   href="/highlights"
-                  className="group flex items-center gap-2 px-5 py-2.5 rounded-full text-[9px] font-black text-white hover:text-primary transition-all tracking-[0.2em] uppercase glass-premium border-primary/20 hover:border-primary/50 shadow-lg shadow-primary/5"
+                  className="group flex items-center gap-2 px-5 py-2.5 rounded-full text-[9px] font-black text-white hover:text-emerald-400 transition-all tracking-[0.2em] uppercase glass-premium border-emerald-500/20 hover:border-emerald-500/50 shadow-lg shadow-emerald-500/5"
                 >
-                  EXPLORAR TIKTOK <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
+                  EXPLORAR FutTok <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
                 </Link>
             </div>
 
