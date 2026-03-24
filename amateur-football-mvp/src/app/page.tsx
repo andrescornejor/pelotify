@@ -127,29 +127,65 @@ const StatCard = ({ stat, i, isPerfMode, fadeUp }: any) => (
 
 const TeamCard = ({ team, isPerfMode }: any) => (
   <motion.div
-    whileHover={isPerfMode ? {} : { scale: 1.01, x: 2 }}
-    className="group flex flex-col sm:flex-row items-center justify-between gap-5 p-6 rounded-[2.5rem] glass-premium border-white/5 hover:border-primary/20 transition-all cursor-pointer relative overflow-hidden"
+    whileHover={isPerfMode ? {} : { scale: 1.01, y: -2 }}
+    className="group flex flex-col sm:flex-row items-center justify-between gap-5 p-6 rounded-[2.5rem] glass-premium border-white/5 hover:border-primary/20 hover:shadow-[0_20px_40px_rgba(0,0,0,0.3),0_0_20px_rgba(44,252,125,0.05)] transition-all cursor-pointer relative overflow-hidden"
   >
-    <div className="flex items-center gap-5 relative z-10 w-full sm:w-auto">
-      <div className="relative">
-        <div className="w-16 h-16 rounded-[2rem] bg-surface flex items-center justify-center overflow-hidden border-2 border-white/5 group-hover:border-primary/30 transition-colors">
-          <Users className="w-7 h-7 text-foreground/20" />
+    {/* Animated background glow */}
+    {!isPerfMode && (
+      <div className="absolute top-0 right-0 w-32 h-32 bg-primary/10 blur-[60px] rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
+    )}
+    
+    <div className="flex items-center gap-6 relative z-10 w-full sm:w-auto">
+      <div className="relative group/avatar">
+        {/* Avatar background glow */}
+        <div className="absolute inset-0 bg-primary/20 blur-xl rounded-full scale-0 group-hover/avatar:scale-150 transition-transform duration-1000 opacity-0 group-hover/avatar:opacity-20" />
+        
+        <div className="w-20 h-20 rounded-[2.5rem] bg-gradient-to-br from-surface to-background flex items-center justify-center overflow-hidden border-2 border-white/5 group-hover:border-primary/40 transition-all duration-500 shadow-inner relative z-10">
+          <div className="absolute inset-0 bg-primary/5 opacity-0 group-hover:opacity-100 transition-opacity" />
+          <Users className="w-10 h-10 text-foreground/20 group-hover:text-primary/40 transition-colors" />
+        </div>
+        
+        {/* Level/Status Mini-Badge */}
+        <div className="absolute -bottom-1 -right-1 px-2 py-0.5 rounded-lg bg-background border border-white/10 flex items-center justify-center shadow-xl">
+          <span className="text-[8px] font-black text-primary uppercase tracking-tighter">LVL 5</span>
         </div>
       </div>
-      <div className="flex-1">
-        <h4 className="text-xl font-black italic uppercase tracking-tighter text-foreground font-kanit leading-none">
+
+      <div className="flex-1 space-y-2">
+        <h4 className="text-2xl font-black italic uppercase tracking-tighter text-foreground font-kanit leading-none group-hover:text-primary transition-colors">
           {team.name}
         </h4>
-        <div className="flex items-center gap-3 mt-2">
-          <div className="flex -space-x-2">
-            {[1, 2, 3].map((i) => (
-              <div key={i} className="w-5 h-5 rounded-full border border-background bg-surface" />
+        <div className="flex items-center gap-4">
+          <div className="flex -space-x-3">
+            {[1, 2, 3, 4].map((i) => (
+              <div 
+                key={i} 
+                className="w-7 h-7 rounded-full border-2 border-background bg-surface overflow-hidden hover:z-20 hover:scale-110 transition-transform"
+                style={{ backgroundColor: `hsl(${i * 45}, 70%, 50%, 0.1)` }}
+              >
+                <User2 className="w-full h-full p-1.5 text-foreground/20" />
+              </div>
             ))}
+            <div className="w-7 h-7 rounded-full border-2 border-background bg-primary/20 flex items-center justify-center text-[8px] font-black text-primary z-10">
+              +{team.members_count || 12}
+            </div>
           </div>
-          <span className="text-[9px] font-black text-foreground/40 uppercase tracking-widest font-outfit">
-            +{team.members_count || 12} miembros
+          <div className="h-4 w-[1px] bg-white/10 hidden sm:block" />
+          <span className="text-[9px] font-black text-foreground/30 uppercase tracking-[0.2em] font-outfit hidden sm:block">
+            Equipo Verificado
           </span>
         </div>
+      </div>
+    </div>
+
+    {/* Right Side Action */}
+    <div className="flex items-center gap-4 relative z-10 w-full sm:w-auto mt-4 sm:mt-0">
+      <div className="hidden lg:flex flex-col items-end opacity-0 group-hover:opacity-100 transition-all translate-x-4 group-hover:translate-x-0 duration-500">
+        <span className="text-[8px] font-black text-primary uppercase tracking-widest text-right">Ver Plantel</span>
+        <span className="text-[10px] font-medium text-foreground/40 italic text-right">Gestionar alineación</span>
+      </div>
+      <div className="w-12 h-12 rounded-2xl bg-foreground/[0.03] border border-white/5 flex items-center justify-center group-hover:bg-primary group-hover:text-background transition-all duration-300 shadow-sm group-hover:shadow-primary/20 group-hover:scale-110">
+        <ArrowRight className="w-5 h-5 group-hover:translate-x-0.5 transition-transform" />
       </div>
     </div>
   </motion.div>
