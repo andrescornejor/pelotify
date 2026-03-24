@@ -784,20 +784,42 @@ export default function HomePage() {
                 </div>
               </div>
 
-              {/* Action Buttons Column */}
-              <div className="grid grid-cols-2 gap-3">
-                <Link href="/create" className="col-span-2">
+              <div className="grid grid-cols-3 gap-3">
+                <Link href="/create" className="col-span-3">
                   <motion.button
                     whileHover={{ scale: 1.02, y: -2 }}
                     whileTap={{ scale: 0.98 }}
-                    className="w-full h-14 rounded-2xl bg-primary text-background font-black uppercase text-[11px] tracking-[0.3em] shadow-[0_15px_40px_rgba(44,252,125,0.3)] flex items-center justify-center gap-3 relative overflow-hidden group"
+                    className="w-full h-14 rounded-2xl bg-emerald-500 text-background font-black uppercase text-[11px] tracking-[0.3em] shadow-[0_15px_40px_rgba(44,252,125,0.3)] flex items-center justify-center gap-3 relative overflow-hidden group"
                   >
                     <div className="absolute inset-x-0 bottom-0 h-1/2 bg-white/10 group-hover:h-full transition-all duration-500" />
                     <PlusCircle className="w-5 h-5 relative z-10 group-hover:rotate-180 transition-transform duration-700" />
                     <span className="relative z-10">ARMAR PARTIDO</span>
                   </motion.button>
                 </Link>
-                <Link href="/search">
+                
+                <Link href="/highlights" className="col-span-2">
+                  <motion.button
+                    whileHover={{ scale: 1.02, y: -2 }}
+                    whileTap={{ scale: 0.98 }}
+                    className="w-full h-14 rounded-2xl bg-violet-600 text-white font-black uppercase text-[10px] tracking-[0.3em] flex items-center justify-center gap-3 relative overflow-hidden group border border-violet-400/30"
+                  >
+                    <div className="absolute inset-0 bg-gradient-to-r from-violet-600 to-indigo-600 opacity-80" />
+                    <Flame className="w-4 h-4 relative z-10 animate-pulse text-orange-400" />
+                    <span className="relative z-10 italic">JUGADAS TOP</span>
+                    <div className="absolute top-1 right-1 px-1.5 py-0.5 bg-red-500 text-[6px] rounded-full animate-bounce z-10 border border-white/20">LIVE</div>
+                  </motion.button>
+                </Link>
+
+                <Link href="/search" className="col-span-1">
+                  <motion.button
+                    whileHover={{ scale: 1.02, y: -2 }}
+                    whileTap={{ scale: 0.98 }}
+                    className="w-full h-14 rounded-2xl glass-premium border-white/10 text-foreground/70 font-black uppercase text-[9px] tracking-[0.2em] flex items-center justify-center"
+                  >
+                    <Search className="w-4 h-4" />
+                  </motion.button>
+                </Link>
+              </div>
                   <motion.button
                     whileHover={{ scale: 1.02, y: -2 }}
                     whileTap={{ scale: 0.98 }}
@@ -1075,6 +1097,59 @@ export default function HomePage() {
                 </motion.button>
               </Link>
             </motion.div>
+
+            <SectionDivider />
+
+            {/* NEW: FEATURED HIGHLIGHTS SECTION */}
+            <div className="flex items-center justify-between px-1">
+              <div className="flex flex-col gap-1">
+                <h2 className="text-xl lg:text-2xl font-black text-foreground italic uppercase tracking-tighter font-kanit">
+                  Jugadas Destacadas
+                </h2>
+                <span className="text-[9px] font-black text-primary uppercase tracking-[0.4em]">
+                  PURO TALENTO NACIONAL
+                </span>
+              </div>
+              <Link
+                href="/highlights"
+                className="group flex items-center gap-1.5 px-4 py-2 rounded-2xl text-[9px] font-black text-foreground/55 hover:text-foreground transition-all tracking-[0.2em] uppercase glass border-violet-500/20"
+              >
+                VER TIKTOK <ArrowRight className="w-3 h-3 group-hover:translate-x-0.5 transition-transform" />
+              </Link>
+            </div>
+
+            <div className="flex gap-4 overflow-x-auto pb-4 scrollbar-none snap-x h-48 sm:h-64">
+              {[1, 2, 3, 4].map((i) => (
+                <Link key={i} href="/highlights" className="shrink-0 w-32 sm:w-44 h-full rounded-[2rem] overflow-hidden relative group snap-start border border-white/5">
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent z-10" />
+                  <img 
+                    src={`https://images.unsplash.com/photo-1574629810360-7efbbe195018?auto=format&fit=crop&q=60&w=400&sig=${i}`} 
+                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 opacity-60 group-hover:opacity-100"
+                    alt="jugada"
+                  />
+                  <div className="absolute top-2 right-2 px-1.5 py-0.5 bg-red-500 text-[6px] rounded-full font-black text-white italic z-20">LIVE</div>
+                  <div className="absolute bottom-4 left-4 right-4 z-20">
+                    <div className="flex items-center gap-2 mb-1">
+                      <div className="w-5 h-5 rounded-full bg-surface border border-white/20 flex items-center justify-center overflow-hidden">
+                        <User2 className="w-3 h-3 text-white/40" />
+                      </div>
+                      <span className="text-[7px] font-black text-white truncate">@crack_{i}</span>
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <Flame className="w-2.5 h-2.5 text-orange-400" />
+                      <span className="text-[8px] font-black text-white">{120 * i}K</span>
+                    </div>
+                  </div>
+                </Link>
+              ))}
+              
+              <Link href="/highlights" className="shrink-0 w-32 sm:w-44 h-full rounded-[2rem] glass-premium border-dashed border-white/20 flex flex-col items-center justify-center gap-3 group hover:border-primary/40 transition-all text-foreground/30 snap-start">
+                 <div className="w-10 h-10 rounded-full bg-surface flex items-center justify-center group-hover:scale-110 transition-transform">
+                    <PlusCircle className="w-5 h-5" />
+                 </div>
+                 <span className="text-[8px] font-black uppercase tracking-widest text-center px-4">Subir mi Jugada</span>
+              </Link>
+            </div>
 
             <SectionDivider />
 
