@@ -24,6 +24,7 @@ import {
   Sparkles,
   Award,
   Shield,
+  Crown,
 } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/lib/supabase';
@@ -37,18 +38,19 @@ interface Rank {
   name: string;
   minElo: number;
   color: string;
+  icon: any;
 }
 
 const RANKS: Rank[] = [
-  { name: 'HIERRO', minElo: 0, color: '#94a3b8' },
-  { name: 'BRONCE', minElo: 500, color: '#92400e' },
-  { name: 'PLATA', minElo: 1000, color: '#64748b' },
-  { name: 'ORO', minElo: 1500, color: '#fbbf24' },
-  { name: 'PLATINO', minElo: 2000, color: '#2dd4bf' },
-  { name: 'DIAMANTE', minElo: 2500, color: '#3b82f6' },
-  { name: 'ELITE', minElo: 3000, color: '#8b5cf6' },
-  { name: 'MAESTRO', minElo: 3500, color: '#f43f5e' },
-  { name: 'PELOTIFY', minElo: 4000, color: '#2cfc7d' },
+  { name: 'HIERRO', minElo: 0, color: '#94a3b8', icon: Shield },
+  { name: 'BRONCE', minElo: 500, color: '#d97706', icon: Activity },
+  { name: 'PLATA', minElo: 1000, color: '#94a3b8', icon: Target },
+  { name: 'ORO', minElo: 1500, color: '#fbbf24', icon: Trophy },
+  { name: 'PLATINO', minElo: 2000, color: '#2dd4bf', icon: Award },
+  { name: 'DIAMANTE', minElo: 2500, color: '#3b82f6', icon: Sparkles },
+  { name: 'ELITE', minElo: 3000, color: '#8b5cf6', icon: Star },
+  { name: 'MAESTRO', minElo: 3500, color: '#f43f5e', icon: Crown },
+  { name: 'PELOTIFY', minElo: 4000, color: '#2cfc7d', icon: Zap },
 ];
 
 const getRankByElo = (elo: number) => {
@@ -69,17 +71,32 @@ const SectionDivider = () => (
 );
 
 const RankBadge = ({ rankName, size = 'md', className }: { rankName: string; size?: 'sm' | 'md' | 'lg'; className?: string }) => {
+  const rank = RANKS.find(r => r.name === rankName) || RANKS[0];
+  const Icon = rank.icon;
+
   const sizeMap = {
     sm: 'w-10 h-10',
     md: 'w-16 h-16',
     lg: 'w-24 h-24',
   };
 
+  const iconSizeMap = {
+    sm: 'w-5 h-5',
+    md: 'w-8 h-8',
+    lg: 'w-12 h-12',
+  };
+
   return (
     <div className={cn("relative flex items-center justify-center", sizeMap[size], className)}>
-      <div className="absolute inset-0 bg-primary/20 blur-xl rounded-full" />
-      <div className="relative z-10 font-black italic text-primary uppercase tracking-tighter leading-none" style={{ fontSize: size === 'lg' ? '1.5rem' : '0.75rem' }}>
-        {rankName[0]}
+      <div 
+        className="absolute inset-0 blur-xl rounded-full opacity-40" 
+        style={{ backgroundColor: rank.color }}
+      />
+      <div className="relative z-10 flex items-center justify-center">
+        <Icon 
+          className={cn(iconSizeMap[size], "drop-shadow-lg")} 
+          style={{ color: rank.color }} 
+        />
       </div>
     </div>
   );
@@ -393,25 +410,29 @@ export default function HomePage() {
     const rankObj = {
       name: info.name,
       color: 'text-primary',
-      glow: `rgba(44,252,125,0.3)`,
+      glow: `${info.color}40`,
       hex: info.color,
+      icon: info.icon,
     };
 
     if (rankObj.name === 'HIERRO') {
-      rankObj.color = 'text-foreground/50';
-      rankObj.glow = 'rgba(255,255,255,0.1)';
-    } else if (rankObj.name === 'BRONCE') {
-      rankObj.color = 'text-orange-600';
-      rankObj.glow = 'rgba(146,64,14,0.3)';
-    } else if (rankObj.name === 'PLATA') {
       rankObj.color = 'text-slate-400';
-      rankObj.glow = 'rgba(148,163,184,0.3)';
+    } else if (rankObj.name === 'BRONCE') {
+      rankObj.color = 'text-amber-600';
+    } else if (rankObj.name === 'PLATA') {
+      rankObj.color = 'text-slate-300';
     } else if (rankObj.name === 'ORO') {
-      rankObj.color = 'text-yellow-500';
-      rankObj.glow = 'rgba(202,138,4,0.35)';
+      rankObj.color = 'text-yellow-400';
+    } else if (rankObj.name === 'PLATINO') {
+      rankObj.color = 'text-emerald-400';
+    } else if (rankObj.name === 'DIAMANTE') {
+      rankObj.color = 'text-blue-400';
+    } else if (rankObj.name === 'ELITE') {
+      rankObj.color = 'text-violet-400';
+    } else if (rankObj.name === 'MAESTRO') {
+      rankObj.color = 'text-rose-400';
     } else {
       rankObj.color = 'text-primary';
-      rankObj.glow = 'rgba(44,252,125,0.4)';
     }
 
     return { info, nextRank: nextR, progress, rank: rankObj };
@@ -630,18 +651,25 @@ export default function HomePage() {
                   {/* Avatar with rank glow */}
                   <div id="hero-avatar" className="relative group/avatar">
                     <div
-                      className="absolute -inset-4 blur-2xl rounded-full opacity-40 group-hover/avatar:opacity-70 transition-opacity"
+                      className="absolute -inset-4 blur-3xl rounded-full opacity-40 group-hover/avatar:opacity-70 transition-opacity"
                       style={{ backgroundColor: rankCalculation.rank.glow }}
                     />
                     <div
-                      className="relative w-10 h-10 rounded-full border-2 overflow-hidden flex items-center justify-center bg-surface"
+                      className="relative w-12 h-12 rounded-full border-2 overflow-hidden flex items-center justify-center bg-surface shadow-2xl"
                       style={{ borderColor: rankCalculation.info.color }}
                     >
                       {metadata?.avatar_url ? (
                         <img src={metadata.avatar_url} alt="" className="w-full h-full object-cover" />
                       ) : (
-                        <User2 className="w-5 h-5 text-foreground/40" />
+                        <User2 className="w-6 h-6 text-foreground/40" />
                       )}
+                      
+                      {/* Floating Rank Icon */}
+                      <div 
+                        className="absolute -top-1 -right-1 w-5 h-5 rounded-full bg-background border border-white/10 flex items-center justify-center shadow-lg"
+                      >
+                         <rankCalculation.rank.icon className="w-3 h-3" style={{ color: rankCalculation.rank.hex }} />
+                      </div>
                     </div>
                   </div>
                   <p className="text-foreground/60 text-lg font-medium font-outfit">
@@ -710,17 +738,23 @@ export default function HomePage() {
                     <p className="text-[10px] font-black text-foreground/40 uppercase tracking-widest leading-none">
                       PROGRESO DE LIGA
                     </p>
-                    <h3 className="text-2xl font-black italic text-foreground leading-none font-kanit uppercase tracking-tighter">
-                      {rankCalculation.info.name}
-                    </h3>
+                    <div className="flex items-center gap-2">
+                      <h3 className="text-2xl font-black italic text-foreground leading-none font-kanit uppercase tracking-tighter">
+                        {rankCalculation.info.name}
+                      </h3>
+                      <rankCalculation.rank.icon className="w-5 h-5" style={{ color: rankCalculation.rank.hex }} />
+                    </div>
                     <span className="text-[9px] font-black text-primary uppercase tracking-[0.2em]">
                       ESTADO DE TEMPORADA
                     </span>
                   </div>
-                  <div className="text-right">
-                    <span className="text-3xl font-black text-foreground italic font-kanit leading-none">
-                      {Math.round(rankCalculation.progress)}%
-                    </span>
+                  <div className="text-right flex flex-col items-end">
+                    <div className="flex items-center gap-2">
+                       <span className="text-3xl font-black text-foreground italic font-kanit leading-none">
+                        {Math.round(rankCalculation.progress)}%
+                      </span>
+                      <rankCalculation.nextRank.icon className="w-6 h-6 opacity-20" style={{ color: rankCalculation.nextRank.color }} />
+                    </div>
                     <p className="text-[8px] font-black text-foreground/30 uppercase mt-1">
                       PARA {rankCalculation.nextRank.name}
                     </p>
