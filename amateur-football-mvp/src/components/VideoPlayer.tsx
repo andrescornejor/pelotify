@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Heart, MessageCircle, Share2, User2, Play, Pause, Trash2, ChevronLeft } from 'lucide-react';
+import { Heart, MessageCircle, Share2, User2, Play, Pause, Trash2, ChevronLeft, Check } from 'lucide-react';
 import { useInView } from 'react-intersection-observer';
 import { useAuth } from '@/contexts/AuthContext';
 import { deleteHighlight, toggleLike, checkIfLiked } from '@/lib/highlights';
@@ -45,6 +45,7 @@ export default function VideoPlayer({
   const [localLikes, setLocalLikes] = useState(likes);
   const [showComments, setShowComments] = useState(false);
   const [localComments, setLocalComments] = useState(comments);
+  const [showCopied, setShowCopied] = useState(false);
 
   const { ref: inViewRef, inView } = useInView({ threshold: 0.7 });
 
@@ -106,6 +107,28 @@ export default function VideoPlayer({
       alert('Error al eliminar la jugada.');
     } finally {
       setIsDeleting(false);
+    }
+  };
+  
+  const handleShare = async (e: React.MouseEvent) => {
+    e.stopPropagation();
+    const shareUrl = `${window.location.origin}/highlights?v=${id}`;
+    const shareData = {
+      title: 'Mira este video en FutTok',
+      text: description || '¡Mirá esta tremenda jugada en Pelotify!',
+      url: shareUrl,
+    };
+
+    try {
+      if (navigator.share && navigator.canShare?.(shareData)) {
+        await navigator.share(shareData);
+      } else {
+        await navigator.clipboard.writeText(shareUrl);
+        setShowCopied(true);
+        setTimeout(() => setShowCopied(false), 2000);
+      }
+    } catch (err) {
+      console.error('Share error:', err);
     }
   };
 
@@ -201,9 +224,29 @@ export default function VideoPlayer({
           <motion.div 
             whileHover={{ scale: 1.15 }}
             whileTap={{ scale: 0.9 }}
-            className="p-3.5 bg-white/10 backdrop-blur-3xl rounded-full border border-white/20 shadow-lg cursor-pointer hover:bg-white/20 transition-all duration-300"
+            onClick={handleShare}
+            className={`p-3.5 backdrop-blur-3xl rounded-full border shadow-lg cursor-pointer transition-all duration-300 ${
+              showCopied ? 'bg-emerald-500 border-emerald-400' : 'bg-white/10 border-white/20 hover:bg-white/20'
+            }`}
           >
-            <Share2 className="w-6 h-6 text-white" />
+            {showCopied ? (
+              <Check className="w-6 h-6 text-white" />
+            ) : (
+              <Share2 className="w-6 h-6 text-white" />
+            )}
+            
+            <AnimatePresence>
+              {showCopied && (
+                <motion.span
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, scale: 0.5 }}
+                  className="absolute -top-10 left-1/2 -translate-x-1/2 bg-emerald-500 text-white text-[10px] font-black py-1 px-3 rounded-full shadow-xl whitespace-nowrap"
+                >
+                  ¡COPIADO!
+                </motion.span>
+              )}
+            </AnimatePresence>
           </motion.div>
 
           {isOwner && (

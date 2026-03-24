@@ -7,9 +7,12 @@ import VideoUploadModal from './VideoUploadModal';
 import { getHighlights, Highlight } from '@/lib/highlights';
 import { Loader2, ArrowLeft, Plus, Play, Sparkles } from 'lucide-react';
 import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
 import { cn } from '@/lib/utils';
 
 export default function VideoFeed() {
+  const searchParams = useSearchParams();
+  const videoIdParam = searchParams.get('v');
   const [highlights, setHighlights] = useState<Highlight[]>([]);
   const [loading, setLoading] = useState(true);
   const [activeId, setActiveId] = useState<string | null>(null);
@@ -19,7 +22,15 @@ export default function VideoFeed() {
     setLoading(true);
     const data = await getHighlights();
     setHighlights(data);
-    if (data.length > 0) setActiveId(data[0].id);
+    
+    if (data.length > 0) {
+      // Deep link support: If 'v' param exists and is in the list, set it as active
+      if (videoIdParam && data.find(h => h.id === videoIdParam)) {
+        setActiveId(videoIdParam);
+      } else {
+        setActiveId(data[0].id);
+      }
+    }
     setLoading(false);
   };
 
