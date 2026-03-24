@@ -117,12 +117,14 @@ export default function VideoFeed() {
               <VideoPlayer
                 id={h.id}
                 url={h.video_url}
+                userId={h.user_id}
                 thumbnail={h.thumbnail_url}
                 description={h.description}
                 userName={h.profiles?.name}
                 userAvatar={h.profiles?.avatar_url}
                 likes={h.likes_count}
                 isActive={activeId === h.id}
+                onDelete={fetchHighlights}
               />
             </section>
           ))

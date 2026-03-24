@@ -1103,10 +1103,10 @@ export default function HomePage() {
               </Link>
             </div>
 
-            <div className="flex gap-4 overflow-x-auto pb-4 scrollbar-none snap-x h-48 sm:h-64">
+            <div className="flex gap-4 overflow-x-auto pb-4 scrollbar-none snap-x h-[280px] sm:h-[380px]">
               {highlights.length > 0 ? (
                 highlights.map((h) => (
-                  <Link key={h.id} href="/highlights" className="shrink-0 w-32 sm:w-44 h-full rounded-[2rem] overflow-hidden relative group snap-start border border-white/5">
+                  <Link key={h.id} href="/highlights" className="shrink-0 aspect-[9/16] h-full rounded-[2rem] overflow-hidden relative group snap-start border border-white/5 shadow-xl">
                     <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent z-10" />
                     <video 
                       src={h.video_url} 
@@ -1140,7 +1140,7 @@ export default function HomePage() {
                 ))
               )}
               
-              <Link href="/highlights" className="shrink-0 w-32 sm:w-44 h-full rounded-[2rem] glass-premium border-dashed border-white/20 flex flex-col items-center justify-center gap-3 group hover:border-primary/40 transition-all text-foreground/30 snap-start">
+              <Link href="/highlights" className="shrink-0 aspect-[9/16] h-full rounded-[2rem] glass-premium border-dashed border-white/20 flex flex-col items-center justify-center gap-3 group hover:border-primary/40 transition-all text-foreground/30 snap-start">
                  <div className="w-10 h-10 rounded-full bg-surface flex items-center justify-center group-hover:scale-110 transition-transform">
                     <PlusCircle className="w-5 h-5 text-emerald-500" />
                  </div>

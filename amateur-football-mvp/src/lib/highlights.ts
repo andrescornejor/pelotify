@@ -42,3 +42,24 @@ export async function incrementView(highlightId: string) {
   const { error } = await supabase.rpc('increment_highlight_views', { h_id: highlightId });
   if (error) console.error('Error incrementing views:', error);
 }
+
+export async function deleteHighlight(id: string, videoUrl: string) {
+  // 1. Delete from Database
+  const { error: dbError } = await supabase
+    .from('match_highlights')
+    .delete()
+    .eq('id', id);
+  
+  if (dbError) throw dbError;
+
+  // 2. Delete from Storage
+  // Extract path from URL (e.g., highlights/USER_ID/FILE.mp4)
+  const path = videoUrl.split('/public/match-highlights/')[1];
+  if (path) {
+    const { error: storageError } = await supabase.storage
+      .from('match-highlights')
+      .remove([path]);
+    
+    if (storageError) console.error('Error deleting from storage:', storageError);
+  }
+}
