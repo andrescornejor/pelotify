@@ -107,53 +107,79 @@ export default function VideoPlayer({
       </AnimatePresence>
 
       {/* Right Action Bar */}
-      <div className="absolute right-4 bottom-24 flex flex-col gap-6 items-center z-10">
-        <div className="flex flex-col items-center">
-          <div className="p-3 bg-white/10 backdrop-blur-md rounded-full border border-white/20 hover:scale-110 transition-transform cursor-pointer">
-            <Heart className="w-6 h-6 text-white" />
-          </div>
-          <span className="text-white text-xs mt-1 font-medium">{likes}</span>
+      <div className="absolute right-4 bottom-28 flex flex-col gap-6 items-center z-10">
+        <div className="flex flex-col items-center group/action">
+          <motion.div 
+            whileHover={{ scale: 1.15 }}
+            whileTap={{ scale: 0.9 }}
+            className="p-3.5 bg-white/10 backdrop-blur-xl rounded-full border border-white/20 shadow-[0_0_20px_rgba(255,255,255,0.05)] cursor-pointer group-hover/action:bg-rose-500/20 group-hover/action:border-rose-500/40 transition-all duration-300"
+          >
+            <Heart className="w-6 h-6 text-white group-hover/action:text-rose-500 group-hover/action:fill-rose-500 transition-colors" />
+          </motion.div>
+          <span className="text-white text-[10px] mt-1.5 font-black uppercase tracking-widest font-outfit opacity-80">{likes}</span>
         </div>
 
-        <div className="flex flex-col items-center">
-          <div className="p-3 bg-white/10 backdrop-blur-md rounded-full border border-white/20 hover:scale-110 transition-transform cursor-pointer">
-            <MessageCircle className="w-6 h-6 text-white" />
-          </div>
-          <span className="text-white text-xs mt-1 font-medium">{comments}</span>
+        <div className="flex flex-col items-center group/action">
+          <motion.div 
+            whileHover={{ scale: 1.15 }}
+            whileTap={{ scale: 0.9 }}
+            className="p-3.5 bg-white/10 backdrop-blur-xl rounded-full border border-white/20 shadow-[0_0_20px_rgba(255,255,255,0.05)] cursor-pointer group-hover/action:bg-primary/20 group-hover/action:border-primary/40 transition-all duration-300"
+          >
+            <MessageCircle className="w-6 h-6 text-white group-hover/action:text-primary transition-colors" />
+          </motion.div>
+          <span className="text-white text-[10px] mt-1.5 font-black uppercase tracking-widest font-outfit opacity-80">{comments}</span>
         </div>
 
-        <div className="p-3 bg-white/10 backdrop-blur-md rounded-full border border-white/20 hover:scale-110 transition-transform cursor-pointer">
+        <motion.div 
+          whileHover={{ scale: 1.15 }}
+          whileTap={{ scale: 0.9 }}
+          className="p-3.5 bg-white/10 backdrop-blur-xl rounded-full border border-white/20 shadow-[0_0_20px_rgba(255,255,255,0.05)] cursor-pointer hover:bg-white/20 transition-all duration-300"
+        >
           <Share2 className="w-6 h-6 text-white" />
-        </div>
+        </motion.div>
       </div>
 
       {/* Bottom Info Section */}
-      <div className="absolute left-4 bottom-8 right-16 z-10">
-        <div className="flex items-center gap-3 mb-3">
-          <div className="w-10 h-10 rounded-full border-2 border-emerald-500 overflow-hidden bg-emerald-100 flex items-center justify-center">
-            {userAvatar ? (
-              <img src={userAvatar} alt={userName} className="w-full h-full object-cover" />
-            ) : (
-              <User2 className="w-6 h-6 text-emerald-600" />
-            )}
+      <div className="absolute left-6 bottom-10 right-20 z-10 space-y-3">
+        <motion.div 
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: 1, x: 0 }}
+          className="flex items-center gap-3"
+        >
+          <div className="relative group/avatar">
+            <div className="absolute -inset-1 bg-emerald-500/50 rounded-full blur-sm opacity-0 group-hover/avatar:opacity-100 transition-opacity" />
+            <div className="relative w-11 h-11 rounded-full border-2 border-emerald-500 overflow-hidden bg-emerald-100 flex items-center justify-center shadow-lg">
+              {userAvatar ? (
+                <img src={userAvatar} alt={userName} className="w-full h-full object-cover" />
+              ) : (
+                <User2 className="w-6 h-6 text-emerald-600" />
+              )}
+            </div>
           </div>
-          <span className="text-white font-bold text-lg drop-shadow-md">
-            @{userName || 'crack_anonimo'}
-          </span>
-        </div>
-        <p className="text-white/90 text-sm line-clamp-2 max-w-sm drop-shadow-sm">
-          {description || '🔥 Tremenda jugada! #Pelotify #FutbolAmateur'}
+          <div className="flex flex-col">
+            <span className="text-white font-black text-lg italic tracking-tight font-kanit drop-shadow-lg leading-tight">
+              @{userName || 'crack_anonimo'}
+            </span>
+            <div className="flex items-center gap-1.5 text-[8px] font-black text-emerald-400 uppercase tracking-[0.2em]">
+              <div className="w-1 h-1 rounded-full bg-emerald-400 animate-pulse" />
+              VERIFICADO
+            </div>
+          </div>
+        </motion.div>
+        
+        <p className="text-white/90 text-sm font-medium leading-relaxed max-w-sm drop-shadow-sm font-outfit">
+          {description || '🔥 Tremenda jugada de mi equipo! #Pelotify #FutbolAmateur'}
         </p>
       </div>
 
       {/* Progress Bar */}
-      <div className="absolute bottom-0 left-0 w-full h-[2px] bg-white/20">
+      <div className="absolute bottom-0 left-0 w-full h-[3px] bg-white/10">
         <motion.div 
-          className="h-full bg-emerald-500"
+          className="h-full bg-emerald-500 shadow-[0_0_10px_rgba(44,252,125,0.6)]"
           initial={{ width: "0%" }}
           animate={{ width: isPlaying ? "100%" : "0%" }}
           transition={{ 
-            duration: 15, // Max length assumed for progress bar visual
+            duration: 15,
             ease: "linear",
             repeat: Infinity
           }}

@@ -1,34 +1,39 @@
-'use client';
-
 import { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import VideoPlayer from './VideoPlayer';
+import VideoUploadModal from './VideoUploadModal';
 import { getHighlights, Highlight } from '@/lib/highlights';
-import { Loader2, ArrowLeft } from 'lucide-react';
+import { Loader2, ArrowLeft, Plus, Play, Sparkles } from 'lucide-react';
 import Link from 'next/link';
+import { cn } from '@/lib/utils';
 
 export default function VideoFeed() {
   const [highlights, setHighlights] = useState<Highlight[]>([]);
   const [loading, setLoading] = useState(true);
   const [activeId, setActiveId] = useState<string | null>(null);
+  const [isUploadOpen, setIsUploadOpen] = useState(false);
+
+  const fetchHighlights = async () => {
+    setLoading(true);
+    const data = await getHighlights();
+    setHighlights(data);
+    if (data.length > 0) setActiveId(data[0].id);
+    setLoading(false);
+  };
 
   useEffect(() => {
-    const fetchHighlights = async () => {
-      const data = await getHighlights();
-      setHighlights(data);
-      if (data.length > 0) setActiveId(data[0].id);
-      setLoading(false);
-    };
-
     fetchHighlights();
   }, []);
 
-  if (loading) {
+  if (loading && highlights.length === 0) {
     return (
       <div className="flex h-screen items-center justify-center bg-black">
-        <div className="text-center">
-          <Loader2 className="w-12 h-12 text-emerald-500 animate-spin mx-auto mb-4" />
-          <p className="text-white/60 font-medium">Cargando jugadas top...</p>
+        <div className="relative">
+          <div className="absolute inset-0 bg-emerald-500/20 blur-3xl rounded-full animate-pulse" />
+          <div className="relative text-center">
+            <Loader2 className="w-14 h-14 text-emerald-500 animate-spin mx-auto mb-6" />
+            <p className="text-white font-black italic uppercase tracking-[0.3em] font-kanit">Sincronizando Jugadas</p>
+          </div>
         </div>
       </div>
     );
@@ -36,39 +41,68 @@ export default function VideoFeed() {
 
   return (
     <div className="relative h-[100dvh] bg-black overflow-hidden">
-      {/* Background Effect */}
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-emerald-900/20 via-black to-black opacity-50" />
+      <AnimatePresence>
+        {isUploadOpen && (
+          <VideoUploadModal 
+            onClose={() => setIsUploadOpen(false)} 
+            onSuccess={() => {
+              setIsUploadOpen(false);
+              fetchHighlights();
+            }}
+          />
+        )}
+      </AnimatePresence>
 
       {/* Top Header Overlay */}
-      <div className="absolute top-0 left-0 w-full z-20 px-4 py-8 flex items-center justify-between">
-        <Link href="/" className="p-2 bg-black/40 backdrop-blur-md rounded-full border border-white/10 text-white">
+      <div className="absolute top-0 left-0 w-full z-20 px-6 py-10 flex items-center justify-between">
+        <Link href="/" className="p-3 bg-black/40 backdrop-blur-xl rounded-2xl border border-white/10 text-white hover:bg-black/60 transition-all">
           <ArrowLeft className="w-6 h-6" />
         </Link>
-        <div className="flex gap-4">
-          <span className="text-white font-bold border-b-2 border-emerald-500 pb-1">Para ti</span>
-          <span className="text-white/60 font-bold hover:text-white transition-colors cursor-pointer pb-1">Seguidos</span>
+        <div className="flex gap-8">
+          <button className="text-white font-black italic uppercase tracking-widest border-b-2 border-emerald-500 pb-1 font-kanit text-lg shadow-[0_4px_10px_rgba(44,252,125,0.3)]">Para ti</button>
+          <button className="text-white/40 font-black italic uppercase tracking-widest hover:text-white/80 transition-colors pb-1 font-kanit text-lg">Clubes</button>
         </div>
-        <div className="w-10 h-10" /> {/* Spacer */}
+        <button 
+          onClick={() => setIsUploadOpen(true)}
+          className="p-3 bg-emerald-500 rounded-2xl text-background shadow-[0_10px_20px_rgba(44,252,125,0.3)] hover:scale-110 active:scale-95 transition-all"
+        >
+          <Plus className="w-6 h-6" />
+        </button>
       </div>
 
       {/* Vertical Feed with Snap Scroll */}
       <div className="h-full overflow-y-auto snap-y snap-mandatory scrollbar-none">
         {highlights.length === 0 ? (
-          <div className="h-full flex items-center justify-center px-8 text-center">
-            <div>
-              <div className="p-6 bg-emerald-500/10 rounded-3xl border border-emerald-500/20 inline-block mb-6">
-                <motion.div
-                  initial={{ rotate: -10 }}
-                  animate={{ rotate: 10 }}
-                  transition={{ duration: 2, repeat: Infinity, repeatType: "reverse" }}
+          <div className="h-full flex items-center justify-center px-8 text-center bg-zinc-950">
+            <div className="relative space-y-8">
+              <div className="absolute inset-x-0 top-0 h-64 bg-emerald-500/10 blur-[100px] -z-10 rounded-full" />
+              
+              <div className="relative inline-block">
+                <div className="w-32 h-32 bg-zinc-900 rounded-[2.5rem] border border-white/5 flex items-center justify-center shadow-2xl">
+                  <Play className="w-12 h-12 text-emerald-500 fill-emerald-500/20" />
+                </div>
+                <motion.div 
+                  animate={{ y: [0, -10, 0] }}
+                  transition={{ duration: 2, repeat: Infinity }}
+                  className="absolute -top-4 -right-4 p-3 bg-emerald-500 rounded-2xl shadow-lg"
                 >
-                  <span className="text-6xl">⚽</span>
+                  <Sparkles className="w-5 h-5 text-background" />
                 </motion.div>
               </div>
-              <h2 className="text-white text-2xl font-bold mb-2">Aún no hay jugadas destacadas</h2>
-              <p className="text-white/50 max-w-xs mx-auto">
-                Sé el primero en subir un clip de 15 segundos y domina el feed nacional.
-              </p>
+
+              <div className="space-y-3">
+                <h2 className="text-white text-3xl font-black italic uppercase tracking-tighter font-kanit">Sin Jugadas Aún</h2>
+                <p className="text-white/40 font-medium max-w-xs mx-auto text-sm font-outfit leading-relaxed">
+                  Sé el primero en subir un clip de 15 segundos y conviértete en la leyenda de la semana.
+                </p>
+              </div>
+
+              <button 
+                onClick={() => setIsUploadOpen(true)}
+                className="px-10 h-14 bg-white text-background font-black uppercase text-xs tracking-[0.2em] rounded-2xl hover:bg-emerald-500 transition-all shadow-xl hover:shadow-emerald-500/20"
+              >
+                SUBIR MI PRIMER CLIP
+              </button>
             </div>
           </div>
         ) : (
