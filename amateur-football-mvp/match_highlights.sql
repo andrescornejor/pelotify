@@ -11,6 +11,7 @@ CREATE TABLE IF NOT EXISTS public.match_highlights (
     description TEXT,
     views_count INT DEFAULT 0,
     likes_count INT DEFAULT 0,
+    comments_count INT DEFAULT 0,
     created_at TIMESTAMPTZ DEFAULT now()
 );
 
@@ -117,6 +118,26 @@ DROP POLICY IF EXISTS "Allow owner delete comments" ON public.match_highlight_co
 CREATE POLICY "Allow public select comments" ON public.match_highlight_comments FOR SELECT USING (true);
 CREATE POLICY "Allow authenticated insert comments" ON public.match_highlight_comments FOR INSERT WITH CHECK (auth.uid() = user_id);
 CREATE POLICY "Allow owner delete comments" ON public.match_highlight_comments FOR DELETE USING (auth.uid() = user_id);
+
+-- Trigger to update comments_count
+CREATE OR REPLACE FUNCTION public.update_highlight_comments_count()
+RETURNS TRIGGER AS $$
+BEGIN
+    IF (TG_OP = 'INSERT') THEN
+        UPDATE public.match_highlights SET comments_count = comments_count + 1 WHERE id = NEW.highlight_id;
+    ELSIF (TG_OP = 'DELETE') THEN
+        UPDATE public.match_highlights SET comments_count = comments_count - 1 WHERE id = OLD.highlight_id;
+    END IF;
+    RETURN NULL;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+-- Cleanup trigger
+DROP TRIGGER IF EXISTS on_highlight_comment_change ON public.match_highlight_comments;
+
+CREATE TRIGGER on_highlight_comment_change
+AFTER INSERT OR DELETE ON public.match_highlight_comments
+FOR EACH ROW EXECUTE FUNCTION public.update_highlight_comments_count();
 
 -- 8. Performance Indexes
 CREATE INDEX IF NOT EXISTS idx_highlights_match ON public.match_highlights(match_id);

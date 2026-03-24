@@ -44,6 +44,7 @@ export default function VideoPlayer({
   const [isLiked, setIsLiked] = useState(false);
   const [localLikes, setLocalLikes] = useState(likes);
   const [showComments, setShowComments] = useState(false);
+  const [localComments, setLocalComments] = useState(comments);
 
   const { ref: inViewRef, inView } = useInView({ threshold: 0.7 });
 
@@ -194,7 +195,7 @@ export default function VideoPlayer({
             >
               <MessageCircle className="w-6 h-6 text-white group-hover/action:text-primary transition-colors" />
             </motion.div>
-            <span className="text-white text-[10px] mt-1.5 font-black tracking-widest font-outfit shadow-sm">{comments}</span>
+            <span className="text-white text-[10px] mt-1.5 font-black tracking-widest font-outfit shadow-sm">{localComments}</span>
           </div>
 
           <motion.div 
@@ -268,6 +269,7 @@ export default function VideoPlayer({
           <CommentsModal 
             highlightId={id} 
             onClose={() => setShowComments(false)}
+            onCommentAdded={() => setLocalComments(prev => prev + 1)}
           />
         )}
       </AnimatePresence>

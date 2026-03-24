@@ -122,6 +122,7 @@ export default function VideoFeed() {
                 userName={h.profiles?.name}
                 userAvatar={h.profiles?.avatar_url}
                 likes={h.likes_count}
+                comments={h.comments_count}
                 isActive={activeId === h.id}
                 onDelete={fetchHighlights}
               />

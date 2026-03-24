@@ -9,6 +9,7 @@ export interface Highlight {
   description?: string;
   views_count: number;
   likes_count: number;
+  comments_count: number;
   profiles: {
     name: string;
     avatar_url: string;
