@@ -145,42 +145,44 @@ const TeamCard = ({ team, isPerfMode }: any) => {
         )}
         
         <div className="flex items-center gap-6 relative z-10 w-full sm:w-auto">
-          <div className="relative group/avatar">
-            {/* Avatar background glow */}
-            {!isPerfMode && (
+          <div className="flex flex-col items-center min-w-[80px]">
+            <div className="relative group/avatar">
+              {/* Avatar background glow */}
+              {!isPerfMode && (
+                <div 
+                  className="absolute inset-0 blur-2xl rounded-full scale-0 group-hover/avatar:scale-150 transition-transform duration-1000 opacity-0 group-hover/avatar:opacity-30"
+                  style={{ backgroundColor: teamColor }}
+                />
+              )}
+              
               <div 
-                className="absolute inset-0 blur-2xl rounded-full scale-0 group-hover/avatar:scale-150 transition-transform duration-1000 opacity-0 group-hover/avatar:opacity-30"
-                style={{ backgroundColor: teamColor }}
-              />
-            )}
-            
-            <div 
-              className="w-20 h-20 rounded-[2.5rem] bg-gradient-to-br from-surface to-background flex items-center justify-center overflow-hidden border-2 border-white/5 group-hover:border-primary/40 transition-all duration-500 shadow-inner relative z-10"
-            >
-              <div className="absolute inset-0 bg-primary/5 opacity-0 group-hover:opacity-100 transition-opacity" />
-              {team.logo_url ? (
-                <img 
+                className="w-20 h-20 rounded-[2.5rem] bg-gradient-to-br from-surface to-background flex items-center justify-center overflow-hidden border-2 border-white/5 group-hover:border-primary/40 transition-all duration-500 shadow-inner relative z-10"
+              >
+                <div className="absolute inset-0 bg-primary/5 opacity-0 group-hover:opacity-100 transition-opacity" />
+                {team.logo_url ? (
+                  <img 
                   src={team.logo_url} 
                   alt={team.name} 
                   className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
-                />
-              ) : (
-                <div className="p-3 w-full h-full">
-                  <JerseyVisualizer 
-                    primaryColor={team.primary_color || '#18181b'} 
-                    secondaryColor={team.secondary_color || '#10b981'} 
-                    pattern={team.jersey_pattern || 'solid'}
-                    className="w-full h-full"
                   />
-                </div>
-              )}
+                ) : (
+                  <div className="p-3 w-full h-full">
+                    <JerseyVisualizer 
+                      primaryColor={team.primary_color || '#18181b'} 
+                      secondaryColor={team.secondary_color || '#10b981'} 
+                      pattern={team.jersey_pattern || 'solid'}
+                      className="w-full h-full"
+                    />
+                  </div>
+                )}
+              </div>
             </div>
             
-            {/* Level/Status Mini-Badge */}
-            <div className="absolute -bottom-1 -right-1 px-2.5 py-1 rounded-xl bg-background border border-white/10 flex items-center justify-center shadow-2xl">
+            {/* Level Badge below Photo */}
+            <div className="mt-2 px-3 py-1 rounded-xl bg-background border border-white/10 flex items-center justify-center shadow-lg w-full">
               <div className="flex items-center gap-1.5">
                 <div className="w-1 h-1 rounded-full bg-primary animate-pulse" />
-                <span className="text-[8px] font-black text-primary uppercase tracking-tighter">LVL {Math.floor((team.elo / 500) + 1)}</span>
+                <span className="text-[9px] font-black text-primary uppercase tracking-tighter">LVL {Math.floor((team.elo / 500) + 1)}</span>
               </div>
             </div>
           </div>
@@ -193,8 +195,8 @@ const TeamCard = ({ team, isPerfMode }: any) => {
               <div className="flex -space-x-3">
                 {[1, 2, 3, 4].map((i) => (
                   <div 
-                    key={i} 
-                    className="w-7 h-7 rounded-full border-2 border-background bg-surface overflow-hidden hover:z-20 hover:scale-110 transition-transform flex items-center justify-center"
+                  key={i} 
+                  className="w-7 h-7 rounded-full border-2 border-background bg-surface overflow-hidden hover:z-20 hover:scale-110 transition-transform flex items-center justify-center"
                   >
                     <User2 className="w-4 h-4 text-foreground/20" />
                   </div>
@@ -453,12 +455,12 @@ export default function HomePage() {
         tooltip: 'Veces elegido MVP',
       },
       {
-        icon: Target,
-        label: 'Precisión',
-        value: '78%',
+        icon: TrendingUp,
+        label: 'Win Rate',
+        value: '0%',
         color: '#f43f5e',
         glow: 'rgba(244,63,94,0.2)',
-        tooltip: 'Efectividad en cancha',
+        tooltip: 'Tu efectividad de victoria',
       },
     ],
     [statsSummary, metadata?.mvp_count]
