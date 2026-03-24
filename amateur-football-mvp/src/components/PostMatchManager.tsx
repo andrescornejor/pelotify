@@ -25,7 +25,7 @@ export default function PostMatchManager() {
 
         for (const match of matches) {
           // Match date/time to Date object
-          // Format: 2024-03-14 and 18:30
+          // Format: 2026-03-14 and 18:30
           const matchStart = new Date(`${match.date}T${match.time}`);
           const matchEnd = new Date(matchStart.getTime() + 60 * 60 * 1000); // +1 hour
 

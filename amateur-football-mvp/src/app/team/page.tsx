@@ -767,7 +767,7 @@ function TeamProfileContent() {
                </div>
                <div className="space-y-1">
                   <h4 className="text-xs font-black text-foreground uppercase tracking-widest italic">{team.name}</h4>
-                  <p className="text-[8px] font-black text-foreground/40 uppercase tracking-widest">TEMPORADA 2024</p>
+                  <p className="text-[8px] font-black text-foreground/40 uppercase tracking-widest">TEMPORADA 2026</p>
                </div>
             </div>
           </motion.div>
