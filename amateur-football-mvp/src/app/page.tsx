@@ -23,11 +23,13 @@ import {
   User2,
   Sparkles,
   Award,
+  Shield,
 } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/lib/supabase';
 import { cn } from '@/lib/utils';
 import { OnboardingTour } from '@/components/OnboardingTour';
+import { JerseyVisualizer } from '@/components/JerseyVisualizer';
 
 // --- TYPES & CONSTANTS ---
 
@@ -125,71 +127,109 @@ const StatCard = ({ stat, i, isPerfMode, fadeUp }: any) => (
   </motion.div>
 );
 
-const TeamCard = ({ team, isPerfMode }: any) => (
-  <motion.div
-    whileHover={isPerfMode ? {} : { scale: 1.01, y: -2 }}
-    className="group flex flex-col sm:flex-row items-center justify-between gap-5 p-6 rounded-[2.5rem] glass-premium border-white/5 hover:border-primary/20 hover:shadow-[0_20px_40px_rgba(0,0,0,0.3),0_0_20px_rgba(44,252,125,0.05)] transition-all cursor-pointer relative overflow-hidden"
-  >
-    {/* Animated background glow */}
-    {!isPerfMode && (
-      <div className="absolute top-0 right-0 w-32 h-32 bg-primary/10 blur-[60px] rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
-    )}
-    
-    <div className="flex items-center gap-6 relative z-10 w-full sm:w-auto">
-      <div className="relative group/avatar">
-        {/* Avatar background glow */}
-        <div className="absolute inset-0 bg-primary/20 blur-xl rounded-full scale-0 group-hover/avatar:scale-150 transition-transform duration-1000 opacity-0 group-hover/avatar:opacity-20" />
+const TeamCard = ({ team, isPerfMode }: any) => {
+  const teamColor = team.primary_color || '#2cfc7d';
+  
+  return (
+    <Link href={`/team?id=${team.id}`} className="block">
+      <motion.div
+        whileHover={isPerfMode ? {} : { scale: 1.01, y: -4 }}
+        className="group flex flex-col sm:flex-row items-center justify-between gap-5 p-6 rounded-[2.5rem] glass-premium border-white/5 hover:border-primary/20 hover:shadow-[0_30px_60px_rgba(0,0,0,0.4),0_0_30px_rgba(44,252,125,0.1)] transition-all cursor-pointer relative overflow-hidden"
+      >
+        {/* Animated background glow based on team color */}
+        {!isPerfMode && (
+          <div 
+            className="absolute top-0 right-0 w-48 h-48 blur-[80px] rounded-full opacity-0 group-hover:opacity-20 transition-opacity duration-700"
+            style={{ backgroundColor: teamColor }}
+          />
+        )}
         
-        <div className="w-20 h-20 rounded-[2.5rem] bg-gradient-to-br from-surface to-background flex items-center justify-center overflow-hidden border-2 border-white/5 group-hover:border-primary/40 transition-all duration-500 shadow-inner relative z-10">
-          <div className="absolute inset-0 bg-primary/5 opacity-0 group-hover:opacity-100 transition-opacity" />
-          <Users className="w-10 h-10 text-foreground/20 group-hover:text-primary/40 transition-colors" />
-        </div>
-        
-        {/* Level/Status Mini-Badge */}
-        <div className="absolute -bottom-1 -right-1 px-2 py-0.5 rounded-lg bg-background border border-white/10 flex items-center justify-center shadow-xl">
-          <span className="text-[8px] font-black text-primary uppercase tracking-tighter">LVL 5</span>
-        </div>
-      </div>
-
-      <div className="flex-1 space-y-2">
-        <h4 className="text-2xl font-black italic uppercase tracking-tighter text-foreground font-kanit leading-none group-hover:text-primary transition-colors">
-          {team.name}
-        </h4>
-        <div className="flex items-center gap-4">
-          <div className="flex -space-x-3">
-            {[1, 2, 3, 4].map((i) => (
+        <div className="flex items-center gap-6 relative z-10 w-full sm:w-auto">
+          <div className="relative group/avatar">
+            {/* Avatar background glow */}
+            {!isPerfMode && (
               <div 
-                key={i} 
-                className="w-7 h-7 rounded-full border-2 border-background bg-surface overflow-hidden hover:z-20 hover:scale-110 transition-transform"
-                style={{ backgroundColor: `hsl(${i * 45}, 70%, 50%, 0.1)` }}
-              >
-                <User2 className="w-full h-full p-1.5 text-foreground/20" />
+                className="absolute inset-0 blur-2xl rounded-full scale-0 group-hover/avatar:scale-150 transition-transform duration-1000 opacity-0 group-hover/avatar:opacity-30"
+                style={{ backgroundColor: teamColor }}
+              />
+            )}
+            
+            <div 
+              className="w-20 h-20 rounded-[2.5rem] bg-gradient-to-br from-surface to-background flex items-center justify-center overflow-hidden border-2 border-white/5 group-hover:border-primary/40 transition-all duration-500 shadow-inner relative z-10"
+            >
+              <div className="absolute inset-0 bg-primary/5 opacity-0 group-hover:opacity-100 transition-opacity" />
+              {team.logo_url ? (
+                <img 
+                  src={team.logo_url} 
+                  alt={team.name} 
+                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                />
+              ) : (
+                <div className="p-3 w-full h-full">
+                  <JerseyVisualizer 
+                    primaryColor={team.primary_color || '#18181b'} 
+                    secondaryColor={team.secondary_color || '#10b981'} 
+                    pattern={team.jersey_pattern || 'solid'}
+                    className="w-full h-full"
+                  />
+                </div>
+              )}
+            </div>
+            
+            {/* Level/Status Mini-Badge */}
+            <div className="absolute -bottom-1 -right-1 px-2.5 py-1 rounded-xl bg-background border border-white/10 flex items-center justify-center shadow-2xl">
+              <div className="flex items-center gap-1.5">
+                <div className="w-1 h-1 rounded-full bg-primary animate-pulse" />
+                <span className="text-[8px] font-black text-primary uppercase tracking-tighter">LVL {Math.floor((team.elo / 500) + 1)}</span>
               </div>
-            ))}
-            <div className="w-7 h-7 rounded-full border-2 border-background bg-primary/20 flex items-center justify-center text-[8px] font-black text-primary z-10">
-              +{team.members_count || 12}
             </div>
           </div>
-          <div className="h-4 w-[1px] bg-white/10 hidden sm:block" />
-          <span className="text-[9px] font-black text-foreground/30 uppercase tracking-[0.2em] font-outfit hidden sm:block">
-            Equipo Verificado
-          </span>
-        </div>
-      </div>
-    </div>
 
-    {/* Right Side Action */}
-    <div className="flex items-center gap-4 relative z-10 w-full sm:w-auto mt-4 sm:mt-0">
-      <div className="hidden lg:flex flex-col items-end opacity-0 group-hover:opacity-100 transition-all translate-x-4 group-hover:translate-x-0 duration-500">
-        <span className="text-[8px] font-black text-primary uppercase tracking-widest text-right">Ver Plantel</span>
-        <span className="text-[10px] font-medium text-foreground/40 italic text-right">Gestionar alineación</span>
-      </div>
-      <div className="w-12 h-12 rounded-2xl bg-foreground/[0.03] border border-white/5 flex items-center justify-center group-hover:bg-primary group-hover:text-background transition-all duration-300 shadow-sm group-hover:shadow-primary/20 group-hover:scale-110">
-        <ArrowRight className="w-5 h-5 group-hover:translate-x-0.5 transition-transform" />
-      </div>
-    </div>
-  </motion.div>
-);
+          <div className="flex-1 space-y-2">
+            <h4 className="text-2xl font-black italic uppercase tracking-tighter text-foreground font-kanit leading-none group-hover:text-primary transition-colors">
+              {team.name}
+            </h4>
+            <div className="flex items-center gap-4">
+              <div className="flex -space-x-3">
+                {[1, 2, 3, 4].map((i) => (
+                  <div 
+                    key={i} 
+                    className="w-7 h-7 rounded-full border-2 border-background bg-surface overflow-hidden hover:z-20 hover:scale-110 transition-transform flex items-center justify-center"
+                  >
+                    <User2 className="w-4 h-4 text-foreground/20" />
+                  </div>
+                ))}
+                <div className="w-7 h-7 rounded-full border-2 border-background bg-primary/20 flex items-center justify-center text-[8px] font-black text-primary z-10 backdrop-blur-sm">
+                  +{team.members_count || 0}
+                </div>
+              </div>
+              <div className="h-4 w-[1px] bg-white/10 hidden sm:block" />
+              <div className="hidden sm:flex items-center gap-2">
+                <Shield className="w-3 h-3 text-primary/40" />
+                <span className="text-[9px] font-black text-foreground/30 uppercase tracking-[0.2em] font-outfit">
+                  {team.elo > 1000 ? 'Club de Élite' : 'Club Verificado'}
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Right Side Action */}
+        <div className="flex items-center gap-6 relative z-10 w-full sm:w-auto mt-4 sm:mt-0">
+          <div className="hidden lg:flex flex-col items-end opacity-0 group-hover:opacity-100 translate-x-4 group-hover:translate-x-0 transition-all duration-500">
+            <span className="text-[10px] font-black text-primary uppercase tracking-[0.2em] text-right">Ver Sede Central</span>
+            <span className="text-[9px] font-medium text-foreground/30 italic text-right mt-0.5">Gestionar club y plantel</span>
+          </div>
+          <div 
+            className="w-14 h-14 rounded-2xl bg-foreground/[0.03] border border-white/5 flex items-center justify-center group-hover:bg-primary group-hover:text-background transition-all duration-500 shadow-sm group-hover:shadow-[0_10px_20px_rgba(44,252,125,0.2)] group-hover:scale-110"
+          >
+            <ArrowRight className="w-6 h-6 group-hover:translate-x-1 transition-transform duration-500" />
+          </div>
+        </div>
+      </motion.div>
+    </Link>
+  );
+};
 
 const EmptyState = ({ icon: Icon, title, description, actionText, actionHref }: any) => (
   <motion.div
