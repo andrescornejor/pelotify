@@ -1112,10 +1112,10 @@ export default function HomePage() {
             <div className="flex items-center justify-between px-1">
               <div className="flex flex-col gap-1">
                 <h2 className="text-xl lg:text-2xl font-black text-foreground italic uppercase tracking-tighter font-kanit">
-                  Jugadas Destacadas
+                  Tendencias en FutTok
                 </h2>
                 <span className="text-[9px] font-black text-primary uppercase tracking-[0.4em]">
-                  PURO TALENTO NACIONAL
+                  LO MEJOR DE LA COMUNIDAD
                 </span>
               </div>
                 <Link
@@ -1129,7 +1129,7 @@ export default function HomePage() {
             <div className="flex gap-4 overflow-x-auto pb-4 scrollbar-none snap-x h-[280px] sm:h-[380px]">
               {highlights.length > 0 ? (
                 highlights.map((h) => (
-                  <Link key={h.id} href="/highlights" className="shrink-0 aspect-[9/16] h-full rounded-[2rem] overflow-hidden relative group snap-start border border-white/5 shadow-xl">
+                  <Link key={h.id} href={`/highlights?v=${h.id}`} className="shrink-0 aspect-[9/16] h-full rounded-[2rem] overflow-hidden relative group snap-start border border-white/5 shadow-xl">
                     <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent z-10" />
                     <video 
                       src={h.video_url} 

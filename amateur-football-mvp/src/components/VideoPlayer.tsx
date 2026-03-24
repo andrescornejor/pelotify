@@ -4,6 +4,7 @@ import { Heart, MessageCircle, Share2, User2, Play, Pause, Trash2, ChevronLeft, 
 import { useInView } from 'react-intersection-observer';
 import { useAuth } from '@/contexts/AuthContext';
 import { deleteHighlight, toggleLike, checkIfLiked } from '@/lib/highlights';
+import Link from 'next/link';
 import CommentsModal from './CommentsModal';
 
 interface VideoPlayerProps {
@@ -215,9 +216,9 @@ export default function VideoPlayer({
              PARA TI
              <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-8 h-[2.5px] bg-emerald-500 shadow-[0_0_10px_#10b981]" />
            </button>
-           <button className="text-white/40 font-black text-xs tracking-[0.3em] uppercase hover:text-white/60 transition-colors pointer-events-auto">
+           <Link href="/teams" className="text-white/40 font-black text-xs tracking-[0.3em] uppercase hover:text-white/60 transition-colors pointer-events-auto">
              CLUBES
-           </button>
+           </Link>
         </div>
 
         {/* Click Area for Play/Pause and Double Tap */}
@@ -343,31 +344,33 @@ export default function VideoPlayer({
 
         {/* Bottom Info Section */}
         <div className="absolute left-6 bottom-12 right-20 z-30 space-y-4">
-          <motion.div 
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            className="flex items-center gap-3"
-          >
-            <div className="relative group/avatar">
-              <div className="absolute -inset-1 bg-emerald-500/50 rounded-full blur-sm opacity-0 group-hover/avatar:opacity-100 transition-opacity" />
-              <div className="relative w-12 h-12 rounded-full border-2 border-emerald-500 overflow-hidden bg-emerald-100 flex items-center justify-center shadow-xl">
-                {userAvatar ? (
-                  <img src={userAvatar} alt={userName} className="w-full h-full object-cover" />
-                ) : (
-                  <User2 className="w-6 h-6 text-emerald-600" />
-                )}
+          <Link href={`/profile?id=${userId}`} className="inline-block block">
+            <motion.div 
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              className="flex items-center gap-3 cursor-pointer group"
+            >
+              <div className="relative group/avatar">
+                <div className="absolute -inset-1 bg-emerald-500/50 rounded-full blur-sm opacity-0 group-hover:opacity-100 transition-opacity" />
+                <div className="relative w-12 h-12 rounded-full border-2 border-emerald-500 overflow-hidden bg-emerald-100 flex items-center justify-center shadow-xl group-hover:scale-110 transition-transform">
+                  {userAvatar ? (
+                    <img src={userAvatar} alt={userName} className="w-full h-full object-cover" />
+                  ) : (
+                    <User2 className="w-6 h-6 text-emerald-600" />
+                  )}
+                </div>
               </div>
-            </div>
-            <div className="flex flex-col">
-              <span className="text-white font-black text-xl italic tracking-tight font-kanit drop-shadow-2xl leading-none">
-                @{userName || 'crack_anonimo'}
-              </span>
-              <div className="flex items-center gap-1.5 text-[8px] font-black text-emerald-400 uppercase tracking-[0.2em] mt-1 shadow-sm">
-                <div className="w-1 h-1 rounded-full bg-emerald-400 animate-pulse" />
-                DESTACADO
+              <div className="flex flex-col">
+                <span className="text-white font-black text-xl italic tracking-tight font-kanit drop-shadow-2xl leading-none group-hover:text-emerald-400 transition-colors">
+                  @{userName || 'crack_anonimo'}
+                </span>
+                <div className="flex items-center gap-1.5 text-[8px] font-black text-emerald-400 uppercase tracking-[0.2em] mt-1 shadow-sm">
+                  <div className="w-1 h-1 rounded-full bg-emerald-400 animate-pulse" />
+                  DESTACADO
+                </div>
               </div>
-            </div>
-          </motion.div>
+            </motion.div>
+          </Link>
           
           <p className="text-white/90 text-sm font-medium leading-relaxed max-w-[280px] drop-shadow-lg font-outfit line-clamp-2">
             {description || '🔥 Mirá esta tremenda jugada en Pelotify! #FutbolAmateur'}
