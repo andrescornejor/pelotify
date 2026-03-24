@@ -40,13 +40,15 @@ export default function VideoFeed() {
 
   if (loading && highlights.length === 0) {
     return (
-      <div className="flex h-screen items-center justify-center bg-black">
-        <div className="relative">
-          <div className="absolute inset-0 bg-emerald-500/20 blur-3xl rounded-full animate-pulse" />
-          <div className="relative text-center">
-            <Loader2 className="w-14 h-14 text-emerald-500 animate-spin mx-auto mb-6" />
-            <p className="text-white font-black italic uppercase tracking-[0.3em] font-kanit">Sincronizando FutTok</p>
+      <div className="flex h-[100dvh] items-center justify-center bg-black overflow-hidden relative">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(16,185,129,0.15),transparent_50%)] animate-pulse" />
+        <div className="relative text-center z-10 flex flex-col items-center">
+          <div className="relative w-20 h-20 mb-8 flex items-center justify-center">
+            <div className="absolute inset-0 border-t-2 border-emerald-500 rounded-full animate-spin" />
+            <div className="absolute inset-2 border-r-2 border-emerald-400 rounded-full animate-spin direction-reverse" style={{ animationDirection: 'reverse', animationDuration: '1.5s' }} />
+            <Sparkles className="w-8 h-8 text-emerald-400 animate-pulse" />
           </div>
+          <p className="text-white font-black italic uppercase tracking-[0.3em] font-kanit text-lg drop-shadow-[0_0_15px_rgba(16,185,129,0.5)]">Sincronizando FutTok</p>
         </div>
       </div>
     );
@@ -73,48 +75,62 @@ export default function VideoFeed() {
         </Link>
       </div>
 
-      <div className="fixed top-6 right-6 z-[100]">
+      <div className="fixed top-6 right-6 z-[100] group">
+        <div className="absolute -inset-2 bg-emerald-500/20 rounded-full blur-xl opacity-0 group-hover:opacity-100 transition-opacity" />
         <button 
           onClick={() => setIsUploadOpen(true)}
-          className="p-3 bg-emerald-500 rounded-2xl text-background shadow-[0_10px_30px_rgba(44,252,125,0.4)] hover:scale-110 active:scale-95 transition-all"
+          className="relative p-3.5 bg-gradient-to-tr from-emerald-600 to-emerald-400 rounded-2xl text-background shadow-[0_0_30px_rgba(16,185,129,0.3)] hover:shadow-[0_0_40px_rgba(16,185,129,0.5)] hover:scale-105 active:scale-95 transition-all border border-emerald-300/30"
         >
-          <Plus className="w-6 h-6" />
+          <Plus className="w-6 h-6 stroke-[3]" />
         </button>
       </div>
 
       {/* Vertical Feed with Snap Scroll */}
       <div className="h-full overflow-y-auto snap-y snap-mandatory scrollbar-none">
         {highlights.length === 0 ? (
-          <div className="h-full flex items-center justify-center px-8 text-center bg-zinc-950">
-            <div className="relative space-y-8">
-              <div className="absolute inset-x-0 top-0 h-64 bg-emerald-500/10 blur-[100px] -z-10 rounded-full" />
+          <div className="h-full flex items-center justify-center px-6 text-center bg-black relative">
+            <div className="absolute inset-0 bg-[url('/noise.png')] opacity-[0.03] mix-blend-overlay pointer-events-none" />
+            
+            <div className="relative space-y-10 z-10 w-full max-w-sm">
+              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-72 h-72 bg-emerald-500/20 blur-[120px] rounded-full pointer-events-none" />
               
-              <div className="relative inline-block">
-                <div className="w-32 h-32 bg-zinc-900 rounded-[2.5rem] border border-white/5 flex items-center justify-center shadow-2xl">
-                  <Play className="w-12 h-12 text-emerald-500 fill-emerald-500/20" />
+              <motion.div 
+                initial={{ scale: 0.8, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                transition={{ type: "spring", duration: 0.8 }}
+                className="relative inline-block"
+              >
+                <div className="w-36 h-36 bg-gradient-to-b from-zinc-800 to-zinc-950 rounded-[3rem] border border-white/10 flex items-center justify-center shadow-[0_20px_50px_rgba(0,0,0,0.5)] relative overflow-hidden group hover:border-emerald-500/50 transition-colors">
+                  <div className="absolute inset-0 bg-emerald-500/5 opacity-0 group-hover:opacity-100 transition-opacity" />
+                  <Play className="w-14 h-14 text-emerald-500 fill-emerald-500/20 group-hover:fill-emerald-500/40 transition-colors" />
                 </div>
                 <motion.div 
-                  animate={{ y: [0, -10, 0] }}
-                  transition={{ duration: 2, repeat: Infinity }}
-                  className="absolute -top-4 -right-4 p-3 bg-emerald-500 rounded-2xl shadow-lg"
+                  animate={{ y: [0, -12, 0], rotate: [0, 5, 0] }}
+                  transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+                  className="absolute -top-4 -right-4 p-3.5 bg-gradient-to-tr from-emerald-500 to-emerald-300 rounded-2xl shadow-[0_10px_25px_rgba(16,185,129,0.4)] border border-white/20"
                 >
-                  <Sparkles className="w-5 h-5 text-background" />
+                  <Sparkles className="w-6 h-6 text-background" />
                 </motion.div>
-              </div>
+              </motion.div>
 
-              <div className="space-y-3">
-                <h2 className="text-white text-3xl font-black italic uppercase tracking-tighter font-kanit">Sin Clips en FutTok</h2>
-                <p className="text-white/40 font-medium max-w-xs mx-auto text-sm font-outfit leading-relaxed">
-                  Sé el primero en subir un clip de 15 segundos y conviértete en la leyenda de FutTok.
+              <div className="space-y-4">
+                <h2 className="text-white text-4xl font-black italic uppercase tracking-tighter font-kanit drop-shadow-md">
+                  El escenario está <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-emerald-600">vacío</span>
+                </h2>
+                <p className="text-white/50 font-medium max-w-[280px] mx-auto text-[15px] font-outfit leading-relaxed">
+                  Sé el primero en subir esa jugada maradoniana. 15 segundos bastan para ser leyenda.
                 </p>
               </div>
 
-              <button 
+              <motion.button 
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
                 onClick={() => setIsUploadOpen(true)}
-                className="px-10 h-14 bg-white text-background font-black uppercase text-xs tracking-[0.2em] rounded-2xl hover:bg-emerald-500 transition-all shadow-xl hover:shadow-emerald-500/20"
+                className="w-full h-16 bg-white text-background font-black uppercase text-sm tracking-[0.2em] rounded-2xl hover:bg-emerald-400 transition-all shadow-[0_0_40px_rgba(255,255,255,0.1)] hover:shadow-[0_0_40px_rgba(16,185,129,0.3)] relative overflow-hidden group"
               >
+                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/50 to-transparent -translate-x-full group-hover:animate-[shimmer_1.5s_infinite]" />
                 SUBIR MI PRIMER CLIP
-              </button>
+              </motion.button>
             </div>
           </div>
         ) : (

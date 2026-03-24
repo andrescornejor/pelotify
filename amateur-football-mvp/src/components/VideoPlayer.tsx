@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Heart, MessageCircle, Share2, User2, Play, Pause, Trash2, ChevronLeft, Check } from 'lucide-react';
+import { Heart, MessageCircle, Share2, User2, Play, Pause, Trash2, ChevronLeft, Check, Volume2, VolumeX } from 'lucide-react';
 import { useInView } from 'react-intersection-observer';
 import { useAuth } from '@/contexts/AuthContext';
 import { deleteHighlight, toggleLike, checkIfLiked } from '@/lib/highlights';
@@ -39,6 +39,9 @@ export default function VideoPlayer({
   const [isMuted, setIsMuted] = useState(true);
   const [showPlayIcon, setShowPlayIcon] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [progress, setProgress] = useState(0);
+  const [showDoubleTapHeart, setShowDoubleTapHeart] = useState(false);
+  const [doubleTapPosition, setDoubleTapPosition] = useState({ x: 0, y: 0 });
   
   // Engagement States
   const [isLiked, setIsLiked] = useState(false);
@@ -67,13 +70,72 @@ export default function VideoPlayer({
     }
   }, [id, user]);
 
-  const togglePlay = () => {
+  const togglePlay = (e?: React.MouseEvent) => {
+    // If standard click, just toggle play
     if (videoRef.current) {
       if (isPlaying) videoRef.current.pause();
       else videoRef.current.play();
       setIsPlaying(!isPlaying);
       setShowPlayIcon(true);
       setTimeout(() => setShowPlayIcon(false), 500);
+    }
+  };
+
+  const handleTimeUpdate = () => {
+    if (videoRef.current) {
+      const current = videoRef.current.currentTime;
+      const duration = videoRef.current.duration;
+      setProgress((current / duration) * 100);
+    }
+  };
+
+  const toggleMute = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setIsMuted(!isMuted);
+  };
+
+  let lastTap = 0;
+  const handleTap = (e: React.MouseEvent) => {
+    const now = Date.now();
+    const DOUBLE_TAP_DELAY = 300;
+    
+    if (now - lastTap < DOUBLE_TAP_DELAY) {
+      // It's a double tap
+      handleDoubleTap(e);
+    } else {
+      // It's a single tap (will wait a bit before toggling perhaps, but directly toggling play is fine)
+      togglePlay(e);
+    }
+    lastTap = now;
+  };
+
+  const handleDoubleTap = (e: React.MouseEvent) => {
+    // Calculate position for the heart animation relative to the container
+    const rect = e.currentTarget.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    
+    setDoubleTapPosition({ x, y });
+    setShowDoubleTapHeart(true);
+    setTimeout(() => setShowDoubleTapHeart(false), 1000); // hide after animation
+    
+    // Auto-like if not liked
+    if (!isLiked && user) {
+      const newLiked = true;
+      setIsLiked(newLiked);
+      setLocalLikes(prev => prev + 1);
+      toggleLike(id, user.id, newLiked).catch(err => {
+        console.error('Like error:', err);
+        setIsLiked(false);
+        setLocalLikes(prev => prev - 1);
+      });
+    }
+    
+    // Important: if we double tapped, it also fired a single tap before.
+    // TikTok keeps playing on double tap, so let's make sure it's playing
+    if (!isPlaying && videoRef.current) {
+      videoRef.current.play();
+      setIsPlaying(true);
     }
   };
 
@@ -158,8 +220,8 @@ export default function VideoPlayer({
            </button>
         </div>
 
-        {/* Click Area for Play/Pause */}
-        <div className="absolute inset-0 z-10" onClick={togglePlay} />
+        {/* Click Area for Play/Pause and Double Tap */}
+        <div className="absolute inset-0 z-10" onClick={handleTap} />
 
         {/* Video Element */}
         <video
@@ -171,22 +233,39 @@ export default function VideoPlayer({
           muted={isMuted}
           className="w-full h-full object-cover"
           preload="metadata"
+          onTimeUpdate={handleTimeUpdate}
           onError={(e) => console.error('Video error:', e)}
         />
 
         {/* Visual Overlays */}
-        <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-transparent to-black/80 pointer-events-none z-20" />
+        <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-transparent to-black/90 pointer-events-none z-20" />
 
-        {/* Play/Pause Icon */}
+        {/* Persistent Play Icon or Temporary Pause/Play */}
         <AnimatePresence>
-          {showPlayIcon && (
+          {(!isPlaying || showPlayIcon) && !showDoubleTapHeart && (
             <motion.div
               initial={{ scale: 0.5, opacity: 0 }}
-              animate={{ scale: 1.5, opacity: 1 }}
+              animate={{ scale: isPlaying ? 1.5 : 1, opacity: isPlaying ? 0 : 1 }}
               exit={{ scale: 2, opacity: 0 }}
-              className="absolute z-30 pointer-events-none top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
+              className="absolute z-30 pointer-events-none top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 drop-shadow-2xl"
             >
-              <Pause className="w-16 h-16 text-white/40 fill-white/40" />
+              <Play className="w-20 h-20 text-white/50 fill-white/50" />
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* Double Tap Heart Animation */}
+        <AnimatePresence>
+          {showDoubleTapHeart && (
+            <motion.div
+              initial={{ scale: 0, opacity: 0, rotate: -15 }}
+              animate={{ scale: 1.2, opacity: 1, rotate: 0 }}
+              exit={{ scale: 1.5, opacity: 0 }}
+              transition={{ type: 'spring', damping: 12, stiffness: 200 }}
+              className="absolute z-40 pointer-events-none"
+              style={{ left: doubleTapPosition.x - 50, top: doubleTapPosition.y - 50 }}
+            >
+              <Heart className="w-24 h-24 text-rose-500 fill-rose-500 drop-shadow-[0_0_30px_rgba(244,63,94,0.8)]" />
             </motion.div>
           )}
         </AnimatePresence>
@@ -296,14 +375,27 @@ export default function VideoPlayer({
         </div>
 
         {/* Progress Bar */}
-        <div className="absolute bottom-0 left-0 w-full h-[4px] bg-white/5 z-40">
+        <div className="absolute bottom-0 left-0 w-full h-[4px] bg-white/10 z-40 rounded-full overflow-hidden">
           <motion.div 
-            className="h-full bg-emerald-400 shadow-[0_0_15px_#10b981]"
-            initial={{ width: "0%" }}
-            animate={{ width: isPlaying ? "100%" : "0%" }}
-            transition={{ duration: 15, ease: "linear", repeat: Infinity }}
+            className="h-full bg-emerald-500 shadow-[0_0_15px_#10b981]"
+            style={{ width: `${progress}%` }}
+            transition={{ duration: 0.1, ease: 'linear' }}
           />
         </div>
+
+        {/* Volume Toggle */}
+        <motion.div 
+          onClick={toggleMute}
+          whileHover={{ scale: 1.1 }}
+          whileTap={{ scale: 0.9 }}
+          className="absolute left-6 bottom-36 z-30 p-2.5 bg-black/20 backdrop-blur-md rounded-full border border-white/10 shadow-lg cursor-pointer hover:bg-black/40 transition-colors"
+        >
+          {isMuted ? (
+            <VolumeX className="w-5 h-5 text-white/80" />
+          ) : (
+            <Volume2 className="w-5 h-5 text-emerald-400" />
+          )}
+        </motion.div>
       </div>
 
       {/* Interactions (Modals) */}
