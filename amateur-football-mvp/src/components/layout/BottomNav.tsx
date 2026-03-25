@@ -57,60 +57,53 @@ export function BottomNav() {
   }
 
   return (
-    <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 w-[92%] max-w-[420px] lg:hidden">
+    <div className="fixed bottom-8 left-1/2 -translate-x-1/2 z-50 w-[94%] max-w-[440px] lg:hidden">
       <nav
         className={cn(
-          'relative overflow-hidden rounded-[2.5rem] border transition-all duration-500',
+          'relative overflow-hidden rounded-[2.5rem] border-t border-x border-white/10 transition-all duration-500 will-change-transform',
           performanceMode
-            ? 'bg-surface border-border shadow-lg'
-            : 'glass-premium bg-background/60 backdrop-blur-2xl border-foreground/[0.08] shadow-[0_20px_50px_rgba(0,0,0,0.3)]'
+            ? 'bg-surface shadow-2xl'
+            : 'bg-[#050508]/80 backdrop-blur-3xl shadow-[0_32px_80px_rgba(0,0,0,0.8)]'
         )}
       >
-        <div className="flex justify-around items-center h-[72px] px-2">
+        {/* Glow ambient inside nav */}
+        {!performanceMode && (
+          <div className="absolute inset-0 pointer-events-none opacity-20 overflow-hidden">
+             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full bg-primary/10 blur-[60px] rounded-full" />
+          </div>
+        )}
+
+        <div className="flex justify-between items-center h-[82px] px-4 relative z-10">
           {NAV_ITEMS.map(({ href, icon: Icon, label, isPrimary }) => {
-            // Better detection for Profile tab (recognize both /profile/me and /profile)
             const isActive =
               href === '/'
                 ? pathname === '/'
                 : pathname.startsWith(href) ||
                   (href === '/profile/me' && pathname.startsWith('/profile'));
 
-            const hasUnread = label === 'Mensajes' && unreadCount > 0;
-
             if (isPrimary) {
               return (
                 <Link
                   key={href}
                   href={href}
-                  className="relative flex flex-col items-center justify-center py-2 px-1"
+                  className="relative flex flex-col items-center justify-center -mt-8"
                 >
-                  {/* Pulsing ring */}
-                  {!performanceMode && (
-                    <div
-                      className="absolute top-[2px] w-14 h-14 rounded-[1.35rem] border-2 border-primary/40"
-                      style={{ animation: 'pulse-ring 2.5s cubic-bezier(0.4, 0, 0.6, 1) infinite' }}
-                    />
-                  )}
                   <motion.div
-                    whileTap={performanceMode ? {} : { scale: 0.9, y: -4 }}
-                    whileHover={performanceMode ? {} : { scale: 1.05 }}
+                    whileTap={{ scale: 0.88 }}
+                    whileHover={{ scale: 1.05 }}
                     className={cn(
-                      'w-12 h-12 rounded-[1.25rem] flex items-center justify-center transition-all duration-300 relative z-10',
-                      isActive ? 'shadow-lg' : 'shadow-md'
+                      'w-15 h-15 rounded-3xl flex items-center justify-center transition-all duration-500 relative z-20 overflow-hidden border-2 border-primary/30',
+                      isActive ? 'bg-primary text-background' : 'bg-[#08080a] text-primary'
                     )}
                     style={{
-                      backgroundColor: '#55fa86',
-                      color: 'black',
-                      boxShadow: isActive
-                        ? '0 0 20px rgba(85, 250, 134, 0.4)'
-                        : '0 4px 12px rgba(85, 250, 134, 0.2)',
+                      boxShadow: isActive 
+                        ? '0 12px 32px rgba(85, 250, 134, 0.4), inset 0 2px 8px rgba(255, 255, 255, 0.4)' 
+                        : '0 8px 24px rgba(0, 0, 0, 0.6)'
                     }}
                   >
-                    <Icon className="w-6 h-6" strokeWidth={2.5} />
+                     <div className="absolute inset-0 bg-gradient-to-br from-white/20 to-transparent opacity-30" />
+                     <Icon className="w-7 h-7 relative z-10" strokeWidth={isActive ? 3 : 2.5} />
                   </motion.div>
-                  <span className="text-[7px] font-black uppercase tracking-[0.2em] mt-1.5 text-primary italic">
-                    {label}
-                  </span>
                 </Link>
               );
             }
@@ -119,51 +112,45 @@ export function BottomNav() {
               <Link
                 key={href}
                 href={href}
-                className="relative flex flex-col items-center justify-center flex-1 h-full py-2 group"
+                className="relative flex-1 flex flex-col items-center justify-center h-full group py-0.5"
               >
-                <div className="relative">
-                  <Icon
-                    className={cn(
-                      'w-5 h-5 transition-all duration-300',
-                      isActive ? 'scale-110' : 'text-foreground/30 group-hover:text-foreground/50'
-                    )}
-                    style={{ color: isActive ? '#55fa86' : undefined }}
-                    strokeWidth={isActive ? 2.5 : 2}
-                  />
-
-                  {/* Unread indicator */}
-                  {hasUnread && !isActive && (
-                    <span
-                      className="absolute -top-1 -right-1 w-2.5 h-2.5 rounded-full border-2 border-background shadow-lg"
-                      style={{
-                        backgroundColor: '#55fa86',
-                        boxShadow: '0 0 10px rgba(85, 250, 134, 0.5)',
-                      }}
+                <div className="relative flex flex-col items-center gap-1.5 px-3 py-2 rounded-2xl transition-all duration-300">
+                  <div className={cn(
+                    "relative transition-all duration-500",
+                    isActive ? "scale-110 -translate-y-0.5" : "text-foreground/30 group-hover:text-foreground/60"
+                  )}>
+                    <Icon
+                      className={cn(
+                        'w-5 h-5 transition-colors',
+                        isActive ? 'text-primary' : 'inherit'
+                      )}
+                      strokeWidth={isActive ? 2.5 : 2}
                     />
-                  )}
-
-                  {/* Active indicator dot */}
-                  {isActive && !performanceMode && (
+                    
+                    {isActive && !performanceMode && (
+                      <motion.div 
+                        layoutId="nav-active-glow"
+                        className="absolute inset-0 bg-primary/20 blur-lg rounded-full -z-10"
+                      />
+                    )}
+                  </div>
+                  
+                  <span
+                    className={cn(
+                      'text-[9px] font-black uppercase tracking-[0.1em] transition-all duration-400',
+                      isActive ? 'text-primary' : 'text-foreground/25 font-bold'
+                    )}
+                  >
+                    {label}
+                  </span>
+                  
+                  {isActive && (
                     <motion.div
-                      layoutId="nav-dot"
-                      className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full"
-                      style={{
-                        backgroundColor: '#55fa86',
-                        boxShadow: '0 0 8px rgba(85, 250, 134, 0.6)',
-                      }}
+                      layoutId="active-nav-line"
+                      className="absolute -bottom-1 w-1 h-1 rounded-full bg-primary shadow-[0_0_8px_rgba(85,250,134,1)]"
                     />
                   )}
                 </div>
-
-                <span
-                  className={cn(
-                    'text-[8px] font-black uppercase tracking-[0.15em] mt-2 transition-colors duration-300',
-                    isActive ? 'italic' : 'text-foreground/35'
-                  )}
-                  style={{ color: isActive ? '#55fa86' : undefined }}
-                >
-                  {label}
-                </span>
               </Link>
             );
           })}

@@ -108,37 +108,42 @@ const StatCard = ({ stat, i, isPerfMode, fadeUp }: any) => (
   <motion.div
     variants={fadeUp}
     custom={i}
-    whileHover={isPerfMode ? {} : { y: -5, scale: 1.02 }}
+    whileHover={isPerfMode ? {} : { y: -8, scale: 1.03 }}
     className={cn(
-      'group relative overflow-hidden p-5 rounded-[2rem] glass-premium transition-all duration-300 border-white/5',
+      'group relative overflow-hidden p-6 rounded-[2.5rem] glass-premium transition-all duration-500 border-white/5 bg-white/[0.01]',
       isPerfMode && 'bg-surface shadow-none'
     )}
   >
-    {/* Glow effect */}
+    {/* Dynamic Background Glow */}
     {!isPerfMode && (
-      <div
-        className="absolute -right-4 -top-4 w-24 h-24 blur-[40px] opacity-0 group-hover:opacity-40 transition-opacity duration-500 rounded-full"
-        style={{ backgroundColor: stat.color }}
-      />
+      <>
+        <div
+          className="absolute -right-10 -top-10 w-32 h-32 blur-[60px] opacity-0 group-hover:opacity-30 transition-opacity duration-700 rounded-full"
+          style={{ backgroundColor: stat.color }}
+        />
+        <div className="absolute inset-0 bg-gradient-to-br from-white/[0.02] to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+      </>
     )}
 
-    <div className="relative z-10 space-y-3">
+    <div className="relative z-10 space-y-4">
       <div
-        className="w-10 h-10 rounded-xl flex items-center justify-center glass border-white/10 shadow-inner group-hover:scale-110 transition-transform duration-500"
-        style={{ backgroundColor: `${stat.color}15` }}
+        className="w-12 h-12 rounded-2xl flex items-center justify-center glass border-white/10 shadow-inner group-hover:scale-110 group-hover:rotate-6 transition-all duration-500"
+        style={{ backgroundColor: `${stat.color}10` }}
       >
-        <stat.icon className="w-5 h-5" style={{ color: stat.color }} />
+        <stat.icon className="w-6 h-6" style={{ color: stat.color }} />
       </div>
       <div>
-        <p className="text-[9px] font-black text-foreground/40 uppercase tracking-[0.2em] font-outfit">
+        <p className="text-[10px] font-black text-foreground/30 uppercase tracking-[0.25em] font-outfit">
           {stat.label}
         </p>
-        <div className="flex items-end gap-1">
-          <h3 className="text-2xl font-black italic tracking-tighter text-foreground font-kanit">
+        <div className="flex items-baseline gap-2 mt-1">
+          <h3 className="text-3xl font-black italic tracking-tighter text-foreground font-kanit">
             {stat.value}
           </h3>
           {!isPerfMode && (
-            <TrendingUp className="w-3 h-3 text-primary mb-1 opacity-60 group-hover:translate-y--0.5 group-hover:translate-x-0.5 transition-transform" />
+            <div className="flex items-center gap-1 text-primary opacity-0 group-hover:opacity-100 transition-all translate-y-2 group-hover:translate-y-0 duration-500">
+               <TrendingUp className="w-3 h-3" />
+            </div>
           )}
         </div>
       </div>
@@ -687,10 +692,15 @@ export default function HomePage() {
                       </div>
                     </div>
                   </div>
-                  <p className="text-foreground/60 text-lg font-medium font-outfit">
-                    Bienvenido,{' '}
-                    <span className="text-foreground font-black uppercase">{userName}</span>
-                  </p>
+                  <div className="flex flex-col gap-1">
+                    <div className="flex items-center gap-2">
+                      <div className="w-1.5 h-1.5 bg-primary rounded-full animate-ping" />
+                      <span className="text-[10px] font-black tracking-[0.4em] uppercase text-primary italic">CAPITÁN AL MANDO</span>
+                    </div>
+                    <h1 className="text-4xl sm:text-5xl font-black italic uppercase tracking-tighter leading-none font-kanit">
+                      {greeting}, <span className="bg-clip-text text-transparent bg-gradient-to-r from-white to-primary/40">{userName}</span>
+                    </h1>
+                  </div>
                 </motion.div>
               </div>
 
@@ -1215,13 +1225,15 @@ export default function HomePage() {
               <div className="flex items-center justify-between px-1">
                 <div className="flex flex-col gap-1">
                   <h2 className="text-xl lg:text-2xl font-black text-foreground italic uppercase tracking-tighter font-kanit">
-                    Feed de Actividad
+                    Feed Global
                   </h2>
                   <span className="text-[9px] font-black text-primary uppercase tracking-[0.4em]">
                     COMUNIDAD EN TIEMPO REAL
                   </span>
                 </div>
-                <Activity className="w-5 h-5 text-primary/30" />
+                <div className="w-10 h-10 rounded-2xl bg-white/[0.03] border border-white/5 flex items-center justify-center">
+                   <Activity className="w-5 h-5 text-primary/30" />
+                </div>
               </div>
 
               <div className="space-y-4">
@@ -1232,13 +1244,13 @@ export default function HomePage() {
                       initial={{ opacity: 0, x: -10 }}
                       whileInView={{ opacity: 1, x: 0 }}
                       transition={{ delay: idx * 0.1 }}
-                      className="p-4 rounded-2xl glass-premium border-white/5 flex items-center gap-4 group"
+                      className="p-4 rounded-2xl bg-white/[0.01] border border-white/5 flex items-center gap-4 group hover:bg-white/[0.03] transition-all"
                     >
-                      <div className="w-10 h-10 rounded-full bg-surface border border-white/5 flex items-center justify-center shrink-0">
-                        {activity.type === 'RANK_UP' ? <TrendingUp className="w-4 h-4 text-primary" /> : <Star className="w-4 h-4 text-accent" />}
+                      <div className="w-10 h-10 rounded-full bg-surface border border-white/5 flex items-center justify-center shrink-0 group-hover:border-primary/30 transition-all">
+                        {activity.type === 'RANK_UP' ? <TrendingUp className="w-4 h-4 text-primary" /> : <Star className="w-4 h-4 text-emerald-400" />}
                       </div>
                       <div className="flex-1 min-w-0">
-                        <p className="text-[10px] font-bold text-foreground">
+                        <p className="text-[11px] font-bold text-foreground">
                           {activity.user} <span className="text-foreground/40 font-medium tracking-tight"> {activity.detail}</span>
                         </p>
                         <p className="text-[8px] font-black text-primary/60 uppercase mt-0.5 tracking-tighter">hace {activity.time}</p>
@@ -1310,13 +1322,12 @@ export default function HomePage() {
                           </div>
                         </div>
 
-                        {/* VS Center */}
                         <div className="flex flex-col items-center gap-3 relative z-10 shrink-0">
                           <div className="w-14 h-14 rounded-full bg-background border border-white/10 flex flex-col items-center justify-center shadow-inner group-hover/match:scale-110 transition-transform duration-500">
                             <span className="text-2xl font-black italic text-primary font-kanit leading-none">VS</span>
                           </div>
                           {countdownText && (
-                            <div className="absolute -bottom-10 whitespace-nowrap px-3 py-1 rounded-lg bg-primary text-background text-[8px] font-black uppercase tracking-widest shadow-lg shadow-primary/20 animate-bounce">
+                            <div className="absolute -bottom-8 whitespace-nowrap px-3 py-1 rounded-lg bg-primary text-background text-[8px] font-black uppercase tracking-widest shadow-lg shadow-primary/20 animate-bounce">
                               {countdownText}
                             </div>
                           )}
