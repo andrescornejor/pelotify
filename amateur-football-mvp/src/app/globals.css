@@ -1,6 +1,6 @@
+@import url('https://fonts.googleapis.com/css2?family=Kanit:ital,wght@1,900&family=Outfit:wght@400;700;900&display=swap');
 @import 'leaflet/dist/leaflet.css';
 @import 'tailwindcss';
-@import url('https://fonts.googleapis.com/css2?family=Kanit:ital,wght@1,900&family=Outfit:wght@400;700;900&display=swap');
 
 @plugin "tailwindcss-animate";
 
