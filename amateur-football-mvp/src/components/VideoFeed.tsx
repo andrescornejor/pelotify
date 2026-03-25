@@ -4,7 +4,8 @@ import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import VideoPlayer from './VideoPlayer';
 import VideoUploadModal from './VideoUploadModal';
-import { getHighlights, Highlight } from '@/lib/highlights';
+import { getHighlights, Highlight, getFriendsHighlights } from '@/lib/highlights';
+import { useAuth } from '@/contexts/AuthContext';
 import { Loader2, ArrowLeft, Plus, Play, Sparkles, Flame } from 'lucide-react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
@@ -17,10 +18,17 @@ export default function VideoFeed() {
   const [loading, setLoading] = useState(true);
   const [activeId, setActiveId] = useState<string | null>(null);
   const [isUploadOpen, setIsUploadOpen] = useState(false);
+  const [activeTab, setActiveTab] = useState<'for-you' | 'friends'>('for-you');
+  const { user } = useAuth();
 
   const fetchHighlights = async () => {
     setLoading(true);
-    const data = await getHighlights();
+    let data;
+    if (activeTab === 'friends' && user) {
+      data = await getFriendsHighlights(user.id);
+    } else {
+      data = await getHighlights();
+    }
     setHighlights(data);
     
     if (data.length > 0) {
@@ -36,7 +44,7 @@ export default function VideoFeed() {
 
   useEffect(() => {
     fetchHighlights();
-  }, []);
+  }, [activeTab, user]);
 
   if (loading && highlights.length === 0) {
     return (
@@ -85,12 +93,29 @@ export default function VideoFeed() {
             </h1>
           </div>
           <div className="flex items-center gap-4 sm:gap-6 mt-1.5">
-            <button className="text-white font-black text-[9px] sm:text-[10px] tracking-[0.3em] uppercase relative shadow-sm transition-colors">
+            <button 
+              onClick={() => setActiveTab('for-you')}
+              className={cn(
+                "font-black text-[9px] sm:text-[10px] tracking-[0.3em] uppercase relative shadow-sm transition-colors",
+                activeTab === 'for-you' ? "text-white" : "text-white/40 hover:text-white/80"
+              )}
+            >
               PARA TI
-              <div className="absolute -bottom-2 sm:-bottom-2.5 left-1/2 -translate-x-1/2 w-6 sm:w-8 h-[2px] sm:h-[2.5px] bg-emerald-500 shadow-[0_0_10px_#10b981] rounded-full" />
+              {activeTab === 'for-you' && (
+                <div className="absolute -bottom-2 sm:-bottom-2.5 left-1/2 -translate-x-1/2 w-6 sm:w-8 h-[2px] sm:h-[2.5px] bg-emerald-500 shadow-[0_0_10px_#10b981] rounded-full" />
+              )}
             </button>
-            <button className="text-white/40 hover:text-white/80 font-black text-[9px] sm:text-[10px] tracking-[0.3em] uppercase transition-colors">
-              SIGUIENDO
+            <button 
+              onClick={() => setActiveTab('friends')}
+              className={cn(
+                "font-black text-[9px] sm:text-[10px] tracking-[0.3em] uppercase relative shadow-sm transition-colors",
+                activeTab === 'friends' ? "text-white" : "text-white/40 hover:text-white/80"
+              )}
+            >
+              AMIGOS
+              {activeTab === 'friends' && (
+                <div className="absolute -bottom-2 sm:-bottom-2.5 left-1/2 -translate-x-1/2 w-6 sm:w-8 h-[2px] sm:h-[2.5px] bg-emerald-500 shadow-[0_0_10px_#10b981] rounded-full" />
+              )}
             </button>
           </div>
         </div>
@@ -139,7 +164,9 @@ export default function VideoFeed() {
                   El escenario está <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-emerald-600">vacío</span>
                 </h2>
                 <p className="text-white/50 font-medium max-w-[280px] mx-auto text-[15px] font-outfit leading-relaxed">
-                  Sé el primero en subir esa jugada maradoniana. 15 segundos bastan para ser leyenda.
+                  {activeTab === 'friends' 
+                    ? "Tus amigos aún no han subido highlights. ¡Motívalos!"
+                    : "Sé el primero en subir esa jugada maradoniana. 15 segundos bastan para ser leyenda."}
                 </p>
               </div>
 

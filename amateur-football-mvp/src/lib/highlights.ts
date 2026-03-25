@@ -1,4 +1,5 @@
 import { supabase } from './supabase';
+import { getFriends } from './friends';
 
 export interface Highlight {
   id: string;
@@ -71,6 +72,35 @@ export async function getUserHighlights(userId: string) {
   }
 
   return data as unknown as Highlight[];
+}
+
+export async function getFriendsHighlights(userId: string, limit = 10) {
+  try {
+    const friends = await getFriends(userId);
+    const friendIds = friends.map(f => f.profiles?.id).filter(Boolean);
+    
+    if (friendIds.length === 0) return [];
+    
+    const { data, error } = await supabase
+      .from('match_highlights')
+      .select(`
+        *,
+        profiles:user_id (
+          name,
+          avatar_url
+        )
+      `)
+      .in('user_id', friendIds)
+      .order('created_at', { ascending: false })
+      .limit(limit);
+      
+    if (error) throw error;
+    
+    return data as unknown as Highlight[];
+  } catch (error) {
+    console.error('Error fetching friends highlights:', error);
+    return [];
+  }
 }
 
 export async function incrementView(highlightId: string) {
