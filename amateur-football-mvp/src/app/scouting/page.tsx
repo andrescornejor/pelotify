@@ -93,26 +93,30 @@ export default function ScoutingPage() {
         <div className="absolute inset-0 bg-[url('/noise.png')] opacity-[0.03] mix-blend-overlay" />
       </div>
 
-      {/* Compact Header */}
-      <div className="relative z-50 px-5 pt-6 pb-2 flex items-center justify-between shrink-0">
+      {/* Header — compact */}
+      <div className="relative z-50 px-5 pt-[env(safe-area-inset-top,12px)] pb-2 flex items-center justify-between shrink-0" style={{ paddingTop: 'max(env(safe-area-inset-top, 12px), 12px)' }}>
         <Link href="/" className="p-2.5 bg-white/5 backdrop-blur-md rounded-xl border border-white/10 text-white hover:bg-white/10 transition-all flex items-center justify-center press-effect">
           <ArrowLeft className="w-4 h-4" />
         </Link>
-        <div className="flex items-center gap-3">
+        <div className="flex flex-col items-center">
             <h1 className="text-lg font-black italic tracking-tighter text-white font-kanit drop-shadow-lg leading-none">
               MERCADO
             </h1>
-            <div className="px-2.5 py-1 rounded-full bg-primary/15 border border-primary/25">
-              <span className="text-[8px] font-black text-primary uppercase tracking-[0.3em]">
-                {Math.max(0, profiles.length - currentIndex)} / {profiles.length}
-              </span>
-            </div>
+            <span className="text-[8px] font-black text-primary uppercase tracking-[0.3em]">
+              Agente Libre
+            </span>
         </div>
-        <div className="w-9" /> {/* Spacer to balance layout */}
+        {/* Profile counter */}
+        <div className="flex flex-col items-center gap-0.5">
+          <div className="w-9 h-9 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center backdrop-blur-md">
+            <span className="text-xs font-black text-white/80 italic">{Math.max(0, profiles.length - currentIndex)}</span>
+          </div>
+          <span className="text-[6px] font-black text-white/30 uppercase tracking-widest">restantes</span>
+        </div>
       </div>
 
-      {/* Card Area — fills available space between header and controls */}
-      <div className="relative z-10 flex-1 flex items-center justify-center w-full max-w-sm mx-auto px-4 min-h-0">
+      {/* Main Card Area — fills remaining space between header and controls */}
+      <div className="relative z-10 flex-1 flex flex-col items-center justify-center w-full max-w-sm mx-auto px-4 min-h-0">
         <AnimatePresence mode="popLayout">
           {currentProfile ? (
             <motion.div
@@ -127,16 +131,15 @@ export default function ScoutingPage() {
               transition={{ type: "spring", stiffness: 300, damping: 25 }}
               className="w-full relative"
             >
-              {/* Profile Card Container — height clamped */}
-              <div className="relative w-full rounded-[2rem] flex flex-col items-center justify-center glass-premium border border-white/10 shadow-2xl overflow-hidden group"
-                style={{ aspectRatio: '3/4.2', maxHeight: 'calc(100dvh - 220px)' }}
-              >
+              {/* Profile Card Container — uses max-height to never overflow */}
+              <div className="relative w-full rounded-[2rem] flex flex-col items-center justify-center glass-premium border border-white/10 shadow-2xl overflow-hidden group" style={{ aspectRatio: '3/4.2', maxHeight: 'calc(100dvh - 200px)' }}>
                 
                 {/* Glow behind the Fifa Card */}
-                <div className="absolute inset-0 bg-gradient-to-br from-primary/15 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none" />
+                <div className="absolute inset-0 bg-gradient-to-br from-primary/15 via-transparent to-transparent pointer-events-none" />
                 
-                {/* The Model / Player */}
-                <div className="relative z-10 scale-[0.85] sm:scale-[0.95] group-hover:scale-[0.9] sm:group-hover:scale-100 transition-transform duration-700 ease-out origin-bottom">
+                {/* The Model / Player — scales to fit */}
+                <div className="relative z-10 flex items-center justify-center flex-1 w-full">
+                  <div className="scale-[0.82] sm:scale-[0.9] origin-center">
                     <FifaCard 
                       player={{
                         name: currentProfile.name || 'Jugador',
@@ -148,22 +151,23 @@ export default function ScoutingPage() {
                         badges: []
                       }}
                     />
+                  </div>
                 </div>
 
                 {/* Swipe Direction Labels */}
                 {direction === 'left' && (
-                  <motion.div initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} className="absolute top-6 right-6 z-30 px-4 py-1.5 rounded-xl bg-red-500/80 backdrop-blur-md border-2 border-red-300/40 shadow-xl rotate-12">
+                  <motion.div initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} className="absolute top-6 right-6 z-30 px-4 py-1.5 rounded-xl bg-red-500/80 backdrop-blur-md border border-red-300/30 shadow-xl">
                     <span className="text-lg font-black text-white italic uppercase tracking-wider">NOPE</span>
                   </motion.div>
                 )}
                 {direction === 'right' && (
-                  <motion.div initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} className="absolute top-6 left-6 z-30 px-4 py-1.5 rounded-xl bg-primary/80 backdrop-blur-md border-2 border-emerald-300/40 shadow-xl -rotate-12">
+                  <motion.div initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} className="absolute top-6 left-6 z-30 px-4 py-1.5 rounded-xl bg-primary/80 backdrop-blur-md border border-emerald-300/30 shadow-xl">
                     <span className="text-lg font-black text-black italic uppercase tracking-wider">FICHAR</span>
                   </motion.div>
                 )}
 
-                {/* Bottom details overlay */}
-                <div className="absolute bottom-0 inset-x-0 px-5 pb-5 pt-16 bg-gradient-to-t from-black/95 via-black/60 to-transparent flex flex-col items-center z-20">
+                {/* Bottom Info Overlay */}
+                <div className="absolute bottom-0 inset-x-0 px-6 pb-5 pt-16 bg-gradient-to-t from-black/90 via-black/60 to-transparent flex flex-col items-center z-20">
                     <h2 className="text-2xl font-black italic uppercase text-white tracking-tighter drop-shadow-md text-center max-w-full truncate">
                         {currentProfile.name || 'Desconocido'}
                     </h2>
@@ -178,14 +182,14 @@ export default function ScoutingPage() {
                         </div>
                     </div>
                 </div>
+
               </div>
             </motion.div>
           ) : (
             <motion.div
               initial={{ scale: 0.9, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
-              className="w-full rounded-[2.5rem] p-10 flex flex-col items-center justify-center text-center glass-premium border border-white/5 space-y-6"
-              style={{ aspectRatio: '3/4', maxHeight: 'calc(100dvh - 200px)' }}
+              className="w-full rounded-[2.5rem] p-10 flex flex-col items-center justify-center text-center glass-premium border border-white/5 space-y-6" style={{ aspectRatio: '3/4' }}
             >
               <div className="w-20 h-20 rounded-full bg-primary/10 flex items-center justify-center border border-primary/20 shadow-[0_0_30px_rgba(16,185,129,0.2)]">
                  <Sparkles className="w-8 h-8 text-primary animate-pulse" />
@@ -204,19 +208,19 @@ export default function ScoutingPage() {
         </AnimatePresence>
       </div>
 
-      {/* Action Buttons — inline at the bottom, above BottomNav safe area */}
+      {/* Controls — positioned above BottomNav (bottom-24 clears the 72px nav + 24px gap) */}
       {currentProfile && (
-        <div className="relative z-50 flex justify-center items-center gap-5 py-4 pb-[calc(16px+env(safe-area-inset-bottom))] shrink-0 mb-20 lg:mb-0">
+        <div className="relative z-50 flex justify-center items-center gap-5 py-3 pb-[calc(env(safe-area-inset-bottom,0px)+100px)] lg:pb-6 shrink-0">
             <button 
               onClick={() => handleAction('pass')}
               disabled={!!direction}
-              className="w-16 h-16 rounded-full bg-white/[0.06] border border-white/10 flex items-center justify-center shadow-xl hover:bg-white/10 hover:border-red-500/50 hover:shadow-[0_0_25px_rgba(239,68,68,0.3)] transition-all group active:scale-90 backdrop-blur-md"
+              className="w-16 h-16 rounded-full bg-white/[0.06] border border-white/10 flex items-center justify-center shadow-xl backdrop-blur-md hover:bg-white/10 hover:border-red-500/50 hover:shadow-[0_0_25px_rgba(239,68,68,0.3)] transition-all group active:scale-90"
             >
                <X className="w-7 h-7 text-white/40 group-hover:text-red-500 transition-colors" />
             </button>
             <Link href={`/profile?id=${currentProfile.id}`}>
-                <button className="w-12 h-12 rounded-full bg-white/[0.06] border border-white/10 flex items-center justify-center shadow-lg hover:bg-white/10 hover:border-white/20 transition-all group active:scale-90 backdrop-blur-md">
-                  <Info className="w-4 h-4 text-white/50 group-hover:text-white transition-colors" />
+                <button className="w-11 h-11 rounded-full bg-white/5 border border-white/10 flex items-center justify-center shadow-lg backdrop-blur-md hover:bg-white/10 hover:border-white/20 transition-all group active:scale-90">
+                <Info className="w-4 h-4 text-white/50 group-hover:text-white transition-colors" />
                 </button>
             </Link>
             <button
