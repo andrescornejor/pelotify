@@ -99,65 +99,64 @@ function formatTime(timeStr: string) {
   return `${display}:${m} ${ampm}`;
 }
 
-// ── MINI PITCH SVG ──────────────────────────────────────────────────────────
+// ── PREMIUM PITCH SVG ──────────────────────────────────────────────────────────
 function MiniPitch({ type }: { type: string }) {
   const isF5 = type === 'F5';
   const isF11 = type === 'F11';
   return (
     <svg
       viewBox="0 0 120 80"
-      className="w-full h-full opacity-100"
+      className="w-full h-full"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
     >
+      <defs>
+        <radialGradient id="pitchGlow" cx="60" cy="40" r="40" gradientUnits="userSpaceOnUse">
+          <stop stopColor="rgba(44,252,125,0.05)" />
+          <stop offset="1" stopColor="transparent" />
+        </radialGradient>
+      </defs>
+      <rect x="0" y="0" width="120" height="80" fill="url(#pitchGlow)" />
       <rect
-        x="1"
-        y="1"
-        width="118"
-        height="78"
-        rx="3"
-        stroke="rgba(255,255,255,0.2)"
+        x="2"
+        y="2"
+        width="116"
+        height="76"
+        rx="4"
+        stroke="rgba(255,255,255,0.08)"
+        strokeWidth="1.5"
+      />
+      <line x1="60" y1="2" x2="60" y2="78" stroke="rgba(255,255,255,0.08)" strokeWidth="1" />
+      <circle cx="60" cy="40" r="14" stroke="rgba(255,255,255,0.08)" strokeWidth="1" />
+      <circle cx="60" cy="40" r="2" fill="rgba(255,255,255,0.2)" />
+      
+      {/* Area A */}
+      <rect
+        x="2"
+        y="28"
+        width={isF5 ? 8 : isF11 ? 12 : 10}
+        height="24"
+        stroke="rgba(44,252,125,0.1)"
         strokeWidth="1"
       />
-      <line x1="60" y1="1" x2="60" y2="79" stroke="rgba(255,255,255,0.15)" strokeWidth="0.8" />
-      <circle cx="60" cy="40" r="12" stroke="rgba(255,255,255,0.15)" strokeWidth="0.8" />
-      <circle cx="60" cy="40" r="1.5" fill="rgba(255,255,255,0.3)" />
+      {/* Area B */}
       <rect
-        x="1"
-        y="27"
-        width={isF5 ? 6 : isF11 ? 10 : 8}
-        height="26"
-        stroke="rgba(255,255,255,0.2)"
-        strokeWidth="0.8"
+        x={isF5 ? 110 : isF11 ? 106 : 108}
+        y="28"
+        width={isF5 ? 8 : isF11 ? 12 : 10}
+        height="24"
+        stroke="rgba(44,252,125,0.1)"
+        strokeWidth="1"
       />
-      <rect
-        x={isF5 ? 113 : isF11 ? 109 : 111}
-        y="27"
-        width={isF5 ? 6 : isF11 ? 10 : 8}
-        height="26"
-        stroke="rgba(255,255,255,0.2)"
-        strokeWidth="0.8"
-      />
-      {!isF5 && (
-        <>
-          <rect
-            x="1"
-            y="18"
-            width={isF11 ? 24 : 18}
-            height="44"
-            stroke="rgba(255,255,255,0.12)"
-            strokeWidth="0.8"
-          />
-          <rect
-            x={isF11 ? 95 : 101}
-            y="18"
-            width={isF11 ? 24 : 18}
-            height="44"
-            stroke="rgba(255,255,255,0.12)"
-            strokeWidth="0.8"
-          />
-        </>
-      )}
+      
+      {/* Grass lines (decorative) */}
+      {[...Array(6)].map((_, i) => (
+        <line 
+          key={i} 
+          x1={20 * (i + 1)} y1="2" x2={20 * (i + 1)} y2="78" 
+          stroke="rgba(255,255,255,0.03)" strokeWidth="0.5" 
+        />
+      ))}
     </svg>
   );
 }
@@ -165,24 +164,26 @@ function MiniPitch({ type }: { type: string }) {
 // ── TEAM COLORS ───────────────────────────────────────────────────────────────
 const TEAM_CONFIG = {
   A: {
-    bg: 'bg-blue-600',
-    border: 'border-blue-500/20',
-    borderActive: 'border-blue-500',
-    shadow: 'shadow-[0_30px_60px_rgba(59,130,246,0.15)]',
-    glow: 'rgba(59,130,246,0.2)',
-    text: 'text-blue-400',
-    btn: 'bg-blue-600 hover:bg-blue-500 shadow-blue-600/30',
-    gradient: 'from-blue-600/10 to-transparent',
+    bg: 'bg-[#3b82f6]',
+    border: 'border-blue-500/10',
+    borderActive: 'border-blue-400',
+    shadow: 'shadow-[0_20px_40px_rgba(59,130,246,0.12)]',
+    glow: 'rgba(59,130,246,0.15)',
+    text: 'text-blue-300',
+    btn: 'bg-blue-600 hover:bg-blue-500 shadow-blue-500/20',
+    gradient: 'from-blue-600/15 via-blue-600/5 to-transparent',
+    accent: '#3b82f6'
   },
   B: {
-    bg: 'bg-red-600',
-    border: 'border-red-500/20',
-    borderActive: 'border-red-500',
-    shadow: 'shadow-[0_30px_60px_rgba(239,68,68,0.15)]',
-    glow: 'rgba(239,68,68,0.2)',
-    text: 'text-red-400',
-    btn: 'bg-red-600 hover:bg-red-500 shadow-red-600/30',
-    gradient: 'from-red-600/10 to-transparent',
+    bg: 'bg-[#f43f5e]',
+    border: 'border-rose-500/10',
+    borderActive: 'border-rose-400',
+    shadow: 'shadow-[0_20px_40px_rgba(244,63,94,0.12)]',
+    glow: 'rgba(244,63,94,0.15)',
+    text: 'text-rose-300',
+    btn: 'bg-rose-600 hover:bg-rose-500 shadow-rose-500/20',
+    gradient: 'from-rose-600/15 via-rose-600/5 to-transparent',
+    accent: '#f43f5e'
   },
 } as const;
 
@@ -411,61 +412,57 @@ function MatchLobbyContent() {
       {/* ═══════════════════════════════════════════════════════════
                 HERO — cinematic full-bleed header
             ═══════════════════════════════════════════════════════════ */}
-      <div className="relative w-full h-[42dvh] lg:h-[50dvh] shrink-0 overflow-hidden bg-zinc-950">
+      <div className="relative w-full h-[45dvh] lg:h-[55dvh] shrink-0 overflow-hidden bg-[#020205]">
         {/* Background image */}
         <motion.img
-          initial={{ scale: 1.15, opacity: 0 }}
-          animate={{ scale: 1.02, opacity: 0.35 }}
-          transition={{ duration: 2.5, ease: 'easeOut' }}
-          src="https://images.unsplash.com/photo-1571512599441-bafb1b8b7f21?q=80&w=1400&auto=format&fit=crop"
+          initial={{ scale: 1.2, opacity: 0 }}
+          animate={{ scale: 1, opacity: 0.25 }}
+          transition={{ duration: 3, ease: 'easeOut' }}
+          src="https://images.unsplash.com/photo-1574629810360-7efbbe195018?q=80&w=1200&auto=format&fit=crop"
           alt=""
-          className="absolute inset-0 w-full h-full object-cover grayscale"
+          className="absolute inset-0 w-full h-full object-cover grayscale brightness-75"
         />
 
-        {/* Mini pitch overlay in hero */}
-        <div className="absolute inset-0 flex items-center justify-center opacity-[0.06]">
-          <div className="w-[80%] max-w-md aspect-[3/2]">
+        {/* Dynamic Scanline/Noise overlay */}
+        <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-20 pointer-events-none mix-blend-overlay" />
+
+        {/* Mini pitch overlay in hero with better scale */}
+        <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 flex items-center justify-center opacity-10 pointer-events-none">
+          <div className="w-[120%] max-w-2xl aspect-video blur-[1px]">
             <MiniPitch type={match.type} />
           </div>
         </div>
 
-        {/* Gradient overlays */}
-        <div className="absolute inset-0 bg-gradient-to-t from-background via-background/50 to-zinc-950/70" />
-        <div className="absolute inset-0 bg-gradient-to-r from-background/30 via-transparent to-transparent" />
+        {/* Premium Gradients */}
+        <div className="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-b from-background/40 via-transparent to-background/60" />
 
         {/* ── TOP BAR ── */}
-        <div className="absolute top-0 left-0 right-0 z-20 px-5 lg:px-12 pt-28 lg:pt-24 flex items-center justify-between">
+        <div className="absolute top-0 left-0 right-0 z-20 px-6 pt-12 lg:pt-16 flex items-center justify-between">
           <motion.button
-            initial={{ opacity: 0, x: -10 }}
-            animate={{ opacity: 1, x: 0 }}
+            whileHover={{ scale: 1.05, backgroundColor: 'rgba(255,255,255,0.1)' }}
+            whileTap={{ scale: 0.95 }}
             onClick={() => router.back()}
-            className="w-11 h-11 bg-black/30 backdrop-blur-xl border border-white/10 rounded-2xl flex items-center justify-center text-white hover:bg-black/50 transition-all active:scale-90"
+            className="w-12 h-12 glass shadow-2xl rounded-2xl flex items-center justify-center text-white border border-white/10 transition-all"
           >
             <ArrowLeft className="w-5 h-5" />
           </motion.button>
 
           <motion.div
-            initial={{ opacity: 0, x: 10 }}
-            animate={{ opacity: 1, x: 0 }}
-            className="flex items-center gap-2"
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="flex items-center gap-3"
           >
-            <div className="px-4 py-1.5 bg-primary rounded-xl border border-primary/30 shadow-[0_5px_20px_rgba(16,185,129,0.3)]">
-              <span className="text-black font-black text-[9px] uppercase tracking-[0.35em]">
+            <div className="px-5 py-2 glass-premium rounded-2xl border border-primary/30 shadow-[0_10px_30px_rgba(44,252,125,0.2)]">
+              <span className="text-primary font-black text-[10px] uppercase tracking-[0.4em] italic leading-none">
                 {match.type}
               </span>
             </div>
             {match.is_private && (
-              <div className="px-4 py-1.5 bg-black/40 backdrop-blur-xl rounded-xl border border-violet-500/30 flex items-center gap-1.5">
-                <Lock className="w-3 h-3 text-violet-400" />
-                <span className="text-violet-400 font-black text-[9px] uppercase tracking-[0.3em]">
-                  Privado
-                </span>
-              </div>
-            )}
-            {isCompleted && (
-              <div className="px-4 py-1.5 bg-black/40 backdrop-blur-xl rounded-xl border border-foreground/20">
-                <span className="text-foreground/50 font-black text-[9px] uppercase tracking-[0.3em]">
-                  Finalizado
+              <div className="px-5 py-2 glass rounded-2xl border border-white/5 flex items-center gap-2">
+                <Lock className="w-3.5 h-3.5 text-white/40" />
+                <span className="text-white/40 font-black text-[10px] uppercase tracking-[0.3em] leading-none">
+                  PRIVADO
                 </span>
               </div>
             )}
@@ -477,44 +474,52 @@ function MatchLobbyContent() {
         </div>
 
         {/* ── MAIN HERO CONTENT ── */}
-        <div className="absolute bottom-0 left-0 right-0 px-5 lg:px-12 pb-8 z-10">
+        <div className="absolute bottom-0 left-0 right-0 px-6 lg:px-12 pb-12 z-10">
           <motion.div
-            initial={{ opacity: 0, y: 24 }}
+            initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3, duration: 0.7 }}
-            className="space-y-4"
+            transition={{ delay: 0.3, duration: 0.8 }}
+            className="space-y-6"
           >
-            {/* Live / Status pill */}
+            {/* Live Indicator */}
             {!isCompleted && (
-              <div className="flex items-center gap-2 w-fit">
-                <div className="w-1.5 h-1.5 bg-primary rounded-full animate-ping absolute" />
-                <div className="w-1.5 h-1.5 bg-primary rounded-full relative" />
-                <span className="text-[9px] font-black text-primary uppercase tracking-[0.5em]">
-                  Partido Activo
+              <div className="flex items-center gap-3">
+                <div className="relative w-2 h-2">
+                  <div className="absolute inset-0 bg-primary rounded-full animate-ping" />
+                  <div className="relative w-full h-full bg-primary rounded-full" />
+                </div>
+                <span className="text-[10px] font-black text-primary uppercase tracking-[0.5em] italic">
+                  CONVOCATORIA ABIERTA
                 </span>
               </div>
             )}
 
-            <h1 className="text-[clamp(2.2rem,7vw,5.5rem)] font-black italic uppercase leading-none tracking-tighter text-white drop-shadow-2xl">
+            <h1 className="text-5xl sm:text-7xl lg:text-8xl font-black italic uppercase leading-[0.85] tracking-[-0.051em] text-white drop-shadow-[0_20px_50px_rgba(0,0,0,0.5)] font-kanit">
               {venueName}
             </h1>
 
-            <div className="flex flex-wrap items-center gap-x-8 gap-y-2">
-              <div className="flex items-center gap-2">
-                <Calendar className="w-4 h-4 text-primary/70" />
-                <span className="text-sm font-black text-white/80 italic capitalize">
-                  {formatDateLong(match.date)}
+            <div className="flex flex-wrap items-center gap-x-12 gap-y-3">
+              <div className="flex items-center gap-3">
+                <div className="p-2 rounded-xl bg-primary/10 border border-primary/20">
+                  <Calendar className="w-4 h-4 text-primary" />
+                </div>
+                <span className="text-base font-black text-white/90 italic uppercase tracking-tighter">
+                  {formatDate(match.date)}
                 </span>
               </div>
-              <div className="flex items-center gap-2">
-                <Clock className="w-4 h-4 text-primary/70" />
-                <span className="text-sm font-black text-white/80 italic">
+              <div className="flex items-center gap-3">
+                <div className="p-2 rounded-xl bg-primary/10 border border-primary/20">
+                  <Clock className="w-4 h-4 text-primary" />
+                </div>
+                <span className="text-base font-black text-white/90 italic">
                   {formatTime(match.time)}
                 </span>
               </div>
-              <div className="flex items-center gap-2">
-                <MapPin className="w-4 h-4 text-primary/70" />
-                <span className="text-xs font-bold text-white/50 italic">{match.location}</span>
+              <div className="hidden sm:flex items-center gap-3">
+                <div className="p-2 rounded-xl bg-white/5 border border-white/10">
+                  <MapPin className="w-4 h-4 text-white/50" />
+                </div>
+                <span className="text-xs font-bold text-white/40 italic">{match.location}</span>
               </div>
             </div>
           </motion.div>

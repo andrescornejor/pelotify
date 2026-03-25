@@ -278,6 +278,5 @@ export default function ScoutingPage() {
         </div>
       )}
     </div>
-    </div>
   );
 }
