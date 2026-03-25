@@ -758,12 +758,12 @@ function TeamProfileContent() {
                   <div className="w-full md:w-[240px] h-[240px] shrink-0 glass rounded-3xl p-4 border-white/5 bg-black/5 flex items-center justify-center">
                     <PerformanceRadar 
                       stats={{
-                        PAC: Math.min(99, 60 + (team.wins || 0) * 2),
-                        SHO: Math.min(99, 55 + (team.wins || 0) * 1.5),
-                        PAS: Math.min(99, 65 + (team.draws || 0) * 3),
-                        DRI: Math.min(99, 58 + (team.wins || 0) * 1.8),
-                        DEF: Math.min(99, 70 + (team.draws || 0) * 2.5),
-                        PHY: Math.min(99, 75 + (team.losses || 0) * 0.5)
+                        pac: Math.min(99, 60 + (team.wins || 0) * 2),
+                        sho: Math.min(99, 55 + (team.wins || 0) * 1.5),
+                        pas: Math.min(99, 65 + (team.draws || 0) * 3),
+                        dri: Math.min(99, 58 + (team.wins || 0) * 1.8),
+                        def: Math.min(99, 70 + (team.draws || 0) * 2.5),
+                        phy: Math.min(99, 75 + (team.losses || 0) * 0.5)
                       }}
                       size={200}
                     />
