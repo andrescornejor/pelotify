@@ -65,10 +65,14 @@ const getRankByElo = (elo: number) => {
 // --- COMPONENTS ---
 
 const SectionDivider = () => (
-  <div className="flex items-center gap-4 py-4 lg:py-8 opacity-20">
-    <div className="h-[1px] flex-1 bg-gradient-to-r from-transparent via-foreground to-transparent" />
-    <div className="w-1.5 h-1.5 rounded-full bg-foreground" />
-    <div className="h-[1px] flex-1 bg-gradient-to-r from-foreground via-foreground to-transparent" />
+  <div className="flex items-center gap-6 py-10 opacity-30 select-none">
+    <div className="h-[1px] flex-1 bg-gradient-to-r from-transparent via-primary/30 to-transparent" />
+    <div className="flex items-center gap-1.5">
+      <div className="w-1 h-1 rounded-full bg-primary/40" />
+      <div className="w-2 h-2 rounded-full bg-primary animate-pulse shadow-[0_0_10px_rgba(44,252,125,0.5)]" />
+      <div className="w-1 h-1 rounded-full bg-primary/40" />
+    </div>
+    <div className="h-[1px] flex-1 bg-gradient-to-r from-transparent via-primary/30 to-transparent" />
   </div>
 );
 
@@ -108,37 +112,40 @@ const StatCard = ({ stat, i, isPerfMode, fadeUp }: any) => (
   <motion.div
     variants={fadeUp}
     custom={i}
-    whileHover={isPerfMode ? {} : { y: -5, scale: 1.02 }}
+    whileHover={isPerfMode ? {} : { y: -8, scale: 1.02, rotate: 1 }}
     className={cn(
-      'group relative overflow-hidden p-5 rounded-[2rem] glass-premium transition-all duration-300 border-white/5',
+      'group relative overflow-hidden p-6 rounded-[2.5rem] glass-premium transition-all duration-500 border-white/5 shadow-2xl',
       isPerfMode && 'bg-surface shadow-none'
     )}
   >
-    {/* Glow effect */}
+    {/* Dynamic Background Glow */}
     {!isPerfMode && (
       <div
-        className="absolute -right-4 -top-4 w-24 h-24 blur-[40px] opacity-0 group-hover:opacity-40 transition-opacity duration-500 rounded-full"
+        className="absolute -right-6 -top-6 w-32 h-32 blur-[50px] opacity-0 group-hover:opacity-30 transition-opacity duration-700 rounded-full"
         style={{ backgroundColor: stat.color }}
       />
     )}
 
-    <div className="relative z-10 space-y-3">
+    <div className="relative z-10 space-y-4">
       <div
-        className="w-10 h-10 rounded-xl flex items-center justify-center glass border-white/10 shadow-inner group-hover:scale-110 transition-transform duration-500"
+        className="w-12 h-12 rounded-2xl flex items-center justify-center glass border-white/10 shadow-inner group-hover:rotate-12 transition-transform duration-500"
         style={{ backgroundColor: `${stat.color}15` }}
       >
-        <stat.icon className="w-5 h-5" style={{ color: stat.color }} />
+        <stat.icon className="w-6 h-6" style={{ color: stat.color }} />
       </div>
       <div>
-        <p className="text-[9px] font-black text-foreground/40 uppercase tracking-[0.2em] font-outfit">
+        <p className="text-[10px] font-black text-foreground/30 uppercase tracking-[0.3em] font-outfit">
           {stat.label}
         </p>
-        <div className="flex items-end gap-1">
-          <h3 className="text-2xl font-black italic tracking-tighter text-foreground font-kanit">
+        <div className="flex items-end gap-1.5 mt-1">
+          <h3 className="text-3xl font-black italic tracking-tighter text-foreground font-kanit leading-none">
             {stat.value}
           </h3>
           {!isPerfMode && (
-            <TrendingUp className="w-3 h-3 text-primary mb-1 opacity-60 group-hover:translate-y--0.5 group-hover:translate-x-0.5 transition-transform" />
+            <div className="mb-1 flex items-center gap-0.5 text-primary opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all duration-500">
+               <TrendingUp className="w-3 h-3" />
+               <span className="text-[8px] font-black">+4%</span>
+            </div>
           )}
         </div>
       </div>
@@ -152,99 +159,99 @@ const TeamCard = ({ team, isPerfMode }: any) => {
   return (
     <Link href={`/team?id=${team.id}`} className="block">
       <motion.div
-        whileHover={isPerfMode ? {} : { scale: 1.01, y: -4 }}
-        className="group flex flex-col sm:flex-row items-center justify-between gap-5 p-6 rounded-[2.5rem] glass-premium border-white/5 hover:border-primary/20 hover:shadow-[0_30px_60px_rgba(0,0,0,0.4),0_0_30px_rgba(44,252,125,0.1)] transition-all cursor-pointer relative overflow-hidden"
+        whileHover={isPerfMode ? {} : { scale: 1.01, y: -6 }}
+        className="group flex flex-col sm:flex-row items-center justify-between gap-6 p-7 rounded-[3rem] glass-premium border-white/5 hover:border-primary/20 transition-all cursor-pointer relative overflow-hidden shadow-2xl"
       >
-        {/* Animated background glow based on team color */}
+        {/* Dynamic Ray Background */}
         {!isPerfMode && (
-          <div 
-            className="absolute top-0 right-0 w-48 h-48 blur-[80px] rounded-full opacity-0 group-hover:opacity-20 transition-opacity duration-700"
-            style={{ backgroundColor: teamColor }}
-          />
+          <>
+            <div 
+              className="absolute top-0 right-0 w-64 h-64 blur-[100px] rounded-full opacity-0 group-hover:opacity-10 transition-opacity duration-1000"
+              style={{ backgroundColor: teamColor }}
+            />
+            <div className="absolute inset-0 bg-gradient-to-r from-primary/5 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
+          </>
         )}
         
-        <div className="flex items-center gap-6 relative z-10 w-full sm:w-auto">
-          <div className="flex flex-col items-center min-w-[80px]">
+        <div className="flex items-center gap-8 relative z-10 w-full sm:w-auto">
+          <div className="flex flex-col items-center min-w-[100px]">
             <div className="relative group/avatar">
-              {/* Avatar background glow */}
               {!isPerfMode && (
                 <div 
-                  className="absolute inset-0 blur-2xl rounded-full scale-0 group-hover/avatar:scale-150 transition-transform duration-1000 opacity-0 group-hover/avatar:opacity-30"
+                  className="absolute inset-0 blur-3xl rounded-full scale-0 group-hover/avatar:scale-150 transition-transform duration-1000 opacity-0 group-hover/avatar:opacity-40"
                   style={{ backgroundColor: teamColor }}
                 />
               )}
               
               <div 
-                className="w-20 h-20 rounded-[2.5rem] bg-gradient-to-br from-surface to-background flex items-center justify-center overflow-hidden border-2 border-white/5 group-hover:border-primary/40 transition-all duration-500 shadow-inner relative z-10"
+                className="w-24 h-24 rounded-[3rem] bg-gradient-to-br from-surface to-background flex items-center justify-center overflow-hidden border-2 border-white/5 group-hover:border-primary/50 transition-all duration-700 shadow-2xl relative z-10 p-1"
               >
-                <div className="absolute inset-0 bg-primary/5 opacity-0 group-hover:opacity-100 transition-opacity" />
-                {team.logo_url ? (
-                  <img 
-                  src={team.logo_url} 
-                  alt={team.name} 
-                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
-                  />
-                ) : (
-                  <div className="p-3 w-full h-full">
-                    <JerseyVisualizer 
-                      primaryColor={team.primary_color || '#18181b'} 
-                      secondaryColor={team.secondary_color || '#10b981'} 
-                      pattern={team.jersey_pattern || 'solid'}
-                      className="w-full h-full"
+                <div className="w-full h-full rounded-[2.8rem] overflow-hidden">
+                  {team.logo_url ? (
+                    <img 
+                    src={team.logo_url} 
+                    alt={team.name} 
+                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-1000"
                     />
-                  </div>
-                )}
+                  ) : (
+                    <div className="p-4 w-full h-full bg-background">
+                      <JerseyVisualizer 
+                        primaryColor={team.primary_color || '#18181b'} 
+                        secondaryColor={team.secondary_color || '#10b981'} 
+                        pattern={team.jersey_pattern || 'solid'}
+                        className="w-full h-full"
+                      />
+                    </div>
+                  )}
+                </div>
               </div>
-            </div>
-            
-            {/* Level Badge below Photo */}
-            <div className="mt-2 px-3 py-1 rounded-xl bg-background border border-white/10 flex items-center justify-center shadow-lg w-full">
-              <div className="flex items-center gap-1.5">
-                <div className="w-1 h-1 rounded-full bg-primary animate-pulse" />
-                <span className="text-[9px] font-black text-primary uppercase tracking-tighter">LVL {Math.floor((team.elo / 500) + 1)}</span>
+
+              {/* LVL Floating Badge */}
+              <div className="absolute -bottom-2 right-0 px-2.5 py-1 rounded-lg bg-primary text-background text-[10px] font-black italic shadow-lg z-20 transform group-hover:translate-y--1 transition-transform">
+                Lvl {Math.floor((team.elo / 500) + 1)}
               </div>
             </div>
           </div>
-
-          <div className="flex-1 space-y-2">
-            <h4 className="text-2xl font-black italic uppercase tracking-tighter text-foreground font-kanit leading-none group-hover:text-primary transition-colors">
+ 
+          <div className="flex-1 space-y-3">
+            <h4 className="text-3xl font-black italic uppercase tracking-tighter text-foreground font-kanit leading-none group-hover:text-primary transition-colors duration-300">
               {team.name}
             </h4>
-            <div className="flex items-center gap-4">
-              <div className="flex -space-x-3">
-                {[1, 2, 3, 4].map((i) => (
+            <div className="flex items-center gap-5">
+              <div className="flex -space-x-3.5">
+                {[1, 2, 3].map((i) => (
                   <div 
                   key={i} 
-                  className="w-7 h-7 rounded-full border-2 border-background bg-surface overflow-hidden hover:z-20 hover:scale-110 transition-transform flex items-center justify-center"
+                  className="w-9 h-9 rounded-full border-2 border-background bg-surface-elevated overflow-hidden hover:z-20 hover:scale-125 transition-transform flex items-center justify-center shadow-lg"
                   >
-                    <User2 className="w-4 h-4 text-foreground/20" />
+                    <User2 className="w-5 h-5 text-foreground/10" />
                   </div>
                 ))}
-                <div className="w-7 h-7 rounded-full border-2 border-background bg-primary/20 flex items-center justify-center text-[8px] font-black text-primary z-10 backdrop-blur-sm">
+                <div className="w-9 h-9 rounded-full border-2 border-background bg-primary text-[10px] font-black text-background flex items-center justify-center z-10 shadow-lg">
                   +{team.members_count || 0}
                 </div>
               </div>
-              <div className="h-4 w-[1px] bg-white/10 hidden sm:block" />
-              <div className="hidden sm:flex items-center gap-2">
-                <Shield className="w-3 h-3 text-primary/40" />
-                <span className="text-[9px] font-black text-foreground/30 uppercase tracking-[0.2em] font-outfit">
-                  {team.elo > 1000 ? 'Club de Élite' : 'Club Verificado'}
+              <div className="h-5 w-[1px] bg-white/10 hidden sm:block" />
+              <div className="hidden sm:flex items-center gap-2.5 px-3 py-1 rounded-full bg-foreground/[0.03] border border-white/5">
+                <Shield className="w-3.5 h-3.5 text-primary" />
+                <span className="text-[10px] font-black text-foreground/40 uppercase tracking-[0.2em] font-outfit">
+                  {team.elo > 1000 ? 'ELITE CLUB' : 'VERIFICADO'}
                 </span>
               </div>
             </div>
           </div>
         </div>
-
-        {/* Right Side Action */}
-        <div className="flex items-center gap-6 relative z-10 w-full sm:w-auto mt-4 sm:mt-0">
-          <div className="hidden lg:flex flex-col items-end opacity-0 group-hover:opacity-100 translate-x-4 group-hover:translate-x-0 transition-all duration-500">
-            <span className="text-[10px] font-black text-primary uppercase tracking-[0.2em] text-right">Ver Sede Central</span>
-            <span className="text-[9px] font-medium text-foreground/30 italic text-right mt-0.5">Gestionar club y plantel</span>
+ 
+        {/* Action Button */}
+        <div className="flex items-center gap-6 relative z-10 w-full sm:w-auto mt-6 sm:mt-0">
+          <div className="hidden xl:flex flex-col items-end opacity-0 group-hover:opacity-100 translate-x-8 group-hover:translate-x-0 transition-all duration-700">
+            <span className="text-[11px] font-black text-primary uppercase tracking-[0.3em] font-outfit">Sede Central</span>
+            <span className="text-[9px] font-medium text-foreground/30 italic mt-1 uppercase">Entrar al vestuario</span>
           </div>
           <div 
-            className="w-14 h-14 rounded-2xl bg-foreground/[0.03] border border-white/5 flex items-center justify-center group-hover:bg-primary group-hover:text-background transition-all duration-500 shadow-sm group-hover:shadow-[0_10px_20px_rgba(44,252,125,0.2)] group-hover:scale-110"
+            className="w-16 h-16 rounded-[2rem] bg-foreground/[0.04] border border-white/5 flex items-center justify-center group-hover:bg-primary group-hover:text-background transition-all duration-700 shadow-xl group-hover:shadow-[0_15px_30px_rgba(44,252,125,0.3)] group-hover:scale-110"
           >
-            <ArrowRight className="w-6 h-6 group-hover:translate-x-1 transition-transform duration-500" />
+            <ArrowRight className="w-8 h-8 group-hover:translate-x-1.5 transition-transform duration-500" />
           </div>
         </div>
       </motion.div>
@@ -802,58 +809,59 @@ export default function HomePage() {
               <div className="grid grid-cols-3 gap-3">
                 <Link href="/create" className="col-span-3">
                   <motion.button
-                    whileHover={{ scale: 1.02, y: -2 }}
+                    whileHover={{ scale: 1.015, y: -4 }}
                     whileTap={{ scale: 0.98 }}
-                    className="w-full h-14 rounded-2xl bg-emerald-500 text-background font-black uppercase text-[11px] tracking-[0.3em] shadow-[0_15px_40px_rgba(44,252,125,0.3)] flex items-center justify-center gap-3 relative overflow-hidden group"
+                    className="w-full h-16 rounded-[2rem] bg-gradient-to-r from-primary to-primary-dark text-background font-black uppercase text-[12px] tracking-[0.4em] shadow-[0_20px_40px_rgba(44,252,125,0.25)] flex items-center justify-center gap-3 relative overflow-hidden group border border-white/20"
                   >
-                    <div className="absolute inset-x-0 bottom-0 h-1/2 bg-white/10 group-hover:h-full transition-all duration-500" />
-                    <PlusCircle className="w-5 h-5 relative z-10 group-hover:rotate-180 transition-transform duration-700" />
-                    <span className="relative z-10">ARMAR PARTIDO</span>
+                    <div className="absolute inset-x-0 top-0 h-1/2 bg-white/10 group-hover:h-full transition-all duration-700" />
+                    <div className="absolute inset-0 bg-gradient-to-b from-white/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                    <PlusCircle className="w-6 h-6 relative z-10 group-hover:rotate-180 transition-transform duration-700" />
+                    <span className="relative z-10 font-bold italic drop-shadow-sm">ARMAR PARTIDO</span>
                   </motion.button>
                 </Link>
                 
                 <Link href="/highlights" className="col-span-2">
                   <motion.button
-                    whileHover={{ scale: 1.02, y: -2 }}
+                    whileHover={{ scale: 1.015, y: -4 }}
                     whileTap={{ scale: 0.98 }}
-                    className="w-full h-14 rounded-2xl bg-zinc-900 border border-emerald-500/20 text-white font-black uppercase text-[10px] tracking-[0.3em] flex items-center justify-center gap-3 relative overflow-hidden group shadow-2xl shadow-emerald-500/10"
+                    className="w-full h-16 rounded-[2rem] bg-zinc-900 border border-white/10 text-white font-black uppercase text-[11px] tracking-[0.3em] flex items-center justify-center gap-3 relative overflow-hidden group shadow-2xl transition-all duration-500"
                   >
                     {/* Background Layer: Video or Gradient */}
                     {highlights.length > 0 ? (
-                      <div className="absolute inset-0 overflow-hidden opacity-40 group-hover:opacity-60 transition-opacity">
+                      <div className="absolute inset-0 overflow-hidden opacity-30 group-hover:opacity-50 transition-opacity duration-700">
                         <video 
                           src={highlights[0].video_url} 
-                          className="w-full h-full object-cover blur-[2px] scale-125" 
+                          className="w-full h-full object-cover blur-[1px] scale-110 group-hover:scale-125 transition-transform duration-[2s]" 
                           autoPlay 
                           muted 
                           loop 
                           playsInline 
                         />
-                        <div className="absolute inset-0 bg-gradient-to-r from-emerald-600/80 to-teal-600/80 mix-blend-multiply" />
+                        <div className="absolute inset-0 bg-gradient-to-br from-primary/40 to-black/60 mix-blend-overlay" />
                       </div>
                     ) : (
-                      <div className="absolute inset-0 bg-gradient-to-r from-emerald-600 to-teal-600 opacity-80" />
+                      <div className="absolute inset-0 bg-gradient-to-br from-zinc-800 to-black opacity-80" />
                     )}
 
-                    <div className="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-colors" />
+                    <div className="absolute inset-x-0 top-0 h-[1px] bg-white/20 shadow-[0_0_10px_white]" />
                     
-                    <Play className="w-5 h-5 relative z-10 text-emerald-400 fill-emerald-400/20 group-hover:scale-125 transition-transform drop-shadow-[0_0_8px_rgba(44,252,125,0.5)]" />
-                    <span className="relative z-10 italic drop-shadow-md">FutTok</span>
+                    <Play className="w-6 h-6 relative z-10 text-primary fill-primary/20 group-hover:scale-125 transition-transform drop-shadow-[0_0_15px_rgba(44,252,125,0.6)]" />
+                    <span className="relative z-10 italic font-bold tracking-[0.2em] group-hover:text-primary transition-colors">FUTTOK</span>
                     
-                    <div className="absolute top-1.5 right-1.5 flex items-center gap-1 z-10">
-                      <div className="w-1.5 h-1.5 bg-red-500 rounded-full animate-ping" />
-                      <div className="px-1.5 py-0.5 bg-red-500 text-[6px] rounded-full font-black border border-white/20">LIVE</div>
+                    <div className="absolute top-2.5 right-3 flex items-center gap-1.5 z-20">
+                      <div className="w-2 h-2 bg-red-500 rounded-full animate-pulse shadow-[0_0_10px_#ef4444]" />
+                      <div className="px-2 py-0.5 bg-red-500 text-[7px] rounded-lg font-black border border-white/20 text-white italic">LIVE</div>
                     </div>
                   </motion.button>
                 </Link>
 
                 <Link href="/search" className="col-span-1">
                   <motion.button
-                    whileHover={{ scale: 1.02, y: -2 }}
+                    whileHover={{ scale: 1.02, y: -4 }}
                     whileTap={{ scale: 0.98 }}
-                    className="w-full h-14 rounded-2xl glass-premium border-white/10 text-foreground/70 font-black uppercase text-[9px] tracking-[0.2em] flex items-center justify-center"
+                    className="w-full h-16 rounded-[2rem] glass-premium border-white/10 text-foreground/40 hover:text-primary font-black uppercase text-[10px] tracking-[0.2em] flex items-center justify-center transition-all duration-500 shadow-xl"
                   >
-                    <Search className="w-4 h-4" />
+                    <Search className="w-5 h-5 group-hover:scale-125 transition-transform" />
                   </motion.button>
                 </Link>
               </div>

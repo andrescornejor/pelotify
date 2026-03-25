@@ -87,18 +87,18 @@ export function FifaCard({ player }: FifaCardProps) {
 
       <div
         className={cn(
-          "w-full h-full rounded-[2.5rem] overflow-hidden relative transition-all duration-500",
-          isLight ? "border-zinc-200/80 shadow-2xl" : "border-primary/25 shadow-black/60"
+          "w-full h-full rounded-[2.5rem] overflow-hidden relative transition-all duration-700",
+          isLight ? "border-zinc-200/80 shadow-2xl" : "border-primary/20 shadow-black/80"
         )}
         style={{
           background: isLight 
-            ? 'linear-gradient(145deg, #ffffff 0%, #f1f5f9 50%, #e2e8f0 100%)'
-            : 'linear-gradient(145deg, #081a12 0%, #031309 50%, #010d06 100%)',
-          borderWidth: '1.5px',
+            ? 'linear-gradient(145deg, #ffffff 0%, #f8fafc 50%, #f1f5f9 100%)'
+            : 'linear-gradient(165deg, #0a0a0f 0%, #050508 50%, #020205 100%)',
+          borderWidth: '2px',
           borderStyle: 'solid',
           boxShadow: isLight
-            ? '0 30px 60px -12px rgba(0,0,0,0.15), inset 0 1px 0 rgba(255,255,255,1)'
-            : '0 30px 70px rgba(0,0,0,0.6), 0 0 0 1px rgba(16,185,129,0.1), inset 0 1px 0 rgba(16,185,129,0.15)',
+            ? '0 30px 60px -12px rgba(0,0,0,0.12), inset 0 2px 0 rgba(255,255,255,1), 0 0 0 1px rgba(0,0,0,0.02)'
+            : '0 40px 80px rgba(0,0,0,0.8), 0 0 0 1px rgba(44,252,125,0.08), inset 0 1px 0 rgba(255,255,255,0.05)',
         }}
       >
         {/* Texture overlay */}
