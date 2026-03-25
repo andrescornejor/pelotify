@@ -206,6 +206,7 @@ export default function MessagesPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [selectedChat, setSelectedChat] = useState<any | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
   const searchParams = useSearchParams();
   const userIdParam = searchParams.get('user');
 
