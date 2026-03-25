@@ -180,62 +180,6 @@ export async function switchTeam(matchId: string, userId: string, team: 'A' | 'B
   }
 }
 
-export async function autoBalanceTeams(matchId: string, participants: MatchParticipant[]) {
-  const confirmed = participants.filter((p) => p.status === 'confirmed');
-  if (confirmed.length === 0) return;
-
-  const userIds = confirmed.map((p) => p.user_id);
-  const { data: profiles } = await supabase
-    .from('profiles')
-    .select('id, overall')
-    .in('id', userIds);
-
-  const eloMap: Record<string, number> = {};
-  if (profiles) {
-    profiles.forEach((pr: any) => {
-      eloMap[pr.id] = pr.overall ?? 60;
-    });
-  }
-
-  const sorted = [...confirmed].sort(
-    (a, b) => (eloMap[b.user_id] || 60) - (eloMap[a.user_id] || 60)
-  );
-
-  let teamALength = 0;
-  let teamBLength = 0;
-  let sumA = 0;
-  let sumB = 0;
-
-  const promises: any[] = [];
-
-  sorted.forEach((p) => {
-    const elo = eloMap[p.user_id] || 60;
-    let targetTeam: 'A' | 'B';
-
-    if (teamALength < teamBLength) {
-      targetTeam = 'A';
-    } else if (teamBLength < teamALength) {
-      targetTeam = 'B';
-    } else {
-      targetTeam = sumA <= sumB ? 'A' : 'B';
-    }
-
-    if (targetTeam === 'A') {
-      teamALength++;
-      sumA += elo;
-    } else {
-      teamBLength++;
-      sumB += elo;
-    }
-
-    if (p.team !== targetTeam) {
-      promises.push(switchTeam(matchId, p.user_id, targetTeam));
-    }
-  });
-
-  await Promise.all(promises);
-}
-
 export async function getUserMatches(userId: string) {
   const { data, error } = await supabase
     .from('match_participants')

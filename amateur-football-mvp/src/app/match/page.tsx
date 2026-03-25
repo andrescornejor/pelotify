@@ -41,7 +41,6 @@ import {
   respondToInvitation,
   getMatchStats,
   updateMatch,
-  autoBalanceTeams,
 } from '@/lib/matches';
 import { getFriends, FriendshipData } from '@/lib/friends';
 import { useAuth } from '@/contexts/AuthContext';
@@ -208,7 +207,6 @@ function MatchLobbyContent() {
   const [editingNames, setEditingNames] = useState({ A: '', B: '' });
   const [isSavingNames, setIsSavingNames] = useState(false);
   const [showChat, setShowChat] = useState(false);
-  const [isBalancing, setIsBalancing] = useState(false);
 
   const fetchMatch = async () => {
     if (!id) return;
@@ -340,19 +338,6 @@ function MatchLobbyContent() {
       alert(`Error: ${err.message}`);
     } finally {
       setIsSavingNames(false);
-    }
-  };
-
-  const handleAutoBalance = async () => {
-    if (!match || !id || !confirm('¿Equilibrar equipos automáticamente según el ELO de los confirmados?')) return;
-    setIsBalancing(true);
-    try {
-      await autoBalanceTeams(id as string, confirmedParticipants);
-      await fetchMatch();
-    } catch (err: any) {
-      alert(`Error equilibrando: ${err.message}`);
-    } finally {
-      setIsBalancing(false);
     }
   };
 
@@ -735,28 +720,13 @@ function MatchLobbyContent() {
                   </p>
                 </div>
                 <div className="flex items-center gap-2">
-                  {!isCompleted && isCreator && confirmedParticipants.length > 1 && (
-                    <button
-                      onClick={handleAutoBalance}
-                      disabled={isBalancing}
-                      className="h-10 px-4 bg-primary/10 text-primary border border-primary/20 rounded-xl flex items-center justify-center gap-2 text-[10px] font-black uppercase tracking-widest hover:bg-primary/20 active:scale-95 transition-all shadow-[0_0_15px_rgba(16,185,129,0.3)] disabled:opacity-50"
-                      title="Auto-Equilibrar según nivel (ELO)"
-                    >
-                      {isBalancing ? (
-                        <Loader2 className="w-4 h-4 animate-spin" />
-                      ) : (
-                        <Zap className="w-4 h-4" />
-                      )}
-                      <span className="hidden sm:inline">Equilibrar</span>
-                    </button>
-                  )}
                   {!isCompleted && (
                     <button
                       onClick={handleOpenInviteModal}
-                      className="h-10 px-5 bg-primary text-black rounded-xl flex items-center justify-center gap-2 text-[10px] font-black uppercase tracking-widest hover:scale-105 active:scale-95 transition-all shadow-lg shadow-primary/20"
+                      className="h-10 px-5 bg-primary text-black rounded-xl flex items-center gap-2 text-[10px] font-black uppercase tracking-widest hover:scale-105 active:scale-95 transition-all shadow-lg shadow-primary/20"
                     >
-                      <UserPlus className="w-4 h-4" />
-                      <span className="hidden sm:inline">Convocar</span>
+                      <UserPlus className="w-3.5 h-3.5" />
+                      Convocar
                     </button>
                   )}
                   {isCreator && !isCompleted && (
