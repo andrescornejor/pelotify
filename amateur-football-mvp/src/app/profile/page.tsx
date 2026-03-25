@@ -3,6 +3,7 @@
 import { Suspense } from 'react';
 import { FifaCard } from '@/components/FifaCard';
 import {
+  User2,
   Award,
   History,
   Info,
@@ -887,47 +888,48 @@ function ProfileContent() {
             })}
           </div>
 
-          {/* Navigation Tabs */}
           <motion.div
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.5 }}
             className={cn(
-              'sticky top-0 z-30 py-6 bg-background/80 backdrop-blur-2xl -mx-4 px-4 lg:-mx-0 lg:px-0 border-b border-foreground/5 transition-all duration-700',
-              isEditing && 'opacity-30 blur-sm pointer-events-none grayscale'
+              'sticky top-0 z-30 py-6 bg-background/40 backdrop-blur-2xl -mx-4 px-4 lg:-mx-0 lg:px-0 border-b border-foreground/5 transition-all duration-700',
+              isEditing && 'opacity-20 blur-md pointer-events-none grayscale'
             )}
           >
-            <div className="flex p-1.5 bg-foreground/[0.03] rounded-[2rem] border border-foreground/10 relative shadow-2xl backdrop-blur-3xl w-full">
+            <div className="flex p-2 bg-black/40 rounded-[2.25rem] border border-white/10 relative shadow-2xl backdrop-blur-3xl w-full">
               {[
-                { id: 'overview', label: 'Biometría' },
-                { id: 'history', label: 'Despliegues' },
-                { id: 'futtok', label: 'FutTok' },
-                { id: 'wall', label: 'Muro Social' },
-              ].map((tab) => (
-                <button
-                  key={tab.id}
-                  onClick={() => setActiveTab(tab.id as any)}
-                  className={cn(
-                    'flex-1 py-4 px-2 text-[10px] sm:text-[11px] font-black uppercase tracking-[0.2em] sm:tracking-[0.3em] rounded-[1.5rem] transition-all relative z-10 italic group outline-none',
-                    activeTab === tab.id ? 'text-black' : 'text-foreground/40 hover:text-foreground'
-                  )}
-                >
-                  <span className="relative z-20 flex items-center justify-center gap-2">
-                    {activeTab === tab.id && (
-                      <div className="w-1.5 h-1.5 rounded-full bg-black animate-pulse" />
+                { id: 'overview', label: 'Biometría', icon: User2 },
+                { id: 'history', label: 'Despliegues', icon: History },
+                { id: 'futtok', label: 'FutTok', icon: Flame },
+                { id: 'wall', label: 'Muro Social', icon: MessageSquare },
+              ].map((tab) => {
+                const Icon = tab.icon;
+                const isActive = activeTab === tab.id;
+                return (
+                  <button
+                    key={tab.id}
+                    onClick={() => setActiveTab(tab.id as any)}
+                    className={cn(
+                      'flex-1 py-4.5 px-2 text-[10px] sm:text-[11px] font-black uppercase tracking-[0.2em] sm:tracking-[0.3em] rounded-[1.75rem] transition-all relative z-10 italic group outline-none flex items-center justify-center gap-2.5',
+                      isActive ? 'text-black' : 'text-foreground/35 hover:text-foreground/60'
                     )}
-                    {tab.label}
-                  </span>
-                  {activeTab === tab.id && (
-                    <motion.div
-                      layoutId="profile-tab-indicator"
-                      className="absolute inset-0 bg-gradient-to-r from-primary to-emerald-400 rounded-[1.5rem] shadow-[0_0_30px_rgba(16,185,129,0.3)]"
-                      initial={false}
-                      transition={{ type: 'spring' as const, stiffness: 400, damping: 30 }}
-                    />
-                  )}
-                </button>
-              ))}
+                  >
+                    <Icon className={cn("w-4 h-4 transition-transform duration-500", isActive ? "scale-110" : "group-hover:scale-110")} />
+                    <span className="relative z-20">
+                      {tab.label}
+                    </span>
+                    {isActive && (
+                      <motion.div
+                        layoutId="profile-tab-indicator"
+                        className="absolute inset-0 bg-gradient-to-r from-primary via-emerald-400 to-emerald-300 rounded-[1.75rem] shadow-[0_0_30px_rgba(44,252,125,0.4)]"
+                        initial={false}
+                        transition={{ type: 'spring' as const, stiffness: 450, damping: 35 }}
+                      />
+                    )}
+                  </button>
+                );
+              })}
             </div>
           </motion.div>
 
@@ -940,359 +942,203 @@ function ProfileContent() {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -20 }}
-                  className="space-y-10"
+                  className="space-y-12"
                 >
-                  {/* Personal Data Grid */}
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    {/* Physical Metrics Card */}
                     <div
                       className={cn(
-                        'glass-premium p-10 lg:p-12 rounded-[3.5rem] border border-foreground/10 space-y-10 relative overflow-hidden group transition-all duration-700',
-                        isEditing
-                          ? 'z-50 ring-4 ring-primary/30 shadow-[0_0_100px_rgba(16,185,129,0.2)] bg-background/80 scale-[1.02]'
-                          : ''
+                        'glass-ultra p-10 lg:p-14 rounded-[3.5rem] border-white/5 space-y-12 relative overflow-hidden group transition-all duration-700 shadow-neon-primary/5',
+                        isEditing && 'z-50 ring-4 ring-primary/30 shadow-[0_0_100px_rgba(44,252,125,0.2)] bg-background/80 scale-[1.02]'
                       )}
                     >
-                      <div className="absolute top-0 right-0 w-64 h-64 bg-primary/10 blur-[80px] opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none" />
-                      <div className="flex items-center justify-between relative z-10 border-b border-foreground/5 pb-6">
-                        <div className="flex items-center gap-5">
-                          <div className="w-14 h-14 rounded-[1.5rem] bg-background/50 flex items-center justify-center border border-primary/20 shadow-[0_0_20px_rgba(16,185,129,0.1)] group-hover:scale-110 transition-transform">
-                            <Info className="w-6 h-6 text-primary" />
-                          </div>
-                          <div className="flex flex-col">
-                            <h3 className="text-xl font-black uppercase tracking-tighter text-foreground italic leading-none">
-                              Biometría
-                            </h3>
-                            <span className="text-[10px] font-black text-foreground/40 uppercase tracking-[0.3em] mt-1">
-                              Identidad Core
-                            </span>
-                          </div>
+                      <div className="flex items-center justify-between relative z-10">
+                        <div className="space-y-2">
+                           <h4 className="text-3xl font-black text-foreground italic uppercase tracking-tighter leading-none font-kanit">
+                             Métricas Físicas
+                           </h4>
+                           <p className="text-[10px] font-black uppercase text-primary tracking-[0.4em] italic mb-1">DATA OFICIAL</p>
                         </div>
-                        <div className="hidden sm:flex px-4 py-2 rounded-full bg-primary/10 border border-primary/20">
-                          <span className="text-[9px] font-black text-primary uppercase tracking-widest">
-                            VERIFICADO
-                          </span>
-                        </div>
-                      </div>
-
-                      <div className="space-y-6 relative z-10">
-                        {isEditing ? (
-                          <div className="grid grid-cols-2 gap-6 bg-background/40 p-6 rounded-[2rem] border border-foreground/5 backdrop-blur-md">
-                            <div className="space-y-3">
-                              <div className="flex items-center gap-2 ml-2">
-                                <div className="w-1.5 h-1.5 rounded-full bg-primary" />
-                                <label className="text-[10px] font-black uppercase text-foreground/70 tracking-[0.2em] leading-none">
-                                  Edad (Años)
-                                </label>
-                              </div>
-                              <input
-                                type="number"
-                                className="w-full h-14 bg-foreground/[0.03] border border-foreground/10 rounded-2xl px-5 text-foreground text-lg font-black outline-none focus:border-primary focus:bg-primary/5 transition-all shadow-inner"
-                                value={editedData.age}
-                                onChange={(e) =>
-                                  setEditedData({ ...editedData, age: e.target.value })
-                                }
-                              />
-                            </div>
-                            <div className="space-y-3">
-                              <div className="flex items-center gap-2 ml-2">
-                                <div className="w-1.5 h-1.5 rounded-full bg-primary" />
-                                <label className="text-[10px] font-black uppercase text-foreground/70 tracking-[0.2em] leading-none">
-                                  Altura (cm)
-                                </label>
-                              </div>
-                              <input
-                                type="number"
-                                className="w-full h-14 bg-foreground/[0.03] border border-foreground/10 rounded-2xl px-5 text-foreground text-lg font-black outline-none focus:border-primary focus:bg-primary/5 transition-all shadow-inner"
-                                value={editedData.height}
-                                onChange={(e) =>
-                                  setEditedData({ ...editedData, height: e.target.value })
-                                }
-                              />
-                            </div>
-                            <div className="col-span-full space-y-3 mt-2">
-                              <div className="flex items-center gap-2 ml-2">
-                                <div className="w-1.5 h-1.5 rounded-full bg-primary" />
-                                <label className="text-[10px] font-black uppercase text-foreground/70 tracking-[0.2em] leading-none">
-                                  Pie Dominante
-                                </label>
-                              </div>
-                              <div className="relative">
-                                <select
-                                  className="w-full h-14 bg-foreground/[0.03] border border-foreground/10 rounded-2xl px-5 text-foreground text-sm font-black outline-none focus:border-primary focus:bg-primary/5 appearance-none cursor-pointer transition-all uppercase shadow-inner"
-                                  value={editedData.preferredFoot}
-                                  onChange={(e) =>
-                                    setEditedData({ ...editedData, preferredFoot: e.target.value })
-                                  }
-                                >
-                                  <option value="Derecha">Diestro</option>
-                                  <option value="Zurda">Zurdo</option>
-                                  <option value="Ambidiestro">Ambidiestro</option>
-                                </select>
-                                <ChevronRight className="absolute right-5 top-1/2 -translate-y-1/2 w-5 h-5 text-foreground/40 rotate-90 pointer-events-none" />
-                              </div>
-                            </div>
-                          </div>
-                        ) : (
-                          <div className="grid grid-cols-2 gap-y-10 gap-x-6">
-                            {[
-                              {
-                                label: 'Ciclos',
-                                value: displayAge,
-                                unit: 'Años',
-                                dot: 'bg-primary',
-                              },
-                              {
-                                label: 'Estatura',
-                                value: displayHeight,
-                                unit: 'cm',
-                                dot: 'bg-blue-400',
-                              },
-                              {
-                                label: 'Eje Hábil',
-                                value: displayFoot,
-                                unit: '',
-                                dot: 'bg-accent',
-                              },
-                              {
-                                label: 'Alineación',
-                                value: teamName,
-                                unit: '',
-                                dot: 'bg-purple-400',
-                                isTeam: true,
-                              },
-                            ].map((item, idx) => (
-                              <div
-                                key={idx}
-                                className="space-y-3 bg-background/30 p-5 rounded-[2rem] border border-foreground/[0.03] hover:border-foreground/10 transition-colors"
-                              >
-                                <div className="flex items-center gap-2">
-                                  <div className={cn('w-1.5 h-1.5 rounded-full', item.dot)} />
-                                  <span className="text-[10px] font-black uppercase text-foreground/50 tracking-[0.3em] leading-none">
-                                    {item.label}
-                                  </span>
-                                </div>
-                                <p
-                                  className={cn(
-                                    'text-2xl lg:text-3xl font-black italic uppercase tracking-tighter truncate',
-                                    item.isTeam
-                                      ? 'text-primary hover:text-white transition-colors cursor-pointer'
-                                      : 'text-foreground'
-                                  )}
-                                >
-                                  {item.value}{' '}
-                                  <span className="text-foreground/40 text-sm not-italic ml-1 tracking-normal font-bold">
-                                    {item.unit}
-                                  </span>
-                                </p>
-                              </div>
-                            ))}
-                          </div>
-                        )}
-                      </div>
-                    </div>
-
-                    <div
-                      className={cn(
-                        'glass-premium p-10 lg:p-12 rounded-[3.5rem] border border-foreground/10 space-y-10 relative overflow-hidden group transition-all duration-700',
-                        isEditing && 'opacity-30 blur-sm pointer-events-none grayscale'
-                      )}
-                    >
-                      <div className="absolute top-0 left-0 w-64 h-64 bg-accent/10 blur-[80px] opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none" />
-                      <div className="flex items-center justify-between relative z-10 border-b border-foreground/5 pb-6">
-                        <div className="flex items-center gap-5">
-                          <div className="w-14 h-14 rounded-[1.5rem] bg-background/50 flex items-center justify-center border border-accent/20 shadow-[0_0_20px_rgba(245,158,11,0.1)] group-hover:scale-110 transition-transform">
-                            <Zap className="w-6 h-6 text-accent" />
-                          </div>
-                          <div className="flex flex-col">
-                            <h3 className="text-xl font-black uppercase tracking-tighter text-foreground italic leading-none">
-                              Rendimiento
-                            </h3>
-                            <span className="text-[10px] font-black text-foreground/40 uppercase tracking-[0.3em] mt-1">
-                              Métricas de Juego
-                            </span>
-                          </div>
+                        <div className="w-16 h-16 rounded-[1.5rem] bg-primary/10 border border-primary/20 flex items-center justify-center group-hover:scale-110 transition-transform shadow-lg">
+                           <Zap className="w-8 h-8 text-primary" />
                         </div>
                       </div>
 
                       <div className="space-y-8 relative z-10 w-full">
-                        {[
-                          {
-                            label: 'Victorias Totales',
-                            value: displayMatchesWon,
-                            color: 'text-foreground',
-                          },
-                          {
-                            label: 'Win Rate',
-                            value: `${displayMatches > 0 ? Math.min(100, Math.round((displayMatchesWon / displayMatches) * 100)) : 0}%`,
-                            color: 'text-foreground',
-                          },
-                          {
-                            label: 'MVP Frecuencia',
-                            value: `${displayMatches > 0 ? Math.min(100, (displayMvpCount / displayMatches) * 100).toFixed(1) : '0.0'}%`,
-                            color: 'text-accent',
-                            isLarge: true,
-                          },
-                        ].map((stat, idx) => (
-                          <div
-                            key={idx}
-                            className="flex justify-between items-center group/item p-4 rounded-2xl hover:bg-foreground/[0.02] transition-colors border border-transparent hover:border-foreground/5"
-                          >
-                            <div className="flex items-center gap-4">
-                              <div className="font-mono text-[9px] text-foreground/20 italic font-bold">
-                                0{idx + 1}
-                              </div>
-                              <span className="text-[11px] font-black uppercase text-foreground/50 tracking-[0.3em] group-hover/item:text-foreground transition-colors">
-                                {stat.label}
-                              </span>
+                        {isEditing ? (
+                          <div className="grid grid-cols-2 gap-6 bg-background/40 p-6 rounded-[2rem] border border-foreground/5 backdrop-blur-md">
+                            <div className="space-y-3">
+                              <label className="text-[10px] font-black uppercase text-foreground/70 tracking-[0.2em] ml-2">Edad</label>
+                              <input
+                                type="number"
+                                className="w-full h-14 bg-foreground/[0.03] border border-foreground/10 rounded-2xl px-5 text-foreground text-lg font-black outline-none focus:border-primary transition-all"
+                                value={editedData.age}
+                                onChange={(e) => setEditedData({ ...editedData, age: e.target.value })}
+                              />
                             </div>
-                            <span
-                              className={cn(
-                                'font-black italic tracking-tighter leading-none text-right',
-                                stat.isLarge
-                                  ? 'text-4xl lg:text-5xl drop-shadow-[0_0_20px_rgba(245,158,11,0.3)]'
-                                  : 'text-3xl lg:text-4xl',
-                                stat.color
-                              )}
-                            >
-                              {stat.value}
-                            </span>
+                            <div className="space-y-3">
+                              <label className="text-[10px] font-black uppercase text-foreground/70 tracking-[0.2em] ml-2">Altura (cm)</label>
+                              <input
+                                type="number"
+                                className="w-full h-14 bg-foreground/[0.03] border border-foreground/10 rounded-2xl px-5 text-foreground text-lg font-black outline-none focus:border-primary transition-all"
+                                value={editedData.height}
+                                onChange={(e) => setEditedData({ ...editedData, height: e.target.value })}
+                              />
+                            </div>
+                            <div className="col-span-full space-y-3">
+                               <label className="text-[10px] font-black uppercase text-foreground/70 tracking-[0.2em] ml-2">Pie Dominante</label>
+                               <div className="relative">
+                                  <select
+                                    className="w-full h-14 bg-foreground/[0.03] border border-foreground/10 rounded-2xl px-5 text-foreground text-sm font-black outline-none focus:border-primary appearance-none cursor-pointer transition-all uppercase"
+                                    value={editedData.preferredFoot}
+                                    onChange={(e) => setEditedData({ ...editedData, preferredFoot: e.target.value })}
+                                  >
+                                    <option value="Derecha">Diestro</option>
+                                    <option value="Zurda">Zurdo</option>
+                                    <option value="Ambidiestro">Ambidiestro</option>
+                                  </select>
+                                  <ChevronRight className="absolute right-5 top-1/2 -translate-y-1/2 w-5 h-5 text-foreground/40 rotate-90 pointer-events-none" />
+                               </div>
+                            </div>
                           </div>
+                        ) : (
+                          <div className="grid grid-cols-2 gap-10">
+                            {[
+                              { label: 'EDAD', value: displayAge, unit: 'años', icon: Calendar },
+                              { label: 'ALTURA', value: displayHeight, unit: 'cm', icon: Target },
+                              { label: 'PERFIL', value: displayFoot, unit: '', icon: Star },
+                              { label: 'EQUIPO', value: teamName, unit: '', icon: Shield },
+                            ].map((item, i) => (
+                               <div key={i} className="space-y-3">
+                                  <p className="text-[10px] font-black text-foreground/30 uppercase tracking-[0.3em] flex items-center gap-2">
+                                    <item.icon className="w-3 h-3 text-primary/40" /> {item.label}
+                                  </p>
+                                  <p className="text-3xl font-black text-foreground italic flex items-baseline gap-1.5 font-kanit">
+                                    {item.value} <span className="text-[11px] font-black uppercase tracking-widest text-foreground/20 leading-none">{item.unit}</span>
+                                  </p>
+                               </div>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+
+                      <div className="absolute top-0 right-0 w-64 h-64 bg-primary/5 blur-[100px] rounded-full pointer-events-none group-hover:bg-primary/10 transition-colors" />
+                    </div>
+
+                    {/* Performance Card */}
+                    <div
+                      className={cn(
+                        'glass-ultra p-10 lg:p-14 rounded-[3.5rem] border-white/5 space-y-12 relative overflow-hidden group transition-all duration-700 shadow-neon-accent/5',
+                        isEditing && 'opacity-20 blur-md pointer-events-none grayscale'
+                      )}
+                    >
+                       <div className="flex items-center justify-between relative z-10">
+                        <div className="space-y-2">
+                           <h4 className="text-3xl font-black text-foreground italic uppercase tracking-tighter leading-none font-kanit">
+                             Rendimiento
+                           </h4>
+                           <p className="text-[10px] font-black uppercase text-accent tracking-[0.4em] italic mb-1">ESTADÍSTICAS ELO</p>
+                        </div>
+                        <div className="w-16 h-16 rounded-[1.5rem] bg-accent/10 border border-accent/20 flex items-center justify-center group-hover:scale-110 transition-transform shadow-lg">
+                           <Award className="w-8 h-8 text-accent" />
+                        </div>
+                      </div>
+
+                      <div className="grid grid-cols-2 gap-10 relative z-10">
+                        {[
+                          { label: 'ELO ACTUAL', value: displayElo, color: 'text-primary' },
+                          { label: 'WIN RATE', value: displayMatches > 0 ? `${Math.round((displayMatchesWon / displayMatches) * 100)}%` : '0%', color: 'text-accent' },
+                          { label: 'GOLES', value: displayGoals, color: 'text-foreground' },
+                          { label: 'MVPs', value: displayMvpCount, color: 'text-amber-500' },
+                        ].map((item, i) => (
+                           <div key={i} className="space-y-3">
+                              <p className="text-[10px] font-black text-foreground/30 uppercase tracking-[0.3em]">{item.label}</p>
+                              <p className={cn("text-3xl font-black italic font-kanit", item.color)}>
+                                {item.value}
+                              </p>
+                           </div>
                         ))}
                       </div>
+
+                      <div className="absolute top-0 right-0 w-64 h-64 bg-accent/5 blur-[100px] rounded-full pointer-events-none group-hover:bg-accent/10 transition-colors" />
                     </div>
                   </div>
 
-                  {/* Team Section */}
-                  {userTeam && (
+                  {/* Skill stats section */}
+                  <div
+                    className={cn(
+                      'glass-premium p-10 lg:p-14 rounded-[3.5rem] border-white/5 relative overflow-hidden transition-all duration-700',
+                      isEditing && 'opacity-20 blur-md pointer-events-none grayscale'
+                    )}
+                  >
+                     <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6 mb-12 relative z-10">
+                        <div className="space-y-2">
+                          <h4 className="text-3xl font-black text-foreground italic uppercase tracking-tighter leading-none font-kanit">
+                            Análisis Técnico
+                          </h4>
+                          <p className="text-[10px] font-black text-foreground/20 uppercase tracking-[0.4em] ml-1">
+                            Specs de Jugador Profesional
+                          </p>
+                        </div>
+                        <div className="flex items-center gap-4 bg-foreground/5 px-6 py-3 rounded-2xl border border-foreground/5">
+                          <Zap className="w-5 h-5 text-primary animate-pulse" />
+                          <span className="text-xl font-black text-foreground italic">
+                            {displayPlayer.overall} OVR
+                          </span>
+                        </div>
+                      </div>
+                     
+                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-12 gap-y-10">
+                        {Object.entries(playerStats).map(([key, value]) => (
+                          <div key={key} className="space-y-4 group">
+                            <div className="flex justify-between items-end px-1">
+                              <span className="text-[11px] font-black text-foreground/40 uppercase tracking-[0.2em] group-hover:text-primary transition-colors">{key}</span>
+                              <span className="text-2xl font-black text-foreground italic group-hover:scale-110 transition-transform font-kanit">{value}</span>
+                            </div>
+                            <div className="h-2.5 w-full bg-white/5 rounded-full overflow-hidden p-0.5 border border-white/5 shadow-inner">
+                              <motion.div
+                                initial={{ width: 0 }}
+                                animate={{ width: `${value}%` }}
+                                transition={{ duration: 1.5, ease: 'circOut' }}
+                                className="h-full rounded-full relative overflow-hidden"
+                                style={{
+                                  background: `linear-gradient(90deg, #10b981, #5dfd9d)`,
+                                  boxShadow: '0 0 10px rgba(44, 252, 125, 0.2)',
+                                }}
+                              >
+                                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent animate-shimmer" />
+                              </motion.div>
+                            </div>
+                          </div>
+                        ))}
+                     </div>
+                  </div>
+
+                  {/* Team Section (if not editing) */}
+                  {!isEditing && userTeam && (
                     <motion.div
                       initial={{ opacity: 0, scale: 0.95 }}
                       animate={{ opacity: 1, scale: 1 }}
-                      className={cn(
-                        'glass-premium p-10 lg:p-12 rounded-[3.5rem] border border-foreground/10 relative overflow-hidden group/team cursor-default transition-all duration-700 z-10',
-                        isEditing
-                          ? 'opacity-30 blur-sm pointer-events-none grayscale'
-                          : 'hover:border-primary/40 hover:shadow-[0_0_50px_rgba(16,185,129,0.1)] focus-within:border-primary/40'
-                      )}
+                      className="glass-premium p-10 lg:p-14 rounded-[3.5rem] border border-white/10 relative overflow-hidden group shadow-2xl"
                     >
-                      <div className="absolute top-0 right-0 w-[150%] h-[150%] bg-gradient-radial from-primary/10 via-transparent to-transparent -translate-y-1/2 translate-x-1/4 opacity-0 group-hover/team:opacity-100 transition-opacity duration-1000 blur-3xl" />
-                      <div className="absolute inset-x-0 bottom-0 h-1 bg-gradient-to-r from-transparent via-primary/50 to-transparent opacity-0 group-hover/team:opacity-100 transition-opacity duration-1000" />
-
-                      <div className="flex flex-col lg:flex-row items-center gap-12 relative z-10">
-                        {/* Team Crest/Logo */}
-                        <div className="relative shrink-0 perspective-1000">
-                          <div className="absolute inset-0 bg-primary/20 blur-[40px] rounded-full scale-110 group-hover/team:scale-150 transition-transform duration-1000" />
-                          <div className="w-36 h-36 md:w-48 md:h-48 rounded-[3rem] bg-background/80 border border-foreground/10 flex items-center justify-center overflow-hidden relative shadow-2xl group-hover/team:border-primary/50 transition-all duration-700 backdrop-blur-xl group-hover/team:-translate-y-2 group-hover/team:rotate-y-12">
-                            <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent opacity-0 group-hover/team:opacity-100 transition-opacity" />
-                            {userTeam.logo_url ? (
-                              <img
-                                src={userTeam.logo_url}
-                                alt={userTeam.name}
-                                className="w-full h-full object-cover group-hover/team:scale-110 group-hover/team:rotate-3 transition-all duration-1000"
-                              />
-                            ) : (
-                              <Shield className="w-20 h-20 md:w-28 md:h-28 text-foreground/20 group-hover/team:text-primary transition-colors duration-700 drop-shadow-md" />
-                            )}
+                       <div className="flex flex-col lg:flex-row items-center gap-12 relative z-10">
+                          <div className="w-32 h-32 md:w-44 md:h-44 rounded-[2.5rem] bg-background/50 border border-foreground/10 flex items-center justify-center overflow-hidden shadow-2xl relative">
+                             {userTeam.logo_url ? <img src={userTeam.logo_url} className="w-full h-full object-cover" /> : <Shield className="w-16 h-16 text-foreground/20" />}
                           </div>
-                        </div>
-
-                        <div className="flex-1 space-y-8 text-center lg:text-left w-full">
-                          <div className="space-y-3">
-                            <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4">
-                              <div className="px-4 py-1.5 bg-primary/10 border border-primary/20 rounded-full flex items-center gap-2 group-hover/team:bg-primary/20 transition-colors">
-                                <div className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
-                                <span className="text-[10px] font-black text-primary uppercase tracking-[0.3em] italic">
-                                  AFILIACIÓN ACTIVA
-                                </span>
-                              </div>
-                              <span className="text-[10px] font-black text-foreground/30 italic tracking-widest uppercase">
-                                NODE #{userTeam.id.slice(0, 8)}
-                              </span>
-                            </div>
-                            <h2 className="text-5xl md:text-7xl font-black italic text-foreground uppercase tracking-tighter leading-none group-hover/team:text-transparent group-hover/team:bg-clip-text group-hover/team:bg-gradient-to-r group-hover/team:from-foreground group-hover/team:to-primary transition-all duration-700">
-                              {userTeam.name}
-                            </h2>
-                            {userTeam.motto && (
-                              <p className="text-base md:text-xl font-bold text-foreground/40 italic uppercase tracking-tight max-w-2xl mx-auto lg:mx-0">
-                                "{userTeam.motto}"
-                              </p>
-                            )}
+                          <div className="flex-1 text-center lg:text-left space-y-4">
+                             <div className="flex justify-center lg:justify-start items-center gap-3">
+                                <span className="px-3 py-1 bg-primary/10 border border-primary/20 rounded-full text-[9px] font-black text-primary tracking-widest uppercase italic">PARTNER OFICIAL</span>
+                                <span className="text-[9px] font-black text-foreground/20 italic tracking-widest">ID {userTeam.id.slice(0, 8)}</span>
+                             </div>
+                             <h3 className="text-5xl md:text-7xl font-black italic tracking-tighter text-foreground uppercase leading-none">{userTeam.name}</h3>
+                             <p className="text-lg font-bold text-foreground/40 italic uppercase tracking-tight">{userTeam.motto}</p>
+                             <div className="flex flex-wrap justify-center lg:justify-start gap-4 mt-6">
+                                <Link href={`/team?id=${userTeam.id}`} className="h-14 px-10 rounded-[1.5rem] bg-foreground text-background font-black text-[11px] uppercase tracking-[0.2em] flex items-center gap-3 hover:bg-white transition-all shadow-xl">
+                                   Ver Sede de Equipo <ExternalLink className="w-4 h-4" />
+                                </Link>
+                             </div>
                           </div>
-
-                          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 bg-background/30 p-6 rounded-[2.5rem] border border-foreground/[0.03]">
-                            {[
-                              {
-                                icon: Trophy,
-                                label: 'ELO Rango',
-                                value: userTeam.elo,
-                                color: 'text-primary',
-                              },
-                              {
-                                icon: Users,
-                                label: 'Squad',
-                                value: userTeam.members_count,
-                                color: 'text-blue-500',
-                              },
-                              {
-                                icon: Shield,
-                                label: 'Tier',
-                                value: userTeam.level || 1,
-                                color: 'text-accent',
-                              },
-                              {
-                                icon: Zap,
-                                label: 'Win Rate',
-                                value:
-                                  userTeam.wins + userTeam.losses > 0
-                                    ? (
-                                        (userTeam.wins /
-                                          (userTeam.wins + userTeam.losses + userTeam.draws)) *
-                                        100
-                                      ).toFixed(0) + '%'
-                                    : '--',
-                                color: 'text-purple-500',
-                              },
-                            ].map((stat, i) => (
-                              <div
-                                key={i}
-                                className="flex flex-col items-center lg:items-start gap-2 group/stat"
-                              >
-                                <div className="flex items-center gap-2">
-                                  <stat.icon
-                                    className={cn(
-                                      'w-4 h-4 opacity-50 group-hover/stat:opacity-100 transition-opacity',
-                                      stat.color
-                                    )}
-                                  />
-                                  <span className="text-[9px] font-black text-foreground/40 uppercase tracking-[0.2em]">
-                                    {stat.label}
-                                  </span>
-                                </div>
-                                <p className="text-3xl font-black text-foreground italic tracking-tighter uppercase group-hover/stat:scale-105 transition-transform origin-left">
-                                  {stat.value}
-                                </p>
-                              </div>
-                            ))}
-                          </div>
-
-                          <div className="flex flex-wrap justify-center lg:justify-start gap-4">
-                            <Link
-                              href={`/team?id=${userTeam.id}`}
-                              className="h-14 px-10 rounded-[1.5rem] bg-foreground hover:bg-white text-background font-black text-[11px] uppercase tracking-[0.3em] flex items-center justify-center gap-3 transition-all shadow-xl hover:shadow-2xl hover:scale-[1.02] active:scale-95 group/link"
-                            >
-                              Acceder Sede
-                              <ExternalLink className="w-5 h-5 group-hover/link:rotate-12 transition-transform" />
-                            </Link>
-                            {userTeam.captain_id === (id === 'me' || !id ? user?.id : id) && (
-                              <div className="h-14 px-8 rounded-[1.5rem] border-2 border-primary bg-primary/10 flex items-center gap-3 shadow-[0_0_20px_rgba(16,185,129,0.2)]">
-                                <Star className="w-5 h-5 text-primary fill-primary animate-pulse" />
-                                <span className="text-[11px] font-black text-primary uppercase tracking-[0.3em]">
-                                  Capitán
-                                </span>
-                              </div>
-                            )}
-                          </div>
-                        </div>
-                      </div>
+                       </div>
                     </motion.div>
                   )}
                 </motion.div>
@@ -1558,33 +1404,39 @@ function ProfileContent() {
                         <Link 
                           key={h.id} 
                           href={`/highlights?v=${h.id}`}
-                          className="group relative aspect-[9/16] rounded-[1.5rem] sm:rounded-[2rem] overflow-hidden border border-white/5 bg-surface transition-all duration-500 hover:scale-[1.03] hover:shadow-[0_0_30px_rgba(16,185,129,0.3)] hover:border-emerald-500/50"
+                          className="group relative aspect-[9/16] rounded-[1.5rem] sm:rounded-[2rem] overflow-hidden border border-white/5 bg-surface transition-all duration-700 hover:scale-[1.03] hover:shadow-[0_0_50px_rgba(44,252,125,0.2)] hover:border-emerald-500/50"
                         >
-                          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent z-10" />
+                          <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent z-10 opacity-60 group-hover:opacity-100 transition-opacity" />
                           <video 
                             src={h.video_url} 
-                            className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 opacity-80 group-hover:opacity-100"
+                            className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-1000 opacity-80 group-hover:opacity-100"
                             muted
                             playsInline
                             loop
-                            // onMouseOver={(e) => (e.target as HTMLVideoElement).play()}
-                            // onMouseOut={(e) => (e.target as HTMLVideoElement).pause()}
                           />
                           
                           <div className="absolute top-3 left-3 z-20 flex gap-2">
-                            <div className="px-2 py-0.5 rounded-full bg-black/50 backdrop-blur-md border border-white/10 flex items-center gap-1.5">
-                              <Play className="w-2.5 h-2.5 text-white" />
-                              <span className="text-[8px] font-black italic text-white">{h.views_count || 0}</span>
+                            <div className="px-2.5 py-1 rounded-full bg-black/60 backdrop-blur-md border border-white/10 flex items-center gap-1.5 shadow-xl">
+                              <Play className="w-2.5 h-2.5 text-primary fill-primary" />
+                              <span className="text-[8px] font-black italic text-white tracking-widest">{h.views_count || 0}</span>
+                            </div>
+                            <div className="flex items-center gap-1 px-2 py-1 rounded-full bg-red-500/80 backdrop-blur-md border border-red-400/30 animate-pulse shadow-lg shadow-red-500/20">
+                               <div className="w-1 h-1 rounded-full bg-white" />
+                               <span className="text-[7px] font-black text-white italic tracking-widest">LIVE</span>
                             </div>
                           </div>
 
-                          <div className="absolute bottom-3 left-3 right-3 z-20">
-                            <h4 className="text-[10px] font-black italic text-white uppercase tracking-wider line-clamp-1 drop-shadow-md">
-                              {h.description || 'HIGHLIGHT'}
+                          <div className="absolute bottom-4 left-4 right-4 z-20 transform translate-y-2 group-hover:translate-y-0 transition-transform duration-500">
+                            <h4 className="text-[10px] sm:text-[11px] font-black italic text-white uppercase tracking-wider line-clamp-1 drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)]">
+                              {h.description || 'TREMENDA JUGADA'}
                             </h4>
-                            <div className="flex items-center gap-1 mt-1 opacity-70">
-                              <Flame className="w-2.5 h-2.5 text-emerald-400" />
-                              <span className="text-[8px] font-black text-white">{h.likes_count || 0} likes</span>
+                            <div className="flex items-center gap-2 mt-1.5">
+                               <div className="flex items-center gap-1">
+                                  <Flame className="w-3 h-3 text-primary animate-pulse" />
+                                  <span className="text-[9px] font-black text-white italic">{h.likes_count || 0}</span>
+                               </div>
+                               <div className="w-1 h-1 rounded-full bg-white/20" />
+                               <span className="text-[8px] font-black text-white/50 uppercase tracking-widest">VER AHORA</span>
                             </div>
                           </div>
                         </Link>

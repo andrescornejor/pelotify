@@ -66,7 +66,6 @@ export const SidebarContent = memo(function SidebarContent({
     { icon: Search, label: 'Buscar Partidos', href: '/search' },
     { icon: User2, label: 'Mi Perfil', href: '/profile/me' },
     { icon: Target, label: 'Mercado', href: '/scouting', badge: 'PRO' },
-    { icon: Target, label: 'Mercado', href: '/scouting', badge: 'PRO' },
     { icon: Flame, label: 'FutTok', href: '/highlights', badge: 'NUEVO' },
     {
       icon: Users,
@@ -461,10 +460,6 @@ export const SidebarContent = memo(function SidebarContent({
           <LogOut className="w-3.5 h-3.5" strokeWidth={2.5} />
           Cerrar Sesión
         </button>
-        <div className="mt-3 flex items-center justify-center gap-2 opacity-40">
-          <div className="w-1 h-1 rounded-full bg-primary" />
-          <span className="text-[8px] font-black text-foreground/30 uppercase tracking-[0.3em]">v2.4.0 · Pelotify</span>
-        </div>
       </div>
     </div>
   );
