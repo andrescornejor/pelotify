@@ -569,7 +569,7 @@ function ProfileContent() {
       <div className="max-w-[1400px] mx-auto w-full px-4 sm:px-8 lg:px-12 -mt-24 sm:-mt-32 lg:-mt-40 relative z-20 pb-20">
         
         {/* Profile Header Block */}
-        <div className="flex flex-col lg:flex-row items-end lg:items-center gap-8 mb-12">
+        <div className="flex flex-col lg:flex-row items-center gap-8 mb-12">
             {/* The FIFA Card (Avatar Replacement) */}
             <div className={cn(
               "relative transition-all duration-700 perspective-1000 group/card",
@@ -596,13 +596,13 @@ function ProfileContent() {
             </div>
 
             {/* Basic Info & Social Stats */}
-            <div className="flex-1 w-full space-y-6 lg:pb-8">
-               <div className="flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-8">
+            <div className="flex-1 w-full space-y-6 lg:pb-8 text-center lg:text-left">
+               <div className="flex flex-col sm:flex-row items-center lg:items-center gap-4 sm:gap-8">
                   <div className="space-y-1">
                     <motion.div 
                       initial={{ opacity: 0, x: -20 }}
                       animate={{ opacity: 1, x: 0 }}
-                      className="flex items-center gap-4"
+                      className="flex items-center justify-center lg:justify-start gap-4"
                     >
                       <h1 className="text-4xl sm:text-6xl font-black italic text-white uppercase tracking-tighter leading-none">
                         {isEditing ? (
@@ -620,7 +620,7 @@ function ProfileContent() {
                         </div>
                       )}
                     </motion.div>
-                    <div className="flex items-center gap-3">
+                    <div className="flex items-center justify-center lg:justify-start gap-3">
                        <span className="text-xs font-black text-primary uppercase tracking-[0.4em] italic">{displayPlayer.position}</span>
                        <div className="w-1 h-1 rounded-full bg-white/20" />
                        <span className="text-xs font-black text-white/40 uppercase tracking-[0.4em]">{teamName}</span>
@@ -681,7 +681,7 @@ function ProfileContent() {
                </div>
 
                {/* Modern Social Stats Hub */}
-               <div className="flex flex-wrap items-center gap-x-12 gap-y-6 pt-6 border-t border-white/5">
+               <div className="flex flex-wrap items-center justify-center lg:justify-start gap-x-12 gap-y-6 pt-6 border-t border-white/5">
                   {[
                     { label: 'Partidos', value: displayMatches, color: 'text-white' },
                     { label: 'ELO RATING', value: displayElo, color: 'text-primary' },
