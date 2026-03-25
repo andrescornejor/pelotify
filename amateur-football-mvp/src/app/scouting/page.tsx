@@ -4,7 +4,8 @@ import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/contexts/AuthContext';
-import { X, Heart, Sparkles, Target, Trophy, Info, ArrowLeft } from 'lucide-react';
+import { sendFriendRequest } from '@/lib/friends';
+import { X, Heart, Sparkles, Target, Trophy, Info, ArrowLeft, CheckCircle2 } from 'lucide-react';
 import Link from 'next/link';
 import { FifaCard } from '@/components/FifaCard';
 import { cn } from '@/lib/utils';
@@ -16,6 +17,7 @@ export default function ScoutingPage() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [loading, setLoading] = useState(true);
   const [direction, setDirection] = useState<'left' | 'right' | null>(null);
+  const [showFeedback, setShowFeedback] = useState<string | null>(null);
 
   useEffect(() => {
     async function fetchProfiles() {
@@ -34,11 +36,21 @@ export default function ScoutingPage() {
     fetchProfiles();
   }, [user]);
 
-  const handleAction = (type: 'like' | 'pass') => {
-    if (currentIndex >= profiles.length) return;
+  const handleAction = async (type: 'like' | 'pass') => {
+    if (currentIndex >= profiles.length || !user) return;
     
     setDirection(type === 'like' ? 'right' : 'left');
     
+    if (type === 'like') {
+        try {
+           await sendFriendRequest(user.id, currentProfile.id);
+           setShowFeedback('¡Interés de Fichaje Enviado!');
+           setTimeout(() => setShowFeedback(null), 1500);
+        } catch (err) {
+           console.error('Error enviando solicitud:', err);
+        }
+    }
+
     setTimeout(() => {
       setCurrentIndex(prev => prev + 1);
       setDirection(null);
@@ -58,6 +70,22 @@ export default function ScoutingPage() {
 
   return (
     <div className="min-h-[100dvh] bg-black overflow-hidden relative selection:bg-primary/30">
+      
+      {/* Feedback Toast */}
+      <AnimatePresence>
+        {showFeedback && (
+          <motion.div 
+            initial={{ opacity: 0, y: -50, scale: 0.9 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -20, scale: 0.9 }}
+            className="fixed top-24 left-1/2 -translate-x-1/2 z-[100] bg-primary text-black px-6 py-3 rounded-2xl font-black uppercase tracking-widest text-[10px] shadow-[0_10px_40px_rgba(44,252,125,0.4)] flex items-center gap-2"
+          >
+            <CheckCircle2 className="w-4 h-4" />
+            {showFeedback}
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       {/* Background Ambience */}
       <div className="absolute inset-0 z-0">
         <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-primary/10 blur-[150px] mix-blend-screen pointer-events-none rounded-full" />
