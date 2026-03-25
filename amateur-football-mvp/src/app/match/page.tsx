@@ -25,6 +25,7 @@ import {
   Globe,
   ChevronRight,
   MessageSquare,
+  PlusCircle,
 } from 'lucide-react';
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
@@ -387,7 +388,9 @@ function MatchLobbyContent() {
       </div>
     );
 
-  const isFull = confirmedParticipants.length >= totalPlayers;
+  const isFull = match?.is_recruitment 
+    ? confirmedParticipants.length >= (match.missing_players || 0)
+    : confirmedParticipants.length >= totalPlayers;
   const matchTime = match ? new Date(`${match.date}T${match.time}`) : null;
   const isPast = matchTime ? new Date() > new Date(matchTime.getTime() + 60 * 60 * 1000) : false;
   const isCompleted =
@@ -399,7 +402,9 @@ function MatchLobbyContent() {
     return v?.displayName || v?.name || match.location;
   })();
 
-  const occupancyPct = Math.min(100, (confirmedParticipants.length / totalPlayers) * 100);
+  const occupancyPct = match?.is_recruitment 
+    ? Math.min(100, (confirmedParticipants.length / (match.missing_players || 1)) * 100)
+    : Math.min(100, (confirmedParticipants.length / totalPlayers) * 100);
 
   return (
     <div className="flex flex-col min-h-screen bg-background relative overflow-x-hidden">
@@ -453,9 +458,15 @@ function MatchLobbyContent() {
             animate={{ opacity: 1, scale: 1 }}
             className="flex items-center gap-3"
           >
-            <div className="px-5 py-2 glass-premium rounded-2xl border border-primary/30 shadow-[0_10px_30px_rgba(44,252,125,0.2)]">
-              <span className="text-primary font-black text-[10px] uppercase tracking-[0.4em] italic leading-none">
-                {match.type}
+            <div className={cn(
+               "px-5 py-2 glass-premium rounded-2xl border backdrop-blur-md",
+               match.is_recruitment ? "border-amber-500/40 shadow-[0_10px_30px_rgba(245,158,11,0.2)]" : "border-primary/30 shadow-[0_10px_30px_rgba(44,252,125,0.2)]"
+            )}>
+              <span className={cn(
+                "font-black text-[10px] uppercase tracking-[0.4em] italic leading-none",
+                match.is_recruitment ? "text-amber-500" : "text-primary"
+              )}>
+                {match.is_recruitment ? "EMERGENCIA" : match.type}
               </span>
             </div>
             {match.is_private && (
@@ -485,11 +496,11 @@ function MatchLobbyContent() {
             {!isCompleted && (
               <div className="flex items-center gap-3">
                 <div className="relative w-2 h-2">
-                  <div className="absolute inset-0 bg-primary rounded-full animate-ping" />
-                  <div className="relative w-full h-full bg-primary rounded-full" />
+                  <div className={cn("absolute inset-0 rounded-full animate-ping", match.is_recruitment ? "bg-amber-500" : "bg-primary")} />
+                  <div className={cn("relative w-full h-full rounded-full", match.is_recruitment ? "bg-amber-500" : "bg-primary")} />
                 </div>
-                <span className="text-[10px] font-black text-primary uppercase tracking-[0.5em] italic">
-                  CONVOCATORIA ABIERTA
+                <span className={cn("text-[10px] font-black uppercase tracking-[0.5em] italic", match.is_recruitment ? "text-amber-500" : "text-primary")}>
+                  {match.is_recruitment ? "BÚSQUEDA DE REFUERZOS" : "CONVOCATORIA ABIERTA"}
                 </span>
               </div>
             )}
@@ -539,10 +550,14 @@ function MatchLobbyContent() {
           {[
             {
               icon: <Users className="w-4 h-4" />,
-              label: 'Jugadores',
-              value: `${confirmedParticipants.length}/${totalPlayers}`,
-              accent: 'text-primary',
-              sub: `${Math.round(occupancyPct)}% ocupado`,
+              label: match.is_recruitment ? 'Reclutando' : 'Jugadores',
+              value: match.is_recruitment 
+                ? `${confirmedParticipants.length}/${match.missing_players}` 
+                : `${confirmedParticipants.length}/${totalPlayers}`,
+              accent: match.is_recruitment ? 'text-amber-400' : 'text-primary',
+              sub: match.is_recruitment 
+                ? `${match.missing_players - confirmedParticipants.length} vacantes` 
+                : `${Math.round(occupancyPct)}% ocupado`,
             },
             {
               icon: <DollarSign className="w-4 h-4" />,
@@ -718,10 +733,12 @@ function MatchLobbyContent() {
               <div className="flex items-center justify-between">
                 <div>
                   <h2 className="text-2xl font-black italic uppercase tracking-tighter text-foreground leading-none">
-                    Alineaciones
+                    {match.is_recruitment ? 'Hub de Reclutamiento' : 'Alineaciones'}
                   </h2>
                   <p className="text-[9px] font-black text-foreground/30 uppercase tracking-[0.4em] mt-1">
-                    Elegí tu equipo y entrá a jugar
+                    {match.is_recruitment 
+                      ? 'Sumate al equipo que busca refuerzos' 
+                      : 'Elegí tu equipo y entrá a jugar'}
                   </p>
                 </div>
                 <div className="flex items-center gap-2">
@@ -787,7 +804,99 @@ function MatchLobbyContent() {
                 </motion.div>
               )}
 
-              {/* Team panels */}
+              {/* Team panels / Recruitment View */}
+              {match.is_recruitment ? (
+                <div className="space-y-6">
+                   <div className="p-8 rounded-[2.5rem] bg-amber-500/[0.03] border border-amber-500/10 relative overflow-hidden group">
+                      <div className="absolute top-0 right-0 w-32 h-32 bg-amber-500/5 blur-3xl rounded-full translate-x-1/2 -translate-y-1/2" />
+                      
+                      <div className="flex flex-col sm:flex-row items-center justify-between gap-6 relative z-10">
+                        <div className="space-y-3 text-center sm:text-left">
+                           <div className="flex items-center justify-center sm:justify-start gap-2">
+                              <Zap className="w-5 h-5 text-amber-500" />
+                              <h3 className="text-xl font-black italic uppercase tracking-tighter text-foreground">
+                                Objetivo: {match.missing_players} {match.missing_players === 1 ? 'Refuerzo' : 'Refuerzos'}
+                              </h3>
+                           </div>
+                           <p className="text-[10px] text-foreground/40 font-bold uppercase tracking-widest max-w-sm">
+                              Este partido ya tiene jugadores confirmados fuera de la plataforma. 
+                              Estamos buscando {match.missing_players} jugadores más para completar.
+                           </p>
+                        </div>
+                        
+                        <div className="flex flex-col items-center sm:items-end gap-2 shrink-0">
+                           <div className="flex items-center gap-3">
+                              <div className="flex -space-x-3">
+                                {confirmedParticipants.map((p, i) => (
+                                   <div key={p.id} className="w-10 h-10 rounded-full border-2 border-background bg-surface overflow-hidden relative" style={{ zIndex: 10 - i }}>
+                                      {p.profiles?.avatar_url ? (
+                                        <img src={p.profiles.avatar_url} alt="" className="w-full h-full object-cover" />
+                                      ) : (
+                                        <div className="w-full h-full flex items-center justify-center text-[10px] font-black">{p.profiles?.name?.[0].toUpperCase()}</div>
+                                      )}
+                                   </div>
+                                ))}
+                                {Array.from({ length: Math.max(0, match.missing_players - confirmedParticipants.length) }).map((_, i) => (
+                                   <div key={i} className="w-10 h-10 rounded-full border-2 border-dashed border-amber-500/20 bg-amber-500/5 flex items-center justify-center">
+                                      <Users className="w-4 h-4 text-amber-500/20" />
+                                   </div>
+                                ))}
+                              </div>
+                           </div>
+                           <span className="text-[9px] font-black text-amber-500 uppercase tracking-widest">
+                             {confirmedParticipants.length} UNIDOS · {match.missing_players - confirmedParticipants.length} POR CUBRIR
+                           </span>
+                        </div>
+                      </div>
+                      
+                      {!hasJoined && !isFull && !isCompleted && (
+                        <div className="mt-8">
+                           <button 
+                             onClick={() => handleJoinTeam('A')}
+                             disabled={actionLoading !== null}
+                             className="w-full h-16 bg-amber-500 text-black font-black uppercase tracking-widest rounded-2xl shadow-[0_15px_40px_rgba(245,158,11,0.2)] hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-3"
+                           >
+                             {actionLoading === 'A' ? (
+                               <Loader2 className="w-6 h-6 animate-spin" />
+                             ) : (
+                               <>
+                                 <PlusCircle className="w-5 h-5" />
+                                 Cubrir Vacante Ahora
+                               </>
+                             )}
+                           </button>
+                        </div>
+                      )}
+
+                      {hasJoined && !isCompleted && (
+                        <div className="mt-8 p-4 rounded-2xl bg-primary/10 border border-primary/20 flex items-center justify-center gap-3">
+                           <Check className="w-5 h-5 text-primary" />
+                           <span className="text-[10px] font-black text-primary uppercase tracking-widest">Ya estás anotado como refuerzo</span>
+                        </div>
+                      )}
+                   </div>
+
+                   {/* List of Joined Recruitment Players */}
+                   {confirmedParticipants.length > 0 && (
+                      <div className="space-y-4">
+                        <span className="text-[9px] font-black text-foreground/20 uppercase tracking-[0.4em] px-1">
+                          Refuerzos via Pelotify
+                        </span>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                           {confirmedParticipants.map(p => (
+                             <div key={p.id} className="p-4 rounded-2xl bg-foreground/[0.02] border border-foreground/5 flex items-center gap-4">
+                                <PlayerSlot participant={p} isSelf={p.user_id === user?.id} />
+                                <div className="flex flex-col">
+                                   <span className="text-xs font-black italic uppercase text-foreground">{p.profiles?.name}</span>
+                                   <span className="text-[8px] font-bold text-primary uppercase tracking-widest">CONFIRMADO</span>
+                                </div>
+                             </div>
+                           ))}
+                        </div>
+                      </div>
+                   )}
+                </div>
+              ) : (
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                 {(['A', 'B'] as const).map((team, teamIdx) => {
                   const members = team === 'A' ? teamA : teamB;
@@ -924,6 +1033,7 @@ function MatchLobbyContent() {
                   );
                 })}
               </div>
+            )}
 
               {/* Action buttons */}
               <div className="space-y-3">
