@@ -607,12 +607,12 @@ function ProfileContent() {
                       animate={{ opacity: 1, x: 0 }}
                       className="flex items-center justify-center lg:justify-start gap-4"
                     >
-                      <h1 className="text-4xl sm:text-6xl font-black italic text-white uppercase tracking-tighter leading-none">
+                      <h1 className="text-4xl sm:text-6xl font-black italic text-foreground uppercase tracking-tighter leading-none">
                         {isEditing ? (
                           <input 
                             value={editedData.name} 
                             onChange={e => setEditedData({...editedData, name: e.target.value})}
-                            className="bg-transparent border-b-2 border-white/20 outline-none focus:border-primary transition-all w-full max-w-[400px] py-1"
+                            className="bg-transparent border-b-2 border-foreground/20 outline-none focus:border-primary transition-all w-full max-w-[400px] py-1"
                             placeholder="Tu Nombre"
                           />
                         ) : (displayPlayer.name)}
@@ -625,8 +625,8 @@ function ProfileContent() {
                     </motion.div>
                     <div className="flex items-center justify-center lg:justify-start gap-3">
                        <span className="text-xs font-black text-primary uppercase tracking-[0.4em] italic">{displayPlayer.position}</span>
-                       <div className="w-1 h-1 rounded-full bg-white/20" />
-                       <span className="text-xs font-black text-white/40 uppercase tracking-[0.4em]">{teamName}</span>
+                       <div className="w-1 h-1 rounded-full bg-foreground/20" />
+                       <span className="text-xs font-black text-foreground/40 uppercase tracking-[0.4em]">{teamName}</span>
                     </div>
                   </div>
 
@@ -663,7 +663,7 @@ function ProfileContent() {
                           value={editedData.bio}
                           onChange={e => setEditedData({...editedData, bio: e.target.value})}
                           placeholder="Escribe algo sobre ti..."
-                          className="w-full bg-white/5 border border-white/10 rounded-2xl p-5 text-sm text-white/70 outline-none focus:border-primary/50 h-28 resize-none shadow-inner"
+                          className="w-full bg-foreground/5 border border-foreground/10 rounded-2xl p-5 text-sm text-foreground/70 outline-none focus:border-primary/50 h-28 resize-none shadow-inner"
                         />
                       </div>
                       <div className="space-y-2">
@@ -672,28 +672,28 @@ function ProfileContent() {
                           value={editedData.cover_url}
                           onChange={e => setEditedData({...editedData, cover_url: e.target.value})}
                           placeholder="https://images.unsplash.com/..."
-                          className="w-full bg-white/5 border border-white/10 rounded-2xl px-5 h-12 text-xs text-white/70 outline-none focus:border-primary/50 shadow-inner"
+                          className="w-full bg-foreground/5 border border-foreground/10 rounded-2xl px-5 h-12 text-xs text-foreground/70 outline-none focus:border-primary/50 shadow-inner"
                         />
                       </div>
                     </div>
                   ) : (
-                    <p className="text-sm sm:text-base text-white/60 font-medium leading-relaxed italic max-w-2xl">
+                    <p className="text-sm sm:text-base text-foreground/70 font-medium leading-relaxed italic max-w-2xl">
                       {editedData.bio || 'Dominando las canchas de Pelotify. Scouting abierto. Siempre listos para el siguiente despliegue. ⚽️'}
                     </p>
                   )}
                </div>
 
                {/* Modern Social Stats Hub */}
-               <div className="flex flex-wrap items-center justify-center lg:justify-start gap-x-12 gap-y-6 pt-6 border-t border-white/5">
+               <div className="flex flex-wrap items-center justify-center lg:justify-start gap-x-12 gap-y-6 pt-6 border-t border-foreground/10">
                   {[
-                    { label: 'Partidos', value: displayMatches, color: 'text-white' },
+                    { label: 'Partidos', value: displayMatches, color: 'text-foreground' },
                     { label: 'ELO RATING', value: displayElo, color: 'text-primary' },
-                    { label: 'Goles', value: displayGoals, color: 'text-white' },
+                    { label: 'Goles', value: displayGoals, color: 'text-foreground' },
                     { label: 'Badges', value: displayMvpCount, color: 'text-accent' },
                   ].map((stat, i) => (
                     <div key={i} className="flex flex-col group/stat cursor-default">
                        <span className={cn("text-3xl font-black italic tracking-tighter leading-none group-hover/stat:scale-110 transition-transform origin-left", stat.color)}>{stat.value}</span>
-                       <span className="text-[9px] font-black text-white/30 uppercase tracking-[0.3em] mt-1.5">{stat.label}</span>
+                       <span className="text-[9px] font-black text-foreground/40 uppercase tracking-[0.3em] mt-1.5">{stat.label}</span>
                     </div>
                   ))}
                </div>
@@ -701,7 +701,7 @@ function ProfileContent() {
         </div>
 
         {/* Navigation Tabs (Social Style) */}
-        <div className="sticky top-0 z-40 bg-background/80 backdrop-blur-xl border-y border-white/5 mb-10 -mx-4 px-4 sm:mx-0">
+        <div className="sticky top-0 z-40 bg-background/80 backdrop-blur-xl border-y border-foreground/10 mb-10 -mx-4 px-4 sm:mx-0">
            <div className="flex items-center justify-center sm:justify-start gap-10 py-5 overflow-x-auto no-scrollbar max-w-[1400px] mx-auto">
               {[
                 { id: 'overview', icon: Info, label: 'Bio & Stats' },
@@ -714,10 +714,10 @@ function ProfileContent() {
                   onClick={() => setActiveTab(tab.id as any)}
                   className={cn(
                     "flex items-center gap-2.5 text-[10px] font-black uppercase tracking-[0.3em] h-10 px-1 transition-all relative group/tab",
-                    activeTab === tab.id ? "text-primary" : "text-white/40 hover:text-white/80"
+                    activeTab === tab.id ? "text-primary" : "text-foreground/40 hover:text-foreground/80"
                   )}
                 >
-                  <tab.icon className={cn("w-4 h-4 transition-transform group-hover/tab:scale-110", activeTab === tab.id ? "text-primary" : "text-white/40")} />
+                  <tab.icon className={cn("w-4 h-4 transition-transform group-hover/tab:scale-110", activeTab === tab.id ? "text-primary" : "text-foreground/40")} />
                   <span className="italic">{tab.label}</span>
                   {activeTab === tab.id && (
                     <motion.div layoutId="social-tab" className="absolute bottom-[-1px] left-0 right-0 h-[3px] bg-primary shadow-[0_0_15px_rgba(44,252,125,0.6)] rounded-full" />

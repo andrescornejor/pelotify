@@ -25,25 +25,25 @@
 
   /* LIGHT THEME: Soft refinement */
   --background: #f8fafc;
-  --foreground: #0f172a;
-  --foreground-rgb: 15, 23, 42;
+  --foreground: #020617; /* Deep slate for high contrast */
+  --foreground-rgb: 2, 6, 23;
 
   --surface: #ffffff;
   --surface-elevated: #f1f5f9;
   --surface-bright: #ffffff;
 
-  --muted: #64748b;
-  --muted-foreground: #94a3b8;
+  --muted: #475569; /* Darker slate for readability */
+  --muted-foreground: #64748b;
 
-  --border: rgba(15, 23, 42, 0.08);
-  --input: #f1f5f9;
+  --border: rgba(2, 6, 23, 0.12); /* More defined borders */
+  --input: #f8fafc;
   --ring: var(--primary);
 
   --radius-xl: 1.5rem;
   --radius-2xl: 2.5rem;
   
-  --glass-bg: rgba(255, 255, 255, 0.82);
-  --glass-border: rgba(15, 23, 42, 0.05);
+  --glass-bg: rgba(255, 255, 255, 0.85);
+  --glass-border: rgba(2, 6, 23, 0.08);
 }
 
 :root.dark {
