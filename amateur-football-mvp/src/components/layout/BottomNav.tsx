@@ -10,7 +10,7 @@ const NAV_ITEMS = [
   { href: '/', icon: Home, label: 'Inicio' },
   { href: '/highlights', icon: Flame, label: 'FutTok' },
   { href: '/create', icon: PlusCircle, label: 'Crear', isPrimary: true },
-  { href: '/scouting', icon: Target, label: 'Mercado' },
+  { href: '/messages', icon: MessageSquare, label: 'Chats' },
   { href: '/profile/me', icon: User, label: 'Perfil' },
 ];
 
