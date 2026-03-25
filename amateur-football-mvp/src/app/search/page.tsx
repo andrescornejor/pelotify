@@ -97,6 +97,9 @@ export default function SearchPage() {
             <h1 className="text-5xl lg:text-7xl font-black italic text-foreground uppercase tracking-tightest leading-none">
               Scouting <span className="text-foreground/20">Radar</span>
             </h1>
+            <p className="text-[10px] font-bold uppercase tracking-[0.3em] text-foreground/30 mt-2">
+              Encontrá tu próximo partido — {filteredMatches.length} {filteredMatches.length === 1 ? 'resultado' : 'resultados'} activos
+            </p>
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-end">

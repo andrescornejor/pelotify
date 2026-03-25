@@ -484,7 +484,7 @@ export default function HomePage() {
       {
         icon: TrendingUp,
         label: 'Win Rate',
-        value: '0%',
+        value: `${statsSummary.winRate}%`,
         color: '#f43f5e',
         glow: 'rgba(244,63,94,0.2)',
         tooltip: 'Tu efectividad de victoria',
@@ -1202,6 +1202,40 @@ export default function HomePage() {
             </div>
 
             <SectionDivider />
+
+            {/* SCOUTING DISCOVERY CTA */}
+            <motion.div
+              whileHover={{ scale: 1.005 }}
+              className="relative overflow-hidden rounded-[2.5rem] p-8 glass-premium border-primary/10 group cursor-pointer"
+            >
+              {/* Animated scan line */}
+              {!isPerfMode && (
+                <motion.div
+                  animate={{ x: ['-100%', '200%'] }}
+                  transition={{ duration: 4, repeat: Infinity, ease: 'linear', repeatDelay: 2 }}
+                  className="absolute inset-y-0 w-32 bg-gradient-to-r from-transparent via-primary/10 to-transparent pointer-events-none z-0"
+                />
+              )}
+              <Link href="/scouting" className="flex flex-col sm:flex-row items-center gap-6 relative z-10">
+                <div className="relative">
+                  <div className="absolute inset-0 bg-primary/20 blur-xl rounded-full animate-pulse" />
+                  <div className="w-20 h-20 rounded-[2rem] bg-gradient-to-br from-primary/20 to-primary/5 border border-primary/30 flex items-center justify-center relative z-10 shadow-[0_0_30px_rgba(44,252,125,0.15)]">
+                    <Target className="w-10 h-10 text-primary" />
+                  </div>
+                </div>
+                <div className="flex-1 text-center sm:text-left space-y-2">
+                  <h4 className="text-2xl font-black text-foreground italic uppercase tracking-tighter font-kanit leading-none">
+                    Mercado de Fichajes
+                  </h4>
+                  <p className="text-[10px] text-foreground/40 font-black uppercase tracking-[0.2em] max-w-sm">
+                    Descubrí nuevos talentos deslizando cartas. <span className="text-primary">Swipe a la derecha</span> para enviar solicitud de fichaje.
+                  </p>
+                </div>
+                <div className="w-14 h-14 rounded-2xl bg-primary/10 border border-primary/20 flex items-center justify-center group-hover:bg-primary group-hover:text-background transition-all duration-500 shadow-lg group-hover:shadow-[0_10px_20px_rgba(44,252,125,0.3)]">
+                  <ArrowRight className="w-6 h-6 group-hover:translate-x-1 transition-transform" />
+                </div>
+              </Link>
+            </motion.div>
             <section id="activity-feed" className="space-y-6">
               <div className="flex items-center justify-between px-1">
                 <div className="flex flex-col gap-1">
@@ -1223,16 +1257,21 @@ export default function HomePage() {
                       initial={{ opacity: 0, x: -10 }}
                       whileInView={{ opacity: 1, x: 0 }}
                       transition={{ delay: idx * 0.1 }}
-                      className="p-4 rounded-2xl glass-premium border-white/5 flex items-center gap-4 group"
+                      className="p-4 rounded-2xl glass-premium border-white/5 flex items-center gap-4 group relative overflow-hidden"
                     >
+                      {/* Left accent bar */}
+                      <div className="absolute left-0 top-3 bottom-3 w-[2px] rounded-full bg-gradient-to-b from-primary/60 to-primary/10 opacity-0 group-hover:opacity-100 transition-opacity" />
                       <div className="w-10 h-10 rounded-full bg-surface border border-white/5 flex items-center justify-center shrink-0">
                         {activity.type === 'RANK_UP' ? <TrendingUp className="w-4 h-4 text-primary" /> : <Star className="w-4 h-4 text-accent" />}
                       </div>
                       <div className="flex-1 min-w-0">
                         <p className="text-[10px] font-bold text-foreground">
-                          {activity.user} <span className="text-foreground/40 font-medium tracking-tight"> {activity.detail}</span>
+                          <span className="font-black">{activity.user}</span> <span className="text-foreground/40 font-medium tracking-tight"> {activity.detail}</span>
                         </p>
-                        <p className="text-[8px] font-black text-primary/60 uppercase mt-0.5 tracking-tighter">hace {activity.time}</p>
+                        <p className="text-[8px] font-black text-primary/60 uppercase mt-0.5 tracking-tighter flex items-center gap-1.5">
+                          <div className="w-1 h-1 rounded-full bg-primary/40" />
+                          hace {activity.time}
+                        </p>
                       </div>
                     </motion.div>
                   ))

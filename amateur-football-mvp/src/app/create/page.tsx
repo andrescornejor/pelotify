@@ -678,6 +678,51 @@ export default function CreateMatchPage() {
                   </div>
                 </div>
 
+                {/* Level */}
+                <div className="space-y-4">
+                  <span className="text-[10px] font-black text-foreground/30 uppercase tracking-[0.4em] px-1">
+                    Nivel de Juego
+                  </span>
+                  <div className="grid grid-cols-3 gap-3">
+                    {[
+                      { value: 'Amateur', icon: '🏃', desc: 'Recreativo, para pasarla bien' },
+                      { value: 'Intermedio', icon: '⚡', desc: 'Algo de competitividad' },
+                      { value: 'Competitivo', icon: '🏆', desc: 'Modo campeonato' },
+                    ].map(({ value, icon, desc }) => {
+                      const isSelected = formData.level === value;
+                      return (
+                        <button
+                          key={value}
+                          type="button"
+                          onClick={() => setFormData({ ...formData, level: value })}
+                          className={`p-4 rounded-2xl border text-center transition-all duration-300 flex flex-col items-center gap-2 relative overflow-hidden ${
+                            isSelected
+                              ? 'border-primary bg-primary/[0.08]'
+                              : 'border-foreground/[0.06] bg-foreground/[0.02] hover:border-foreground/15'
+                          }`}
+                        >
+                          <span className="text-2xl">{icon}</span>
+                          <span className={`text-[10px] font-black italic uppercase tracking-tight ${isSelected ? 'text-foreground' : 'text-foreground/30'}`}>
+                            {value}
+                          </span>
+                          <span className={`text-[8px] font-medium tracking-wide leading-tight ${isSelected ? 'text-foreground/50' : 'text-foreground/15'}`}>
+                            {desc}
+                          </span>
+                          {isSelected && (
+                            <motion.div
+                              initial={{ scale: 0 }}
+                              animate={{ scale: 1 }}
+                              className="absolute top-2 right-2 w-5 h-5 rounded-full bg-primary flex items-center justify-center"
+                            >
+                              <CheckCircle2 className="w-3 h-3 text-black" />
+                            </motion.div>
+                          )}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+
                 {/* Privacy */}
                 <div className="space-y-4">
                   <span className="text-[10px] font-black text-foreground/30 uppercase tracking-[0.4em] px-1">
@@ -833,6 +878,11 @@ export default function CreateMatchPage() {
                         ),
                         label: 'Privacidad',
                         value: formData.is_private ? 'Solo invitados' : 'Público',
+                      },
+                      {
+                        icon: <Shield className="w-4 h-4" />,
+                        label: 'Nivel',
+                        value: formData.level,
                       },
                     ].map(({ icon, label, value }) => (
                       <div key={label} className="flex items-start gap-3">
