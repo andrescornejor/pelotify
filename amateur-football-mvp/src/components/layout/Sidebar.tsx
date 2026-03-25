@@ -119,36 +119,43 @@ export const SidebarContent = memo(function SidebarContent({
       )}
 
       {/* ── Logo Header ── */}
-      <div className="relative z-10 px-6 pt-10 pb-6 flex items-center justify-between shrink-0">
-        <Link
-          href="/"
-          onClick={() => isMobile && onClose && onClose()}
-          className="flex items-center gap-3.5 group/logo"
-        >
-          <div className="w-14 h-14 flex items-center justify-center relative shrink-0">
-            {!performanceMode && (
-              <div className="absolute inset-0 bg-primary/20 blur-[20px] rounded-full opacity-60 group-hover/logo:opacity-100 transition-opacity" />
-            )}
-            <img
-              src="/logo_pelotify.png"
-              alt="Logo"
-              className="w-full h-full object-contain relative z-10 drop-shadow-[0_0_15px_rgba(44,252,125,0.3)] transition-transform duration-500 group-hover/logo:scale-110 group-hover/logo:rotate-3"
-            />
-          </div>
-          <div className="flex flex-col">
-            <span className="text-[24px] font-[900] tracking-[-0.06em] font-kanit uppercase italic leading-none flex items-center">
-              <span className="text-foreground">PELOTI</span>
-              <span className="text-primary italic">FY</span>
-            </span>
-            <div className="flex items-center gap-1.5 mt-1">
-               <div className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
-               <span className="text-[8px] font-black uppercase tracking-[0.3em] text-foreground/40 leading-none">
-                 PRO LEAGUE 2026
-               </span>
+      <div className="relative z-10 px-6 pt-7 pb-5 flex items-center justify-between shrink-0">
+        <div className="flex flex-col">
+          <Link
+            href="/"
+            onClick={() => isMobile && onClose && onClose()}
+            className="flex items-center gap-2.5 group/logo"
+          >
+            <div className="w-16 h-16 flex items-center justify-center relative shrink-0 transition-transform duration-500 group-hover/logo:scale-110">
+              {!performanceMode && (
+                <div className="absolute inset-0 bg-primary/20 blur-[15px] rounded-full opacity-40 shrink-0" />
+              )}
+              <img
+                src="/logo_pelotify.png"
+                alt="Logo"
+                className="w-full h-full object-contain relative z-10"
+              />
             </div>
-          </div>
-        </Link>
-      </div>
+            <div className="flex flex-col">
+              <span className="text-[22px] font-[900] tracking-[-0.04em] font-kanit uppercase italic leading-tight flex items-center gap-0 group-hover/logo:text-primary transition-all pr-4">
+                <span className="text-foreground">PELOTI</span>
+                <span
+                  className="px-2 -mx-2"
+                  style={{
+                    background: 'linear-gradient(135deg, #5dfd9d 0%, #2cfc7d 50%, #1db95a 100%)',
+                    WebkitBackgroundClip: 'text',
+                    WebkitTextFillColor: 'transparent',
+                  }}
+                >
+                  FY
+                </span>
+              </span>
+              <span className="text-[8px] font-black uppercase tracking-[0.25em] leading-none mt-0.5 text-foreground/55">
+                Dominá el Potrero
+              </span>
+            </div>
+          </Link>
+        </div>
 
         <div className="flex items-center gap-1.5">
           {!isMobile && (
@@ -215,44 +222,93 @@ export const SidebarContent = memo(function SidebarContent({
 
       {/* ── User Card ── */}
       {user && (
-        <div className="relative z-10 mx-5 mb-8 shrink-0">
-          <Link href="/profile/me" onClick={() => isMobile && onClose && onClose()} className="block">
-            <div className="group relative overflow-hidden rounded-[2rem] glass-premium p-1 cursor-pointer transition-all duration-300 hover:shadow-[0_20px_40px_rgba(0,0,0,0.25)] border-primary/10 hover:border-primary/30">
-              {/* Internal padding container */}
-              <div className="p-4 rounded-[1.9rem] bg-background/40">
-                <div className="flex items-center gap-4 relative z-10">
-                  {/* Avatar with Ring */}
-                  <div className="relative shrink-0">
-                    <div className="w-14 h-14 rounded-2xl bg-surface border border-white/5 flex items-center justify-center overflow-hidden shadow-2xl group-hover:scale-105 transition-transform duration-500">
-                      {user.avatar_url ? (
-                        <img src={user.avatar_url} alt="" className="w-full h-full object-cover" />
-                      ) : (
-                        <span className="font-black text-xl text-primary font-kanit">
-                          {user.name ? user.name.charAt(0).toUpperCase() : 'U'}
-                        </span>
-                      )}
-                    </div>
-                    {/* Status Dot */}
-                    <div className="absolute -bottom-1 -right-1 w-4 h-4 rounded-full border-[3px] border-background bg-primary shadow-[0_0_10px_rgba(44,252,125,0.5)]" />
-                  </div>
-  
-                  <div className="flex flex-col min-w-0 flex-1">
-                    <h3 className="text-[13px] font-black text-foreground italic uppercase tracking-tighter truncate leading-none">
-                      {user.name || 'Usuario'}
-                    </h3>
-                    <div className="flex items-center gap-2 mt-2">
-                       <span className="px-2 py-0.5 rounded-md bg-primary/10 text-[7px] font-black text-primary uppercase tracking-widest border border-primary/20">
-                          {rank.name}
-                       </span>
-                       <span className="text-[9px] font-black text-foreground/30 uppercase tracking-[0.1em]">
-                          {elo} PTS
-                       </span>
-                    </div>
-                  </div>
+        <div className="relative z-10 mx-4 mb-5 shrink-0">
+          <Link href="/profile/me" onClick={() => isMobile && onClose && onClose()}>
+            <div
+              className="group relative overflow-hidden rounded-[1.25rem] p-4 cursor-pointer transition-transform duration-200 hover:scale-[1.015]"
+              style={{
+                background:
+                  'linear-gradient(135deg, rgba(44,252,126,0.06) 0%, rgba(44,252,125,0.02) 100%)',
+                border: '1px solid rgba(44,252,125,0.12)',
+              }}
+            >
+              {/* Background shine on hover */}
+              <div
+                className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+                style={{
+                  background:
+                    'radial-gradient(ellipse at 30% 50%, rgba(44,252,125,0.08) 0%, transparent 80%)',
+                }}
+              />
 
-                  <div className="w-8 h-8 rounded-xl flex items-center justify-center bg-foreground/[0.03] border border-white/5 group-hover:bg-primary group-hover:text-background transition-all duration-500">
-                    <ChevronRight className="w-4 h-4 opacity-50 group-hover:opacity-100" />
+              <div className="flex items-center gap-3 relative z-10">
+                {/* Avatar */}
+                <div className="relative shrink-0">
+                  <div
+                    className="w-11 h-11 rounded-[0.875rem] flex items-center justify-center overflow-hidden"
+                    style={{
+                      background:
+                        'linear-gradient(135deg, rgba(44,252,125,0.2), rgba(44,252,125,0.08))',
+                      border: '1.5px solid rgba(44,252,125,0.3)',
+                      boxShadow: '0 4px 16px rgba(44,252,125,0.15)',
+                    }}
+                  >
+                    {user.avatar_url ? (
+                      <img src={user.avatar_url} alt="" className="w-full h-full object-cover" />
+                    ) : (
+                      <span className="font-black text-lg text-primary">
+                        {user.name ? user.name.charAt(0).toUpperCase() : 'U'}
+                      </span>
+                    )}
                   </div>
+                  {/* Online dot */}
+                  <div
+                    className="absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full border-2 border-background"
+                    style={{ background: '#2cfc7d', boxShadow: '0 0 6px rgba(44,252,125,0.6)' }}
+                  />
+                </div>
+
+                <div className="flex flex-col min-w-0 pr-1">
+                  <p className="text-sm font-black text-foreground italic uppercase tracking-tighter truncate">
+                    {user.name || 'Usuario'}
+                  </p>
+                  <p className="text-[9px] font-black text-foreground/50 uppercase tracking-[0.2em] mt-0.5">
+                    #{user?.id?.slice(0, 5) || '00000'}
+                  </p>
+                </div>
+
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-1.5 mt-0.5">
+                    <span
+                      className="text-[9px] font-black uppercase tracking-widest"
+                      style={{ color: rank.color }}
+                    >
+                      {rank.name}
+                    </span>
+                    <span className="text-[9px] text-foreground/25 font-black">·</span>
+                    <span className="text-[9px] font-black text-foreground/35 uppercase tracking-widest">
+                      {elo} ELO
+                    </span>
+                  </div>
+                </div>
+
+                <div
+                  className="w-6 h-6 rounded-lg flex items-center justify-center shrink-0 opacity-0 group-hover:opacity-100 transition-opacity"
+                  style={{ background: 'rgba(44,252,125,0.12)' }}
+                >
+                  <svg
+                    className="w-3 h-3 text-primary"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2.5}
+                      d="M9 5l7 7-7 7"
+                    />
+                  </svg>
                 </div>
               </div>
             </div>

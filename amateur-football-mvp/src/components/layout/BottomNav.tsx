@@ -57,70 +57,60 @@ export function BottomNav() {
   }
 
   return (
-    <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-[100] w-[92%] max-w-[460px] lg:hidden pointer-events-none">
+    <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 w-[92%] max-w-[420px] lg:hidden">
       <nav
         className={cn(
-          'relative overflow-hidden rounded-[2.8rem] border transition-all duration-700 will-change-transform shadow-[0_30px_100px_rgba(0,0,0,0.5)] pointer-events-auto group/nav',
+          'relative overflow-hidden rounded-[2.5rem] border transition-all duration-500',
           performanceMode
-            ? 'bg-surface border-border'
-            : 'glass-premium bg-background/40 backdrop-blur-3xl border-white/5 active:scale-[0.98]'
+            ? 'bg-surface border-border shadow-lg'
+            : 'glass-premium bg-background/60 backdrop-blur-2xl border-foreground/[0.08] shadow-[0_20px_50px_rgba(0,0,0,0.3)]'
         )}
       >
-        {/* Cinematic Scan Line */}
-        {!performanceMode && (
-          <motion.div
-            animate={{ x: ['-100%', '200%'] }}
-            transition={{ duration: 10, repeat: Infinity, ease: 'linear' }}
-            className="absolute inset-0 bg-gradient-to-r from-transparent via-primary/5 to-transparent skew-x-[-30deg] pointer-events-none"
-          />
-        )}
-
-        <div className="flex justify-around items-center h-[82px] px-4 relative z-10">
+        <div className="flex justify-around items-center h-[72px] px-2">
           {NAV_ITEMS.map(({ href, icon: Icon, label, isPrimary }) => {
+            // Better detection for Profile tab (recognize both /profile/me and /profile)
             const isActive =
               href === '/'
                 ? pathname === '/'
                 : pathname.startsWith(href) ||
                   (href === '/profile/me' && pathname.startsWith('/profile'));
 
+            const hasUnread = label === 'Mensajes' && unreadCount > 0;
+
             if (isPrimary) {
               return (
                 <Link
                   key={href}
                   href={href}
-                  className="relative flex flex-col items-center justify-center -translate-y-1.5 px-2"
+                  className="relative flex flex-col items-center justify-center py-2 px-1"
                 >
+                  {/* Pulsing ring */}
+                  {!performanceMode && (
+                    <div
+                      className="absolute top-[2px] w-14 h-14 rounded-[1.35rem] border-2 border-primary/40"
+                      style={{ animation: 'pulse-ring 2.5s cubic-bezier(0.4, 0, 0.6, 1) infinite' }}
+                    />
+                  )}
                   <motion.div
-                    whileTap={{ scale: 0.9, y: 2 }}
-                    whileHover={{ scale: 1.1, y: -2 }}
+                    whileTap={performanceMode ? {} : { scale: 0.9, y: -4 }}
+                    whileHover={performanceMode ? {} : { scale: 1.05 }}
                     className={cn(
-                      'w-16 h-16 rounded-[2.2rem] flex items-center justify-center transition-all duration-700 relative z-10 shadow-2xl overflow-hidden group/primary',
-                      isActive 
-                        ? 'bg-primary text-black' 
-                        : 'bg-foreground/[0.03] text-primary border border-primary/40'
+                      'w-12 h-12 rounded-[1.25rem] flex items-center justify-center transition-all duration-300 relative z-10',
+                      isActive ? 'shadow-lg' : 'shadow-md'
                     )}
                     style={{
-                      boxShadow: isActive 
-                        ? '0 20px 40px rgba(var(--primary-rgb), 0.4), inset 0 2px 6px rgba(255,255,255,0.4)' 
-                        : '0 10px 25px rgba(0,0,0,0.3), inset 0 1px 1px rgba(255,255,255,0.05)'
+                      backgroundColor: '#55fa86',
+                      color: 'black',
+                      boxShadow: isActive
+                        ? '0 0 20px rgba(85, 250, 134, 0.4)'
+                        : '0 4px 12px rgba(85, 250, 134, 0.2)',
                     }}
                   >
-                    {!performanceMode && isActive && (
-                      <div className="absolute inset-0 bg-gradient-to-tr from-white/30 to-transparent animate-shimmer opacity-40" />
-                    )}
-                    <Icon className={cn("w-8 h-8 transition-transform duration-700", isActive && "group-hover/primary:scale-110")} strokeWidth={isActive ? 2.5 : 2} />
+                    <Icon className="w-6 h-6" strokeWidth={2.5} />
                   </motion.div>
-                  
-                  <span className={cn(
-                    "text-[9px] font-[1000] uppercase tracking-[0.3em] mt-2.5 transition-all duration-500 font-kanit italic",
-                    isActive ? "text-primary scale-110" : "text-foreground/20 opacity-40 group-hover/nav:opacity-60"
-                  )}>
+                  <span className="text-[7px] font-black uppercase tracking-[0.2em] mt-1.5 text-primary italic">
                     {label}
                   </span>
-                  
-                  {isActive && !performanceMode && (
-                    <div className="absolute -bottom-1 w-1 h-1 rounded-full bg-primary shadow-[0_0_10px_var(--primary)]" />
-                  )}
                 </Link>
               );
             }
@@ -129,39 +119,48 @@ export function BottomNav() {
               <Link
                 key={href}
                 href={href}
-                className="relative flex flex-col items-center justify-center flex-1 h-full py-4 group/item"
+                className="relative flex flex-col items-center justify-center flex-1 h-full py-2 group"
               >
                 <div className="relative">
-                  <motion.div
-                    animate={isActive ? { scale: 1.25, y: -4 } : { scale: 1, y: 0 }}
-                    transition={{ type: 'spring', stiffness: 450, damping: 20 }}
+                  <Icon
                     className={cn(
-                      'transition-all duration-500 relative z-10',
-                      isActive ? 'text-primary' : 'text-foreground/20 group-hover/item:text-foreground/60'
+                      'w-5 h-5 transition-all duration-300',
+                      isActive ? 'scale-110' : 'text-foreground/30 group-hover:text-foreground/50'
                     )}
-                  >
-                    <Icon className="w-5.5 h-5.5" strokeWidth={isActive ? 2.5 : 2} />
-                  </motion.div>
+                    style={{ color: isActive ? '#55fa86' : undefined }}
+                    strokeWidth={isActive ? 2.5 : 2}
+                  />
 
-                  {/* Active Indicator Glow */}
-                  <AnimatePresence>
-                    {isActive && !performanceMode && (
-                      <motion.div
-                        layoutId="nav-indicator-glow"
-                        className="absolute inset-0 bg-primary/20 blur-xl rounded-full -z-10"
-                        initial={{ opacity: 0, scale: 0 }}
-                        animate={{ opacity: 1, scale: 1.5 }}
-                        exit={{ opacity: 0, scale: 0 }}
-                      />
-                    )}
-                  </AnimatePresence>
+                  {/* Unread indicator */}
+                  {hasUnread && !isActive && (
+                    <span
+                      className="absolute -top-1 -right-1 w-2.5 h-2.5 rounded-full border-2 border-background shadow-lg"
+                      style={{
+                        backgroundColor: '#55fa86',
+                        boxShadow: '0 0 10px rgba(85, 250, 134, 0.5)',
+                      }}
+                    />
+                  )}
+
+                  {/* Active indicator dot */}
+                  {isActive && !performanceMode && (
+                    <motion.div
+                      layoutId="nav-dot"
+                      className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full"
+                      style={{
+                        backgroundColor: '#55fa86',
+                        boxShadow: '0 0 8px rgba(85, 250, 134, 0.6)',
+                      }}
+                    />
+                  )}
                 </div>
 
                 <span
                   className={cn(
-                    'text-[9px] font-[1000] uppercase tracking-[0.3em] mt-3 transition-all duration-500 font-kanit italic',
-                    isActive ? 'text-primary opacity-100' : 'text-foreground/20 group-hover/item:text-foreground/40'
+                    'text-[8px] font-black uppercase tracking-[0.15em] mt-2 transition-colors duration-300',
+                    isActive ? 'italic' : 'text-foreground/35'
                   )}
+                  style={{ color: isActive ? '#55fa86' : undefined }}
                 >
                   {label}
                 </span>
