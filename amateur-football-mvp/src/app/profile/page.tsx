@@ -29,7 +29,8 @@ import {
   Send,
   Trash,
   Flame,
-  Play
+  Play,
+  BadgeCheck,
 } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useSearchParams, useRouter } from 'next/navigation';
@@ -91,6 +92,8 @@ function ProfileContent() {
     height: '',
     preferredFoot: 'Derecha',
     position: 'DC',
+    bio: '',
+    cover_url: '',
   });
   const [skillPoints, setSkillPoints] = useState(0);
   const [editedStats, setEditedStats] = useState<PlayerStats>(DEFAULT_PLAYER.stats);
@@ -136,6 +139,8 @@ function ProfileContent() {
         height: (metadata.height || '').toString() || '175',
         preferredFoot: metadata.preferredFoot || metadata.preferred_foot || 'Derecha',
         position: (metadata.position || user.user_metadata?.position || 'DC').toUpperCase(),
+        bio: metadata.bio || '',
+        cover_url: metadata.cover_url || '',
       });
     }
   }, [isMe, user]);
@@ -406,7 +411,8 @@ function ProfileContent() {
         preferred_foot: editedData.preferredFoot,
         age: parseInt(editedData.age) || 18,
         height: parseInt(editedData.height) || 170,
-        avatar_url: newAvatarUrl,
+        cover_url: editedData.cover_url,
+        bio: editedData.bio,
         stats: editedStats,
         skill_points: skillPoints,
         updated_at: new Date().toISOString(),
@@ -439,6 +445,8 @@ function ProfileContent() {
             preferredFoot: editedData.preferredFoot,
             position: editedData.position,
             avatar_url: newAvatarUrl,
+            cover_url: editedData.cover_url,
+            bio: editedData.bio,
             stats: editedStats,
             skill_points: skillPoints,
           },
@@ -496,446 +504,229 @@ function ProfileContent() {
   }
 
   return (
-    <div className="flex flex-col gap-8 p-4 sm:p-6 lg:p-10 xl:p-14 2xl:p-16 max-w-full mx-auto min-h-screen bg-background relative selection:bg-primary/30 selection:text-primary">
+    <div className="flex flex-col min-h-screen bg-background relative selection:bg-primary/30 selection:text-primary overflow-x-hidden">
       {/* Ambient Effects */}
       <div className="fixed inset-0 pointer-events-none -z-10 overflow-hidden">
         <div
-          className="absolute top-0 left-0 w-full h-[80dvh] opacity-40 transition-colors duration-1000"
+          className="absolute top-0 left-0 w-full h-[80dvh] opacity-30 transition-colors duration-1000"
           style={{
             backgroundImage: ambientColor
               ? `radial-gradient(ellipse at 50% 0%, ${ambientColor}40, transparent 70%)`
               : 'radial-gradient(ellipse at 50% 0%, rgba(16,185,129,0.15), transparent 70%)',
           }}
         />
-        <div
-          className={cn(
-            'absolute top-[-20%] right-[-10%] w-[90%] h-[90%] blur-[160px] rounded-full animate-pulse opacity-50',
-            !ambientColor && 'bg-primary/5'
-          )}
-          style={{ backgroundColor: ambientColor || undefined, animationDuration: '8s' }}
-        />
-        <div
-          className={cn(
-            'absolute bottom-[-10%] left-[-20%] w-[60%] h-[60%] blur-[120px] rounded-full opacity-30 animate-pulse delay-1000',
-            !ambientColor && 'bg-accent/5'
-          )}
-          style={{
-            backgroundColor: ambientColor ? `${ambientColor}80` : undefined,
-            animationDuration: '6s',
-          }}
-        />
-        <div className="absolute inset-0 bg-[url('/noise.png')] opacity-[0.03] mix-blend-overlay" />
+        <div className="absolute inset-0 bg-[url('/noise.png')] opacity-[0.02] mix-blend-overlay" />
       </div>
 
-      {/* Header / Actions */}
-      <div className="relative z-10 flex flex-col md:flex-row justify-between items-start md:items-center gap-6 group/header">
-        <div className="space-y-3">
-          <motion.div
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            className="flex items-center gap-3"
-          >
-            <div className="relative flex items-center justify-center w-6 h-6 rounded-full bg-primary/10 border border-primary/30">
-              <div className="w-2 h-2 rounded-full bg-primary animate-ping absolute" />
-              <div className="w-2 h-2 rounded-full bg-primary" />
-            </div>
-            <span className="text-[10px] font-black uppercase tracking-[0.5em] text-foreground/40 italic bg-clip-text text-transparent bg-gradient-to-r from-foreground/50 to-foreground/20">
-              Identidad Digital
-            </span>
-          </motion.div>
-          <motion.h1
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.1 }}
-            className="text-5xl md:text-7xl lg:text-8xl font-black italic text-foreground uppercase tracking-tighter leading-none"
-          >
-            {isMe ? 'Mi ' : ''}
-            <span className="relative inline-block">
-              <span className="relative z-10 text-transparent bg-clip-text bg-gradient-to-br from-foreground to-foreground/50">
-                Perfil
-              </span>
-              <span className="absolute -bottom-2 -right-8 w-24 h-24 bg-primary/20 blur-[30px] rounded-full group-hover/header:bg-primary/40 transition-colors duration-700" />
-            </span>
-            {!isMe && <span className="text-foreground/20 ml-6 tracking-normal">Público</span>}
-          </motion.h1>
-        </div>
+      {/* Hero Banner Section */}
+      <div className="relative w-full h-[220px] sm:h-[320px] lg:h-[400px] overflow-hidden group/banner">
+        <div className="absolute inset-0 z-10 bg-gradient-to-t from-background via-background/20 to-transparent" />
+        <div className="absolute inset-0 z-10 bg-black/20" />
+        
+        {/* Placeholder or User Cover */}
+        <motion.img 
+          initial={{ scale: 1.1, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{ duration: 1.5 }}
+          src={editedData.cover_url || "https://images.unsplash.com/photo-1574629810360-7efbbe195018?auto=format&fit=crop&q=80&w=2000"} 
+          alt="Cover" 
+          className="w-full h-full object-cover grayscale-[0.3] brightness-[0.6] group-hover/banner:scale-105 transition-transform duration-[4s]"
+        />
 
         {isMe && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.2 }}
-            className="flex items-center gap-4 w-full md:w-auto mt-4 md:mt-0"
-          >
-            <AnimatePresence mode="wait">
-              {isEditing ? (
-                <motion.div
-                  key="editing"
-                  initial={{ opacity: 0, scale: 0.95 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.95 }}
-                  className="flex w-full gap-4"
-                >
-                  <button
-                    onClick={() => setIsEditing(false)}
-                    className="flex-1 md:flex-none h-14 px-8 rounded-[1.5rem] bg-foreground/5 border border-foreground/10 text-[11px] font-black uppercase tracking-[0.2em] text-foreground/50 hover:text-foreground hover:bg-foreground/10 hover:border-foreground/20 transition-all disabled:opacity-50 active:scale-95 group/btn"
-                    disabled={isSaving}
-                  >
-                    <div className="flex items-center justify-center gap-2">
-                      <X className="w-4 h-4 group-hover/btn:rotate-90 transition-transform duration-300" />
-                      <span>Cancelar</span>
-                    </div>
-                  </button>
-                  <button
-                    onClick={handleSaveProfile}
-                    className="flex-[2] md:flex-none h-14 px-10 rounded-[1.5rem] bg-gradient-to-r from-primary to-emerald-400 text-black text-[11px] font-black uppercase tracking-[0.2em] shadow-[0_0_40px_rgba(16,185,129,0.3)] hover:shadow-[0_0_60px_rgba(16,185,129,0.5)] transition-all disabled:opacity-50 active:scale-95 relative overflow-hidden group/btn"
-                    disabled={isSaving}
-                  >
-                    <div className="absolute inset-0 flex translate-x-[-100%] group-hover/btn:animate-[shimmer_1.5s_infinite] bg-gradient-to-r from-transparent via-white/40 to-transparent" />
-                    <div className="flex items-center justify-center gap-3 relative z-10">
-                      {isSaving ? (
-                        <Loader2 className="w-5 h-5 animate-spin" />
-                      ) : (
-                        <Save className="w-5 h-5" />
-                      )}
-                      <span className="drop-shadow-md">Guardar Data</span>
-                    </div>
-                  </button>
-                </motion.div>
-                ) : (
-                <div className="flex flex-col sm:flex-row gap-4 w-full md:w-auto">
-                  <ShareStory
-                    type="profile"
-                    data={{
-                      ...displayPlayer,
-                      name: displayPlayer.name,
-                      overall: displayPlayer.overall,
-                      position: displayPlayer.position,
-                      image: getField('avatar_url', undefined) as string | undefined,
-                    }}
-                    className="w-full md:w-auto"
-                  />
-                  <motion.button
-                    key="not-editing"
-                    initial={{ opacity: 0, scale: 0.9 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    onClick={() => {
-                      setIsEditing(true);
-                      setActiveTab('overview');
-                    }}
-                    className="w-full md:w-auto h-14 px-10 rounded-[1.5rem] glass-premium bg-foreground/5 border border-foreground/10 text-[11px] font-black uppercase tracking-[0.3em] text-foreground hover:bg-foreground/10 hover:border-primary/40 focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all flex items-center justify-center gap-3 group active:scale-95 shadow-xl"
-                  >
-                    <div className="p-2 rounded-xl bg-primary/10 group-hover:bg-primary/20 transition-colors">
-                      <Edit2 className="w-4 h-4 text-primary group-hover:rotate-12 transition-transform duration-500" />
-                    </div>
-                    Modificar Specs
-                  </motion.button>
-                </div>
-              )}
-            </AnimatePresence>
-          </motion.div>
+          <div className="absolute top-6 right-6 z-20 flex gap-3">
+             <button 
+              onClick={() => setIsEditing(!isEditing)}
+              className="px-6 h-12 rounded-2xl glass-premium border-white/10 hover:border-primary/40 text-[10px] font-black uppercase tracking-[0.2em] transition-all flex items-center gap-2 group/btn backdrop-blur-md"
+             >
+                <Edit2 className="w-4 h-4 text-primary group-hover/btn:rotate-12 transition-transform" />
+                <span>{isEditing ? 'Cerrar Editor' : 'Personalizar'}</span>
+             </button>
+             {!isEditing && (
+              <ShareStory
+                type="profile"
+                data={{
+                  ...displayPlayer,
+                  image: getField('avatar_url', undefined) as string | undefined,
+                }}
+              />
+             )}
+          </div>
+        )}
+
+        {/* Floating Rank Badge */}
+        {!isEditing && (
+          <div className="absolute bottom-10 right-6 sm:right-12 lg:right-20 z-20 flex flex-col items-end gap-1">
+             <RankBadge rankName={getRankByElo(displayElo).name} size="lg" className="drop-shadow-[0_0_30px_rgba(44,252,125,0.4)]" />
+             <span className="text-[10px] font-black text-primary uppercase tracking-[0.4em] drop-shadow-lg italic">
+               RANGO {getRankByElo(displayElo).name}
+             </span>
+          </div>
         )}
       </div>
 
-      {/* Profile Hero Section */}
-      <div className="relative z-10 flex flex-col lg:flex-row gap-8 items-center lg:items-start pt-4">
-        {/* Left: FIFA Card */}
-        <div
-          className={cn(
-            'relative shrink-0 group transition-all duration-1000',
-            isEditing ? 'z-50 scale-[1.03]' : ''
-          )}
-        >
-          <div
-            className={cn(
-              'absolute -inset-20 blur-[120px] rounded-full pointer-events-none transition-all duration-1000',
-              isEditing
-                ? 'bg-primary/30 scale-125 animate-pulse'
-                : ambientColor
-                  ? ''
-                  : 'bg-primary/10 animate-pulse'
-            )}
-            style={{ backgroundColor: !isEditing ? ambientColor || undefined : undefined }}
-          />
-          <div className="relative">
-            <FifaCard
-              player={{
-                ...displayPlayer,
-                name: (isEditing ? editedData.name : displayPlayer.name) as string,
-                position: (isEditing ? editedData.position : displayPlayer.position) as string,
-                image: avatarPreview || (getField('avatar_url', undefined) as string | undefined),
-                mvpTrophies: displayMvpCount,
-                badges: userBadges.map((b) => b.badge_type as string),
-              }}
-            />
-
-            {isEditing && (
-              <label className="absolute inset-0 z-30 flex flex-col items-center justify-center bg-background/60 backdrop-blur-sm cursor-pointer opacity-0 group-hover:opacity-100 transition-all text-foreground border-4 border-dashed border-primary/20 rounded-[2rem] m-2">
-                <Camera className="w-8 h-8 mb-2 text-primary" />
-                <span className="text-[10px] font-black uppercase tracking-widest leading-none">
-                  Cambiar Foto
-                </span>
-                <input
-                  type="file"
-                  accept="image/*"
-                  className="hidden"
-                  onChange={handleAvatarChange}
+      {/* Main Content Container */}
+      <div className="max-w-[1400px] mx-auto w-full px-4 sm:px-8 lg:px-12 -mt-24 sm:-mt-32 lg:-mt-40 relative z-20 pb-20">
+        
+        {/* Profile Header Block */}
+        <div className="flex flex-col lg:flex-row items-end lg:items-center gap-8 mb-12">
+            {/* The FIFA Card (Avatar Replacement) */}
+            <div className={cn(
+              "relative transition-all duration-700 perspective-1000 group/card",
+              isEditing && "z-50 scale-105"
+            )}>
+               <div className="absolute -inset-10 bg-primary/20 blur-[80px] rounded-full opacity-0 group-hover/card:opacity-100 transition-opacity" />
+               <FifaCard
+                  player={{
+                    ...displayPlayer,
+                    name: (isEditing ? editedData.name : displayPlayer.name) as string,
+                    position: (isEditing ? editedData.position : displayPlayer.position) as string,
+                    image: avatarPreview || (getField('avatar_url', undefined) as string | undefined),
+                    mvpTrophies: displayMvpCount,
+                    badges: userBadges.map((b) => b.badge_type as string),
+                  }}
                 />
-              </label>
-            )}
-          </div>
-
-          {isEditing && (
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="mt-6 glass-premium p-6 space-y-6 border border-primary/20 rounded-[2rem] shadow-xl"
-            >
-              {/* Skill Points Display */}
-              <div className="flex items-center justify-between p-4 bg-primary/10 border border-primary/20 rounded-2xl">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-xl bg-primary/20 flex items-center justify-center">
-                    <Zap className="w-5 h-5 text-primary animate-pulse" />
-                  </div>
-                  <div className="flex flex-col">
-                    <span className="text-[9px] font-black text-primary uppercase tracking-[0.2em] leading-tight">
-                      Puntos de Habilidad
-                    </span>
-                    <span className="text-xl font-black text-foreground">{skillPoints}</span>
-                  </div>
-                </div>
-                {skillPoints > 0 && (
-                  <span className="text-[8px] font-black text-primary uppercase animate-bounce">
-                    ¡Mejora tu carta!
-                  </span>
+                {isEditing && (
+                  <label className="absolute inset-0 z-30 flex flex-col items-center justify-center bg-black/60 backdrop-blur-md cursor-pointer rounded-[2rem] border-2 border-dashed border-primary/40 m-2 transition-all hover:bg-black/40">
+                    <Camera className="w-10 h-10 text-primary mb-2" />
+                    <span className="text-[10px] font-black uppercase tracking-widest">Cambiar Foto</span>
+                    <input type="file" className="hidden" onChange={handleAvatarChange} />
+                  </label>
                 )}
-              </div>
+            </div>
 
-              {/* Stat Editor Controls */}
-              <div className="grid grid-cols-2 gap-4">
-                {(Object.keys(editedStats) as Array<keyof PlayerStats>).map((key) => (
-                  <div key={key} className="flex flex-col gap-2">
-                    <div className="flex justify-between items-center px-1">
-                      <span className="text-[10px] font-black text-foreground/40 uppercase tracking-widest">
-                        {key}
-                      </span>
-                      <span className="text-xs font-black text-foreground">{editedStats[key]}</span>
-                    </div>
-                    <div className="flex gap-1">
-                      <button
-                        onClick={() => {
-                          const originalVal = dbProfile.stats?.[key] || DEFAULT_PLAYER.stats[key];
-                          if (editedStats[key] > originalVal) {
-                            setSkillPoints((prev) => prev + 1);
-                            setEditedStats((prev) => ({ ...prev, [key]: prev[key] - 1 }));
-                          }
-                        }}
-                        disabled={editedStats[key] <= (dbProfile.stats?.[key] || 0)}
-                        className="flex-1 h-9 rounded-lg bg-foreground/5 border border-foreground/10 text-xs font-black disabled:opacity-30 flex items-center justify-center hover:bg-foreground/10 transition-all"
-                      >
-                        -
-                      </button>
-                      <button
-                        onClick={() => {
-                          if (skillPoints > 0 && editedStats[key] < 99) {
-                            setSkillPoints((prev) => prev - 1);
-                            setEditedStats((prev) => ({ ...prev, [key]: prev[key] + 1 }));
-                          }
-                        }}
-                        disabled={skillPoints === 0 || editedStats[key] >= 99}
-                        className="flex-1 h-9 rounded-lg bg-primary/20 border border-primary/20 text-primary text-xs font-black disabled:opacity-30 flex items-center justify-center hover:bg-primary/30 transition-all"
-                      >
-                        +
-                      </button>
-                    </div>
-                  </div>
-                ))}
-              </div>
-
-              <div className="space-y-4 pt-2">
-                <div className="space-y-3">
-                  <label className="text-[10px] font-black uppercase text-foreground/40 tracking-[0.3em] ml-1">
-                    Nombre en Carta
-                  </label>
-                  <input
-                    type="text"
-                    className="w-full h-14 bg-background/40 border border-foreground/5 rounded-2xl px-6 text-foreground text-sm font-black outline-none focus:border-primary/50 transition-all uppercase placeholder:foreground/20"
-                    value={editedData.name}
-                    onChange={(e) => setEditedData({ ...editedData, name: e.target.value })}
-                  />
-                </div>
-                <div className="space-y-3">
-                  <label className="text-[10px] font-black uppercase text-foreground/40 tracking-[0.3em] ml-1">
-                    Posición Principal
-                  </label>
-                  <div className="relative">
-                    <select
-                      className="w-full h-14 bg-background/40 border border-foreground/5 rounded-2xl px-6 text-foreground text-sm font-black outline-none focus:border-primary/50 appearance-none cursor-pointer uppercase transition-all"
-                      value={editedData.position}
-                      onChange={(e) => setEditedData({ ...editedData, position: e.target.value })}
+            {/* Basic Info & Social Stats */}
+            <div className="flex-1 w-full space-y-6 lg:pb-8">
+               <div className="flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-8">
+                  <div className="space-y-1">
+                    <motion.div 
+                      initial={{ opacity: 0, x: -20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      className="flex items-center gap-4"
                     >
-                      <option value="POR">PORTERO (POR)</option>
-                      <option value="DFC">DEFENSA (DFC)</option>
-                      <option value="MC">MEDIOCAMPISTA (MC)</option>
-                      <option value="DC">DELANTERO (DC)</option>
-                      <option value="ED">EXTREMO DERECHO (ED)</option>
-                      <option value="EI">EXTREMO IZQUIERDO (EI)</option>
-                    </select>
-                    <ChevronRight className="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-foreground/40 rotate-90 pointer-events-none" />
+                      <h1 className="text-4xl sm:text-6xl font-black italic text-white uppercase tracking-tighter leading-none">
+                        {isEditing ? (
+                          <input 
+                            value={editedData.name} 
+                            onChange={e => setEditedData({...editedData, name: e.target.value})}
+                            className="bg-transparent border-b-2 border-white/20 outline-none focus:border-primary transition-all w-full max-w-[400px] py-1"
+                            placeholder="Tu Nombre"
+                          />
+                        ) : (displayPlayer.name)}
+                      </h1>
+                      {!isEditing && (
+                        <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center border border-primary/40">
+                           <BadgeCheck className="w-4 h-4 text-primary" />
+                        </div>
+                      )}
+                    </motion.h1>
+                    <div className="flex items-center gap-3">
+                       <span className="text-xs font-black text-primary uppercase tracking-[0.4em] italic">{displayPlayer.position}</span>
+                       <div className="w-1 h-1 rounded-full bg-white/20" />
+                       <span className="text-xs font-black text-white/40 uppercase tracking-[0.4em]">{teamName}</span>
+                    </div>
                   </div>
-                </div>
-              </div>
-            </motion.div>
-          )}
+
+                  {/* Desktop Action Buttons */}
+                  <div className="flex items-center gap-3 mt-4 sm:mt-0 sm:ml-auto">
+                    {isMe ? (
+                       isEditing && (
+                        <div className="flex gap-3">
+                           <button onClick={() => setIsEditing(false)} className="h-14 px-8 rounded-2xl bg-white/5 border border-white/10 text-[11px] font-black uppercase tracking-widest hover:bg-white/10 transition-all">Cancelar</button>
+                           <button onClick={handleSaveProfile} disabled={isSaving} className="h-14 px-10 rounded-2xl bg-primary text-black text-[11px] font-black uppercase tracking-widest shadow-xl shadow-primary/20 flex items-center gap-3 active:scale-95 disabled:opacity-50 transition-all">
+                             {isSaving ? <Loader2 className="w-5 h-5 animate-spin" /> : <Save className="w-5 h-5" />}
+                             Guardar Cambios
+                           </button>
+                        </div>
+                       )
+                    ) : (
+                      <div className="flex gap-3">
+                         <button className="h-14 px-10 rounded-2xl bg-primary text-black text-[11px] font-black uppercase tracking-widest shadow-xl shadow-primary/20 hover:scale-105 active:scale-95 transition-all">Seguir</button>
+                         <button className="h-14 w-14 rounded-2xl glass-premium border-white/10 flex items-center justify-center hover:bg-white/10 transition-all">
+                            <MessageSquare className="w-6 h-6 text-white" />
+                         </button>
+                      </div>
+                    )}
+                  </div>
+               </div>
+
+               {/* Bio Section */}
+               <div className="max-w-xl">
+                  {isEditing ? (
+                    <div className="space-y-4">
+                      <div className="space-y-2">
+                        <label className="text-[10px] font-black uppercase text-white/40 tracking-widest">Biografía</label>
+                        <textarea 
+                          value={editedData.bio}
+                          onChange={e => setEditedData({...editedData, bio: e.target.value})}
+                          placeholder="Escribe algo sobre ti..."
+                          className="w-full bg-white/5 border border-white/10 rounded-2xl p-5 text-sm text-white/70 outline-none focus:border-primary/50 h-28 resize-none shadow-inner"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <label className="text-[10px] font-black uppercase text-white/40 tracking-widest">URL de Portada</label>
+                        <input 
+                          value={editedData.cover_url}
+                          onChange={e => setEditedData({...editedData, cover_url: e.target.value})}
+                          placeholder="https://images.unsplash.com/..."
+                          className="w-full bg-white/5 border border-white/10 rounded-2xl px-5 h-12 text-xs text-white/70 outline-none focus:border-primary/50 shadow-inner"
+                        />
+                      </div>
+                    </div>
+                  ) : (
+                    <p className="text-sm sm:text-base text-white/60 font-medium leading-relaxed italic max-w-2xl">
+                      {editedData.bio || 'Dominando las canchas de Pelotify. Scouting abierto. Siempre listos para el siguiente despliegue. ⚽️'}
+                    </p>
+                  )}
+               </div>
+
+               {/* Modern Social Stats Hub */}
+               <div className="flex flex-wrap items-center gap-x-12 gap-y-6 pt-6 border-t border-white/5">
+                  {[
+                    { label: 'Partidos', value: displayMatches, color: 'text-white' },
+                    { label: 'ELO RATING', value: displayElo, color: 'text-primary' },
+                    { label: 'Goles', value: displayGoals, color: 'text-white' },
+                    { label: 'Badges', value: displayMvpCount, color: 'text-accent' },
+                  ].map((stat, i) => (
+                    <div key={i} className="flex flex-col group/stat cursor-default">
+                       <span className={cn("text-3xl font-black italic tracking-tighter leading-none group-hover/stat:scale-110 transition-transform origin-left", stat.color)}>{stat.value}</span>
+                       <span className="text-[9px] font-black text-white/30 uppercase tracking-[0.3em] mt-1.5">{stat.label}</span>
+                    </div>
+                  ))}
+               </div>
+            </div>
         </div>
 
-        {/* Right: Stats & Info */}
-        <div className="flex-1 w-full space-y-12">
-          {/* Stats Highlights */}
-          <div
-            className={cn(
-              'grid grid-cols-1 sm:grid-cols-3 gap-6 transition-all duration-700',
-              isEditing && 'opacity-30 blur-sm pointer-events-none grayscale'
-            )}
-          >
-            {[
-              {
-                icon: (props: any) => (
-                  <RankBadge rankName={getRankByElo(displayElo).name} size="md" {...props} />
-                ),
-                label: 'Rango Actual',
-                value: getRankByElo(displayElo).name,
-                color: 'text-primary',
-                glow: 'from-primary/20 via-primary/5 to-transparent',
-                unit: '',
-              },
-              {
-                icon: History,
-                label: 'Despliegues',
-                value: displayMatches,
-                color: 'text-blue-500',
-                glow: 'from-blue-500/20 via-blue-500/5 to-transparent',
-                unit: 'EXP',
-              },
-              {
-                icon: Target,
-                label: 'Objetivos',
-                value: displayGoals,
-                color: 'text-accent',
-                glow: 'from-accent/20 via-accent/5 to-transparent',
-                unit: 'GOL',
-              },
-            ].map((node, i) => {
-              const Icon = node.icon;
-              return (
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.3 + i * 0.1 }}
-                  key={i}
-                  className="glass-premium p-8 lg:p-10 rounded-[2.5rem] border border-foreground/10 relative overflow-hidden group hover:border-foreground/20 transition-all duration-500 hover:-translate-y-2 hover:shadow-2xl"
-                >
-                  <div
-                    className={cn(
-                      'absolute inset-0 bg-gradient-to-br opacity-0 group-hover:opacity-100 transition-opacity duration-700',
-                      node.glow
-                    )}
-                  />
-                  <div
-                    className={cn(
-                      'absolute inset-x-0 top-0 h-1 bg-gradient-to-r hidden sm:block opacity-50',
-                      i === 0
-                        ? 'from-primary to-transparent'
-                        : i === 1
-                          ? 'from-blue-500 to-transparent'
-                          : 'from-accent to-transparent'
-                    )}
-                  />
-                  <div className="flex items-center justify-between mb-8 relative z-10">
-                    <div
-                      className={cn(
-                        'p-4 rounded-2xl bg-background/50 border border-foreground/5 backdrop-blur-xl group-hover:scale-110 transition-transform duration-500 shadow-xl',
-                        i === 0
-                          ? 'shadow-primary/10'
-                          : i === 1
-                            ? 'shadow-blue-500/10'
-                            : 'shadow-accent/10'
-                      )}
-                    >
-                      <Icon className={cn('w-6 h-6', node.color)} />
-                    </div>
-                    <span className="text-[10px] font-black text-foreground/20 uppercase tracking-widest italic group-hover:text-foreground/40 transition-colors"></span>
-                  </div>
-                  <div className="flex items-baseline gap-2 relative z-10">
-                    <span className="text-4xl sm:text-6xl font-black text-foreground italic tracking-tighter leading-none group-hover:scale-105 transition-transform origin-left truncate">
-                      {node.value}
-                    </span>
-                    {node.unit && (
-                      <span
-                        className={cn(
-                          'text-[11px] font-black uppercase tracking-[0.2em] -mt-2',
-                          node.color
-                        )}
-                      >
-                        {node.unit}
-                      </span>
-                    )}
-                  </div>
-                  <p className="text-[10px] font-black uppercase text-foreground/40 tracking-[0.4em] mt-4 ml-1 relative z-10">
-                    {node.label}
-                  </p>
-                </motion.div>
-              );
-            })}
-          </div>
-
-          {/* Navigation Tabs */}
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.5 }}
-            className={cn(
-              'sticky top-0 z-30 py-6 bg-background/80 backdrop-blur-2xl -mx-4 px-4 lg:-mx-0 lg:px-0 border-b border-foreground/5 transition-all duration-700',
-              isEditing && 'opacity-30 blur-sm pointer-events-none grayscale'
-            )}
-          >
-            <div className="flex p-1.5 bg-foreground/[0.03] rounded-[2rem] border border-foreground/10 relative shadow-2xl backdrop-blur-3xl w-full">
+        {/* Navigation Tabs (Social Style) */}
+        <div className="sticky top-0 z-40 bg-background/80 backdrop-blur-xl border-y border-white/5 mb-10 -mx-4 px-4 sm:mx-0">
+           <div className="flex items-center justify-center sm:justify-start gap-10 py-5 overflow-x-auto no-scrollbar max-w-[1400px] mx-auto">
               {[
-                { id: 'overview', label: 'Biometría' },
-                { id: 'history', label: 'Despliegues' },
-                { id: 'futtok', label: 'FutTok' },
-                { id: 'wall', label: 'Muro Social' },
+                { id: 'overview', icon: Info, label: 'Bio & Stats' },
+                { id: 'history', icon: History, label: 'Historial' },
+                { id: 'futtok', icon: Play, label: 'FutTok' },
+                { id: 'wall', icon: MessageSquare, label: 'Muro Social' },
               ].map((tab) => (
                 <button
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id as any)}
                   className={cn(
-                    'flex-1 py-4 px-2 text-[10px] sm:text-[11px] font-black uppercase tracking-[0.2em] sm:tracking-[0.3em] rounded-[1.5rem] transition-all relative z-10 italic group outline-none',
-                    activeTab === tab.id ? 'text-black' : 'text-foreground/40 hover:text-foreground'
+                    "flex items-center gap-2.5 text-[10px] font-black uppercase tracking-[0.3em] h-10 px-1 transition-all relative group/tab",
+                    activeTab === tab.id ? "text-primary" : "text-white/40 hover:text-white/80"
                   )}
                 >
-                  <span className="relative z-20 flex items-center justify-center gap-2">
-                    {activeTab === tab.id && (
-                      <div className="w-1.5 h-1.5 rounded-full bg-black animate-pulse" />
-                    )}
-                    {tab.label}
-                  </span>
+                  <tab.icon className={cn("w-4 h-4 transition-transform group-hover/tab:scale-110", activeTab === tab.id ? "text-primary" : "text-white/40")} />
+                  <span className="italic">{tab.label}</span>
                   {activeTab === tab.id && (
-                    <motion.div
-                      layoutId="profile-tab-indicator"
-                      className="absolute inset-0 bg-gradient-to-r from-primary to-emerald-400 rounded-[1.5rem] shadow-[0_0_30px_rgba(16,185,129,0.3)]"
-                      initial={false}
-                      transition={{ type: 'spring' as const, stiffness: 400, damping: 30 }}
-                    />
+                    <motion.div layoutId="social-tab" className="absolute bottom-[-1px] left-0 right-0 h-[3px] bg-primary shadow-[0_0_15px_rgba(44,252,125,0.6)] rounded-full" />
                   )}
                 </button>
               ))}
-            </div>
-          </motion.div>
+           </div>
+        </div>
 
-          {/* Tab Content */}
-          <div className="min-h-[400px]">
-            <AnimatePresence mode="wait">
+        {/* Main Tab View */}
+        <div className="min-h-[600px]">
+          <AnimatePresence mode="wait">
               {activeTab === 'overview' && (
                 <motion.div
                   key="overview"
