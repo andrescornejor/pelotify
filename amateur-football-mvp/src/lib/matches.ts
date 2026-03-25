@@ -22,6 +22,7 @@ export interface Match {
   team_a_name?: string;
   team_b_name?: string;
   is_private?: boolean;
+  is_recruitment?: boolean;
   participants?: { count: number }[];
   user_team?: 'A' | 'B' | null;
 }
