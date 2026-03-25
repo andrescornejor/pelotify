@@ -511,20 +511,20 @@ function ProfileContent() {
       {/* Ambient Effects */}
       <div className="fixed inset-0 pointer-events-none -z-10 overflow-hidden">
         <div
-          className="absolute top-0 left-0 w-full h-[80dvh] opacity-30 transition-colors duration-1000"
+          className="absolute top-0 left-0 w-full h-[80dvh] opacity-30 dark:opacity-40 transition-colors duration-1000"
           style={{
             backgroundImage: ambientColor
-              ? `radial-gradient(ellipse at 50% 0%, ${ambientColor}40, transparent 70%)`
-              : 'radial-gradient(ellipse at 50% 0%, rgba(16,185,129,0.15), transparent 70%)',
+              ? `radial-gradient(ellipse at 50% 0%, ${ambientColor}50, transparent 75%)`
+              : 'radial-gradient(ellipse at 50% 0%, rgba(16,185,129,0.2), transparent 75%)',
           }}
         />
-        <div className="absolute inset-0 bg-[url('/noise.png')] opacity-[0.02] mix-blend-overlay" />
+        <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/stadium.png')] opacity-[0.03] dark:opacity-[0.05] invert dark:invert-0 pointer-events-none" />
       </div>
 
       {/* Hero Banner Section */}
-      <div className="relative w-full h-[280px] sm:h-[450px] lg:h-[500px] overflow-hidden group/banner">
+      <div className="relative w-full h-[280px] sm:h-[450px] lg:h-[500px] overflow-hidden group/banner bg-[#020205]">
         <div className="absolute inset-0 z-10 bg-gradient-to-t from-background via-background/20 to-transparent" />
-        <div className="absolute inset-0 z-10 bg-black/40" />
+        <div className="absolute inset-0 z-10 bg-black/40 lg:bg-black/20" />
         
         {/* Placeholder or User Cover */}
         <motion.img 
@@ -607,7 +607,7 @@ function ProfileContent() {
                       animate={{ opacity: 1, x: 0 }}
                       className="flex items-center justify-center lg:justify-start gap-4"
                     >
-                      <h1 className="text-4xl sm:text-6xl font-black italic text-foreground uppercase tracking-tighter leading-none">
+                      <h1 className="text-4xl sm:text-6xl font-black italic text-white uppercase tracking-tighter leading-none drop-shadow-2xl">
                         {isEditing ? (
                           <input 
                             value={editedData.name} 
@@ -624,9 +624,9 @@ function ProfileContent() {
                       )}
                     </motion.div>
                     <div className="flex items-center justify-center lg:justify-start gap-3">
-                       <span className="text-xs font-black text-primary uppercase tracking-[0.4em] italic">{displayPlayer.position}</span>
-                       <div className="w-1 h-1 rounded-full bg-foreground/20" />
-                       <span className="text-xs font-black text-foreground/40 uppercase tracking-[0.4em]">{teamName}</span>
+                       <span className="text-xs font-black text-primary uppercase tracking-[0.4em] italic drop-shadow-md">{displayPlayer.position}</span>
+                       <div className="w-1 h-1 rounded-full bg-white/40" />
+                       <span className="text-xs font-black text-white/70 uppercase tracking-[0.4em] drop-shadow-md">{teamName}</span>
                     </div>
                   </div>
 
@@ -677,7 +677,7 @@ function ProfileContent() {
                       </div>
                     </div>
                   ) : (
-                    <p className="text-sm sm:text-base text-foreground/70 font-medium leading-relaxed italic max-w-2xl">
+                    <p className="text-sm sm:text-base text-foreground/70 dark:text-white/60 font-medium leading-relaxed italic max-w-2xl">
                       {editedData.bio || 'Dominando las canchas de Pelotify. Scouting abierto. Siempre listos para el siguiente despliegue. ⚽️'}
                     </p>
                   )}
@@ -743,6 +743,7 @@ function ProfileContent() {
                     <div
                       className={cn(
                         'glass-premium p-10 lg:p-12 rounded-[3.5rem] border border-foreground/10 space-y-10 relative overflow-hidden group transition-all duration-700',
+                        'shadow-[0_10px_40px_rgba(0,0,0,0.02)] dark:shadow-[0_20px_50px_rgba(0,0,0,0.4)]',
                         isEditing
                           ? 'z-50 ring-4 ring-primary/30 shadow-[0_0_100px_rgba(16,185,129,0.2)] bg-background/80 scale-[1.02]'
                           : ''
