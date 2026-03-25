@@ -1296,7 +1296,7 @@ export default function HomePage() {
                              />
                           </motion.div>
                           <div className="text-center space-y-1">
-                            <span className="text-[11px] font-black uppercase italic tracking-tighter text-foreground font-kanit block truncate max-w-[100px]">{nextMatch.team_a_name || 'TITANES FC'}</span>
+                            <span className="text-[11px] font-black uppercase italic tracking-tighter text-foreground font-kanit block truncate max-w-[100px]">{(nextMatch.team_a_name && nextMatch.team_a_name !== 'Team A') ? nextMatch.team_a_name : 'LOCAL'}</span>
                             <span className="text-[8px] font-black text-foreground/20 uppercase tracking-widest">LOCAL</span>
                           </div>
                         </div>
@@ -1327,7 +1327,7 @@ export default function HomePage() {
                              />
                           </motion.div>
                           <div className="text-center space-y-1">
-                            <span className="text-[11px] font-black uppercase italic tracking-tighter text-foreground font-kanit block truncate max-w-[100px]">{nextMatch.team_b_name || 'LEGIONARIOS'}</span>
+                            <span className="text-[11px] font-black uppercase italic tracking-tighter text-foreground font-kanit block truncate max-w-[100px]">{(nextMatch.team_b_name && nextMatch.team_b_name !== 'Team B') ? nextMatch.team_b_name : 'VISITANTE'}</span>
                             <span className="text-[8px] font-black text-foreground/20 uppercase tracking-widest">VISITA</span>
                           </div>
                         </div>
