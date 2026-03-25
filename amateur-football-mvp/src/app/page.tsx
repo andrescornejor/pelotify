@@ -34,6 +34,7 @@ import { cn } from '@/lib/utils';
 import { OnboardingTour } from '@/components/OnboardingTour';
 import { JerseyVisualizer } from '@/components/JerseyVisualizer';
 import { getHighlights, Highlight } from '@/lib/highlights';
+import { RankUpCelebration } from '@/components/RankUpCelebration';
 
 // --- TYPES & CONSTANTS ---
 
@@ -299,6 +300,7 @@ export default function HomePage() {
   const { performanceMode, setPerformanceMode } = useSettings();
   const [scrollProgress, setScrollProgress] = useState(0);
   const [highlights, setHighlights] = useState<Highlight[]>([]);
+  const [showRankUp, setShowRankUp] = useState(false);
 
   // Local sync to set global perf-mode if user previously toggled it here (Legacy compatibility)
   useEffect(() => {
@@ -545,11 +547,11 @@ export default function HomePage() {
         </span>
       </button>
 
-      <div className="max-w-full mx-auto px-4 sm:px-6 lg:px-10 xl:px-16 py-4 lg:py-8 space-y-8 lg:space-y-12">
-        {/* 
-            HERO  full-width cinematic header
-         */}
-        <motion.section
+      <div className="max-w-full mx-auto px-4 sm:px-6 lg:px-10 xl:px-16 py-8 lg:py-12 flex flex-col gap-12">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-10 auto-rows-min">
+          {/* HERO GRID ITEM */}
+          <div className="lg:col-span-12 xl:col-span-12">
+            <motion.section
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
@@ -861,8 +863,10 @@ export default function HomePage() {
           </div>
         </motion.section>
 
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-          <div className="lg:col-span-8 xl:col-span-8 space-y-6">
+        {/* --- MAIN BENTO CONTENT --- */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-10 items-start">
+          {/* Main Content (Left Column) */}
+          <div className="lg:col-span-8 flex flex-col gap-8">
             <motion.section
               id="stat-cards"
               initial="hidden"
@@ -1448,6 +1452,13 @@ export default function HomePage() {
                     </Link>
                   ))}
                </div>
+               <button 
+                  onClick={() => setShowRankUp(true)}
+                  className="w-full h-12 mt-4 px-4 rounded-xl flex items-center justify-center gap-2 bg-primary/10 border border-primary/20 text-primary font-black uppercase text-[9px] tracking-[0.3em] hover:bg-primary/20 transition-all font-kanit"
+                >
+                  <Sparkles className="w-3.5 h-3.5 animate-pulse" />
+                  PROBAR ASCENSO
+                </button>
             </div>
           </div>
         </div>
@@ -1470,6 +1481,14 @@ export default function HomePage() {
           </div>
         </footer>
       </div>
+      <RankUpCelebration 
+        isOpen={showRankUp}
+        onClose={() => setShowRankUp(false)}
+        oldRank="ORO"
+        newRank={rankCalculation.rank.name}
+        newRankColor={rankCalculation.rank.hex}
+        newRankIcon={rankCalculation.rank.icon}
+      />
     </div>
   );
 }

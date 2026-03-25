@@ -36,7 +36,7 @@ import { useSearchParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useState, useEffect, useMemo } from 'react';
 import { supabase } from '@/lib/supabase';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence, useScroll, useTransform } from 'framer-motion';
 import { cn } from '@/lib/utils';
 import { getUserMatches, Match } from '@/lib/matches';
 import { findVenueByLocation } from '@/lib/venues';
@@ -495,8 +495,35 @@ function ProfileContent() {
     return null;
   }
 
+  const { scrollY } = useScroll();
+  const heroY = useTransform(scrollY, [0, 500], [0, 200]);
+  const heroOpacity = useTransform(scrollY, [0, 300], [1, 0]);
+
   return (
     <div className="flex flex-col gap-8 p-4 sm:p-6 lg:p-10 xl:p-14 2xl:p-16 max-w-full mx-auto min-h-screen bg-background relative selection:bg-primary/30 selection:text-primary">
+      {/* Parallax Hero Background */}
+      <div className="absolute top-0 left-0 right-0 h-[60dvh] overflow-hidden pointer-events-none -z-20">
+        <motion.div 
+          style={{ y: heroY, opacity: heroOpacity }}
+          className="relative w-full h-full"
+        >
+          <div 
+            className="absolute inset-0 opacity-20"
+            style={{ 
+              background: ambientColor 
+                ? `linear-gradient(to bottom, ${ambientColor}, transparent)` 
+                : `linear-gradient(to bottom, #10b981, transparent)`
+            }}
+          />
+          <img 
+            src="https://images.unsplash.com/photo-1574629810360-7efbbe195018?auto=format&fit=crop&q=80&w=2000" 
+            alt="Hero Background"
+            className="w-full h-full object-cover grayscale opacity-10"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent" />
+        </motion.div>
+      </div>
+
       {/* Ambient Effects */}
       <div className="fixed inset-0 pointer-events-none -z-10 overflow-hidden">
         <div
