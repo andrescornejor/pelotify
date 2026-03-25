@@ -1417,6 +1417,7 @@ export default function HomePage() {
                    </div>
                  )}
               </div>
+            </div>
 
             <div className="glass-premium p-6 rounded-[2.5rem] border-white/5 space-y-4">
                <h3 className="text-[10px] font-black text-foreground/40 uppercase tracking-[0.2em]">Accesos Rápidos</h3>
