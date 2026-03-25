@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Heart, MessageCircle, Share2, User2, Play, Pause, Trash2, ChevronLeft, Check, Volume2, VolumeX } from 'lucide-react';
+import { Heart, MessageCircle, Share2, User2, Play, Pause, Trash2, ChevronLeft, Check, Volume2, VolumeX, Flame } from 'lucide-react';
 import { useInView } from 'react-intersection-observer';
 import { useAuth } from '@/contexts/AuthContext';
 import { deleteHighlight, toggleLike, checkIfLiked } from '@/lib/highlights';
