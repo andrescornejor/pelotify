@@ -13,6 +13,7 @@ import {
   Bell,
   PlusCircle,
   Flame,
+  Target,
 } from 'lucide-react';
 import Link from 'next/link';
 import { useAuth } from '@/contexts/AuthContext';
@@ -61,8 +62,10 @@ export const SidebarContent = memo(function SidebarContent({
 
   const navItems = [
     { icon: HomeIcon, label: 'Inicio', href: '/' },
+    { icon: Trophy, label: 'Ranking Global', href: '/ranks' },
     { icon: Search, label: 'Buscar Partidos', href: '/search' },
     { icon: User2, label: 'Mi Perfil', href: '/profile/me' },
+    { icon: Target, label: 'Mercado', href: '/scouting', badge: 'PRO' },
     { icon: Flame, label: 'FutTok', href: '/highlights', badge: 'NUEVO' },
     {
       icon: Users,
