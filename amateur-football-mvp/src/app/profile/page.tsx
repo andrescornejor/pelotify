@@ -48,7 +48,6 @@ import { RankBadge } from '@/components/RankBadge';
 import { getRankByElo } from '@/lib/ranks';
 import { ShareStory } from '@/components/ShareStory';
 import { getUserHighlights, Highlight } from '@/lib/highlights';
-import { PerformanceRadar } from '@/components/PerformanceRadar';
 
 interface PlayerStats {
   pac: number;
@@ -975,11 +974,7 @@ function ProfileContent() {
                         </div>
                       </div>
 
-                      <div className="flex flex-col xl:flex-row gap-10 items-center">
-                         <div className="w-full lg:w-auto flex justify-center py-4">
-                            <PerformanceRadar stats={displayPlayer.stats} size={260} />
-                         </div>
-                         <div className="flex-1 space-y-6 w-full relative z-10">
+                      <div className="space-y-6 relative z-10">
                         {isEditing ? (
                           <div className="grid grid-cols-2 gap-6 bg-background/40 p-6 rounded-[2rem] border border-foreground/5 backdrop-blur-md">
                             <div className="space-y-3">
@@ -1095,7 +1090,6 @@ function ProfileContent() {
                         )}
                       </div>
                     </div>
-                  </div>
 
                     <div
                       className={cn(

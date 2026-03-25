@@ -26,7 +26,6 @@ import {
   Shield,
   Crown,
   Play,
-  Settings,
 } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/lib/supabase';
@@ -34,15 +33,11 @@ import { cn } from '@/lib/utils';
 import { OnboardingTour } from '@/components/OnboardingTour';
 import { JerseyVisualizer } from '@/components/JerseyVisualizer';
 import { getHighlights, Highlight } from '@/lib/highlights';
-import { MatchCountdown } from '@/components/MatchCountdown';
-import { MatchPromotionShare } from '@/components/MatchPromotionShare';
-import { RankBadge } from '@/components/RankBadge';
-import { RankName } from '@/lib/ranks';
 
 // --- TYPES & CONSTANTS ---
 
 interface Rank {
-  name: RankName;
+  name: string;
   minElo: number;
   color: string;
   icon: any;
@@ -77,7 +72,37 @@ const SectionDivider = () => (
   </div>
 );
 
+const RankBadge = ({ rankName, size = 'md', className }: { rankName: string; size?: 'sm' | 'md' | 'lg'; className?: string }) => {
+  const rank = RANKS.find(r => r.name === rankName) || RANKS[0];
+  const Icon = rank.icon;
 
+  const sizeMap = {
+    sm: 'w-10 h-10',
+    md: 'w-16 h-16',
+    lg: 'w-24 h-24',
+  };
+
+  const iconSizeMap = {
+    sm: 'w-5 h-5',
+    md: 'w-8 h-8',
+    lg: 'w-12 h-12',
+  };
+
+  return (
+    <div className={cn("relative flex items-center justify-center", sizeMap[size], className)}>
+      <div 
+        className="absolute inset-0 blur-xl rounded-full opacity-40" 
+        style={{ backgroundColor: rank.color }}
+      />
+      <div className="relative z-10 flex items-center justify-center">
+        <Icon 
+          className={cn(iconSizeMap[size], "drop-shadow-lg")} 
+          style={{ color: rank.color }} 
+        />
+      </div>
+    </div>
+  );
+};
 
 const StatCard = ({ stat, i, isPerfMode, fadeUp }: any) => (
   <motion.div
@@ -1225,7 +1250,7 @@ export default function HomePage() {
           <div className="lg:col-span-4 xl:col-span-4 space-y-6">
             <div id="featured-match" className="glass-premium p-6 rounded-[2.5rem] border-primary/10 relative overflow-hidden group">
                <div className="absolute top-0 right-0 p-4">
-                 <div className="px-3 py-1.5 rounded-full bg-primary text-background text-[8px] font-black uppercase tracking-[0.2em] animate-pulse shadow-[0_0_15px_rgba(44,252,125,0.4)]">PRÓXIMO MATCH</div>
+                 <div className="px-2 py-1 rounded bg-primary text-background text-[7px] font-black uppercase tracking-widest animate-pulse">PRÓXIMO</div>
                </div>
                
                <h3 className="text-[10px] font-black text-foreground/40 uppercase tracking-[0.2em] mb-4">Agenda Prioritaria</h3>
@@ -1306,18 +1331,16 @@ export default function HomePage() {
                <h3 className="text-[10px] font-black text-foreground/40 uppercase tracking-[0.2em]">Accesos Rápidos</h3>
                <div className="grid grid-cols-1 gap-2">
                   {[
-                    { label: 'Mercado de Fichajes', icon: Target, href: '/scouting', color: 'text-primary' },
-                    { label: 'Mi Squad Central', icon: Users, href: '/team/me', color: 'text-blue-400' },
-                    { label: 'Transferencias', icon: MessageSquare, href: '/messages', color: 'text-accent' },
-                    { label: 'Centro de Ajustes', icon: Settings, href: '/settings', color: 'text-zinc-500' }
+                    { label: 'Mercado', icon: Target, href: '/scouting' },
+                    { label: 'Mis Amigos', icon: Users, href: '/friends' },
+                    { label: 'Chat Global', icon: MessageSquare, href: '/messages' },
+                    { label: 'Configuración', icon: Target, href: '/settings' }
                   ].map((link, idx) => (
                     <Link key={idx} href={link.href}>
                       <button className="w-full h-12 px-4 rounded-xl flex items-center justify-between group hover:bg-foreground/[0.03] transition-all border border-transparent hover:border-white/5">
-                        <div className="flex items-center gap-4">
-                          <div className={cn("w-10 h-10 rounded-xl bg-foreground/[0.03] flex items-center justify-center border border-white/5 transition-colors group-hover:border-primary/20", (link as any).color)}>
-                            <link.icon className="w-5 h-5" />
-                          </div>
-                          <span className="text-[10px] font-black uppercase tracking-[0.2em] text-foreground/60 group-hover:text-foreground italic">{link.label}</span>
+                        <div className="flex items-center gap-3">
+                          <link.icon className="w-4 h-4 text-foreground/40 group-hover:text-primary transition-colors" />
+                          <span className="text-[10px] font-black uppercase tracking-widest text-foreground/60 group-hover:text-foreground">{link.label}</span>
                         </div>
                         <ChevronRight className="w-4 h-4 text-foreground/20 group-hover:text-foreground/40 group-hover:translate-x-1 transition-all" />
                       </button>

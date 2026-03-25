@@ -149,18 +149,6 @@ export function JerseyVisualizer({
           opacity="0.05"
         />
 
-        {/* Global Sheen / Highlight */}
-        <linearGradient id="jersey-sheen" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" style={{ stopColor: 'white', stopOpacity: 0.1 }} />
-          <stop offset="50%" style={{ stopColor: 'white', stopOpacity: 0.2 }} />
-          <stop offset="100%" style={{ stopColor: 'white', stopOpacity: 0 }} />
-        </linearGradient>
-        <path
-          d="M50 40 C 80 20, 120 20, 150 40 L 190 80 L 170 100 L 150 80 L 150 180 L 50 180 L 50 80 L 30 100 L 10 80 Z"
-          fill="url(#jersey-sheen)"
-          pointerEvents="none"
-        />
-
         {/* Center Chest (Logo Area) */}
         <g transform="translate(100, 85)">
             <defs>
