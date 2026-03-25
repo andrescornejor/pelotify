@@ -28,6 +28,7 @@ import {
   Play,
 } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
+import { useSettings } from '@/contexts/SettingsContext';
 import { supabase } from '@/lib/supabase';
 import { cn } from '@/lib/utils';
 import { OnboardingTour } from '@/components/OnboardingTour';
