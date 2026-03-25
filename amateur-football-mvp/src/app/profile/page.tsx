@@ -1969,6 +1969,7 @@ function ProfileContent() {
           </div>
         )}
       </AnimatePresence>
+      </div>
     </div>
   );
 }

@@ -1096,7 +1096,6 @@ export default function HomePage() {
           </motion.div>
 
         </div>
-       </div>
 
         <footer className="mt-20 pt-16 pb-24 lg:pb-12 border-t border-foreground/[0.05]">
           <div className="grid grid-cols-1 md:grid-cols-12 gap-12 lg:gap-8">
