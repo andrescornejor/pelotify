@@ -456,23 +456,6 @@
   80%, 100% { transform: scale(1.8); opacity: 0; }
 }
 
-@keyframes pelotify-spin {
-  0% { transform: rotate(0deg) scale(1); border-radius: 50%; }
-  33% { transform: rotate(120deg) scale(1.1); border-radius: 40%; }
-  66% { transform: rotate(240deg) scale(0.9); border-radius: 60%; }
-  100% { transform: rotate(360deg) scale(1); border-radius: 50%; }
-}
-
-@keyframes cinematic-fade-in {
-  from { opacity: 0; filter: blur(20px); transform: scale(1.05); }
-  to { opacity: 1; filter: blur(0); transform: scale(1); }
-}
-
-@keyframes scroll-x {
-  0% { transform: translateX(0); }
-  100% { transform: translateX(-100%); }
-}
-
 /* ── Named animation classes ── */
 .animate-radar-pulse {
   animation: radar-pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;

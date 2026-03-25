@@ -33,6 +33,9 @@ import { cn } from '@/lib/utils';
 import { OnboardingTour } from '@/components/OnboardingTour';
 import { JerseyVisualizer } from '@/components/JerseyVisualizer';
 import { getHighlights, Highlight } from '@/lib/highlights';
+import { MatchCountdown } from '@/components/MatchCountdown';
+import { MatchPromotionShare } from '@/components/MatchPromotionShare';
+import { RankBadge } from '@/components/RankBadge';
 
 // --- TYPES & CONSTANTS ---
 
@@ -541,35 +544,6 @@ export default function HomePage() {
         {/* 
             HERO  full-width cinematic header
          */}
-        {/* Cinematic Loader / Ticker at the top */}
-        <div className="relative z-20 h-10 w-full overflow-hidden flex items-center bg-black/40 backdrop-blur-md border-b border-white/5 mb-6 group/ticker">
-           <div className="flex whitespace-nowrap animate-scroll-x hover:[animation-play-state:paused] cursor-default">
-              {Array(10).fill(0).map((_, i) => (
-                <div key={i} className="flex items-center gap-6 px-4">
-                   <div className="flex items-center gap-2">
-                      <div className="w-1.5 h-1.5 rounded-full bg-primary shadow-[0_0_8px_rgba(44,252,125,0.6)]" />
-                      <span className="text-[9px] font-black text-white/50 uppercase tracking-[0.2em] italic">TOP PLAYER:</span>
-                      <span className="text-[10px] font-black text-white uppercase tracking-widest">@{['LeoMessi', 'NeymarJR', 'KylianM', 'Cristiano'][i % 4]}</span>
-                      <span className="text-[8px] font-black text-primary italic">99 OVR</span>
-                   </div>
-                   <div className="w-[1px] h-3 bg-white/10" />
-                </div>
-              ))}
-              {/* Duplicate for seamless infinite loop */}
-              {Array(10).fill(0).map((_, i) => (
-                <div key={i + 10} className="flex items-center gap-6 px-4">
-                   <div className="flex items-center gap-2">
-                      <div className="w-1.5 h-1.5 rounded-full bg-primary shadow-[0_0_8px_rgba(44,252,125,0.6)]" />
-                      <span className="text-[9px] font-black text-white/50 uppercase tracking-[0.2em] italic">TOP PLAYER:</span>
-                      <span className="text-[10px] font-black text-white uppercase tracking-widest">@{['LeoMessi', 'NeymarJR', 'KylianM', 'Cristiano'][i % 4]}</span>
-                      <span className="text-[8px] font-black text-primary italic">99 OVR</span>
-                   </div>
-                   <div className="w-[1px] h-3 bg-white/10" />
-                </div>
-              ))}
-           </div>
-        </div>
-
         <motion.section
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
@@ -660,15 +634,16 @@ export default function HomePage() {
                   initial={{ opacity: 0, y: 40 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.3, duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-                  className="font-black italic tracking-tight leading-[0.85] uppercase font-kanit drop-shadow-2xl"
-                  style={{ fontSize: 'clamp(2.5rem, 6vw, 7.5rem)' }}
+                  className="font-black italic tracking-tight leading-[0.85] uppercase font-kanit"
+                  style={{ fontSize: 'clamp(2.5rem, 6vw, 6rem)' }}
                 >
-                  <span className="text-foreground/90 mix-blend-difference heading-gradient block">DOMINA</span>
+                  <span className="text-foreground/90 mix-blend-difference">DOMINA</span>
+                  <br />
                   <span
                     className={
                       isPerfMode
                         ? 'text-primary'
-                        : 'bg-clip-text text-transparent bg-gradient-to-r from-primary-light via-primary to-primary-dark animate-gradient text-shadow-glow [text-shadow:0_0_40px_rgba(44,252,125,0.3)]'
+                        : 'bg-clip-text text-transparent bg-gradient-to-r from-primary-light via-primary to-primary-dark animate-gradient [text-shadow:0_0_40px_rgba(44,252,125,0.3)]'
                     }
                   >
                     LA CANCHA.
@@ -1278,7 +1253,7 @@ export default function HomePage() {
           <div className="lg:col-span-4 xl:col-span-4 space-y-6">
             <div id="featured-match" className="glass-premium p-6 rounded-[2.5rem] border-primary/10 relative overflow-hidden group">
                <div className="absolute top-0 right-0 p-4">
-                 <div className="px-2 py-1 rounded bg-primary text-background text-[7px] font-black uppercase tracking-widest animate-pulse">PRÓXIMO</div>
+                 <div className="px-3 py-1.5 rounded-full bg-primary text-background text-[8px] font-black uppercase tracking-[0.2em] animate-pulse shadow-[0_0_15px_rgba(44,252,125,0.4)]">PRÓXIMO MATCH</div>
                </div>
                
                <h3 className="text-[10px] font-black text-foreground/40 uppercase tracking-[0.2em] mb-4">Agenda Prioritaria</h3>
@@ -1359,16 +1334,18 @@ export default function HomePage() {
                <h3 className="text-[10px] font-black text-foreground/40 uppercase tracking-[0.2em]">Accesos Rápidos</h3>
                <div className="grid grid-cols-1 gap-2">
                   {[
-                    { label: 'Mercado', icon: Target, href: '/scouting' },
-                    { label: 'Mis Amigos', icon: Users, href: '/friends' },
-                    { label: 'Chat Global', icon: MessageSquare, href: '/messages' },
-                    { label: 'Configuración', icon: Target, href: '/settings' }
+                    { label: 'Mercado de Fichajes', icon: Target, href: '/scouting', color: 'text-primary' },
+                    { label: 'Mi Squad Central', icon: Users, href: '/team/me', color: 'text-blue-400' },
+                    { label: 'Transferencias', icon: MessageSquare, href: '/messages', color: 'text-accent' },
+                    { label: 'Centro de Ajustes', icon: Settings, href: '/settings', color: 'text-zinc-500' }
                   ].map((link, idx) => (
                     <Link key={idx} href={link.href}>
                       <button className="w-full h-12 px-4 rounded-xl flex items-center justify-between group hover:bg-foreground/[0.03] transition-all border border-transparent hover:border-white/5">
-                        <div className="flex items-center gap-3">
-                          <link.icon className="w-4 h-4 text-foreground/40 group-hover:text-primary transition-colors" />
-                          <span className="text-[10px] font-black uppercase tracking-widest text-foreground/60 group-hover:text-foreground">{link.label}</span>
+                        <div className="flex items-center gap-4">
+                          <div className={cn("w-10 h-10 rounded-xl bg-foreground/[0.03] flex items-center justify-center border border-white/5 transition-colors group-hover:border-primary/20", (link as any).color)}>
+                            <link.icon className="w-5 h-5" />
+                          </div>
+                          <span className="text-[10px] font-black uppercase tracking-[0.2em] text-foreground/60 group-hover:text-foreground italic">{link.label}</span>
                         </div>
                         <ChevronRight className="w-4 h-4 text-foreground/20 group-hover:text-foreground/40 group-hover:translate-x-1 transition-all" />
                       </button>

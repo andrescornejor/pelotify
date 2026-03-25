@@ -53,6 +53,8 @@ import { JerseyVisualizer, JERSEY_PATTERNS, JerseyPattern } from '@/components/J
 import TeamTactics from '@/components/TeamTactics';
 import { getDominantColor } from '@/lib/colorUtils';
 import { useSettings } from '@/contexts/SettingsContext';
+import { MatchCountdown } from '@/components/MatchCountdown';
+import { PerformanceRadar } from '@/components/PerformanceRadar';
 
 function TeamProfileContent() {
   const searchParams = useSearchParams();
@@ -732,22 +734,39 @@ function TeamProfileContent() {
             animate={{ opacity: 1, y: 0 }}
             className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12"
           >
-            {/* Main Elo Card */}
+             {/* Main Elo Card */}
             <div className="md:col-span-2 glass-premium p-8 rounded-[3rem] border border-foreground/5 bg-surface relative overflow-hidden group">
                <div className="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-full blur-[80px] -mr-16 -mt-16" />
-               <div className="relative z-10 flex flex-col h-full justify-between">
-                  <div className="flex items-center gap-4">
-                    <div className="w-10 h-10 rounded-2xl bg-primary/10 flex items-center justify-center text-primary border border-primary/20">
-                      <Zap className="w-5 h-5" />
+               <div className="relative z-10 flex flex-col md:flex-row h-full gap-8">
+                  <div className="flex-1 flex flex-col justify-between">
+                    <div className="flex items-center gap-4">
+                      <div className="w-10 h-10 rounded-2xl bg-primary/10 flex items-center justify-center text-primary border border-primary/20 transition-transform group-hover:rotate-12">
+                        <Zap className="w-5 h-5" />
+                      </div>
+                      <div>
+                        <h3 className="text-xl font-black italic text-foreground uppercase tracking-tighter leading-none">DNA Colectivo</h3>
+                        <p className="text-[9px] font-black uppercase tracking-widest text-foreground/40 mt-1">EQUILIBRIO TÁCTICO DEL CLUB</p>
+                      </div>
                     </div>
-                    <div>
-                      <h3 className="text-xl font-black italic text-foreground uppercase tracking-tighter leading-none">Status del Club</h3>
-                      <p className="text-[9px] font-black uppercase tracking-widest text-foreground/40 mt-1">REPUTACIÓN Y PODERÍO EN CANCHA</p>
+                    <div className="mt-8 flex items-baseline gap-2">
+                      <span className="text-6xl font-black italic text-primary tracking-tighter drop-shadow-[0_0_15px_rgba(44,252,125,0.3)]">{team.elo}</span>
+                      <span className="text-xs font-black uppercase tracking-widest text-foreground/20 italic">CAPACIDAD CLUB</span>
                     </div>
                   </div>
-                  <div className="mt-8 flex items-baseline gap-2">
-                    <span className="text-6xl font-black italic text-primary tracking-tighter">{team.elo}</span>
-                    <span className="text-xs font-black uppercase tracking-widest text-foreground/20">PUNTOS ELO</span>
+                  
+                  {/* Team DNA Radar */}
+                  <div className="w-full md:w-[240px] h-[240px] shrink-0 glass rounded-3xl p-4 border-white/5 bg-black/5 flex items-center justify-center">
+                    <PerformanceRadar 
+                      stats={{
+                        PAC: Math.min(99, 60 + (team.wins || 0) * 2),
+                        SHO: Math.min(99, 55 + (team.wins || 0) * 1.5),
+                        PAS: Math.min(99, 65 + (team.draws || 0) * 3),
+                        DRI: Math.min(99, 58 + (team.wins || 0) * 1.8),
+                        DEF: Math.min(99, 70 + (team.draws || 0) * 2.5),
+                        PHY: Math.min(99, 75 + (team.losses || 0) * 0.5)
+                      }}
+                      size={200}
+                    />
                   </div>
                </div>
             </div>
@@ -797,7 +816,13 @@ function TeamProfileContent() {
               )
               .slice(0, 1)
               .map((m) => (
-                <Link key={m.id} href={`/match?id=${m.id}`}>
+                <div key={m.id} className="space-y-4">
+                  <MatchCountdown 
+                    targetDate={m.date} 
+                    targetTime={m.time} 
+                    className="bg-primary/10 border-primary/20"
+                  />
+                  <Link href={`/match?id=${m.id}`}>
                   <motion.div
                     whileHover={{ scale: 1.02 }}
                     className="relative group p-8 rounded-[3rem] glass-premium border border-primary/30 overflow-hidden shadow-[0_30px_60px_rgba(var(--primary-rgb),0.2)]"
@@ -847,6 +872,7 @@ function TeamProfileContent() {
                     </div>
                   </motion.div>
                 </Link>
+                </div>
               ))}
           </div>
         )}

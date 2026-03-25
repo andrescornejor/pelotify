@@ -233,6 +233,21 @@ export default function VideoPlayer({
           <div className="absolute bottom-0 inset-x-0 h-56 bg-gradient-to-t from-black/90 via-black/50 to-transparent" />
         </div>
 
+        {/* Premium Badge Layer */}
+        {likes > 10 && (
+          <motion.div 
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            className="absolute top-24 left-6 z-30 pointer-events-none"
+          >
+            <div className="glass-premium px-3 py-1.5 rounded-full border-emerald-500/30 flex items-center gap-2 shadow-[0_0_20px_rgba(16,185,129,0.2)]">
+              <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+              <span className="text-[8px] font-black text-white italic uppercase tracking-[0.2em]">TENDENCIA GLOBAL</span>
+              <Flame className="w-3 h-3 text-orange-400" />
+            </div>
+          </motion.div>
+        )}
+
         {/* Persistent Play Icon or Temporary Pause/Play */}
         <AnimatePresence>
           {(!isPlaying || showPlayIcon) && !showDoubleTapHeart && (
