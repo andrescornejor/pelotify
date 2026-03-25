@@ -893,76 +893,140 @@ function ProfileContent() {
                         )}
                       </div>
                     </div>
-
                     <div
-                      className={cn(
-                        'glass-premium p-10 lg:p-12 rounded-[3.5rem] border border-foreground/10 space-y-10 relative overflow-hidden group transition-all duration-700',
-                        isEditing && 'opacity-30 blur-sm pointer-events-none grayscale'
-                      )}
-                    >
-                      <div className="absolute top-0 left-0 w-64 h-64 bg-accent/10 blur-[80px] opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none" />
-                      <div className="flex items-center justify-between relative z-10 border-b border-foreground/5 pb-6">
-                        <div className="flex items-center gap-5">
-                          <div className="w-14 h-14 rounded-[1.5rem] bg-background/50 flex items-center justify-center border border-accent/20 shadow-[0_0_20px_rgba(245,158,11,0.1)] group-hover:scale-110 transition-transform">
-                            <Zap className="w-6 h-6 text-accent" />
-                          </div>
-                          <div className="flex flex-col">
-                            <h3 className="text-xl font-black uppercase tracking-tighter text-foreground italic leading-none">
-                              Rendimiento
-                            </h3>
-                            <span className="text-[10px] font-black text-foreground/40 uppercase tracking-[0.3em] mt-1">
-                              Métricas de Juego
-                            </span>
-                          </div>
-                        </div>
-                      </div>
-
-                      <div className="space-y-8 relative z-10 w-full">
-                        {[
-                          {
-                            label: 'Victorias Totales',
-                            value: displayMatchesWon,
-                            color: 'text-foreground',
-                          },
-                          {
-                            label: 'Win Rate',
-                            value: `${displayMatches > 0 ? Math.min(100, Math.round((displayMatchesWon / displayMatches) * 100)) : 0}%`,
-                            color: 'text-foreground',
-                          },
-                          {
-                            label: 'MVP Frecuencia',
-                            value: `${displayMatches > 0 ? Math.min(100, (displayMvpCount / displayMatches) * 100).toFixed(1) : '0.0'}%`,
-                            color: 'text-accent',
-                            isLarge: true,
-                          },
-                        ].map((stat, idx) => (
-                          <div
-                            key={idx}
-                            className="flex justify-between items-center group/item p-4 rounded-2xl hover:bg-foreground/[0.02] transition-colors border border-transparent hover:border-foreground/5"
-                          >
-                            <div className="flex items-center gap-4">
-                              <div className="font-mono text-[9px] text-foreground/20 italic font-bold">
-                                0{idx + 1}
-                              </div>
-                              <span className="text-[11px] font-black uppercase text-foreground/50 tracking-[0.3em] group-hover/item:text-foreground transition-colors">
-                                {stat.label}
-                              </span>
+                        className={cn(
+                          'p-10 lg:p-12 rounded-[3.5rem] border border-foreground/10 space-y-10 relative overflow-hidden group transition-all duration-700 h-full',
+                          'bg-surface/50 dark:bg-foreground/5 backdrop-blur-xl',
+                          'shadow-[0_20px_60px_-15px_rgba(0,0,0,0.05)] dark:shadow-[0_30px_70px_rgba(0,0,0,0.4)]',
+                          isEditing
+                            ? 'z-50 ring-4 ring-primary/30 shadow-[0_0_100px_rgba(16,185,129,0.2)] bg-background/80 scale-[1.02]'
+                            : ''
+                        )}
+                      >
+                        <div className="absolute top-0 left-0 w-64 h-64 bg-accent/10 blur-[80px] opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none" />
+                        
+                        {isEditing ? (
+                          <>
+                            <div className="flex items-center justify-between relative z-10 border-b border-foreground/5 pb-6">
+                                <div className="flex items-center gap-5">
+                                    <div className="w-14 h-14 rounded-[1.5rem] bg-background/50 flex items-center justify-center border border-accent/20 shadow-[0_0_20px_rgba(245,158,11,0.1)] group-hover:scale-110 transition-transform">
+                                        <Zap className="w-6 h-6 text-accent" />
+                                    </div>
+                                    <div className="flex flex-col">
+                                        <h3 className="text-xl font-black uppercase tracking-tighter text-foreground italic leading-none">
+                                            Atributos
+                                        </h3>
+                                        <span className="text-[10px] font-black text-foreground/40 uppercase tracking-[0.3em] mt-1">
+                                            Skill Points: <span className="text-primary">{skillPoints}</span>
+                                        </span>
+                                    </div>
+                                </div>
                             </div>
-                            <span
-                              className={cn(
-                                'font-black italic tracking-tighter leading-none text-right',
-                                stat.isLarge
-                                  ? 'text-4xl lg:text-5xl drop-shadow-[0_0_20px_rgba(245,158,11,0.3)]'
-                                  : 'text-3xl lg:text-4xl',
-                                stat.color
-                              )}
-                            >
-                              {stat.value}
-                            </span>
-                          </div>
-                        ))}
+
+                            <div className="grid grid-cols-2 gap-4 relative z-10 pb-4">
+                                {(Object.keys(editedStats) as Array<keyof PlayerStats>).map((stat) => (
+                                    <div key={stat} className="bg-background/40 p-5 rounded-[2rem] border border-foreground/5 space-y-3 group/skill relative overflow-hidden">
+                                         <div className="flex items-center justify-between">
+                                            <span className="text-[11px] font-black uppercase text-foreground/50 tracking-[0.2em] group-hover/skill:text-primary transition-colors italic">{stat}</span>
+                                            <span className="text-xl font-black italic text-foreground tracking-tighter">{editedStats[stat]}</span>
+                                         </div>
+                                         <div className="flex items-center gap-2">
+                                            <button 
+                                              onClick={() => {
+                                                if (editedStats[stat] > 0) {
+                                                  setEditedStats({ ...editedStats, [stat]: editedStats[stat] - 1 });
+                                                  setSkillPoints(skillPoints + 1);
+                                                }
+                                              }}
+                                              className="w-10 h-10 rounded-xl bg-foreground/5 border border-foreground/10 flex items-center justify-center hover:bg-red-500/20 hover:text-red-500 transition-all text-foreground/30"
+                                            >-</button>
+                                            <div className="flex-1 h-2 bg-foreground/5 rounded-full overflow-hidden">
+                                                <motion.div 
+                                                    className="h-full bg-primary shadow-[0_0_10px_rgba(44,252,125,0.4)]"
+                                                    initial={{ width: 0 }}
+                                                    animate={{ width: `${(editedStats[stat] / 99) * 100}%` }}
+                                                />
+                                            </div>
+                                            <button 
+                                              onClick={() => {
+                                                if (skillPoints > 0 && editedStats[stat] < 99) {
+                                                  setEditedStats({ ...editedStats, [stat]: editedStats[stat] + 1 });
+                                                  setSkillPoints(skillPoints - 1);
+                                                }
+                                              }}
+                                              className="w-10 h-10 rounded-xl bg-foreground/5 border border-foreground/10 flex items-center justify-center hover:bg-primary/20 hover:text-primary transition-all text-foreground/30"
+                                            >+</button>
+                                         </div>
+                                    </div>
+                                ))}
+                            </div>
+                          </>
+                        ) : (
+                          <>
+                            <div className="flex items-center justify-between relative z-10 border-b border-foreground/5 pb-6">
+                              <div className="flex items-center gap-5">
+                                <div className="w-14 h-14 rounded-[1.5rem] bg-background/50 flex items-center justify-center border border-accent/20 shadow-[0_0_20px_rgba(245,158,11,0.1)] group-hover:scale-110 transition-transform">
+                                  <Zap className="w-6 h-6 text-accent" />
+                                </div>
+                                <div className="flex flex-col">
+                                  <h3 className="text-xl font-black uppercase tracking-tighter text-foreground italic leading-none">
+                                    Rendimiento
+                                  </h3>
+                                  <span className="text-[10px] font-black text-foreground/40 uppercase tracking-[0.3em] mt-1">
+                                    Métricas de Juego
+                                  </span>
+                                </div>
+                              </div>
+                            </div>
+
+                            <div className="space-y-8 relative z-10 w-full">
+                              {[
+                                {
+                                  label: 'Victorias Totales',
+                                  value: displayMatchesWon,
+                                  color: 'text-foreground',
+                                },
+                                {
+                                  label: 'Win Rate',
+                                  value: `${displayMatches > 0 ? Math.min(100, Math.round((displayMatchesWon / displayMatches) * 100)) : 0}%`,
+                                  color: 'text-foreground',
+                                },
+                                {
+                                  label: 'MVP Frecuencia',
+                                  value: `${displayMatches > 0 ? Math.min(100, (displayMvpCount / displayMatches) * 100).toFixed(1) : '0.0'}%`,
+                                  color: 'text-accent',
+                                  isLarge: true,
+                                },
+                              ].map((stat, idx) => (
+                                <div
+                                  key={idx}
+                                  className="flex justify-between items-center group/item p-4 rounded-2xl hover:bg-foreground/[0.02] transition-colors border border-transparent hover:border-foreground/5"
+                                >
+                                  <div className="flex items-center gap-4">
+                                    <div className="font-mono text-[9px] text-foreground/20 italic font-bold">
+                                      0{idx + 1}
+                                    </div>
+                                    <span className="text-[11px] font-black uppercase text-foreground/50 tracking-[0.3em] group-hover/item:text-foreground transition-colors">
+                                      {stat.label}
+                                    </span>
+                                  </div>
+                                  <span
+                                    className={cn(
+                                      'font-black italic tracking-tighter leading-none text-right',
+                                      stat.isLarge
+                                        ? 'text-4xl lg:text-5xl drop-shadow-[0_0_20px_rgba(245,158,11,0.3)]'
+                                        : 'text-3xl lg:text-4xl',
+                                      stat.color
+                                    )}
+                                  >
+                                    {stat.value}
+                                  </span>
+                                </div>
+                              ))}
+                            </div>
+                          </>
+                        )}
                       </div>
-                    </div>
                   </div>
 
                   {/* Team Section */}
