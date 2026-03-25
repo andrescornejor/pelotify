@@ -52,6 +52,27 @@ export async function getHighlights(limit = 10) {
   return data as unknown as Highlight[];
 }
 
+export async function getUserHighlights(userId: string) {
+  const { data, error } = await supabase
+    .from('match_highlights')
+    .select(`
+      *,
+      profiles:user_id (
+        name,
+        avatar_url
+      )
+    `)
+    .eq('user_id', userId)
+    .order('created_at', { ascending: false });
+
+  if (error) {
+    console.error('Error fetching user highlights:', error);
+    return [];
+  }
+
+  return data as unknown as Highlight[];
+}
+
 export async function incrementView(highlightId: string) {
   const { error } = await supabase.rpc('increment_highlight_views', { h_id: highlightId });
   if (error) console.error('Error incrementing views:', error);

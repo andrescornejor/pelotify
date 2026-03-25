@@ -28,6 +28,8 @@ import {
   MessageSquare,
   Send,
   Trash,
+  Flame,
+  Play
 } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useSearchParams, useRouter } from 'next/navigation';
@@ -45,6 +47,7 @@ import { compressImage, blobToFile } from '@/lib/imageUtils';
 import { RankBadge } from '@/components/RankBadge';
 import { getRankByElo } from '@/lib/ranks';
 import { ShareStory } from '@/components/ShareStory';
+import { getUserHighlights, Highlight } from '@/lib/highlights';
 
 interface PlayerStats {
   pac: number;
@@ -78,7 +81,7 @@ function ProfileContent() {
   const id = searchParams.get('id');
   const isMe = id === 'me' || id === user?.id || (!id && user?.id);
 
-  const [activeTab, setActiveTab] = useState<'overview' | 'history' | 'wall'>('overview');
+  const [activeTab, setActiveTab] = useState<'overview' | 'history' | 'futtok' | 'wall'>('overview');
 
   // Edit state
   const [isEditing, setIsEditing] = useState(false);
@@ -102,6 +105,10 @@ function ProfileContent() {
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [userMatches, setUserMatches] = useState<Match[]>([]);
   const [ambientColor, setAmbientColor] = useState<string | null>(null);
+
+  // FutTok State
+  const [userHighlights, setUserHighlights] = useState<Highlight[]>([]);
+  const [isLoadingHighlights, setIsLoadingHighlights] = useState(false);
 
   // Comments State
   const [comments, setComments] = useState<any[]>([]);
@@ -183,6 +190,17 @@ function ProfileContent() {
         setUserMatches(matches);
       } catch (err) {
         console.warn('Error cargando data extra:', err);
+      }
+
+      // Fetch Highlights
+      setIsLoadingHighlights(true);
+      try {
+        const highlights = await getUserHighlights(targetId);
+        setUserHighlights(highlights);
+      } catch (err) {
+         console.warn('Error cargando highlights:', err);
+      } finally {
+        setIsLoadingHighlights(false);
       }
     };
 
@@ -883,6 +901,7 @@ function ProfileContent() {
               {[
                 { id: 'overview', label: 'Biometría' },
                 { id: 'history', label: 'Despliegues' },
+                { id: 'futtok', label: 'FutTok' },
                 { id: 'wall', label: 'Muro Social' },
               ].map((tab) => (
                 <button
@@ -1503,6 +1522,106 @@ function ProfileContent() {
                           INICIAR CONVOCATORIA
                         </button>
                       </Link>
+                    </div>
+                  )}
+                </motion.div>
+              )}
+              {activeTab === 'futtok' && (
+                <motion.div
+                  key="futtok"
+                  initial={{ opacity: 0, x: 50 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -50 }}
+                  className="space-y-6"
+                >
+                  <div className="flex items-center justify-between px-1 mb-6">
+                    <div className="flex flex-col gap-1">
+                      <h3 className="text-xl lg:text-2xl font-black italic text-foreground uppercase tracking-tighter font-kanit">
+                        Highlights
+                      </h3>
+                      <span className="text-[9px] font-black text-primary uppercase tracking-[0.4em]">
+                        GALERÍA FutTok
+                      </span>
+                    </div>
+                    <Flame className="w-6 h-6 text-emerald-500 animate-pulse" />
+                  </div>
+
+                  {isLoadingHighlights ? (
+                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 sm:gap-4">
+                      {[1, 2, 3, 4, 5, 6].map((i) => (
+                        <div key={i} className="aspect-[9/16] rounded-2xl bg-foreground/[0.03] animate-pulse border border-white/5" />
+                      ))}
+                    </div>
+                  ) : userHighlights.length > 0 ? (
+                    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2 sm:gap-4">
+                      {userHighlights.map((h, i) => (
+                        <Link 
+                          key={h.id} 
+                          href={`/highlights?v=${h.id}`}
+                          className="group relative aspect-[9/16] rounded-[1.5rem] sm:rounded-[2rem] overflow-hidden border border-white/5 bg-surface transition-all duration-500 hover:scale-[1.03] hover:shadow-[0_0_30px_rgba(16,185,129,0.3)] hover:border-emerald-500/50"
+                        >
+                          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent z-10" />
+                          <video 
+                            src={h.video_url} 
+                            className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 opacity-80 group-hover:opacity-100"
+                            muted
+                            playsInline
+                            loop
+                            // onMouseOver={(e) => (e.target as HTMLVideoElement).play()}
+                            // onMouseOut={(e) => (e.target as HTMLVideoElement).pause()}
+                          />
+                          
+                          <div className="absolute top-3 left-3 z-20 flex gap-2">
+                            <div className="px-2 py-0.5 rounded-full bg-black/50 backdrop-blur-md border border-white/10 flex items-center gap-1.5">
+                              <Play className="w-2.5 h-2.5 text-white" />
+                              <span className="text-[8px] font-black italic text-white">{h.views_count || 0}</span>
+                            </div>
+                          </div>
+
+                          <div className="absolute bottom-3 left-3 right-3 z-20">
+                            <h4 className="text-[10px] font-black italic text-white uppercase tracking-wider line-clamp-1 drop-shadow-md">
+                              {h.description || 'HIGHLIGHT'}
+                            </h4>
+                            <div className="flex items-center gap-1 mt-1 opacity-70">
+                              <Flame className="w-2.5 h-2.5 text-emerald-400" />
+                              <span className="text-[8px] font-black text-white">{h.likes_count || 0} likes</span>
+                            </div>
+                          </div>
+                        </Link>
+                      ))}
+                      
+                      {isMe && (
+                        <Link href="/highlights" className="aspect-[9/16] rounded-[1.5rem] sm:rounded-[2rem] border-2 border-dashed border-white/10 flex flex-col items-center justify-center gap-3 hover:border-emerald-500/50 hover:bg-emerald-500/5 transition-colors group">
+                           <div className="w-12 h-12 rounded-full bg-surface border border-white/5 flex items-center justify-center group-hover:scale-110 transition-transform">
+                             <Plus className="w-6 h-6 text-emerald-500" />
+                           </div>
+                           <span className="text-[9px] font-black uppercase text-foreground/40 group-hover:text-emerald-500 tracking-widest px-4 text-center">SUBIR JUGADA</span>
+                        </Link>
+                      )}
+                    </div>
+                  ) : (
+                    <div className="glass-premium p-16 sm:p-20 rounded-[4rem] flex flex-col items-center justify-center text-center gap-8 border-dashed border-2 border-foreground/10 bg-foreground/[0.01]">
+                      <div className="w-24 h-24 rounded-[2.5rem] bg-foreground/5 border border-foreground/10 flex items-center justify-center shadow-xl">
+                        <Flame className="w-10 h-10 text-foreground/10" />
+                      </div>
+                      <div className="space-y-3">
+                        <p className="text-2xl font-black text-foreground italic uppercase tracking-tighter">
+                          Sin Highlights
+                        </p>
+                        <p className="text-[10px] font-black uppercase text-foreground/20 tracking-[0.3em] max-w-sm">
+                          {isMe
+                            ? 'Aún no subiste tus mejores jugadas. Mostrá lo que sabes hacer en la cancha.'
+                            : 'Este jugador no ha subido videos todavía.'}
+                        </p>
+                      </div>
+                      {isMe && (
+                        <Link href="/highlights">
+                          <button className="h-14 px-10 bg-emerald-500/10 hover:bg-emerald-500 text-emerald-500 hover:text-black font-black text-[10px] uppercase tracking-[0.3em] rounded-2xl border border-emerald-500/20 transition-all active:scale-95 flex items-center gap-3">
+                            <Plus className="w-4 h-4" />
+                            SUBIR VIDEO
+                          </button>
+                        </Link>
+                      )}
                     </div>
                   )}
                 </motion.div>
