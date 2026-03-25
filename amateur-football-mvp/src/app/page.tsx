@@ -1291,7 +1291,7 @@ export default function HomePage() {
                              <JerseyVisualizer 
                                primaryColor="#18181b" 
                                secondaryColor="#2cfc7d" 
-                               pattern="stripes"
+                               pattern="vertical"
                                className="w-full h-full"
                              />
                           </motion.div>
@@ -1322,7 +1322,7 @@ export default function HomePage() {
                              <JerseyVisualizer 
                                primaryColor="#10b981" 
                                secondaryColor="#ffffff" 
-                               pattern="circles"
+                               pattern="hoops"
                                className="w-full h-full"
                              />
                           </motion.div>
