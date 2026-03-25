@@ -317,12 +317,21 @@ export default function HomePage() {
       try {
         const [teamsRes, matchesRes, playersCountRes] = await Promise.all([
           supabase.from('team_members').select('team_id, teams(*)').eq('user_id', user.id).limit(3),
-          supabase.from('matches').select('*').gte('date', new Date().toISOString().split('T')[0]).order('date', { ascending: true }).order('time', { ascending: true }).limit(1),
+          supabase.from('match_participants')
+            .select('matches:matches!inner(*)')
+            .eq('user_id', user.id)
+            .gte('matches.date', new Date().toISOString().split('T')[0])
+            .order('date', { foreignTable: 'matches', ascending: true })
+            .limit(1),
           supabase.from('profiles').select('id', { count: 'exact', head: true }),
         ]);
 
         if (teamsRes.data) setUserTeams(teamsRes.data.map((t) => t.teams).filter(Boolean));
-        if (matchesRes.data?.[0]) setNextMatch(matchesRes.data[0]);
+        if (matchesRes.data?.[0]) {
+          const m = (matchesRes.data[0] as any).matches;
+          const mData = Array.isArray(m) ? m[0] : m;
+          setNextMatch(mData);
+        }
         if (playersCountRes.count) setTotalPlayers(playersCountRes.count);
 
         // Fetch Recent Members as real activity
