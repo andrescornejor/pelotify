@@ -53,20 +53,20 @@ export function MatchPromotionShare({ match, teamALogo, teamBLogo, className }: 
           if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
             try {
               await navigator.share({
-                 files: [file],
-                 title: `¡Se viene un partidazo! ${teamAName} vs ${teamBName}`,
-                 text: 'Descargá Pelotify y sumate al partido ⚽🔥',
+                files: [file],
+                title: `¡Se viene un partidazo! ${teamAName} vs ${teamBName}`,
+                text: 'Descargá Pelotify y sumate al partido ⚽🔥',
               });
             } catch (e) {
               console.log('Web share cancelled or failed', e);
             }
           } else {
-             const url = URL.createObjectURL(blob);
-             const a = document.createElement('a');
-             a.href = url;
-             a.download = fileName;
-             a.click();
-             URL.revokeObjectURL(url);
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = fileName;
+            a.click();
+            URL.revokeObjectURL(url);
           }
         };
 
@@ -141,6 +141,8 @@ export function MatchPromotionShare({ match, teamALogo, teamBLogo, className }: 
             </div>
           </div>
 
+          {/*ANASHE */}
+
           {/* Header */}
           <div className="w-full flex justify-between items-center p-16 relative z-30">
             <h1 className="text-6xl font-black italic uppercase tracking-tighter text-white drop-shadow-xl">
@@ -157,9 +159,9 @@ export function MatchPromotionShare({ match, teamALogo, teamBLogo, className }: 
               {teamALogo ? (
                 <img src={teamALogo} className="w-[450px] h-[450px] object-contain drop-shadow-[0_30px_60px_rgba(0,0,0,0.6)]" alt="" />
               ) : (
-                 <div className="w-[450px] h-[450px] rounded-[6rem] bg-blue-500 flex items-center justify-center border-[12px] border-white/20 shadow-2xl">
-                   <span className="text-[12rem] font-black italic text-white text-center leading-none">{teamAName.substring(0, 2)}</span>
-                 </div>
+                <div className="w-[450px] h-[450px] rounded-[6rem] bg-blue-500 flex items-center justify-center border-[12px] border-white/20 shadow-2xl">
+                  <span className="text-[12rem] font-black italic text-white text-center leading-none">{teamAName.substring(0, 2)}</span>
+                </div>
               )}
               <h2 className="text-[6rem] font-black italic uppercase tracking-tighter text-white text-center leading-[0.8] max-w-[800px] break-words drop-shadow-[0_10px_20px_rgba(0,0,0,0.8)]">
                 {teamAName}
@@ -174,9 +176,9 @@ export function MatchPromotionShare({ match, teamALogo, teamBLogo, className }: 
               {teamBLogo ? (
                 <img src={teamBLogo} className="w-[450px] h-[450px] object-contain drop-shadow-[0_30px_60px_rgba(0,0,0,0.6)]" alt="" />
               ) : (
-                 <div className="w-[450px] h-[450px] rounded-[6rem] bg-red-500 flex items-center justify-center border-[12px] border-white/20 shadow-2xl">
-                   <span className="text-[12rem] font-black italic text-white text-center leading-none">{teamBName.substring(0, 2)}</span>
-                 </div>
+                <div className="w-[450px] h-[450px] rounded-[6rem] bg-red-500 flex items-center justify-center border-[12px] border-white/20 shadow-2xl">
+                  <span className="text-[12rem] font-black italic text-white text-center leading-none">{teamBName.substring(0, 2)}</span>
+                </div>
               )}
             </div>
           </div>
@@ -186,15 +188,15 @@ export function MatchPromotionShare({ match, teamALogo, teamBLogo, className }: 
             <h3 className="text-6xl font-black uppercase text-primary tracking-[0.5em] mb-12 text-center italic drop-shadow-[0_0_20px_rgba(44,252,125,0.4)]">
               MATCH DAY
             </h3>
-            
+
             <div className="flex items-center justify-between w-full px-8 opacity-90">
               <div className="flex flex-col items-center gap-4 text-center">
                 <Calendar className="w-20 h-20 text-white" />
                 <span className="text-4xl font-black text-white capitalize tracking-wide">{formatDisplayDate(match.date)}</span>
               </div>
-              
+
               <div className="w-2 h-32 bg-white/20 rounded-full" />
-              
+
               <div className="flex flex-col items-center gap-4 text-center">
                 <Clock className="w-20 h-20 text-white" />
                 <span className="text-4xl font-black text-white tracking-wide">{match.time} HS</span>
