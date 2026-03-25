@@ -36,7 +36,7 @@ import { useSearchParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useState, useEffect, useMemo } from 'react';
 import { supabase } from '@/lib/supabase';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence, useScroll, useTransform } from 'framer-motion';
 import { cn } from '@/lib/utils';
 import { getUserMatches, Match } from '@/lib/matches';
 import { findVenueByLocation } from '@/lib/venues';
@@ -125,6 +125,9 @@ function ProfileContent() {
   // Avatar Upload State
   const [avatarFile, setAvatarFile] = useState<File | null>(null);
   const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
+
+  const { scrollY } = useScroll();
+  const yTransform = useTransform(scrollY, [0, 500], [0, 150]);
 
   useEffect(() => {
     if (isMe && user) {
@@ -497,8 +500,21 @@ function ProfileContent() {
 
   return (
     <div className="flex flex-col gap-8 p-4 sm:p-6 lg:p-10 xl:p-14 2xl:p-16 max-w-full mx-auto min-h-screen bg-background relative selection:bg-primary/30 selection:text-primary">
-      {/* Ambient Effects */}
-      <div className="fixed inset-0 pointer-events-none -z-10 overflow-hidden">
+      {/* Idea 7: Premium Parallax Hero Background */}
+      <div className="fixed inset-0 pointer-events-none -z-10 overflow-hidden select-none">
+        {/* Stadium Backdrop with Parallax */}
+        <motion.div 
+          style={{ y: yTransform }}
+          className="absolute inset-0 z-0 scale-110 grayscale opacity-[0.05] brightness-50"
+        >
+           <img 
+            src="https://images.unsplash.com/photo-1508098682722-e99c43a406b2?auto=format&fit=crop&q=80&w=2000" 
+            alt="" 
+            className="w-full h-full object-cover blur-[2px]"
+           />
+        </motion.div>
+
+        {/* Dynamic Color Glows */}
         <div
           className="absolute top-0 left-0 w-full h-[80dvh] opacity-40 transition-colors duration-1000"
           style={{
@@ -525,6 +541,9 @@ function ProfileContent() {
           }}
         />
         <div className="absolute inset-0 bg-[url('/noise.png')] opacity-[0.03] mix-blend-overlay" />
+        
+        {/* Glass Grain Overlay */}
+        <div className="absolute inset-0 bg-background/20 backdrop-blur-[1px]" />
       </div>
 
       {/* Header / Actions */}
