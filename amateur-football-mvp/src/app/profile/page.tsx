@@ -522,9 +522,9 @@ function ProfileContent() {
       </div>
 
       {/* Hero Banner Section */}
-      <div className="relative w-full h-[280px] sm:h-[450px] lg:h-[500px] overflow-hidden group/banner bg-[#020205]">
-        <div className="absolute inset-0 z-10 bg-gradient-to-t from-background via-background/20 to-transparent" />
-        <div className="absolute inset-0 z-10 bg-black/40 lg:bg-black/20" />
+      <div className="relative w-full h-[280px] sm:h-[450px] lg:h-[500px] overflow-hidden group/banner bg-zinc-950">
+        <div className="absolute inset-0 z-10 bg-gradient-to-t from-background via-transparent to-transparent opacity-100" />
+        <div className="absolute inset-0 z-10 bg-gradient-to-b from-black/60 via-transparent to-black/60 opacity-100" />
         
         {/* Placeholder or User Cover */}
         <motion.img 
@@ -533,7 +533,7 @@ function ProfileContent() {
           transition={{ duration: 1.5 }}
           src={editedData.cover_url || "https://images.unsplash.com/photo-1574629810360-7efbbe195018?auto=format&fit=crop&q=80&w=2000"} 
           alt="Cover" 
-          className="w-full h-full object-cover grayscale-[0.3] brightness-[0.7] group-hover/banner:scale-105 transition-transform duration-[4s]"
+          className="w-full h-full object-cover grayscale-[0.2] brightness-[0.7] group-hover/banner:scale-105 transition-transform duration-[4s]"
         />
 
         {isMe && (
@@ -607,7 +607,7 @@ function ProfileContent() {
                       animate={{ opacity: 1, x: 0 }}
                       className="flex items-center justify-center lg:justify-start gap-4"
                     >
-                      <h1 className="text-4xl sm:text-6xl font-black italic text-white uppercase tracking-tighter leading-none drop-shadow-2xl">
+                      <h1 className="text-4xl sm:text-6xl font-black italic text-white uppercase tracking-tighter leading-none text-shadow-md">
                         {isEditing ? (
                           <input 
                             value={editedData.name} 
@@ -635,7 +635,7 @@ function ProfileContent() {
                     {isMe ? (
                        isEditing && (
                         <div className="flex gap-3">
-                           <button onClick={() => setIsEditing(false)} className="h-14 px-8 rounded-2xl bg-white/5 border border-white/10 text-[11px] font-black uppercase tracking-widest hover:bg-white/10 transition-all">Cancelar</button>
+                           <button onClick={() => setIsEditing(false)} className="h-14 px-8 rounded-2xl bg-foreground/5 border border-foreground/10 text-[11px] font-black uppercase tracking-widest hover:bg-foreground/10 transition-all">Cancelar</button>
                            <button onClick={handleSaveProfile} disabled={isSaving} className="h-14 px-10 rounded-2xl bg-primary text-black text-[11px] font-black uppercase tracking-widest shadow-xl shadow-primary/20 flex items-center gap-3 active:scale-95 disabled:opacity-50 transition-all">
                              {isSaving ? <Loader2 className="w-5 h-5 animate-spin" /> : <Save className="w-5 h-5" />}
                              Guardar Cambios
@@ -645,8 +645,8 @@ function ProfileContent() {
                     ) : (
                       <div className="flex gap-3">
                          <button className="h-14 px-10 rounded-2xl bg-primary text-black text-[11px] font-black uppercase tracking-widest shadow-xl shadow-primary/20 hover:scale-105 active:scale-95 transition-all">Seguir</button>
-                         <button className="h-14 w-14 rounded-2xl glass-premium border-white/10 flex items-center justify-center hover:bg-white/10 transition-all">
-                            <MessageSquare className="w-6 h-6 text-white" />
+                         <button className="h-14 w-14 rounded-2xl bg-surface/80 dark:bg-foreground/5 border border-foreground/10 flex items-center justify-center hover:bg-foreground/10 transition-all">
+                            <MessageSquare className="w-6 h-6 text-foreground" />
                          </button>
                       </div>
                     )}
@@ -677,7 +677,7 @@ function ProfileContent() {
                       </div>
                     </div>
                   ) : (
-                    <p className="text-sm sm:text-base text-foreground/70 dark:text-white/60 font-medium leading-relaxed italic max-w-2xl">
+                    <p className="text-sm sm:text-base text-foreground/80 dark:text-white/60 font-medium leading-relaxed italic max-w-2xl">
                       {editedData.bio || 'Dominando las canchas de Pelotify. Scouting abierto. Siempre listos para el siguiente despliegue. ⚽️'}
                     </p>
                   )}
@@ -742,8 +742,9 @@ function ProfileContent() {
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                     <div
                       className={cn(
-                        'glass-premium p-10 lg:p-12 rounded-[3.5rem] border border-foreground/10 space-y-10 relative overflow-hidden group transition-all duration-700',
-                        'shadow-[0_10px_40px_rgba(0,0,0,0.02)] dark:shadow-[0_20px_50px_rgba(0,0,0,0.4)]',
+                        'p-10 lg:p-12 rounded-[3.5rem] border border-foreground/10 space-y-10 relative overflow-hidden group transition-all duration-700',
+                        'bg-surface/50 dark:bg-foreground/5 backdrop-blur-xl',
+                        'shadow-[0_20px_60px_-15px_rgba(0,0,0,0.05)] dark:shadow-[0_30px_70px_rgba(0,0,0,0.4)]',
                         isEditing
                           ? 'z-50 ring-4 ring-primary/30 shadow-[0_0_100px_rgba(16,185,129,0.2)] bg-background/80 scale-[1.02]'
                           : ''
