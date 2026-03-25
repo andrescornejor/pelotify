@@ -25,16 +25,16 @@ const RANK_CONFIG: Record<
 > = {
   HIERRO: {
     icon: Shield,
-    color: '#64748b',
-    gradient: 'from-slate-500 to-slate-700',
-    glow: 'rgba(100, 116, 139, 0.2)',
+    color: '#94a3b8',
+    gradient: 'from-slate-400 to-slate-500',
+    glow: 'rgba(148, 163, 184, 0.2)',
     border: 'border-slate-400/30',
   },
   BRONCE: {
     icon: Zap,
-    color: '#92400e',
-    gradient: 'from-amber-700 to-amber-900',
-    glow: 'rgba(146, 64, 14, 0.3)',
+    color: '#d97706',
+    gradient: 'from-amber-600 to-amber-700',
+    glow: 'rgba(217, 119, 6, 0.3)',
     border: 'border-amber-600/30',
   },
   PLATA: {
@@ -46,38 +46,45 @@ const RANK_CONFIG: Record<
   },
   ORO: {
     icon: Trophy,
-    color: '#ca8a04',
+    color: '#fbbf24',
     gradient: 'from-yellow-400 to-yellow-600',
-    glow: 'rgba(202, 138, 4, 0.4)',
+    glow: 'rgba(251, 191, 36, 0.4)',
     border: 'border-yellow-300/50',
   },
   PLATINO: {
     icon: Star,
-    color: '#0ea5e9',
-    gradient: 'from-cyan-400 to-blue-600',
-    glow: 'rgba(14, 165, 233, 0.4)',
-    border: 'border-cyan-300/50',
+    color: '#2dd4bf',
+    gradient: 'from-emerald-400 to-teal-600',
+    glow: 'rgba(45, 212, 191, 0.4)',
+    border: 'border-emerald-300/50',
   },
   DIAMANTE: {
     icon: Hexagon,
-    color: '#22d3ee',
-    gradient: 'from-sky-300 via-cyan-400 to-indigo-500',
-    glow: 'rgba(34, 211, 238, 0.5)',
-    border: 'border-sky-200/60',
+    color: '#3b82f6',
+    gradient: 'from-blue-400 via-blue-500 to-indigo-600',
+    glow: 'rgba(59, 130, 246, 0.5)',
+    border: 'border-blue-300/60',
   },
   ELITE: {
     icon: Flame,
-    color: '#10b981',
-    gradient: 'from-emerald-400 via-green-500 to-teal-600',
-    glow: 'rgba(16, 185, 129, 0.6)',
-    border: 'border-emerald-300/70',
+    color: '#8b5cf6',
+    gradient: 'from-violet-400 via-purple-500 to-indigo-600',
+    glow: 'rgba(139, 92, 246, 0.6)',
+    border: 'border-violet-300/70',
   },
-  LEYENDA: {
+  MAESTRO: {
     icon: Crown,
-    color: '#f59e0b',
-    gradient: 'from-orange-400 via-yellow-500 to-red-600',
-    glow: 'rgba(245, 158, 11, 0.7)',
-    border: 'border-yellow-200/80',
+    color: '#f43f5e',
+    gradient: 'from-rose-400 via-pink-500 to-red-600',
+    glow: 'rgba(244, 63, 94, 0.7)',
+    border: 'border-rose-400/80',
+  },
+  PELOTIFY: {
+    icon: Zap,
+    color: '#2cfc7d',
+    gradient: 'from-primary-light via-primary to-primary-dark',
+    glow: 'rgba(44, 252, 125, 0.8)',
+    border: 'border-primary/50',
   },
 };
 
@@ -128,7 +135,7 @@ export const RankBadge = memo(
           )} />
 
           {/* Shimmer Effect for high ranks */}
-          {(rankName === 'LEYENDA' || rankName === 'ELITE' || rankName === 'DIAMANTE') && (
+          {(rankName === 'PELOTIFY' || rankName === 'MAESTRO' || rankName === 'ELITE' || rankName === 'DIAMANTE') && (
             <motion.div
               animate={{
                 x: ['-100%', '200%'],
@@ -154,14 +161,14 @@ export const RankBadge = memo(
             />
           </div>
 
-          {/* Rotating outer ring for Legends */}
-          {rankName === 'LEYENDA' && (
+          {/* Rotating outer ring for High Ranks */}
+          {(rankName === 'PELOTIFY' || rankName === 'MAESTRO') && (
             <motion.div
               animate={{ rotate: 360 }}
               transition={{ duration: 10, repeat: Infinity, ease: 'linear' }}
               className={cn(
                 "absolute inset-0 border-2 border-dashed rounded-full scale-90 transition-all duration-500",
-                isLight ? "border-yellow-500/20" : "border-yellow-500/30"
+                rankName === 'PELOTIFY' ? "border-primary/40" : "border-rose-500/30"
               )}
             />
           )}

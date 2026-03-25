@@ -6,7 +6,8 @@ export type RankName =
   | 'PLATINO'
   | 'DIAMANTE'
   | 'ELITE'
-  | 'LEYENDA';
+  | 'MAESTRO'
+  | 'PELOTIFY';
 
 export interface RankInfo {
   name: RankName;
@@ -15,14 +16,15 @@ export interface RankInfo {
 }
 
 export const RANKS: RankInfo[] = [
-  { name: 'HIERRO', color: '#64748b', minElo: 0 },
-  { name: 'BRONCE', color: '#92400e', minElo: 1000 },
-  { name: 'PLATA', color: '#94a3b8', minElo: 3000 },
-  { name: 'ORO', color: '#ca8a04', minElo: 6000 },
-  { name: 'PLATINO', color: '#0ea5e9', minElo: 10000 },
-  { name: 'DIAMANTE', color: '#22d3ee', minElo: 16000 },
-  { name: 'ELITE', color: '#10b981', minElo: 25000 },
-  { name: 'LEYENDA', color: '#f59e0b', minElo: 40000 },
+  { name: 'HIERRO', color: '#94a3b8', minElo: 0 },
+  { name: 'BRONCE', color: '#d97706', minElo: 500 },
+  { name: 'PLATA', color: '#94a3b8', minElo: 1000 },
+  { name: 'ORO', color: '#fbbf24', minElo: 1500 },
+  { name: 'PLATINO', color: '#2dd4bf', minElo: 2000 },
+  { name: 'DIAMANTE', color: '#3b82f6', minElo: 2500 },
+  { name: 'ELITE', color: '#8b5cf6', minElo: 3000 },
+  { name: 'MAESTRO', color: '#f43f5e', minElo: 3500 },
+  { name: 'PELOTIFY', color: '#2cfc7d', minElo: 4000 },
 ];
 
 export function getRankByElo(elo: number): RankInfo {
