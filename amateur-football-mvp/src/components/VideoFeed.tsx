@@ -146,7 +146,8 @@ export default function VideoFeed() {
       {/* Vertical Feed with Snap Scroll */}
       <div 
         ref={feedRef}
-        className="h-full overflow-y-auto snap-y snap-proximity no-scrollbar flex flex-col"
+        className="h-[100dvh] w-full overflow-y-auto snap-y snap-mandatory no-scrollbar flex flex-col touch-pan-y antialiased overscroll-contain bg-black"
+        style={{ scrollBehavior: 'smooth' }}
       >
         {highlights.length === 0 ? (
           <div className="h-full flex items-center justify-center px-6 text-center bg-black relative">
