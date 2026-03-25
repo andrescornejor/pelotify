@@ -689,39 +689,41 @@
 
 /* ══════════════════════════════════════════
    PERFORMANCE MODE (MODO RENDIMIENTO)
+   Optimizado para mantener estética PRO sin lag
 ══════════════════════════════════════════ */
 .perf-mode {
   scroll-behavior: auto !important;
 
-  /* Global performance overrides */
+  /* Reducir carga de GPU - Mantener sombras básicas para profundidad */
   * {
     backdrop-filter: none !important;
     -webkit-backdrop-filter: none !important;
-    animation: none !important;
-    transition: none !important;
     text-shadow: none !important;
-    box-shadow: none !important;
   }
 
-  /* Keep basic shadow for depth on cards */
+  /* Solo desactivar animaciones pesadas/looping, mantener micro-interacciones */
+  .animate-pulse, 
+  .animate-ping, 
+  .animate-bounce,
+  [class*='blur-'] {
+    animation: none !important;
+    filter: none !important;
+  }
+
+  /* Simplificar vidrios pero mantener el color de superficie */
   .glass,
   .glass-premium,
   .glass-card,
   .premium-card,
   .glass-premium-hover {
-    background: var(--surface-elevated) !important;
+    background: var(--surface-bright) !important;
     border: 1px solid var(--border) !important;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08) !important;
   }
 
-  /* Simplify sidebar */
-  .sidebar-container {
-    transition: transform 0.1s ease-out !important;
-    backdrop-filter: none !important;
-  }
-
-  /* Disable all blur-related styles */
-  [style*='blur'] {
-    filter: none !important;
+  /* Optimizar transiciones para que se sientan fluidas pero no pesadas */
+  .transition-all,
+  .transition-transform {
+    transition-duration: 200ms !important;
   }
 }

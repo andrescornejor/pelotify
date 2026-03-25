@@ -325,38 +325,26 @@ function ProfileContent() {
     }
   }, [dbProfile, authMetadata, avatarPreview]);
 
-  const resolveStats = (): PlayerStats => {
-    if (isEditing) return editedStats;
-    const statsSource = isMe ? authMetadata.stats : dbProfile.stats || dbMetadata.stats;
-    if (statsSource && typeof statsSource === 'object') return statsSource as PlayerStats;
+  const playerStats = useMemo(() => resolveStats(), [isMe, authMetadata.stats, dbProfile.stats, editedStats, isEditing]);
+  
+  const playerOverall = useMemo(() => {
+    return getField(
+      'overall',
+      Math.round(Object.values(playerStats).reduce((a: number, b: number) => a + b, 0) / 6)
+    );
+  }, [playerStats, dbProfile, authMetadata]);
 
-    return {
-      pac: getField('pac', DEFAULT_PLAYER.stats.pac),
-      sho: getField('sho', DEFAULT_PLAYER.stats.sho),
-      pas: getField('pas', DEFAULT_PLAYER.stats.pas),
-      dri: getField('dri', DEFAULT_PLAYER.stats.dri),
-      def: getField('def', DEFAULT_PLAYER.stats.def),
-      phy: getField('phy', DEFAULT_PLAYER.stats.phy),
-    };
-  };
-
-  const playerStats = resolveStats();
-  const playerOverall = getField(
-    'overall',
-    Math.round(Object.values(playerStats).reduce((a: number, b: number) => a + b, 0) / 6)
-  );
-
-  const displayPlayer = {
+  const displayPlayer = useMemo(() => ({
     ...DEFAULT_PLAYER,
     name: (isMe ? user?.name || editedData.name : dbProfile.name) || DEFAULT_PLAYER.name,
     position: getField('position', DEFAULT_PLAYER.position) as string,
     overall: playerOverall as number,
     stats: playerStats,
-  };
+  }), [isMe, user?.name, editedData.name, dbProfile.name, playerOverall, playerStats]);
 
-  const displayAge = getField('age', '18');
-  const displayHeight = getField('height', '170');
-  const displayFoot = getField('preferredFoot', 'Derecha', 'preferred_foot');
+  const displayAge = useMemo(() => getField('age', '18'), [dbProfile, authMetadata]);
+  const displayHeight = useMemo(() => getField('height', '170'), [dbProfile, authMetadata]);
+  const displayFoot = useMemo(() => getField('preferredFoot', 'Derecha', 'preferred_foot'), [dbProfile, authMetadata]);
 
   const displayMatches = parseInt(`${getField('matches', 0)}`) || 0;
   const displayElo = parseInt(`${getField('elo', 0)}`) || 0;

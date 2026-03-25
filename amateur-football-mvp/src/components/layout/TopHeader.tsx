@@ -37,15 +37,15 @@ const DESKTOP_NAV = [
   { href: '/teams', icon: Shield, label: 'Equipos' },
 ];
 
-export function TopHeader() {
+export const TopHeader = React.memo(function TopHeader() {
   const pathname = usePathname();
   const { toggleSidebar, isNotificationsOpen, setNotificationsOpen } = useSidebar();
   const { user } = useAuth();
   const { theme, setTheme } = useTheme();
   const [notifCount, setNotifCount] = useState(0);
   const [unreadChatCount, setUnreadChatCount] = useState(0);
-
   const [friendsCount, setFriendsCount] = useState(0);
+  const lastPathname = useRef(pathname);
 
   const updateCount = async () => {
     if (!user) return;
@@ -68,12 +68,18 @@ export function TopHeader() {
 
   useEffect(() => {
     if (!user) return;
+    
+    // Only fetch if initial or significant path change (not just query params)
+    const baseCurrent = pathname.split('?')[0];
+    const baseLast = lastPathname.current.split('?')[0];
+    
+    if (baseCurrent !== baseLast || notifCount === 0) {
+      updateCount();
+      lastPathname.current = pathname;
+    }
 
-    updateCount();
-
-    // Clear unread chat count if on messages page
-    const cleanPath = pathname.replace(/\/$/, '') || '/';
-    if (cleanPath === '/messages') {
+    // Clear unread if on messages
+    if (baseCurrent === '/messages') {
       setUnreadChatCount(0);
     }
 

@@ -295,15 +295,12 @@ export default function HomePage() {
   const [greeting, setGreeting] = useState('');
   const [countdownText, setCountdownText] = useState<string | null>(null);
   const [isRatingOpen, setIsRatingOpen] = useState(false);
-  const [isPerfMode, setIsPerfMode] = useState(false);
+  const { performanceMode } = useSettings();
   const [scrollProgress, setScrollProgress] = useState(0);
   const [highlights, setHighlights] = useState<Highlight[]>([]);
 
-  // Performance Detection
+  // Local sync to set global perf-mode if user previously toggled it here (Legacy compatibility)
   useEffect(() => {
-    const isLite = localStorage.getItem('perf-mode-lite') === 'true';
-    if (isLite) setIsPerfMode(true);
-
     const handleScroll = () => {
       const total = document.documentElement.scrollHeight - window.innerHeight;
       setScrollProgress(window.scrollY / total);
@@ -311,12 +308,6 @@ export default function HomePage() {
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
-
-  const togglePerfMode = () => {
-    const newVal = !isPerfMode;
-    setIsPerfMode(newVal);
-    localStorage.setItem('perf-mode-lite', String(newVal));
-  };
 
   useEffect(() => {
     async function fetchData() {
@@ -883,7 +874,7 @@ export default function HomePage() {
                   key={stat.label}
                   stat={stat}
                   i={i}
-                  isPerfMode={isPerfMode}
+                  isPerfMode={performanceMode}
                   fadeUp={fadeUp}
                 />
               ))}
@@ -1214,7 +1205,7 @@ export default function HomePage() {
                   <div key={i} className="h-24 rounded-[2rem] skeleton-shimmer" />
                 ))
               ) : userTeams.length > 0 ? (
-                userTeams.map((team) => <TeamCard key={team.id} team={team} isPerfMode={isPerfMode} />)
+                userTeams.map((team) => <TeamCard key={team.id} team={team} isPerfMode={performanceMode} />)
               ) : null}
             </div>
 
