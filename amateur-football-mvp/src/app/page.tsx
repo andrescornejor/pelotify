@@ -34,6 +34,7 @@ import { cn } from '@/lib/utils';
 import { OnboardingTour } from '@/components/OnboardingTour';
 import { JerseyVisualizer } from '@/components/JerseyVisualizer';
 import { getHighlights, Highlight } from '@/lib/highlights';
+import { QuickChatsSidebar } from '@/components/QuickChatsSidebar';
 
 // --- TYPES & CONSTANTS ---
 
@@ -545,7 +546,8 @@ export default function HomePage() {
         </span>
       </button>
 
-      <div className="max-w-full mx-auto px-4 sm:px-6 lg:px-10 xl:px-16 py-4 lg:py-8 space-y-8 lg:space-y-12">
+      <div className="max-w-full mx-auto px-4 sm:px-6 lg:px-10 xl:px-16 xl:pr-[400px] py-4 lg:py-8 space-y-8 lg:space-y-12">
+        <QuickChatsSidebar />
         {/* 
             HERO  full-width cinematic header
          */}
