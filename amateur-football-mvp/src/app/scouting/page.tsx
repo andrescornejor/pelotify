@@ -95,7 +95,7 @@ export default function ScoutingPage() {
 
       {/* Header */}
       <div className="relative z-50 px-6 pt-10 pb-4 flex items-center justify-between">
-        <Link href="/" className="p-3 bg-white/5 backdrop-blur-md rounded-2xl border border-white/10 text-white hover:bg-white/10 transition-all flex items-center justify-center">
+        <Link href="/" className="p-3 bg-white/5 backdrop-blur-md rounded-2xl border border-white/10 text-white hover:bg-white/10 transition-all flex items-center justify-center press-effect">
           <ArrowLeft className="w-5 h-5" />
         </Link>
         <div className="flex flex-col items-center">
@@ -106,7 +106,13 @@ export default function ScoutingPage() {
               Agente Libre
             </span>
         </div>
-        <div className="w-11 h-11" /> {/* Spacer */}
+        {/* Profile counter */}
+        <div className="flex flex-col items-center gap-0.5">
+          <div className="w-11 h-11 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center backdrop-blur-md">
+            <span className="text-sm font-black text-white/80 italic">{Math.max(0, profiles.length - currentIndex)}</span>
+          </div>
+          <span className="text-[7px] font-black text-white/30 uppercase tracking-widest">restantes</span>
+        </div>
       </div>
 
       {/* Main Tinder-like Card Area */}
@@ -145,6 +151,18 @@ export default function ScoutingPage() {
                       }}
                     />
                 </div>
+
+                {/* Swipe Direction Labels */}
+                {direction === 'left' && (
+                  <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="absolute top-8 right-8 z-30 px-5 py-2 rounded-2xl bg-red-500/80 backdrop-blur-md border border-red-300/30 shadow-xl">
+                    <span className="text-xl font-black text-white italic uppercase tracking-wider">NOPE</span>
+                  </motion.div>
+                )}
+                {direction === 'right' && (
+                  <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="absolute top-8 left-8 z-30 px-5 py-2 rounded-2xl bg-primary/80 backdrop-blur-md border border-emerald-300/30 shadow-xl">
+                    <span className="text-xl font-black text-black italic uppercase tracking-wider">FICHAR</span>
+                  </motion.div>
+                )}
 
                 {/* Additional Details Overlay at bottom of the card */}
                 <div className="absolute bottom-0 inset-x-0 p-8 bg-gradient-to-t from-black/90 via-black/60 to-transparent flex flex-col items-center pt-24 z-20">

@@ -228,7 +228,10 @@ export default function VideoPlayer({
         />
 
         {/* Visual Overlays */}
-        <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-transparent to-black/90 pointer-events-none z-20" />
+        <div className="absolute inset-0 pointer-events-none z-20">
+          <div className="absolute top-0 inset-x-0 h-40 bg-gradient-to-b from-black/70 via-black/30 to-transparent" />
+          <div className="absolute bottom-0 inset-x-0 h-56 bg-gradient-to-t from-black/90 via-black/50 to-transparent" />
+        </div>
 
         {/* Persistent Play Icon or Temporary Pause/Play */}
         <AnimatePresence>
@@ -367,12 +370,18 @@ export default function VideoPlayer({
         </div>
 
         {/* Progress Bar */}
-        <div className="absolute bottom-0 left-0 w-full h-[4px] bg-white/10 z-40 rounded-full overflow-hidden">
+        <div className="absolute bottom-0 left-0 w-full h-[3px] bg-white/[0.08] z-40 overflow-hidden">
           <motion.div 
-            className="h-full bg-emerald-500 shadow-[0_0_15px_#10b981]"
-            style={{ width: `${progress}%` }}
+            className="h-full rounded-full relative"
+            style={{ 
+              width: `${progress}%`,
+              background: 'linear-gradient(90deg, #10b981, #5dfd9d)',
+              boxShadow: '0 0 12px rgba(16,185,129,0.6)',
+            }}
             transition={{ duration: 0.1, ease: 'linear' }}
-          />
+          >
+            <div className="absolute right-0 top-1/2 -translate-y-1/2 w-2.5 h-2.5 rounded-full bg-white shadow-[0_0_8px_rgba(255,255,255,0.8)]" />
+          </motion.div>
         </div>
 
         {/* Volume Toggle */}

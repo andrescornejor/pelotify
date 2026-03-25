@@ -1250,7 +1250,7 @@ export default function HomePage() {
           <div className="lg:col-span-4 xl:col-span-4 space-y-6">
             <div id="featured-match" className="glass-premium p-6 rounded-[2.5rem] border-primary/10 relative overflow-hidden group">
                <div className="absolute top-0 right-0 p-4">
-                 <div className="px-2 py-1 rounded bg-primary text-background text-[7px] font-black uppercase tracking-widest animate-pulse">PRXIMO</div>
+                 <div className="px-2 py-1 rounded bg-primary text-background text-[7px] font-black uppercase tracking-widest animate-pulse">PRÓXIMO</div>
                </div>
                
                <h3 className="text-[10px] font-black text-foreground/40 uppercase tracking-[0.2em] mb-4">Agenda Prioritaria</h3>
@@ -1331,6 +1331,7 @@ export default function HomePage() {
                <h3 className="text-[10px] font-black text-foreground/40 uppercase tracking-[0.2em]">Accesos Rápidos</h3>
                <div className="grid grid-cols-1 gap-2">
                   {[
+                    { label: 'Mercado', icon: Target, href: '/scouting' },
                     { label: 'Mis Amigos', icon: Users, href: '/friends' },
                     { label: 'Chat Global', icon: MessageSquare, href: '/messages' },
                     { label: 'Configuración', icon: Target, href: '/settings' }
@@ -1364,7 +1365,7 @@ export default function HomePage() {
           </div>
           <div className="mt-20 pt-8 border-t border-foreground/5 flex flex-col md:flex-row items-center justify-between gap-4 text-[9px] font-black uppercase tracking-[0.3em] text-foreground/30">
             <span> 2026 Pelotify. Todos los derechos reservados.</span>
-            <span className="flex items-center gap-2">Diseado con <Sparkles className="w-3 h-3 text-primary" /> para campeones</span>
+            <span className="flex items-center gap-2">Diseñado con <Sparkles className="w-3 h-3 text-primary" /> para campeones</span>
           </div>
         </footer>
       </div>

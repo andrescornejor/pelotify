@@ -2,15 +2,15 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Home, Search, PlusCircle, User, MessageSquare, Flame } from 'lucide-react';
+import { Home, Search, PlusCircle, User, MessageSquare, Flame, Target } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const NAV_ITEMS = [
+  { href: '/', icon: Home, label: 'Inicio' },
   { href: '/highlights', icon: Flame, label: 'FutTok' },
-  { href: '/search', icon: Search, label: 'Buscar' },
   { href: '/create', icon: PlusCircle, label: 'Crear', isPrimary: true },
-  { href: '/messages', icon: MessageSquare, label: 'Mensajes' },
+  { href: '/scouting', icon: Target, label: 'Mercado' },
   { href: '/profile/me', icon: User, label: 'Perfil' },
 ];
 
@@ -84,11 +84,18 @@ export function BottomNav() {
                   href={href}
                   className="relative flex flex-col items-center justify-center py-2 px-1"
                 >
+                  {/* Pulsing ring */}
+                  {!performanceMode && (
+                    <div
+                      className="absolute top-[2px] w-14 h-14 rounded-[1.35rem] border-2 border-primary/40"
+                      style={{ animation: 'pulse-ring 2.5s cubic-bezier(0.4, 0, 0.6, 1) infinite' }}
+                    />
+                  )}
                   <motion.div
                     whileTap={performanceMode ? {} : { scale: 0.9, y: -4 }}
                     whileHover={performanceMode ? {} : { scale: 1.05 }}
                     className={cn(
-                      'w-12 h-12 rounded-[1.25rem] flex items-center justify-center transition-all duration-300',
+                      'w-12 h-12 rounded-[1.25rem] flex items-center justify-center transition-all duration-300 relative z-10',
                       isActive ? 'shadow-lg' : 'shadow-md'
                     )}
                     style={{
