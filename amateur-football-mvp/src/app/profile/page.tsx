@@ -724,7 +724,8 @@ function ProfileContent() {
                     <div className="flex gap-1">
                       <button
                         onClick={() => {
-                          if (editedStats[key] > resolveStats()[key]) {
+                          const originalVal = dbProfile.stats?.[key] || DEFAULT_PLAYER.stats[key];
+                          if (editedStats[key] > originalVal) {
                             setSkillPoints((prev) => prev + 1);
                             setEditedStats((prev) => ({ ...prev, [key]: prev[key] - 1 }));
                           }
