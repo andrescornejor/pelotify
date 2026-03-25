@@ -12,6 +12,7 @@ import {
   Moon,
   Bell,
   PlusCircle,
+  Flame,
 } from 'lucide-react';
 import Link from 'next/link';
 import { useAuth } from '@/contexts/AuthContext';
@@ -62,6 +63,7 @@ export const SidebarContent = memo(function SidebarContent({
     { icon: HomeIcon, label: 'Inicio', href: '/' },
     { icon: Search, label: 'Buscar Partidos', href: '/search' },
     { icon: User2, label: 'Mi Perfil', href: '/profile/me' },
+    { icon: Flame, label: 'FutTok', href: '/highlights', badge: 'NUEVO' },
     {
       icon: Users,
       label: 'Amigos',

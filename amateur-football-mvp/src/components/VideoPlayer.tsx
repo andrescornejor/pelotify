@@ -210,17 +210,6 @@ export default function VideoPlayer({
       {/* 9:16 Aspect Ratio Wrapper */}
       <div className="relative h-full aspect-[9/16] bg-zinc-950 shadow-[0_0_80px_rgba(0,0,0,0.8)] flex items-center justify-center overflow-hidden z-10 border-x border-white/5">
         
-        {/* Top Header Overlay (Para Ti / Clubes) */}
-        <div className="absolute top-0 left-0 w-full p-8 z-30 flex justify-center items-center gap-6 pointer-events-none">
-           <button className="text-white font-black text-xs tracking-[0.3em] uppercase opacity-100 relative pointer-events-auto shadow-sm">
-             PARA TI
-             <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-8 h-[2.5px] bg-emerald-500 shadow-[0_0_10px_#10b981]" />
-           </button>
-           <Link href="/teams" className="text-white/40 font-black text-xs tracking-[0.3em] uppercase hover:text-white/60 transition-colors pointer-events-auto">
-             CLUBES
-           </Link>
-        </div>
-
         {/* Click Area for Play/Pause and Double Tap */}
         <div className="absolute inset-0 z-10" onClick={handleTap} />
 

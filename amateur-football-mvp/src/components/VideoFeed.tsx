@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import VideoPlayer from './VideoPlayer';
 import VideoUploadModal from './VideoUploadModal';
 import { getHighlights, Highlight } from '@/lib/highlights';
-import { Loader2, ArrowLeft, Plus, Play, Sparkles } from 'lucide-react';
+import { Loader2, ArrowLeft, Plus, Play, Sparkles, Flame } from 'lucide-react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import { cn } from '@/lib/utils';
@@ -69,20 +69,41 @@ export default function VideoFeed() {
       </AnimatePresence>
 
       {/* Global Navigation Controls */}
-      <div className="fixed top-6 left-6 z-[100] flex items-center gap-4">
-        <Link href="/" className="p-3 bg-black/40 backdrop-blur-xl rounded-2xl border border-white/10 text-white hover:bg-black/60 transition-all shadow-xl">
-          <ArrowLeft className="w-6 h-6" />
-        </Link>
-      </div>
+      <div className="fixed top-0 left-0 right-0 z-[100] px-6 pt-6 sm:pt-8 pb-4 bg-gradient-to-b from-black/80 via-black/40 to-transparent pointer-events-none flex items-center justify-between">
+        <div className="flex items-center gap-4 pointer-events-auto">
+          <Link href="/" className="p-3 bg-black/40 backdrop-blur-xl rounded-2xl border border-white/10 text-white hover:bg-black/60 hover:scale-105 active:scale-95 transition-all shadow-xl">
+            <ArrowLeft className="w-5 h-5 sm:w-6 sm:h-6" />
+          </Link>
+        </div>
 
-      <div className="fixed top-6 right-6 z-[100] group">
-        <div className="absolute -inset-2 bg-emerald-500/20 rounded-full blur-xl opacity-0 group-hover:opacity-100 transition-opacity" />
-        <button 
-          onClick={() => setIsUploadOpen(true)}
-          className="relative p-3.5 bg-gradient-to-tr from-emerald-600 to-emerald-400 rounded-2xl text-background shadow-[0_0_30px_rgba(16,185,129,0.3)] hover:shadow-[0_0_40px_rgba(16,185,129,0.5)] hover:scale-105 active:scale-95 transition-all border border-emerald-300/30"
-        >
-          <Plus className="w-6 h-6 stroke-[3]" />
-        </button>
+        {/* Center Title / Tabs */}
+        <div className="flex flex-col items-center gap-2 pointer-events-auto pt-2">
+          <div className="flex items-center gap-1.5 sm:gap-2">
+            <Flame className="w-4 h-4 sm:w-5 sm:h-5 text-emerald-400 fill-emerald-500/20 drop-shadow-[0_0_10px_rgba(16,185,129,0.8)]" />
+            <h1 className="text-lg sm:text-xl font-black italic tracking-tighter text-white font-kanit drop-shadow-lg leading-none">
+              FUTTOK
+            </h1>
+          </div>
+          <div className="flex items-center gap-4 sm:gap-6 mt-1.5">
+            <button className="text-white font-black text-[9px] sm:text-[10px] tracking-[0.3em] uppercase relative shadow-sm transition-colors">
+              PARA TI
+              <div className="absolute -bottom-2 sm:-bottom-2.5 left-1/2 -translate-x-1/2 w-6 sm:w-8 h-[2px] sm:h-[2.5px] bg-emerald-500 shadow-[0_0_10px_#10b981] rounded-full" />
+            </button>
+            <button className="text-white/40 hover:text-white/80 font-black text-[9px] sm:text-[10px] tracking-[0.3em] uppercase transition-colors">
+              SIGUIENDO
+            </button>
+          </div>
+        </div>
+
+        <div className="pointer-events-auto relative group">
+          <div className="absolute -inset-2 bg-emerald-500/20 rounded-full blur-xl opacity-0 group-hover:opacity-100 transition-opacity" />
+          <button 
+            onClick={() => setIsUploadOpen(true)}
+            className="relative p-3 sm:p-3.5 bg-gradient-to-tr from-emerald-600 to-emerald-400 rounded-2xl text-background shadow-[0_0_30px_rgba(16,185,129,0.3)] hover:shadow-[0_0_40px_rgba(16,185,129,0.5)] hover:scale-105 active:scale-95 transition-all border border-emerald-300/30"
+          >
+            <Plus className="w-5 h-5 sm:w-6 sm:h-6 stroke-[3]" />
+          </button>
+        </div>
       </div>
 
       {/* Vertical Feed with Snap Scroll */}
