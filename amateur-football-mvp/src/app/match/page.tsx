@@ -438,7 +438,7 @@ function MatchLobbyContent() {
         <div className="absolute inset-0 bg-gradient-to-b from-background/40 via-transparent to-background/60" />
 
         {/* ── TOP BAR ── */}
-        <div className="absolute top-0 left-0 right-0 z-20 px-6 pt-12 lg:pt-16 flex items-center justify-between">
+        <div className="absolute top-0 left-0 right-0 z-20 px-6 pt-40 lg:pt-32 flex items-center justify-between">
           <motion.button
             whileHover={{ scale: 1.05, backgroundColor: 'rgba(255,255,255,0.1)' }}
             whileTap={{ scale: 0.95 }}
