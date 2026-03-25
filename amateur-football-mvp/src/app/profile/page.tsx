@@ -677,9 +677,11 @@ function ProfileContent() {
                       </div>
                     </div>
                   ) : (
-                    <p className="text-sm sm:text-base text-foreground/80 dark:text-white/60 font-medium leading-relaxed italic max-w-2xl">
-                      {editedData.bio || 'Dominando las canchas de Pelotify. Scouting abierto. Siempre listos para el siguiente despliegue. ⚽️'}
-                    </p>
+                    editedData.bio && (
+                      <p className="text-sm sm:text-base text-foreground/80 dark:text-white/60 font-medium leading-relaxed italic max-w-2xl">
+                        {editedData.bio}
+                      </p>
+                    )
                   )}
                </div>
 
