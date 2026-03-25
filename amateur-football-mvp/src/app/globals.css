@@ -40,33 +40,29 @@
 }
 
 :root.dark {
-  /* ULTRA DARK THEME - DEEP SPACE */
-  --background: #020204;
-  --foreground: #f8fafc;
-  --foreground-rgb: 248, 250, 252;
+  /* ULTRA DARK THEME */
+  --background: #020205;
+  --foreground: #ffffff; /* Pure white for max contrast */
+  --foreground-rgb: 255, 255, 255;
 
-  --surface: #05050a;
-  --surface-elevated: #0a0a14;
-  --surface-bright: #0f0f1f;
+  --surface: #04040a;
+  --surface-elevated: #080812;
+  --surface-bright: #0c0c1a;
 
-  --muted: #64748b;
-  --muted-foreground: #475569;
+  --muted: #94a3b8; /* Slate 400 for dark theme muted text */
+  --muted-foreground: #64748b;
 
-  --border: rgba(255, 255, 255, 0.06);
-  --input: #0a0a14;
+  --border: rgba(255, 255, 255, 0.1);
+  --input: #080812;
   --ring: #2cfc7d;
-  
-  /* Additional semantic colors */
-  --card-shadow: rgba(0, 0, 0, 0.6);
-  --glow-opacity: 0.15;
 }
 
 @theme {
   --font-sans:
-    'Outfit', var(--font-inter), ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI',
+    var(--font-inter), ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI',
     Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif;
-  --font-outfit: 'Outfit', var(--font-outfit), ui-sans-serif, system-ui;
-  --font-kanit: 'Kanit', var(--font-kanit), ui-sans-serif, system-ui;
+  --font-outfit: var(--font-outfit), ui-sans-serif, system-ui;
+  --font-kanit: var(--font-kanit), ui-sans-serif, system-ui;
 
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -307,22 +303,21 @@
     transform: scale(0.96);
   }
 
-  /* ── Expert Layout Utilities ── */
-  .layout-grid {
-    @apply grid grid-cols-1 md:grid-cols-12 gap-6 lg:gap-8 max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8;
+  /* ── Smooth reveal on scroll ── */
+  .reveal-up {
+    animation: reveal-up 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    opacity: 0;
   }
 
-  /* ── Interactive State ── */
-  .hover-lift {
-    @apply transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl hover:shadow-primary/10;
+  /* ── Text Shadow Helpers ── */
+  .text-shadow-sm {
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
   }
-
-  /* ── Premium Scroll Reveal (requires JS for stagger but providing base) ── */
-  .reveal-base {
-    @apply opacity-0 translate-y-4 transition-all duration-700 ease-out;
+  .text-shadow-md {
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
   }
-  .reveal-active {
-    @apply opacity-100 translate-y-0;
+  .text-shadow-glow {
+    text-shadow: 0 0 20px rgba(var(--primary-rgb), 0.4), 0 0 60px rgba(var(--primary-rgb), 0.15);
   }
 }
 
