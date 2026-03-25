@@ -9,6 +9,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { cn } from '@/lib/utils';
 import { useSidebar } from '@/contexts/SidebarContext';
 import { NotificationCenter } from '@/components/notifications/NotificationCenter';
+import { FloatingChat } from '@/components/FloatingChat';
 
 export default function ClientLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
@@ -81,6 +82,9 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
           onClose={() => setNotificationsOpen(false)}
         />
       )}
+
+      {/* Persistent Floating Chat (Desktop only) */}
+      {showNav && <FloatingChat />}
     </div>
   );
 }
