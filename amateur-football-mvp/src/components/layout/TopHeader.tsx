@@ -1,5 +1,6 @@
 'use client';
 
+import React, { useState, useEffect, useRef, memo } from 'react';
 import {
   Bell,
   Sun,
@@ -17,7 +18,6 @@ import { usePathname } from 'next/navigation';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useSidebar } from '@/contexts/SidebarContext';
-import { useState, useEffect } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { getPendingRequestsCount } from '@/lib/friends';
 import { getMatchInvitationsCount } from '@/lib/matches';
@@ -37,7 +37,7 @@ const DESKTOP_NAV = [
   { href: '/teams', icon: Shield, label: 'Equipos' },
 ];
 
-export const TopHeader = React.memo(function TopHeader() {
+export const TopHeader = memo(function TopHeader() {
   const pathname = usePathname();
   const { toggleSidebar, isNotificationsOpen, setNotificationsOpen } = useSidebar();
   const { user } = useAuth();
