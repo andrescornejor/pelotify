@@ -109,18 +109,18 @@ const RankBadge = ({ rankName, size = 'md', className }: { rankName: string; siz
   );
 };
 
-const StatCard = ({ stat, i, isPerfMode, fadeUp }: any) => (
+const StatCard = ({ stat, i, performanceMode, fadeUp }: any) => (
   <motion.div
     variants={fadeUp}
     custom={i}
-    whileHover={isPerfMode ? {} : { y: -8, scale: 1.02, rotate: 1 }}
+    whileHover={performanceMode ? {} : { y: -8, scale: 1.02, rotate: 1 }}
     className={cn(
       'group relative overflow-hidden p-6 rounded-[2.5rem] glass-premium transition-all duration-500 border-white/5 shadow-2xl',
-      isPerfMode && 'bg-surface shadow-none'
+      performanceMode && 'bg-surface shadow-none'
     )}
   >
     {/* Dynamic Background Glow */}
-    {!isPerfMode && (
+    {!performanceMode && (
       <div
         className="absolute -right-6 -top-6 w-32 h-32 blur-[50px] opacity-0 group-hover:opacity-30 transition-opacity duration-700 rounded-full"
         style={{ backgroundColor: stat.color }}
@@ -142,7 +142,7 @@ const StatCard = ({ stat, i, isPerfMode, fadeUp }: any) => (
           <h3 className="text-3xl font-black italic tracking-tighter text-foreground font-kanit leading-none">
             {stat.value}
           </h3>
-          {!isPerfMode && (
+          {!performanceMode && (
             <div className="mb-1 flex items-center gap-0.5 text-primary opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all duration-500">
                <TrendingUp className="w-3 h-3" />
                <span className="text-[8px] font-black">+4%</span>
@@ -154,17 +154,17 @@ const StatCard = ({ stat, i, isPerfMode, fadeUp }: any) => (
   </motion.div>
 );
 
-const TeamCard = ({ team, isPerfMode }: any) => {
+const TeamCard = ({ team, performanceMode }: any) => {
   const teamColor = team.primary_color || '#2cfc7d';
   
   return (
     <Link href={`/team?id=${team.id}`} className="block">
       <motion.div
-        whileHover={isPerfMode ? {} : { scale: 1.01, y: -6 }}
+        whileHover={performanceMode ? {} : { scale: 1.01, y: -6 }}
         className="group flex flex-col sm:flex-row items-center justify-between gap-6 p-7 rounded-[3rem] glass-premium border-white/5 hover:border-primary/20 transition-all cursor-pointer relative overflow-hidden shadow-2xl"
       >
         {/* Dynamic Ray Background */}
-        {!isPerfMode && (
+        {!performanceMode && (
           <>
             <div 
               className="absolute top-0 right-0 w-64 h-64 blur-[100px] rounded-full opacity-0 group-hover:opacity-10 transition-opacity duration-1000"
@@ -177,7 +177,7 @@ const TeamCard = ({ team, isPerfMode }: any) => {
         <div className="flex items-center gap-8 relative z-10 w-full sm:w-auto">
           <div className="flex flex-col items-center min-w-[100px]">
             <div className="relative group/avatar">
-              {!isPerfMode && (
+              {!performanceMode && (
                 <div 
                   className="absolute inset-0 blur-3xl rounded-full scale-0 group-hover/avatar:scale-150 transition-transform duration-1000 opacity-0 group-hover/avatar:opacity-40"
                   style={{ backgroundColor: teamColor }}
@@ -296,7 +296,7 @@ export default function HomePage() {
   const [greeting, setGreeting] = useState('');
   const [countdownText, setCountdownText] = useState<string | null>(null);
   const [isRatingOpen, setIsRatingOpen] = useState(false);
-  const { performanceMode } = useSettings();
+  const { performanceMode, setPerformanceMode } = useSettings();
   const [scrollProgress, setScrollProgress] = useState(0);
   const [highlights, setHighlights] = useState<Highlight[]>([]);
 
@@ -505,7 +505,7 @@ export default function HomePage() {
     <div
       className={cn(
         'relative min-h-screen bg-background font-sans selection:bg-primary selection:text-background',
-        isPerfMode && 'perf-mode'
+        performanceMode && 'perf-mode'
       )}
     >
       <OnboardingTour />
@@ -516,7 +516,7 @@ export default function HomePage() {
       />
 
       {/*  AMBIENT  Simplified for Performance  */}
-      {!isPerfMode && (
+      {!performanceMode && (
         <div className="fixed inset-0 pointer-events-none -z-10 overflow-hidden hidden md:block">
           <div
             className="absolute top-[-5%] right-[-5%] w-[40%] h-[40%] opacity-[0.05]"
@@ -531,17 +531,17 @@ export default function HomePage() {
 
       {/*  MOBILE PERF TOGGLE  */}
       <button
-        onClick={togglePerfMode}
+        onClick={() => setPerformanceMode(!performanceMode)}
         className={cn(
           'fixed bottom-24 right-6 z-[100] w-12 h-12 rounded-2xl md:hidden flex flex-col items-center justify-center transition-all active:scale-90 border',
-          isPerfMode
+          performanceMode
             ? 'bg-primary text-black border-primary shadow-[0_0_20px_rgba(44,252,125,0.4)]'
             : 'glass border-white/10 text-primary shadow-lg shadow-primary/10'
         )}
       >
-        <Zap className={cn('w-5 h-5', isPerfMode && 'fill-current')} />
+        <Zap className={cn('w-5 h-5', performanceMode && 'fill-current')} />
         <span className="text-[7px] font-black uppercase mt-0.5 tracking-tighter">
-          {isPerfMode ? 'LITE ON' : 'FX ON'}
+          {performanceMode ? 'LITE ON' : 'FX ON'}
         </span>
       </button>
 
@@ -565,7 +565,7 @@ export default function HomePage() {
             <motion.img
               initial={false}
               animate={
-                isPerfMode
+                performanceMode
                   ? { scale: 1, rotate: 0 }
                   : {
                     scale: [1.02, 1.08, 1.02],
@@ -578,17 +578,17 @@ export default function HomePage() {
               fetchPriority="high"
               className={cn(
                 'w-full h-full object-cover grayscale opacity-[0.08] dark:opacity-[0.12] scale-110 transition-opacity',
-                isPerfMode && 'grayscale-0 opacity-20 scale-100'
+                performanceMode && 'grayscale-0 opacity-20 scale-100'
               )}
             />
             {/* Overlay gradients for depth */}
             <div
               className={cn(
                 'absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent opacity-90',
-                isPerfMode && 'opacity-70'
+                performanceMode && 'opacity-70'
               )}
             />
-            {!isPerfMode && (
+            {!performanceMode && (
               <>
                 <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-transparent to-accent/5" />
                 <div className="absolute inset-0 backdrop-blur-[2px] opacity-40 mix-blend-overlay" />
@@ -611,19 +611,19 @@ export default function HomePage() {
             {/* Left: Text & Branding */}
             <div className="flex-1 space-y-6 lg:space-y-8 max-w-2xl">
               <motion.div
-                initial={isPerfMode ? { opacity: 1 } : { x: -20, opacity: 0 }}
+                initial={performanceMode ? { opacity: 1 } : { x: -20, opacity: 0 }}
                 animate={{ x: 0, opacity: 1 }}
                 transition={{ delay: 0.2, type: 'spring', stiffness: 200 }}
                 className={cn(
                   'inline-flex items-center gap-3 px-4 py-1.5 rounded-full glass-premium border-primary/20',
-                  isPerfMode && 'bg-surface'
+                  performanceMode && 'bg-surface'
                 )}
               >
                 <div className="relative flex h-2 w-2">
                   <span
                     className={cn(
                       'absolute inline-flex h-full w-full rounded-full bg-primary opacity-75',
-                      !isPerfMode && 'animate-ping'
+                      !performanceMode && 'animate-ping'
                     )}
                   />
                   <span className="relative inline-flex rounded-full h-2 w-2 bg-primary" />
@@ -646,7 +646,7 @@ export default function HomePage() {
                   <br />
                   <span
                     className={
-                      isPerfMode
+                      performanceMode
                         ? 'text-primary'
                         : 'bg-clip-text text-transparent bg-gradient-to-r from-primary-light via-primary to-primary-dark animate-gradient [text-shadow:0_0_40px_rgba(44,252,125,0.3)]'
                     }
@@ -875,7 +875,7 @@ export default function HomePage() {
                   key={stat.label}
                   stat={stat}
                   i={i}
-                  isPerfMode={performanceMode}
+                  performanceMode={performanceMode}
                   fadeUp={fadeUp}
                 />
               ))}
@@ -889,13 +889,13 @@ export default function HomePage() {
               whileInView="visible"
               viewport={{ once: true }}
               custom={1}
-              whileHover={isPerfMode ? {} : { scale: 1.01 }}
+              whileHover={performanceMode ? {} : { scale: 1.01 }}
               className={cn(
                 'relative overflow-hidden rounded-[2.5rem] p-6 flex flex-col sm:flex-row items-center justify-between gap-6 snap-start scroll-mt-26 glass-premium border-primary/10',
-                isPerfMode && 'bg-surface'
+                performanceMode && 'bg-surface'
               )}
             >
-              {!isPerfMode && (
+              {!performanceMode && (
                 <div
                   className="absolute right-0 top-0 w-full h-full opacity-10 pointer-events-none"
                   style={{
@@ -1206,7 +1206,7 @@ export default function HomePage() {
                   <div key={i} className="h-24 rounded-[2rem] skeleton-shimmer" />
                 ))
               ) : userTeams.length > 0 ? (
-                userTeams.map((team) => <TeamCard key={team.id} team={team} isPerfMode={performanceMode} />)
+                userTeams.map((team) => <TeamCard key={team.id} team={team} performanceMode={performanceMode} />)
               ) : null}
             </div>
 
@@ -1259,7 +1259,7 @@ export default function HomePage() {
           <div className="lg:col-span-4 xl:col-span-4 space-y-6">
             <div id="featured-match" className="relative group/match overflow-hidden rounded-[3rem] glass-premium border-primary/20 shadow-[0_20px_50px_rgba(0,0,0,0.3)]">
                {/* Background Effects */}
-               {!isPerfMode && (
+               {!performanceMode && (
                  <>
                    <div className="absolute top-0 right-0 w-64 h-64 bg-primary/10 blur-[100px] rounded-full -translate-y-1/2 translate-x-1/2 group-hover/match:bg-primary/20 transition-all duration-700" />
                    <div className="absolute bottom-0 left-0 w-64 h-64 bg-emerald-500/5 blur-[80px] rounded-full translate-y-1/2 -translate-x-1/2" />
