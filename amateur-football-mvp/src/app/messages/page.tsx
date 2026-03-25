@@ -21,6 +21,7 @@ import {
 } from 'lucide-react';
 import ChatRoom from '@/components/ChatRoom';
 import { cn } from '@/lib/utils';
+import { useSearchParams } from 'next/navigation';
 
 // Memoized variant objects to prevent unnecessary re-renders
 const containerVariants = {
@@ -205,7 +206,8 @@ export default function MessagesPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [selectedChat, setSelectedChat] = useState<any | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
-  const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const searchParams = useSearchParams();
+  const userIdParam = searchParams.get('user');
 
   useEffect(() => {
     if (!user) return;
@@ -267,6 +269,26 @@ export default function MessagesPage() {
       supabase.removeChannel(channel);
     };
   }, [user, user?.id]);
+
+  useEffect(() => {
+    if (!isLoading && userIdParam && conversations.length > 0) {
+      const existing = conversations.find(c => c.userId === userIdParam);
+      if (existing) {
+        setSelectedChat(existing);
+      } else {
+        const friend = friends.find(f => f.userId === userIdParam);
+        if (friend) {
+          setSelectedChat({
+            userId: friend.userId,
+            name: friend.name,
+            avatar_url: friend.avatar_url,
+            lastMessage: 'Iniciar conversación...',
+            timestamp: new Date().toISOString(),
+          });
+        }
+      }
+    }
+  }, [isLoading, userIdParam, conversations, friends]);
 
   const filteredConversations = useMemo(
     () => conversations.filter((c) => c.name.toLowerCase().includes(searchQuery.toLowerCase())),

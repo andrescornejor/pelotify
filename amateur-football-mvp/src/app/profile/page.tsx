@@ -644,9 +644,12 @@ function ProfileContent() {
                        )
                     ) : (
                       <div className="flex gap-3">
-                         <button className="h-14 px-10 rounded-2xl bg-primary text-black text-[11px] font-black uppercase tracking-widest shadow-xl shadow-primary/20 hover:scale-105 active:scale-95 transition-all">Seguir</button>
-                         <button className="h-14 w-14 rounded-2xl bg-surface/80 dark:bg-foreground/5 border border-foreground/10 flex items-center justify-center hover:bg-foreground/10 transition-all">
-                            <MessageSquare className="w-6 h-6 text-foreground" />
+                         <button 
+                           onClick={() => router.push(`/messages?user=${playerId}`)}
+                           className="h-14 px-10 rounded-2xl bg-primary text-black text-[11px] font-black uppercase tracking-widest shadow-xl shadow-primary/20 hover:scale-105 active:scale-95 transition-all flex items-center gap-3"
+                         >
+                            <MessageSquare className="w-5 h-5" />
+                            <span>Enviar Mensaje</span>
                          </button>
                       </div>
                     )}
