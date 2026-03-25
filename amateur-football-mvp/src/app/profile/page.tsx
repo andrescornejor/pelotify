@@ -36,7 +36,7 @@ import { useSearchParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useState, useEffect, useMemo } from 'react';
 import { supabase } from '@/lib/supabase';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence, useScroll, useTransform } from 'framer-motion';
 import { cn } from '@/lib/utils';
 import { getUserMatches, Match } from '@/lib/matches';
 import { findVenueByLocation } from '@/lib/venues';
@@ -139,6 +139,12 @@ function ProfileContent() {
       });
     }
   }, [isMe, user]);
+
+  const { scrollY } = useScroll();
+  const heroY = useTransform(scrollY, [0, 500], [0, 200]);
+  const heroOpacity = useTransform(scrollY, [0, 300], [1, 0]);
+  const heroScale = useTransform(scrollY, [0, 300], [1, 1.1]);
+  const heroBlur = useTransform(scrollY, [0, 300], [0, 10]);
 
   useEffect(() => {
     const fetchProfileData = async () => {
@@ -496,7 +502,25 @@ function ProfileContent() {
   }
 
   return (
-    <div className="flex flex-col gap-8 p-4 sm:p-6 lg:p-10 xl:p-14 2xl:p-16 max-w-full mx-auto min-h-screen bg-background relative selection:bg-primary/30 selection:text-primary">
+    <div className="flex flex-col gap-8 pb-20 max-w-full mx-auto min-h-screen bg-background relative selection:bg-primary/30 selection:text-primary overflow-x-hidden">
+      
+      {/* IMMERSIVE HERO PARALLAX */}
+      <div className="absolute top-0 left-0 right-0 h-[60dvh] overflow-hidden pointer-events-none">
+        <motion.div 
+          style={{ y: heroY, scale: heroScale, opacity: heroOpacity, filter: `blur(${heroBlur}px)` }}
+          className="relative w-full h-full"
+        >
+          <img 
+            src="https://images.unsplash.com/photo-1508098682722-e99c43a406b2?auto=format&fit=crop&q=80&w=2000" 
+            className="w-full h-full object-cover opacity-20 grayscale"
+            alt=""
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-b from-primary/10 via-transparent to-transparent" />
+        </motion.div>
+      </div>
+
+      <div className="relative z-10 px-4 sm:px-6 lg:px-10 xl:px-14 2xl:p-16 space-y-12">
       {/* Ambient Effects */}
       <div className="fixed inset-0 pointer-events-none -z-10 overflow-hidden">
         <div
