@@ -1597,7 +1597,7 @@ function ProfileContent() {
             </AnimatePresence>
           </div>
         </div>
-      </div>
+
 
       <div className="pb-32 lg:pb-12" />
 
