@@ -325,7 +325,20 @@ function ProfileContent() {
     }
   }, [dbProfile, authMetadata, avatarPreview]);
 
-  const playerStats = useMemo(() => resolveStats(), [isMe, authMetadata.stats, dbProfile.stats, editedStats, isEditing]);
+  const playerStats = useMemo((): PlayerStats => {
+    if (isEditing) return editedStats;
+    const statsSource = isMe ? authMetadata.stats : dbProfile.stats || dbMetadata.stats;
+    if (statsSource && typeof statsSource === 'object') return statsSource as PlayerStats;
+
+    return {
+      pac: getField('pac', DEFAULT_PLAYER.stats.pac),
+      sho: getField('sho', DEFAULT_PLAYER.stats.sho),
+      pas: getField('pas', DEFAULT_PLAYER.stats.pas),
+      dri: getField('dri', DEFAULT_PLAYER.stats.dri),
+      def: getField('def', DEFAULT_PLAYER.stats.def),
+      phy: getField('phy', DEFAULT_PLAYER.stats.phy),
+    };
+  }, [isMe, authMetadata.stats, dbProfile.stats, dbMetadata.stats, editedStats, isEditing]);
   
   const playerOverall = useMemo(() => {
     return getField(
