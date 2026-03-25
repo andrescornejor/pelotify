@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import VideoPlayer from './VideoPlayer';
 import VideoUploadModal from './VideoUploadModal';
@@ -20,6 +20,8 @@ export default function VideoFeed() {
   const [isUploadOpen, setIsUploadOpen] = useState(false);
   const [activeTab, setActiveTab] = useState<'for-you' | 'friends'>('for-you');
   const { user } = useAuth();
+  const feedRef = useRef<HTMLDivElement>(null);
+  const [hasScrolledToParam, setHasScrolledToParam] = useState(false);
 
   const fetchHighlights = async () => {
     setLoading(true);
@@ -45,6 +47,16 @@ export default function VideoFeed() {
   useEffect(() => {
     fetchHighlights();
   }, [activeTab, user]);
+
+  useEffect(() => {
+    if (highlights.length > 0 && activeId && !hasScrolledToParam && videoIdParam) {
+      const element = document.getElementById(`video-${activeId}`);
+      if (element) {
+        element.scrollIntoView({ behavior: 'auto' });
+        setHasScrolledToParam(true);
+      }
+    }
+  }, [highlights, activeId, hasScrolledToParam, videoIdParam]);
 
   if (loading && highlights.length === 0) {
     return (
@@ -132,7 +144,10 @@ export default function VideoFeed() {
       </div>
 
       {/* Vertical Feed with Snap Scroll */}
-      <div className="h-full overflow-y-auto snap-y snap-mandatory scrollbar-none">
+      <div 
+        ref={feedRef}
+        className="h-full overflow-y-auto snap-y snap-mandatory no-scrollbar overscroll-contain"
+      >
         {highlights.length === 0 ? (
           <div className="h-full flex items-center justify-center px-6 text-center bg-black relative">
             <div className="absolute inset-0 bg-[url('/noise.png')] opacity-[0.03] mix-blend-overlay pointer-events-none" />
@@ -183,10 +198,10 @@ export default function VideoFeed() {
           </div>
         ) : (
           highlights.map((h) => (
-            <section 
+            <div 
+              id={`video-${h.id}`}
               key={h.id} 
-              className="h-full snap-start"
-              onMouseEnter={() => setActiveId(h.id)}
+              className="h-[100dvh] snap-start snap-always scroll-mt-0 relative"
             >
               <VideoPlayer
                 id={h.id}
@@ -200,8 +215,9 @@ export default function VideoFeed() {
                 comments={h.comments_count}
                 isActive={activeId === h.id}
                 onDelete={fetchHighlights}
+                onInView={setActiveId}
               />
-            </section>
+            </div>
           ))
         )}
       </div>

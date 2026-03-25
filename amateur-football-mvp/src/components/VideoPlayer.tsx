@@ -19,6 +19,7 @@ interface VideoPlayerProps {
   comments?: number;
   isActive: boolean;
   onDelete?: () => void;
+  onInView?: (id: string) => void;
 }
 
 export default function VideoPlayer({
@@ -32,7 +33,8 @@ export default function VideoPlayer({
   likes = 0,
   comments = 0,
   isActive,
-  onDelete
+  onDelete,
+  onInView
 }: VideoPlayerProps) {
   const { user } = useAuth();
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -51,7 +53,7 @@ export default function VideoPlayer({
   const [localComments, setLocalComments] = useState(comments);
   const [showCopied, setShowCopied] = useState(false);
 
-  const { ref: inViewRef, inView } = useInView({ threshold: 0.7 });
+  const { ref: inViewRef, inView } = useInView({ threshold: 0.5 });
 
   const setRefs = (node: HTMLDivElement) => { inViewRef(node); };
 
@@ -59,11 +61,21 @@ export default function VideoPlayer({
     if (inView && isActive) {
       videoRef.current?.play().catch(() => setIsPlaying(false));
       setIsPlaying(true);
+    } else if (!inView && isActive) {
+      // If active id is this but not in view, we shouldn't play
+      videoRef.current?.pause();
+      setIsPlaying(false);
     } else {
       videoRef.current?.pause();
       setIsPlaying(false);
     }
   }, [inView, isActive]);
+
+  useEffect(() => {
+    if (inView) {
+      onInView?.(id);
+    }
+  }, [inView, id, onInView]);
 
   useEffect(() => {
     if (user && id) {
@@ -200,7 +212,7 @@ export default function VideoPlayer({
   return (
     <div 
       ref={setRefs}
-      className="relative w-full h-[100dvh] bg-black snap-start overflow-hidden flex items-center justify-center overscroll-none"
+      className="relative w-full h-full bg-black overflow-hidden flex items-center justify-center overscroll-contain"
     >
       {/* Background Blur (Desktop Aesthetics) */}
       <div className="absolute inset-0 hidden sm:block pointer-events-none">
