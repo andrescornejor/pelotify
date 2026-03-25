@@ -62,92 +62,136 @@ export default function SearchPage() {
       {/* ── HEADER & RADAR SCANNER ── */}
       <div
         className={cn(
-          'sticky top-0 z-30 pt-4 pb-6 -mx-4 px-4 lg:-mx-12 lg:px-12 border-b border-foreground/5 shadow-2xl shadow-black/5',
-          isPerfMode ? 'bg-background' : 'bg-background/80 backdrop-blur-xl'
+          'sticky top-0 z-40 pt-6 pb-8 -mx-4 px-4 lg:-mx-12 lg:px-12 border-b border-white/5 shadow-2xl transition-all duration-500',
+          isPerfMode ? 'bg-background shadow-none' : 'bg-background/80 backdrop-blur-3xl shadow-black/40'
         )}
       >
-        <div className="flex flex-col gap-8 relative z-10 text-center lg:text-left max-w-screen-2xl mx-auto">
-          <div className="flex flex-col gap-2 relative">
+        <div className="flex flex-col gap-10 relative z-10 text-center lg:text-left max-w-screen-2xl mx-auto">
+          <div className="flex flex-col gap-4 relative">
             {/* Radar Sweep Animation behind title */}
             {!isPerfMode && (
-              <div className="absolute -top-10 -left-10 lg:-left-20 w-32 lg:w-48 h-32 lg:h-48 pointer-events-none opacity-20">
-                <div className="absolute inset-0 border border-primary/30 rounded-full" />
-                <div className="absolute inset-0 border border-primary/10 rounded-full scale-150" />
+              <div className="absolute -top-16 -left-16 lg:-left-28 w-48 lg:w-64 h-48 lg:h-64 pointer-events-none opacity-20">
+                <div className="absolute inset-0 border border-primary/20 rounded-full animate-pulse" />
+                <div className="absolute inset-0 border border-primary/5 rounded-full scale-150" />
                 <motion.div
                   animate={{ rotate: 360 }}
-                  transition={{ duration: 4, repeat: Infinity, ease: 'linear' }}
-                  className="absolute inset-0 border-r-2 border-primary/40 rounded-full"
+                  transition={{ duration: 6, repeat: Infinity, ease: 'linear' }}
+                  className="absolute inset-0 border-r-[3px] border-primary/30 rounded-full"
                   style={{ clipPath: 'polygon(50% 50%, 100% 0, 100% 100%)' }}
                 />
-                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-1.5 h-1.5 bg-primary rounded-full shadow-[0_0_10px_rgba(44,252,125,1)]" />
+                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-2 h-2 bg-primary rounded-full shadow-[0_0_20px_var(--primary)]" />
               </div>
             )}
 
-            <div className="flex items-center gap-3 justify-center lg:justify-start">
+            <div className="flex items-center gap-4 justify-center lg:justify-start">
               <div
                 className={cn(
-                  'w-1.5 h-1.5 rounded-full bg-primary',
-                  !isPerfMode && 'animate-pulse'
+                  'w-2 h-2 rounded-full bg-primary',
+                  !isPerfMode && 'animate-ping'
                 )}
               />
-              <span className="text-[10px] font-black uppercase tracking-[0.5em] text-primary italic">
-                Sintonizando Frecuencias
+              <span className="text-[11px] font-black uppercase tracking-[0.5em] text-primary italic font-kanit">
+                SISTEMA DE LOCALIZACIÓN ACTIVO
               </span>
             </div>
-            <h1 className="text-5xl lg:text-7xl font-black italic text-foreground uppercase tracking-tightest leading-none">
-              Scouting <span className="text-foreground/20">Radar</span>
+            <h1 
+               className="text-6xl lg:text-8xl font-[1000] italic text-foreground uppercase tracking-[-0.05em] leading-[0.85] font-kanit"
+               style={{ textShadow: '0 0 40px rgba(var(--foreground-rgb), 0.1)' }}
+            >
+              Scouting <span className="text-foreground/10">Radar</span>
             </h1>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-end">
-            <div className="lg:col-span-8 space-y-6">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center lg:items-end">
+            <div className="lg:col-span-8 flex flex-col gap-8">
               <div className="relative group">
-                <div className="absolute inset-y-0 left-7 flex items-center pointer-events-none">
-                  <Search className="w-6 h-6 text-foreground/20 group-focus-within:text-primary transition-all duration-500" />
+                <div className="absolute inset-y-0 left-8 flex items-center pointer-events-none">
+                  <Search className="w-7 h-7 text-foreground/20 group-focus-within:text-primary group-focus-within:scale-110 transition-all duration-700" />
                 </div>
                 <input
                   type="text"
                   placeholder="Buscá canchas, zonas o tipo de partido..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full h-16 lg:h-20 pl-16 lg:pl-20 pr-10 rounded-[1.8rem] lg:rounded-[2.5rem] bg-foreground/[0.03] border border-foreground/10 focus:bg-foreground/[0.05] focus:border-primary/30 outline-none transition-all text-lg lg:text-xl font-black text-foreground placeholder:text-foreground/20 placeholder:italic shadow-2xl focus:shadow-primary/5"
+                  className="w-full h-18 lg:h-22 pl-18 lg:pl-22 pr-12 rounded-[2rem] lg:rounded-[3rem] bg-foreground/[0.04] border border-white/5 focus:bg-foreground/[0.06] focus:border-primary/40 outline-none transition-all text-xl lg:text-2xl font-[1000] text-foreground placeholder:text-foreground/10 placeholder:italic font-kanit italic tracking-tighter shadow-2xl focus:shadow-[0_0_50px_rgba(var(--primary-rgb),0.15)]"
                 />
                 <div className="absolute inset-y-0 right-10 flex items-center">
-                  <Filter className="w-6 h-6 text-primary cursor-pointer hover:text-primary transition-colors" />
+                   <div className="p-3 rounded-2xl bg-primary/10 border border-primary/20 text-primary hover:bg-primary hover:text-black transition-all cursor-pointer group-hover:scale-110">
+                      <Filter className="w-5 h-5" />
+                   </div>
                 </div>
               </div>
 
               {/* Advanced Filters */}
-              <div className="flex flex-wrap items-center gap-3 px-2">
-                <div className="flex items-center p-1 bg-foreground/5 rounded-2xl border border-foreground/5 gap-1">
+              <div className="flex flex-wrap items-center gap-4 px-2">
+                <div className="flex items-center p-1.5 glass-premium rounded-[1.5rem] border-white/5 gap-1.5 shadow-xl">
                   {(['All', 'F5', 'F7', 'F11'] as const).map((type) => (
                     <button
                       key={type}
                       onClick={() => setTypeFilter(type)}
                       className={cn(
-                        'px-5 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest italic transition-all',
+                        'px-6 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-[0.2em] italic font-kanit transition-all relative overflow-hidden group/tab',
                         typeFilter === type
-                          ? 'bg-primary text-black shadow-lg shadow-primary/20'
-                          : 'text-foreground/40 hover:text-foreground/60 hover:bg-foreground/5'
+                          ? 'text-black'
+                          : 'text-foreground/30 hover:text-foreground/60'
                       )}
                     >
-                      {type === 'All' ? 'TODOS' : type}
+                       {typeFilter === type && (
+                          <motion.div 
+                             layoutId="search-type-bg"
+                             className="absolute inset-0 bg-primary shadow-lg shadow-primary/20"
+                          />
+                       )}
+                       <span className="relative z-10">{type === 'All' ? 'TODOS' : type}</span>
                     </button>
                   ))}
                 </div>
 
-                <div className="h-8 w-px bg-foreground/10 mx-1 hidden sm:block" />
+                <div className="h-10 w-px bg-white/10 mx-2 hidden sm:block" />
 
                 <button
                   onClick={() => setOnlyAvailable(!onlyAvailable)}
                   className={cn(
-                    'flex items-center gap-3 px-6 py-3.5 rounded-2xl border transition-all text-[10px] font-black uppercase tracking-widest italic',
+                    'flex items-center gap-4 px-8 py-4 rounded-2xl border transition-all text-[10px] font-black uppercase tracking-[0.2em] italic font-kanit shadow-xl active:scale-95',
                     onlyAvailable
-                      ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400 shadow-lg shadow-emerald-500/5'
-                      : 'bg-foreground/5 border-foreground/5 text-foreground/40 hover:border-foreground/10'
-                  ) + ' active:scale-95'}
+                      ? 'bg-emerald-500 text-black border-emerald-500 shadow-[0_10px_30px_rgba(16,185,129,0.3)]'
+                      : 'glass-premium border-white/5 text-foreground/30 hover:border-white/20'
+                  )}
                 >
-                  <div className={cn(
+                  <CheckCircle2 className={cn("w-4 h-4", onlyAvailable ? "text-black" : "text-emerald-500 opacity-20")} />
+                  <span>SOLO DISPONIBLES</span>
+                </button>
+              </div>
+            </div>
+
+            <div className="lg:col-span-4 flex items-center justify-center lg:justify-end gap-3">
+              <div className="p-1 glass-premium rounded-2xl border-white/5 shadow-xl flex gap-1">
+                {(['list', 'map'] as const).map((tab) => (
+                  <button
+                    key={tab}
+                    onClick={() => setActiveTab(tab)}
+                    className={cn(
+                      'flex items-center justify-center gap-3 px-8 py-4 rounded-xl text-[10px] font-black uppercase tracking-[0.2em] italic font-kanit transition-all relative group/view',
+                      activeTab === tab 
+                        ? 'text-black' 
+                        : 'text-foreground/30 hover:text-foreground/60'
+                    )}
+                  >
+                    {activeTab === tab && (
+                       <motion.div 
+                          layoutId="search-view-bg"
+                          className="absolute inset-0 bg-primary"
+                       />
+                    )}
+                    {tab === 'list' ? <LayoutGrid className="w-4 h-4 relative z-10" /> : <MapPin className="w-4 h-4 relative z-10" />}
+                    <span className="relative z-10">{tab === 'list' ? 'LISTA' : 'MAPA'}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
                     'w-1.5 h-1.5 rounded-full',
                     onlyAvailable ? 'bg-emerald-400 animate-pulse' : 'bg-foreground/20'
                   )} />

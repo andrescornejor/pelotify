@@ -111,150 +111,80 @@ export function TopHeader() {
             initial={{ y: -24, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ type: 'spring', stiffness: 300, damping: 26, delay: 0.05 }}
-            className="overflow-hidden rounded-[1.25rem] lg:rounded-[1.75rem]"
+            className="overflow-hidden rounded-[2rem] lg:rounded-[2.5rem] relative group"
             style={{
               background: performanceMode
                 ? 'var(--surface-elevated)'
-                : 'rgba(var(--foreground-rgb), 0.04)',
-              backdropFilter: performanceMode ? 'none' : 'blur(12px) saturate(180%)',
-              WebkitBackdropFilter: performanceMode ? 'none' : 'blur(12px) saturate(180%)',
-              border: '1px solid rgba(var(--foreground-rgb), 0.08)',
+                : 'rgba(var(--foreground-rgb), 0.05)',
+              backdropFilter: performanceMode ? 'none' : 'blur(20px) saturate(180%)',
+              WebkitBackdropFilter: performanceMode ? 'none' : 'blur(20px) saturate(180%)',
+              border: '1px solid var(--border)',
               boxShadow: performanceMode
                 ? '0 10px 30px rgba(0,0,0,0.2)'
-                : '0 4px 32px rgba(0,0,0,0.12), inset 0 1px 0 rgba(255,255,255,0.05)',
+                : '0 20px 50px rgba(0,0,0,0.15), inset 0 1px 0 rgba(255,255,255,0.05)',
             }}
           >
-            {/* Background subtle light beam */}
-            <div className="absolute top-0 left-[-10%] w-[40%] h-full bg-gradient-to-r from-primary/5 via-transparent to-transparent -skew-x-12 pointer-events-none" />
+            {/* Dynamic Glass Highlight */}
+            {!performanceMode && (
+              <div className="absolute top-0 left-[-20%] w-[50%] h-full bg-gradient-to-r from-primary/10 via-transparent to-transparent -skew-x-[25deg] transition-all duration-1000 group-hover:left-[100%]" />
+            )}
 
-            <div className="grid grid-cols-[1fr_auto_1fr] items-center h-[80px] sm:h-[80px] lg:h-[76px] px-4 sm:px-6 lg:px-8 w-full">
-              {/* Left: Menu + Logo */}
-              <div className="flex items-center gap-3 sm:gap-4 lg:gap-3 xl:gap-6 min-w-0">
+            <div className="flex items-center justify-between h-[84px] px-6 lg:px-10 w-full relative z-10">
+              {/* Left Side: Brand & Menu */}
+              <div className="flex items-center gap-6">
                 <motion.button
                   onClick={toggleSidebar}
-                  whileTap={{ scale: 0.92 }}
-                  className="relative w-[64px] h-12 lg:w-11 lg:h-11 flex items-center justify-center rounded-2xl bg-foreground/[0.04] hover:bg-foreground/[0.08] border border-foreground/[0.06] transition-all group"
-                  aria-label="Menu"
+                  whileTap={{ scale: 0.94 }}
+                  className="w-12 h-12 flex items-center justify-center rounded-2xl bg-foreground/[0.04] hover:bg-primary hover:text-background border border-border transition-all group/menu"
                 >
-                  <div className="flex flex-col gap-[5px] w-[22px] items-center">
-                    <motion.span
-                      animate={
-                        useSidebar().isOpen
-                          ? { rotate: 45, y: 7.5, width: '100%' }
-                          : { rotate: 0, y: 0, width: '100%' }
-                      }
-                      className="h-[2px] bg-foreground/80 rounded-full block origin-center transition-all duration-300"
-                    />
-                    <motion.span
-                      animate={useSidebar().isOpen ? { opacity: 0, x: -8 } : { opacity: 1, x: 0 }}
-                      className="h-[2.2px] w-[70%] bg-primary rounded-full block transition-all duration-300 shadow-[0_0_8px_rgba(16,185,129,0.4)]"
-                    />
-                    <motion.span
-                      animate={
-                        useSidebar().isOpen
-                          ? { rotate: -45, y: -7.5, width: '100%' }
-                          : { rotate: 0, y: 0, width: '100%' }
-                      }
-                      className="h-[2px] bg-foreground/80 rounded-full block origin-center transition-all duration-300"
-                    />
+                  <div className="flex flex-col gap-1.5 w-5">
+                    <div className="h-0.5 w-full bg-current rounded-full" />
+                    <div className="h-0.5 w-full bg-current rounded-full opacity-60" />
+                    <div className="h-0.5 w-full bg-current rounded-full" />
                   </div>
                 </motion.button>
 
-                <Link
-                  href="/"
-                  className="flex items-center gap-2 select-none hover:opacity-90 transition-all group/logo"
-                >
-                  <div className="w-16 h-16 sm:w-18 sm:h-18 lg:w-14 lg:h-14 xl:w-20 xl:h-20 flex items-center justify-center relative transition-transform duration-500 group-hover/logo:scale-110 shrink-0">
-                    <div className="absolute inset-0 bg-primary/15 blur-[20px] rounded-full opacity-40 shrink-0" />
-                    <img
-                      src="/logo_pelotify.png"
-                      alt="Logo"
-                      className="w-full h-full object-contain relative z-10 drop-shadow-[0_0_15px_rgba(44,252,125,0.2)]"
-                    />
-                  </div>
-                  <div className="flex-1 min-w-0 flex flex-col lg:gap-0.5">
-                    <div className="flex items-center gap-2">
-                      <span className="hidden min-[400px]:flex text-[20px] sm:text-[24px] lg:text-[24px] 2xl:text-[32px] font-[900] tracking-[-0.02em] font-kanit uppercase italic leading-tight items-center gap-0 pr-4">
-                        <span className="text-foreground">PELOTI</span>
-                        <span
-                          className="bg-clip-text text-transparent px-2 -mx-2"
-                          style={{
-                            backgroundImage:
-                              'linear-gradient(135deg, #5dfd9d 0%, #2cfc7d 40%, #1db95a 100%)',
-                            filter: 'drop-shadow(0 0 20px rgba(44,252,125,0.45))',
-                          }}
-                        >
-                          FY
-                        </span>
-                      </span>
-                      {/* Subtitle gem - only lg */}
-                      <motion.div
-                        animate={{ scale: [1, 1.2, 1], opacity: [0.5, 1, 0.5] }}
-                        transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
-                        className="hidden lg:block w-2.5 h-2.5 rounded-full bg-primary shadow-[0_0_15px_rgba(44,252,125,0.8)]"
-                      />
+                <Link href="/" className="flex items-center gap-4 group/brand">
+                    <div className="w-12 h-12 relative flex items-center justify-center">
+                       <div className="absolute inset-x-0 inset-y-0 bg-primary/20 blur-xl rounded-full opacity-0 group-hover/brand:opacity-100 transition-opacity" />
+                       <img src="/logo_pelotify.png" alt="Logo" className="w-full h-full object-contain relative z-10 drop-shadow-[0_0_8px_rgba(var(--primary-rgb),0.3)] group-hover/brand:scale-110 transition-transform duration-500" />
                     </div>
-                    <span className="hidden sm:block lg:hidden 2xl:block text-[7px] sm:text-[9px] lg:text-[10px] font-black uppercase tracking-[0.3em] text-foreground/25 leading-none mt-0.5 group-hover/logo:text-primary transition-colors duration-500">
-                      Dominá el{' '}
-                      <span className="text-primary/50 group-hover/logo:text-primary transition-colors duration-500">
-                        Potrero
-                      </span>
-                    </span>
-                  </div>
+                    <div className="flex flex-col">
+                       <h1 className="text-2xl font-black font-kanit italic tracking-[-0.04em] leading-none uppercase">
+                         PELOTI<span className="text-primary">FY</span>
+                       </h1>
+                       <div className="flex items-center gap-1.5 mt-1 opacity-40 group-hover/brand:opacity-100 transition-opacity">
+                          <div className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
+                          <span className="text-[8px] font-black uppercase tracking-[0.3em]">BETA v2.0</span>
+                       </div>
+                    </div>
                 </Link>
               </div>
 
-              {/* Middle: Desktop Nav */}
-              <nav className="hidden lg:flex items-center gap-1.5 bg-foreground/[0.03] p-1.5 rounded-[1.25rem] border border-foreground/[0.05] backdrop-blur-md">
+              {/* Center: Desktop Navigation - Expert Styling */}
+              <nav className="hidden lg:flex items-center gap-1 p-1.5 rounded-2xl bg-foreground/[0.03] border border-border">
                 {DESKTOP_NAV.map((item) => {
                   const cleanPath = pathname.replace(/\/$/, '') || '/';
                   const cleanHref = item.href.replace(/\/$/, '') || '/';
-                  const isActive =
-                    cleanPath === cleanHref ||
-                    (cleanHref !== '/' && cleanPath.startsWith(cleanHref));
-                  const hasBadge =
-                    (item.id === 'friends' && friendsCount > 0 && !isActive) ||
-                    (item.label === 'Mensajes' && unreadChatCount > 0 && !isActive);
-
+                  const isActive = cleanPath === cleanHref || (cleanHref !== '/' && cleanPath.startsWith(cleanHref));
+                  
                   return (
-                    <Link key={item.href} href={item.href} className="relative">
+                    <Link key={item.href} href={item.href}>
                       <motion.div
-                        whileHover={{ y: -1 }}
                         className={cn(
-                          'relative px-4 py-2 rounded-xl flex items-center gap-2.5 transition-all duration-300 group',
-                          isActive
-                            ? 'bg-primary/10 text-primary'
-                            : 'text-foreground/45 hover:text-foreground/70 hover:bg-foreground/[0.04]'
+                          'relative px-5 py-2.5 rounded-xl flex items-center gap-3 transition-all duration-300 group/nav shadow-sm',
+                          isActive ? 'bg-primary text-background' : 'text-foreground/40 hover:text-foreground/80 hover:bg-foreground/[0.04]'
                         )}
+                        whileHover={!isActive ? { y: -2 } : {}}
                       >
-                        {isActive && (
-                          <motion.div
-                            layoutId="nav-glow"
-                            className="absolute inset-0 rounded-xl bg-primary/[0.08]"
-                            initial={false}
-                            transition={{ type: 'spring', stiffness: 380, damping: 30 }}
+                        <item.icon className="w-4 h-4" strokeWidth={isActive ? 3 : 2} />
+                        <span className="text-[11px] font-[900] uppercase tracking-widest italic">{item.label}</span>
+                        
+                        {isActive && !performanceMode && (
+                          <motion.div 
+                            layoutId="top-nav-shadow"
+                            className="absolute inset-0 rounded-xl shadow-[0_10px_20px_rgba(var(--primary-rgb),0.3)] pointer-events-none"
                           />
-                        )}
-
-                        <item.icon
-                          className={cn(
-                            'w-4 h-4 transition-transform duration-300',
-                            isActive ? 'scale-110' : 'group-hover:scale-110'
-                          )}
-                          strokeWidth={isActive ? 2.5 : 2}
-                        />
-
-                        <span
-                          className={cn(
-                            'hidden 2xl:block text-[12px] font-black uppercase tracking-wider',
-                            isActive ? 'opacity-100' : 'opacity-80'
-                          )}
-                        >
-                          {item.label}
-                        </span>
-
-                        {hasBadge && (
-                          <span className="w-1.5 h-1.5 rounded-full bg-primary shadow-[0_0_8px_rgba(16,185,129,0.8)] ml-0.5" />
                         )}
                       </motion.div>
                     </Link>
@@ -262,83 +192,53 @@ export function TopHeader() {
                 })}
               </nav>
 
-              {/* Right: Actions */}
-              <div className="flex items-center justify-end gap-1.5 sm:gap-4 lg:gap-2.5 xl:gap-4 col-start-3">
-                {/* Create Match Button - Only Desktop */}
-
-                <div className="flex items-center gap-1.5 sm:gap-2.5">
-                  {/* Theme Toggle */}
-                  <motion.button
-                    whileHover={{ scale: 1.08 }}
-                    whileTap={{ scale: 0.88, rotate: 20 }}
+              {/* Right Side: Account & Settings */}
+              <div className="flex items-center gap-3">
+                 <motion.button
+                    whileTap={{ scale: 0.9 }}
                     onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
-                    className="w-12 h-12 lg:w-11 lg:h-11 flex items-center justify-center rounded-2xl bg-foreground/[0.04] hover:bg-foreground/[0.08] text-foreground/45 hover:text-foreground/70 transition-all border border-foreground/[0.04]"
-                    title="Cambiar Tema"
-                  >
+                    className="w-12 h-12 flex items-center justify-center rounded-2xl border border-border bg-foreground/[0.03] hover:bg-foreground/[0.08] transition-all"
+                 >
                     <AnimatePresence mode="wait">
                       <motion.div
                         key={theme}
-                        initial={{ scale: 0.5, rotate: -30, opacity: 0 }}
-                        animate={{ scale: 1, rotate: 0, opacity: 1 }}
-                        exit={{ scale: 0.5, rotate: 30, opacity: 0 }}
-                        transition={{ duration: 0.2 }}
+                        initial={{ rotate: -20, opacity: 0 }}
+                        animate={{ rotate: 0, opacity: 1 }}
+                        exit={{ rotate: 20, opacity: 0 }}
                       >
-                        {theme === 'dark' ? (
-                          <Sun className="w-4 h-4 sm:w-[1.1rem] sm:h-[1.1rem]" />
-                        ) : (
-                          <Moon className="w-4 h-4 sm:w-[1.1rem] sm:h-[1.1rem]" />
-                        )}
+                        {theme === 'dark' ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
                       </motion.div>
                     </AnimatePresence>
-                  </motion.button>
+                 </motion.button>
 
-                  {/* Notification Bell */}
-                  <motion.button
-                    whileHover={{ scale: 1.08 }}
-                    whileTap={{ scale: 0.88 }}
-                    onClick={() => {
-                      setNotificationsOpen(true);
-                      setNotifCount(0);
-                    }}
-                    className="relative w-12 h-12 lg:w-11 lg:h-11 flex items-center justify-center rounded-2xl bg-foreground/[0.04] hover:bg-foreground/[0.08] text-foreground/45 hover:text-foreground/70 transition-all border border-foreground/[0.04]"
-                  >
-                    <Bell className="w-4 h-4 sm:w-[1.1rem] sm:h-[1.1rem]" />
-                    <AnimatePresence>
-                      {notifCount > 0 && (
-                        <motion.span
-                          initial={{ scale: 0, y: 4 }}
-                          animate={{ scale: 1, y: 0 }}
-                          exit={{ scale: 0 }}
-                          transition={{ type: 'spring', stiffness: 500, damping: 25 }}
-                          className="absolute -top-1 -right-1 min-w-[19px] h-[19px] px-1 bg-primary text-background text-[10px] font-black rounded-full flex items-center justify-center shadow-[0_0_15px_rgba(16,185,129,0.5)] border-2 border-background"
-                        >
-                          {notifCount > 9 ? '9+' : notifCount}
-                        </motion.span>
-                      )}
-                    </AnimatePresence>
-                  </motion.button>
+                 <motion.button
+                    whileTap={{ scale: 0.9 }}
+                    onClick={() => setNotificationsOpen(true)}
+                    className="relative w-12 h-12 flex items-center justify-center rounded-2xl border border-border bg-foreground/[0.03] hover:bg-foreground/[0.08] transition-all"
+                 >
+                    <Bell className="w-4 h-4" />
+                    {notifCount > 0 && (
+                      <span className="absolute top-2 right-2 w-4 h-4 bg-primary text-background text-[8px] font-black rounded-full flex items-center justify-center border-2 border-background animate-bounce shadow-lg">
+                        {notifCount}
+                      </span>
+                    )}
+                 </motion.button>
 
-                  {/* Profile Avatar */}
-                  <Link href="/profile/me">
+                 <Link href="/profile/me">
                     <motion.div
-                      whileHover={{ scale: 1.08 }}
-                      whileTap={{ scale: 0.92 }}
-                      className="w-12 h-12 lg:w-11 lg:h-11 rounded-2xl p-0.5 bg-foreground/[0.04] border border-foreground/[0.08] hover:border-primary/30 transition-all"
+                       whileHover={{ scale: 1.05 }}
+                       whileTap={{ scale: 0.95 }}
+                       className="w-14 h-14 p-1 rounded-[1.25rem] border-2 border-primary/20 hover:border-primary transition-all bg-surface shadow-xl"
                     >
-                      <div className="w-full h-full rounded-[0.85rem] overflow-hidden bg-primary/5 flex items-center justify-center">
-                        {user?.avatar_url ? (
-                          <img
-                            src={user.avatar_url}
-                            alt="Perfil"
-                            className="w-full h-full object-cover"
-                          />
-                        ) : (
-                          <User2 className="w-5 h-5 text-primary/60" />
-                        )}
-                      </div>
+                       <div className="w-full h-full rounded-[0.9rem] overflow-hidden bg-foreground/5 flex items-center justify-center">
+                          {user?.avatar_url ? (
+                            <img src={user.avatar_url} className="w-full h-full object-cover" />
+                          ) : (
+                            <User2 className="w-5 h-5 opacity-40" />
+                          )}
+                       </div>
                     </motion.div>
-                  </Link>
-                </div>
+                 </Link>
               </div>
             </div>
           </motion.div>

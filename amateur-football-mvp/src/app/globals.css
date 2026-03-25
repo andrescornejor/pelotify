@@ -6,54 +6,54 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
-  /* Neon Elite Theme */
-  --primary: #55fa86;
-  --primary-light: #83ffab;
-  --primary-dark: #3ec86b;
-  --primary-rgb: 85, 250, 134;
-
+  /* Expert Neon Elite Theme - Refined Palette */
+  --primary: #2cfc7d;
+  --primary-light: #5dfd9d;
+  --primary-dark: #1db95a;
+  --primary-rgb: 44, 252, 125;
+  
   --accent: #f59e0b;
-  --accent-light: #fbce4e;
+  --accent-light: #fbbf24;
   --accent-rgb: 245, 158, 11;
-
+  
   --success: #2cfc7d;
   --warning: #f59e0b;
-  --danger: #f43f5e;
+  --danger: #ef4444;
 
-  /* LIGHT THEME */
+  /* LIGHT THEME - Professional Slate & Sky */
   --background: #f8fafc;
-  --foreground: #020617; /* Darker for better contrast */
-  --foreground-rgb: 2, 6, 23;
-
+  --foreground: #0f172a;
+  --foreground-rgb: 15, 23, 42;
+  
   --surface: #ffffff;
   --surface-elevated: #f1f5f9;
   --surface-bright: #e2e8f0;
-
-  --muted: #475569; /* Slate 600 for light theme muted text */
-  --muted-foreground: #64748b;
-
-  --border: rgba(0, 0, 0, 0.12); /* Slightly darker border */
+  
+  --muted: #64748b;
+  --muted-foreground: #94a3b8;
+  
+  --border: rgba(15, 23, 42, 0.08);
   --input: #f1f5f9;
   --ring: #2cfc7d;
-
-  --radius: 0.75rem;
+  
+  --radius: 1rem;
 }
 
 :root.dark {
-  /* ULTRA DARK THEME */
-  --background: #020205;
-  --foreground: #ffffff; /* Pure white for max contrast */
-  --foreground-rgb: 255, 255, 255;
-
-  --surface: #04040a;
-  --surface-elevated: #080812;
-  --surface-bright: #0c0c1a;
-
-  --muted: #94a3b8; /* Slate 400 for dark theme muted text */
+  /* ULTRA DARK THEME - Deep Space & Obsidian */
+  --background: #020204;
+  --foreground: #f8fafc;
+  --foreground-rgb: 248, 250, 252;
+  
+  --surface: #050508;
+  --surface-elevated: #0a0a0f;
+  --surface-bright: #0f0f1a;
+  
+  --muted: #94a3b8;
   --muted-foreground: #64748b;
-
-  --border: rgba(255, 255, 255, 0.1);
-  --input: #080812;
+  
+  --border: rgba(255, 255, 255, 0.06);
+  --input: #0a0a0f;
   --ring: #2cfc7d;
 }
 

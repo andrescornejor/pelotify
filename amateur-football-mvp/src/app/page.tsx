@@ -108,37 +108,40 @@ const StatCard = ({ stat, i, isPerfMode, fadeUp }: any) => (
   <motion.div
     variants={fadeUp}
     custom={i}
-    whileHover={isPerfMode ? {} : { y: -5, scale: 1.02 }}
+    whileHover={isPerfMode ? {} : { y: -4, scale: 1.015 }}
     className={cn(
-      'group relative overflow-hidden p-5 rounded-[2rem] glass-premium transition-all duration-300 border-white/5',
-      isPerfMode && 'bg-surface shadow-none'
+      'group relative overflow-hidden rounded-[2.5rem] transition-all duration-500',
+      isPerfMode ? 'bg-surface border border-border' : 'glass-premium p-6 border-white/5 hover:border-primary/20 shadow-2xl'
     )}
   >
-    {/* Glow effect */}
+    {/* Expert Background Gradient */}
     {!isPerfMode && (
       <div
-        className="absolute -right-4 -top-4 w-24 h-24 blur-[40px] opacity-0 group-hover:opacity-40 transition-opacity duration-500 rounded-full"
+        className="absolute -right-8 -bottom-8 w-32 h-32 blur-[60px] opacity-10 group-hover:opacity-30 transition-opacity duration-1000 rounded-full"
         style={{ backgroundColor: stat.color }}
       />
     )}
 
-    <div className="relative z-10 space-y-3">
+    <div className="relative z-10 flex flex-col gap-5">
       <div
-        className="w-10 h-10 rounded-xl flex items-center justify-center glass border-white/10 shadow-inner group-hover:scale-110 transition-transform duration-500"
-        style={{ backgroundColor: `${stat.color}15` }}
+        className="w-12 h-12 rounded-[1.25rem] flex items-center justify-center glass shadow-inner transition-all duration-700 group-hover:shadow-[0_0_20px_rgba(var(--primary-rgb),0.2)]"
+        style={{ backgroundColor: `${stat.color}15`, border: `1px solid ${stat.color}25` }}
       >
-        <stat.icon className="w-5 h-5" style={{ color: stat.color }} />
+        <stat.icon className="w-6 h-6 transition-transform duration-500 group-hover:rotate-12" style={{ color: stat.color }} />
       </div>
-      <div>
-        <p className="text-[9px] font-black text-foreground/40 uppercase tracking-[0.2em] font-outfit">
+      
+      <div className="space-y-1">
+        <p className="text-[10px] font-black text-foreground/30 uppercase tracking-[0.3em] font-outfit italic">
           {stat.label}
         </p>
-        <div className="flex items-end gap-1">
-          <h3 className="text-2xl font-black italic tracking-tighter text-foreground font-kanit">
+        <div className="flex items-center gap-2">
+          <h3 className="text-3xl font-[900] italic tracking-[-0.04em] text-foreground font-kanit leading-none">
             {stat.value}
           </h3>
           {!isPerfMode && (
-            <TrendingUp className="w-3 h-3 text-primary mb-1 opacity-60 group-hover:translate-y--0.5 group-hover:translate-x-0.5 transition-transform" />
+            <div className="flex items-center justify-center w-5 h-5 rounded-full bg-primary/10 border border-primary/20">
+               <TrendingUp className="w-3 h-3 text-primary" />
+            </div>
           )}
         </div>
       </div>
@@ -155,96 +158,104 @@ const TeamCard = ({ team, isPerfMode }: any) => {
         whileHover={isPerfMode ? {} : { scale: 1.01, y: -4 }}
         className="group flex flex-col sm:flex-row items-center justify-between gap-5 p-6 rounded-[2.5rem] glass-premium border-white/5 hover:border-primary/20 hover:shadow-[0_30px_60px_rgba(0,0,0,0.4),0_0_30px_rgba(44,252,125,0.1)] transition-all cursor-pointer relative overflow-hidden"
       >
-        {/* Animated background glow based on team color */}
+        {/* Cinematic Team Aura */}
         {!isPerfMode && (
           <div 
-            className="absolute top-0 right-0 w-48 h-48 blur-[80px] rounded-full opacity-0 group-hover:opacity-20 transition-opacity duration-700"
+            className="absolute -right-20 -top-20 w-64 h-64 blur-[100px] rounded-full opacity-0 group-hover:opacity-20 transition-all duration-1000 group-hover:scale-150"
             style={{ backgroundColor: teamColor }}
           />
         )}
         
-        <div className="flex items-center gap-6 relative z-10 w-full sm:w-auto">
-          <div className="flex flex-col items-center min-w-[80px]">
-            <div className="relative group/avatar">
-              {/* Avatar background glow */}
-              {!isPerfMode && (
-                <div 
-                  className="absolute inset-0 blur-2xl rounded-full scale-0 group-hover/avatar:scale-150 transition-transform duration-1000 opacity-0 group-hover/avatar:opacity-30"
-                  style={{ backgroundColor: teamColor }}
-                />
+        <div className="flex flex-col sm:flex-row items-center gap-8 relative z-10 w-full sm:w-auto">
+          <div className="relative shrink-0">
+            {/* Elite Badge */}
+            <div className="absolute -top-3 -right-3 z-20 px-3 py-1 bg-primary rounded-lg shadow-[0_5px_15px_rgba(var(--primary-rgb),0.3)] transform -rotate-12 group-hover:rotate-0 transition-transform duration-500">
+               <span className="text-[9px] font-[1000] text-black uppercase tracking-widest italic font-kanit">LVL {level}</span>
+            </div>
+
+            <div 
+              className={cn(
+                "w-24 h-24 rounded-[2.5rem] flex items-center justify-center overflow-hidden border-2 transition-all duration-700 relative shadow-2xl skew-x-[-4deg] group-hover:skew-x-0 group-hover:scale-110",
+                isPerfMode ? "bg-background border-white/10" : "bg-gradient-to-br from-surface to-background border-white/5 group-hover:border-primary/40"
               )}
-              
-              <div 
-                className="w-20 h-20 rounded-[2.5rem] bg-gradient-to-br from-surface to-background flex items-center justify-center overflow-hidden border-2 border-white/5 group-hover:border-primary/40 transition-all duration-500 shadow-inner relative z-10"
-              >
-                <div className="absolute inset-0 bg-primary/5 opacity-0 group-hover:opacity-100 transition-opacity" />
-                {team.logo_url ? (
-                  <img 
+            >
+              <div className="absolute inset-0 bg-primary/5 opacity-0 group-hover:opacity-100 transition-opacity" />
+              {team.logo_url ? (
+                <img 
                   src={team.logo_url} 
                   alt={team.name} 
-                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                  className="w-full h-full object-cover group-hover:scale-125 transition-transform duration-1000 blur-0 group-hover:blur-sm opacity-100 group-hover:opacity-40"
+                />
+              ) : (
+                <div className="p-4 w-full h-full">
+                  <JerseyVisualizer 
+                    primaryColor={team.primary_color || '#18181b'} 
+                    secondaryColor={team.secondary_color || '#10b981'} 
+                    pattern={team.jersey_pattern || 'solid'}
+                    className="w-full h-full group-hover:scale-110 transition-transform duration-700"
                   />
-                ) : (
-                  <div className="p-3 w-full h-full">
-                    <JerseyVisualizer 
-                      primaryColor={team.primary_color || '#18181b'} 
-                      secondaryColor={team.secondary_color || '#10b981'} 
-                      pattern={team.jersey_pattern || 'solid'}
-                      className="w-full h-full"
-                    />
-                  </div>
-                )}
-              </div>
-            </div>
-            
-            {/* Level Badge below Photo */}
-            <div className="mt-2 px-3 py-1 rounded-xl bg-background border border-white/10 flex items-center justify-center shadow-lg w-full">
-              <div className="flex items-center gap-1.5">
-                <div className="w-1 h-1 rounded-full bg-primary animate-pulse" />
-                <span className="text-[9px] font-black text-primary uppercase tracking-tighter">LVL {Math.floor((team.elo / 500) + 1)}</span>
+                </div>
+              )}
+              {/* Overlay Label on Hover */}
+              <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+                 <span className="text-[10px] font-black text-primary uppercase tracking-[0.3em] italic font-kanit">VER CLUB</span>
               </div>
             </div>
           </div>
 
-          <div className="flex-1 space-y-2">
-            <h4 className="text-2xl font-black italic uppercase tracking-tighter text-foreground font-kanit leading-none group-hover:text-primary transition-colors">
-              {team.name}
-            </h4>
-            <div className="flex items-center gap-4">
+          <div className="flex flex-col items-center sm:items-start gap-4">
+            <div className="space-y-1 text-center sm:text-left">
+              <h4 className="text-3xl lg:text-4xl font-[1000] italic uppercase tracking-tighter text-foreground font-kanit leading-none group-hover:text-primary transition-colors duration-500">
+                {team.name}
+              </h4>
+              <div className="flex items-center justify-center sm:justify-start gap-3">
+                 <div className="flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-white/5 border border-white/5">
+                    <div className="w-1 h-1 rounded-full bg-primary" />
+                    <span className="text-[9px] font-black text-foreground/40 uppercase tracking-widest font-outfit">Sede Central</span>
+                 </div>
+                 <div className="w-1 h-1 rounded-full bg-white/10" />
+                 <span className="text-[9px] font-black text-primary uppercase tracking-widest font-outfit italic">{team.type || 'F5'} PREFERENCE</span>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-6">
               <div className="flex -space-x-3">
                 {[1, 2, 3, 4].map((i) => (
                   <div 
-                  key={i} 
-                  className="w-7 h-7 rounded-full border-2 border-background bg-surface overflow-hidden hover:z-20 hover:scale-110 transition-transform flex items-center justify-center"
+                    key={i} 
+                    className="w-8 h-8 rounded-full border-2 border-background bg-surface overflow-hidden hover:z-20 hover:scale-110 transition-transform flex items-center justify-center shadow-lg"
                   >
                     <User2 className="w-4 h-4 text-foreground/20" />
                   </div>
                 ))}
-                <div className="w-7 h-7 rounded-full border-2 border-background bg-primary/20 flex items-center justify-center text-[8px] font-black text-primary z-10 backdrop-blur-sm">
+                <div className="w-8 h-8 rounded-full border-2 border-background bg-primary/20 flex items-center justify-center text-[10px] font-black text-primary z-10 backdrop-blur-sm shadow-lg">
                   +{team.members_count || 0}
                 </div>
               </div>
-              <div className="h-4 w-[1px] bg-white/10 hidden sm:block" />
-              <div className="hidden sm:flex items-center gap-2">
-                <Shield className="w-3 h-3 text-primary/40" />
-                <span className="text-[9px] font-black text-foreground/30 uppercase tracking-[0.2em] font-outfit">
-                  {team.elo > 1000 ? 'Club de Élite' : 'Club Verificado'}
-                </span>
+              <div className="h-6 w-[1px] bg-white/10" />
+              <div className="flex items-center gap-3">
+                <Shield className="w-4 h-4 text-primary/40 group-hover:text-primary transition-colors duration-500" />
+                <div className="flex flex-col">
+                   <span className="text-[8px] font-black text-foreground/20 uppercase tracking-[0.3em] font-outfit leading-none">STATUS</span>
+                   <span className="text-[10px] font-black text-foreground/60 uppercase tracking-widest font-kanit italic">
+                     {team.elo > 1000 ? 'ÉLITE CERTIFICADA' : 'EQUIPO VERIFICADO'}
+                   </span>
+                </div>
               </div>
             </div>
           </div>
         </div>
 
-        {/* Right Side Action */}
-        <div className="flex items-center gap-6 relative z-10 w-full sm:w-auto mt-4 sm:mt-0">
-          <div className="hidden lg:flex flex-col items-end opacity-0 group-hover:opacity-100 translate-x-4 group-hover:translate-x-0 transition-all duration-500">
-            <span className="text-[10px] font-black text-primary uppercase tracking-[0.2em] text-right">Ver Sede Central</span>
-            <span className="text-[9px] font-medium text-foreground/30 italic text-right mt-0.5">Gestionar club y plantel</span>
+        {/* Action Button: Hover Optimized */}
+        <div className="flex flex-col items-center sm:items-end gap-3 w-full sm:w-auto mt-6 sm:mt-0 relative z-10">
+          <div className="hidden lg:flex flex-col items-end opacity-0 group-hover:opacity-100 translate-x-6 group-hover:translate-x-0 transition-all duration-700">
+            <span className="text-[11px] font-[1000] text-primary uppercase tracking-[0.2em] font-kanit">ADMINISTRAR</span>
+            <span className="text-[9px] font-medium text-foreground/30 italic mt-0.5">Estadísticas y plantilla completa</span>
           </div>
           <div 
-            className="w-14 h-14 rounded-2xl bg-foreground/[0.03] border border-white/5 flex items-center justify-center group-hover:bg-primary group-hover:text-background transition-all duration-500 shadow-sm group-hover:shadow-[0_10px_20px_rgba(44,252,125,0.2)] group-hover:scale-110"
+            className="w-16 h-16 rounded-[2rem] glass-premium bg-foreground/[0.04] border border-white/5 flex items-center justify-center group-hover:bg-primary group-hover:text-black transition-all duration-700 shadow-xl group-hover:shadow-[0_20px_40px_rgba(var(--primary-rgb),0.3)] group-hover:scale-110 group-hover:-rotate-12 active:scale-95"
           >
-            <ArrowRight className="w-6 h-6 group-hover:translate-x-1 transition-transform duration-500" />
+            <ArrowRight className="w-7 h-7 group-hover:translate-x-1 transition-transform duration-700" />
           </div>
         </div>
       </motion.div>
@@ -254,25 +265,30 @@ const TeamCard = ({ team, isPerfMode }: any) => {
 
 const EmptyState = ({ icon: Icon, title, description, actionText, actionHref }: any) => (
   <motion.div
-    initial={{ opacity: 0, scale: 0.95 }}
-    whileInView={{ opacity: 1, scale: 1 }}
-    className="w-full py-12 px-6 rounded-[2.5rem] flex flex-col items-center justify-center text-center gap-6 glass-premium border-white/5 bg-foreground/[0.01] relative overflow-hidden group"
+    initial={{ opacity: 0, scale: 0.98, y: 10 }}
+    whileInView={{ opacity: 1, scale: 1, y: 0 }}
+    className="w-full py-16 px-8 rounded-[4rem] flex flex-col items-center justify-center text-center gap-8 glass-premium border-white/5 bg-foreground/[0.01] relative overflow-hidden group shadow-[0_20px_50px_rgba(0,0,0,0.3)]"
   >
-    <div className="absolute inset-0 bg-gradient-to-b from-primary/5 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-    <div className="w-16 h-16 rounded-[2rem] bg-surface flex items-center justify-center border border-white/10 shadow-inner group-hover:scale-110 transition-transform">
-      <Icon className="w-8 h-8 text-foreground/20 group-hover:text-primary/40 transition-colors" />
+    <div className="absolute inset-0 bg-gradient-to-b from-primary/5 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-1000" />
+    <div className="w-20 h-20 rounded-[2.8rem] bg-surface/50 flex items-center justify-center border border-white/10 shadow-[inset_0_2px_10px_rgba(0,0,0,0.5)] group-hover:scale-110 group-hover:rotate-6 transition-all duration-700 relative overflow-hidden">
+       <div className="absolute inset-0 bg-primary/5 animate-pulse" />
+       <Icon className="w-10 h-10 text-foreground/10 group-hover:text-primary transition-colors duration-500 relative z-10" />
     </div>
-    <div className="space-y-2 relative z-10">
-      <h5 className="text-lg font-black italic uppercase tracking-tighter text-foreground font-kanit">{title}</h5>
-      <p className="text-[10px] font-black text-foreground/30 uppercase tracking-[0.2em] max-w-[240px] leading-relaxed">
+    <div className="space-y-3 relative z-10">
+      <h5 className="text-2xl font-[1000] italic uppercase tracking-tighter text-foreground font-kanit">{title}</h5>
+      <p className="text-[11px] font-black text-foreground/20 uppercase tracking-[0.3em] max-w-[280px] leading-relaxed font-outfit">
         {description}
       </p>
     </div>
     {actionText && actionHref && (
       <Link href={actionHref}>
-        <button className="px-8 h-10 rounded-xl bg-foreground/[0.03] hover:bg-primary hover:text-background border border-white/10 text-[9px] font-black uppercase tracking-[0.2em] transition-all">
+        <motion.button 
+          whileHover={{ scale: 1.05, y: -2 }}
+          whileTap={{ scale: 0.95 }}
+          className="px-10 h-14 rounded-2xl bg-foreground/[0.04] hover:bg-primary hover:text-black border border-white/10 hover:border-primary/40 text-[10px] font-[1000] uppercase tracking-[0.4em] transition-all duration-500 font-kanit italic shadow-xl"
+        >
           {actionText}
-        </button>
+        </motion.button>
       </Link>
     )}
   </motion.div>
@@ -608,48 +624,51 @@ export default function HomePage() {
           </div>
 
           {/* Content Wrapper */}
-          <div className="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-6 lg:gap-10 p-6 sm:p-12 lg:p-16 xl:p-20">
+          <div className="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-10 lg:gap-16 p-8 sm:p-14 lg:p-20 xl:p-24">
             {/* Left: Text & Branding */}
-            <div className="flex-1 space-y-6 lg:space-y-8 max-w-2xl">
+            <div className="flex-1 space-y-8 lg:space-y-12 max-w-3xl">
               <motion.div
                 initial={isPerfMode ? { opacity: 1 } : { x: -20, opacity: 0 }}
                 animate={{ x: 0, opacity: 1 }}
                 transition={{ delay: 0.2, type: 'spring', stiffness: 200 }}
                 className={cn(
-                  'inline-flex items-center gap-3 px-4 py-1.5 rounded-full glass-premium border-primary/20',
+                  'inline-flex items-center gap-4 px-5 py-2 rounded-full glass-premium border-primary/20 bg-primary/5',
                   isPerfMode && 'bg-surface'
                 )}
               >
-                <div className="relative flex h-2 w-2">
+                <div className="relative flex h-2.5 w-2.5">
                   <span
                     className={cn(
                       'absolute inline-flex h-full w-full rounded-full bg-primary opacity-75',
                       !isPerfMode && 'animate-ping'
                     )}
                   />
-                  <span className="relative inline-flex rounded-full h-2 w-2 bg-primary" />
+                  <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-primary" />
                 </div>
-                <span className="text-[10px] font-black uppercase tracking-[0.4em] text-primary/90 font-outfit">
-                  {greeting}
+                <span className="text-[11px] font-black uppercase tracking-[0.4em] text-primary italic font-kanit">
+                  SISTEMA ACTIVO — {greeting}
                 </span>
               </motion.div>
 
               {/* Title Section */}
-              <div className="space-y-4">
+              <div className="space-y-6">
                 <motion.h1
                   initial={{ opacity: 0, y: 40 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.3, duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-                  className="font-black italic tracking-tight leading-[0.85] uppercase font-kanit"
-                  style={{ fontSize: 'clamp(2.5rem, 6vw, 6rem)' }}
+                  transition={{ delay: 0.3, duration: 1, ease: [0.16, 1, 0.3, 1] }}
+                  className="font-black italic tracking-[-0.04em] leading-[0.82] uppercase font-kanit"
+                  style={{ fontSize: 'clamp(3.5rem, 8vw, 8.5rem)' }}
                 >
-                  <span className="text-foreground/90 mix-blend-difference">DOMINA</span>
+                  <span className="text-foreground relative">
+                     DOMINA
+                     <span className="absolute -top-6 -right-12 text-[12px] font-black tracking-[1em] text-primary/40 opacity-50 hidden lg:block italic">THE ELITE</span>
+                  </span>
                   <br />
                   <span
                     className={
                       isPerfMode
                         ? 'text-primary'
-                        : 'bg-clip-text text-transparent bg-gradient-to-r from-primary-light via-primary to-primary-dark animate-gradient [text-shadow:0_0_40px_rgba(44,252,125,0.3)]'
+                        : 'bg-clip-text text-transparent bg-gradient-to-r from-primary via-emerald-400 to-primary-dark [text-shadow:0_0_60px_rgba(var(--primary-rgb),0.4)]'
                     }
                   >
                     LA CANCHA.
@@ -660,70 +679,78 @@ export default function HomePage() {
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ delay: 0.5 }}
-                  className="flex items-center gap-4 py-2"
+                  className="flex items-center gap-6 py-4"
                 >
-                  <div className="h-[2px] w-12 bg-primary/30" />
+                  <div className="h-[1px] w-20 bg-gradient-to-r from-primary/60 to-transparent" />
                   {/* Avatar with rank glow */}
-                  <div id="hero-avatar" className="relative group/avatar">
+                  <div className="relative group/avatar">
+                    {!isPerfMode && (
+                      <div
+                        className="absolute -inset-6 blur-[40px] rounded-full opacity-40 group-hover/avatar:opacity-80 transition-opacity duration-1000 animate-pulse"
+                        style={{ backgroundColor: rankCalculation.rank.hex + '40' }}
+                      />
+                    )}
                     <div
-                      className="absolute -inset-4 blur-3xl rounded-full opacity-40 group-hover/avatar:opacity-70 transition-opacity"
-                      style={{ backgroundColor: rankCalculation.rank.glow }}
-                    />
-                    <div
-                      className="relative w-12 h-12 rounded-full border-2 overflow-hidden flex items-center justify-center bg-surface shadow-2xl"
-                      style={{ borderColor: rankCalculation.info.color }}
+                      className="relative w-16 h-16 rounded-[2rem] border-2 overflow-hidden flex items-center justify-center bg-surface shadow-2xl transition-all duration-700 group-hover:scale-110 group-hover:rotate-3"
+                      style={{ borderColor: rankCalculation.info.color + '60' }}
                     >
                       {metadata?.avatar_url ? (
                         <img src={metadata.avatar_url} alt="" className="w-full h-full object-cover" />
                       ) : (
-                        <User2 className="w-6 h-6 text-foreground/40" />
+                        <User2 className="w-8 h-8 text-foreground/20" />
                       )}
                       
                       {/* Floating Rank Icon */}
                       <div 
-                        className="absolute -top-1 -right-1 w-5 h-5 rounded-full bg-background border border-white/10 flex items-center justify-center shadow-lg"
+                        className="absolute -top-1 -right-1 w-7 h-7 rounded-2xl bg-background border border-white/10 flex items-center justify-center shadow-2xl scale-0 group-hover/avatar:scale-100 transition-transform duration-500"
                       >
-                         <rankCalculation.rank.icon className="w-3 h-3" style={{ color: rankCalculation.rank.hex }} />
+                         <rankCalculation.rank.icon className="w-4 h-4" style={{ color: rankCalculation.rank.hex }} />
                       </div>
                     </div>
                   </div>
-                  <p className="text-foreground/60 text-lg font-medium font-outfit">
-                    Bienvenido,{' '}
-                    <span className="text-foreground font-black uppercase">{userName}</span>
-                  </p>
+                  <div className="flex flex-col">
+                    <p className="text-foreground/40 text-[10px] font-black uppercase tracking-[0.3em] font-outfit">Leyenda confirmada</p>
+                    <p className="text-foreground text-3xl font-[1000] uppercase font-kanit italic tracking-tighter">
+                      {userName}
+                    </p>
+                  </div>
                 </motion.div>
               </div>
 
-              {/* Stats / Rank Summary */}
+              {/* Stats Summary Panel */}
               <motion.div
-                initial={{ opacity: 0, y: 20 }}
+                initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.6 }}
-                className="grid grid-cols-2 sm:grid-cols-3 gap-4 lg:gap-6 pt-2 lg:pt-4"
+                className="flex flex-wrap items-center gap-10 lg:gap-16 pt-6"
               >
                 {[
                   {
-                    label: 'Rango Actual',
+                    label: 'STATUS',
                     value: rankCalculation.rank.name,
-                    color: rankCalculation.rank.color,
+                    color: rankCalculation.rank.hex,
                     icon: Trophy,
                   },
                   {
-                    label: 'Partidos Jugados',
+                    label: 'COMBATES',
                     value: statsSummary.totalMatches,
-                    color: 'text-accent',
-                    icon: Calendar,
+                    color: 'var(--primary)',
+                    icon: Zap,
                   },
+                  {
+                    label: 'VICTORIA',
+                    value: '0%',
+                    color: 'var(--accent)',
+                    icon: Star,
+                  }
                 ].map((item, idx) => (
-                  <div key={idx} className={cn("space-y-1", idx === 2 && "hidden sm:block")}>
-                    <p className="text-[9px] font-black text-foreground/40 uppercase tracking-[0.25em] flex items-center gap-1.5">
-                      <item.icon className="w-2.5 h-2.5" /> {item.label}
+                  <div key={idx} className="space-y-2 group/stat">
+                    <p className="text-[10px] font-black text-foreground/20 uppercase tracking-[0.4em] flex items-center gap-2 group-hover/stat:text-primary/60 transition-colors">
+                      <item.icon className="w-3 h-3" /> {item.label}
                     </p>
                     <p
-                      className={cn(
-                        'text-2xl font-black italic tracking-tighter uppercase font-kanit',
-                        item.color
-                      )}
+                      className="text-4xl font-[1000] italic tracking-[-0.05em] uppercase font-kanit leading-none"
+                      style={{ color: item.color }}
                     >
                       {item.value}
                     </p>
@@ -736,125 +763,100 @@ export default function HomePage() {
             <motion.div
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: 0.4, duration: 0.7 }}
-              className="lg:shrink-0 w-full lg:w-[400px] space-y-4"
+              transition={{ delay: 0.4, duration: 1, ease: [0.16, 1, 0.3, 1] }}
+              className="lg:shrink-0 w-full lg:w-[420px] space-y-6"
             >
-              {/* Rank Progress Card */}
-              <div className="glass-premium p-6 rounded-[2.5rem] border-white/5 space-y-6 relative overflow-hidden group">
+              {/* Rank Progress Card - Expert Redesign */}
+              <div className="glass-premium p-8 rounded-[3rem] border-white/5 space-y-8 relative overflow-hidden group/rank shadow-[0_30px_80px_rgba(0,0,0,0.4)]">
                 {/* Background Rank Glow */}
-                <div
-                  className="absolute -top-20 -right-20 w-40 h-40 blur-[80px] opacity-20 transition-opacity group-hover:opacity-40"
-                  style={{ backgroundColor: rankCalculation.info.color }}
-                />
+                {!isPerfMode && (
+                  <div
+                    className="absolute -top-32 -right-32 w-64 h-64 blur-[100px] opacity-20 transition-all duration-1000 group-hover/rank:opacity-50"
+                    style={{ backgroundColor: rankCalculation.info.color }}
+                  />
+                )}
 
                 <div className="flex items-center gap-6 relative z-10">
-                  <RankBadge rankName={rankCalculation.info.name} size="lg" />
-                  <div className="flex-1 space-y-2">
-                    <p className="text-[10px] font-black text-foreground/40 uppercase tracking-widest leading-none">
-                      PROGRESO DE LIGA
+                  <div className="relative">
+                    <div className="absolute inset-0 bg-primary/20 blur-2xl rounded-full scale-0 group-hover/rank:scale-150 transition-transform duration-1000" />
+                    <RankBadge rankName={rankCalculation.info.name} size="lg" className="relative z-10" />
+                  </div>
+                  <div className="flex-1 space-y-3">
+                    <p className="text-[10px] font-black text-foreground/40 uppercase tracking-[0.4em] leading-none font-kanit italic">
+                      ESTADO COMPETITIVO
                     </p>
-                    <div className="flex items-center gap-2">
-                      <h3 className="text-2xl font-black italic text-foreground leading-none font-kanit uppercase tracking-tighter">
+                    <div className="flex items-center gap-3">
+                      <h3 className="text-3xl font-[1000] italic text-foreground leading-none font-kanit uppercase tracking-[-0.04em]">
                         {rankCalculation.info.name}
                       </h3>
-                      <rankCalculation.rank.icon className="w-5 h-5" style={{ color: rankCalculation.rank.hex }} />
+                      <div className="w-2 h-2 rounded-full bg-primary animate-pulse" />
                     </div>
-                    <span className="text-[9px] font-black text-primary uppercase tracking-[0.2em]">
-                      ESTADO DE TEMPORADA
-                    </span>
-                  </div>
-                  <div className="text-right flex flex-col items-end">
-                    <div className="flex items-center gap-2">
-                       <span className="text-3xl font-black text-foreground italic font-kanit leading-none">
-                        {Math.round(rankCalculation.progress)}%
-                      </span>
-                      <rankCalculation.nextRank.icon className="w-6 h-6 opacity-20" style={{ color: rankCalculation.nextRank.color }} />
-                    </div>
-                    <p className="text-[8px] font-black text-foreground/30 uppercase mt-1">
-                      PARA {rankCalculation.nextRank.name}
-                    </p>
                   </div>
                 </div>
 
-                <div className="space-y-3 relative z-10">
-                  <div className="relative h-3 bg-foreground/5 rounded-full p-0.5 overflow-hidden border border-white/5">
+                <div className="space-y-4 relative z-10">
+                  <div className="flex justify-between items-end mb-1">
+                     <div className="flex flex-col">
+                        <span className="text-[11px] font-black text-primary uppercase tracking-[0.2em] italic font-kanit">Nivel de Maestría</span>
+                        <span className="text-[9px] font-black text-foreground/30 uppercase tracking-[0.1em] mt-1">Sig: {rankCalculation.nextRank.name}</span>
+                     </div>
+                     <span className="text-4xl font-[1000] italic text-foreground font-kanit leading-none tracking-tighter">
+                        {Math.round(rankCalculation.progress)}%
+                     </span>
+                  </div>
+                  
+                  <div className="relative h-4 bg-foreground/5 rounded-2xl p-1 overflow-hidden border border-white/5">
                     <motion.div
                       initial={{ width: 0 }}
                       animate={{ width: `${rankCalculation.progress}%` }}
-                      transition={{ duration: 2, ease: 'circOut', delay: 0.8 }}
-                      className="h-full rounded-full relative"
+                      transition={{ duration: 2, ease: 'circOut', delay: 1 }}
+                      className="h-full rounded-xl relative"
                       style={{
-                        background: `linear-gradient(90deg, ${rankCalculation.info.color}, #5dfd9d)`,
-                        boxShadow: `0 0 15px ${rankCalculation.info.color}40`,
+                        background: `linear-gradient(90deg, ${rankCalculation.info.color}, var(--primary))`,
+                        boxShadow: `0 0 20px ${rankCalculation.info.color}40`,
                       }}
                     >
                       <div className="absolute inset-0 animate-shimmer opacity-30 bg-gradient-to-r from-transparent via-white/40 to-transparent" />
                     </motion.div>
                   </div>
-
-                  <div className="flex justify-between text-[8px] font-black text-foreground/30 uppercase tracking-[0.3em]">
-                    <span>PROGRESO DE TEMPORADA</span>
-                    <span>SIGUIENTE NIVEL</span>
-                  </div>
                 </div>
               </div>
 
-              <div className="grid grid-cols-3 gap-3">
-                <Link href="/create" className="col-span-3">
+              <div className="grid grid-cols-2 gap-4">
+                <Link href="/create" className="col-span-2">
                   <motion.button
-                    whileHover={{ scale: 1.02, y: -2 }}
+                    whileHover={{ scale: 1.02, y: -4 }}
                     whileTap={{ scale: 0.98 }}
-                    className="w-full h-14 rounded-2xl bg-emerald-500 text-background font-black uppercase text-[11px] tracking-[0.3em] shadow-[0_15px_40px_rgba(44,252,125,0.3)] flex items-center justify-center gap-3 relative overflow-hidden group"
+                    className="w-full h-16 rounded-[1.8rem] bg-primary text-black font-[1000] uppercase text-[12px] tracking-[0.3em] shadow-[0_20px_50px_rgba(var(--primary-rgb),0.3)] flex items-center justify-center gap-4 relative overflow-hidden group/btn font-kanit italic"
                   >
-                    <div className="absolute inset-x-0 bottom-0 h-1/2 bg-white/10 group-hover:h-full transition-all duration-500" />
-                    <PlusCircle className="w-5 h-5 relative z-10 group-hover:rotate-180 transition-transform duration-700" />
-                    <span className="relative z-10">ARMAR PARTIDO</span>
+                    <div className="absolute inset-x-0 bottom-0 h-0 bg-white/20 group-hover/btn:h-full transition-all duration-500" />
+                    <PlusCircle className="w-6 h-6 relative z-10 group-hover/btn:rotate-180 transition-transform duration-700" />
+                    <span className="relative z-10">CREAR ESCUADRA</span>
                   </motion.button>
                 </Link>
                 
-                <Link href="/highlights" className="col-span-2">
-                  <motion.button
-                    whileHover={{ scale: 1.02, y: -2 }}
-                    whileTap={{ scale: 0.98 }}
-                    className="w-full h-14 rounded-2xl bg-zinc-900 border border-emerald-500/20 text-white font-black uppercase text-[10px] tracking-[0.3em] flex items-center justify-center gap-3 relative overflow-hidden group shadow-2xl shadow-emerald-500/10"
-                  >
-                    {/* Background Layer: Video or Gradient */}
-                    {highlights.length > 0 ? (
-                      <div className="absolute inset-0 overflow-hidden opacity-40 group-hover:opacity-60 transition-opacity">
-                        <video 
-                          src={highlights[0].video_url} 
-                          className="w-full h-full object-cover blur-[2px] scale-125" 
-                          autoPlay 
-                          muted 
-                          loop 
-                          playsInline 
-                        />
-                        <div className="absolute inset-0 bg-gradient-to-r from-emerald-600/80 to-teal-600/80 mix-blend-multiply" />
-                      </div>
-                    ) : (
-                      <div className="absolute inset-0 bg-gradient-to-r from-emerald-600 to-teal-600 opacity-80" />
-                    )}
-
-                    <div className="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-colors" />
-                    
-                    <Play className="w-5 h-5 relative z-10 text-emerald-400 fill-emerald-400/20 group-hover:scale-125 transition-transform drop-shadow-[0_0_8px_rgba(44,252,125,0.5)]" />
-                    <span className="relative z-10 italic drop-shadow-md">FutTok</span>
-                    
-                    <div className="absolute top-1.5 right-1.5 flex items-center gap-1 z-10">
-                      <div className="w-1.5 h-1.5 bg-red-500 rounded-full animate-ping" />
-                      <div className="px-1.5 py-0.5 bg-red-500 text-[6px] rounded-full font-black border border-white/20">LIVE</div>
-                    </div>
-                  </motion.button>
+                <Link href="/highlights" className="col-span-1">
+                   <motion.button
+                      whileHover={{ scale: 1.05, y: -2 }}
+                      whileTap={{ scale: 0.95 }}
+                      className="w-full h-14 rounded-2xl glass-premium border-white/5 flex items-center justify-center gap-3 group/futtok relative overflow-hidden shadow-2xl"
+                   >
+                      <div className="absolute inset-0 bg-gradient-to-tr from-rose-500/10 to-transparent opacity-0 group-hover/futtok:opacity-100 transition-opacity" />
+                      <Play className="w-4 h-4 text-rose-500 fill-rose-500/20 group-hover/futtok:scale-125 transition-transform" />
+                      <span className="text-[10px] font-black uppercase tracking-[0.2em] text-foreground/60 italic font-kanit">FutTok</span>
+                   </motion.button>
                 </Link>
 
-                <Link href="/search" className="col-span-1">
-                  <motion.button
-                    whileHover={{ scale: 1.02, y: -2 }}
-                    whileTap={{ scale: 0.98 }}
-                    className="w-full h-14 rounded-2xl glass-premium border-white/10 text-foreground/70 font-black uppercase text-[9px] tracking-[0.2em] flex items-center justify-center"
-                  >
-                    <Search className="w-4 h-4" />
-                  </motion.button>
+                <Link href="/ranks" className="col-span-1">
+                   <motion.button
+                      whileHover={{ scale: 1.05, y: -2 }}
+                      whileTap={{ scale: 0.95 }}
+                      className="w-full h-14 rounded-2xl glass-premium border-white/5 flex items-center justify-center gap-3 group/ranklink relative overflow-hidden shadow-2xl"
+                   >
+                      <div className="absolute inset-0 bg-gradient-to-tr from-primary/10 to-transparent opacity-0 group-hover/ranklink:opacity-100 transition-opacity" />
+                      <Trophy className="w-4 h-4 text-primary group-hover/ranklink:scale-125 transition-transform" />
+                      <span className="text-[10px] font-black uppercase tracking-[0.2em] text-foreground/60 italic font-kanit">Ranks</span>
+                   </motion.button>
                 </Link>
               </div>
             </motion.div>
