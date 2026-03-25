@@ -619,7 +619,7 @@ function ProfileContent() {
                            <BadgeCheck className="w-4 h-4 text-primary" />
                         </div>
                       )}
-                    </motion.h1>
+                    </motion.div>
                     <div className="flex items-center gap-3">
                        <span className="text-xs font-black text-primary uppercase tracking-[0.4em] italic">{displayPlayer.position}</span>
                        <div className="w-1 h-1 rounded-full bg-white/20" />
