@@ -80,10 +80,10 @@ const MessageItem = memo(
           <motion.div
             layout
             className={cn(
-              'px-6 py-4 text-[14px] font-bold relative transition-all duration-300 shadow-lg group/bubble',
+              'px-6 py-4 text-[14px] font-bold relative transition-all duration-300 group/bubble',
               isMine
-                ? 'bg-gradient-to-br from-primary via-primary to-primary-dark text-black rounded-[2rem] rounded-tr-[0.5rem] hover:shadow-primary/30'
-                : 'bg-foreground/[0.04] border border-foreground/5 text-foreground rounded-[2rem] rounded-tl-[0.5rem] hover:bg-foreground/[0.08] backdrop-blur-md',
+                ? 'bg-gradient-to-br from-primary via-primary to-primary-dark text-black rounded-[2rem] rounded-tr-[0.5rem] shadow-[0_10px_30px_rgba(85,250,134,0.15)] hover:shadow-primary/30'
+                : 'bg-white/90 dark:bg-foreground/[0.08] border border-foreground/10 text-foreground rounded-[2rem] rounded-tl-[0.5rem] shadow-sm hover:bg-foreground/[0.1] backdrop-blur-md',
               sameAuthorAsPrev && (isMine ? 'rounded-tr-[2rem]' : 'rounded-tl-[2rem]'),
               sameAuthorAsNext && (isMine ? 'rounded-br-[0.5rem]' : 'rounded-bl-[0.5rem]')
             )}

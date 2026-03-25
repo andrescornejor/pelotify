@@ -64,12 +64,18 @@ const ConversationItem = memo(
       whileTap={{ scale: 0.98 }}
       onClick={() => onClick(chat)}
       className={cn(
-        'w-full p-4 rounded-[1.8rem] border transition-all duration-300 flex items-center gap-4 group text-left',
+        'w-full p-4 sm:p-5 rounded-[2rem] border transition-all duration-500 flex items-center gap-4 group text-left relative overflow-hidden',
         isSelected
-          ? 'bg-primary text-black border-primary shadow-2xl shadow-primary/20'
-          : 'bg-surface/50 backdrop-blur-sm border-foreground/5 hover:border-primary/30 hover:bg-foreground/[0.04]'
+          ? 'bg-primary text-black border-primary shadow-[0_20px_50px_rgba(85,250,134,0.3)]'
+          : 'bg-surface/40 backdrop-blur-md border-foreground/5 hover:border-primary/30 hover:bg-foreground/[0.04] shadow-sm'
       )}
     >
+      {isSelected && (
+        <motion.div
+          layoutId="chat-active-glow"
+          className="absolute inset-0 bg-gradient-to-r from-primary/20 via-transparent to-transparent pointer-events-none"
+        />
+      )}
       <div
         className={cn(
           'w-14 h-14 rounded-[1.2rem] overflow-hidden shrink-0 border-2 transition-transform duration-500 group-hover:scale-110',
@@ -372,12 +378,15 @@ export default function MessagesPage() {
           <div className="flex flex-col gap-5">
             <div className="flex items-center justify-between">
               <div className="flex flex-col gap-1">
-                <h1 className="text-4xl font-black text-foreground italic uppercase tracking-tighter leading-none text-gradient">
-                  Mensajes
+                <h1 className="text-5xl font-black text-foreground italic uppercase tracking-tighter leading-none text-gradient drop-shadow-sm">
+                  Inbox
                 </h1>
-                <span className="text-[10px] font-black text-primary uppercase tracking-[0.4em] drop-shadow-[0_0_8px_rgba(85,250,134,0.3)]">
-                  Central de Comunicaciones
-                </span>
+                <div className="flex items-center gap-2">
+                  <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
+                  <span className="text-[10px] font-black text-primary uppercase tracking-[0.4em] drop-shadow-[0_0_8px_rgba(85,250,134,0.3)]">
+                    Directo / {conversations.length}
+                  </span>
+                </div>
               </div>
               <motion.button
                 whileHover={{ scale: 1.05, rotate: 90 }}
@@ -477,9 +486,9 @@ export default function MessagesPage() {
         >
           {selectedChat ? (
             <motion.div
-              initial={{ opacity: 0, scale: 0.98 }}
-              animate={{ opacity: 1, scale: 1 }}
-              className="flex flex-col h-full glass-premium border border-foreground/5 rounded-[2.5rem] overflow-hidden relative shadow-2xl shadow-black/20"
+              initial={{ opacity: 0, y: 10, scale: 0.99 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              className="flex flex-col h-full bg-surface/30 dark:bg-foreground/[0.02] backdrop-blur-3xl border border-foreground/10 rounded-[3.5rem] overflow-hidden relative shadow-[0_40px_100px_-20px_rgba(0,0,0,0.1)] dark:shadow-[0_50px_120px_rgba(0,0,0,0.6)]"
             >
               {/* Chat Header */}
               <div className="px-6 sm:px-10 py-6 bg-foreground/[0.03] backdrop-blur-2xl border-b border-foreground/5 flex items-center justify-between relative z-20">
