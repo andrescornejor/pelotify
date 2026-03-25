@@ -25,7 +25,6 @@ import {
   Globe,
   ChevronRight,
   MessageSquare,
-  Shuffle,
 } from 'lucide-react';
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
@@ -42,7 +41,6 @@ import {
   respondToInvitation,
   getMatchStats,
   updateMatch,
-  autoBalanceTeams,
 } from '@/lib/matches';
 import { getFriends, FriendshipData } from '@/lib/friends';
 import { useAuth } from '@/contexts/AuthContext';
@@ -209,7 +207,6 @@ function MatchLobbyContent() {
   const [editingNames, setEditingNames] = useState({ A: '', B: '' });
   const [isSavingNames, setIsSavingNames] = useState(false);
   const [showChat, setShowChat] = useState(false);
-  const [isBalancing, setIsBalancing] = useState(false);
 
   const fetchMatch = async () => {
     if (!id) return;
@@ -341,24 +338,6 @@ function MatchLobbyContent() {
       alert(`Error: ${err.message}`);
     } finally {
       setIsSavingNames(false);
-    }
-  };
-
-  const handleAutoBalance = async () => {
-    if (!match || !user || !confirm('¿Armar equipos equitativamente según el Nivel (Elo) de los jugadores confirmados?')) return;
-    setIsBalancing(true);
-    try {
-      const pData = confirmedParticipants.map(p => ({
-        id: p.id,
-        user_id: p.user_id,
-        elo: p.profiles?.overall || 50
-      }));
-      await autoBalanceTeams(match.id, pData);
-      await fetchMatch();
-    } catch (err: any) {
-      alert(`Error al equilibrar: ${err.message}`);
-    } finally {
-      setIsBalancing(false);
     }
   };
 
@@ -741,16 +720,6 @@ function MatchLobbyContent() {
                   </p>
                 </div>
                 <div className="flex items-center gap-2">
-                  {isCreator && !isCompleted && confirmedParticipants.length > 2 && (
-                    <button
-                      onClick={handleAutoBalance}
-                      disabled={isBalancing}
-                      className="h-10 px-4 bg-foreground/[0.05] border border-foreground/10 text-foreground rounded-xl flex items-center gap-2 text-[10px] font-black uppercase tracking-widest hover:bg-foreground/10 transition-all active:scale-95 shadow-sm"
-                    >
-                      {isBalancing ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Shuffle className="w-3.5 h-3.5 text-primary" />}
-                      <span className="hidden sm:inline">Equilibrar</span>
-                    </button>
-                  )}
                   {!isCompleted && (
                     <button
                       onClick={handleOpenInviteModal}

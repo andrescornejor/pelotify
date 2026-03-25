@@ -49,7 +49,6 @@ export interface MatchParticipant {
     name: string;
     avatar_url?: string;
     position?: string;
-    overall?: number;
   };
 }
 
@@ -104,7 +103,7 @@ export async function getMatchById(id: string) {
     const userIds = participants.map((p: any) => p.user_id);
     const { data: profiles } = await supabase
       .from('profiles')
-      .select('id, name, avatar_url, position, overall')
+      .select('id, name, avatar_url, position')
       .in('id', userIds);
 
     if (profiles) {
@@ -179,48 +178,6 @@ export async function switchTeam(matchId: string, userId: string, team: 'A' | 'B
       'Permiso denegado. Agrega una política UPDATE en match_participants en Supabase.'
     );
   }
-}
-
-export async function autoBalanceTeams(matchId: string, participants: { id: string, user_id: string, elo: number }[]) {
-  // Sort participants by ELO descending to ensure fair greedy distribution
-  const sorted = [...participants].sort((a, b) => b.elo - a.elo);
-  
-  let teamAElo = 0;
-  let teamBElo = 0;
-  
-  const updates = [];
-  
-  for (const p of sorted) {
-    let assignedTeam: 'A' | 'B';
-    const teamASize = updates.filter(u => u.team === 'A').length;
-    const teamBSize = updates.filter(u => u.team === 'B').length;
-    
-    // Balance team size first
-    const half = Math.ceil(sorted.length / 2);
-    
-    if (teamASize >= half) {
-      assignedTeam = 'B';
-    } else if (teamBSize >= half) {
-      assignedTeam = 'A';
-    } else {
-       // Greedy Elo allocation
-       if (teamAElo <= teamBElo) {
-         assignedTeam = 'A';
-       } else {
-         assignedTeam = 'B';
-       }
-    }
-    
-    if (assignedTeam === 'A') teamAElo += p.elo;
-    else teamBElo += p.elo;
-    
-    updates.push({ participantId: p.id, team: assignedTeam });
-  }
-
-  // Update in DB individually (no built-in bulk update for edge functions without RPC)
-  await Promise.all(updates.map(u => 
-    supabase.from('match_participants').update({ team: u.team }).eq('id', u.participantId)
-  ));
 }
 
 export async function getUserMatches(userId: string) {
