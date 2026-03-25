@@ -411,6 +411,7 @@ function ProfileContent() {
         preferred_foot: editedData.preferredFoot,
         age: parseInt(editedData.age) || 18,
         height: parseInt(editedData.height) || 170,
+        avatar_url: newAvatarUrl,
         cover_url: editedData.cover_url,
         bio: editedData.bio,
         stats: editedStats,
@@ -431,27 +432,29 @@ function ProfileContent() {
       setAvatarPreview(null);
       router.refresh();
 
-      // 2. Update Auth Metadata (for the current session) - Background Fire
-      // This triggers onAuthStateChange to refresh headers, but we don't 'await' it
-      // to avoid hanging if the Auth server is slow.
-      console.log('Actualizando metadata en segundo plano...');
-      supabase.auth
-        .updateUser({
-          data: {
-            name: editedData.name,
-            full_name: editedData.name,
-            age: editedData.age,
-            height: editedData.height,
-            preferredFoot: editedData.preferredFoot,
-            position: editedData.position,
-            avatar_url: newAvatarUrl,
-            cover_url: editedData.cover_url,
-            bio: editedData.bio,
-            stats: editedStats,
-            skill_points: skillPoints,
-          },
-        })
-        .catch((e) => console.warn('Error secundario en metadata de auth:', e));
+      // 2. Update Auth Metadata (for the current session)
+      console.log('Actualizando metadata de auth...');
+      await supabase.auth.updateUser({
+        data: {
+          name: editedData.name,
+          full_name: editedData.name,
+          age: editedData.age,
+          height: editedData.height,
+          preferredFoot: editedData.preferredFoot,
+          position: editedData.position,
+          avatar_url: newAvatarUrl,
+          cover_url: editedData.cover_url,
+          bio: editedData.bio,
+          stats: editedStats,
+          skill_points: skillPoints,
+        },
+      });
+
+      // 3. Final Sync
+      router.refresh();
+      // Optional: If we want absolute certainty, we'd trigger the fetchProfileData again
+      // fetchProfileData is already in useEffect [user], and updateUser SHOULD trigger it.
+
     } catch (error: any) {
       console.error('Error crítico en handleSaveProfile:', error);
       alert(`Error guardando perfil: ${error.message || 'Error desconocido'}`);
