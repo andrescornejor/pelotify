@@ -522,9 +522,9 @@ function ProfileContent() {
       </div>
 
       {/* Hero Banner Section */}
-      <div className="relative w-full h-[220px] sm:h-[320px] lg:h-[400px] overflow-hidden group/banner">
+      <div className="relative w-full h-[280px] sm:h-[450px] lg:h-[500px] overflow-hidden group/banner">
         <div className="absolute inset-0 z-10 bg-gradient-to-t from-background via-background/20 to-transparent" />
-        <div className="absolute inset-0 z-10 bg-black/20" />
+        <div className="absolute inset-0 z-10 bg-black/40" />
         
         {/* Placeholder or User Cover */}
         <motion.img 
@@ -533,11 +533,11 @@ function ProfileContent() {
           transition={{ duration: 1.5 }}
           src={editedData.cover_url || "https://images.unsplash.com/photo-1574629810360-7efbbe195018?auto=format&fit=crop&q=80&w=2000"} 
           alt="Cover" 
-          className="w-full h-full object-cover grayscale-[0.3] brightness-[0.6] group-hover/banner:scale-105 transition-transform duration-[4s]"
+          className="w-full h-full object-cover grayscale-[0.3] brightness-[0.7] group-hover/banner:scale-105 transition-transform duration-[4s]"
         />
 
         {isMe && (
-          <div className="absolute top-6 right-6 z-20 flex gap-3">
+          <div className="absolute top-28 sm:top-32 right-6 sm:right-12 z-20 flex gap-3">
              <button 
               onClick={() => setIsEditing(!isEditing)}
               className="px-6 h-12 rounded-2xl glass-premium border-white/10 hover:border-primary/40 text-[10px] font-black uppercase tracking-[0.2em] transition-all flex items-center gap-2 group/btn backdrop-blur-md"
