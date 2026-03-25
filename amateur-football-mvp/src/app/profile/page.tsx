@@ -645,7 +645,7 @@ function ProfileContent() {
                     ) : (
                       <div className="flex gap-3">
                          <button 
-                           onClick={() => router.push(`/messages?user=${playerId}`)}
+                           onClick={() => router.push(`/messages?user=${id}`)}
                            className="h-14 px-10 rounded-2xl bg-primary text-black text-[11px] font-black uppercase tracking-widest shadow-xl shadow-primary/20 hover:scale-105 active:scale-95 transition-all flex items-center gap-3"
                          >
                             <MessageSquare className="w-5 h-5" />
