@@ -146,7 +146,7 @@ export default function VideoFeed() {
       {/* Vertical Feed with Snap Scroll */}
       <div 
         ref={feedRef}
-        className="h-full overflow-y-auto snap-y snap-mandatory no-scrollbar overscroll-contain"
+        className="h-full overflow-y-auto snap-y snap-proximity no-scrollbar flex flex-col"
       >
         {highlights.length === 0 ? (
           <div className="h-full flex items-center justify-center px-6 text-center bg-black relative">
@@ -201,7 +201,7 @@ export default function VideoFeed() {
             <div 
               id={`video-${h.id}`}
               key={h.id} 
-              className="h-[100dvh] snap-start snap-always scroll-mt-0 relative"
+              className="h-[100dvh] w-full flex-shrink-0 snap-start snap-always scroll-mt-0 relative"
             >
               <VideoPlayer
                 id={h.id}

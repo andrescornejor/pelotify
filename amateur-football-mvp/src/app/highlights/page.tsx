@@ -8,7 +8,7 @@ export const metadata: Metadata = {
 
 export default function HighlightsPage() {
   return (
-    <main className="h-[100dvh] w-full bg-black overflow-hidden overscroll-none">
+    <main className="h-[100dvh] w-full bg-black overflow-hidden">
       <VideoFeed />
     </main>
   );

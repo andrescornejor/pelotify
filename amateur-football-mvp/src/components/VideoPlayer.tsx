@@ -212,7 +212,7 @@ export default function VideoPlayer({
   return (
     <div 
       ref={setRefs}
-      className="relative w-full h-full bg-black overflow-hidden flex items-center justify-center overscroll-contain"
+      className="relative w-full h-full bg-black overflow-hidden flex items-center justify-center"
     >
       {/* Background Blur (Desktop Aesthetics) */}
       <div className="absolute inset-0 hidden sm:block pointer-events-none">
