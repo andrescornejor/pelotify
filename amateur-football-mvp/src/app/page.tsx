@@ -36,11 +36,12 @@ import { getHighlights, Highlight } from '@/lib/highlights';
 import { MatchCountdown } from '@/components/MatchCountdown';
 import { MatchPromotionShare } from '@/components/MatchPromotionShare';
 import { RankBadge } from '@/components/RankBadge';
+import { RankName } from '@/lib/ranks';
 
 // --- TYPES & CONSTANTS ---
 
 interface Rank {
-  name: string;
+  name: RankName;
   minElo: number;
   color: string;
   icon: any;
