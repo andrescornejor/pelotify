@@ -537,33 +537,31 @@ function ProfileContent() {
         />
 
         {isMe && (
-          <div className="absolute top-24 sm:top-32 right-4 sm:right-12 z-20 flex flex-col sm:flex-row gap-2 sm:gap-3 items-end sm:items-center">
+          <div className="absolute top-28 sm:top-32 right-6 sm:right-12 z-20 flex gap-3">
              <button 
               onClick={() => setIsEditing(!isEditing)}
-              className="px-4 sm:px-6 h-10 sm:h-12 rounded-xl sm:rounded-2xl glass-premium border-white/10 hover:border-primary/40 text-[9px] sm:text-[10px] font-black uppercase tracking-[0.2em] transition-all flex items-center gap-2 group/btn backdrop-blur-md shadow-lg"
+              className="px-6 h-12 rounded-2xl glass-premium border-white/10 hover:border-primary/40 text-[10px] font-black uppercase tracking-[0.2em] transition-all flex items-center gap-2 group/btn backdrop-blur-md"
              >
-                <Edit2 className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-primary group-hover/btn:rotate-12 transition-transform" />
-                <span>{isEditing ? 'Cerrar' : 'Personalizar'}</span>
+                <Edit2 className="w-4 h-4 text-primary group-hover/btn:rotate-12 transition-transform" />
+                <span>{isEditing ? 'Cerrar Editor' : 'Personalizar'}</span>
              </button>
              {!isEditing && (
-              <div className="scale-90 sm:scale-100 origin-right">
-                <ShareStory
-                  type="profile"
-                  data={{
-                    ...displayPlayer,
-                    image: getField('avatar_url', undefined) as string | undefined,
-                  }}
-                />
-              </div>
+              <ShareStory
+                type="profile"
+                data={{
+                  ...displayPlayer,
+                  image: getField('avatar_url', undefined) as string | undefined,
+                }}
+              />
              )}
           </div>
         )}
 
         {/* Floating Rank Badge */}
         {!isEditing && (
-          <div className="absolute bottom-12 sm:bottom-10 right-4 sm:right-12 lg:right-20 z-20 flex flex-col items-end gap-1 scale-90 sm:scale-100">
+          <div className="absolute bottom-10 right-6 sm:right-12 lg:right-20 z-20 flex flex-col items-end gap-1">
              <RankBadge rankName={getRankByElo(displayElo).name} size="lg" className="drop-shadow-[0_0_30px_rgba(44,252,125,0.4)]" />
-             <span className="text-[9px] sm:text-[10px] font-black text-primary uppercase tracking-[0.3em] sm:tracking-[0.4em] drop-shadow-lg italic">
+             <span className="text-[10px] font-black text-primary uppercase tracking-[0.4em] drop-shadow-lg italic">
                RANGO {getRankByElo(displayElo).name}
              </span>
           </div>
@@ -625,10 +623,10 @@ function ProfileContent() {
                         </div>
                       )}
                     </motion.div>
-                     <div className="flex flex-wrap items-center justify-center lg:justify-start gap-2 sm:gap-3">
-                       <span className="text-[10px] sm:text-xs font-black text-primary uppercase tracking-[0.3em] sm:tracking-[0.4em] italic drop-shadow-md">{displayPlayer.position}</span>
+                    <div className="flex items-center justify-center lg:justify-start gap-3">
+                       <span className="text-xs font-black text-primary uppercase tracking-[0.4em] italic drop-shadow-md">{displayPlayer.position}</span>
                        <div className="w-1 h-1 rounded-full bg-white/40" />
-                       <span className="text-[10px] sm:text-xs font-black text-white/70 uppercase tracking-[0.3em] sm:tracking-[0.4em] drop-shadow-md">{teamName}</span>
+                       <span className="text-xs font-black text-white/70 uppercase tracking-[0.4em] drop-shadow-md">{teamName}</span>
                     </div>
                   </div>
 
@@ -691,16 +689,16 @@ function ProfileContent() {
                </div>
 
                {/* Modern Social Stats Hub */}
-               <div className="flex flex-wrap items-center justify-center lg:justify-start gap-x-8 sm:gap-x-12 gap-y-6 pt-6 border-t border-foreground/10">
+               <div className="flex flex-wrap items-center justify-center lg:justify-start gap-x-12 gap-y-6 pt-6 border-t border-foreground/10">
                   {[
                     { label: 'Partidos', value: displayMatches, color: 'text-foreground' },
                     { label: 'ELO RATING', value: displayElo, color: 'text-primary' },
                     { label: 'Goles', value: displayGoals, color: 'text-foreground' },
                     { label: 'Badges', value: displayMvpCount, color: 'text-accent' },
                   ].map((stat, i) => (
-                    <div key={i} className="flex flex-col group/stat cursor-default items-center lg:items-start min-w-[80px]">
-                       <span className={cn("text-2xl sm:text-3xl font-black italic tracking-tighter leading-none group-hover/stat:scale-110 transition-transform origin-left", stat.color)}>{stat.value}</span>
-                       <span className="text-[8px] sm:text-[9px] font-black text-foreground/40 uppercase tracking-[0.2em] sm:tracking-[0.3em] mt-1.5">{stat.label}</span>
+                    <div key={i} className="flex flex-col group/stat cursor-default">
+                       <span className={cn("text-3xl font-black italic tracking-tighter leading-none group-hover/stat:scale-110 transition-transform origin-left", stat.color)}>{stat.value}</span>
+                       <span className="text-[9px] font-black text-foreground/40 uppercase tracking-[0.3em] mt-1.5">{stat.label}</span>
                     </div>
                   ))}
                </div>
@@ -709,22 +707,22 @@ function ProfileContent() {
 
         {/* Navigation Tabs (Social Style) */}
         <div className="sticky top-0 z-40 bg-background/80 backdrop-blur-xl border-y border-foreground/10 mb-10 -mx-4 px-4 sm:mx-0">
-           <div className="flex items-center justify-center sm:justify-start gap-4 sm:gap-10 py-4 sm:py-5 overflow-x-auto no-scrollbar max-w-[1400px] mx-auto">
+           <div className="flex items-center justify-center sm:justify-start gap-10 py-5 overflow-x-auto no-scrollbar max-w-[1400px] mx-auto">
               {[
-                { id: 'overview', icon: Info, label: 'Bio' },
+                { id: 'overview', icon: Info, label: 'Bio & Stats' },
                 { id: 'history', icon: History, label: 'Historial' },
                 { id: 'futtok', icon: Play, label: 'FutTok' },
-                { id: 'wall', icon: MessageSquare, label: 'Muro' },
+                { id: 'wall', icon: MessageSquare, label: 'Muro Social' },
               ].map((tab) => (
                 <button
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id as any)}
                   className={cn(
-                    "flex items-center gap-2 sm:gap-2.5 text-[11px] sm:text-[10px] font-black uppercase tracking-[0.2em] sm:tracking-[0.3em] h-10 px-1 transition-all relative group/tab whitespace-nowrap",
+                    "flex items-center gap-2.5 text-[10px] font-black uppercase tracking-[0.3em] h-10 px-1 transition-all relative group/tab",
                     activeTab === tab.id ? "text-primary" : "text-foreground/40 hover:text-foreground/80"
                   )}
                 >
-                  <tab.icon className={cn("w-3.5 h-3.5 sm:w-4 sm:h-4 transition-transform group-hover/tab:scale-110", activeTab === tab.id ? "text-primary" : "text-foreground/40")} />
+                  <tab.icon className={cn("w-4 h-4 transition-transform group-hover/tab:scale-110", activeTab === tab.id ? "text-primary" : "text-foreground/40")} />
                   <span className="italic">{tab.label}</span>
                   {activeTab === tab.id && (
                     <motion.div layoutId="social-tab" className="absolute bottom-[-1px] left-0 right-0 h-[3px] bg-primary shadow-[0_0_15px_rgba(44,252,125,0.6)] rounded-full" />
