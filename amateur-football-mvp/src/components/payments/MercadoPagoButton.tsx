@@ -21,25 +21,31 @@ export default function MercadoPagoButton({ matchId, title, price }: MercadoPago
   const [loading, setLoading] = useState(false);
 
   const handlePayment = async () => {
+    if (!user) {
+      alert('Debes iniciar sesión para realizar el pago.');
+      return;
+    }
+
     setLoading(true);
     try {
       const response = await fetch('/api/checkout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ matchId, title, price, userId: user?.id }),
+        body: JSON.stringify({ matchId, title, price, userId: user.id }),
       });
 
       const data = await response.json();
 
       if (data.init_point) {
-        // Redirect to Mercado Pago Checkout
         window.location.href = data.init_point;
       } else {
-        alert('Error al generar el pago. Verificá las credenciales.');
+        const errorMsg = data.error || 'Error desconocido';
+        console.error('MP Backend Error:', errorMsg);
+        alert(`Error al generar el pago: ${errorMsg}. Revisa tus credenciales en .env.local.`);
       }
     } catch (error) {
       console.error('Checkout error:', error);
-      alert('Ocurrió un error al procesar el pago.');
+      alert('Error de red. Verifica que el servidor esté corriendo.');
     } finally {
       setLoading(false);
     }
