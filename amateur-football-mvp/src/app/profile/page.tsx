@@ -537,13 +537,13 @@ function ProfileContent() {
         />
 
         {isMe && (
-          <div className="absolute top-28 sm:top-32 right-6 sm:right-12 z-20 flex gap-3">
+          <div className="absolute top-24 sm:top-32 right-6 sm:right-12 z-20 flex gap-3">
              <button 
               onClick={() => setIsEditing(!isEditing)}
-              className="px-6 h-12 rounded-2xl glass-premium border-white/10 hover:border-primary/40 text-[10px] font-black uppercase tracking-[0.2em] transition-all flex items-center gap-2 group/btn backdrop-blur-md"
+              className="px-4 sm:px-6 h-10 sm:h-12 rounded-2xl glass-premium border-white/10 hover:border-primary/40 text-[9px] sm:text-[10px] font-black uppercase tracking-[0.2em] transition-all flex items-center gap-2 group/btn backdrop-blur-md"
              >
-                <Edit2 className="w-4 h-4 text-primary group-hover/btn:rotate-12 transition-transform" />
-                <span>{isEditing ? 'Cerrar Editor' : 'Personalizar'}</span>
+                <Edit2 className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-primary group-hover/btn:rotate-12 transition-transform" />
+                <span>{isEditing ? 'Cerrar' : 'Personalizar'}</span>
              </button>
              {!isEditing && (
               <ShareStory
@@ -559,7 +559,7 @@ function ProfileContent() {
 
         {/* Floating Rank Badge */}
         {!isEditing && (
-          <div className="absolute bottom-10 right-6 sm:right-12 lg:right-20 z-20 flex flex-col items-end gap-1">
+          <div className="absolute bottom-10 right-6 sm:right-12 lg:right-20 z-20 hidden sm:flex flex-col items-end gap-1">
              <RankBadge rankName={getRankByElo(displayElo).name} size="lg" className="drop-shadow-[0_0_30px_rgba(44,252,125,0.4)]" />
              <span className="text-[10px] font-black text-primary uppercase tracking-[0.4em] drop-shadow-lg italic">
                RANGO {getRankByElo(displayElo).name}
@@ -569,14 +569,14 @@ function ProfileContent() {
       </div>
 
       {/* Main Content Container */}
-      <div className="max-w-[1400px] mx-auto w-full px-4 sm:px-8 lg:px-12 -mt-24 sm:-mt-32 lg:-mt-40 relative z-20 pb-20">
+      <div className="max-w-[1400px] mx-auto w-full px-4 sm:px-8 lg:px-12 -mt-16 sm:-mt-32 lg:-mt-40 relative z-20 pb-20">
         
         {/* Profile Header Block */}
         <div className="flex flex-col lg:flex-row items-center gap-8 mb-12">
             {/* The FIFA Card (Avatar Replacement) */}
             <div className={cn(
               "relative transition-all duration-700 perspective-1000 group/card",
-              isEditing && "z-50 scale-105"
+              isEditing ? "z-50 scale-105" : "scale-[0.85] sm:scale-100"
             )}>
                <div className="absolute -inset-10 bg-primary/20 blur-[80px] rounded-full opacity-0 group-hover/card:opacity-100 transition-opacity" />
                <FifaCard
@@ -607,7 +607,7 @@ function ProfileContent() {
                       animate={{ opacity: 1, x: 0 }}
                       className="flex items-center justify-center lg:justify-start gap-4"
                     >
-                      <h1 className="text-4xl sm:text-6xl font-black italic text-white uppercase tracking-tighter leading-none text-shadow-md">
+                      <h1 className="text-3xl sm:text-5xl lg:text-6xl font-black italic text-white uppercase tracking-tighter leading-none text-shadow-md">
                         {isEditing ? (
                           <input 
                             value={editedData.name} 
@@ -689,16 +689,16 @@ function ProfileContent() {
                </div>
 
                {/* Modern Social Stats Hub */}
-               <div className="flex flex-wrap items-center justify-center lg:justify-start gap-x-12 gap-y-6 pt-6 border-t border-foreground/10">
+               <div className="flex flex-wrap items-center justify-center lg:justify-start gap-x-6 sm:gap-x-12 gap-y-4 pt-6 border-t border-foreground/10">
                   {[
                     { label: 'Partidos', value: displayMatches, color: 'text-foreground' },
                     { label: 'ELO RATING', value: displayElo, color: 'text-primary' },
                     { label: 'Goles', value: displayGoals, color: 'text-foreground' },
                     { label: 'Badges', value: displayMvpCount, color: 'text-accent' },
                   ].map((stat, i) => (
-                    <div key={i} className="flex flex-col group/stat cursor-default">
-                       <span className={cn("text-3xl font-black italic tracking-tighter leading-none group-hover/stat:scale-110 transition-transform origin-left", stat.color)}>{stat.value}</span>
-                       <span className="text-[9px] font-black text-foreground/40 uppercase tracking-[0.3em] mt-1.5">{stat.label}</span>
+                    <div key={i} className="flex flex-col group/stat cursor-default items-center lg:items-start">
+                       <span className={cn("text-2xl sm:text-3xl font-black italic tracking-tighter leading-none group-hover/stat:scale-110 transition-transform origin-left", stat.color)}>{stat.value}</span>
+                       <span className="text-[8px] sm:text-[9px] font-black text-foreground/40 uppercase tracking-[0.3em] mt-1.5">{stat.label}</span>
                     </div>
                   ))}
                </div>
@@ -706,8 +706,8 @@ function ProfileContent() {
         </div>
 
         {/* Navigation Tabs (Social Style) */}
-        <div className="sticky top-0 z-40 bg-background/80 backdrop-blur-xl border-y border-foreground/10 mb-10 -mx-4 px-4 sm:mx-0">
-           <div className="flex items-center justify-center sm:justify-start gap-10 py-5 overflow-x-auto no-scrollbar max-w-[1400px] mx-auto">
+        <div className="sticky top-[90px] lg:top-0 z-40 bg-background/80 backdrop-blur-xl border-y border-foreground/10 mb-10 -mx-4 px-4 sm:mx-0">
+           <div className="flex items-center justify-center sm:justify-start gap-6 sm:gap-10 py-5 overflow-x-auto no-scrollbar max-w-[1400px] mx-auto">
               {[
                 { id: 'overview', icon: Info, label: 'Bio & Stats' },
                 { id: 'history', icon: History, label: 'Historial' },
@@ -747,7 +747,7 @@ function ProfileContent() {
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                     <div
                       className={cn(
-                        'p-10 lg:p-12 rounded-[3.5rem] border border-foreground/10 space-y-10 relative overflow-hidden group transition-all duration-700',
+                        'p-6 sm:p-10 lg:p-12 rounded-[2.5rem] sm:rounded-[3.5rem] border border-foreground/10 space-y-8 sm:space-y-10 relative overflow-hidden group transition-all duration-700',
                         'bg-surface/50 dark:bg-foreground/5 backdrop-blur-xl',
                         'shadow-[0_20px_60px_-15px_rgba(0,0,0,0.05)] dark:shadow-[0_30px_70px_rgba(0,0,0,0.4)]',
                         isEditing
