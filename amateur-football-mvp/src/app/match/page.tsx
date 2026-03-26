@@ -54,6 +54,7 @@ import { MatchSkeleton } from '@/components/Skeletons';
 import dynamic from 'next/dynamic';
 import ChatRoom from '@/components/ChatRoom';
 import { MatchPromotionShare } from '@/components/MatchPromotionShare';
+import MercadoPagoButton from '@/components/payments/MercadoPagoButton';
 
 const VenueMap = dynamic(() => import('@/components/VenueMap'), {
   ssr: false,
@@ -1096,6 +1097,39 @@ function MatchLobbyContent() {
                     <ChatRoom matchId={match.id} title="Chat del Lobby" />
                   </div>
                 </div>
+              )}
+
+              {/* PAYMENT SECTION */}
+              {isConfirmed && match.price > 0 && !isCompleted && !myEntry?.paid && (
+                <motion.div
+                  initial={{ opacity: 0, x: 20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  className="p-6 rounded-[2.5rem] bg-[#009EE3]/5 border border-[#009EE3]/20 space-y-4"
+                >
+                  <div className="flex items-center gap-3 font-kanit">
+                    <div className="w-10 h-10 rounded-2xl bg-[#009EE3] flex items-center justify-center text-white">
+                      <DollarSign className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <h3 className="text-lg font-black italic uppercase tracking-tighter text-foreground leading-none">
+                        Confirmá tu lugar
+                      </h3>
+                      <p className="text-[10px] text-[#009EE3] font-bold uppercase tracking-widest mt-1">
+                        Pago seguro vía Mercado Pago
+                      </p>
+                    </div>
+                  </div>
+                  
+                  <MercadoPagoButton 
+                    matchId={match.id} 
+                    title={`Lugar en ${venueName} - ${match.date}`} 
+                    price={match.price} 
+                  />
+                  
+                  <p className="text-[9px] text-foreground/20 font-bold uppercase tracking-widest text-center">
+                    * El pago confirma tu asistencia definitiva.
+                  </p>
+                </motion.div>
               )}
 
               {/* MAP */}

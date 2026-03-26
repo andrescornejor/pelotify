@@ -45,6 +45,7 @@ export interface MatchParticipant {
   user_id: string;
   status: 'confirmed' | 'pending';
   team: 'A' | 'B' | null;
+  paid?: boolean;
   created_at: string;
   profiles?: {
     name: string;
@@ -89,6 +90,7 @@ export async function getMatchById(id: string) {
                 user_id,
                 status,
                 team,
+                paid,
                 created_at
             )
         `

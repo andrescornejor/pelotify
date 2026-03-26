@@ -50,9 +50,8 @@ export default function LocationSearch({ value, onChange, placeholder }: Locatio
 
     setIsLoading(true);
     try {
-      // Photon API (OpenStreetMap based)
-      // Adding lon/lat for Rosario to bias results
-      const lon = -60.6393;
+      // Photon API (OpenStreetMap based) - FREE
+      const lon = -60.6393; // Rosario bias
       const lat = -32.9468;
       const url = `https://photon.komoot.io/api/?q=${encodeURIComponent(searchQuery)}&limit=8&lat=${lat}&lon=${lon}`;
 
@@ -64,7 +63,6 @@ export default function LocationSearch({ value, onChange, placeholder }: Locatio
         retryWithCity &&
         !searchQuery.toLowerCase().includes('rosario')
       ) {
-        // Try once more appending Rosario if no results found
         return searchLocations(`${searchQuery} Rosario`, false);
       }
 
@@ -89,7 +87,7 @@ export default function LocationSearch({ value, onChange, placeholder }: Locatio
   // Simple debounce
   useEffect(() => {
     const timer = setTimeout(() => {
-      if (query !== value) {
+      if (query !== value && query.length >= 3) {
         searchLocations(query);
       }
     }, 500);
