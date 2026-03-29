@@ -35,6 +35,10 @@ export default function CanchasDashboard() {
   const [bookings, setBookings] = useState<any[]>([]);
   const [loadingDb, setLoadingDb] = useState(true);
 
+  // Modals state
+  const [showBookingModal, setShowBookingModal] = useState(false);
+  const [selectedSlot, setSelectedSlot] = useState<{time: string, fieldId: string} | null>(null);
+
   // Tab configurations
   const tabs = [
     { id: 'overview', label: 'Resumen', icon: LayoutDashboard },
@@ -198,14 +202,26 @@ export default function CanchasDashboard() {
               exit={{ opacity: 0, y: -10 }}
               transition={{ duration: 0.2 }}
             >
-              {activeTab === 'overview' && <OverviewTab business={business} bookings={bookings} fields={fields} />}
-              {activeTab === 'calendar' && <CalendarTab bookings={bookings} fields={fields} />}
-              {activeTab === 'finances' && <FinancesTab business={business} />}
+              {activeTab === 'overview' && <OverviewTab business={business} bookings={bookings} fields={fields} onNewBooking={() => setShowBookingModal(true)} />}
+              {activeTab === 'calendar' && <CalendarTab bookings={bookings} fields={fields} onSlotClick={(time: string, fieldId: string) => { setSelectedSlot({time, fieldId}); setShowBookingModal(true); }} />}
+              {activeTab === 'finances' && <FinancesTab business={business} bookings={bookings} />}
               {activeTab === 'settings' && <SettingsTab business={business} fields={fields} setFields={setFields} />}
             </motion.div>
           </AnimatePresence>
         </main>
       </div>
+
+      {/* MODALS */}
+      <AnimatePresence>
+        {showBookingModal && (
+          <NewBookingModal 
+            onClose={() => { setShowBookingModal(false); setSelectedSlot(null); }} 
+            fields={fields} 
+            selectedSlot={selectedSlot}
+            onBooked={(newBooking: any) => setBookings(prev => [...prev, newBooking])}
+          />
+        )}
+      </AnimatePresence>
 
       {/* MOBILE BOTTOM NAV */}
       <div className="md:hidden fixed bottom-0 w-full z-50 glass border-t border-border/40 pb-safe">
@@ -243,7 +259,7 @@ export default function CanchasDashboard() {
 /* =========================================
    OVERVIEW TAB
 ========================================= */
-function OverviewTab({ business, bookings, fields }: any) {
+function OverviewTab({ business, bookings, fields, onNewBooking }: any) {
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'pending': return 'bg-danger/10 text-danger border-danger/20';
@@ -278,7 +294,7 @@ function OverviewTab({ business, bookings, fields }: any) {
           <h2 className="text-2xl font-kanit font-bold text-gradient">Panel de Control</h2>
           <p className="text-muted-foreground text-sm">Resumen de actividad de hoy</p>
         </div>
-        <button className="bg-primary text-black font-bold py-2 px-4 rounded-xl flex items-center gap-2 hover:bg-primary-light transition-colors press-effect">
+        <button onClick={onNewBooking} className="bg-primary text-black font-bold py-2 px-4 rounded-xl flex items-center gap-2 hover:bg-primary-light transition-colors press-effect">
           <Plus className="w-5 h-5" />
           Nueva Reserva
         </button>
@@ -341,16 +357,6 @@ function OverviewTab({ business, bookings, fields }: any) {
                   isPending={booking.status === 'pending'} 
                 />
               ))
-            )}
-            
-            {/* Fallback to mock data if no real DB bookings exist just to keep the UI awesome during demo */}
-            {bookings.length === 0 && (
-              <>
-                <UpcomingMatch time="18:00" field="Cancha 1 (F5)" team="Los Pibes FC" status="Pagado" price="$15.000" />
-                <UpcomingMatch time="19:00" field="Cancha 3 (F7)" team="La Scaloneta" status="Seña $5.000" price="$25.000" />
-                <UpcomingMatch time="20:00" field="Cancha 1 (F5)" team="Tercer Tiempo" status="Pendiente" price="$15.000" isPending />
-                <UpcomingMatch time="21:30" field="Cancha 2 (F11)" team="Torneo Relámpago" status="Pagado" price="$40.000" />
-              </>
             )}
           </div>
         </div>
@@ -457,7 +463,7 @@ function QuickAction({ icon: Icon, label }: any) {
 /* =========================================
    CALENDAR TAB
 ========================================= */
-function CalendarTab({ bookings, fields }: any) {
+function CalendarTab({ bookings, fields, onSlotClick }: any) {
   const timeSlots = ["17:00", "18:00", "19:00", "20:00", "21:00", "22:00", "23:00"];
   // Use DB fields or fallback to mock
   const displayFields = fields.length > 0 ? fields : [{ id: 1, name: "Cancha 1 (F5)" }, { id: 2, name: "Cancha 2 (F5)" }, { id: 3, name: "Cancha 3 (F7)" }];
@@ -496,48 +502,33 @@ function CalendarTab({ bookings, fields }: any) {
                   <div className="p-4 text-center text-sm font-kanit font-bold text-muted-foreground flex items-center justify-center">
                     {time}
                   </div>
-                  {/* Mock logic for visually demonstrating a schedule */}
-                  <div className="p-2 border-l border-border/50">
-                    {time === "18:00" || time === "20:00" ? (
-                      <div className="h-full w-full bg-primary/10 border border-primary/30 rounded-lg p-2 text-xs flex flex-col justify-center">
-                        <span className="font-bold text-primary">Reservado</span>
-                        <span className="text-muted-foreground truncate">Juan Pérez - $15.000</span>
+                  
+                  {displayFields.slice(0, 3).map((f: any) => {
+                    const booking = bookings.find((b: any) => 
+                      b.field_id === f.id && 
+                      b.date === new Date().toISOString().split('T')[0] && 
+                      b.start_time.startsWith(time)
+                    );
+
+                    return (
+                      <div key={f.id} className="p-2 border-l border-border/50">
+                        {booking ? (
+                          <div className={`h-full w-full rounded-lg p-2 text-xs flex flex-col justify-center border ${
+                            booking.status === 'pending' ? 'bg-danger/10 border-danger/30 text-danger' :
+                            booking.status === 'partial_paid' ? 'bg-accent/10 border-accent/30 text-accent' :
+                            'bg-primary/10 border-primary/30 text-primary'
+                          }`}>
+                            <span className="font-bold">{booking.status === 'pending' ? 'Impago' : booking.status === 'partial_paid' ? 'Señado' : 'Pagado'}</span>
+                            <span className="text-muted-foreground truncate">{booking.title || 'Reserva'} - ${booking.total_price}</span>
+                          </div>
+                        ) : (
+                          <button onClick={() => onSlotClick(time, f.id)} className="h-full w-full min-h-[60px] rounded-lg border border-dashed border-border/50 hover:border-primary/50 hover:bg-primary/5 text-muted-foreground hover:text-primary flex items-center justify-center gap-1 transition-colors text-xs opacity-0 hover:opacity-100">
+                            <Plus className="w-3 h-3" /> Turno
+                          </button>
+                        )}
                       </div>
-                    ) : (
-                      <button className="h-full w-full min-h-[60px] rounded-lg border border-dashed border-border/50 hover:border-primary/50 hover:bg-primary/5 text-muted-foreground hover:text-primary flex items-center justify-center gap-1 transition-colors text-xs opacity-0 hover:opacity-100">
-                        <Plus className="w-3 h-3" /> Turno
-                      </button>
-                    )}
-                  </div>
-                  <div className="p-2 border-l border-border/50">
-                    {time === "19:00" ? (
-                      <div className="h-full w-full bg-accent/10 border border-accent/30 rounded-lg p-2 text-xs flex flex-col justify-center">
-                        <span className="font-bold text-accent">Seña Pagada</span>
-                        <span className="text-muted-foreground truncate">Team Z - $5.000 / $15.000</span>
-                      </div>
-                    ) : time === "22:00" ? (
-                      <div className="h-full w-full bg-danger/10 border border-danger/30 rounded-lg p-2 text-xs flex flex-col justify-center relative overflow-hidden">
-                        <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iMiIgY3k9IjIiIHI9IjEiIGZpbGw9InJnYmEoMjQ0LCA2MywgOTQsIDAuMikiLz48L3N2Zz4=')] opacity-50"></div>
-                        <span className="font-bold text-danger z-10">Mantenimiento</span>
-                      </div>
-                    ) : (
-                      <button className="h-full w-full min-h-[60px] rounded-lg border border-dashed border-border/50 hover:border-primary/50 hover:bg-primary/5 text-muted-foreground hover:text-primary flex items-center justify-center gap-1 transition-colors text-xs opacity-0 hover:opacity-100">
-                        <Plus className="w-3 h-3" /> Turno
-                      </button>
-                    )}
-                  </div>
-                  <div className="p-2 border-l border-border/50">
-                     {time === "20:00" || time === "21:00" ? (
-                        <div className={`h-full w-full rounded-lg p-2 text-xs flex flex-col justify-center ${time === "20:00" ? "bg-primary/10 border-t border-l border-r border-primary/30 rounded-b-none" : "bg-primary/10 border-b border-l border-r border-primary/30 rounded-t-none"}`}>
-                          <span className="font-bold text-primary">Torneo Relámpago</span>
-                          {time === "20:00" && <span className="text-muted-foreground truncate">Bloqueado 2h</span>}
-                        </div>
-                      ) : (
-                        <button className="h-full w-full min-h-[60px] rounded-lg border border-dashed border-border/50 hover:border-primary/50 hover:bg-primary/5 text-muted-foreground hover:text-primary flex items-center justify-center gap-1 transition-colors text-xs opacity-0 hover:opacity-100">
-                          <Plus className="w-3 h-3" /> Turno
-                        </button>
-                      )}
-                  </div>
+                    );
+                  })}
                 </div>
               ))}
             </div>
@@ -551,7 +542,11 @@ function CalendarTab({ bookings, fields }: any) {
 /* =========================================
    FINANCES TAB
 ========================================= */
-function FinancesTab({ business }: any) {
+function FinancesTab({ business, bookings }: any) {
+  const totalIncome = bookings
+    .filter((b: any) => b.status === 'full_paid' || b.status === 'partial_paid')
+    .reduce((acc: number, curr: any) => acc + (curr.total_price || 0), 0);
+
   return (
     <div className="space-y-6">
        <div>
@@ -564,9 +559,9 @@ function FinancesTab({ business }: any) {
           <div className="md:col-span-2 premium-card p-6 sm:p-8 bg-gradient-to-br from-surface to-surface-elevated relative overflow-hidden">
             <div className="absolute top-0 right-0 w-64 h-64 bg-primary/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/3"></div>
             
-            <p className="text-sm font-semibold text-muted-foreground mb-2 relative z-10">Saldo Disponible en Pelotify</p>
+            <p className="text-sm font-semibold text-muted-foreground mb-2 relative z-10">Total Recaudado (Proyección)</p>
             <h1 className="text-4xl sm:text-5xl font-kanit font-bold text-foreground mb-6 overflow-hidden relative z-10">
-              <span className="text-primary">$</span>540.000
+              <span className="text-primary">$</span>{new Intl.NumberFormat('es-AR', { maximumFractionDigits: 0 }).format(totalIncome)}
             </h1>
 
             <div className="flex gap-4 relative z-10">
@@ -605,10 +600,13 @@ function FinancesTab({ business }: any) {
         <div className="glass-card p-6">
           <h3 className="text-lg font-bold font-kanit mb-4">Últimos Movimientos</h3>
           <div className="space-y-4">
-            <TransactionRow date="Hoy, 15:30" concept="Reserva - Cancha 1 (F5)" amount="+$15.000" type="income" status="Acreditado" />
-            <TransactionRow date="Hoy, 12:45" concept="Seña Reserva - Cancha 3 (F7)" amount="+$5.000" type="income" status="Acreditado" />
-            <TransactionRow date="Ayer, 09:00" concept="Retiro de fondos a Cuenta Bancaria" amount="-$250.000" type="withdrawal" status="Completado" />
-            <TransactionRow date="Ayer, 20:15" concept="Reserva Torneo - Cancha 2 (F11)" amount="+$40.000" type="income" status="Acreditado" />
+             {bookings.length === 0 ? (
+               <p className="text-sm text-muted-foreground text-center py-4 bg-surface rounded-xl border border-dashed border-border">Aún no hay movimientos registrados.</p>
+             ) : (
+               bookings.map((b: any) => (
+                 <TransactionRow key={b.id} date={`Hoy, ${b.start_time.substring(0,5)}`} concept={`Reserva - ${b.canchas_fields?.name} (${b.canchas_fields?.type})`} amount={`+$${b.total_price}`} type="income" status={b.status === 'pending' ? 'Impago' : 'Acreditado'} />
+               ))
+             )}
           </div>
         </div>
     </div>
@@ -788,6 +786,117 @@ function FieldItem({ name, type, isPremium = false }: any) {
       <button className="text-muted-foreground hover:text-foreground opacity-0 group-hover:opacity-100 transition-opacity">
         <Settings className="w-4 h-4" />
       </button>
+    </div>
+  );
+}
+
+/* =========================================
+   NEW BOOKING MODAL
+========================================= */
+function NewBookingModal({ onClose, fields, selectedSlot, onBooked }: any) {
+  const [loading, setLoading] = useState(false);
+  const { user } = useAuth();
+  
+  const [formData, setFormData] = useState({
+    title: '',
+    fieldId: selectedSlot?.fieldId || (fields[0]?.id || ''),
+    time: selectedSlot?.time || '18:00',
+    date: new Date().toISOString().split('T')[0],
+    paid: false
+  });
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!formData.fieldId) {
+       alert("No tienes canchas disponibles o no seleccionaste una.");
+       return;
+    }
+
+    setLoading(true);
+    const selectedFieldObj = fields.find((f: any) => f.id === formData.fieldId);
+    if (!selectedFieldObj) {
+        setLoading(false);
+        return;
+    }
+    const price = selectedFieldObj.price_per_match || 15000;
+    
+    // Calculate end time (assuming 1 hour matches)
+    const [hours, minutes] = formData.time.split(':');
+    const endHours = parseInt(hours) + 1;
+    const endTime = `${endHours.toString().padStart(2, '0')}:${minutes}:00`;
+    const startTimeFull = `${formData.time}:00`;
+
+    const { data, error } = await supabase.from('canchas_bookings').insert([{
+      field_id: formData.fieldId,
+      booker_id: user?.id,
+      title: formData.title || 'Reserva Presencial',
+      date: formData.date,
+      start_time: startTimeFull,
+      end_time: endTime,
+      total_price: price,
+      down_payment_paid: formData.paid ? price : 0,
+      status: formData.paid ? 'full_paid' : 'pending' 
+    }]).select('*, canchas_fields(name, type)').single();
+
+    if (error) {
+      alert("Error al guardar reserva: " + error.message);
+    } else {
+      onBooked(data);
+      onClose();
+    }
+    setLoading(false);
+  };
+
+  return (
+    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-background/80 backdrop-blur-sm animate-in fade-in duration-200">
+      <motion.div
+        initial={{ scale: 0.95, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        exit={{ scale: 0.95, opacity: 0 }}
+        className="glass-card w-full max-w-md p-6 overflow-hidden relative"
+      >
+        <div className="absolute top-0 right-0 w-32 h-32 bg-primary/10 rounded-full blur-2xl -translate-y-1/2 translate-x-1/2 pointer-events-none"></div>
+        
+        <div className="flex justify-between items-center mb-6 relative z-10">
+           <h3 className="text-2xl font-black font-kanit">Nueva Reserva</h3>
+           <button onClick={onClose} className="text-muted-foreground hover:text-foreground">X</button>
+        </div>
+
+        <form onSubmit={handleSubmit} className="space-y-4 relative z-10">
+           <div>
+             <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-1 block">A Nombre De</label>
+             <input type="text" value={formData.title} onChange={e => setFormData(prev => ({...prev, title: e.target.value}))} className="w-full bg-surface-elevated border border-border/50 rounded-xl px-4 py-3 outline-none" placeholder="Nombre completo o equipo..." required />
+           </div>
+
+           <div className="grid grid-cols-2 gap-4">
+             <div>
+               <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-1 block">Cancha</label>
+               <select value={formData.fieldId} onChange={e => setFormData(prev => ({...prev, fieldId: e.target.value}))} className="w-full bg-surface-elevated border border-border/50 rounded-xl px-4 py-3 outline-none appearance-none">
+                 {fields.map((f: any) => (
+                    <option key={f.id} value={f.id}>{f.name} ({f.type})</option>
+                 ))}
+               </select>
+             </div>
+             <div>
+               <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-1 block">Hora Inicio</label>
+               <select value={formData.time} onChange={e => setFormData(prev => ({...prev, time: e.target.value}))} className="w-full bg-surface-elevated border border-border/50 rounded-xl px-4 py-3 outline-none appearance-none">
+                 {["17:00", "18:00", "19:00", "20:00", "21:00", "22:00", "23:00"].map(t => (
+                    <option key={t} value={t}>{t}</option>
+                 ))}
+               </select>
+             </div>
+           </div>
+
+           <div className="flex items-center gap-3 pt-2">
+             <input type="checkbox" id="paid" checked={formData.paid} onChange={e => setFormData(prev => ({...prev, paid: e.target.checked}))} className="w-5 h-5 accent-primary rounded bg-surface border-border" />
+             <label htmlFor="paid" className="text-sm font-semibold select-none">Marcar como cobrado en efectivo</label>
+           </div>
+
+           <button type="submit" disabled={loading} className="w-full mt-4 h-12 bg-primary text-black font-black text-sm uppercase tracking-wider rounded-xl hover:bg-white transition-all disabled:opacity-50">
+             {loading ? 'Guardando...' : 'Confirmar Turno'}
+           </button>
+        </form>
+      </motion.div>
     </div>
   );
 }
