@@ -243,7 +243,7 @@ export default function EstablecimientoProfile() {
                   </div>
                   
                   <div className="flex gap-2 bg-surface-elevated/50 p-2 rounded-2xl border border-white/5 shadow-inner">
-                     {["F5", "F7", "F11"].map(type => (
+                     {(Array.from(new Set(fields.map(f => f.type))) as string[]).map(type => (
                         <button key={type} className="px-6 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-surface-bright transition-all border border-transparent hover:border-white/5">
                            {type}
                         </button>

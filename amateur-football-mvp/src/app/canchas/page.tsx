@@ -1447,8 +1447,8 @@ function SettingsTab({ business, fields, setFields, hasMP, setBusiness }: any) {
                          </p>
                       </div>
                       <div className="flex gap-2">
-                         {["F5", "F7", "F11"].map(type => (
-                            <div key={type} className="flex-1 h-12 rounded-xl bg-foreground/5 border border-white/5 flex items-center justify-center font-black italic font-kanit text-[10px] text-primary/40">
+                         {(Array.from(new Set(fields.map((f: any) => f.type))) as string[]).map(type => (
+                            <div key={type} className="px-4 h-12 rounded-xl bg-foreground/5 border border-white/5 flex items-center justify-center font-black italic font-kanit text-[10px] text-primary/40">
                                {type}
                             </div>
                          ))}
