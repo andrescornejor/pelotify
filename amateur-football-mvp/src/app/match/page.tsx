@@ -232,10 +232,9 @@ function MatchLobbyContent() {
            .eq('is_active', true);
          
           // Primero intentar por ID directo
-          let matchedBiz = allBusinesses.find((biz: any) => biz.id === data.business_id);
+          let matchedBiz = allBusinesses?.find((biz: any) => biz.id === data.business_id);
           
-          // Si no, intentar por nombre/ubicación (fuzzy match)
-          if (!matchedBiz && data.location) {
+          if (allBusinesses && !matchedBiz && data.location) {
             const loc = data.location.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').trim();
             matchedBiz = allBusinesses.find((biz: any) => {
               const bizName = (biz.name || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').trim();
