@@ -28,7 +28,8 @@ import {
   Trash2,
   Layers,
   ChevronLeft,
-  Shield
+  Shield,
+  ExternalLink
 } from 'lucide-react';
 
 import { useAuth } from '@/contexts/AuthContext';
@@ -198,6 +199,15 @@ export default function CanchasDashboard() {
                 <div className="px-2 py-0.5 rounded-md bg-primary/20 border border-primary/30 hidden sm:block">
                   <span className="text-[8px] font-black text-primary uppercase tracking-widest">PRO PLAN</span>
                 </div>
+                {business?.id && (
+                  <button 
+                    onClick={() => window.open(`/establecimientos/${business.id}`, '_blank')}
+                    className="p-1.5 rounded-lg bg-foreground/5 hover:bg-primary/20 text-muted-foreground hover:text-primary transition-all flex items-center gap-1.5 px-2"
+                  >
+                     <ExternalLink className="w-3 h-3" />
+                     <span className="text-[8px] font-black uppercase tracking-widest">Perfil Público</span>
+                  </button>
+                )}
               </div>
               <p className="text-[10px] text-muted-foreground flex items-center gap-1.5 font-black uppercase tracking-widest mt-0.5">
                 <span className="w-2 h-2 rounded-full bg-primary animate-pulse shadow-[0_0_8px_rgba(44,252,125,0.6)]"></span>

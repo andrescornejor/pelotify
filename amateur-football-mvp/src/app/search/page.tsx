@@ -11,6 +11,8 @@ import {
   CheckCircle2,
   LayoutGrid,
   ChevronRight,
+  Zap,
+  Star,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import Link from 'next/link';
@@ -30,7 +32,7 @@ const MapSearch = dynamic(() => import('@/components/MapSearch'), {
 });
 
 export default function SearchPage() {
-  const [activeTab, setActiveTab] = useState<'list' | 'map'>('list');
+  const [activeTab, setActiveTab] = useState<'list' | 'map' | 'sedes'>('list');
   const {
     filteredMatches,
     joinedIds,
@@ -43,6 +45,31 @@ export default function SearchPage() {
     setOnlyAvailable,
   } = useMatchSearch();
   const { performanceMode: isPerfMode } = useSettings();
+  const [venues, setVenues] = useState<any[]>([]);
+  const [loadingVenues, setLoadingVenues] = useState(false);
+
+  useEffect(() => {
+    if (activeTab === 'sedes') {
+      fetchVenues();
+    }
+  }, [activeTab]);
+
+  const fetchVenues = async () => {
+    try {
+      setLoadingVenues(true);
+      const { data, error } = await supabase
+        .from('canchas_businesses')
+        .select('*')
+        .eq('is_active', true)
+        .order('name', { ascending: true });
+      if (error) throw error;
+      setVenues(data || []);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoadingVenues(false);
+    }
+  };
 
   return (
     <div
@@ -162,32 +189,37 @@ export default function SearchPage() {
                 <button
                   onClick={() => setActiveTab('list')}
                   className={cn(
-                    'flex-1 h-full text-[10px] font-black uppercase tracking-[0.2em] rounded-xl transition-all relative z-10 flex items-center justify-center gap-3 italic',
-                    activeTab === 'list'
-                      ? 'text-black'
-                      : 'text-foreground/40 hover:text-foreground/60'
+                    'flex-1 h-full text-[9px] font-black uppercase tracking-[0.1em] rounded-xl transition-all relative z-10 flex items-center justify-center gap-1.5 italic',
+                    activeTab === 'list' ? 'text-black' : 'text-foreground/40 hover:text-foreground/60'
                   )}
                 >
-                  <LayoutGrid className="w-3.5 h-3.5" /> VISTA LISTA
+                  <LayoutGrid className="w-3 h-3" /> LISTA
                 </button>
                 <button
                   onClick={() => setActiveTab('map')}
                   className={cn(
-                    'flex-1 h-full text-[10px] font-black uppercase tracking-[0.2em] rounded-xl transition-all relative z-10 flex items-center justify-center gap-3 italic',
-                    activeTab === 'map'
-                      ? 'text-black'
-                      : 'text-foreground/40 hover:text-foreground/60'
+                    'flex-1 h-full text-[9px] font-black uppercase tracking-[0.1em] rounded-xl transition-all relative z-10 flex items-center justify-center gap-1.5 italic',
+                    activeTab === 'map' ? 'text-black' : 'text-foreground/40 hover:text-foreground/60'
                   )}
                 >
-                  <MapPin className="w-3.5 h-3.5" /> MAPEO GPS
+                  <MapPin className="w-3 h-3" /> MAPA
+                </button>
+                <button
+                  onClick={() => setActiveTab('sedes')}
+                  className={cn(
+                    'flex-1 h-full text-[9px] font-black uppercase tracking-[0.1em] rounded-xl transition-all relative z-10 flex items-center justify-center gap-1.5 italic',
+                    activeTab === 'sedes' ? 'text-black' : 'text-foreground/40 hover:text-foreground/60'
+                  )}
+                >
+                  <Zap className="w-3 h-3" /> SEDES
                 </button>
                 <motion.div
                   layoutId="radar-pill"
                   className="absolute inset-y-1 bg-primary rounded-xl shadow-[0_5px_15px_rgba(16,185,129,0.2)]"
                   initial={false}
                   animate={{
-                    left: activeTab === 'list' ? '4px' : 'calc(50% + 2px)',
-                    right: activeTab === 'list' ? 'calc(50% + 2px)' : '4px',
+                    left: activeTab === 'list' ? '4px' : activeTab === 'map' ? '33.33%' : '66.66%',
+                    right: activeTab === 'list' ? '66.66%' : activeTab === 'map' ? '33.33%' : '4px',
                   }}
                   transition={{ type: 'spring' as const, stiffness: 350, damping: 25 }}
                 />
@@ -488,6 +520,55 @@ export default function SearchPage() {
                 </Link>
               </div>
             )}
+          </div>
+        ) : activeTab === 'sedes' ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+             {loadingVenues ? (
+                [...Array(6)].map((_, i) => (
+                  <div key={i} className="h-64 rounded-[3rem] bg-foreground/5 animate-pulse border border-foreground/5" />
+                ))
+             ) : venues.length > 0 ? (
+                venues.map((venue, i) => (
+                  <motion.div
+                    key={venue.id}
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ delay: i * 0.05 }}
+                  >
+                    <Link href={`/establecimientos/${venue.id}`}>
+                       <div className="glass-premium rounded-[3rem] p-6 border-white/5 group hover:border-primary/40 transition-all duration-300 h-full flex flex-col gap-6">
+                          <div className="aspect-[16/10] rounded-[2.2rem] overflow-hidden relative">
+                             <img src="https://images.unsplash.com/photo-1574629810360-7efbbe195018?q=80&w=800&auto=format&fit=crop" className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500" />
+                             <div className="absolute top-4 right-4 px-3 py-1 glass rounded-xl border border-white/10 flex items-center gap-1.5 focus:bg-primary">
+                                <Star className="w-3 h-3 fill-accent text-accent" />
+                                <span className="text-[10px] font-black">4.9</span>
+                             </div>
+                          </div>
+                          <div className="space-y-4">
+                             <div>
+                                <h3 className="text-2xl font-black italic uppercase tracking-tighter group-hover:text-primary transition-colors">{venue.name}</h3>
+                                <p className="text-[10px] font-bold text-muted-foreground uppercase flex items-center gap-2 mt-1">
+                                   <MapPin className="w-3 h-3 text-primary" />
+                                   {venue.address || "Rosario, Argentina"}
+                                </p>
+                             </div>
+                             <div className="flex items-center justify-between pt-4 border-t border-white/5">
+                                <span className="text-[9px] font-black uppercase tracking-widest text-primary">Disponible Hoy</span>
+                                <div className="p-2 rounded-xl bg-primary text-black hover:scale-110 transition-transform">
+                                   <ChevronRight className="w-4 h-4" />
+                                </div>
+                             </div>
+                          </div>
+                       </div>
+                    </Link>
+                  </motion.div>
+                ))
+             ) : (
+                <div className="col-span-full py-40 text-center space-y-4">
+                   <Zap className="w-16 h-16 text-muted-foreground/20 mx-auto" />
+                   <p className="text-sm font-black text-muted-foreground uppercase tracking-widest leading-none">No se encontraron establecimientos activos.</p>
+                </div>
+             )}
           </div>
         ) : (
           <div className="w-full h-full min-h-[600px] relative overflow-hidden rounded-[4rem] border border-foreground/10 shadow-[0_50px_100px_rgba(0,0,0,0.5)] bg-surface">
