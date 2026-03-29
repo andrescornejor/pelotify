@@ -296,7 +296,7 @@ export default function CanchasDashboard() {
               {activeTab === 'calendar' && <CalendarTab bookings={bookings} fields={fields} selectedDate={selectedDate} setSelectedDate={setSelectedDate} onSlotClick={(time: string, fieldId: string) => { setSelectedSlot({time, fieldId}); setShowBookingModal(true); }} onBookingClick={(booking: any) => { setSelectedBooking(booking); setShowEditBookingModal(true); }} />}
               {activeTab === 'marketing' && <MarketingTab business={business} />}
               {activeTab === 'finances' && <FinancesTab business={business} bookings={bookings} hasMP={hasMP} user={user} />}
-              {activeTab === 'settings' && <SettingsTab business={business} fields={fields} setFields={setFields} hasMP={hasMP} />}
+              {activeTab === 'settings' && <SettingsTab business={business} fields={fields} setFields={setFields} hasMP={hasMP} setBusiness={setBusiness} />}
             </motion.div>
           </AnimatePresence>
         </main>
@@ -1125,7 +1125,7 @@ function TransactionRow({ date, concept, amount, type, status }: any) {
 /* =========================================
    SETTINGS TAB
 ========================================= */
-function SettingsTab({ business, fields, setFields, hasMP }: any) {
+function SettingsTab({ business, fields, setFields, hasMP, setBusiness }: any) {
   const { user } = useAuth();
   const [loading, setLoading] = useState(false);
   const [deposit, setDeposit] = useState(fields?.[0]?.down_payment_percentage || 30);
@@ -1133,6 +1133,9 @@ function SettingsTab({ business, fields, setFields, hasMP }: any) {
   const [description, setDescription] = useState(business?.description || '');
   const [address, setAddress] = useState(business?.address || '');
   const [city, setCity] = useState(business?.city || '');
+  const [businessName, setBusinessName] = useState(business?.name || '');
+  const [phone, setPhone] = useState(business?.phone || '');
+  const [profileImageUrl, setProfileImageUrl] = useState(business?.profile_image_url || '');
   const [coords, setCoords] = useState({ 
     link: business?.google_maps_link || ''
   });
@@ -1167,6 +1170,9 @@ function SettingsTab({ business, fields, setFields, hasMP }: any) {
       const { data: updatedBiz, error: aliasError } = await supabase
         .from('canchas_businesses')
         .update({ 
+          name: businessName.trim(),
+          phone: phone.trim(),
+          profile_image_url: profileImageUrl.trim(),
           alias_cbu: trimmedAlias, 
           description,
           address,
@@ -1188,6 +1194,11 @@ function SettingsTab({ business, fields, setFields, hasMP }: any) {
         alert("⚠️ No se pudo guardar la configuración. Verificá que tu cuenta tenga permisos de administrador sobre este establecimiento.");
         setIsSavingPrices(false);
         return;
+      }
+
+      // Actualizamos estado local del negocio en el padre
+      if (setBusiness) {
+        setBusiness(updatedBiz[0]);
       }
         
       // Actualizamos estado local
@@ -1240,56 +1251,86 @@ function SettingsTab({ business, fields, setFields, hasMP }: any) {
 
        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           {/* General Info */}
-          <div className="glass-premium rounded-[2.5rem] p-10 border-white/5 space-y-8">
-             <div className="flex items-center gap-4 mb-2">
-                <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center border border-primary/20">
-                   <Settings className="w-5 h-5 text-primary" />
-                </div>
-                <h3 className="text-xl font-black font-kanit italic uppercase tracking-tighter">Perfil del Complejo</h3>
-             </div>
-
-             <div className="space-y-6">
-                <div>
-                  <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground mb-2 block">Descripción Pública</label>
-                  <textarea 
-                    value={description}
-                    onChange={(e) => setDescription(e.target.value)}
-                    className="w-full bg-foreground/[0.03] border border-white/5 rounded-2xl p-4 text-sm focus:border-primary/50 outline-none transition-all min-h-[100px]"
-                    placeholder="Contanos sobre tu complejo, servicios, etc..."
-                  />
-                </div>
-                <div className="grid grid-cols-2 gap-4">
-                   <div>
-                    <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground mb-2 block">Dirección</label>
-                    <input 
-                      type="text" 
-                      value={address}
-                      onChange={(e) => setAddress(e.target.value)}
-                      className="w-full bg-foreground/[0.03] border border-white/5 rounded-2xl p-4 text-sm focus:border-primary/50 outline-none transition-all"
-                    />
-                   </div>
-                   <div>
-                    <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground mb-2 block">Ciudad</label>
-                    <input 
-                      type="text" 
-                      value={city}
-                      onChange={(e) => setCity(e.target.value)}
-                      className="w-full bg-foreground/[0.03] border border-white/5 rounded-2xl p-4 text-sm focus:border-primary/50 outline-none transition-all"
-                    />
-                   </div>
-                </div>
-                <div>
-                  <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground mb-2 block">Google Maps Link</label>
-                  <input 
-                    type="text" 
-                    value={coords.link}
-                    onChange={(e) => setCoords({...coords, link: e.target.value})}
-                    placeholder="https://goo.gl/maps/..."
-                    className="w-full bg-foreground/[0.03] border border-white/5 rounded-2xl p-4 text-sm focus:border-primary/50 outline-none transition-all"
-                  />
-                </div>
-             </div>
-          </div>
+           <div className="glass-premium rounded-[2.5rem] p-10 border-white/5 space-y-8">
+              <div className="flex items-center gap-4 mb-2">
+                 <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center border border-primary/20">
+                    <Settings className="w-5 h-5 text-primary" />
+                 </div>
+                 <h3 className="text-xl font-black font-kanit italic uppercase tracking-tighter">Perfil del Complejo</h3>
+              </div>
+ 
+              <div className="space-y-6">
+                 <div>
+                   <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground mb-2 block">Nombre del Establecimiento</label>
+                   <input 
+                     type="text" 
+                     value={businessName}
+                     onChange={(e) => setBusinessName(e.target.value)}
+                     className="w-full bg-foreground/[0.03] border border-white/5 rounded-2xl p-4 text-sm focus:border-primary/50 outline-none transition-all font-black"
+                   />
+                 </div>
+                 <div>
+                   <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground mb-2 block">Descripción Pública</label>
+                   <textarea 
+                     value={description}
+                     onChange={(e) => setDescription(e.target.value)}
+                     className="w-full bg-foreground/[0.03] border border-white/5 rounded-2xl p-4 text-sm focus:border-primary/50 outline-none transition-all min-h-[100px]"
+                     placeholder="Contanos sobre tu complejo, servicios, etc..."
+                   />
+                 </div>
+                 <div className="grid grid-cols-2 gap-4">
+                    <div>
+                     <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground mb-2 block">Dirección</label>
+                     <input 
+                       type="text" 
+                       value={address}
+                       onChange={(e) => setAddress(e.target.value)}
+                       className="w-full bg-foreground/[0.03] border border-white/5 rounded-2xl p-4 text-sm focus:border-primary/50 outline-none transition-all"
+                     />
+                    </div>
+                    <div>
+                     <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground mb-2 block">Teléfono de Contacto</label>
+                     <input 
+                       type="text" 
+                       value={phone}
+                       onChange={(e) => setPhone(e.target.value)}
+                       className="w-full bg-foreground/[0.03] border border-white/5 rounded-2xl p-4 text-sm focus:border-primary/50 outline-none transition-all"
+                     />
+                    </div>
+                 </div>
+                 <div className="grid grid-cols-2 gap-4">
+                    <div>
+                       <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground mb-2 block">Ciudad</label>
+                       <input 
+                         type="text" 
+                         value={city}
+                         onChange={(e) => setCity(e.target.value)}
+                         className="w-full bg-foreground/[0.03] border border-white/5 rounded-2xl p-4 text-sm focus:border-primary/50 outline-none transition-all"
+                       />
+                    </div>
+                    <div>
+                       <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground mb-2 block">URL Imagen del Complejo</label>
+                       <input 
+                         type="text" 
+                         value={profileImageUrl}
+                         onChange={(e) => setProfileImageUrl(e.target.value)}
+                         placeholder="https://images..."
+                         className="w-full bg-foreground/[0.03] border border-white/5 rounded-2xl p-4 text-sm focus:border-primary/50 outline-none transition-all"
+                       />
+                    </div>
+                 </div>
+                 <div>
+                   <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground mb-2 block">Google Maps Link</label>
+                   <input 
+                     type="text" 
+                     value={coords.link}
+                     onChange={(e) => setCoords({...coords, link: e.target.value})}
+                     placeholder="https://goo.gl/maps/..."
+                     className="w-full bg-foreground/[0.03] border border-white/5 rounded-2xl p-4 text-sm focus:border-primary/50 outline-none transition-all"
+                   />
+                 </div>
+              </div>
+           </div>
 
           {/* Pricing & Payments */}
           <div className="glass-premium rounded-[2.5rem] p-10 border-white/5 space-y-8">
