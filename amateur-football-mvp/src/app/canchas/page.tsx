@@ -788,7 +788,6 @@ function SettingsTab({ business, fields, setFields, hasMP }: any) {
     link: business?.google_maps_link || ''
   });
   const [isSavingPrices, setIsSavingPrices] = useState(false);
-  const [isSavingPrices, setIsSavingPrices] = useState(false);
   // Estado local para precios de cada cancha
   const [fieldPrices, setFieldPrices] = useState<Record<string, number>>(() => {
     const prices: Record<string, number> = {};
