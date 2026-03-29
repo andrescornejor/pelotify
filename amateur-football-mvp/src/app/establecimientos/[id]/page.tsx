@@ -380,7 +380,7 @@ export default function EstablecimientoProfile() {
                               <p className="text-[8px] font-bold text-muted-foreground uppercase tracking-widest">(30% del valor total)</p>
                            </div>
                            <p className="text-4xl font-black font-kanit italic tracking-tighter text-white">
-                              ${selectedField ? new Intl.NumberFormat('es-AR').format(Math.round(selectedField.price_per_match * (field.down_payment_percentage || 30) / 100)) : "0"}
+                              ${selectedField ? new Intl.NumberFormat('es-AR').format(Math.round(selectedField.price_per_match * (selectedField.down_payment_percentage || 30) / 100)) : "0"}
                            </p>
                         </div>
                      </div>
