@@ -18,7 +18,14 @@ import {
   ArrowDownRight,
   Activity,
   Plus,
-  Check
+  Check,
+  Zap,
+  Share2,
+  Coffee,
+  BarChart3,
+  QrCode,
+  Tag,
+  Gamepad2
 } from 'lucide-react';
 
 import { useAuth } from '@/contexts/AuthContext';
@@ -57,6 +64,8 @@ export default function CanchasDashboard() {
   const tabs = [
     { id: 'overview', label: 'Resumen', icon: LayoutDashboard },
     { id: 'calendar', label: 'Horarios', icon: CalendarDays },
+    { id: 'marketing', label: 'Marketing', icon: Zap },
+    { id: 'inventory', label: 'Bar / Stock', icon: Coffee },
     { id: 'finances', label: 'Finanzas', icon: Wallet },
     { id: 'settings', label: 'Configuración', icon: Settings },
   ];
@@ -171,30 +180,56 @@ export default function CanchasDashboard() {
     <div className="min-h-screen bg-background text-foreground pb-20 md:pb-0 font-outfit">
       
       {/* HEADER TRAY */}
-      <header className="fixed top-0 w-full z-40 glass border-b border-border/40">
-        <div className="max-w-7xl mx-auto px-4 h-16 sm:h-20 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-primary-dark flex items-center justify-center glow-primary">
-              <MapPin className="w-5 h-5 text-black" />
+      <header className="fixed top-0 w-full z-40 glass border-b border-border/40 backdrop-blur-xl">
+        <div className="max-w-7xl mx-auto px-4 h-16 sm:h-24 flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-primary via-primary to-primary-dark flex items-center justify-center glow-primary rotate-3 transition-transform hover:rotate-0 cursor-pointer">
+              <MapPin className="w-6 h-6 text-black" />
             </div>
             <div>
-              <h1 className="text-lg sm:text-xl font-bold font-kanit tracking-wide">
-                <span className="text-foreground">{business?.name || "Complejo"}</span>
-              </h1>
-              <p className="text-xs text-muted-foreground flex items-center gap-1">
-                <span className="w-2 h-2 rounded-full bg-success animate-pulse"></span>
-                Operativo
+              <div className="flex items-center gap-2">
+                <h1 className="text-xl sm:text-2xl font-black font-kanit tracking-tighter italic uppercase text-foreground">
+                  {business?.name || "Pelotify Business"}
+                </h1>
+                <div className="px-2 py-0.5 rounded-md bg-primary/20 border border-primary/30 hidden sm:block">
+                  <span className="text-[8px] font-black text-primary uppercase tracking-widest">PRO PLAN</span>
+                </div>
+              </div>
+              <p className="text-[10px] text-muted-foreground flex items-center gap-1.5 font-black uppercase tracking-widest mt-0.5">
+                <span className="w-2 h-2 rounded-full bg-primary animate-pulse shadow-[0_0_8px_rgba(44,252,125,0.6)]"></span>
+                Establecimiento Verificado
               </p>
             </div>
           </div>
           
-          <div className="flex items-center gap-4">
-            <button className="relative p-2 rounded-full hover:bg-foreground/5 transition-colors hidden sm:block delay-100" onClick={() => alert("Soporte Técnico pronto estará disponible por WhatsApp.")}>
-               <span className="text-xs text-primary font-bold pr-4">Soporte técnico</span>
+          <div className="flex items-center gap-4 sm:gap-6">
+            <div className="hidden lg:flex items-center gap-2 px-4 py-2 rounded-2xl bg-foreground/[0.03] border border-white/5 relative group overflow-hidden">
+               <div className="absolute top-0 right-0 w-8 h-8 bg-primary/5 rounded-full blur-xl group-hover:bg-primary/20 transition-colors"></div>
+               <div className="text-right relative z-10">
+                  <div className="flex items-center gap-1 justify-end">
+                     <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse shadow-[0_0_8px_rgba(44,252,125,0.8)]"></span>
+                     <p className="text-[9px] font-black text-muted-foreground uppercase tracking-widest leading-none">Tu Balance</p>
+                  </div>
+                  <p className="text-sm font-black text-foreground italic font-kanit leading-none mt-1">${new Intl.NumberFormat('es-AR').format(stats.monthIncome)}</p>
+               </div>
+               <div className="w-px h-6 bg-white/10 mx-2 relative z-10"></div>
+               <button onClick={onNewBooking} className="p-2 rounded-xl bg-primary text-black hover:scale-110 transition-transform shadow-lg shadow-primary/20 relative z-10">
+                  <Plus className="w-4 h-4" />
+               </button>
+            </div>
+
+            <button className="relative p-3 rounded-xl bg-surface-elevated border border-white/5 hover:bg-surface-bright transition-all group" onClick={() => alert("Soporte Técnico pronto estará disponible por WhatsApp.")}>
+               <Bell className="w-5 h-5 text-muted-foreground group-hover:text-primary transition-colors" />
+               <div className="absolute top-2.5 right-2.5 w-2 h-2 rounded-full bg-accent border-2 border-background animate-bounce shadow-[0_0_8px_rgba(255,107,107,0.5)]"></div>
             </button>
-            <div className="hidden sm:flex items-center gap-2 pl-4 border-l border-border/50">
-              <div className="w-8 h-8 rounded-full bg-surface-elevated overflow-hidden border border-border">
-                <img src={user?.avatar_url || `https://ui-avatars.com/api/?name=${user?.name || 'Admin'}&background=random`} alt="Admin" className="w-full h-full object-cover" />
+
+            <div className="flex items-center gap-3 pl-4 border-l border-border/50">
+              <div className="hidden sm:block text-right">
+                 <p className="text-[10px] font-black text-foreground uppercase tracking-tighter leading-none">{user?.user_metadata?.full_name || 'Administrador'}</p>
+                 <p className="text-[8px] font-bold text-muted-foreground uppercase mt-1">Owner</p>
+              </div>
+              <div className="w-10 h-10 rounded-2xl bg-surface-elevated overflow-hidden border-2 border-primary/20 shadow-xl p-0.5">
+                <img src={user?.user_metadata?.avatar_url || `https://ui-avatars.com/api/?name=${user?.name || 'Admin'}&background=2cfc7d&color=000`} alt="Admin" className="w-full h-full object-cover rounded-xl" />
               </div>
             </div>
           </div>
@@ -245,6 +280,8 @@ export default function CanchasDashboard() {
             >
               {activeTab === 'overview' && <OverviewTab business={business} bookings={bookings} fields={fields} onNewBooking={() => setShowBookingModal(true)} onBookingClick={(booking: any) => { setSelectedBooking(booking); setShowEditBookingModal(true); }} onTabChange={setActiveTab} />}
               {activeTab === 'calendar' && <CalendarTab bookings={bookings} fields={fields} selectedDate={selectedDate} setSelectedDate={setSelectedDate} onSlotClick={(time: string, fieldId: string) => { setSelectedSlot({time, fieldId}); setShowBookingModal(true); }} onBookingClick={(booking: any) => { setSelectedBooking(booking); setShowEditBookingModal(true); }} />}
+              {activeTab === 'marketing' && <MarketingTab business={business} />}
+              {activeTab === 'inventory' && <InventoryTab />}
               {activeTab === 'finances' && <FinancesTab business={business} bookings={bookings} hasMP={hasMP} user={user} />}
               {activeTab === 'settings' && <SettingsTab business={business} fields={fields} setFields={setFields} hasMP={hasMP} />}
             </motion.div>
@@ -338,25 +375,32 @@ function OverviewTab({ business, bookings, fields, onNewBooking, onBookingClick,
   };
 
   return (
-    <div className="space-y-6">
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-        <div>
-          <h2 className="text-2xl font-kanit font-bold text-gradient">Panel de Control</h2>
-          <p className="text-muted-foreground text-sm">Resumen de actividad de hoy</p>
+    <div className="space-y-8 animate-reveal-up">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6">
+        <div className="space-y-1">
+          <h2 className="text-3xl font-black font-kanit italic uppercase tracking-tighter text-foreground">
+            Sede <span className="text-primary">{business?.name || "Central"}</span>
+          </h2>
+          <p className="text-[10px] font-black uppercase tracking-[0.4em] text-muted-foreground">Panel de Control & Analytics</p>
         </div>
-        <button onClick={onNewBooking} className="bg-primary text-black font-bold py-2 px-4 rounded-xl flex items-center gap-2 hover:bg-primary-light transition-colors press-effect">
-          <Plus className="w-5 h-5" />
-          Nueva Reserva
-        </button>
+        <div className="flex items-center gap-3 w-full sm:w-auto">
+          <button className="flex-1 sm:flex-initial p-3 rounded-2xl bg-surface-elevated border border-border/50 hover:bg-surface-bright transition-all">
+            <Share2 className="w-5 h-5 mx-auto" />
+          </button>
+          <button onClick={onNewBooking} className="flex-[3] sm:flex-initial bg-primary text-black font-black uppercase text-[11px] tracking-widest py-3.5 px-8 rounded-2xl flex items-center justify-center gap-2 hover:bg-primary-light transition-all shadow-[0_10px_30px_rgba(44,252,125,0.3)] press-effect">
+            <Plus className="w-5 h-5" />
+            Nueva Reserva
+          </button>
+        </div>
       </div>
 
       {/* STATS CARDS */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
         <StatCard 
           icon={DollarSign} 
-          title="Ingresos Hoy (Proyección)" 
+          title="Ingresos Hoy" 
           value={formatMoney(todayIncome || 0)} 
-          trend="Calculado..." 
+          trend="+12%" 
           trendUp={true} 
           color="primary"
         />
@@ -364,55 +408,116 @@ function OverviewTab({ business, bookings, fields, onNewBooking, onBookingClick,
           icon={CalendarDays} 
           title="Reservas Totales" 
           value={bookings.length.toString()} 
-          trend="Próximos 30 días" 
+          trend="+5" 
           trendUp={true} 
           color="accent"
         />
         <StatCard 
           icon={Activity} 
           title="Canchas Activas" 
-          value={fields.filter((f: any) => f.is_active).length.toString()} 
-          trend="Operativas" 
+          value={`${fields.filter((f: any) => f.is_active).length}/${fields.length}`} 
+          trend="Full" 
           trendUp={true} 
           color="success"
         />
         <StatCard 
-          icon={Wallet} 
-          title="Cobrado Online" 
-          value={formatMoney(bookings.filter((b: any) => b.status === 'full_paid' || b.status === 'partial_paid').reduce((acc: number, curr: any) => acc + (curr.down_payment_paid || 0), 0))} 
-          trend="Acumulado" 
+          icon={TrendingUp} 
+          title="Ocupación" 
+          value="78%" 
+          trend="+3%" 
           trendUp={true} 
           color="primary"
         />
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* UPCOMING MATCHES */}
-        <div className="lg:col-span-2 glass-card p-5 sm:p-6 relative overflow-hidden">
-          <div className="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/3"></div>
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8">
+        {/* REVENUE CHART PLACEHOLDER (CUSTOM SVG) */}
+        <div className="lg:col-span-2 glass-premium rounded-[2.5rem] p-8 border-white/5 relative overflow-hidden group">
+          <div className="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-full blur-[80px] -z-10 group-hover:bg-primary/10 transition-colors"></div>
           
-          <div className="flex justify-between items-center mb-6 relative z-10">
-            <h3 className="text-lg font-bold font-kanit">Próximos Partidos</h3>
-            <button onClick={() => alert("Usa la pestaña de Horarios para ver todas tus reservas")} className="text-primary text-sm font-semibold hover:text-primary-light transition-colors flex items-center">
-              Ver todos <ChevronRight className="w-4 h-4" />
+          <div className="flex justify-between items-center mb-10">
+            <div>
+              <h3 className="text-xl font-black font-kanit italic uppercase tracking-tighter">Actividad Semanal</h3>
+              <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest mt-1">Comparativa de reservas x día</p>
+            </div>
+            <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-foreground/5 border border-white/5">
+              <BarChart3 className="w-4 h-4 text-primary" />
+              <span className="text-[9px] font-black uppercase tracking-widest">Live</span>
+            </div>
+          </div>
+
+          {/* Mini Chart Mockup */}
+          <div className="h-48 flex items-end justify-between gap-3 relative pb-8">
+            <div className="absolute inset-x-0 bottom-8 h-px bg-white/5"></div>
+            {[45, 78, 52, 91, 64, 85, 72].map((height, i) => (
+              <div key={i} className="flex-1 flex flex-col items-center gap-3 group/bar">
+                <motion.div 
+                  initial={{ height: 0 }}
+                  animate={{ height: `${height}%` }}
+                  transition={{ delay: i * 0.1, duration: 1, ease: 'circOut' }}
+                  className={`w-full max-w-[40px] rounded-t-xl relative overflow-hidden transition-all group-hover/bar:scale-x-110 ${i === 3 ? 'bg-primary' : 'bg-surface-elevated border border-white/5 hover:border-primary/50'}`}
+                >
+                   {i === 3 && <div className="absolute inset-0 bg-white/20 animate-shimmer"></div>}
+                </motion.div>
+                <span className="text-[9px] font-black text-muted-foreground uppercase tracking-widest leading-none">
+                  {['L', 'M', 'X', 'J', 'V', 'S', 'D'][i]}
+                </span>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* QUICK ACTIONS */}
+        <div className="glass-premium rounded-[2.5rem] p-8 border-white/5">
+           <h3 className="text-xl font-black font-kanit italic uppercase tracking-tighter mb-6">Acceso Rápido</h3>
+           <div className="grid grid-cols-2 gap-4">
+             <QuickActionPremium icon={CalendarDays} label="Agenda" sub="Revisar Turnos" color="primary" onClick={() => onTabChange('calendar')} />
+             <QuickActionPremium icon={Zap} label="Marketing" sub="Subir Promo" color="accent" onClick={() => onTabChange('marketing')} />
+             <QuickActionPremium icon={Coffee} label="Bar" sub="Inventario" color="success" onClick={() => onTabChange('inventory')} />
+             <QuickActionPremium icon={Settings} label="Ajustes" sub="Configuración" color="primary" onClick={() => onTabChange('settings')} />
+           </div>
+           
+           <div className="mt-8 p-6 rounded-3xl bg-surface-elevated/50 border border-white/5 space-y-4">
+              <div className="flex items-center gap-3">
+                 <div className="w-8 h-8 rounded-xl bg-accent/20 flex items-center justify-center">
+                    < Bell className="w-4 h-4 text-accent" />
+                 </div>
+                 <h4 className="text-xs font-black uppercase tracking-widest">Aviso Importante</h4>
+              </div>
+              <p className="text-[10px] text-muted-foreground leading-relaxed">Tenés 2 reservas pendientes de confirmación para hoy a las 21:00hs. <span className="text-primary cursor-pointer font-black underline">Revisar ahora</span></p>
+           </div>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        {/* UPCOMING MATCHES */}
+        <div className="lg:col-span-2 glass-premium rounded-[2.5rem] p-8 border-white/5">
+          <div className="flex justify-between items-center mb-8">
+            <div>
+              <h3 className="text-xl font-black font-kanit italic uppercase tracking-tighter">Agenda Próxima</h3>
+              <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Turnos de las próximas 24 horas</p>
+            </div>
+            <button onClick={() => onTabChange('calendar')} className="px-4 py-2 rounded-xl bg-foreground/5 hover:bg-foreground/10 text-[9px] font-black uppercase tracking-widest transition-all">
+              Ver Agenda Completa
             </button>
           </div>
           
-          <div className="space-y-4 relative z-10">
+          <div className="space-y-3">
             {bookings.length === 0 ? (
-              <div className="text-center p-8 bg-surface-elevated/30 rounded-2xl border border-border/50 text-muted-foreground font-semibold">
-                No hay reservas próximas registradas.
+              <div className="text-center py-12 bg-surface-elevated/30 rounded-[2rem] border border-dashed border-white/10 text-muted-foreground font-black uppercase text-[10px] tracking-widest">
+                No hay movimientos detectados
               </div>
             ) : (
-              bookings.slice(0, 4).map((booking: any) => (
+              bookings.slice(0, 5).map((booking: any) => (
                 <UpcomingMatch 
                   key={booking.id}
                   time={booking.start_time.substring(0, 5)} 
                   field={booking.canchas_fields?.name || 'Cancha'} 
-                  team={booking.title || 'Reserva anónima'} 
+                  team={booking.title || 'Turno Manual'} 
                   status={getStatusLabel(booking.status)} 
                   price={formatMoney(booking.total_price)} 
                   isPending={booking.status === 'pending'} 
+                  isApp={!!booking.match_id}
                   onClick={() => onBookingClick?.(booking)}
                 />
               ))
@@ -420,20 +525,262 @@ function OverviewTab({ business, bookings, fields, onNewBooking, onBookingClick,
           </div>
         </div>
 
-        {/* QUICK ACTIONS & NOTICES */}
-        <div className="space-y-6">
-          <div className="glass-card p-5 sm:p-6">
-             <h3 className="text-lg font-bold font-kanit mb-4">Acciones Rápidas</h3>
-             <div className="grid grid-cols-2 gap-3">
-               <QuickAction icon={CalendarDays} label="Ver Agenda" onClick={() => onTabChange('calendar')} />
-               <QuickAction icon={Wallet} label="Ver Finanzas" onClick={() => onTabChange('finances')} />
-               <QuickAction icon={Users} label="Clientes" onClick={() => alert("Panel de CRM para clientes estará disponible en futuras actualizaciones.")} />
-               <QuickAction icon={Settings} label="Editar Canchas" onClick={() => onTabChange('settings')} />
-             </div>
-          </div>
+        {/* FEEDBACK & RECENT */}
+        <div className="glass-premium rounded-[2.5rem] p-8 border-white/5">
+           <h3 className="text-xl font-black font-kanit italic uppercase tracking-tighter mb-6">Top Clientes</h3>
+           <div className="space-y-4">
+              {[1, 2, 3].map((_, i) => (
+                <div key={i} className="flex items-center justify-between p-4 rounded-2xl bg-surface-elevated/30 border border-white/5 hover:border-primary/30 transition-all cursor-pointer group">
+                  <div className="flex items-center gap-3">
+                     <div className="w-10 h-10 rounded-xl bg-background overflow-hidden border border-white/10 p-0.5">
+                        <img src={`https://i.pravatar.cc/150?u=${i+10}`} className="w-full h-full object-cover rounded-lg" alt="" />
+                     </div>
+                     <div>
+                        <p className="text-xs font-black uppercase tracking-tighter">Santi Pérez</p>
+                        <p className="text-[8px] font-bold text-muted-foreground uppercase tracking-widest">8 Partidos • Lvl 42</p>
+                     </div>
+                  </div>
+                  <ChevronRight className="w-4 h-4 text-muted-foreground group-hover:text-primary transition-colors" />
+                </div>
+              ))}
+              <button className="w-full py-4 rounded-2xl border border-dashed border-white/10 text-[9px] font-black uppercase tracking-widest text-muted-foreground hover:text-foreground hover:bg-surface-elevated transition-all mt-4">
+                Ver Ranking de Clientes
+              </button>
+           </div>
         </div>
       </div>
     </div>
+  );
+}
+
+function QuickActionPremium({ icon: Icon, label, sub, color, onClick }: any) {
+  return (
+    <button onClick={onClick} className="flex flex-col items-start gap-4 p-5 rounded-[1.8rem] bg-surface-elevated/50 hover:bg-surface-elevated border border-white/5 hover:border-primary/20 transition-all press-effect relative overflow-hidden group">
+      <div className={`p-2.5 rounded-xl bg-background border border-white/10 group-hover:bg-primary transition-colors`}>
+        <Icon className={`w-5 h-5 group-hover:text-black transition-colors ${color === 'primary' ? 'text-primary' : color === 'accent' ? 'text-accent' : 'text-success'}`} />
+      </div>
+      <div>
+        <p className="text-xs font-black uppercase tracking-tighter">{label}</p>
+        <p className="text-[8px] font-bold text-muted-foreground uppercase tracking-widest mt-1 opacity-0 group-hover:opacity-100 transition-opacity">{sub}</p>
+      </div>
+      <Plus className="absolute top-4 right-4 w-4 h-4 text-muted-foreground/20 group-hover:text-primary transition-colors" />
+    </button>
+  );
+}
+
+/* =========================================
+   MARKETING TAB
+ ========================================= */
+function MarketingTab({ business }: any) {
+  return (
+    <div className="space-y-8 animate-reveal-up">
+       <div className="flex flex-col gap-1">
+          <h2 className="text-3xl font-black font-kanit italic uppercase tracking-tighter text-foreground">
+            Promo <span className="text-primary">Radar</span>
+          </h2>
+          <p className="text-[10px] font-black uppercase tracking-[0.4em] text-muted-foreground">Marketing & Fidelización</p>
+       </div>
+
+       <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="md:col-span-2 space-y-6">
+             {/* QR Section */}
+             <div className="glass-premium rounded-[2.5rem] p-8 border-white/5 relative overflow-hidden">
+                <div className="flex flex-col lg:flex-row gap-8 items-center">
+                   <div className="w-48 h-48 bg-white rounded-[2rem] p-4 flex items-center justify-center shadow-2xl">
+                      <QrCode className="w-full h-full text-black" />
+                   </div>
+                   <div className="flex-1 space-y-4 text-center lg:text-left">
+                      <h3 className="text-2xl font-black font-kanit italic uppercase tracking-tighter">Tu Perfil Directo</h3>
+                      <p className="text-xs text-muted-foreground leading-relaxed max-w-sm">Este QR lleva a los jugadores directamente a tu complejo en Pelotify. Imprimilo y pegalo en la administración para que todos se unan!</p>
+                      <div className="flex flex-col sm:flex-row gap-3 pt-2">
+                         <button className="bg-primary text-black font-black uppercase text-[10px] tracking-widest py-3 px-6 rounded-xl flex items-center justify-center gap-2 hover:bg-primary-light transition-all">
+                            <Share2 className="w-4 h-4" /> Copiar Link
+                         </button>
+                         <button className="bg-surface-elevated text-foreground font-black uppercase text-[10px] tracking-widest py-3 px-6 rounded-xl border border-white/10 hover:bg-surface-bright transition-all">
+                            Descargar PNG
+                         </button>
+                      </div>
+                   </div>
+                </div>
+             </div>
+
+             {/* active Promotions */}
+             <div className="glass-premium rounded-[2.5rem] p-8 border-white/5">
+                <div className="flex justify-between items-center mb-8">
+                   <h3 className="text-xl font-black font-kanit italic uppercase tracking-tighter">Promociones Activas</h3>
+                   <button className="px-5 py-2.5 bg-primary/20 text-primary border border-primary/30 rounded-xl text-[9px] font-black uppercase tracking-widest hover:bg-primary transition-all hover:text-black">
+                      Nueva Campaña
+                   </button>
+                </div>
+                
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                   <PromoCard 
+                      title="Happy Hour F5" 
+                      discount="20% OFF" 
+                      period="14hs - 17hs" 
+                      status="Activa"
+                      icon={Clock}
+                   />
+                   <PromoCard 
+                      title="Pelotify Exclusive" 
+                      discount="Free Gatorade" 
+                      period="Reservas via App" 
+                      status="Pausada"
+                      icon={Zap}
+                      inactive
+                   />
+                </div>
+             </div>
+          </div>
+
+          <div className="space-y-6">
+             <div className="glass-premium rounded-[2.5rem] p-8 border-white/5 bg-gradient-to-br from-primary/10 to-transparent">
+                <h3 className="text-lg font-black font-kanit italic uppercase tracking-tighter mb-4">Tips de Crecimiento</h3>
+                <ul className="space-y-4">
+                   <GrowthTip icon={Gamepad2} text="Ofrece un 10% de descuento a equipos que usen el uniforme oficial de su equipo en Pelotify." />
+                   <GrowthTip icon={Users} text="Crea un partido 'Open Recruit' para completar tus horas muertas." />
+                   <GrowthTip icon={Tag} text="Habilitá el pago por Mercado Pago para reducir ausencias (No-Shows) en un 40%." />
+                </ul>
+             </div>
+          </div>
+       </div>
+    </div>
+  );
+}
+
+function PromoCard({ title, discount, period, status, icon: Icon, inactive = false }: any) {
+  return (
+    <div className={`p-6 rounded-[2rem] border transition-all ${inactive ? 'bg-surface-elevated/50 border-white/5 opacity-60' : 'bg-surface-elevated border-primary/20 shadow-lg shadow-primary/5'}`}>
+       <div className="flex justify-between items-start mb-4">
+          <div className={`p-2 rounded-lg ${inactive ? 'bg-background' : 'bg-primary/20 text-primary'}`}>
+             <Icon className="w-5 h-5" />
+          </div>
+          <span className={`text-[8px] font-black uppercase tracking-widest px-2 py-1 rounded-md ${inactive ? 'bg-background text-muted-foreground' : 'bg-primary text-black'}`}>
+             {status}
+          </span>
+       </div>
+       <h4 className="text-sm font-black uppercase tracking-tighter">{title}</h4>
+       <div className="mt-4 flex items-end justify-between">
+          <div>
+             <p className="text-xl font-black italic font-kanit text-primary">{discount}</p>
+             <p className="text-[8px] font-bold text-muted-foreground uppercase tracking-widest mt-1">{period}</p>
+          </div>
+          <button className="p-2 rounded-lg bg-background border border-white/5 hover:border-primary/50 transition-colors">
+             <Settings className="w-4 h-4 text-muted-foreground" />
+          </button>
+       </div>
+    </div>
+  );
+}
+
+function GrowthTip({ icon: Icon, text }: any) {
+  return (
+    <li className="flex gap-4">
+       <div className="w-8 h-8 shrink-0 rounded-lg bg-background flex items-center justify-center border border-white/10">
+          <Icon className="w-4 h-4 text-primary" />
+       </div>
+       <p className="text-[10px] text-muted-foreground font-medium leading-relaxed">{text}</p>
+    </li>
+  );
+}
+
+/* =========================================
+   INVENTORY TAB
+ ========================================= */
+function InventoryTab() {
+  const items = [
+    { name: 'Gatorade Blue 500ml', stock: 24, price: 1200, category: 'Bebidas' },
+    { name: 'Agua Villavicencio 500ml', stock: 48, price: 800, category: 'Bebidas' },
+    { name: 'Barrita de Cereal', stock: 12, price: 500, category: 'Snacks' },
+    { name: 'Alquiler de Chalecos', stock: 10, price: 1000, category: 'Servicios' },
+  ];
+
+  return (
+    <div className="space-y-8 animate-reveal-up">
+       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6">
+          <div className="flex flex-col gap-1">
+             <h2 className="text-3xl font-black font-kanit italic uppercase tracking-tighter text-foreground">
+               Control <span className="text-primary">Stock</span>
+             </h2>
+             <p className="text-[10px] font-black uppercase tracking-[0.4em] text-muted-foreground">Inventario & Ventas del Bar</p>
+          </div>
+          <button className="w-full sm:w-auto bg-primary text-black font-black uppercase text-[11px] tracking-widest py-3.5 px-8 rounded-2xl flex items-center justify-center gap-2 hover:bg-primary-light transition-all shadow-lg press-effect">
+            <Plus className="w-5 h-5" />
+            Cargar Compra
+          </button>
+       </div>
+
+       <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
+          <div className="lg:col-span-3">
+             <div className="glass-premium rounded-[2.5rem] border-white/5 overflow-hidden">
+                <table className="w-full text-left">
+                   <thead className="bg-surface-elevated/50 border-b border-white/5">
+                      <tr>
+                         <th className="px-8 py-5 text-[10px] font-black uppercase tracking-widest text-muted-foreground">Producto</th>
+                         <th className="px-8 py-5 text-[10px] font-black uppercase tracking-widest text-muted-foreground">Stock</th>
+                         <th className="px-8 py-5 text-[10px] font-black uppercase tracking-widest text-muted-foreground">Precio</th>
+                         <th className="px-8 py-5 text-[10px] font-black uppercase tracking-widest text-muted-foreground">Acción</th>
+                      </tr>
+                   </thead>
+                   <tbody className="divide-y divide-white/5">
+                      {items.map((item, i) => (
+                        <tr key={i} className="hover:bg-foreground/[0.02] transition-colors group">
+                           <td className="px-8 py-6">
+                              <p className="text-sm font-black uppercase tracking-tighter group-hover:text-primary transition-colors">{item.name}</p>
+                              <p className="text-[8px] font-black text-muted-foreground uppercase mt-1 tracking-widest">{item.category}</p>
+                           </td>
+                           <td className="px-8 py-6">
+                              <div className="flex items-center gap-2">
+                                 <span className={`text-sm font-black italic font-kanit ${item.stock < 15 ? 'text-accent' : 'text-foreground'}`}>{item.stock}</span>
+                                 {item.stock < 15 && <span className="text-[8px] font-black text-accent uppercase tracking-widest">Bajo</span>}
+                              </div>
+                           </td>
+                           <td className="px-8 py-6">
+                              <span className="text-sm font-black text-foreground">${item.price}</span>
+                           </td>
+                           <td className="px-8 py-6">
+                              <div className="flex items-center gap-2">
+                                 <button className="p-2 rounded-lg bg-foreground/5 hover:bg-primary hover:text-black transition-all">
+                                    <Plus className="w-4 h-4" />
+                                 </button>
+                                 <button className="p-2 rounded-lg bg-foreground/5 hover:bg-danger hover:text-white transition-all">
+                                    <Trash2 className="w-4 h-4" />
+                                 </button>
+                              </div>
+                           </td>
+                        </tr>
+                      ))}
+                   </tbody>
+                </table>
+             </div>
+          </div>
+
+          <div className="space-y-6">
+             <div className="glass-premium rounded-[2.5rem] p-8 border-white/5">
+                <h3 className="text-lg font-black font-kanit italic uppercase tracking-tighter mb-6">Resumen del Turno</h3>
+                <div className="space-y-6">
+                   <div className="flex justify-between items-center">
+                      <p className="text-[10px] font-black text-muted-foreground uppercase">Ventas Hoy</p>
+                      <p className="text-xl font-black italic font-kanit text-primary">$12.400</p>
+                   </div>
+                   <div className="flex justify-between items-center">
+                      <p className="text-[10px] font-black text-muted-foreground uppercase">Rentabilidad</p>
+                      <p className="text-xl font-black italic font-kanit text-accent">35%</p>
+                   </div>
+                   <button className="w-full py-4 bg-foreground/5 hover:bg-foreground/10 rounded-2xl text-[9px] font-black uppercase tracking-widest transition-all">
+                      Ver Reporte Detallado
+                   </button>
+                </div>
+             </div>
+          </div>
+       </div>
+    </div>
+  );
+}
+
+function Trash2(props: any) {
+  return (
+    <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-trash-2"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" x2="10" y1="11" y2="17"/><line x1="14" x2="14" y1="11" y2="17"/></svg>
   );
 }
 
@@ -471,25 +818,37 @@ function StatCard({ icon: Icon, title, value, trend, trendUp, color }: any) {
   );
 }
 
-function UpcomingMatch({ time, field, team, status, price, isPending = false, onClick }: any) {
+function UpcomingMatch({ time, field, team, status, price, isPending = false, isApp = false, onClick }: any) {
   return (
-    <div onClick={onClick} className="cursor-pointer flex items-center justify-between p-3 sm:p-4 rounded-xl bg-surface-elevated/50 hover:bg-surface-elevated border border-border/50 transition-colors group">
-      <div className="flex items-center gap-4">
+    <div onClick={onClick} className="cursor-pointer flex items-center justify-between p-5 rounded-[2rem] bg-surface-elevated/40 hover:bg-surface-elevated border border-white/5 hover:border-primary/20 transition-all group relative overflow-hidden">
+      {isApp && (
+        <div className="absolute top-0 left-0 w-1 h-full bg-primary shadow-[0_0_15px_rgba(44,252,125,0.8)]"></div>
+      )}
+      <div className="flex items-center gap-6">
         <div className="text-center w-14 shrink-0">
-          <span className="block text-lg font-bold font-kanit">{time}</span>
+          <span className="block text-xl font-black font-kanit italic text-foreground tracking-tighter group-hover:text-primary transition-colors">{time}</span>
+          <span className="text-[8px] font-black text-muted-foreground uppercase tracking-widest">HS</span>
         </div>
-        <div className="w-px h-10 bg-border hidden sm:block"></div>
+        <div className="w-px h-12 bg-white/5 hidden sm:block"></div>
         <div>
-          <h4 className="font-bold text-sm sm:text-base group-hover:text-primary transition-colors">{field}</h4>
-          <p className="text-xs text-muted-foreground">{team}</p>
+          <div className="flex items-center gap-2">
+            <h4 className="font-black text-sm uppercase tracking-tighter text-foreground">{field}</h4>
+            {isApp && (
+              <div className="flex items-center gap-1 px-1.5 py-0.5 rounded-md bg-primary/10 border border-primary/20">
+                <Zap className="w-2.5 h-2.5 text-primary" />
+                <span className="text-[7px] font-black text-primary uppercase tracking-widest">APP</span>
+              </div>
+            )}
+          </div>
+          <p className="text-[10px] text-muted-foreground font-bold uppercase tracking-widest mt-0.5">{team}</p>
         </div>
       </div>
       <div className="text-right">
-        <p className="font-bold text-sm sm:text-base text-foreground">{price}</p>
-        <p className={`text-[10px] sm:text-xs font-semibold px-2 py-0.5 rounded-full mt-1 inline-block ${
+        <p className="font-black text-base italic font-kanit text-foreground">{price}</p>
+        <p className={`text-[8px] font-black uppercase tracking-[0.2em] px-2 py-1 rounded-lg mt-1 inline-block ${
           isPending ? 'bg-danger/10 text-danger border border-danger/20' : 
-          status.includes('Seña') ? 'bg-accent/10 text-accent border border-accent/20' : 
-          'bg-primary/10 text-primary border border-primary/20'
+          status.includes('Seña') ? 'bg-accent/10 text-accent border border-accent/20 text-glow-accent' : 
+          'bg-primary/10 text-primary border border-primary/20 text-glow-primary'
         }`}>
           {status}
         </p>
@@ -563,61 +922,67 @@ function CalendarTab({ bookings, fields, selectedDate, setSelectedDate, onSlotCl
   }
 
   return (
-    <div className="space-y-6">
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-        <div>
-          <h2 className="text-2xl font-kanit font-bold text-gradient">Agenda</h2>
-          <p className="text-muted-foreground text-sm">Organización de turnos</p>
+    <div className="space-y-8 animate-reveal-up">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6">
+        <div className="space-y-1">
+          <h2 className="text-3xl font-black font-kanit italic uppercase tracking-tighter text-foreground">
+            Gestión <span className="text-primary">Turnos</span>
+          </h2>
+          <p className="text-[10px] font-black uppercase tracking-[0.4em] text-muted-foreground">Calendario de Ocupación</p>
         </div>
-        <div className="flex flex-col gap-4">
-          <div className="flex bg-surface-elevated p-1 rounded-xl border border-border gap-1 overflow-x-auto no-scrollbar">
-             {getWeekDays().map(date => (
+        <div className="flex items-center gap-4 bg-surface-elevated p-2 rounded-[2rem] border border-white/5 shadow-inner">
+           {getWeekDays().map(date => {
+             const isSelected = selectedDate === date;
+             const isToday = date === getTodayStr();
+             return (
                <button 
                  key={date}
                  onClick={() => setSelectedDate(date)} 
-                 className={`flex-1 min-w-[70px] py-2 px-1 rounded-lg transition-all flex flex-col items-center gap-0.5 ${
-                   selectedDate === date 
-                    ? 'bg-primary text-black font-bold shadow-lg shadow-primary/20 scale-[1.02]' 
+                 className={`relative h-14 w-14 sm:h-16 sm:w-16 rounded-2xl transition-all flex flex-col items-center justify-center gap-0.5 ${
+                   isSelected 
+                    ? 'bg-primary text-black font-black shadow-lg shadow-primary/20 scale-110 z-10' 
                     : 'text-muted-foreground hover:text-foreground hover:bg-surface-bright'
                  }`}
                >
-                 <span className="text-[10px] uppercase opacity-70">{getDayName(date)}</span>
-                 <span className="text-sm font-kanit">{date.split('-')[2]}</span>
+                 <span className={`text-[8px] font-black uppercase tracking-widest ${isSelected ? 'text-black/60' : 'opacity-70'}`}>{getDayName(date)}</span>
+                 <span className="text-lg font-black font-kanit italic leading-none">{date.split('-')[2]}</span>
+                 {isToday && !isSelected && <div className="absolute top-2 right-2 w-1.5 h-1.5 rounded-full bg-primary animate-pulse shadow-[0_0_8px_rgba(44,252,125,0.8)]"></div>}
                </button>
-             ))}
-             <div className="relative min-w-[50px] flex items-center justify-center border-l border-border/50 ml-1 pl-1">
+             );
+           })}
+           <div className="h-10 w-px bg-white/5 mx-2 hidden sm:block"></div>
+           <div className="relative h-14 w-14 flex items-center justify-center rounded-2xl bg-surface-bright/50 border border-white/5">
                <input 
                  type="date" 
                  value={selectedDate} 
                  onChange={(e) => setSelectedDate(e.target.value)} 
-                 className="absolute inset-0 opacity-0 cursor-pointer w-full h-full" 
+                 className="absolute inset-0 opacity-0 cursor-pointer w-full h-full z-20" 
                />
-               <CalendarDays className="w-5 h-5 text-muted-foreground hover:text-primary transition-colors"/>
-             </div>
-          </div>
+               <CalendarDays className="w-5 h-5 text-muted-foreground group-hover:text-primary transition-colors"/>
+           </div>
         </div>
       </div>
 
-      <div className="glass-card overflow-hidden">
+      <div className="glass-premium rounded-[3rem] border-white/5 overflow-hidden shadow-2xl">
         <div className="overflow-x-auto no-scrollbar">
-          <div className="min-w-[700px]">
+          <div className="min-w-[800px]">
             {/* Grid Header */}
-            <div className="grid border-b border-border/50 bg-surface-elevated/30" style={{ gridTemplateColumns: `80px repeat(${Math.min(displayFields.length, 4)}, 1fr)` }}>
-              <div className="p-4 text-center text-xs font-bold text-muted-foreground">Hora</div>
-              {displayFields.slice(0, 4).map((f: any) => (
-                <div key={f.name || f.id} className="p-4 text-center font-bold text-sm border-l border-border/50">{f.name}</div>
+            <div className="grid border-b border-white/5 bg-foreground/[0.02]" style={{ gridTemplateColumns: `100px repeat(${Math.max(displayFields.length, 1)}, 1fr)` }}>
+              <div className="p-6 text-center text-[10px] font-black uppercase tracking-[0.3em] text-muted-foreground italic">Reloj</div>
+              {displayFields.map((f: any) => (
+                <div key={f.id} className="p-6 text-center font-black text-xs uppercase tracking-widest border-l border-white/5 italic text-foreground/80">{f.name}</div>
               ))}
             </div>
             
             {/* Grid Body */}
-            <div className="divide-y divide-border/50">
+            <div className="divide-y divide-white/5">
               {timeSlots.map(time => (
-                <div key={time} className="grid hover:bg-surface-bright/20 transition-colors" style={{ gridTemplateColumns: `80px repeat(${Math.min(displayFields.length, 4)}, 1fr)` }}>
-                  <div className="p-4 text-center text-sm font-kanit font-bold text-muted-foreground flex items-center justify-center">
+                <div key={time} className="grid hover:bg-primary/[0.02] transition-colors group/row" style={{ gridTemplateColumns: `100px repeat(${Math.max(displayFields.length, 1)}, 1fr)` }}>
+                  <div className="p-6 text-center text-lg font-black font-kanit italic text-muted-foreground/40 group-hover/row:text-primary transition-colors flex items-center justify-center">
                     {time}
                   </div>
                   
-                  {displayFields.slice(0, 4).map((f: any) => {
+                  {displayFields.map((f: any) => {
                     const booking = bookings.find((b: any) => 
                       b.field_id === f.id && 
                       b.date === selectedDate && 
@@ -625,20 +990,24 @@ function CalendarTab({ bookings, fields, selectedDate, setSelectedDate, onSlotCl
                     );
 
                     return (
-                      <div key={f.id} className="p-2 border-l border-border/50">
+                      <div key={f.id} className="p-3 border-l border-white/5 relative min-h-[100px]">
                         {booking ? (
-                          <div onClick={() => onBookingClick(booking)} className={`cursor-pointer h-full w-full rounded-lg p-2 text-xs flex flex-col justify-center border hover:brightness-110 transition-all ${
-                            booking.status === 'pending' ? 'bg-danger/10 border-danger/30 text-danger' :
-                            booking.status === 'partial_paid' ? 'bg-accent/10 border-accent/30 text-accent' :
-                            'bg-primary/10 border-primary/30 text-primary'
+                          <div onClick={() => onBookingClick(booking)} className={`cursor-pointer h-full w-full rounded-2xl p-4 text-[10px] flex flex-col justify-center border-l-4 transition-all hover:scale-[1.02] hover:shadow-xl ${
+                            booking.status === 'pending' ? 'bg-danger/5 border-l-danger text-danger border-white/5' :
+                            booking.status === 'partial_paid' ? 'bg-accent/5 border-l-accent text-accent border-white/5 shadow-accent/5' :
+                            'bg-primary/5 border-l-primary text-primary border-white/5 shadow-primary/5'
                           }`}>
-                            <span className="font-bold">{booking.status === 'pending' ? 'Impago' : booking.status === 'partial_paid' ? 'Señado' : 'Pagado'}</span>
-                            <span className="text-muted-foreground truncate">{booking.title || 'Reserva'} - ${booking.total_price}</span>
-                            {booking.match_id && <span className="text-primary text-[9px] uppercase font-bold mt-1 tracking-widest bg-primary/20 px-1 py-0.5 rounded w-max">App</span>}
+                            <div className="flex items-center justify-between mb-1">
+                               <span className="font-black uppercase tracking-widest">{booking.status === 'pending' ? 'Impago' : booking.status === 'partial_paid' ? 'Señado' : 'Pagado'}</span>
+                               {booking.match_id && <Zap className="w-3 h-3 text-primary animate-pulse" />}
+                            </div>
+                            <span className="font-black uppercase tracking-tighter text-sm text-foreground truncate">{booking.title || 'Reserva Directa'}</span>
+                            <span className="text-[9px] font-bold text-muted-foreground mt-1">${new Intl.NumberFormat('es-AR').format(booking.total_price)}</span>
                           </div>
                         ) : (
-                          <button onClick={() => onSlotClick(time, f.id)} className="h-full w-full min-h-[60px] rounded-lg border border-dashed border-border/50 hover:border-primary/50 hover:bg-primary/5 text-muted-foreground hover:text-primary flex items-center justify-center gap-1 transition-colors text-xs opacity-0 hover:opacity-100">
-                            <Plus className="w-3 h-3" /> Turno
+                          <button onClick={() => onSlotClick(time, f.id)} className="h-full w-full rounded-2xl border-2 border-dashed border-white/5 hover:border-primary/30 hover:bg-primary/5 text-muted-foreground hover:text-primary flex items-center justify-center gap-2 transition-all opacity-0 hover:opacity-100 group/btn">
+                            <Plus className="w-4 h-4 group-hover:rotate-90 transition-transform" />
+                            <span className="text-[10px] font-black uppercase tracking-widest">Crear Turno</span>
                           </button>
                         )}
                       </div>
@@ -663,85 +1032,106 @@ function FinancesTab({ business, bookings, hasMP, user }: any) {
     .reduce((acc: number, curr: any) => acc + (curr.total_price || 0), 0);
 
   return (
-    <div className="space-y-6">
-       <div>
-          <h2 className="text-2xl font-kanit font-bold text-gradient">Finanzas</h2>
-          <p className="text-muted-foreground text-sm">Gestión de ingresos y saldo</p>
+    <div className="space-y-8 animate-reveal-up">
+       <div className="flex flex-col gap-1">
+          <h2 className="text-3xl font-black font-kanit italic uppercase tracking-tighter text-foreground">
+            Bóveda <span className="text-primary">Financiera</span>
+          </h2>
+          <p className="text-[10px] font-black uppercase tracking-[0.4em] text-muted-foreground">Flujo de Caja & Liquidaciones</p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Main Balance */}
-          <div className="md:col-span-2 premium-card p-6 sm:p-8 bg-gradient-to-br from-surface to-surface-elevated relative overflow-hidden">
-            <div className="absolute top-0 right-0 w-64 h-64 bg-primary/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/3"></div>
+          <div className="lg:col-span-2 glass-premium rounded-[3rem] p-10 border-white/5 relative overflow-hidden group shadow-2xl">
+            <div className="absolute top-0 right-0 w-80 h-80 bg-primary/10 rounded-full blur-[100px] -z-10 group-hover:bg-primary/20 transition-colors"></div>
             
-            <p className="text-sm font-semibold text-muted-foreground mb-2 relative z-10">Total Recaudado (Proyección)</p>
-            <h1 className="text-4xl sm:text-5xl font-kanit font-bold text-foreground mb-6 overflow-hidden relative z-10">
-              <span className="text-primary">$</span>{new Intl.NumberFormat('es-AR', { maximumFractionDigits: 0 }).format(totalIncome)}
-            </h1>
+            <div className="relative z-10 flex flex-col h-full justify-between">
+              <div>
+                <p className="text-[11px] font-black text-muted-foreground uppercase tracking-[0.3em] mb-4">Balance Proyectado (30d)</p>
+                <div className="flex items-baseline gap-2">
+                   <h1 className="text-6xl sm:text-7xl font-kanit font-black italic tracking-tighter text-foreground leading-none">
+                     <span className="text-primary">$</span>{new Intl.NumberFormat('es-AR', { maximumFractionDigits: 0 }).format(totalIncome)}
+                   </h1>
+                </div>
+              </div>
 
-            <div className="flex gap-4 relative z-10">
-              <button disabled className="flex-1 bg-surface-bright/50 text-muted-foreground font-bold py-3 px-4 rounded-xl flex justify-center items-center gap-2 cursor-not-allowed">
-                Retirar (Próximamente) <ArrowUpRight className="w-5 h-5 opacity-50" />
-              </button>
+              <div className="flex flex-wrap gap-4 mt-12">
+                <button disabled className="flex-1 bg-surface-elevated text-muted-foreground font-black uppercase text-[10px] tracking-widest py-4 px-6 rounded-2xl flex justify-center items-center gap-2 border border-white/5 opacity-50 cursor-not-allowed">
+                  Retirar Fondos <ArrowUpRight className="w-5 h-5" />
+                </button>
+                <button className="flex-1 bg-primary text-black font-black uppercase text-[10px] tracking-widest py-4 px-6 rounded-2xl flex justify-center items-center gap-2 hover:bg-primary-light transition-all shadow-lg shadow-primary/20">
+                  Descargar Reporte <BarChart3 className="w-5 h-5" />
+                </button>
+              </div>
             </div>
           </div>
 
-          <div className="md:col-span-1 flex flex-col gap-4">
-             <div className="glass-card p-5 flex items-center justify-between group cursor-default">
+          <div className="lg:col-span-1 flex flex-col gap-6">
+             <div className="glass-premium rounded-[2.5rem] p-8 border-white/5 flex items-center justify-between group hover:border-primary/30 transition-all">
                 <div>
-                   <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-1">Canchas</p>
-                   <h3 className="text-2xl font-black">{business.total_fields || 0}</h3>
+                   <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest mb-2">Comisión Plataforma</p>
+                   <h3 className="text-3xl font-black italic font-kanit">5.0<span className="text-primary">%</span></h3>
                 </div>
-                <div className="w-12 h-12 rounded-xl bg-surface-elevated border border-border/50 flex items-center justify-center group-hover:-translate-y-1 transition-transform">
-                   <LayoutDashboard className="w-6 h-6 text-primary" />
+                <div className="w-14 h-14 rounded-2xl bg-surface-elevated border border-white/10 flex items-center justify-center group-hover:rotate-12 transition-transform shadow-xl">
+                   <Shield className="w-7 h-7 text-primary" />
                 </div>
              </div>
-             <div className="glass-card p-5 flex items-center justify-between group cursor-default h-full">
-                <div>
-                   <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-1">Mercado Pago</p>
-                   {hasMP ? (
-                      <h3 className="text-2xl font-black text-[#009EE3]">VINCULADA</h3>
-                   ) : (
-                      <button onClick={() => window.location.href = `/api/mercadopago/authorize?userId=${user?.id}`} className="mt-1 bg-[#009EE3]/10 text-[#009EE3] text-xs px-3 py-1.5 rounded-lg border border-[#009EE3]/20 hover:bg-[#009EE3]/20 font-bold transition-colors">
-                        CONECTAR AHORA
-                      </button>
-                   )}
+             
+             <div className="glass-premium rounded-[2.5rem] p-8 border-white/5 group hover:border-[#009EE3]/30 transition-all">
+                <div className="flex justify-between items-start mb-6">
+                   <div>
+                      <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest mb-1">Pasarela de Pago</p>
+                      <h3 className={`text-2xl font-black italic font-kanit ${hasMP ? 'text-[#009EE3]' : 'text-danger'}`}>
+                        {hasMP ? 'MERCADO PAGO' : 'SIN VINCULAR'}
+                      </h3>
+                   </div>
+                   <div className="w-12 h-12 rounded-xl bg-[#009EE3]/10 border border-[#009EE3]/20 flex items-center justify-center group-hover:-translate-y-1 transition-transform">
+                      <DollarSign className="w-6 h-6 text-[#009EE3]" />
+                   </div>
                 </div>
-                {hasMP && (
-                  <div className="w-12 h-12 rounded-xl bg-[#009EE3]/10 border border-[#009EE3]/20 flex items-center justify-center group-hover:-translate-y-1 transition-transform">
-                     <DollarSign className="w-6 h-6 text-[#009EE3]" />
+                
+                {hasMP ? (
+                  <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-[#009EE3]/10 border border-[#009EE3]/20 w-fit">
+                     <Check className="w-3.5 h-3.5 text-[#009EE3]" />
+                     <span className="text-[9px] font-black text-[#009EE3] uppercase tracking-widest">Cuenta Vinculada</span>
                   </div>
+                ) : (
+                  <button onClick={() => window.location.href = `/api/mercadopago/authorize?userId=${user?.id}`} className="w-full bg-[#009EE3] text-white font-black uppercase text-[10px] tracking-widest py-3.5 rounded-xl hover:bg-[#009EE3]/80 transition-all shadow-lg shadow-[#009EE3]/20">
+                    CONECTAR CUENTA
+                  </button>
                 )}
              </div>
           </div>
         </div>
 
         {/* RECENT TRANSACTIONS */}
-        <div className="glass-card p-6">
-          <div className="flex justify-between items-center mb-6">
-            <h3 className="font-bold font-kanit text-lg">Últimos Cobros</h3>
-            <button className="text-xs font-semibold text-primary px-3 py-1.5 rounded-full bg-primary/10 hover:bg-primary/20 transition-colors">Todos (MVP)</button>
+        <div className="glass-premium rounded-[2.5rem] p-10 border-white/5">
+          <div className="flex justify-between items-center mb-8">
+            <h3 className="text-2xl font-black font-kanit italic uppercase tracking-tighter">Historial de Cobros</h3>
+            <div className="p-1 px-2 bg-foreground/5 rounded-xl border border-white/5 text-[9px] font-black uppercase tracking-widest">Últimos 30 días</div>
           </div>
-          <div className="space-y-4">
-            {bookings.filter((b:any) => b.status === 'full_paid' || b.status === 'partial_paid').slice(0, 5).map((booking: any, i: number) => (
-              <div key={`tx-${i}`} className="flex items-center justify-between p-3 rounded-xl hover:bg-surface-elevated/50 transition-colors border border-border/10 hover:border-border/50">
-                <div className="flex items-center gap-3">
-                  <div className={`w-10 h-10 rounded-full flex items-center justify-center ${booking.match_id ? 'bg-primary/20 text-primary' : 'bg-surface-bright text-foreground'}`}>
-                    <Wallet className="w-5 h-5" />
+          <div className="space-y-2">
+            {bookings.filter((b:any) => b.status === 'full_paid' || b.status === 'partial_paid').slice(0, 8).map((booking: any, i: number) => (
+              <div key={`tx-${i}`} className="flex items-center justify-between p-5 rounded-2xl hover:bg-foreground/[0.03] transition-all border border-transparent hover:border-white/5 group">
+                <div className="flex items-center gap-4">
+                  <div className={`w-12 h-12 rounded-2xl flex items-center justify-center transition-colors ${booking.match_id ? 'bg-primary/20 text-primary border border-primary/20' : 'bg-surface-elevated text-muted-foreground border border-white/10'}`}>
+                    {booking.match_id ? <Zap className="w-6 h-6" /> : <Wallet className="w-6 h-6" />}
                   </div>
                   <div>
-                    <h4 className="font-bold text-sm tracking-tight">{booking.title || 'Reserva pagada'}</h4>
-                    <p className="text-xs text-muted-foreground">{booking.date} • {booking.start_time.substring(0,5)} • {booking.status === 'partial_paid' ? 'Seña acreditada' : 'Pago Completado'}</p>
+                    <h4 className="font-black text-sm uppercase tracking-tighter group-hover:text-primary transition-colors">{booking.title || 'Reserva Acreditada'}</h4>
+                    <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest italic mt-1">{booking.date} • {booking.status === 'partial_paid' ? 'Seña acreditada' : 'Pago Total'}</p>
                   </div>
                 </div>
-                <span className="font-bold text-accent">+{new Intl.NumberFormat('es-AR', { maximumFractionDigits: 0 }).format(booking.down_payment_paid || booking.total_price)}</span>
+                <div className="text-right">
+                   <p className="text-2xl font-black italic font-kanit text-primary">+{new Intl.NumberFormat('es-AR', { maximumFractionDigits: 0 }).format(booking.down_payment_paid || booking.total_price)}</p>
+                   <p className="text-[8px] font-black text-muted-foreground uppercase tracking-widest mt-1">Neto Acreditado</p>
+                </div>
               </div>
             ))}
             {bookings.filter((b:any) => b.status === 'full_paid' || b.status === 'partial_paid').length === 0 && (
-               <div className="text-center py-10 bg-surface/50 rounded-xl border border-dashed border-border/50">
-                 <Wallet className="w-8 h-8 mx-auto text-muted-foreground mb-3 opacity-50" />
-                 <p className="text-muted-foreground text-sm font-semibold">No hay movimientos financieros acreditados.</p>
-                 <p className="text-muted-foreground text-xs mt-1">Los pagos de las reservas aparecerán aquí.</p>
+               <div className="flex flex-col items-center justify-center py-20 bg-surface-elevated/30 rounded-[2rem] border border-dashed border-white/10">
+                 <Wallet className="w-12 h-12 text-muted-foreground/30 mb-4" />
+                 <p className="text-muted-foreground font-black uppercase text-[10px] tracking-widest">Esperando primer cobro...</p>
                </div>
             )}
           </div>
@@ -853,7 +1243,6 @@ function SettingsTab({ business, fields, setFields, hasMP }: any) {
   };
 
   const handleCreateField = async () => {
-    // Quick prompt for MVP
     const fieldName = prompt("Nombre de la nueva cancha (ej. Cancha 4):");
     if (!fieldName) return;
     const type = prompt("Tipo (F5, F7, F11):") || 'F5';
@@ -880,148 +1269,165 @@ function SettingsTab({ business, fields, setFields, hasMP }: any) {
   };
 
   return (
-    <div className="space-y-6 max-w-4xl">
-      <div>
-        <h2 className="text-2xl font-kanit font-bold text-gradient">Configuración</h2>
-        <p className="text-muted-foreground text-sm">Precios, ubicación y canchas del establecimiento</p>
-      </div>
+    <div className="space-y-8 animate-reveal-up pb-20">
+       <div className="flex flex-col gap-1">
+          <h2 className="text-3xl font-black font-kanit italic uppercase tracking-tighter text-foreground">
+            Configuración <span className="text-primary">Maestra</span>
+          </h2>
+          <p className="text-[10px] font-black uppercase tracking-[0.4em] text-muted-foreground">Personalización del Establecimiento</p>
+       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {/* Pricing Configuration */}
-        <div className="glass-card p-6 space-y-6">
-          <div className="flex items-center gap-3 border-b border-border/50 pb-4">
-            <div className="p-2 rounded-lg bg-primary/10 text-primary">
-              <DollarSign className="w-5 h-5" />
-            </div>
-            <h3 className="font-bold font-kanit text-lg">Precios Base</h3>
-          </div>
-          
-          <div className="space-y-4">
-            {(fields || []).length > 0 ? (
-              (fields || []).map((field: any) => (
-                <div key={field.id}>
-                  <label className="text-sm font-semibold text-muted-foreground mb-1 block">{field.name} ({field.type})</label>
-                  <div className="relative">
-                    <span className="absolute left-3 top-1/2 -translate-y-1/2 font-bold text-muted-foreground">$</span>
-                    <input 
-                      type="number" 
-                      value={fieldPrices[field.id] ?? field.price_per_match ?? 0}
-                      onChange={(e) => setFieldPrices(prev => ({ ...prev, [field.id]: parseInt(e.target.value) || 0 }))}
-                      className="w-full bg-surface-elevated border border-border/50 rounded-xl py-2 pl-8 pr-4 text-foreground font-bold outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/50 transition-all font-kanit"
-                    />
-                  </div>
+       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          {/* General Info */}
+          <div className="glass-premium rounded-[2.5rem] p-10 border-white/5 space-y-8">
+             <div className="flex items-center gap-4 mb-2">
+                <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center border border-primary/20">
+                   <Settings className="w-5 h-5 text-primary" />
                 </div>
-              ))
-            ) : (
-              <p className="text-sm text-muted-foreground italic">No tenés canchas registradas. Crealas abajo.</p>
-            )}
-            
-            <div className="pt-4 border-t border-border/50">
-              <label className="text-sm font-semibold text-muted-foreground mb-2 block">Seña Requerida (%)</label>
-              <div className="flex items-center gap-4">
-                <input 
-                  type="range" 
-                  min="0" 
-                  max="100" 
-                  step="10" 
-                  value={deposit} 
-                  onChange={(e) => setDeposit(parseInt(e.target.value))} 
-                  className="flex-1 accent-primary" 
-                />
-                <span className="font-bold text-lg w-12 text-right">{deposit}%</span>
-              </div>
-              <p className="text-xs text-muted-foreground mt-2">Porcentaje mínimo del valor de la cancha para confirmar la reserva.</p>
-            </div>
-            
-            <div className="pt-4 border-t border-border/50">
-              <label className="text-sm font-semibold text-muted-foreground mb-4 block">Información del Predio</label>
-              <div className="space-y-4">
+                <h3 className="text-xl font-black font-kanit italic uppercase tracking-tighter">Perfil del Complejo</h3>
+             </div>
+
+             <div className="space-y-6">
                 <div>
-                  <label className="text-[10px] font-bold text-muted-foreground uppercase mb-1 block">Descripción / Bio</label>
+                  <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground mb-2 block">Descripción Pública</label>
                   <textarea 
                     value={description}
                     onChange={(e) => setDescription(e.target.value)}
-                    placeholder="Descripción del complejo..."
-                    className="w-full bg-surface-elevated border border-border/50 rounded-xl py-2 px-4 text-foreground outline-none focus:border-primary/50 transition-all text-sm min-h-[80px]"
+                    className="w-full bg-foreground/[0.03] border border-white/5 rounded-2xl p-4 text-sm focus:border-primary/50 outline-none transition-all min-h-[100px]"
+                    placeholder="Contanos sobre tu complejo, servicios, etc..."
                   />
                 </div>
-                <div className="grid grid-cols-2 gap-3">
-                  <div>
-                    <label className="text-[10px] font-bold text-muted-foreground uppercase mb-1 block">Dirección</label>
-                    <input type="text" value={address} onChange={(e) => setAddress(e.target.value)} className="w-full bg-surface-elevated border border-border/50 rounded-xl py-2 px-4 text-sm outline-none" placeholder="Calle y nro" />
-                  </div>
-                  <div>
-                    <label className="text-[10px] font-bold text-muted-foreground uppercase mb-1 block">Ciudad</label>
-                    <input type="text" value={city} onChange={(e) => setCity(e.target.value)} className="w-full bg-surface-elevated border border-border/50 rounded-xl py-2 px-4 text-sm outline-none" placeholder="Rosario, etc" />
-                  </div>
+                <div className="grid grid-cols-2 gap-4">
+                   <div>
+                    <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground mb-2 block">Dirección</label>
+                    <input 
+                      type="text" 
+                      value={address}
+                      onChange={(e) => setAddress(e.target.value)}
+                      className="w-full bg-foreground/[0.03] border border-white/5 rounded-2xl p-4 text-sm focus:border-primary/50 outline-none transition-all"
+                    />
+                   </div>
+                   <div>
+                    <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground mb-2 block">Ciudad</label>
+                    <input 
+                      type="text" 
+                      value={city}
+                      onChange={(e) => setCity(e.target.value)}
+                      className="w-full bg-foreground/[0.03] border border-white/5 rounded-2xl p-4 text-sm focus:border-primary/50 outline-none transition-all"
+                    />
+                   </div>
                 </div>
                 <div>
-                  <label className="text-[10px] font-bold text-muted-foreground uppercase mb-1 block">Google Maps Link</label>
-                  <input type="text" value={coords.link} onChange={(e) => setCoords({...coords, link: e.target.value})} className="w-full bg-surface-elevated border border-border/50 rounded-xl py-2 px-4 text-sm outline-none" placeholder="https://maps.app.goo.gl/..." />
+                  <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground mb-2 block">Google Maps Link</label>
+                  <input 
+                    type="text" 
+                    value={coords.link}
+                    onChange={(e) => setCoords({...coords, link: e.target.value})}
+                    placeholder="https://goo.gl/maps/..."
+                    className="w-full bg-foreground/[0.03] border border-white/5 rounded-2xl p-4 text-sm focus:border-primary/50 outline-none transition-all"
+                  />
                 </div>
-              </div>
-            </div>
-
-            <div className="pt-4 border-t border-border/50">
-              <label className="text-sm font-semibold text-muted-foreground mb-2 block">Alias / CBU para Transferencias</label>
-              <div className="relative">
-                <span className="absolute left-3 top-1/2 -translate-y-1/2 font-bold text-muted-foreground"><Wallet className="w-4 h-4"/></span>
-                <input 
-                  type="text" 
-                  value={aliasCbu}
-                  onChange={(e) => setAliasCbu(e.target.value)}
-                  placeholder="ej. mi.cancha.mp"
-                  className="w-full bg-surface-elevated border border-border/50 rounded-xl py-2 pl-10 pr-4 text-foreground font-bold outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/50 transition-all font-kanit"
-                />
-              </div>
-              <p className="text-xs text-muted-foreground mt-2">Los jugadores verán esta cuenta para pagos manuales.</p>
-            </div>
+             </div>
           </div>
-          
-          <div className="pt-4 border-t border-border/50">
-              <label className="text-sm font-semibold text-muted-foreground mb-2 block">Mercado Pago Connect</label>
-              <div className="flex flex-col gap-2">
-                 {hasMP ? (
-                   <div className="bg-[#009EE3]/10 text-[#009EE3] font-bold py-3 px-4 rounded-xl flex items-center justify-between border border-[#009EE3]/20">
-                      <div className="flex items-center gap-2"><DollarSign className="w-5 h-5"/> Cuenta Vinculada Exitosamente</div>
-                      <Check className="w-5 h-5" />
-                   </div>
-                 ) : (
-                   <button onClick={() => window.location.href = `/api/mercadopago/authorize?userId=${user?.id}`} className="bg-[#009EE3]/10 text-[#009EE3] hover:bg-[#009EE3]/20 font-bold py-3 px-4 rounded-xl flex items-center justify-center gap-2 transition-colors">
-                      <DollarSign className="w-5 h-5"/>
-                      Vincular Mercado Pago
-                   </button>
-                 )}
-                 <p className="text-xs text-muted-foreground mt-1">Recibe tus pagos online automáticamente. Esta cuenta servirá para todas tus reservas confirmadas con el botón de MP.</p>
-              </div>
-            </div>
-            
-            <button 
-              onClick={handleSavePrices} 
-              disabled={isSavingPrices}
-            className="w-full py-2.5 bg-primary/10 text-primary hover:bg-primary/20 font-bold rounded-xl transition-colors disabled:opacity-50"
-          >
-            {isSavingPrices ? 'Guardando...' : 'Guardar Precios y Seña'}
-          </button>
-        </div>
 
-        {/* Fields and Schedule config */}
-        <div className="space-y-6">
-          <div className="glass-card p-6">
-            <div className="flex items-center justify-between border-b border-border/50 pb-4 mb-4">
-              <div className="flex items-center gap-3">
-                <div className="p-2 rounded-lg bg-accent/10 text-accent">
-                  <MapPin className="w-5 h-5" />
+          {/* Pricing & Payments */}
+          <div className="glass-premium rounded-[2.5rem] p-10 border-white/5 space-y-8">
+             <div className="flex items-center gap-4 mb-2">
+                <div className="w-10 h-10 rounded-xl bg-accent/10 flex items-center justify-center border border-accent/20">
+                   <DollarSign className="w-5 h-5 text-accent" />
                 </div>
-                <h3 className="font-bold font-kanit text-lg">Canchas de {business?.name || "Establecimiento"}</h3>
-              </div>
-              <button 
-                onClick={handleCreateField}
-                disabled={loading}
-                className="text-primary hover:text-primary-light bg-primary/10 p-1.5 rounded-lg transition-colors group">
-                  <Plus className="w-5 h-5 group-hover:scale-110 transition-transform"/>
-              </button>
-            </div>
+                <h3 className="text-xl font-black font-kanit italic uppercase tracking-tighter">Pagos y Señas</h3>
+             </div>
+
+             <div className="space-y-6">
+                <div className="p-6 rounded-3xl bg-surface-elevated/50 border border-white/5">
+                   <div className="flex justify-between items-center mb-4">
+                      <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Porcentaje de Seña</label>
+                      <span className="text-2xl font-black italic font-kanit text-primary">{deposit}%</span>
+                   </div>
+                   <input 
+                     type="range" min="0" max="100" step="10"
+                     value={deposit}
+                     onChange={(e) => setDeposit(Number(e.target.value))}
+                     className="w-full accent-primary h-2 bg-foreground/10 rounded-full"
+                   />
+                </div>
+
+                <div>
+                   <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground mb-4 block">Precios por Cancha (1 Hora)</label>
+                   <div className="space-y-3">
+                      {fields.map((f: any) => (
+                        <div key={f.id} className="flex items-center justify-between p-4 rounded-2xl bg-foreground/[0.03] border border-white/5">
+                           <span className="text-xs font-black uppercase tracking-tighter">{f.name}</span>
+                           <div className="flex items-center gap-2">
+                              <span className="text-sm font-black text-muted-foreground">$</span>
+                              <input 
+                                type="number" 
+                                value={fieldPrices[f.id] || 0}
+                                onChange={(e) => setFieldPrices({...fieldPrices, [f.id]: Number(e.target.value)})}
+                                className="w-24 bg-transparent text-right font-black italic font-kanit text-lg outline-none"
+                              />
+                           </div>
+                        </div>
+                      ))}
+                   </div>
+                </div>
+
+                <div>
+                   <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground mb-2 block">Alias / CBU para Transferencia</label>
+                   <input 
+                     type="text" 
+                     value={aliasCbu}
+                     onChange={(e) => setAliasCbu(e.target.value)}
+                     placeholder="complejo.ejemplo.mp"
+                     className="w-full bg-foreground/[0.03] border border-white/5 rounded-2xl p-4 text-sm focus:border-primary/50 outline-none transition-all font-mono"
+                   />
+                </div>
+             </div>
+
+             <button 
+                onClick={handleSavePrices} 
+                className="w-full bg-primary text-black font-black uppercase text-xs tracking-widest py-5 rounded-2xl hover:bg-primary-light transition-all shadow-[0_10px_30_rgba(44,252,125,0.3)] press-effect mt-4"
+                disabled={isSavingPrices}
+             >
+                {isSavingPrices ? 'Guardando...' : 'Guardar Todo'}
+             </button>
+          </div>
+       </div>
+
+       {/* Managed Fields List */}
+       <div className="glass-premium rounded-[2.5rem] p-10 border-white/5">
+          <div className="flex justify-between items-center mb-8">
+            <h3 className="text-2xl font-black font-kanit italic uppercase tracking-tighter">Inventario de Canchas</h3>
+            <button onClick={handleCreateField} className="p-3 rounded-2xl bg-primary text-black hover:bg-primary-light transition-all shadow-lg shadow-primary/20">
+               <Plus className="w-6 h-6" />
+            </button>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+             {fields.map((f: any) => (
+               <div key={f.id} className="p-6 rounded-3xl bg-surface-elevated/30 border border-white/5 hover:border-primary/30 transition-all group">
+                  <div className="flex justify-between items-start mb-6">
+                     <div className="p-3 rounded-xl bg-background border border-white/10 group-hover:bg-primary/10 transition-colors">
+                        <MapPin className="w-6 h-6 text-primary" />
+                     </div>
+                     <span className="text-[9px] font-black uppercase tracking-widest text-muted-foreground px-2 py-1 rounded bg-foreground/5">{f.type}</span>
+                  </div>
+                  <h4 className="text-lg font-black uppercase tracking-tighter mb-1">{f.name}</h4>
+                  <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Activa • {f.is_active ? 'Visible' : 'Oculta'}</p>
+                  
+                  <div className="mt-8 flex gap-3">
+                     <button className="flex-1 py-3 rounded-xl bg-foreground/5 hover:bg-foreground/10 text-[9px] font-black uppercase tracking-widest transition-all">Editar Horarios</button>
+                     <button className="p-3 rounded-xl bg-danger/10 text-danger hover:bg-danger transition-all hover:text-white">
+                        <Trash2 className="w-4 h-4" />
+                     </button>
+                  </div>
+               </div>
+             ))}
+          </div>
+       </div>
+    </div>
+  );
+}
             
             <div className="space-y-3 max-h-64 overflow-y-auto no-scrollbar pr-2">
               {fields.length === 0 ? (
