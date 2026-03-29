@@ -210,6 +210,7 @@ function MatchLobbyContent() {
   const [editingNames, setEditingNames] = useState({ A: '', B: '' });
   const [isSavingNames, setIsSavingNames] = useState(false);
   const [showChat, setShowChat] = useState(false);
+  const [venueAliasCbu, setVenueAliasCbu] = useState<string | null>(null);
 
   const fetchMatch = async () => {
     if (!id) return;
@@ -218,6 +219,13 @@ function MatchLobbyContent() {
       const data = await getMatchById(id as string);
       setMatch(data);
       setEditingNames({ A: data.team_a_name || 'Local', B: data.team_b_name || 'Visitante' });
+      
+      try {
+         const { data: bookingData } = await supabase.from('canchas_bookings').select('canchas_fields(canchas_businesses(alias_cbu))').eq('match_id', data.id).single();
+         if (bookingData?.canchas_fields?.canchas_businesses?.alias_cbu) {
+            setVenueAliasCbu(bookingData.canchas_fields.canchas_businesses.alias_cbu);
+         }
+      } catch(e) {}
       if (data.is_completed) {
         try {
           setMatchStats(await getMatchStats(data.id));
@@ -1126,7 +1134,14 @@ function MatchLobbyContent() {
                     price={match.price} 
                   />
                   
-                  <p className="text-[9px] text-foreground/20 font-bold uppercase tracking-widest text-center">
+                  {venueAliasCbu && (
+                    <div className="mt-4 p-4 rounded-xl bg-foreground/5 border border-foreground/10 text-center">
+                      <p className="text-[10px] text-foreground/40 font-bold uppercase tracking-widest mb-1">O transferí manualmente a la cancha:</p>
+                      <p className="text-sm font-black italic tracking-tighter text-foreground selectable select-all">{venueAliasCbu}</p>
+                    </div>
+                  )}
+                  
+                  <p className="text-[9px] text-foreground/20 font-bold uppercase tracking-widest text-center mt-4">
                     * El pago confirma tu asistencia definitiva.
                   </p>
                 </motion.div>

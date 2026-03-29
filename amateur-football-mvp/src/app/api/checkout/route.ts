@@ -39,10 +39,25 @@ export async function POST(request: Request) {
       .eq('id', match.creator_id)
       .single();
 
-    // Determinar si el creador tiene MP Connect activo y establecer el cliente
+    // 2.5 Determinar si el partido pertenece a un establecimiento registrado (Canchas)
+    const { data: bookingData } = await supabaseAdmin
+      .from('canchas_bookings')
+      .select('canchas_fields(canchas_businesses(id, mp_access_token, owner_id))')
+      .eq('match_id', matchId)
+      .single();
+
+    let businessToken = null;
+    let businessOwnerId = null;
+
+    if (bookingData && bookingData.canchas_fields && bookingData.canchas_fields.canchas_businesses) {
+      businessToken = bookingData.canchas_fields.canchas_businesses.mp_access_token;
+      businessOwnerId = bookingData.canchas_fields.canchas_businesses.owner_id;
+    }
+
+    // Determinar si el creador o el establecimiento tienen MP Connect activo y establecer el cliente
     let clientToUse = platformClient;
     
-    // Cálculo de precios y comisiones (Volviendo al modelo 15% para que el creador gane limpio)
+    // Cálculo de precios y comisiones (Volviendo al modelo 15% para que reciban limpio)
     const basePrice = Number(price);
     const serviceFeePerItem = Math.ceil(basePrice * 0.15); // 15% sobre el precio base
     const finalPricePerItem = basePrice + serviceFeePerItem;
@@ -52,15 +67,18 @@ export async function POST(request: Request) {
 
     let marketplaceFee = 0;
 
-    if (creatorProfile && creatorProfile.mp_access_token) {
+    if (businessToken) {
+      // El Establecimiento cobrará el dinero directamente!
+      clientToUse = new MercadoPagoConfig({ accessToken: businessToken });
+      marketplaceFee = platformCommissionPerItem * Number(quantity);
+      console.log("Cobro dirigido al establecimiento de la cancha");
+    } else if (creatorProfile && creatorProfile.mp_access_token) {
       // El creador conectó su cuenta: creamos la preferencia en SU nombre
       clientToUse = new MercadoPagoConfig({ accessToken: creatorProfile.mp_access_token });
-      
-      // Nuestra ganancia real de uso de plataforma
       marketplaceFee = platformCommissionPerItem * Number(quantity); 
+      console.log("Cobro dirigido al creador del partido");
     } else {
-      console.warn("El creador no vinculó Mercado Pago, el dinero irá a la plataforma");
-      // Incluso si va a la plataforma, le cobramos al usuario el cargo de servicio por equidad
+      console.warn("Nadie vinculó Mercado Pago, el dinero irá a la plataforma");
     }
 
     const preference = new Preference(clientToUse);
@@ -85,7 +103,7 @@ export async function POST(request: Request) {
         pending: `${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/match?id=${matchId}&payment=pending`,
       },
       auto_return: 'approved',
-      notification_url: `${process.env.NEXT_PUBLIC_BASE_URL}/api/webhooks/mercadopago?creator_id=${match.creator_id}`,
+      notification_url: `${process.env.NEXT_PUBLIC_BASE_URL}/api/webhooks/mercadopago?creator_id=${businessOwnerId || match.creator_id}`,
       external_reference: externalReference,
       metadata: {
         match_id: matchId,

@@ -13,6 +13,7 @@ CREATE TABLE IF NOT EXISTS public.canchas_businesses (
   phone text,
   mp_access_token text, -- Mercado Pago Access Token for split payments
   mp_public_key text,
+  alias_cbu text, -- CBU o Alias bancario para depósito
   is_active boolean DEFAULT true,
   created_at timestamp with time zone DEFAULT now(),
   updated_at timestamp with time zone DEFAULT now()

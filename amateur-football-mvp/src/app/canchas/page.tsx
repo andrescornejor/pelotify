@@ -691,6 +691,7 @@ function SettingsTab({ business, fields, setFields }: any) {
   const [loading, setLoading] = useState(false);
   // Inicializar seña con la primera cancha o 30 por defecto
   const [deposit, setDeposit] = useState(fields?.[0]?.down_payment_percentage || 30);
+  const [aliasCbu, setAliasCbu] = useState(business?.alias_cbu || '');
   const [isSavingPrices, setIsSavingPrices] = useState(false);
 
   const handleSavePrices = async () => {
@@ -705,9 +706,15 @@ function SettingsTab({ business, fields, setFields }: any) {
     if (error) {
       alert("Error al actualizar la seña requerida: " + error.message);
     } else {
+      // Guardar también el alias_cbu en canchas_businesses
+      await supabase
+        .from('canchas_businesses')
+        .update({ alias_cbu: aliasCbu })
+        .eq('id', business.id);
+        
       // Actualizamos estado local
       setFields((prev: any) => prev.map((f: any) => ({ ...f, down_payment_percentage: deposit })));
-      alert("Seña requerida actualizada correctamente para todas tus canchas.");
+      alert("Configuración de pagos y seña actualizada correctamente.");
     }
     setIsSavingPrices(false);
   };
@@ -776,6 +783,21 @@ function SettingsTab({ business, fields, setFields }: any) {
                 <span className="font-bold text-lg w-12 text-right">{deposit}%</span>
               </div>
               <p className="text-xs text-muted-foreground mt-2">Porcentaje mínimo del valor de la cancha para confirmar la reserva.</p>
+            </div>
+            
+            <div className="pt-4 border-t border-border/50">
+              <label className="text-sm font-semibold text-muted-foreground mb-2 block">Alias / CBU para Transferencias</label>
+              <div className="relative">
+                <span className="absolute left-3 top-1/2 -translate-y-1/2 font-bold text-muted-foreground"><Wallet className="w-4 h-4"/></span>
+                <input 
+                  type="text" 
+                  value={aliasCbu}
+                  onChange={(e) => setAliasCbu(e.target.value)}
+                  placeholder="ej. mi.cancha.mp"
+                  className="w-full bg-surface-elevated border border-border/50 rounded-xl py-2 pl-10 pr-4 text-foreground font-bold outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/50 transition-all font-kanit"
+                />
+              </div>
+              <p className="text-xs text-muted-foreground mt-2">Los jugadores verán esta cuenta para pagos manuales.</p>
             </div>
           </div>
           
