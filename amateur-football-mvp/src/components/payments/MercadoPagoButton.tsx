@@ -51,9 +51,9 @@ export default function MercadoPagoButton({ matchId, title, price }: MercadoPago
     }
   };
 
-  // Calcular precios para mostrar en la interfaz (5% de cargo total por servicio)
+  // Calcular precios para mostrar en la interfaz (15% de cargo total por servicio)
   const basePrice = price;
-  const serviceFee = Math.ceil(basePrice * 0.05);
+  const serviceFee = Math.ceil(basePrice * 0.15);
   const finalPrice = basePrice + serviceFee;
 
   return (
@@ -87,10 +87,11 @@ export default function MercadoPagoButton({ matchId, title, price }: MercadoPago
       </button>
       
       <p className="text-center text-[10px] font-bold text-foreground/40 uppercase tracking-widest leading-relaxed px-4">
-        Los cargos de servicio son exclusivos de Pelotify. <span className="text-emerald-500">M.Pago puede retener un extra al organizador por procesar el cobro.</span>
+        Los cargos de servicio cubren el mantenimiento de la plataforma y comisiones bancarias, <span className="text-emerald-500">garantizando que el organizador no tenga pérdidas.</span>
       </p>
     </div>
   );
 }
+
 
 

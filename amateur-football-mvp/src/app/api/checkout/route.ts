@@ -42,13 +42,13 @@ export async function POST(request: Request) {
     // Determinar si el creador tiene MP Connect activo y establecer el cliente
     let clientToUse = platformClient;
     
-    // Cálculo de precios y comisiones
+    // Cálculo de precios y comisiones (Volviendo al modelo 15% para que el creador gane limpio)
     const basePrice = Number(price);
-    const serviceFeePerItem = Math.ceil(basePrice * 0.05); // 5% sobre el precio base (solo Pelotify)
+    const serviceFeePerItem = Math.ceil(basePrice * 0.15); // 15% sobre el precio base
     const finalPricePerItem = basePrice + serviceFeePerItem;
     
-    // Nuestra comisión es exactamente el cargo por servicio
-    const platformCommissionPerItem = serviceFeePerItem;
+    // Nuestra ganancia real como plataforma Pelotify (5%)
+    const platformCommissionPerItem = Math.ceil(basePrice * 0.05);
 
     let marketplaceFee = 0;
 
