@@ -222,28 +222,35 @@ function MatchLobbyContent() {
       setMatch(data);
       setEditingNames({ A: data.team_a_name || 'Local', B: data.team_b_name || 'Visitante' });
       
+      // Buscar si el partido es en un establecimiento registrado
+      // Usamos canchas_businesses directamente (tiene RLS público para is_active=true)
+      // en vez de canchas_bookings (bloqueado por RLS para usuarios que no son booker/owner)
       try {
-         const { data: bookingData } = await supabase.from('canchas_bookings').select('canchas_fields(canchas_businesses(alias_cbu, mp_access_token, owner_id))').eq('match_id', data.id).single();
-         const booking: any = bookingData;
-         if (booking?.canchas_fields) {
-            const field = Array.isArray(booking.canchas_fields) ? booking.canchas_fields[0] : booking.canchas_fields;
-            if (field?.canchas_businesses) {
-               const biz = Array.isArray(field.canchas_businesses) ? field.canchas_businesses[0] : field.canchas_businesses;
-               if (biz) {
-                  setVenueAliasCbu(biz.alias_cbu || null);
-                  // Determinar si el negocio o su dueño tiene Mercado Pago
-                  if (biz.mp_access_token) {
-                     setVenueHasMP(true);
-                  } else if (biz.owner_id) {
-                     const { data: ownerProf } = await supabase.from('profiles').select('mp_access_token').eq('id', biz.owner_id).single();
-                     setVenueHasMP(!!ownerProf?.mp_access_token);
-                  } else {
-                     setVenueHasMP(false);
-                  }
-               }
-            }
+         const { data: allBusinesses } = await supabase
+           .from('canchas_businesses')
+           .select('id, name, alias_cbu, mp_access_token, owner_id')
+           .eq('is_active', true);
+         
+         if (allBusinesses && data.location) {
+           const loc = data.location.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').trim();
+           const matchedBiz = allBusinesses.find((biz: any) => {
+             const bizName = (biz.name || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').trim();
+             return loc.includes(bizName) || bizName.includes(loc) || loc === bizName;
+           });
+           
+           if (matchedBiz) {
+             setVenueAliasCbu(matchedBiz.alias_cbu || null);
+             if (matchedBiz.mp_access_token) {
+               setVenueHasMP(true);
+             } else if (matchedBiz.owner_id) {
+               const { data: ownerProf } = await supabase.from('profiles').select('mp_access_token').eq('id', matchedBiz.owner_id).single();
+               setVenueHasMP(!!ownerProf?.mp_access_token);
+             } else {
+               setVenueHasMP(false);
+             }
+           }
          }
-      } catch(e) {}
+      } catch(e) { console.error('Error buscando establecimiento:', e); }
       if (data.is_completed) {
         try {
           setMatchStats(await getMatchStats(data.id));
