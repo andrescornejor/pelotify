@@ -213,6 +213,7 @@ function MatchLobbyContent() {
   const [showChat, setShowChat] = useState(false);
   const [venueAliasCbu, setVenueAliasCbu] = useState<string | null>(null);
   const [venueHasMP, setVenueHasMP] = useState<boolean | null>(null); // null means no venue. false means venue without MP. true means venue with MP.
+  const [venueInfo, setVenueInfo] = useState<any>(null);
 
   const fetchMatch = async () => {
     if (!id) return;
@@ -225,11 +226,11 @@ function MatchLobbyContent() {
       // Buscar si el partido es en un establecimiento registrado
       // Usamos canchas_businesses directamente (tiene RLS público para is_active=true)
       // en vez de canchas_bookings (bloqueado por RLS para usuarios que no son booker/owner)
-      try {
-         const { data: allBusinesses } = await supabase
-           .from('canchas_businesses')
-           .select('id, name, alias_cbu, mp_access_token, owner_id')
-           .eq('is_active', true);
+       try {
+          const { data: allBusinesses } = await supabase
+            .from('canchas_businesses')
+            .select('id, name, alias_cbu, mp_access_token, owner_id, latitude, longitude')
+            .eq('is_active', true);
          
           // Primero intentar por ID directo
           let matchedBiz = allBusinesses?.find((biz: any) => biz.id === data.business_id);
@@ -243,6 +244,7 @@ function MatchLobbyContent() {
           }
            
           if (matchedBiz) {
+            setVenueInfo(matchedBiz);
             setVenueAliasCbu(matchedBiz.alias_cbu || null);
             if (matchedBiz.mp_access_token) {
               setVenueHasMP(true);
@@ -253,6 +255,7 @@ function MatchLobbyContent() {
               setVenueHasMP(false);
             }
           } else {
+             setVenueInfo(null);
              setVenueHasMP(null);
           }
       } catch(e) { console.error('Error buscando establecimiento:', e); }
@@ -437,6 +440,7 @@ function MatchLobbyContent() {
   const userParticipant = user ? participants.find((p) => p.user_id === user.id) : null;
 
   const venueName = (() => {
+    if (venueInfo?.name) return venueInfo.name;
     const v = findVenueByLocation(match.location);
     return v?.displayName || v?.name || match.location;
   })();
@@ -1231,12 +1235,16 @@ function MatchLobbyContent() {
                 <div className="px-5 py-4 border-b border-foreground/5 flex items-center gap-3">
                   <MapPin className="w-4 h-4 text-primary" />
                   <span className="text-[10px] font-black text-foreground/50 uppercase tracking-widest">
-                    Ubicación
+                    {venueName}
                   </span>
                 </div>
                 <div className="p-3">
                   <div className="h-56 rounded-xl overflow-hidden">
-                    <VenueMap location={match.location} lat={match.lat} lng={match.lng} />
+                    <VenueMap 
+                       location={match.location} 
+                       lat={venueInfo?.latitude ?? match.lat} 
+                       lng={venueInfo?.longitude ?? match.lng} 
+                    />
                   </div>
                 </div>
                 <div className="px-5 pb-4">
