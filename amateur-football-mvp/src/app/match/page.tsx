@@ -44,6 +44,7 @@ import {
   updateMatch,
 } from '@/lib/matches';
 import { getFriends, FriendshipData } from '@/lib/friends';
+import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/contexts/AuthContext';
 import { findVenueByLocation } from '@/lib/venues';
 import { cn } from '@/lib/utils';
@@ -222,8 +223,15 @@ function MatchLobbyContent() {
       
       try {
          const { data: bookingData } = await supabase.from('canchas_bookings').select('canchas_fields(canchas_businesses(alias_cbu))').eq('match_id', data.id).single();
-         if (bookingData?.canchas_fields?.canchas_businesses?.alias_cbu) {
-            setVenueAliasCbu(bookingData.canchas_fields.canchas_businesses.alias_cbu);
+         const booking: any = bookingData;
+         if (booking?.canchas_fields) {
+            const field = Array.isArray(booking.canchas_fields) ? booking.canchas_fields[0] : booking.canchas_fields;
+            if (field?.canchas_businesses) {
+               const biz = Array.isArray(field.canchas_businesses) ? field.canchas_businesses[0] : field.canchas_businesses;
+               if (biz?.alias_cbu) {
+                  setVenueAliasCbu(biz.alias_cbu);
+               }
+            }
          }
       } catch(e) {}
       if (data.is_completed) {
