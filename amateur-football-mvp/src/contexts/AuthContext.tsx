@@ -163,13 +163,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     if (isLoading) return;
 
     const isAuthRoute =
-      pathname === '/login' || pathname === '/register' || pathname === '/update-password' || pathname === '/canchas/login';
+      pathname === '/login' || pathname === '/register' || pathname === '/update-password' || pathname === '/canchas/login' || pathname === '/canchas/register';
     const isOnboardingRoute = pathname === '/onboarding';
     const isCanchasRoute = pathname?.startsWith('/canchas');
 
     if (!user && !isAuthRoute && !isCanchasRoute) {
       router.push('/login');
-    } else if (!user && !isAuthRoute && isCanchasRoute && pathname !== '/canchas/login') {
+    } else if (!user && !isAuthRoute && isCanchasRoute && pathname !== '/canchas/login' && pathname !== '/canchas/register') {
       router.push('/canchas/login');
     } else if (user) {
       // Check if user has finished onboarding (we store this in user_metadata)
@@ -352,7 +352,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   const isAuthRoute =
-    pathname === '/login' || pathname === '/register' || pathname === '/update-password' || pathname === '/canchas/login';
+    pathname === '/login' || pathname === '/register' || pathname === '/update-password' || pathname === '/canchas/login' || pathname === '/canchas/register';
   const isCanchasRoute = pathname?.startsWith('/canchas');
 
   // Verification and redirect logic for showing loader
@@ -362,7 +362,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const showLoader =
     (isLoading && !isAuthRoute) ||
     (!isLoading && !user && !isAuthRoute && !isCanchasRoute) ||
-    (!isLoading && !user && isCanchasRoute && pathname !== '/canchas/login') ||
+    (!isLoading && !user && isCanchasRoute && pathname !== '/canchas/login' && pathname !== '/canchas/register') ||
     (!isLoading && user && isAuthRoute);
 
   return (

@@ -5,6 +5,7 @@ import { Mail, Lock, Loader2, MapPin } from 'lucide-react';
 import { useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 
 export default function CanchasLoginPage() {
   const { login } = useAuth();
@@ -101,6 +102,15 @@ export default function CanchasLoginPage() {
                 {isLoading ? <Loader2 className="w-5 h-5 animate-spin" /> : 'INGRESAR AL PANEL'}
               </button>
             </form>
+
+            <div className="text-center mt-2">
+              <p className="text-[10px] font-black text-foreground/40 uppercase tracking-[0.2em] font-kanit">
+                ¿AÚN NO ERES SOCIO?{' '}
+                <Link href="/canchas/register" className="text-primary hover:text-white transition-colors underline decoration-primary/30 underline-offset-4">
+                  REGISTRA TU ESTABLECIMIENTO
+                </Link>
+              </p>
+            </div>
           </div>
         </motion.div>
       </div>
