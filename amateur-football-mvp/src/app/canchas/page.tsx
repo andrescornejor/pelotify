@@ -1184,6 +1184,7 @@ function SettingsTab({ business, fields, setFields, hasMP, setBusiness }: any) {
           phone: phone.trim(),
           profile_image_url: profileImageUrl.trim(),
           alias_cbu: trimmedAlias, 
+          amenities,
           description,
           address,
           city,
@@ -1343,7 +1344,27 @@ function SettingsTab({ business, fields, setFields, hasMP, setBusiness }: any) {
                     </div>
                  </div>
                  <div>
-                   <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground mb-2 block">Google Maps Link</label>
+                   <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground mb-4 block">Servicios y Amenities</label>
+                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 mb-8">
+                       {['Luces LED', 'Seguridad 24hs', 'Vestuarios', 'Estacionamiento', 'Bar / Buffet', 'WiFi', 'Techada', 'Parrillas'].map(item => {
+                          const isSelected = amenities.includes(item);
+                          return (
+                             <button 
+                                key={item}
+                                onClick={() => {
+                                   if(isSelected) setAmenities(amenities.filter(a => a !== item));
+                                   else setAmenities([...amenities, item]);
+                                }}
+                                className={`p-4 rounded-2xl border transition-all text-left group ${isSelected ? 'bg-primary/10 border-primary shadow-lg shadow-primary/10' : 'bg-foreground/[0.03] border-white/5 hover:border-white/20'}`}
+                             >
+                                <div className={`text-[10px] font-black uppercase tracking-widest transition-colors ${isSelected ? 'text-primary' : 'text-muted-foreground'}`}>{item}</div>
+                             </button>
+                          );
+                       })}
+                    </div>
+                  </div>
+                  <div>
+                    <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground mb-2 block">Google Maps Link</label>
                    <input 
                      type="text" 
                      value={coords.link}
