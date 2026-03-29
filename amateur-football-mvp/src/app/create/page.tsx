@@ -805,6 +805,47 @@ export default function CreateMatchPage() {
                       ARS
                     </span>
                   </div>
+
+                  {/* Fee Breakdown */}
+                  <AnimatePresence>
+                    {formData.price > 0 && (
+                      <motion.div
+                        initial={{ opacity: 0, height: 0, marginTop: 0 }}
+                        animate={{ opacity: 1, height: 'auto', marginTop: 12 }}
+                        exit={{ opacity: 0, height: 0, marginTop: 0 }}
+                        className="px-4 py-3 rounded-2xl bg-foreground/[0.02] border border-foreground/5 flex flex-col gap-2 overflow-hidden"
+                      >
+                        <div className="flex items-center justify-between">
+                          <span className="text-[10px] font-bold text-foreground/40 uppercase tracking-widest">
+                            Vos recibís
+                          </span>
+                          <span className="text-xs font-black text-emerald-500">
+                            ${formData.price.toLocaleString('es-AR')}
+                          </span>
+                        </div>
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-1.5">
+                            <Zap className="w-3 h-3 text-amber-500" />
+                            <span className="text-[10px] font-bold text-foreground/40 uppercase tracking-widest">
+                              Cargo por servicio
+                            </span>
+                          </div>
+                          <span className="text-[10px] font-bold text-foreground/40">
+                            + ${Math.ceil(formData.price * 0.15).toLocaleString('es-AR')}
+                          </span>
+                        </div>
+                        <div className="h-px w-full bg-foreground/5 my-0.5" />
+                        <div className="flex items-center justify-between">
+                          <span className="text-[10px] font-black text-foreground/60 uppercase tracking-widest">
+                            El jugador paga
+                          </span>
+                          <span className="text-sm font-black italic text-foreground tracking-tighter">
+                            ${(formData.price + Math.ceil(formData.price * 0.15)).toLocaleString('es-AR')}
+                          </span>
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
                 </div>
 
                 {/* Privacy */}
