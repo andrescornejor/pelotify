@@ -17,7 +17,8 @@ import {
   ArrowUpRight,
   ArrowDownRight,
   Activity,
-  Plus
+  Plus,
+  Check
 } from 'lucide-react';
 
 import { useAuth } from '@/contexts/AuthContext';
@@ -42,6 +43,7 @@ export default function CanchasDashboard() {
   const [showEditBookingModal, setShowEditBookingModal] = useState(false);
   // Calendar Date
   const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0]);
+  const [hasMP, setHasMP] = useState<boolean>(false);
 
   // Tab configurations
   const tabs = [
@@ -94,6 +96,15 @@ export default function CanchasDashboard() {
 
           if (!bkError && bkData) setBookings(bkData);
         }
+
+        // 4. Determinar si se ha vinculado MP via negocio o dueño
+        if (bData?.mp_access_token) {
+          setHasMP(true);
+        } else {
+          const { data: profileObj } = await supabase.from('profiles').select('mp_access_token').eq('id', user.id).single();
+          setHasMP(!!profileObj?.mp_access_token);
+        }
+
       } catch (err) {
         console.error('Unexpected error fetching dashboard data:', err);
       } finally {
@@ -208,8 +219,8 @@ export default function CanchasDashboard() {
             >
               {activeTab === 'overview' && <OverviewTab business={business} bookings={bookings} fields={fields} onNewBooking={() => setShowBookingModal(true)} onBookingClick={(booking: any) => { setSelectedBooking(booking); setShowEditBookingModal(true); }} onTabChange={setActiveTab} />}
               {activeTab === 'calendar' && <CalendarTab bookings={bookings} fields={fields} selectedDate={selectedDate} setSelectedDate={setSelectedDate} onSlotClick={(time: string, fieldId: string) => { setSelectedSlot({time, fieldId}); setShowBookingModal(true); }} onBookingClick={(booking: any) => { setSelectedBooking(booking); setShowEditBookingModal(true); }} />}
-              {activeTab === 'finances' && <FinancesTab business={business} bookings={bookings} />}
-              {activeTab === 'settings' && <SettingsTab business={business} fields={fields} setFields={setFields} />}
+              {activeTab === 'finances' && <FinancesTab business={business} bookings={bookings} hasMP={hasMP} user={user} />}
+              {activeTab === 'settings' && <SettingsTab business={business} fields={fields} setFields={setFields} hasMP={hasMP} />}
             </motion.div>
           </AnimatePresence>
         </main>
@@ -578,7 +589,7 @@ function CalendarTab({ bookings, fields, selectedDate, setSelectedDate, onSlotCl
 /* =========================================
    FINANCES TAB
 ========================================= */
-function FinancesTab({ business, bookings }: any) {
+function FinancesTab({ business, bookings, hasMP, user }: any) {
   const totalIncome = bookings
     .filter((b: any) => b.status === 'full_paid' || b.status === 'partial_paid')
     .reduce((acc: number, curr: any) => acc + (curr.total_price || 0), 0);
@@ -617,14 +628,22 @@ function FinancesTab({ business, bookings }: any) {
                    <LayoutDashboard className="w-6 h-6 text-primary" />
                 </div>
              </div>
-             <div className="glass-card p-5 flex items-center justify-between group cursor-default">
+             <div className="glass-card p-5 flex items-center justify-between group cursor-default h-full">
                 <div>
-                   <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-1">App Conectada</p>
-                   <h3 className="text-2xl font-black text-[#009EE3]">MP</h3>
+                   <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-1">Mercado Pago</p>
+                   {hasMP ? (
+                      <h3 className="text-2xl font-black text-[#009EE3]">VINCULADA</h3>
+                   ) : (
+                      <button onClick={() => window.location.href = `/api/mercadopago/authorize?userId=${user?.id}`} className="mt-1 bg-[#009EE3]/10 text-[#009EE3] text-xs px-3 py-1.5 rounded-lg border border-[#009EE3]/20 hover:bg-[#009EE3]/20 font-bold transition-colors">
+                        CONECTAR AHORA
+                      </button>
+                   )}
                 </div>
-                <div className="w-12 h-12 rounded-xl bg-[#009EE3]/10 border border-[#009EE3]/20 flex items-center justify-center group-hover:-translate-y-1 transition-transform">
-                   <DollarSign className="w-6 h-6 text-[#009EE3]" />
-                </div>
+                {hasMP && (
+                  <div className="w-12 h-12 rounded-xl bg-[#009EE3]/10 border border-[#009EE3]/20 flex items-center justify-center group-hover:-translate-y-1 transition-transform">
+                     <DollarSign className="w-6 h-6 text-[#009EE3]" />
+                  </div>
+                )}
              </div>
           </div>
         </div>
@@ -687,7 +706,7 @@ function TransactionRow({ date, concept, amount, type, status }: any) {
 /* =========================================
    SETTINGS TAB
 ========================================= */
-function SettingsTab({ business, fields, setFields }: any) {
+function SettingsTab({ business, fields, setFields, hasMP }: any) {
   const { user } = useAuth();
   const [loading, setLoading] = useState(false);
   // Inicializar seña con la primera cancha o 30 por defecto
@@ -805,11 +824,18 @@ function SettingsTab({ business, fields, setFields }: any) {
           <div className="pt-4 border-t border-border/50">
               <label className="text-sm font-semibold text-muted-foreground mb-2 block">Mercado Pago Connect</label>
               <div className="flex flex-col gap-2">
-                 <button onClick={() => window.location.href = `/api/mercadopago/authorize?userId=${user?.id}`} className="bg-[#009EE3]/10 text-[#009EE3] hover:bg-[#009EE3]/20 font-bold py-3 px-4 rounded-xl flex items-center justify-center gap-2 transition-colors">
-                    <DollarSign className="w-5 h-5"/>
-                    Vincular Mercado Pago
-                 </button>
-                 <p className="text-xs text-muted-foreground mt-1">Recibe tus pagos online automáticamente en tu cuenta. Esta cuenta servirá para todas tus canchas.</p>
+                 {hasMP ? (
+                   <div className="bg-[#009EE3]/10 text-[#009EE3] font-bold py-3 px-4 rounded-xl flex items-center justify-between border border-[#009EE3]/20">
+                      <div className="flex items-center gap-2"><DollarSign className="w-5 h-5"/> Cuenta Vinculada Exitosamente</div>
+                      <Check className="w-5 h-5" />
+                   </div>
+                 ) : (
+                   <button onClick={() => window.location.href = `/api/mercadopago/authorize?userId=${user?.id}`} className="bg-[#009EE3]/10 text-[#009EE3] hover:bg-[#009EE3]/20 font-bold py-3 px-4 rounded-xl flex items-center justify-center gap-2 transition-colors">
+                      <DollarSign className="w-5 h-5"/>
+                      Vincular Mercado Pago
+                   </button>
+                 )}
+                 <p className="text-xs text-muted-foreground mt-1">Recibe tus pagos online automáticamente. Esta cuenta servirá para todas tus reservas confirmadas con el botón de MP.</p>
               </div>
             </div>
             
