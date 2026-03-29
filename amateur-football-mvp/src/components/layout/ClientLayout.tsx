@@ -29,7 +29,8 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
     pathname === '/login' ||
     pathname === '/register' ||
     pathname === '/onboarding' ||
-    pathname === '/team-builder';
+    pathname === '/team-builder' ||
+    pathname.startsWith('/canchas');
 
   const isHighlightsPage = pathname === '/highlights';
   const showNav = !isAuthPage && !!user && !isHighlightsPage;

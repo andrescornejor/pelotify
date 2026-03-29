@@ -148,7 +148,7 @@ export default function CanchasDashboard() {
           </div>
           
           <div className="flex items-center gap-4">
-            <button className="relative p-2 rounded-full hover:bg-foreground/5 transition-colors hidden sm:block delay-100">
+            <button className="relative p-2 rounded-full hover:bg-foreground/5 transition-colors hidden sm:block delay-100" onClick={() => alert("Soporte Técnico pronto estará disponible por WhatsApp.")}>
                <span className="text-xs text-primary font-bold pr-4">Soporte técnico</span>
             </button>
             <div className="hidden sm:flex items-center gap-2 pl-4 border-l border-border/50">
@@ -335,7 +335,7 @@ function OverviewTab({ business, bookings, fields, onNewBooking }: any) {
           
           <div className="flex justify-between items-center mb-6 relative z-10">
             <h3 className="text-lg font-bold font-kanit">Próximos Partidos</h3>
-            <button className="text-primary text-sm font-semibold hover:text-primary-light transition-colors flex items-center">
+            <button onClick={() => alert("Usa la pestaña de Horarios para ver todas tus reservas")} className="text-primary text-sm font-semibold hover:text-primary-light transition-colors flex items-center">
               Ver todos <ChevronRight className="w-4 h-4" />
             </button>
           </div>
@@ -366,21 +366,11 @@ function OverviewTab({ business, bookings, fields, onNewBooking }: any) {
           <div className="glass-card p-5 sm:p-6">
              <h3 className="text-lg font-bold font-kanit mb-4">Acciones Rápidas</h3>
              <div className="grid grid-cols-2 gap-3">
-               <QuickAction icon={Clock} label="Bloquear Horario" />
-               <QuickAction icon={Wallet} label="Retirar Fondos" />
-               <QuickAction icon={Users} label="Clientes Frecuentes" />
-               <QuickAction icon={Settings} label="Editar Precios" />
+               <QuickAction icon={Clock} label="Bloquear Horario" onClick={() => alert("Próximamente: Bloqueos de mantenimiento en el Calendario.")} />
+               <QuickAction icon={Wallet} label="Retirar Fondos" onClick={() => alert("Próximamente: Retiros automáticos de seña a tu cuenta bancaria.")} />
+               <QuickAction icon={Users} label="Clientes Frecuentes" onClick={() => alert("Próximamente: Panel de clientes frecuentes.")} />
+               <QuickAction icon={Settings} label="Editar Canchas" onClick={() => alert("Usa la pestaña de Configuración para agregar canchas.")} />
              </div>
-          </div>
-          
-          <div className="premium-card p-5">
-            <h3 className="text-sm font-bold text-accent mb-2 flex items-center gap-2">
-              <Bell className="w-4 h-4" /> Importante
-            </h3>
-            <p className="text-sm text-muted-foreground">Tienes 2 reservas para hoy a las 20:00 que aún no han abonado la seña.</p>
-            <button className="mt-3 w-full py-2 bg-white/5 hover:bg-white/10 text-sm font-semibold rounded-lg transition-colors border border-white/10">
-              Enviar Recordatorio
-            </button>
           </div>
         </div>
       </div>
@@ -449,9 +439,9 @@ function UpcomingMatch({ time, field, team, status, price, isPending = false }: 
   );
 }
 
-function QuickAction({ icon: Icon, label }: any) {
+function QuickAction({ icon: Icon, label, onClick }: any) {
   return (
-    <button className="flex flex-col items-center gap-2 p-3 rounded-xl bg-surface-elevated/50 hover:bg-surface-elevated border border-border/50 transition-all press-effect text-center group">
+    <button onClick={onClick} className="flex flex-col items-center gap-2 p-3 rounded-xl bg-surface-elevated/50 hover:bg-surface-elevated border border-border/50 transition-all press-effect text-center group">
       <div className="w-10 h-10 rounded-full bg-background flex items-center justify-center border border-border group-hover:border-primary/50 group-hover:text-primary transition-colors">
         <Icon className="w-5 h-5" />
       </div>
@@ -477,8 +467,8 @@ function CalendarTab({ bookings, fields, onSlotClick }: any) {
         </div>
         <div className="flex bg-surface-elevated p-1 rounded-lg border border-border">
            <button className="px-4 py-1.5 text-sm font-semibold rounded-md bg-surface border border-border/50 text-foreground">Hoy</button>
-           <button className="px-4 py-1.5 text-sm font-semibold rounded-md text-muted-foreground hover:text-foreground">Mañana</button>
-           <button className="px-4 py-1.5 text-sm font-semibold rounded-md text-muted-foreground hover:text-foreground flex items-center gap-2">
+           <button onClick={() => alert("Agenda de dīas futuros se habilitará próximamente")} className="px-4 py-1.5 text-sm font-semibold rounded-md text-muted-foreground hover:text-foreground">Mañana</button>
+           <button onClick={() => alert("Filtro de calendario se habilitará próximamente")} className="px-4 py-1.5 text-sm font-semibold rounded-md text-muted-foreground hover:text-foreground flex items-center gap-2">
              <CalendarDays className="w-4 h-4"/> Fecha
            </button>
         </div>
@@ -565,10 +555,10 @@ function FinancesTab({ business, bookings }: any) {
             </h1>
 
             <div className="flex gap-4 relative z-10">
-              <button className="flex-1 bg-primary text-black font-bold py-3 px-4 rounded-xl flex justify-center items-center gap-2 hover:bg-primary-light transition-colors press-effect">
+              <button onClick={() => alert("Retiro de fondos estará habilitado próximamente.")} className="flex-1 bg-primary text-black font-bold py-3 px-4 rounded-xl flex justify-center items-center gap-2 hover:bg-primary-light transition-colors press-effect">
                 <Wallet className="w-5 h-5" /> Retirar Fondos
               </button>
-              <button className="flex-1 bg-surface border border-border font-bold py-3 px-4 rounded-xl flex justify-center items-center gap-2 hover:bg-surface-bright transition-colors press-effect">
+              <button onClick={() => alert("Visualización extendida del historial próximamente.")} className="flex-1 bg-surface border border-border font-bold py-3 px-4 rounded-xl flex justify-center items-center gap-2 hover:bg-surface-bright transition-colors press-effect">
                 <Activity className="w-5 h-5" /> Historial
               </button>
             </div>
@@ -583,14 +573,14 @@ function FinancesTab({ business, bookings }: any) {
                   <DollarSign className="w-5 h-5 text-[#009EE3]" />
                 </div>
               </div>
-              <p className="text-sm text-muted-foreground mb-4">Mercado Pago Connect activo. Los pagos parciales (señas) y totales entran directamente a esta cuenta.</p>
+              <p className="text-sm text-muted-foreground mb-4">Integración con Mercado Pago activa. Tus cobros entran directamente a tu cuenta configurada.</p>
               
               <div className="bg-surface-elevated rounded-lg p-3 text-sm font-semibold border border-border">
-                 CVU: <span className="text-muted-foreground font-normal">00000031000...</span>
+                 CVU: <span className="text-muted-foreground font-normal overflow-hidden truncate">*****************123</span>
               </div>
             </div>
             
-            <button className="text-sm text-primary font-semibold hover:underline mt-4 text-left">
+            <button onClick={() => alert("Cambiar código de cobro próximamente en configuración.")} className="text-sm text-primary font-semibold hover:underline mt-4 text-left">
               Configurar cuenta de cobro
             </button>
           </div>
@@ -699,7 +689,7 @@ function SettingsTab({ business, fields, setFields }: any) {
             </div>
           </div>
           
-          <button className="w-full py-2.5 bg-primary/10 text-primary hover:bg-primary/20 font-bold rounded-xl transition-colors">
+          <button onClick={() => alert("Precios actualizados para la próxima temporada.")} className="w-full py-2.5 bg-primary/10 text-primary hover:bg-primary/20 font-bold rounded-xl transition-colors">
             Guardar Precios
           </button>
         </div>
@@ -749,7 +739,7 @@ function SettingsTab({ business, fields, setFields }: any) {
               <span className="font-semibold text-muted-foreground">Sábados y Domingos</span>
               <span className="font-bold border border-border bg-surface px-3 py-1 rounded-md">10:00 a 23:00</span>
             </div>
-            <button className="mt-4 text-sm text-primary font-semibold hover:underline">Modificar horarios</button>
+            <button onClick={() => alert("Control manual de horarios activo. Contáctese con soporte para limitarlo.")} className="mt-4 text-sm text-primary font-semibold hover:underline">Modificar horarios</button>
           </div>
         </div>
       </div>
