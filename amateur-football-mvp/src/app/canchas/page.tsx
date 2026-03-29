@@ -25,7 +25,10 @@ import {
   BarChart3,
   QrCode,
   Tag,
-  Gamepad2
+  Gamepad2,
+  Trash2,
+  Layers,
+  ChevronLeft
 } from 'lucide-react';
 
 import { useAuth } from '@/contexts/AuthContext';
@@ -1428,89 +1431,7 @@ function SettingsTab({ business, fields, setFields, hasMP }: any) {
     </div>
   );
 }
-            
-            <div className="space-y-3 max-h-64 overflow-y-auto no-scrollbar pr-2">
-              {fields.length === 0 ? (
-                <div className="text-sm text-muted-foreground text-center py-4 bg-surface rounded-xl border border-dashed border-border">No hay canchas configuradas, agrega la primera presionando el botón '+'.</div>
-              ) : (
-                fields.map((f: any) => (
-                  <FieldItem 
-                    key={f.id} 
-                    id={f.id}
-                    name={f.name} 
-                    type={`${f.type} - $${f.price_per_match}`} 
-                    isPremium={f.type === 'F11'} 
-                    onDelete={async (id: string) => {
-                      if(!window.confirm("¿Seguro que quieres borrar esta cancha?")) return;
-                      const { error } = await supabase.from('canchas_fields').delete().eq('id', id);
-                      if(!error) setFields((prev: any) => prev.filter((field: any) => field.id !== id));
-                      else alert("Error borrando cancha");
-                    }}
-                  />
-                ))
-              )}
-            </div>
-          </div>
 
-          <div className="glass-card p-6">
-            <div className="flex items-center gap-3 border-b border-border/50 pb-4 mb-4">
-              <div className="p-2 rounded-lg bg-foreground/10 text-foreground">
-                <Clock className="w-5 h-5" />
-              </div>
-              <h3 className="font-bold font-kanit text-lg">Horario de Atención</h3>
-            </div>
-            
-            <div className="flex items-center justify-between text-sm py-2">
-              <span className="font-semibold text-muted-foreground">Lunes a Viernes</span>
-              <span className="font-bold border border-border bg-surface px-3 py-1 rounded-md">17:00 a 00:00</span>
-            </div>
-            <div className="flex items-center justify-between text-sm py-2">
-              <span className="font-semibold text-muted-foreground">Sábados y Domingos</span>
-              <span className="font-bold border border-border bg-surface px-3 py-1 rounded-md">10:00 a 23:00</span>
-            </div>
-            <button onClick={() => alert("Control manual de horarios activo. Contáctese con soporte para limitarlo.")} className="mt-4 text-sm text-primary font-semibold hover:underline">Modificar horarios</button>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function PriceInput({ label, defaultValue }: any) {
-  return (
-    <div>
-      <label className="text-sm font-semibold text-muted-foreground mb-1 block">{label}</label>
-      <div className="relative">
-        <span className="absolute left-3 top-1/2 -translate-y-1/2 font-bold text-muted-foreground">$</span>
-        <input 
-          type="number" 
-          defaultValue={defaultValue}
-          className="w-full bg-surface-elevated border border-border/50 rounded-xl py-2 pl-8 pr-4 text-foreground font-bold outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/50 transition-all font-kanit"
-        />
-      </div>
-    </div>
-  );
-}
-
-function FieldItem({ id, name, type, isPremium = false, onDelete }: any) {
-  return (
-    <div className="flex items-center justify-between p-3 rounded-lg bg-surface border border-border group hover:border-border/80 transition-colors">
-      <div>
-        <h4 className="font-bold text-sm flex items-center gap-2">
-          {name}
-          {isPremium && <span className="px-1.5 py-0.5 rounded text-[10px] bg-accent/20 text-accent font-bold uppercase">Premium</span>}
-        </h4>
-        <p className="text-xs text-muted-foreground">{type}</p>
-      </div>
-      <button 
-        onClick={() => onDelete(id)}
-        className="text-danger hover:bg-danger/10 p-1.5 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity"
-      >
-        <Plus className="w-4 h-4 rotate-45" />
-      </button>
-    </div>
-  );
-}
 
 /* =========================================
    NEW BOOKING MODAL
