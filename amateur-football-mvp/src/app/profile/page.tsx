@@ -31,6 +31,7 @@ import {
   Flame,
   Play,
   BadgeCheck,
+  Wallet,
 } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useSearchParams, useRouter } from 'next/navigation';
@@ -1678,6 +1679,27 @@ function ProfileContent() {
       {/* FOOTER ACTIONS SECTION */}
       {isMe && (
         <div className="relative z-10 border-t border-foreground/10 pt-8 pb-8 flex flex-wrap gap-8 items-center">
+          {user && (
+            <button
+              onClick={() => {
+                if (dbProfile?.mp_user_id) {
+                  alert('Tu cuenta ya está vinculada a Mercado Pago.');
+                } else {
+                  window.location.href = `/api/mercadopago/authorize?userId=${user.id}`;
+                }
+              }}
+              className={cn(
+                "flex items-center gap-3 transition-colors text-[11px] font-black uppercase tracking-widest group",
+                dbProfile?.mp_user_id 
+                  ? "text-primary cursor-default" 
+                  : "text-foreground/30 hover:text-[#009EE3]"
+              )}
+            >
+              <Wallet className="w-4 h-4 group-hover:scale-110 transition-transform" />
+              {dbProfile?.mp_user_id ? 'Mercado Pago Conectado' : 'Vincular Mercado Pago'}
+            </button>
+          )}
+
           <button
             onClick={() => setShowPasswordModal(true)}
             className="flex items-center gap-3 text-foreground/30 hover:text-primary transition-colors text-[11px] font-black uppercase tracking-widest group"

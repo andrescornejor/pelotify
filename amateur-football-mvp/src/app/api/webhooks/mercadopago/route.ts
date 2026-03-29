@@ -2,11 +2,6 @@ import { NextResponse } from 'next/server';
 import { MercadoPagoConfig, Payment } from 'mercadopago';
 import { createClient } from '@supabase/supabase-js';
 
-// Initialize MP
-const client = new MercadoPagoConfig({ 
-  accessToken: process.env.MP_ACCESS_TOKEN || '' 
-});
-
 // Admin Supabase client (using service role to bypass RLS for updates)
 const supabaseAdmin = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL || '',
@@ -18,12 +13,30 @@ export async function POST(request: Request) {
     const url = new URL(request.url);
     const type = url.searchParams.get('type');
     const paymentId = url.searchParams.get('data.id');
+    const creatorId = url.searchParams.get('creator_id');
 
     // MP sends notifications for several events. We only care about payments.
     if (type !== 'payment' || !paymentId) {
       return NextResponse.json({ received: true });
     }
 
+    // Por default el token de la plataforma
+    let accessTokenToUse = process.env.MP_ACCESS_TOKEN || '';
+
+    // Si recibimos el creator_id, intentamos usar su token para leer el pago (MP Connect)
+    if (creatorId) {
+      const { data: creatorProfile } = await supabaseAdmin
+        .from('profiles')
+        .select('mp_access_token')
+        .eq('id', creatorId)
+        .single();
+      
+      if (creatorProfile && creatorProfile.mp_access_token) {
+        accessTokenToUse = creatorProfile.mp_access_token;
+      }
+    }
+
+    const client = new MercadoPagoConfig({ accessToken: accessTokenToUse });
     const payment = new Payment(client);
     const paymentDetails = await payment.get({ id: paymentId });
 
@@ -64,3 +77,4 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }
+
