@@ -709,25 +709,32 @@ function TransactionRow({ date, concept, amount, type, status }: any) {
 function SettingsTab({ business, fields, setFields, hasMP }: any) {
   const { user } = useAuth();
   const [loading, setLoading] = useState(false);
-  // Inicializar seña con la primera cancha o 30 por defecto
   const [deposit, setDeposit] = useState(fields?.[0]?.down_payment_percentage || 30);
   const [aliasCbu, setAliasCbu] = useState(business?.alias_cbu || '');
   const [isSavingPrices, setIsSavingPrices] = useState(false);
+  // Estado local para precios de cada cancha
+  const [fieldPrices, setFieldPrices] = useState<Record<string, number>>(() => {
+    const prices: Record<string, number> = {};
+    (fields || []).forEach((f: any) => { prices[f.id] = f.price_per_match || 0; });
+    return prices;
+  });
 
   const handleSavePrices = async () => {
     if (!business) return;
     setIsSavingPrices(true);
     try {
-      // Actualizar porcentaje de seña en todas las canchas para este negocio
-      const { error } = await supabase
-        .from('canchas_fields')
-        .update({ down_payment_percentage: deposit })
-        .eq('business_id', business.id);
-
-      if (error) {
-        alert("Error al actualizar la seña requerida: " + error.message);
-        setIsSavingPrices(false);
-        return;
+      // 1. Actualizar porcentaje de seña y precio de cada cancha
+      for (const field of (fields || [])) {
+        const price = fieldPrices[field.id] ?? field.price_per_match;
+        const { error: fieldErr } = await supabase
+          .from('canchas_fields')
+          .update({ down_payment_percentage: deposit, price_per_match: price })
+          .eq('id', field.id);
+        if (fieldErr) {
+          alert(`Error actualizando ${field.name}: ${fieldErr.message}`);
+          setIsSavingPrices(false);
+          return;
+        }
       }
 
       // Guardar el alias_cbu en canchas_businesses
@@ -752,7 +759,11 @@ function SettingsTab({ business, fields, setFields, hasMP }: any) {
       }
         
       // Actualizamos estado local
-      setFields((prev: any) => prev.map((f: any) => ({ ...f, down_payment_percentage: deposit })));
+      setFields((prev: any) => prev.map((f: any) => ({ 
+        ...f, 
+        down_payment_percentage: deposit,
+        price_per_match: fieldPrices[f.id] ?? f.price_per_match 
+      })));
       alert("✅ Configuración guardada correctamente.");
     } catch (err: any) {
       alert("Error inesperado: " + err.message);
@@ -805,9 +816,24 @@ function SettingsTab({ business, fields, setFields, hasMP }: any) {
           </div>
           
           <div className="space-y-4">
-            <PriceInput label="Fútbol 5 (F5)" defaultValue="15000" />
-            <PriceInput label="Fútbol 7 (F7)" defaultValue="25000" />
-            <PriceInput label="Fútbol 11 (F11)" defaultValue="40000" />
+            {(fields || []).length > 0 ? (
+              (fields || []).map((field: any) => (
+                <div key={field.id}>
+                  <label className="text-sm font-semibold text-muted-foreground mb-1 block">{field.name} ({field.type})</label>
+                  <div className="relative">
+                    <span className="absolute left-3 top-1/2 -translate-y-1/2 font-bold text-muted-foreground">$</span>
+                    <input 
+                      type="number" 
+                      value={fieldPrices[field.id] ?? field.price_per_match ?? 0}
+                      onChange={(e) => setFieldPrices(prev => ({ ...prev, [field.id]: parseInt(e.target.value) || 0 }))}
+                      className="w-full bg-surface-elevated border border-border/50 rounded-xl py-2 pl-8 pr-4 text-foreground font-bold outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/50 transition-all font-kanit"
+                    />
+                  </div>
+                </div>
+              ))
+            ) : (
+              <p className="text-sm text-muted-foreground italic">No tenés canchas registradas. Crealas abajo.</p>
+            )}
             
             <div className="pt-4 border-t border-border/50">
               <label className="text-sm font-semibold text-muted-foreground mb-2 block">Seña Requerida (%)</label>
