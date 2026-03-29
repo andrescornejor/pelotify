@@ -212,6 +212,7 @@ function MatchLobbyContent() {
   const [isSavingNames, setIsSavingNames] = useState(false);
   const [showChat, setShowChat] = useState(false);
   const [venueAliasCbu, setVenueAliasCbu] = useState<string | null>(null);
+  const [venueHasMP, setVenueHasMP] = useState<boolean | null>(null); // null means no venue. false means venue without MP. true means venue with MP.
 
   const fetchMatch = async () => {
     if (!id) return;
@@ -222,14 +223,23 @@ function MatchLobbyContent() {
       setEditingNames({ A: data.team_a_name || 'Local', B: data.team_b_name || 'Visitante' });
       
       try {
-         const { data: bookingData } = await supabase.from('canchas_bookings').select('canchas_fields(canchas_businesses(alias_cbu))').eq('match_id', data.id).single();
+         const { data: bookingData } = await supabase.from('canchas_bookings').select('canchas_fields(canchas_businesses(alias_cbu, mp_access_token, owner_id))').eq('match_id', data.id).single();
          const booking: any = bookingData;
          if (booking?.canchas_fields) {
             const field = Array.isArray(booking.canchas_fields) ? booking.canchas_fields[0] : booking.canchas_fields;
             if (field?.canchas_businesses) {
                const biz = Array.isArray(field.canchas_businesses) ? field.canchas_businesses[0] : field.canchas_businesses;
-               if (biz?.alias_cbu) {
-                  setVenueAliasCbu(biz.alias_cbu);
+               if (biz) {
+                  setVenueAliasCbu(biz.alias_cbu || null);
+                  // Determinar si el negocio o su dueño tiene Mercado Pago
+                  if (biz.mp_access_token) {
+                     setVenueHasMP(true);
+                  } else if (biz.owner_id) {
+                     const { data: ownerProf } = await supabase.from('profiles').select('mp_access_token').eq('id', biz.owner_id).single();
+                     setVenueHasMP(!!ownerProf?.mp_access_token);
+                  } else {
+                     setVenueHasMP(false);
+                  }
                }
             }
          }
@@ -1123,29 +1133,34 @@ function MatchLobbyContent() {
                   className="p-6 rounded-[2.5rem] bg-[#009EE3]/5 border border-[#009EE3]/20 space-y-4"
                 >
                   <div className="flex items-center gap-3 font-kanit">
-                    <div className="w-10 h-10 rounded-2xl bg-[#009EE3] flex items-center justify-center text-white">
+                    <div className="w-10 h-10 rounded-2xl bg-[#009EE3] flex items-center justify-center text-white shrink-0">
                       <DollarSign className="w-5 h-5" />
                     </div>
                     <div>
                       <h3 className="text-lg font-black italic uppercase tracking-tighter text-foreground leading-none">
                         Confirmá tu lugar
                       </h3>
-                      <p className="text-[10px] text-[#009EE3] font-bold uppercase tracking-widest mt-1">
-                        Pago seguro vía Mercado Pago
-                      </p>
+                      {venueHasMP !== false && (
+                         <p className="text-[10px] text-[#009EE3] font-bold uppercase tracking-widest mt-1">
+                           Pago seguro vía Mercado Pago
+                         </p>
+                      )}
                     </div>
                   </div>
                   
-                  <MercadoPagoButton 
-                    matchId={match.id} 
-                    title={`Lugar en ${venueName} - ${match.date}`} 
-                    price={match.price} 
-                  />
+                  {/* Si NO es una cancha registrada con Alias PERO sin MP, mostramos botón MP */}
+                  {venueHasMP !== false && (
+                    <MercadoPagoButton 
+                      matchId={match.id} 
+                      title={`Lugar en ${venueName} - ${match.date}`} 
+                      price={match.price} 
+                    />
+                  )}
                   
                   {venueAliasCbu && (
                     <div className="mt-4 p-4 rounded-xl bg-foreground/5 border border-foreground/10 text-center">
-                      <p className="text-[10px] text-foreground/40 font-bold uppercase tracking-widest mb-1">O transferí manualmente a la cancha:</p>
-                      <p className="text-sm font-black italic tracking-tighter text-foreground selectable select-all">{venueAliasCbu}</p>
+                      <p className="text-[10px] text-foreground/40 font-bold uppercase tracking-widest mb-1">Pagá transfiriendo manualmente a este Alias/CBU:</p>
+                      <p className="text-sm font-black italic tracking-tighter text-foreground selectable select-all bg-background border border-border inline-block px-3 py-1.5 rounded-lg mt-2">{venueAliasCbu}</p>
                     </div>
                   )}
                   

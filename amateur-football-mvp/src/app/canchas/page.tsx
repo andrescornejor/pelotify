@@ -801,9 +801,20 @@ function SettingsTab({ business, fields, setFields }: any) {
             </div>
           </div>
           
-          <button 
-            onClick={handleSavePrices} 
-            disabled={isSavingPrices}
+          <div className="pt-4 border-t border-border/50">
+              <label className="text-sm font-semibold text-muted-foreground mb-2 block">Mercado Pago Connect</label>
+              <div className="flex flex-col gap-2">
+                 <button onClick={() => window.location.href = `/api/mercadopago/authorize?userId=${user?.id}`} className="bg-[#009EE3]/10 text-[#009EE3] hover:bg-[#009EE3]/20 font-bold py-3 px-4 rounded-xl flex items-center justify-center gap-2 transition-colors">
+                    <DollarSign className="w-5 h-5"/>
+                    Vincular Mercado Pago
+                 </button>
+                 <p className="text-xs text-muted-foreground mt-1">Recibe tus pagos online automáticamente en tu cuenta. Esta cuenta servirá para todas tus canchas.</p>
+              </div>
+            </div>
+            
+            <button 
+              onClick={handleSavePrices} 
+              disabled={isSavingPrices}
             className="w-full py-2.5 bg-primary/10 text-primary hover:bg-primary/20 font-bold rounded-xl transition-colors disabled:opacity-50"
           >
             {isSavingPrices ? 'Guardando...' : 'Guardar Precios y Seña'}

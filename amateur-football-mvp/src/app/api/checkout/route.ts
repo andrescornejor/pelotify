@@ -61,6 +61,18 @@ export async function POST(request: Request) {
       }
     }
 
+    // Fallback: Si el establecimiento no tiene token directo, tomamos el del perfil del Dueño del Complejo
+    if (!businessToken && businessOwnerId) {
+       const { data: ownerProfile } = await supabaseAdmin
+         .from('profiles')
+         .select('mp_access_token')
+         .eq('id', businessOwnerId)
+         .single();
+       if (ownerProfile?.mp_access_token) {
+         businessToken = ownerProfile.mp_access_token;
+       }
+    }
+
     // Determinar si el creador o el establecimiento tienen MP Connect activo y establecer el cliente
     let clientToUse = platformClient;
     
