@@ -30,7 +30,7 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
     pathname === '/register' ||
     pathname === '/onboarding' ||
     pathname === '/team-builder';
-  
+
   const isHighlightsPage = pathname === '/highlights';
   const showNav = !isAuthPage && !!user && !isHighlightsPage;
 
@@ -53,8 +53,8 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
           className={cn(
             'flex-1 w-full relative',
             showNav
-              ? pathname.startsWith('/match') || 
-                pathname === '/profile' || 
+              ? pathname.startsWith('/match') ||
+                pathname === '/profile' ||
                 pathname.startsWith('/profile/')
                 ? 'pb-24 lg:pb-0'
                 : 'pt-32 lg:pt-24 pb-24 lg:pb-0'
