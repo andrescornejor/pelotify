@@ -23,6 +23,7 @@ export interface Match {
   team_b_name?: string;
   is_private?: boolean;
   is_recruitment?: boolean;
+  payment_method?: 'mercado_pago' | 'cash';
   participants?: { count: number }[];
   user_team?: 'A' | 'B' | null;
 }
@@ -132,7 +133,12 @@ export async function createMatch(matchData: Partial<Match> & { field_id?: strin
   const { field_id, business_id, ...insertData } = matchData;
   const { data, error } = await supabase
     .from('matches')
-    .insert([{ ...insertData, is_completed: false, is_private: insertData.is_private ?? false }])
+    .insert([{ 
+      ...insertData, 
+      is_completed: false, 
+      is_private: insertData.is_private ?? false,
+      payment_method: insertData.payment_method || 'mercado_pago'
+    }])
     .select()
     .single();
 
@@ -166,7 +172,8 @@ export async function createMatch(matchData: Partial<Match> & { field_id?: strin
          title: `[Pelotify] Partido ${match.type}`,
          total_price: match.price * (match.type === 'F5' ? 10 : match.type === 'F7' ? 14 : 22), // Total price calculation based on format
          down_payment_paid: 0,
-         status: 'pending' // Starting as pending for user payment
+         status: match.payment_method === 'cash' ? 'pending' : 'pending' // Still pending until paid on MP
+       }]);
        }]);
 
        if (bookingError) console.error("Could not create linked booking:", bookingError);

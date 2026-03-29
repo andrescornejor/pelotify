@@ -1144,24 +1144,32 @@ function MatchLobbyContent() {
                       <DollarSign className="w-5 h-5" />
                     </div>
                     <div>
-                      <h3 className="text-lg font-black italic uppercase tracking-tighter text-foreground leading-none">
-                        Confirmá tu lugar
+                        {match.payment_method === 'cash' ? 'Pago en el predio' : 'Confirmá tu lugar'}
                       </h3>
-                      {venueHasMP !== false && (
-                         <p className="text-[10px] text-[#009EE3] font-bold uppercase tracking-widest mt-1">
-                           Pago seguro vía Mercado Pago
-                         </p>
-                      )}
+                      <p className={cn("text-[10px] font-bold uppercase tracking-widest mt-1", match.payment_method === 'cash' ? "text-amber-500" : "text-[#009EE3]")}>
+                        {match.payment_method === 'cash' ? 'Abonás al llegar a la cancha' : 'Pago seguro vía Mercado Pago'}
+                      </p>
                     </div>
                   </div>
                   
                   {/* Si NO es una cancha registrada con Alias PERO sin MP, mostramos botón MP */}
-                  {venueHasMP !== false && (
+                  {venueHasMP !== false && match.payment_method !== 'cash' && (
                     <MercadoPagoButton 
                       matchId={match.id} 
                       title={`Lugar en ${venueName} - ${match.date}`} 
                       price={match.price} 
                     />
+                  )}
+
+                  {match.payment_method === 'cash' && (
+                    <div className="mt-4 p-5 rounded-2xl bg-amber-500/10 border border-amber-500/20 flex items-center gap-4">
+                      <div className="w-10 h-10 rounded-full bg-amber-500 flex items-center justify-center shrink-0">
+                        <DollarSign className="w-5 h-5 text-black" />
+                      </div>
+                      <p className="text-xs font-bold text-amber-500 uppercase tracking-tight leading-snug">
+                        Recordá llevar el dinero en efectivo. El establecimiento te cobrará antes de jugar.
+                      </p>
+                    </div>
                   )}
                   
                   {venueAliasCbu && (

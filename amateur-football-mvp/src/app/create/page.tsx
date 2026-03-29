@@ -209,6 +209,7 @@ export default function CreateMatchPage() {
     missing_players: 0,
     field_id: '', // To link with canchas schema
     business_id: '',
+    payment_method: 'mercado_pago' as 'mercado_pago' | 'cash',
   });
 
   useEffect(() => {
@@ -1006,6 +1007,61 @@ export default function CreateMatchPage() {
                     })}
                   </div>
                 </div>
+
+                {/* Payment Method Selection */}
+                <div className="space-y-4">
+                  <span className="text-[10px] font-black text-foreground/30 uppercase tracking-[0.4em] px-1">
+                    Método de Pago para Reserva
+                  </span>
+                  <div className="grid grid-cols-2 gap-4">
+                    <button
+                      type="button"
+                      onClick={() => setFormData({ ...formData, payment_method: 'mercado_pago' })}
+                      className={cn(
+                        "p-5 rounded-3xl border text-left transition-all duration-300 flex flex-col gap-3 relative overflow-hidden",
+                        formData.payment_method === 'mercado_pago'
+                          ? "border-primary bg-primary/[0.08]"
+                          : "border-foreground/[0.06] bg-foreground/[0.02] hover:border-foreground/15"
+                      )}
+                    >
+                      <div className={cn(
+                        "w-10 h-10 rounded-2xl flex items-center justify-center transition-all",
+                        formData.payment_method === 'mercado_pago' ? "bg-primary text-black" : "bg-foreground/[0.04] text-foreground/20"
+                      )}>
+                        <DollarSign className="w-5 h-5" />
+                      </div>
+                      <div>
+                        <span className={cn("block text-sm font-black italic uppercase tracking-tight", formData.payment_method === 'mercado_pago' ? "text-foreground" : "text-foreground/30")}>Mercado Pago</span>
+                        <span className={cn("block text-[10px] font-bold tracking-wide mt-0.5", formData.payment_method === 'mercado_pago' ? "text-foreground/50" : "text-foreground/15")}>Asegura la cancha ahora</span>
+                      </div>
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() => setFormData({ ...formData, payment_method: 'cash' })}
+                      className={cn(
+                        "p-5 rounded-3xl border text-left transition-all duration-300 flex flex-col gap-3 relative overflow-hidden",
+                        formData.payment_method === 'cash'
+                          ? "border-amber-500 bg-amber-500/[0.08]"
+                          : "border-foreground/[0.06] bg-foreground/[0.02] hover:border-foreground/15"
+                      )}
+                    >
+                      <div className={cn(
+                        "w-10 h-10 rounded-2xl flex items-center justify-center transition-all",
+                        formData.payment_method === 'cash' ? "bg-amber-500 text-black" : "bg-foreground/[0.04] text-foreground/20"
+                      )}>
+                        <Zap className="w-5 h-5" />
+                      </div>
+                      <div>
+                        <span className={cn("block text-sm font-black italic uppercase tracking-tight", formData.payment_method === 'cash' ? "text-foreground" : "text-foreground/30")}>En Efectivo</span>
+                        <span className={cn("block text-[10px] font-bold tracking-wide mt-0.5", formData.payment_method === 'cash' ? "text-foreground/50" : "text-foreground/15")}>Pagás en el complejo</span>
+                      </div>
+                    </button>
+                  </div>
+                  <p className="text-[9px] font-medium text-foreground/30 px-1">
+                    * Si seleccionas pago online, recuerda que Pelotify no se hace responsable por reembolsos fuera de los términos del complejo.
+                  </p>
+                </div>
               </motion.div>
             )}
 
@@ -1088,6 +1144,11 @@ export default function CreateMatchPage() {
                         ),
                         label: 'Privacidad',
                         value: formData.is_private ? 'Solo invitados' : 'Público',
+                      },
+                      {
+                        icon: <DollarSign className="w-4 h-4" />,
+                        label: 'Pago',
+                        value: formData.payment_method === 'mercado_pago' ? 'Online (Reserva)' : 'Efectivo (Predio)',
                       },
                     ].map(({ icon, label, value }) => (
                       <div key={label} className="flex items-start gap-3">
