@@ -1180,7 +1180,10 @@ function MatchLobbyContent() {
                     </div>
                   )}
                   
-                  <p className="text-[9px] text-foreground/20 font-bold uppercase tracking-widest text-center mt-4">
+                  <p className="text-[9px] text-foreground/40 font-bold uppercase tracking-widest text-center mt-4">
+                    * Cada jugador abona su lugar individualmente. El organizador NO paga el total de la reserva.
+                  </p>
+                  <p className="text-[9px] text-foreground/20 font-bold uppercase tracking-widest text-center mt-2">
                     * El pago confirma tu asistencia definitiva.
                   </p>
                 </motion.div>
