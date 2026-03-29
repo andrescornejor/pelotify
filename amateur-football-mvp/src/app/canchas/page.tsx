@@ -21,7 +21,6 @@ import {
   Check,
   Zap,
   Share2,
-  Coffee,
   BarChart3,
   QrCode,
   Tag,
@@ -71,7 +70,6 @@ export default function CanchasDashboard() {
     { id: 'overview', label: 'Resumen', icon: LayoutDashboard },
     { id: 'calendar', label: 'Horarios', icon: CalendarDays },
     { id: 'marketing', label: 'Marketing', icon: Zap },
-    { id: 'inventory', label: 'Bar / Stock', icon: Coffee },
     { id: 'finances', label: 'Finanzas', icon: Wallet },
     { id: 'settings', label: 'Configuración', icon: Settings },
   ];
@@ -287,7 +285,6 @@ export default function CanchasDashboard() {
               {activeTab === 'overview' && <OverviewTab business={business} bookings={bookings} fields={fields} onNewBooking={() => setShowBookingModal(true)} onBookingClick={(booking: any) => { setSelectedBooking(booking); setShowEditBookingModal(true); }} onTabChange={setActiveTab} />}
               {activeTab === 'calendar' && <CalendarTab bookings={bookings} fields={fields} selectedDate={selectedDate} setSelectedDate={setSelectedDate} onSlotClick={(time: string, fieldId: string) => { setSelectedSlot({time, fieldId}); setShowBookingModal(true); }} onBookingClick={(booking: any) => { setSelectedBooking(booking); setShowEditBookingModal(true); }} />}
               {activeTab === 'marketing' && <MarketingTab business={business} />}
-              {activeTab === 'inventory' && <InventoryTab />}
               {activeTab === 'finances' && <FinancesTab business={business} bookings={bookings} hasMP={hasMP} user={user} />}
               {activeTab === 'settings' && <SettingsTab business={business} fields={fields} setFields={setFields} hasMP={hasMP} />}
             </motion.div>
@@ -429,8 +426,8 @@ function OverviewTab({ business, bookings, fields, onNewBooking, onBookingClick,
         <StatCard 
           icon={TrendingUp} 
           title="Ocupación" 
-          value="78%" 
-          trend="+3%" 
+          value={fields.length > 0 ? `${Math.round((bookings.filter((b:any) => b.date === new Date().toISOString().split('T')[0]).length / (16 * fields.length)) * 100)}%` : '0%'} 
+          trend="Real" 
           trendUp={true} 
           color="primary"
         />
@@ -452,25 +449,6 @@ function OverviewTab({ business, bookings, fields, onNewBooking, onBookingClick,
             </div>
           </div>
 
-          {/* Mini Chart Mockup */}
-          <div className="h-48 flex items-end justify-between gap-3 relative pb-8">
-            <div className="absolute inset-x-0 bottom-8 h-px bg-white/5"></div>
-            {[45, 78, 52, 91, 64, 85, 72].map((height, i) => (
-              <div key={i} className="flex-1 flex flex-col items-center gap-3 group/bar">
-                <motion.div 
-                  initial={{ height: 0 }}
-                  animate={{ height: `${height}%` }}
-                  transition={{ delay: i * 0.1, duration: 1, ease: 'circOut' }}
-                  className={`w-full max-w-[40px] rounded-t-xl relative overflow-hidden transition-all group-hover/bar:scale-x-110 ${i === 3 ? 'bg-primary' : 'bg-surface-elevated border border-white/5 hover:border-primary/50'}`}
-                >
-                   {i === 3 && <div className="absolute inset-0 bg-white/20 animate-shimmer"></div>}
-                </motion.div>
-                <span className="text-[9px] font-black text-muted-foreground uppercase tracking-widest leading-none">
-                  {['L', 'M', 'X', 'J', 'V', 'S', 'D'][i]}
-                </span>
-              </div>
-            ))}
-          </div>
         </div>
 
         {/* QUICK ACTIONS */}
@@ -479,8 +457,8 @@ function OverviewTab({ business, bookings, fields, onNewBooking, onBookingClick,
            <div className="grid grid-cols-2 gap-4">
              <QuickActionPremium icon={CalendarDays} label="Agenda" sub="Revisar Turnos" color="primary" onClick={() => onTabChange('calendar')} />
              <QuickActionPremium icon={Zap} label="Marketing" sub="Subir Promo" color="accent" onClick={() => onTabChange('marketing')} />
-             <QuickActionPremium icon={Coffee} label="Bar" sub="Inventario" color="success" onClick={() => onTabChange('inventory')} />
              <QuickActionPremium icon={Settings} label="Ajustes" sub="Configuración" color="primary" onClick={() => onTabChange('settings')} />
+             <QuickActionPremium icon={Wallet} label="Cobros" sub="Finanzas" color="accent" onClick={() => onTabChange('finances')} />
            </div>
            
            <div className="mt-8 p-6 rounded-3xl bg-surface-elevated/50 border border-white/5 space-y-4">
@@ -490,7 +468,7 @@ function OverviewTab({ business, bookings, fields, onNewBooking, onBookingClick,
                  </div>
                  <h4 className="text-xs font-black uppercase tracking-widest">Aviso Importante</h4>
               </div>
-              <p className="text-[10px] text-muted-foreground leading-relaxed">Tenés 2 reservas pendientes de confirmación para hoy a las 21:00hs. <span className="text-primary cursor-pointer font-black underline">Revisar ahora</span></p>
+              <p className="text-[10px] text-muted-foreground leading-relaxed">No tienes avisos críticos en este momento. Los pedidos de reserva aparecerán aquí automáticamente.</p>
            </div>
         </div>
       </div>
@@ -531,28 +509,13 @@ function OverviewTab({ business, bookings, fields, onNewBooking, onBookingClick,
           </div>
         </div>
 
-        {/* FEEDBACK & RECENT */}
-        <div className="glass-premium rounded-[2.5rem] p-8 border-white/5">
-           <h3 className="text-xl font-black font-kanit italic uppercase tracking-tighter mb-6">Top Clientes</h3>
-           <div className="space-y-4">
-              {[1, 2, 3].map((_, i) => (
-                <div key={i} className="flex items-center justify-between p-4 rounded-2xl bg-surface-elevated/30 border border-white/5 hover:border-primary/30 transition-all cursor-pointer group">
-                  <div className="flex items-center gap-3">
-                     <div className="w-10 h-10 rounded-xl bg-background overflow-hidden border border-white/10 p-0.5">
-                        <img src={`https://i.pravatar.cc/150?u=${i+10}`} className="w-full h-full object-cover rounded-lg" alt="" />
-                     </div>
-                     <div>
-                        <p className="text-xs font-black uppercase tracking-tighter">Santi Pérez</p>
-                        <p className="text-[8px] font-bold text-muted-foreground uppercase tracking-widest">8 Partidos • Lvl 42</p>
-                     </div>
-                  </div>
-                  <ChevronRight className="w-4 h-4 text-muted-foreground group-hover:text-primary transition-colors" />
-                </div>
-              ))}
-              <button className="w-full py-4 rounded-2xl border border-dashed border-white/10 text-[9px] font-black uppercase tracking-widest text-muted-foreground hover:text-foreground hover:bg-surface-elevated transition-all mt-4">
-                Ver Ranking de Clientes
-              </button>
+        <div className="glass-premium rounded-[2.5rem] p-8 border-white/5 flex flex-col items-center justify-center text-center space-y-4">
+           <div className="w-16 h-16 rounded-3xl bg-primary/10 flex items-center justify-center border border-primary/20">
+              <Users className="w-8 h-8 text-primary" />
            </div>
+           <h3 className="text-xl font-black font-kanit italic uppercase tracking-tighter">Comunidad Activa</h3>
+           <p className="text-[10px] text-muted-foreground leading-relaxed uppercase tracking-widest font-bold">Pronto verás aquí el ranking de tus jugadores más fieles y sus estadísticas de juego.</p>
+        </div>
         </div>
       </div>
     </div>
@@ -619,22 +582,10 @@ function MarketingTab({ business }: any) {
                    </button>
                 </div>
                 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                   <PromoCard 
-                      title="Happy Hour F5" 
-                      discount="20% OFF" 
-                      period="14hs - 17hs" 
-                      status="Activa"
-                      icon={Clock}
-                   />
-                   <PromoCard 
-                      title="Pelotify Exclusive" 
-                      discount="Free Gatorade" 
-                      period="Reservas via App" 
-                      status="Pausada"
-                      icon={Zap}
-                      inactive
-                   />
+                <div className="p-10 text-center flex flex-col items-center justify-center border-dashed border-2 border-white/5 rounded-[2rem] bg-surface-elevated/30">
+                   <Tag className="w-12 h-12 text-muted-foreground/30 mb-4" />
+                   <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">No hay promociones activas actualmente.</p>
+                   <p className="text-[8px] font-bold text-muted-foreground uppercase tracking-widest mt-2 px-6">Crea una nueva campaña para incentivar a tus jugadores en horas muertas.</p>
                 </div>
              </div>
           </div>
