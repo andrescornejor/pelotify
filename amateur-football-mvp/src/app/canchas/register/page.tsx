@@ -184,12 +184,6 @@ export default function CanchasRegisterPage() {
                 </div>
               </div>
 
-              <div className="p-4 bg-surface-elevated/50 border border-border/50 rounded-xl">
-                 <p className="text-xs text-muted-foreground font-semibold leading-relaxed">
-                   🚨 IMPORTANTE: Asegúrate de haber ejecutado el script <span className="text-primary font-Kanit">canchas_schema.sql</span> en el panel de Supabase antes de registrarte para que se cree tu negocio automáticamente.
-                 </p>
-              </div>
-
               <button
                 type="submit"
                 disabled={isLoading || success}
