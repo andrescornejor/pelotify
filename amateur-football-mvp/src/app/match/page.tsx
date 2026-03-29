@@ -45,7 +45,7 @@ import {
 } from '@/lib/matches';
 import { getFriends, FriendshipData } from '@/lib/friends';
 import { useAuth } from '@/contexts/AuthContext';
-import { findVenueByLocation } from '@/lib/venues';
+import { supabase } from '@/lib/supabase';
 import { cn } from '@/lib/utils';
 import PlayerSlot from '@/components/PlayerSlot';
 import PostMatchView from '@/components/PostMatchView';
