@@ -1,3 +1,10 @@
+export type MatchFormat = 'F5' | 'F7' | 'F11';
+
+export interface VenueFormat {
+  type: MatchFormat;
+  pricePerPlayer: number;
+}
+
 export interface Venue {
   id: string;
   name: string;
@@ -8,6 +15,7 @@ export interface Venue {
   lng: number;
   mapQuery?: string; // override for Google Maps search
   aliases?: string[]; // alternative names like 'Hipódromo'
+  formats?: VenueFormat[];
 }
 
 export const ROSARIO_VENUES: Venue[] = [
@@ -21,6 +29,10 @@ export const ROSARIO_VENUES: Venue[] = [
     lat: -32.92991583849577,
     lng: -60.67460062260593,
     aliases: ['adiur', 'alberdi', 'mongsfeld'],
+    formats: [
+      { type: 'F7', pricePerPlayer: 6500 },
+      { type: 'F11', pricePerPlayer: 7500 }
+    ],
   },
   {
     id: 'olimpicus',
@@ -32,6 +44,9 @@ export const ROSARIO_VENUES: Venue[] = [
     lat: -32.937213,
     lng: -60.655214,
     aliases: ['olimpicus'],
+    formats: [
+      { type: 'F5', pricePerPlayer: 7000 }
+    ],
   },
   {
     id: 'el-ovalo',
@@ -43,6 +58,11 @@ export const ROSARIO_VENUES: Venue[] = [
     lat: -32.962106518121615,
     lng: -60.661848158713866,
     aliases: ['ovalo', 'hipodromo', 'hipódromo', 'hipodromo independencia'],
+    formats: [
+      { type: 'F5', pricePerPlayer: 6500 },
+      { type: 'F7', pricePerPlayer: 8000 },
+      { type: 'F11', pricePerPlayer: 9000 }
+    ],
   },
   {
     id: 'la-cancha',
@@ -54,6 +74,9 @@ export const ROSARIO_VENUES: Venue[] = [
     lat: -32.9463,
     lng: -60.6521,
     aliases: ['la cancha', 'stadium'],
+    formats: [
+      { type: 'F5', pricePerPlayer: 7000 }
+    ],
   },
 ];
 

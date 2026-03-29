@@ -22,7 +22,7 @@ import {
 import { useState, useEffect } from 'react';
 import { createMatch } from '@/lib/matches';
 import { useAuth } from '@/contexts/AuthContext';
-import { ROSARIO_VENUES } from '@/lib/venues';
+import { ROSARIO_VENUES, findVenueByLocation } from '@/lib/venues';
 import LocationSearch from '@/components/LocationSearch';
 import { cn } from '@/lib/utils';
 import { AVAILABLE_TIMES } from '@/lib/constants';
@@ -191,6 +191,44 @@ export default function CreateMatchPage() {
     missing_players: 0,
   });
 
+  const handleLocationSelect = (address: string) => {
+    const venue = findVenueByLocation(address);
+    let newType = formData.type;
+    let newPrice = formData.price;
+
+    if (venue?.formats && venue.formats.length > 0) {
+      const currentFormatValid = venue.formats.find(f => f.type === newType);
+      
+      if (!currentFormatValid) {
+        newType = venue.formats[0].type;
+        newPrice = venue.formats[0].pricePerPlayer;
+      } else {
+        newPrice = currentFormatValid.pricePerPlayer;
+      }
+    }
+
+    setFormData({ 
+      ...formData, 
+      location: address,
+      type: newType,
+      price: newPrice
+    });
+  };
+
+  const handleTypeSelect = (type: 'F5' | 'F7' | 'F11') => {
+    const venue = findVenueByLocation(formData.location);
+    let newPrice = formData.price;
+
+    if (venue?.formats) {
+      const formatData = venue.formats.find(f => f.type === type);
+      if (formatData) {
+        newPrice = formatData.pricePerPlayer;
+      }
+    }
+
+    setFormData({ ...formData, type, price: newPrice });
+  };
+
   const handleCreate = async () => {
     if (!user) return;
     setIsCreating(true);
@@ -333,7 +371,7 @@ export default function CreateMatchPage() {
                         initial={false}
                         animate={{ opacity: 1, y: 0 }}
                         type="button"
-                        onClick={() => setFormData({ ...formData, location: venue.address })}
+                        onClick={() => handleLocationSelect(venue.address)}
                         className={`group relative p-4 sm:p-5 rounded-3xl border text-left transition-all duration-300 overflow-hidden ${
                           isSelected
                             ? 'border-primary bg-primary/[0.08]'
@@ -405,7 +443,7 @@ export default function CreateMatchPage() {
                   </div>
                   <LocationSearch
                     value={formData.location}
-                    onChange={(addr) => setFormData({ ...formData, location: addr })}
+                    onChange={handleLocationSelect}
                     placeholder="Buscá otra cancha o dirección..."
                   />
                 </motion.div>
@@ -676,6 +714,11 @@ export default function CreateMatchPage() {
                         (typeof FORMAT_DATA)[keyof typeof FORMAT_DATA],
                       ][]
                     ).map(([key, data], i) => {
+                      const venue = findVenueByLocation(formData.location);
+                      const isAvailable = !venue?.formats || venue.formats.some(f => f.type === key);
+                      
+                      if (!isAvailable) return null;
+
                       const isSelected = formData.type === key;
                       return (
                         <motion.button
@@ -683,7 +726,7 @@ export default function CreateMatchPage() {
                           initial={false}
                           animate={{ opacity: 1, y: 0 }}
                           type="button"
-                          onClick={() => setFormData({ ...formData, type: key })}
+                          onClick={() => handleTypeSelect(key)}
                           className={`group relative p-4 sm:p-5 rounded-3xl border text-left transition-all duration-300 overflow-hidden flex flex-col gap-3 ${
                             isSelected
                               ? `border-primary bg-primary/[0.08] sm:shadow-2xl ${data.glow}`
