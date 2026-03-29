@@ -38,7 +38,7 @@ export async function POST(request: Request) {
     const isSena = title?.startsWith('Seña Reserva');
 
     if (isSena) {
-      const { data: booking } = await supabaseAdmin
+      const { data: bookingRaw } = await supabaseAdmin
         .from('canchas_bookings')
         .select(`
           field_id,
@@ -52,10 +52,12 @@ export async function POST(request: Request) {
         `)
         .eq('match_id', matchId)
         .single();
-        
-      if (booking?.canchas_fields?.canchas_businesses) {
-         receiverId = booking.canchas_fields.canchas_businesses.owner_id;
-         businessAccessToken = booking.canchas_fields.canchas_businesses.mp_access_token;
+
+      const booking = bookingRaw as any;
+      const biz = booking?.canchas_fields?.canchas_businesses;
+      if (biz) {
+         receiverId = biz.owner_id;
+         businessAccessToken = biz.mp_access_token;
       }
     }
 
