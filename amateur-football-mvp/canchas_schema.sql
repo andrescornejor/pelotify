@@ -25,6 +25,10 @@ CREATE POLICY "Owners can view their own business"
   ON public.canchas_businesses FOR SELECT
   USING (auth.uid() = owner_id);
 
+CREATE POLICY "Users can view active businesses"
+  ON public.canchas_businesses FOR SELECT
+  USING (is_active = true);
+
 CREATE POLICY "Owners can update their own business"
   ON public.canchas_businesses FOR UPDATE
   USING (auth.uid() = owner_id);

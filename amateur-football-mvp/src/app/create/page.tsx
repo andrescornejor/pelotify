@@ -249,7 +249,9 @@ export default function CreateMatchPage() {
        
        if (validField) {
          newType = validField.type as any;
-         newPrice = validField.price_per_match;
+         // Calcular por jugador dividiendo el total por el formato
+         const divider = validField.type === 'F5' ? 10 : validField.type === 'F7' ? 14 : validField.type === 'F11' ? 22 : 10;
+         newPrice = Math.round((validField.price_per_match || 0) / divider);
          fieldId = validField.id;
        }
     } else {
@@ -284,7 +286,8 @@ export default function CreateMatchPage() {
     if (venue?.id) { // Real DB venue
       const formatData = dbFields.find(f => f.business_id === venue.id && f.type === type);
       if (formatData) {
-        newPrice = formatData.price_per_match;
+        const divider = type === 'F5' ? 10 : type === 'F7' ? 14 : type === 'F11' ? 22 : 10;
+        newPrice = Math.round((formatData.price_per_match || 0) / divider);
         fieldId = formatData.id;
       }
     } else if (venue?.formats) { // Hardcoded venue
