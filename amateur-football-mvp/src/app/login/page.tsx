@@ -147,13 +147,22 @@ export default function LoginPage() {
               </button>
             </form>
 
-            <div className="text-center mt-6">
+            <div className="text-center mt-6 space-y-4">
               <p className="text-[10px] font-black text-foreground/40 uppercase tracking-[0.2em]">
                 ¿No tenés equipo?{' '}
                 <Link href="/register" className="text-primary hover:text-white transition-colors underline decoration-primary/30 underline-offset-4">
                   FICHATE ACÁ
                 </Link>
               </p>
+              
+              <div className="pt-4 border-t border-white/5 opacity-30 hover:opacity-100 transition-opacity">
+                <p className="text-[9px] font-black text-foreground/30 uppercase tracking-[0.3em]">
+                  ¿Tenés un complejo?{' '}
+                  <Link href="/canchas" className="text-primary hover:text-white transition-colors underline decoration-primary/30 underline-offset-4">
+                    ADMINISTRÁ TU SEDE
+                  </Link>
+                </p>
+              </div>
             </div>
           </div>
         </motion.div>
