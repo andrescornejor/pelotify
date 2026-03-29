@@ -34,6 +34,7 @@ import { cn } from '@/lib/utils';
 import { OnboardingTour } from '@/components/OnboardingTour';
 import { JerseyVisualizer } from '@/components/JerseyVisualizer';
 import { getHighlights, Highlight } from '@/lib/highlights';
+import { useRouter } from 'next/navigation';
 
 // --- TYPES & CONSTANTS ---
 
@@ -298,6 +299,28 @@ export default function HomePage() {
   const [isRatingOpen, setIsRatingOpen] = useState(false);
   const { performanceMode, setPerformanceMode } = useSettings();
   const [scrollProgress, setScrollProgress] = useState(0);
+  const router = useRouter();
+
+  useEffect(() => {
+    async function checkVenueAccount() {
+      if (!user?.id) return;
+      try {
+        // Redirigir si el usuario ya tiene un establecimiento registrado (es dueño)
+        const { data: business } = await supabase
+          .from('canchas_businesses')
+          .select('id')
+          .eq('owner_id', user.id)
+          .maybeSingle();
+
+        if (business) {
+          router.replace('/canchas');
+        }
+      } catch (e) {
+        console.error('Redirection check error:', e);
+      }
+    }
+    checkVenueAccount();
+  }, [user?.id, router]);
   const [highlights, setHighlights] = useState<Highlight[]>([]);
 
   // Local sync to set global perf-mode if user previously toggled it here (Legacy compatibility)
