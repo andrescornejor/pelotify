@@ -49,7 +49,7 @@ export async function POST(request: Request) {
         date,
         start_time: time,
         end_time: (parseInt(time.split(':')[0]) + 1) + ":00", // Asumimos 1 hora
-        user_id: userId,
+        booker_id: userId,
         status: 'pending',
         total_price: totalPrice,
         down_payment_paid: 0,

@@ -21,9 +21,10 @@ import {
   Instagram,
   Facebook
 } from 'lucide-react';
-import { useParams, useRouter } from 'next/navigation';
+import { useParams, useRouter, useSearchParams } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/contexts/AuthContext';
+import confetti from 'canvas-confetti';
 
 export default function EstablecimientoProfile() {
   const params = useParams();
@@ -41,6 +42,23 @@ export default function EstablecimientoProfile() {
   const [reviews, setReviews] = useState<any[]>([]);
   const [isPostingReview, setIsPostingReview] = useState(false);
   const [newReview, setNewReview] = useState({ rating: 5, comment: '' });
+  const searchParams = useSearchParams();
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
+
+  useEffect(() => {
+    const paymentStatus = searchParams.get('payment');
+    if (paymentStatus === 'success') {
+      setShowSuccessModal(true);
+      confetti({
+        particleCount: 150,
+        spread: 70,
+        origin: { y: 0.6 },
+        colors: ['#2cfc7d', '#ffffff', '#000000']
+      });
+      // Clear URL params without reloading
+      window.history.replaceState({}, '', window.location.pathname);
+    }
+  }, [searchParams]);
 
   useEffect(() => {
     if (params.id) {
@@ -596,6 +614,33 @@ const handleBooking = async () => {
          )}
       </AnimatePresence>
 
+      {/* SUCCESS MODAL */}
+      <AnimatePresence>
+         {showSuccessModal && (
+            <div className="fixed inset-0 z-[110] flex items-center justify-center p-6 bg-background/90 backdrop-blur-2xl">
+               <motion.div
+                 initial={{ scale: 0.8, opacity: 0 }}
+                 animate={{ scale: 1, opacity: 1 }}
+                 exit={{ scale: 0.8, opacity: 0 }}
+                 className="relative w-full max-w-sm glass-premium rounded-[3rem] p-10 border-primary/20 text-center shadow-[0_0_100px_rgba(44,252,125,0.15)]"
+               >
+                  <div className="w-20 h-20 bg-primary rounded-[2rem] flex items-center justify-center mx-auto mb-8 rotate-12 shadow-[0_15px_30px_rgba(44,252,125,0.4)]">
+                     <Check className="w-10 h-10 text-black stroke-[3]" />
+                  </div>
+                  <h3 className="text-3xl font-black font-kanit italic uppercase tracking-tighter mb-4">¡Reserva <span className="text-primary">Confirmada!</span></h3>
+                  <p className="text-sm text-balance text-muted-foreground mb-10 px-4">
+                     Tu turno ha sido señado con éxito. Ya puedes verlo en tu sección de próximos partidos. ¡A romperla!
+                  </p>
+                  <button 
+                    onClick={() => setShowSuccessModal(false)}
+                    className="w-full py-5 bg-foreground text-background font-black uppercase text-[10px] tracking-widest rounded-2xl hover:scale-105 active:scale-95 transition-all shadow-xl"
+                  >
+                     EXCELENTE
+                  </button>
+               </motion.div>
+            </div>
+         )}
+      </AnimatePresence>
     </div>
   );
 }

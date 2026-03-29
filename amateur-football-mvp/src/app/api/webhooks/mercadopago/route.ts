@@ -40,7 +40,6 @@ export async function POST(request: Request) {
     const paymentDetails = await payment.get({ id: paymentId });
 
     if (paymentDetails.status === 'approved') {
-      // Extract our custom identifiers
       const externalReference = paymentDetails.external_reference;
       
       if (!externalReference) {
@@ -48,26 +47,52 @@ export async function POST(request: Request) {
         return NextResponse.json({ error: 'Missing external_reference' }, { status: 400 });
       }
 
-      const [matchId, userId] = externalReference.split(':');
+      // 1. Handle Direct Venue Booking Payments
+      if (externalReference.startsWith('booking:')) {
+        const bookingId = externalReference.split(':')[1];
+        
+        // Fetch booking to see if it was a down payment or full
+        const { data: booking } = await supabaseAdmin
+          .from('canchas_bookings')
+          .select('total_price, down_payment_paid')
+          .eq('id', bookingId)
+          .single();
+        
+        if (booking) {
+          const amountPaid = (paymentDetails as any).transaction_details?.total_paid_amount || paymentDetails.transaction_amount;
+          const isFullPayment = amountPaid >= booking.total_price;
+          
+          const { error } = await supabaseAdmin
+            .from('canchas_bookings')
+            .update({ 
+               status: isFullPayment ? 'full_paid' : 'partial_paid',
+               down_payment_paid: amountPaid,
+               updated_at: new Date().toISOString()
+            })
+            .eq('id', bookingId);
+            
+          if (error) throw error;
+          console.log(`Booking confirmed: ${bookingId} (${isFullPayment ? 'FULL' : 'PARTIAL'})`);
+        }
+      } 
+      // 2. Handle Individual Player Payments for Matches
+      else {
+        const [matchId, userId] = externalReference.split(':');
 
-      if (!matchId || !userId) {
-        console.error('Invalid external_reference format', externalReference);
-        return NextResponse.json({ error: 'Invalid reference' }, { status: 400 });
+        if (matchId && userId) {
+          const { error } = await supabaseAdmin
+            .from('match_participants')
+            .update({ paid: true })
+            .eq('match_id', matchId)
+            .eq('user_id', userId);
+
+          if (error) {
+            console.error('Supabase update error:', error);
+            return NextResponse.json({ error: 'Database update failed' }, { status: 500 });
+          }
+          console.log(`Match payment confirmed for Match ${matchId}, User ${userId}`);
+        }
       }
-
-      // Update the database
-      const { error } = await supabaseAdmin
-        .from('match_participants')
-        .update({ paid: true })
-        .eq('match_id', matchId)
-        .eq('user_id', userId);
-
-      if (error) {
-        console.error('Supabase update error:', error);
-        return NextResponse.json({ error: 'Database update failed' }, { status: 500 });
-      }
-
-      console.log(`Payment confirmed for Match ${matchId}, User ${userId}`);
     }
 
     return NextResponse.json({ success: true });
