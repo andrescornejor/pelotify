@@ -717,24 +717,45 @@ function SettingsTab({ business, fields, setFields, hasMP }: any) {
   const handleSavePrices = async () => {
     if (!business) return;
     setIsSavingPrices(true);
-    // Actualizar porcentaje de seña en todas las canchas para este negocio
-    const { error } = await supabase
-      .from('canchas_fields')
-      .update({ down_payment_percentage: deposit })
-      .eq('business_id', business.id);
+    try {
+      // Actualizar porcentaje de seña en todas las canchas para este negocio
+      const { error } = await supabase
+        .from('canchas_fields')
+        .update({ down_payment_percentage: deposit })
+        .eq('business_id', business.id);
 
-    if (error) {
-      alert("Error al actualizar la seña requerida: " + error.message);
-    } else {
-      // Guardar también el alias_cbu en canchas_businesses
-      await supabase
+      if (error) {
+        alert("Error al actualizar la seña requerida: " + error.message);
+        setIsSavingPrices(false);
+        return;
+      }
+
+      // Guardar el alias_cbu en canchas_businesses
+      const trimmedAlias = aliasCbu.trim();
+      const { data: updatedBiz, error: aliasError } = await supabase
         .from('canchas_businesses')
-        .update({ alias_cbu: aliasCbu })
-        .eq('id', business.id);
+        .update({ alias_cbu: trimmedAlias, updated_at: new Date().toISOString() })
+        .eq('id', business.id)
+        .eq('owner_id', user?.id)
+        .select();
+
+      if (aliasError) {
+        alert("Error al guardar Alias/CBU: " + aliasError.message);
+        setIsSavingPrices(false);
+        return;
+      }
+
+      if (!updatedBiz || updatedBiz.length === 0) {
+        alert("⚠️ No se pudo guardar el Alias/CBU. Verificá que tu cuenta tenga permisos de administrador sobre este establecimiento.");
+        setIsSavingPrices(false);
+        return;
+      }
         
       // Actualizamos estado local
       setFields((prev: any) => prev.map((f: any) => ({ ...f, down_payment_percentage: deposit })));
-      alert("Configuración de pagos y seña actualizada correctamente.");
+      alert("✅ Configuración guardada correctamente.");
+    } catch (err: any) {
+      alert("Error inesperado: " + err.message);
     }
     setIsSavingPrices(false);
   };
