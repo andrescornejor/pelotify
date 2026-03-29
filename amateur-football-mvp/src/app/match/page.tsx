@@ -229,7 +229,7 @@ function MatchLobbyContent() {
        try {
           const { data: allBusinesses } = await supabase
             .from('canchas_businesses')
-            .select('id, name, alias_cbu, mp_access_token, owner_id, latitude, longitude')
+            .select('id, name, alias_cbu, mp_access_token, owner_id, google_maps_link')
             .eq('is_active', true);
          
           // Primero intentar por ID directo
@@ -1239,12 +1239,25 @@ function MatchLobbyContent() {
                   </span>
                 </div>
                 <div className="p-3">
-                  <div className="h-56 rounded-xl overflow-hidden">
+                  <div className="h-56 rounded-xl overflow-hidden bg-foreground/5 relative flex items-center justify-center group">
                     <VenueMap 
                        location={match.location} 
-                       lat={venueInfo?.latitude ?? match.lat} 
-                       lng={venueInfo?.longitude ?? match.lng} 
                     />
+                    {venueInfo?.google_maps_link && (
+                      <a 
+                        href={venueInfo.google_maps_link}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="absolute inset-0 z-10 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center gap-3 text-white backdrop-blur-[2px]"
+                      >
+                        <div className="w-12 h-12 rounded-2xl bg-primary flex items-center justify-center text-black shadow-2xl scale-75 group-hover:scale-100 transition-transform">
+                          <ExternalLink className="w-6 h-6" />
+                        </div>
+                        <span className="text-[10px] font-black uppercase tracking-widest bg-black/60 px-4 py-2 rounded-full border border-white/10">
+                          Ver en Google Maps
+                        </span>
+                      </a>
+                    )}
                   </div>
                 </div>
                 <div className="px-5 pb-4">

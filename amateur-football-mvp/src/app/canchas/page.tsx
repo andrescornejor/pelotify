@@ -783,8 +783,6 @@ function SettingsTab({ business, fields, setFields, hasMP }: any) {
   const [address, setAddress] = useState(business?.address || '');
   const [city, setCity] = useState(business?.city || '');
   const [coords, setCoords] = useState({ 
-    lat: business?.latitude || '', 
-    lng: business?.longitude || '',
     link: business?.google_maps_link || ''
   });
   const [isSavingPrices, setIsSavingPrices] = useState(false);
@@ -822,8 +820,6 @@ function SettingsTab({ business, fields, setFields, hasMP }: any) {
           description,
           address,
           city,
-          latitude: coords.lat ? parseFloat(coords.lat.toString()) : null,
-          longitude: coords.lng ? parseFloat(coords.lng.toString()) : null,
           google_maps_link: coords.link,
           updated_at: new Date().toISOString() 
         })
@@ -957,16 +953,6 @@ function SettingsTab({ business, fields, setFields, hasMP }: any) {
                   <div>
                     <label className="text-[10px] font-bold text-muted-foreground uppercase mb-1 block">Ciudad</label>
                     <input type="text" value={city} onChange={(e) => setCity(e.target.value)} className="w-full bg-surface-elevated border border-border/50 rounded-xl py-2 px-4 text-sm outline-none" placeholder="Rosario, etc" />
-                  </div>
-                </div>
-                <div className="grid grid-cols-2 gap-3">
-                  <div>
-                    <label className="text-[10px] font-bold text-muted-foreground uppercase mb-1 block">Latitud</label>
-                    <input type="text" value={coords.lat} onChange={(e) => setCoords({...coords, lat: e.target.value})} className="w-full bg-surface-elevated border border-border/50 rounded-xl py-2 px-4 text-sm outline-none" placeholder="-34.123" />
-                  </div>
-                  <div>
-                    <label className="text-[10px] font-bold text-muted-foreground uppercase mb-1 block">Longitud</label>
-                    <input type="text" value={coords.lng} onChange={(e) => setCoords({...coords, lng: e.target.value})} className="w-full bg-surface-elevated border border-border/50 rounded-xl py-2 px-4 text-sm outline-none" placeholder="-60.456" />
                   </div>
                 </div>
                 <div>
