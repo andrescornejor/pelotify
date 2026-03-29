@@ -69,7 +69,6 @@ CREATE TABLE IF NOT EXISTS public.canchas_bookings (
   id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   field_id uuid REFERENCES public.canchas_fields(id) ON DELETE CASCADE NOT NULL,
   booker_id uuid REFERENCES auth.users(id), -- User who booked (can be null if booked manually by owner)
-  match_id uuid, -- Link to Pelotify match
   title text, -- Auto-generated or manual name
   date date NOT NULL,
   start_time time NOT NULL,

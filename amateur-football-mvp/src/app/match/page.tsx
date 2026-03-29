@@ -45,7 +45,6 @@ import {
 } from '@/lib/matches';
 import { getFriends, FriendshipData } from '@/lib/friends';
 import { useAuth } from '@/contexts/AuthContext';
-import { supabase } from '@/lib/supabase';
 import { findVenueByLocation } from '@/lib/venues';
 import { cn } from '@/lib/utils';
 import PlayerSlot from '@/components/PlayerSlot';
@@ -211,7 +210,6 @@ function MatchLobbyContent() {
   const [editingNames, setEditingNames] = useState({ A: '', B: '' });
   const [isSavingNames, setIsSavingNames] = useState(false);
   const [showChat, setShowChat] = useState(false);
-  const [booking, setBooking] = useState<any>(null); // For venue booking status
 
   const fetchMatch = async () => {
     if (!id) return;
@@ -220,15 +218,6 @@ function MatchLobbyContent() {
       const data = await getMatchById(id as string);
       setMatch(data);
       setEditingNames({ A: data.team_a_name || 'Local', B: data.team_b_name || 'Visitante' });
-      
-      // Attempt to load associated venue booking
-      try {
-        const { data: bData } = await supabase.from('canchas_bookings').select('*, canchas_fields(name, down_payment_percentage)').eq('match_id', id).single();
-        if (bData) setBooking(bData);
-      } catch (err) {
-         // silently ignore if no booking
-      }
-
       if (data.is_completed) {
         try {
           setMatchStats(await getMatchStats(data.id));
@@ -697,49 +686,6 @@ function MatchLobbyContent() {
               </div>
             </motion.div>
           )}
-        </AnimatePresence>
-
-        {/* ── VENUE BOOKING PENDING (SEÑA) BANNER (For Creator) ── */}
-        <AnimatePresence>
-          {booking && booking.status === 'pending' && user?.id === match?.creator_id && !isCompleted && (() => {
-             const señaPct = booking.canchas_fields?.down_payment_percentage || 30;
-             const señaAmount = Math.ceil(booking.total_price * (señaPct / 100));
-
-             return (
-              <motion.div
-                initial={{ opacity: 0, y: -10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0 }}
-                className="relative overflow-hidden rounded-[2rem] border border-amber-500/30 bg-amber-500/5 p-6"
-              >
-                <div className="absolute inset-0 bg-gradient-to-r from-amber-500/10 via-transparent to-transparent" />
-                <div className="relative flex flex-col md:flex-row items-center justify-between gap-5">
-                  <div className="flex items-center gap-4 w-full md:w-auto">
-                    <div className="w-14 h-14 bg-amber-500/20 rounded-2xl flex items-center justify-center border border-amber-500/30 text-amber-500 shrink-0">
-                       <MapPin className="w-6 h-6" />
-                    </div>
-                    <div>
-                      <h3 className="text-xl font-black text-amber-500 italic uppercase tracking-tighter">
-                        ¡Cancha sin Confirmar!
-                      </h3>
-                      <p className="text-[10px] text-foreground/60 font-bold uppercase tracking-widest mt-0.5 max-w-sm">
-                        Para reservar oficialmente en {booking.canchas_fields?.name || "el establecimiento"}, debes abonar el {señaPct}% de seña (${señaAmount.toLocaleString('es-AR')}).
-                      </p>
-                    </div>
-                  </div>
-                  <div className="w-full md:w-1/3">
-                    <MercadoPagoButton
-                      matchId={match.id}
-                      title={`Seña Reserva - ${booking.canchas_fields?.name}`}
-                      price={señaAmount}
-                      userId={user.id}
-                      fullWidth
-                    />
-                  </div>
-                </div>
-              </motion.div>
-             );
-          })()}
         </AnimatePresence>
 
         {/* ── POST-MATCH PROMPT ── */}

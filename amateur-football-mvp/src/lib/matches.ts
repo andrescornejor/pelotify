@@ -159,7 +159,6 @@ export async function createMatch(matchData: Partial<Match> & { field_id?: strin
        const { error: bookingError } = await supabase.from('canchas_bookings').insert([{
          field_id: field_id,
          booker_id: match.creator_id,
-         match_id: match.id,
          date: match.date,
          start_time: startTime,
          end_time: endTime,

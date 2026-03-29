@@ -32,45 +32,15 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Partido no encontrado' }, { status: 404 });
     }
 
-    // 2. Determinar quién recibe el pago: el Creador del Partido o el Dueño de la Cancha (Si es Seña)
-    let receiverId = match.creator_id;
-    let businessAccessToken = null;
-    const isSena = title?.startsWith('Seña Reserva');
-
-    if (isSena) {
-      const { data: bookingRaw } = await supabaseAdmin
-        .from('canchas_bookings')
-        .select(`
-          field_id,
-          canchas_fields (
-            business_id,
-            canchas_businesses (
-              owner_id,
-              mp_access_token
-            )
-          )
-        `)
-        .eq('match_id', matchId)
-        .single();
-
-      const booking = bookingRaw as any;
-      const biz = booking?.canchas_fields?.canchas_businesses;
-      if (biz) {
-         receiverId = biz.owner_id;
-         businessAccessToken = biz.mp_access_token;
-      }
-    }
-
-    // 3. Obtener la información de MP del receptor (Creador o Cancha)
+    // 2. Obtener la información de MP del creador
     const { data: creatorProfile, error: profileError } = await supabaseAdmin
       .from('profiles')
       .select('mp_access_token')
-      .eq('id', receiverId)
+      .eq('id', match.creator_id)
       .single();
 
-    // Determinar si el receptor tiene MP Connect activo y establecer el cliente
+    // Determinar si el creador tiene MP Connect activo y establecer el cliente
     let clientToUse = platformClient;
-    const finalAccessToken = businessAccessToken || creatorProfile?.mp_access_token;
     
     // Cálculo de precios y comisiones (Volviendo al modelo 15% para que el creador gane limpio)
     const basePrice = Number(price);
@@ -82,14 +52,14 @@ export async function POST(request: Request) {
 
     let marketplaceFee = 0;
 
-    if (finalAccessToken) {
-      // El receptor conectó su cuenta: creamos la preferencia en SU nombre
-      clientToUse = new MercadoPagoConfig({ accessToken: finalAccessToken });
+    if (creatorProfile && creatorProfile.mp_access_token) {
+      // El creador conectó su cuenta: creamos la preferencia en SU nombre
+      clientToUse = new MercadoPagoConfig({ accessToken: creatorProfile.mp_access_token });
       
       // Nuestra ganancia real de uso de plataforma
       marketplaceFee = platformCommissionPerItem * Number(quantity); 
     } else {
-      console.warn("El receptor no vinculó Mercado Pago, el dinero irá a la plataforma");
+      console.warn("El creador no vinculó Mercado Pago, el dinero irá a la plataforma");
       // Incluso si va a la plataforma, le cobramos al usuario el cargo de servicio por equidad
     }
 
@@ -102,7 +72,7 @@ export async function POST(request: Request) {
     const preferenceBody: any = {
       items: [
         {
-          id: isSena ? `SENA-${matchId}` : matchId,
+          id: matchId,
           title: title || `Reserva de lugar - Pelotify`,
           unit_price: finalPricePerItem,
           quantity: Number(quantity),
@@ -115,12 +85,11 @@ export async function POST(request: Request) {
         pending: `${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/match?id=${matchId}&payment=pending`,
       },
       auto_return: 'approved',
-      notification_url: `${process.env.NEXT_PUBLIC_BASE_URL}/api/webhooks/mercadopago?receiver_id=${receiverId}`,
+      notification_url: `${process.env.NEXT_PUBLIC_BASE_URL}/api/webhooks/mercadopago?creator_id=${match.creator_id}`,
       external_reference: externalReference,
       metadata: {
         match_id: matchId,
-        user_id: userId,
-        is_sena: isSena
+        user_id: userId
       }
     };
 
