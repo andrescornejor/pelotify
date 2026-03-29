@@ -41,16 +41,26 @@ export async function POST(request: Request) {
 
     // Determinar si el creador tiene MP Connect activo y establecer el cliente
     let clientToUse = platformClient;
+    
+    // Cálculo de precios y comisiones
+    const basePrice = Number(price);
+    const serviceFeePerItem = Math.ceil(basePrice * 0.05); // 5% sobre el precio base (solo Pelotify)
+    const finalPricePerItem = basePrice + serviceFeePerItem;
+    
+    // Nuestra comisión es exactamente el cargo por servicio
+    const platformCommissionPerItem = serviceFeePerItem;
+
     let marketplaceFee = 0;
 
     if (creatorProfile && creatorProfile.mp_access_token) {
       // El creador conectó su cuenta: creamos la preferencia en SU nombre
       clientToUse = new MercadoPagoConfig({ accessToken: creatorProfile.mp_access_token });
       
-      // La tarifa de la plataforma (ej: 5% del valor por cupo). Puedes ajustar este valor.
-      marketplaceFee = Number(price) * 0.05 * Number(quantity); 
+      // Nuestra ganancia real de uso de plataforma
+      marketplaceFee = platformCommissionPerItem * Number(quantity); 
     } else {
       console.warn("El creador no vinculó Mercado Pago, el dinero irá a la plataforma");
+      // Incluso si va a la plataforma, le cobramos al usuario el cargo de servicio por equidad
     }
 
     const preference = new Preference(clientToUse);
@@ -64,7 +74,7 @@ export async function POST(request: Request) {
         {
           id: matchId,
           title: title || `Reserva de lugar - Pelotify`,
-          unit_price: Number(price),
+          unit_price: finalPricePerItem,
           quantity: Number(quantity),
           currency_id: 'ARS',
         },
