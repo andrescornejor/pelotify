@@ -16,11 +16,12 @@ import {
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import Link from 'next/link';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { findVenueByLocation } from '@/lib/venues';
 import dynamic from 'next/dynamic';
 import { useMatchSearch } from '@/hooks/useMatchSearch';
 import { useSettings } from '@/contexts/SettingsContext';
+import { supabase } from '@/lib/supabase';
 
 const MapSearch = dynamic(() => import('@/components/MapSearch'), {
   ssr: false,
