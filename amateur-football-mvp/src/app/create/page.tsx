@@ -182,6 +182,7 @@ export default function CreateMatchPage() {
   const [isCreating, setIsCreating] = useState(false);
   const [dbVenues, setDbVenues] = useState<any[]>([]);
   const [dbFields, setDbFields] = useState<any[]>([]);
+  const [bookedTimes, setBookedTimes] = useState<string[]>([]);
 
   useEffect(() => {
     // Fetch real venues from database
@@ -209,6 +210,32 @@ export default function CreateMatchPage() {
     field_id: '', // To link with canchas schema
     business_id: '',
   });
+
+  useEffect(() => {
+    // Escuchar cambios de cancha y fecha para obtener horarios ocupados
+    const fetchBookings = async () => {
+      if (formData.field_id && formData.date) {
+        const { data } = await supabase
+          .from('canchas_bookings')
+          .select('start_time, end_time')
+          .eq('field_id', formData.field_id)
+          .eq('date', formData.date)
+          .neq('status', 'cancelled');
+
+        if (data) {
+          const booked = data.map(b => b.start_time.substring(0, 5));
+          setBookedTimes(booked);
+          // Si el horario actual está ocupado, deseleccionarlo
+          if (booked.includes(formData.time)) {
+             setFormData(prev => ({ ...prev, time: '' }));
+          }
+        }
+      } else {
+        setBookedTimes([]);
+      }
+    };
+    fetchBookings();
+  }, [formData.field_id, formData.date]);
 
   const handleLocationSelect = (address: string, isRealDb = false, businessId?: string) => {
     let newType = formData.type;
@@ -626,13 +653,15 @@ export default function CreateMatchPage() {
                         const hour = parseInt(h);
                         const displayHour = hour % 12 === 0 ? 12 : hour % 12;
                         const ampm = hour >= 12 ? 'PM' : 'AM';
+                        const isBooked = bookedTimes.includes(t);
                         return (
                           <option
                             key={t}
                             value={t}
-                            className="bg-background text-foreground font-bold"
+                            disabled={isBooked}
+                            className={`bg-background font-bold ${isBooked ? 'text-foreground/20' : 'text-foreground'}`}
                           >
-                            {displayHour}:{m} {ampm}
+                            {displayHour}:{m} {ampm} {isBooked ? '(Ocupado)' : ''}
                           </option>
                         );
                       })}

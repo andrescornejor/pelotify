@@ -76,6 +76,7 @@ CREATE TABLE IF NOT EXISTS public.canchas_bookings (
   total_price numeric NOT NULL DEFAULT 0,
   down_payment_paid numeric NOT NULL DEFAULT 0,
   status text NOT NULL DEFAULT 'pending', -- pending, partial_paid, full_paid, cancelled
+  match_id uuid REFERENCES public.matches(id) ON DELETE CASCADE,
   created_at timestamp with time zone DEFAULT now(),
   updated_at timestamp with time zone DEFAULT now()
 );

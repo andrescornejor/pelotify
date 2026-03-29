@@ -38,6 +38,8 @@ export default function CanchasDashboard() {
   // Modals state
   const [showBookingModal, setShowBookingModal] = useState(false);
   const [selectedSlot, setSelectedSlot] = useState<{time: string, fieldId: string} | null>(null);
+  const [selectedBooking, setSelectedBooking] = useState<any>(null);
+  const [showEditBookingModal, setShowEditBookingModal] = useState(false);
 
   // Tab configurations
   const tabs = [
@@ -202,8 +204,8 @@ export default function CanchasDashboard() {
               exit={{ opacity: 0, y: -10 }}
               transition={{ duration: 0.2 }}
             >
-              {activeTab === 'overview' && <OverviewTab business={business} bookings={bookings} fields={fields} onNewBooking={() => setShowBookingModal(true)} />}
-              {activeTab === 'calendar' && <CalendarTab bookings={bookings} fields={fields} onSlotClick={(time: string, fieldId: string) => { setSelectedSlot({time, fieldId}); setShowBookingModal(true); }} />}
+              {activeTab === 'overview' && <OverviewTab business={business} bookings={bookings} fields={fields} onNewBooking={() => setShowBookingModal(true)} onBookingClick={(booking: any) => { setSelectedBooking(booking); setShowEditBookingModal(true); }} />}
+              {activeTab === 'calendar' && <CalendarTab bookings={bookings} fields={fields} onSlotClick={(time: string, fieldId: string) => { setSelectedSlot({time, fieldId}); setShowBookingModal(true); }} onBookingClick={(booking: any) => { setSelectedBooking(booking); setShowEditBookingModal(true); }} />}
               {activeTab === 'finances' && <FinancesTab business={business} bookings={bookings} />}
               {activeTab === 'settings' && <SettingsTab business={business} fields={fields} setFields={setFields} />}
             </motion.div>
@@ -219,6 +221,14 @@ export default function CanchasDashboard() {
             fields={fields} 
             selectedSlot={selectedSlot}
             onBooked={(newBooking: any) => setBookings(prev => [...prev, newBooking])}
+          />
+        )}
+        {showEditBookingModal && selectedBooking && (
+          <EditBookingModal 
+             booking={selectedBooking}
+             onClose={() => { setShowEditBookingModal(false); setSelectedBooking(null); }}
+             onUpdate={(updated: any) => setBookings(prev => prev.map(b => b.id === updated.id ? updated : b))}
+             onDelete={(id: string) => setBookings(prev => prev.filter(b => b.id !== id))}
           />
         )}
       </AnimatePresence>
@@ -259,7 +269,7 @@ export default function CanchasDashboard() {
 /* =========================================
    OVERVIEW TAB
 ========================================= */
-function OverviewTab({ business, bookings, fields, onNewBooking }: any) {
+function OverviewTab({ business, bookings, fields, onNewBooking, onBookingClick }: any) {
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'pending': return 'bg-danger/10 text-danger border-danger/20';
@@ -355,6 +365,7 @@ function OverviewTab({ business, bookings, fields, onNewBooking }: any) {
                   status={getStatusLabel(booking.status)} 
                   price={formatMoney(booking.total_price)} 
                   isPending={booking.status === 'pending'} 
+                  onClick={() => onBookingClick?.(booking)}
                 />
               ))
             )}
@@ -412,9 +423,9 @@ function StatCard({ icon: Icon, title, value, trend, trendUp, color }: any) {
   );
 }
 
-function UpcomingMatch({ time, field, team, status, price, isPending = false }: any) {
+function UpcomingMatch({ time, field, team, status, price, isPending = false, onClick }: any) {
   return (
-    <div className="flex items-center justify-between p-3 sm:p-4 rounded-xl bg-surface-elevated/50 hover:bg-surface-elevated border border-border/50 transition-colors group">
+    <div onClick={onClick} className="cursor-pointer flex items-center justify-between p-3 sm:p-4 rounded-xl bg-surface-elevated/50 hover:bg-surface-elevated border border-border/50 transition-colors group">
       <div className="flex items-center gap-4">
         <div className="text-center w-14 shrink-0">
           <span className="block text-lg font-bold font-kanit">{time}</span>
@@ -453,7 +464,7 @@ function QuickAction({ icon: Icon, label, onClick }: any) {
 /* =========================================
    CALENDAR TAB
 ========================================= */
-function CalendarTab({ bookings, fields, onSlotClick }: any) {
+function CalendarTab({ bookings, fields, onSlotClick, onBookingClick }: any) {
   const timeSlots = ["17:00", "18:00", "19:00", "20:00", "21:00", "22:00", "23:00"];
   const displayFields = fields;
 
@@ -518,13 +529,14 @@ function CalendarTab({ bookings, fields, onSlotClick }: any) {
                     return (
                       <div key={f.id} className="p-2 border-l border-border/50">
                         {booking ? (
-                          <div className={`h-full w-full rounded-lg p-2 text-xs flex flex-col justify-center border ${
+                          <div onClick={() => onBookingClick(booking)} className={`cursor-pointer h-full w-full rounded-lg p-2 text-xs flex flex-col justify-center border hover:brightness-110 transition-all ${
                             booking.status === 'pending' ? 'bg-danger/10 border-danger/30 text-danger' :
                             booking.status === 'partial_paid' ? 'bg-accent/10 border-accent/30 text-accent' :
                             'bg-primary/10 border-primary/30 text-primary'
                           }`}>
                             <span className="font-bold">{booking.status === 'pending' ? 'Impago' : booking.status === 'partial_paid' ? 'Señado' : 'Pagado'}</span>
                             <span className="text-muted-foreground truncate">{booking.title || 'Reserva'} - ${booking.total_price}</span>
+                            {booking.match_id && <span className="text-primary text-[9px] uppercase font-bold mt-1 tracking-widest bg-primary/20 px-1 py-0.5 rounded w-max">App</span>}
                           </div>
                         ) : (
                           <button onClick={() => onSlotClick(time, f.id)} className="h-full w-full min-h-[60px] rounded-lg border border-dashed border-border/50 hover:border-primary/50 hover:bg-primary/5 text-muted-foreground hover:text-primary flex items-center justify-center gap-1 transition-colors text-xs opacity-0 hover:opacity-100">
@@ -934,6 +946,113 @@ function NewBookingModal({ onClose, fields, selectedSlot, onBooked }: any) {
            <button type="submit" disabled={loading} className="w-full mt-4 h-12 bg-primary text-black font-black text-sm uppercase tracking-wider rounded-xl hover:bg-white transition-all disabled:opacity-50">
              {loading ? 'Guardando...' : 'Confirmar Turno'}
            </button>
+        </form>
+      </motion.div>
+    </div>
+  );
+}
+
+/* =========================================
+   EDIT BOOKING MODAL
+========================================= */
+function EditBookingModal({ booking, onClose, onUpdate, onDelete }: any) {
+  const [loading, setLoading] = useState(false);
+  const [status, setStatus] = useState(booking.status);
+  const [downPayment, setDownPayment] = useState(booking.down_payment_paid || 0);
+
+  const handleUpdate = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    
+    // Si viene desde la app (match_id) y se cancela, ideally cancelamos también en matches o se maneja asíncrono.
+    // Para el MVP de canchas actualizamos este booking local:
+    
+    const { data, error } = await supabase.from('canchas_bookings')
+      .update({ status, down_payment_paid: downPayment })
+      .eq('id', booking.id)
+      .select('*, canchas_fields(name, type)')
+      .single();
+
+    if (error) {
+      alert("Error al actualizar la reserva: " + error.message);
+    } else {
+      onUpdate(data);
+      onClose();
+    }
+    setLoading(false);
+  };
+
+  const handleDelete = async () => {
+    if(!window.confirm("¿Estás seguro de que quieres eliminar esta reserva permanentemente? Esta acción liberará la cancha para este horario.")) return;
+    setLoading(true);
+    const { error } = await supabase.from('canchas_bookings').delete().eq('id', booking.id);
+    if(error){
+       alert("Error al eliminar: " + error.message);
+    } else {
+       onDelete(booking.id);
+       onClose();
+    }
+    setLoading(false);
+  };
+
+  return (
+    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-background/80 backdrop-blur-sm animate-in fade-in duration-200">
+      <motion.div
+        initial={{ scale: 0.95, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        exit={{ scale: 0.95, opacity: 0 }}
+        className="glass-card w-full max-w-md p-6 overflow-hidden relative"
+      >
+        <div className="flex justify-between items-center mb-6 relative z-10">
+           <div>
+             <h3 className="text-2xl font-black font-kanit">Gestionar Reserva</h3>
+             <p className="text-xs text-muted-foreground">{booking.title}</p>
+           </div>
+           <button onClick={onClose} className="text-muted-foreground hover:text-foreground">X</button>
+        </div>
+
+        <form onSubmit={handleUpdate} className="space-y-4 relative z-10">
+           <div className="grid grid-cols-2 gap-4 bg-surface-elevated/30 p-4 rounded-xl border border-border/50">
+             <div>
+               <p className="text-[10px] font-bold text-muted-foreground uppercase">Cancha</p>
+               <p className="font-semibold text-sm">{booking.canchas_fields?.name}</p>
+             </div>
+             <div>
+               <p className="text-[10px] font-bold text-muted-foreground uppercase">Horario</p>
+               <p className="font-semibold text-sm">{booking.start_time.substring(0,5)} a {booking.end_time.substring(0,5)}</p>
+             </div>
+             <div>
+               <p className="text-[10px] font-bold text-muted-foreground uppercase">Monto Total</p>
+               <p className="font-semibold text-sm text-foreground">${booking.total_price}</p>
+             </div>
+             <div>
+               <p className="text-[10px] font-bold text-primary uppercase">Origen</p>
+               <p className="font-semibold text-sm">{booking.match_id ? "App Pelotify 📱" : "Manual 📅"}</p>
+             </div>
+           </div>
+
+           <div>
+             <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-1 block">Estado de Cobro</label>
+             <select value={status} onChange={e => setStatus(e.target.value)} className="w-full bg-surface-elevated border border-border/50 rounded-xl px-4 py-3 outline-none appearance-none">
+               <option value="pending">Impago (Pendiente)</option>
+               <option value="partial_paid">Seña Abonada</option>
+               <option value="full_paid">Completamente Pagado</option>
+             </select>
+           </div>
+
+           <div>
+             <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-1 block">Monto Cobrado ($)</label>
+             <input type="number" value={downPayment} onChange={e => setDownPayment(parseInt(e.target.value))} className="w-full bg-surface-elevated border border-border/50 rounded-xl px-4 py-3 outline-none" placeholder="0" />
+           </div>
+
+           <div className="flex gap-3 pt-4 border-t border-border/50">
+             <button type="button" onClick={handleDelete} disabled={loading} className="px-4 h-12 bg-danger/10 text-danger border border-danger/30 font-bold text-sm rounded-xl hover:bg-danger/20 transition-all disabled:opacity-50">
+               Liberar/Borrar
+             </button>
+             <button type="submit" disabled={loading} className="flex-1 h-12 bg-primary text-black font-black text-sm uppercase tracking-wider rounded-xl hover:bg-white transition-all disabled:opacity-50">
+               {loading ? 'Guardando...' : 'Actualizar Reserva'}
+             </button>
+           </div>
         </form>
       </motion.div>
     </div>
