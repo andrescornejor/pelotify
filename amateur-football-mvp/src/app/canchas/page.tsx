@@ -37,7 +37,7 @@ export default function CanchasDashboard() {
 
   // Modals state
   const [showBookingModal, setShowBookingModal] = useState(false);
-  const [selectedSlot, setSelectedSlot] = useState<{time: string, fieldId: string} | null>(null);
+  const [selectedSlot, setSelectedSlot] = useState<{time: string, fieldId: string, date?: string} | null>(null);
 
   // Tab configurations
   const tabs = [
