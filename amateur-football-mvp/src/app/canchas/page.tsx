@@ -44,6 +44,14 @@ export default function CanchasDashboard() {
   // Calendar Date
   const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0]);
   const [hasMP, setHasMP] = useState<boolean>(false);
+  
+  // Stats state
+  const [stats, setStats] = useState({
+    todayIncome: 0,
+    monthIncome: 0,
+    totalBookings: 0,
+    activeFields: 0
+  });
 
   // Tab configurations
   const tabs = [
@@ -84,17 +92,35 @@ export default function CanchasDashboard() {
 
           if (!fError && fData) setFields(fData);
 
-          // 3. Fetch Bookings (for today or upcoming)
+          // 3. Fetch Bookings (Range from 7 days ago to 30 days ahead)
+          const start = new Date();
+          start.setDate(start.getDate() - 7);
+          const end = new Date();
+          end.setDate(end.getDate() + 30);
+
           const { data: bkData, error: bkError } = await supabase
             .from('canchas_bookings')
             .select('*, canchas_fields(name, type)')
             .in('field_id', fData?.map(f => f.id) || [])
-            .gte('date', new Date().toISOString().split('T')[0]) // Upcoming
+            .gte('date', start.toISOString().split('T')[0])
+            .lte('date', end.toISOString().split('T')[0])
             .order('date', { ascending: true })
-            .order('start_time', { ascending: true })
-            .limit(200);
+            .order('start_time', { ascending: true });
 
           if (!bkError && bkData) setBookings(bkData);
+
+          // Calculate stats
+          const today = new Date().toISOString().split('T')[0];
+          const tIncome = bkData?.filter((b: any) => b.date === today && b.status !== 'cancelled')
+            .reduce((acc: number, curr: any) => acc + (curr.total_price || 0), 0) || 0;
+          
+          setStats({
+            todayIncome: tIncome,
+            monthIncome: bkData?.filter((b: any) => b.status === 'full_paid' || b.status === 'partial_paid')
+              .reduce((acc: number, curr: any) => acc + (curr.down_payment_paid || 0), 0) || 0,
+            totalBookings: bkData?.length || 0,
+            activeFields: fData?.filter(f => f.is_active).length || 0
+          });
         }
 
         // 4. Determinar si se ha vinculado MP via negocio o dueño
@@ -336,19 +362,27 @@ function OverviewTab({ business, bookings, fields, onNewBooking, onBookingClick,
         />
         <StatCard 
           icon={CalendarDays} 
-          title="Reservas" 
-          value={bookings.filter((b: any) => b.date === new Date().toISOString().split('T')[0]).length.toString()} 
-          trend="Hoy" 
+          title="Reservas Totales" 
+          value={bookings.length.toString()} 
+          trend="Próximos 30 días" 
           trendUp={true} 
           color="accent"
         />
         <StatCard 
           icon={Activity} 
-          title="Canchas" 
-          value={fields.length > 0 ? fields.length.toString() : "0"} 
-          trend="Activas" 
+          title="Canchas Activas" 
+          value={fields.filter((f: any) => f.is_active).length.toString()} 
+          trend="Operativas" 
           trendUp={true} 
           color="success"
+        />
+        <StatCard 
+          icon={Wallet} 
+          title="Cobrado Online" 
+          value={formatMoney(bookings.filter((b: any) => b.status === 'full_paid' || b.status === 'partial_paid').reduce((acc: number, curr: any) => acc + (curr.down_payment_paid || 0), 0))} 
+          trend="Acumulado" 
+          trendUp={true} 
+          color="primary"
         />
       </div>
 
@@ -479,8 +513,25 @@ function QuickAction({ icon: Icon, label, onClick }: any) {
    CALENDAR TAB
 ========================================= */
 function CalendarTab({ bookings, fields, selectedDate, setSelectedDate, onSlotClick, onBookingClick }: any) {
-  const timeSlots = ["17:00", "18:00", "19:00", "20:00", "21:00", "22:00", "23:00"];
+  const timeSlots = ["08:00", "09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00", "19:00", "20:00", "21:00", "22:00", "23:00"];
   const displayFields = fields;
+
+  const getDayName = (dateStr: string) => {
+    const days = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'];
+    const d = new Date(dateStr + 'T00:00:00');
+    return days[d.getDay()];
+  };
+
+  const getWeekDays = () => {
+    const days = [];
+    const today = new Date();
+    for (let i = -2; i < 5; i++) {
+      const d = new Date();
+      d.setDate(today.getDate() + i);
+      days.push(d.toISOString().split('T')[0]);
+    }
+    return days;
+  };
 
   const handleDateChange = (daysToAdd: number) => {
     const d = new Date();
@@ -518,15 +569,32 @@ function CalendarTab({ bookings, fields, selectedDate, setSelectedDate, onSlotCl
           <h2 className="text-2xl font-kanit font-bold text-gradient">Agenda</h2>
           <p className="text-muted-foreground text-sm">Organización de turnos</p>
         </div>
-        <div className="flex bg-surface-elevated p-1 rounded-lg border border-border gap-1 overflow-x-auto no-scrollbar max-w-full">
-           <button onClick={() => setSelectedDate(getTodayStr())} className={`px-4 py-1.5 text-sm font-semibold rounded-md transition-colors ${selectedDate === getTodayStr() ? 'bg-surface border border-border/50 text-foreground shadow-sm' : 'text-muted-foreground hover:text-foreground'}`}>Hoy</button>
-           <button onClick={() => setSelectedDate(getTomorrowStr())} className={`px-4 py-1.5 text-sm font-semibold rounded-md transition-colors ${selectedDate === getTomorrowStr() ? 'bg-surface border border-border/50 text-foreground shadow-sm' : 'text-muted-foreground hover:text-foreground'}`}>Mañana</button>
-           <div className="relative">
-             <input type="date" value={selectedDate} onChange={(e) => setSelectedDate(e.target.value)} className="absolute inset-0 opacity-0 cursor-pointer w-full h-full" />
-             <button className="px-4 py-1.5 text-sm font-semibold rounded-md text-muted-foreground hover:text-foreground flex items-center gap-2">
-               <CalendarDays className="w-4 h-4"/> Elige fecha
-             </button>
-           </div>
+        <div className="flex flex-col gap-4">
+          <div className="flex bg-surface-elevated p-1 rounded-xl border border-border gap-1 overflow-x-auto no-scrollbar">
+             {getWeekDays().map(date => (
+               <button 
+                 key={date}
+                 onClick={() => setSelectedDate(date)} 
+                 className={`flex-1 min-w-[70px] py-2 px-1 rounded-lg transition-all flex flex-col items-center gap-0.5 ${
+                   selectedDate === date 
+                    ? 'bg-primary text-black font-bold shadow-lg shadow-primary/20 scale-[1.02]' 
+                    : 'text-muted-foreground hover:text-foreground hover:bg-surface-bright'
+                 }`}
+               >
+                 <span className="text-[10px] uppercase opacity-70">{getDayName(date)}</span>
+                 <span className="text-sm font-kanit">{date.split('-')[2]}</span>
+               </button>
+             ))}
+             <div className="relative min-w-[50px] flex items-center justify-center border-l border-border/50 ml-1 pl-1">
+               <input 
+                 type="date" 
+                 value={selectedDate} 
+                 onChange={(e) => setSelectedDate(e.target.value)} 
+                 className="absolute inset-0 opacity-0 cursor-pointer w-full h-full" 
+               />
+               <CalendarDays className="w-5 h-5 text-muted-foreground hover:text-primary transition-colors"/>
+             </div>
+          </div>
         </div>
       </div>
 
@@ -711,6 +779,15 @@ function SettingsTab({ business, fields, setFields, hasMP }: any) {
   const [loading, setLoading] = useState(false);
   const [deposit, setDeposit] = useState(fields?.[0]?.down_payment_percentage || 30);
   const [aliasCbu, setAliasCbu] = useState(business?.alias_cbu || '');
+  const [description, setDescription] = useState(business?.description || '');
+  const [address, setAddress] = useState(business?.address || '');
+  const [city, setCity] = useState(business?.city || '');
+  const [coords, setCoords] = useState({ 
+    lat: business?.latitude || '', 
+    lng: business?.longitude || '',
+    link: business?.google_maps_link || ''
+  });
+  const [isSavingPrices, setIsSavingPrices] = useState(false);
   const [isSavingPrices, setIsSavingPrices] = useState(false);
   // Estado local para precios de cada cancha
   const [fieldPrices, setFieldPrices] = useState<Record<string, number>>(() => {
@@ -741,19 +818,28 @@ function SettingsTab({ business, fields, setFields, hasMP }: any) {
       const trimmedAlias = aliasCbu.trim();
       const { data: updatedBiz, error: aliasError } = await supabase
         .from('canchas_businesses')
-        .update({ alias_cbu: trimmedAlias, updated_at: new Date().toISOString() })
+        .update({ 
+          alias_cbu: trimmedAlias, 
+          description,
+          address,
+          city,
+          latitude: coords.lat ? parseFloat(coords.lat.toString()) : null,
+          longitude: coords.lng ? parseFloat(coords.lng.toString()) : null,
+          google_maps_link: coords.link,
+          updated_at: new Date().toISOString() 
+        })
         .eq('id', business.id)
         .eq('owner_id', user?.id)
         .select();
 
       if (aliasError) {
-        alert("Error al guardar Alias/CBU: " + aliasError.message);
+        alert("Error al guardar configuración: " + aliasError.message);
         setIsSavingPrices(false);
         return;
       }
 
       if (!updatedBiz || updatedBiz.length === 0) {
-        alert("⚠️ No se pudo guardar el Alias/CBU. Verificá que tu cuenta tenga permisos de administrador sobre este establecimiento.");
+        alert("⚠️ No se pudo guardar la configuración. Verificá que tu cuenta tenga permisos de administrador sobre este establecimiento.");
         setIsSavingPrices(false);
         return;
       }
@@ -802,7 +888,7 @@ function SettingsTab({ business, fields, setFields, hasMP }: any) {
     <div className="space-y-6 max-w-4xl">
       <div>
         <h2 className="text-2xl font-kanit font-bold text-gradient">Configuración</h2>
-        <p className="text-muted-foreground text-sm">Precios, canchas y reglas del establecimiento</p>
+        <p className="text-muted-foreground text-sm">Precios, ubicación y canchas del establecimiento</p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -852,6 +938,45 @@ function SettingsTab({ business, fields, setFields, hasMP }: any) {
               <p className="text-xs text-muted-foreground mt-2">Porcentaje mínimo del valor de la cancha para confirmar la reserva.</p>
             </div>
             
+            <div className="pt-4 border-t border-border/50">
+              <label className="text-sm font-semibold text-muted-foreground mb-4 block">Información del Predio</label>
+              <div className="space-y-4">
+                <div>
+                  <label className="text-[10px] font-bold text-muted-foreground uppercase mb-1 block">Descripción / Bio</label>
+                  <textarea 
+                    value={description}
+                    onChange={(e) => setDescription(e.target.value)}
+                    placeholder="Descripción del complejo..."
+                    className="w-full bg-surface-elevated border border-border/50 rounded-xl py-2 px-4 text-foreground outline-none focus:border-primary/50 transition-all text-sm min-h-[80px]"
+                  />
+                </div>
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <label className="text-[10px] font-bold text-muted-foreground uppercase mb-1 block">Dirección</label>
+                    <input type="text" value={address} onChange={(e) => setAddress(e.target.value)} className="w-full bg-surface-elevated border border-border/50 rounded-xl py-2 px-4 text-sm outline-none" placeholder="Calle y nro" />
+                  </div>
+                  <div>
+                    <label className="text-[10px] font-bold text-muted-foreground uppercase mb-1 block">Ciudad</label>
+                    <input type="text" value={city} onChange={(e) => setCity(e.target.value)} className="w-full bg-surface-elevated border border-border/50 rounded-xl py-2 px-4 text-sm outline-none" placeholder="Rosario, etc" />
+                  </div>
+                </div>
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <label className="text-[10px] font-bold text-muted-foreground uppercase mb-1 block">Latitud</label>
+                    <input type="text" value={coords.lat} onChange={(e) => setCoords({...coords, lat: e.target.value})} className="w-full bg-surface-elevated border border-border/50 rounded-xl py-2 px-4 text-sm outline-none" placeholder="-34.123" />
+                  </div>
+                  <div>
+                    <label className="text-[10px] font-bold text-muted-foreground uppercase mb-1 block">Longitud</label>
+                    <input type="text" value={coords.lng} onChange={(e) => setCoords({...coords, lng: e.target.value})} className="w-full bg-surface-elevated border border-border/50 rounded-xl py-2 px-4 text-sm outline-none" placeholder="-60.456" />
+                  </div>
+                </div>
+                <div>
+                  <label className="text-[10px] font-bold text-muted-foreground uppercase mb-1 block">Google Maps Link</label>
+                  <input type="text" value={coords.link} onChange={(e) => setCoords({...coords, link: e.target.value})} className="w-full bg-surface-elevated border border-border/50 rounded-xl py-2 px-4 text-sm outline-none" placeholder="https://maps.app.goo.gl/..." />
+                </div>
+              </div>
+            </div>
+
             <div className="pt-4 border-t border-border/50">
               <label className="text-sm font-semibold text-muted-foreground mb-2 block">Alias / CBU para Transferencias</label>
               <div className="relative">
@@ -918,7 +1043,19 @@ function SettingsTab({ business, fields, setFields, hasMP }: any) {
                 <div className="text-sm text-muted-foreground text-center py-4 bg-surface rounded-xl border border-dashed border-border">No hay canchas configuradas, agrega la primera presionando el botón '+'.</div>
               ) : (
                 fields.map((f: any) => (
-                  <FieldItem key={f.id} name={f.name} type={`${f.type} - $${f.price_per_match}`} isPremium={f.type === 'F11'} />
+                  <FieldItem 
+                    key={f.id} 
+                    id={f.id}
+                    name={f.name} 
+                    type={`${f.type} - $${f.price_per_match}`} 
+                    isPremium={f.type === 'F11'} 
+                    onDelete={async (id: string) => {
+                      if(!window.confirm("¿Seguro que quieres borrar esta cancha?")) return;
+                      const { error } = await supabase.from('canchas_fields').delete().eq('id', id);
+                      if(!error) setFields((prev: any) => prev.filter((field: any) => field.id !== id));
+                      else alert("Error borrando cancha");
+                    }}
+                  />
                 ))
               )}
             </div>
@@ -964,7 +1101,7 @@ function PriceInput({ label, defaultValue }: any) {
   );
 }
 
-function FieldItem({ name, type, isPremium = false }: any) {
+function FieldItem({ id, name, type, isPremium = false, onDelete }: any) {
   return (
     <div className="flex items-center justify-between p-3 rounded-lg bg-surface border border-border group hover:border-border/80 transition-colors">
       <div>
@@ -974,8 +1111,11 @@ function FieldItem({ name, type, isPremium = false }: any) {
         </h4>
         <p className="text-xs text-muted-foreground">{type}</p>
       </div>
-      <button className="text-muted-foreground hover:text-foreground opacity-0 group-hover:opacity-100 transition-opacity">
-        <Settings className="w-4 h-4" />
+      <button 
+        onClick={() => onDelete(id)}
+        className="text-danger hover:bg-danger/10 p-1.5 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity"
+      >
+        <Plus className="w-4 h-4 rotate-45" />
       </button>
     </div>
   );
@@ -1071,7 +1211,7 @@ function NewBookingModal({ onClose, fields, selectedSlot, onBooked, selectedDate
              <div>
                <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-1 block">Hora Inicio</label>
                <select value={formData.time} onChange={e => setFormData(prev => ({...prev, time: e.target.value}))} className="w-full bg-surface-elevated border border-border/50 rounded-xl px-4 py-3 outline-none appearance-none">
-                 {["17:00", "18:00", "19:00", "20:00", "21:00", "22:00", "23:00"].map(t => (
+                 {["08:00", "09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00", "19:00", "20:00", "21:00", "22:00", "23:00"].map(t => (
                     <option key={t} value={t}>{t}</option>
                  ))}
                </select>
