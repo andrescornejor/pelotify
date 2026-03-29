@@ -37,6 +37,7 @@ export default function EstablecimientoProfile() {
   const [selectedField, setSelectedField] = useState<any>(null);
   const [selectedSlot, setSelectedSlot] = useState<string | null>(null);
   const [isBooking, setIsBooking] = useState(false);
+  const [showBookingConfirm, setShowBookingConfirm] = useState(false);
 
   useEffect(() => {
     if (params.id) {
@@ -485,7 +486,7 @@ export default function EstablecimientoProfile() {
                      
                      <div className="grid grid-cols-2 gap-4 mb-10 bg-surface-elevated/50 p-6 rounded-[2.5rem] border border-white/5 mx-4">
                         <div className="text-left">
-                           <p className="text-[9px] font-black text-muted-foreground uppercase tracking-widest mb-1">Día Elejido</p>
+                           <p className="text-[9px] font-black text-muted-foreground uppercase tracking-widest mb-1">Día Elegido</p>
                            <p className="text-sm font-black text-foreground">{new Intl.DateTimeFormat('es-AR', { day: 'numeric', month: 'short' }).format(new Date(selectedDate))}</p>
                         </div>
                         <div className="text-right">

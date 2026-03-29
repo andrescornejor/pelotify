@@ -29,7 +29,8 @@ import {
   Layers,
   ChevronLeft,
   Shield,
-  ExternalLink
+  ExternalLink,
+  Info
 } from 'lucide-react';
 
 import { useAuth } from '@/contexts/AuthContext';
@@ -1416,6 +1417,7 @@ function SettingsTab({ business, fields, setFields, hasMP, setBusiness }: any) {
                 {isSavingPrices ? 'Guardando...' : 'Guardar Todo'}
              </button>
           </div>
+           </div>
 
           {/* Preview Card */}
           <div className="hidden xl:block space-y-6">
