@@ -455,8 +455,23 @@ function QuickAction({ icon: Icon, label, onClick }: any) {
 ========================================= */
 function CalendarTab({ bookings, fields, onSlotClick }: any) {
   const timeSlots = ["17:00", "18:00", "19:00", "20:00", "21:00", "22:00", "23:00"];
-  // Use DB fields or fallback to mock
-  const displayFields = fields.length > 0 ? fields : [{ id: 1, name: "Cancha 1 (F5)" }, { id: 2, name: "Cancha 2 (F5)" }, { id: 3, name: "Cancha 3 (F7)" }];
+  const displayFields = fields;
+
+  if (displayFields.length === 0) {
+    return (
+      <div className="space-y-6">
+        <div>
+          <h2 className="text-2xl font-kanit font-bold text-gradient">Agenda</h2>
+          <p className="text-muted-foreground text-sm">Organización de turnos</p>
+        </div>
+        <div className="glass-card p-10 text-center flex flex-col items-center justify-center border-dashed border-2 border-border/50">
+          <CalendarDays className="w-12 h-12 text-muted-foreground mb-4 opacity-50" />
+          <h3 className="text-xl font-kanit font-bold mb-2">Sin canchas configuradas</h3>
+          <p className="text-muted-foreground text-sm max-w-sm mx-auto">No has dado de alta ninguna cancha en tu establecimiento. Ve a la sección de Configuración para crear tu primera cancha.</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
@@ -478,9 +493,9 @@ function CalendarTab({ bookings, fields, onSlotClick }: any) {
         <div className="overflow-x-auto no-scrollbar">
           <div className="min-w-[700px]">
             {/* Grid Header */}
-            <div className="grid grid-cols-[80px_1fr_1fr_1fr] border-b border-border/50 bg-surface-elevated/30">
+            <div className="grid border-b border-border/50 bg-surface-elevated/30" style={{ gridTemplateColumns: `80px repeat(${Math.min(displayFields.length, 4)}, 1fr)` }}>
               <div className="p-4 text-center text-xs font-bold text-muted-foreground">Hora</div>
-              {displayFields.slice(0, 3).map((f: any) => (
+              {displayFields.slice(0, 4).map((f: any) => (
                 <div key={f.name || f.id} className="p-4 text-center font-bold text-sm border-l border-border/50">{f.name}</div>
               ))}
             </div>
@@ -488,12 +503,12 @@ function CalendarTab({ bookings, fields, onSlotClick }: any) {
             {/* Grid Body */}
             <div className="divide-y divide-border/50">
               {timeSlots.map(time => (
-                <div key={time} className="grid grid-cols-[80px_1fr_1fr_1fr] hover:bg-surface-bright/20 transition-colors">
+                <div key={time} className="grid hover:bg-surface-bright/20 transition-colors" style={{ gridTemplateColumns: `80px repeat(${Math.min(displayFields.length, 4)}, 1fr)` }}>
                   <div className="p-4 text-center text-sm font-kanit font-bold text-muted-foreground flex items-center justify-center">
                     {time}
                   </div>
                   
-                  {displayFields.slice(0, 3).map((f: any) => {
+                  {displayFields.slice(0, 4).map((f: any) => {
                     const booking = bookings.find((b: any) => 
                       b.field_id === f.id && 
                       b.date === new Date().toISOString().split('T')[0] && 
