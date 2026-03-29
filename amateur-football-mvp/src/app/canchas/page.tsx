@@ -40,6 +40,8 @@ export default function CanchasDashboard() {
   const [selectedSlot, setSelectedSlot] = useState<{time: string, fieldId: string} | null>(null);
   const [selectedBooking, setSelectedBooking] = useState<any>(null);
   const [showEditBookingModal, setShowEditBookingModal] = useState(false);
+  // Calendar Date
+  const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0]);
 
   // Tab configurations
   const tabs = [
@@ -88,7 +90,7 @@ export default function CanchasDashboard() {
             .gte('date', new Date().toISOString().split('T')[0]) // Upcoming
             .order('date', { ascending: true })
             .order('start_time', { ascending: true })
-            .limit(20);
+            .limit(200);
 
           if (!bkError && bkData) setBookings(bkData);
         }
@@ -204,8 +206,8 @@ export default function CanchasDashboard() {
               exit={{ opacity: 0, y: -10 }}
               transition={{ duration: 0.2 }}
             >
-              {activeTab === 'overview' && <OverviewTab business={business} bookings={bookings} fields={fields} onNewBooking={() => setShowBookingModal(true)} onBookingClick={(booking: any) => { setSelectedBooking(booking); setShowEditBookingModal(true); }} />}
-              {activeTab === 'calendar' && <CalendarTab bookings={bookings} fields={fields} onSlotClick={(time: string, fieldId: string) => { setSelectedSlot({time, fieldId}); setShowBookingModal(true); }} onBookingClick={(booking: any) => { setSelectedBooking(booking); setShowEditBookingModal(true); }} />}
+              {activeTab === 'overview' && <OverviewTab business={business} bookings={bookings} fields={fields} onNewBooking={() => setShowBookingModal(true)} onBookingClick={(booking: any) => { setSelectedBooking(booking); setShowEditBookingModal(true); }} onTabChange={setActiveTab} />}
+              {activeTab === 'calendar' && <CalendarTab bookings={bookings} fields={fields} selectedDate={selectedDate} setSelectedDate={setSelectedDate} onSlotClick={(time: string, fieldId: string) => { setSelectedSlot({time, fieldId}); setShowBookingModal(true); }} onBookingClick={(booking: any) => { setSelectedBooking(booking); setShowEditBookingModal(true); }} />}
               {activeTab === 'finances' && <FinancesTab business={business} bookings={bookings} />}
               {activeTab === 'settings' && <SettingsTab business={business} fields={fields} setFields={setFields} />}
             </motion.div>
@@ -221,6 +223,7 @@ export default function CanchasDashboard() {
             fields={fields} 
             selectedSlot={selectedSlot}
             onBooked={(newBooking: any) => setBookings(prev => [...prev, newBooking])}
+            selectedDate={selectedDate}
           />
         )}
         {showEditBookingModal && selectedBooking && (
@@ -269,7 +272,7 @@ export default function CanchasDashboard() {
 /* =========================================
    OVERVIEW TAB
 ========================================= */
-function OverviewTab({ business, bookings, fields, onNewBooking, onBookingClick }: any) {
+function OverviewTab({ business, bookings, fields, onNewBooking, onBookingClick, onTabChange }: any) {
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'pending': return 'bg-danger/10 text-danger border-danger/20';
@@ -377,10 +380,10 @@ function OverviewTab({ business, bookings, fields, onNewBooking, onBookingClick 
           <div className="glass-card p-5 sm:p-6">
              <h3 className="text-lg font-bold font-kanit mb-4">Acciones Rápidas</h3>
              <div className="grid grid-cols-2 gap-3">
-               <QuickAction icon={Clock} label="Bloquear Horario" onClick={() => alert("Próximamente: Bloqueos de mantenimiento en el Calendario.")} />
-               <QuickAction icon={Wallet} label="Retirar Fondos" onClick={() => alert("Próximamente: Retiros automáticos de seña a tu cuenta bancaria.")} />
-               <QuickAction icon={Users} label="Clientes Frecuentes" onClick={() => alert("Próximamente: Panel de clientes frecuentes.")} />
-               <QuickAction icon={Settings} label="Editar Canchas" onClick={() => alert("Usa la pestaña de Configuración para agregar canchas.")} />
+               <QuickAction icon={CalendarDays} label="Ver Agenda" onClick={() => onTabChange('calendar')} />
+               <QuickAction icon={Wallet} label="Ver Finanzas" onClick={() => onTabChange('finances')} />
+               <QuickAction icon={Users} label="Clientes" onClick={() => alert("Panel de CRM para clientes estará disponible en futuras actualizaciones.")} />
+               <QuickAction icon={Settings} label="Editar Canchas" onClick={() => onTabChange('settings')} />
              </div>
           </div>
         </div>
@@ -464,9 +467,22 @@ function QuickAction({ icon: Icon, label, onClick }: any) {
 /* =========================================
    CALENDAR TAB
 ========================================= */
-function CalendarTab({ bookings, fields, onSlotClick, onBookingClick }: any) {
+function CalendarTab({ bookings, fields, selectedDate, setSelectedDate, onSlotClick, onBookingClick }: any) {
   const timeSlots = ["17:00", "18:00", "19:00", "20:00", "21:00", "22:00", "23:00"];
   const displayFields = fields;
+
+  const handleDateChange = (daysToAdd: number) => {
+    const d = new Date();
+    d.setDate(d.getDate() + daysToAdd);
+    setSelectedDate(d.toISOString().split('T')[0]);
+  };
+
+  const getTodayStr = () => new Date().toISOString().split('T')[0];
+  const getTomorrowStr = () => {
+    const d = new Date();
+    d.setDate(d.getDate() + 1);
+    return d.toISOString().split('T')[0];
+  };
 
   if (displayFields.length === 0) {
     return (
@@ -491,12 +507,15 @@ function CalendarTab({ bookings, fields, onSlotClick, onBookingClick }: any) {
           <h2 className="text-2xl font-kanit font-bold text-gradient">Agenda</h2>
           <p className="text-muted-foreground text-sm">Organización de turnos</p>
         </div>
-        <div className="flex bg-surface-elevated p-1 rounded-lg border border-border">
-           <button className="px-4 py-1.5 text-sm font-semibold rounded-md bg-surface border border-border/50 text-foreground">Hoy</button>
-           <button onClick={() => alert("Agenda de dīas futuros se habilitará próximamente")} className="px-4 py-1.5 text-sm font-semibold rounded-md text-muted-foreground hover:text-foreground">Mañana</button>
-           <button onClick={() => alert("Filtro de calendario se habilitará próximamente")} className="px-4 py-1.5 text-sm font-semibold rounded-md text-muted-foreground hover:text-foreground flex items-center gap-2">
-             <CalendarDays className="w-4 h-4"/> Fecha
-           </button>
+        <div className="flex bg-surface-elevated p-1 rounded-lg border border-border gap-1 overflow-x-auto no-scrollbar max-w-full">
+           <button onClick={() => setSelectedDate(getTodayStr())} className={`px-4 py-1.5 text-sm font-semibold rounded-md transition-colors ${selectedDate === getTodayStr() ? 'bg-surface border border-border/50 text-foreground shadow-sm' : 'text-muted-foreground hover:text-foreground'}`}>Hoy</button>
+           <button onClick={() => setSelectedDate(getTomorrowStr())} className={`px-4 py-1.5 text-sm font-semibold rounded-md transition-colors ${selectedDate === getTomorrowStr() ? 'bg-surface border border-border/50 text-foreground shadow-sm' : 'text-muted-foreground hover:text-foreground'}`}>Mañana</button>
+           <div className="relative">
+             <input type="date" value={selectedDate} onChange={(e) => setSelectedDate(e.target.value)} className="absolute inset-0 opacity-0 cursor-pointer w-full h-full" />
+             <button className="px-4 py-1.5 text-sm font-semibold rounded-md text-muted-foreground hover:text-foreground flex items-center gap-2">
+               <CalendarDays className="w-4 h-4"/> Elige fecha
+             </button>
+           </div>
         </div>
       </div>
 
@@ -522,7 +541,7 @@ function CalendarTab({ bookings, fields, onSlotClick, onBookingClick }: any) {
                   {displayFields.slice(0, 4).map((f: any) => {
                     const booking = bookings.find((b: any) => 
                       b.field_id === f.id && 
-                      b.date === new Date().toISOString().split('T')[0] && 
+                      b.date === selectedDate && 
                       b.start_time.startsWith(time)
                     );
 
@@ -582,48 +601,62 @@ function FinancesTab({ business, bookings }: any) {
             </h1>
 
             <div className="flex gap-4 relative z-10">
-              <button onClick={() => alert("Retiro de fondos estará habilitado próximamente.")} className="flex-1 bg-primary text-black font-bold py-3 px-4 rounded-xl flex justify-center items-center gap-2 hover:bg-primary-light transition-colors press-effect">
-                <Wallet className="w-5 h-5" /> Retirar Fondos
-              </button>
-              <button onClick={() => alert("Visualización extendida del historial próximamente.")} className="flex-1 bg-surface border border-border font-bold py-3 px-4 rounded-xl flex justify-center items-center gap-2 hover:bg-surface-bright transition-colors press-effect">
-                <Activity className="w-5 h-5" /> Historial
+              <button disabled className="flex-1 bg-surface-bright/50 text-muted-foreground font-bold py-3 px-4 rounded-xl flex justify-center items-center gap-2 cursor-not-allowed">
+                Retirar (Próximamente) <ArrowUpRight className="w-5 h-5 opacity-50" />
               </button>
             </div>
           </div>
 
-          {/* Connected Account */}
-          <div className="glass-card p-6 flex flex-col justify-between">
-            <div>
-              <div className="flex items-center justify-between mb-4">
-                <h3 className="font-bold">Cuenta Conectada</h3>
-                <div className="w-8 h-8 rounded-full bg-[#009EE3]/10 flex items-center justify-center">
-                  <DollarSign className="w-5 h-5 text-[#009EE3]" />
+          <div className="md:col-span-1 flex flex-col gap-4">
+             <div className="glass-card p-5 flex items-center justify-between group cursor-default">
+                <div>
+                   <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-1">Canchas</p>
+                   <h3 className="text-2xl font-black">{business.total_fields || 0}</h3>
                 </div>
-              </div>
-              <p className="text-sm text-muted-foreground mb-4">Integración con Mercado Pago activa. Tus cobros entran directamente a tu cuenta configurada.</p>
-              
-              <div className="bg-surface-elevated rounded-lg p-3 text-sm font-semibold border border-border">
-                 CVU: <span className="text-muted-foreground font-normal overflow-hidden truncate">*****************123</span>
-              </div>
-            </div>
-            
-            <button onClick={() => alert("Cambiar código de cobro próximamente en configuración.")} className="text-sm text-primary font-semibold hover:underline mt-4 text-left">
-              Configurar cuenta de cobro
-            </button>
+                <div className="w-12 h-12 rounded-xl bg-surface-elevated border border-border/50 flex items-center justify-center group-hover:-translate-y-1 transition-transform">
+                   <LayoutDashboard className="w-6 h-6 text-primary" />
+                </div>
+             </div>
+             <div className="glass-card p-5 flex items-center justify-between group cursor-default">
+                <div>
+                   <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-1">App Conectada</p>
+                   <h3 className="text-2xl font-black text-[#009EE3]">MP</h3>
+                </div>
+                <div className="w-12 h-12 rounded-xl bg-[#009EE3]/10 border border-[#009EE3]/20 flex items-center justify-center group-hover:-translate-y-1 transition-transform">
+                   <DollarSign className="w-6 h-6 text-[#009EE3]" />
+                </div>
+             </div>
           </div>
         </div>
 
-        {/* Recent Transactions */}
+        {/* RECENT TRANSACTIONS */}
         <div className="glass-card p-6">
-          <h3 className="text-lg font-bold font-kanit mb-4">Últimos Movimientos</h3>
+          <div className="flex justify-between items-center mb-6">
+            <h3 className="font-bold font-kanit text-lg">Últimos Cobros</h3>
+            <button className="text-xs font-semibold text-primary px-3 py-1.5 rounded-full bg-primary/10 hover:bg-primary/20 transition-colors">Todos (MVP)</button>
+          </div>
           <div className="space-y-4">
-             {bookings.length === 0 ? (
-               <p className="text-sm text-muted-foreground text-center py-4 bg-surface rounded-xl border border-dashed border-border">Aún no hay movimientos registrados.</p>
-             ) : (
-               bookings.map((b: any) => (
-                 <TransactionRow key={b.id} date={`Hoy, ${b.start_time.substring(0,5)}`} concept={`Reserva - ${b.canchas_fields?.name} (${b.canchas_fields?.type})`} amount={`+$${b.total_price}`} type="income" status={b.status === 'pending' ? 'Impago' : 'Acreditado'} />
-               ))
-             )}
+            {bookings.filter((b:any) => b.status === 'full_paid' || b.status === 'partial_paid').slice(0, 5).map((booking: any, i: number) => (
+              <div key={`tx-${i}`} className="flex items-center justify-between p-3 rounded-xl hover:bg-surface-elevated/50 transition-colors border border-border/10 hover:border-border/50">
+                <div className="flex items-center gap-3">
+                  <div className={`w-10 h-10 rounded-full flex items-center justify-center ${booking.match_id ? 'bg-primary/20 text-primary' : 'bg-surface-bright text-foreground'}`}>
+                    <Wallet className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <h4 className="font-bold text-sm tracking-tight">{booking.title || 'Reserva pagada'}</h4>
+                    <p className="text-xs text-muted-foreground">{booking.date} • {booking.start_time.substring(0,5)} • {booking.status === 'partial_paid' ? 'Seña acreditada' : 'Pago Completado'}</p>
+                  </div>
+                </div>
+                <span className="font-bold text-accent">+{new Intl.NumberFormat('es-AR', { maximumFractionDigits: 0 }).format(booking.down_payment_paid || booking.total_price)}</span>
+              </div>
+            ))}
+            {bookings.filter((b:any) => b.status === 'full_paid' || b.status === 'partial_paid').length === 0 && (
+               <div className="text-center py-10 bg-surface/50 rounded-xl border border-dashed border-border/50">
+                 <Wallet className="w-8 h-8 mx-auto text-muted-foreground mb-3 opacity-50" />
+                 <p className="text-muted-foreground text-sm font-semibold">No hay movimientos financieros acreditados.</p>
+                 <p className="text-muted-foreground text-xs mt-1">Los pagos de las reservas aparecerán aquí.</p>
+               </div>
+            )}
           </div>
         </div>
     </div>
@@ -844,7 +877,7 @@ function FieldItem({ name, type, isPremium = false }: any) {
 /* =========================================
    NEW BOOKING MODAL
 ========================================= */
-function NewBookingModal({ onClose, fields, selectedSlot, onBooked }: any) {
+function NewBookingModal({ onClose, fields, selectedSlot, onBooked, selectedDate }: any) {
   const [loading, setLoading] = useState(false);
   const { user } = useAuth();
   
@@ -852,7 +885,7 @@ function NewBookingModal({ onClose, fields, selectedSlot, onBooked }: any) {
     title: '',
     fieldId: selectedSlot?.fieldId || (fields[0]?.id || ''),
     time: selectedSlot?.time || '18:00',
-    date: new Date().toISOString().split('T')[0],
+    date: selectedDate || new Date().toISOString().split('T')[0],
     paid: false
   });
 
