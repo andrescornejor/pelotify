@@ -516,7 +516,6 @@ function OverviewTab({ business, bookings, fields, onNewBooking, onBookingClick,
            <h3 className="text-xl font-black font-kanit italic uppercase tracking-tighter">Comunidad Activa</h3>
            <p className="text-[10px] text-muted-foreground leading-relaxed uppercase tracking-widest font-bold">Pronto verás aquí el ranking de tus jugadores más fieles y sus estadísticas de juego.</p>
         </div>
-        </div>
       </div>
     </div>
   );
