@@ -83,7 +83,7 @@ function ProfileContent() {
   const id = searchParams.get('id');
   const isMe = id === 'me' || id === user?.id || (!id && user?.id);
 
-  const [activeTab, setActiveTab] = useState<'overview' | 'history' | 'futtok' | 'wall'>('overview');
+  const [activeTab, setActiveTab] = useState<'overview' | 'history' | 'futtok' | 'wall' | 'wallet'>('overview');
 
   // Edit state
   const [isEditing, setIsEditing] = useState(false);
@@ -714,6 +714,7 @@ function ProfileContent() {
                 { id: 'history', icon: History, label: 'Historial' },
                 { id: 'futtok', icon: Play, label: 'FutTok' },
                 { id: 'wall', icon: MessageSquare, label: 'Muro Social' },
+                ...(isMe ? [{ id: 'wallet', icon: Wallet, label: 'Finanzas' }] : []),
               ].map((tab) => (
                 <button
                   key={tab.id}
@@ -1669,6 +1670,76 @@ function ProfileContent() {
                   </div>
                 </motion.div>
               )}
+              {activeTab === 'wallet' && isMe && (
+                <motion.div
+                  key="wallet"
+                  initial={{ opacity: 0, y: 30 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, scale: 0.95 }}
+                  className="max-w-4xl mx-auto pb-20 mt-10"
+                >
+                  <div className="glass-premium p-8 sm:p-12 rounded-[3.5rem] border border-[#009EE3]/30 bg-gradient-to-br from-[#009EE3]/5 to-transparent relative overflow-hidden shadow-[0_20px_60px_rgba(0,158,227,0.1)] group/wallet">
+                    <div className="absolute top-0 right-0 w-64 h-64 bg-[#009EE3]/10 blur-[80px] pointer-events-none group-hover/wallet:opacity-100 opacity-50 transition-opacity duration-1000" />
+                    
+                    <div className="flex flex-col md:flex-row gap-10 items-center justify-between relative z-10">
+                      <div className="space-y-6 flex-1 text-center md:text-left">
+                        <div className="w-16 h-16 rounded-2xl bg-[#009EE3]/10 border border-[#009EE3]/20 flex items-center justify-center mx-auto md:mx-0 shadow-lg top-1">
+                          <Wallet className="w-8 h-8 text-[#009EE3]" />
+                        </div>
+                        
+                        <div className="space-y-2">
+                          <h2 className="text-4xl sm:text-5xl font-black italic uppercase tracking-tighter text-foreground leading-none">
+                            Mercado <span className="text-[#009EE3]">Pago</span>
+                          </h2>
+                          <p className="text-[11px] font-black uppercase tracking-[0.3em] text-foreground/60 leading-relaxed max-w-sm mt-2">
+                            Organiza partidos y recibe el dinero de los cupos directo a tu cuenta bancaria al instante.
+                          </p>
+                        </div>
+                        
+                        <div className="grid grid-cols-2 gap-4 max-w-sm mx-auto md:mx-0">
+                          <div className="p-4 rounded-2xl bg-background/50 border border-foreground/5 flex items-center gap-3 shadow-inner">
+                            <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                            <span className="text-[9px] font-black uppercase text-foreground/50 tracking-widest">Sin Retenciones</span>
+                          </div>
+                          <div className="p-4 rounded-2xl bg-background/50 border border-foreground/5 flex items-center gap-3 shadow-inner">
+                            <div className="w-2 h-2 rounded-full bg-[#009EE3] animate-pulse" />
+                            <span className="text-[9px] font-black uppercase text-foreground/50 tracking-widest">Split Automático</span>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="shrink-0 w-full md:w-auto">
+                        {dbProfile?.mp_user_id ? (
+                          <div className="flex flex-col items-center gap-4 p-8 rounded-[2rem] bg-gradient-to-b from-emerald-500/10 to-transparent border border-emerald-500/20 text-center shadow-lg">
+                            <div className="w-16 h-16 rounded-full bg-emerald-500/20 flex items-center justify-center shadow-[0_0_30px_rgba(16,185,129,0.3)]">
+                              <BadgeCheck className="w-8 h-8 text-emerald-500" />
+                            </div>
+                            <div>
+                              <p className="text-lg font-black uppercase tracking-tighter text-emerald-500 italic">Cuenta Vinculada</p>
+                              <p className="text-[10px] font-black text-foreground/40 tracking-widest uppercase mt-1">ID: {dbProfile.mp_user_id.slice(0, 8)}...</p>
+                            </div>
+                            <div className="mt-2 text-[9px] text-emerald-500/80 font-bold uppercase tracking-widest">
+                              Recibiendo pagos activos
+                            </div>
+                          </div>
+                        ) : (
+                          <button
+                            onClick={() => {
+                                window.location.href = `/api/mercadopago/authorize?userId=${user?.id}`;
+                            }}
+                            className="w-full md:w-auto px-10 py-6 rounded-3xl bg-[#009EE3] text-white hover:bg-[#0086c3] shadow-[0_15px_40px_rgba(0,158,227,0.3)] hover:shadow-[0_20px_50px_rgba(0,158,227,0.5)] transition-all hover:scale-105 active:scale-95 flex flex-col items-center gap-3 group/connect border border-white/10"
+                          >
+                            <span className="text-xl font-black italic tracking-tighter uppercase leading-none text-white">Vincular Cuenta</span>
+                            <span className="text-[9px] font-black uppercase tracking-[0.3em] opacity-80 group-hover/connect:opacity-100 flex items-center gap-2 text-white/90">
+                              Conectar con Mercado Pago <ChevronRight className="w-3 h-3 group-hover/connect:translate-x-1 transition-transform" />
+                            </span>
+                          </button>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                </motion.div>
+              )}
             </AnimatePresence>
           </div>
         </div>
@@ -1679,27 +1750,6 @@ function ProfileContent() {
       {/* FOOTER ACTIONS SECTION */}
       {isMe && (
         <div className="relative z-10 border-t border-foreground/10 pt-8 pb-8 flex flex-wrap gap-8 items-center">
-          {user && (
-            <button
-              onClick={() => {
-                if (dbProfile?.mp_user_id) {
-                  alert('Tu cuenta ya está vinculada a Mercado Pago.');
-                } else {
-                  window.location.href = `/api/mercadopago/authorize?userId=${user.id}`;
-                }
-              }}
-              className={cn(
-                "flex items-center gap-3 transition-colors text-[11px] font-black uppercase tracking-widest group",
-                dbProfile?.mp_user_id 
-                  ? "text-primary cursor-default" 
-                  : "text-foreground/30 hover:text-[#009EE3]"
-              )}
-            >
-              <Wallet className="w-4 h-4 group-hover:scale-110 transition-transform" />
-              {dbProfile?.mp_user_id ? 'Mercado Pago Conectado' : 'Vincular Mercado Pago'}
-            </button>
-          )}
-
           <button
             onClick={() => setShowPasswordModal(true)}
             className="flex items-center gap-3 text-foreground/30 hover:text-primary transition-colors text-[11px] font-black uppercase tracking-widest group"
