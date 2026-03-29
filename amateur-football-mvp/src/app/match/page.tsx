@@ -26,6 +26,7 @@ import {
   ChevronRight,
   MessageSquare,
   PlusCircle,
+  ExternalLink,
 } from 'lucide-react';
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
