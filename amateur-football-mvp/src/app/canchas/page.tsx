@@ -1124,7 +1124,15 @@ function TransactionRow({ date, concept, amount, type, status }: any) {
 
 /* =========================================
    SETTINGS TAB
-========================================= */
+ ========================================= */
+const PRESET_IMAGES = [
+  "https://images.unsplash.com/photo-1574629810360-7efbbe195018?q=80&w=1200&auto=format&fit=crop",
+  "https://images.unsplash.com/photo-1529900948638-19f94ff446a1?q=80&w=1200&auto=format&fit=crop",
+  "https://images.unsplash.com/photo-1551958219-acbc608c6377?q=80&w=1200&auto=format&fit=crop",
+  "https://images.unsplash.com/photo-1508098682722-e99c43a406b2?q=80&w=1200&auto=format&fit=crop"
+];
+
+
 function SettingsTab({ business, fields, setFields, hasMP, setBusiness }: any) {
   const { user } = useAuth();
   const [loading, setLoading] = useState(false);
@@ -1249,8 +1257,10 @@ function SettingsTab({ business, fields, setFields, hasMP, setBusiness }: any) {
           <p className="text-[10px] font-black uppercase tracking-[0.4em] text-muted-foreground">Personalización del Establecimiento</p>
        </div>
 
-       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          {/* General Info */}
+       <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
+          {/* General Info & Pricing */}
+          <div className="xl:col-span-2 space-y-8">
+             {/* General Info Card */}
            <div className="glass-premium rounded-[2.5rem] p-10 border-white/5 space-y-8">
               <div className="flex items-center gap-4 mb-2">
                  <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center border border-primary/20">
@@ -1309,13 +1319,24 @@ function SettingsTab({ business, fields, setFields, hasMP, setBusiness }: any) {
                        />
                     </div>
                     <div>
-                       <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground mb-2 block">URL Imagen del Complejo</label>
+                       <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground mb-4 block">Imagen del Complejo</label>
+                       <div className="grid grid-cols-4 gap-2 mb-4">
+                          {PRESET_IMAGES.map((img, i) => (
+                             <button 
+                                key={i}
+                                onClick={() => setProfileImageUrl(img)}
+                                className={`aspect-square rounded-xl overflow-hidden border-2 transition-all ${profileImageUrl === img ? 'border-primary scale-95' : 'border-transparent opacity-60 hover:opacity-100'}`}
+                             >
+                                <img src={img} className="w-full h-full object-cover" />
+                             </button>
+                          ))}
+                       </div>
                        <input 
                          type="text" 
                          value={profileImageUrl}
                          onChange={(e) => setProfileImageUrl(e.target.value)}
-                         placeholder="https://images..."
-                         className="w-full bg-foreground/[0.03] border border-white/5 rounded-2xl p-4 text-sm focus:border-primary/50 outline-none transition-all"
+                         placeholder="O pega una URL custom..."
+                         className="w-full bg-foreground/[0.03] border border-white/5 rounded-2xl p-4 text-sm focus:border-primary/50 outline-none transition-all font-mono text-[10px]"
                        />
                     </div>
                  </div>
@@ -1394,6 +1415,56 @@ function SettingsTab({ business, fields, setFields, hasMP, setBusiness }: any) {
              >
                 {isSavingPrices ? 'Guardando...' : 'Guardar Todo'}
              </button>
+          </div>
+
+          {/* Preview Card */}
+          <div className="hidden xl:block space-y-6">
+             <div className="sticky top-10">
+                <div className="flex flex-col gap-1 mb-6">
+                   <h3 className="text-xl font-black font-kanit italic uppercase tracking-tighter">Vista <span className="text-primary">Previa</span></h3>
+                   <p className="text-[10px] font-black uppercase tracking-[0.4em] text-muted-foreground">Así te ven los pibes</p>
+                </div>
+                
+                <div className="glass-premium rounded-[3rem] overflow-hidden border-white/5 shadow-2xl group">
+                   <div className="h-48 relative">
+                      <img src={profileImageUrl || "https://images.unsplash.com/photo-1574629810360-7efbbe195018?q=80&w=600&auto=format&fit=crop"} className="w-full h-full object-cover brightness-[0.4] contrast-125" />
+                      <div className="absolute inset-0 bg-gradient-to-t from-background to-transparent" />
+                      <div className="absolute bottom-4 left-6">
+                         <h4 className="text-2xl font-black italic uppercase text-white tracking-tighter">{businessName || "Tu Complejo"}</h4>
+                         <div className="flex items-center gap-2 mt-1">
+                            <MapPin className="w-3 h-3 text-primary" />
+                            <span className="text-[8px] font-bold text-white/60 uppercase tracking-widest">{address || "Rosario, Argentina"}</span>
+                         </div>
+                      </div>
+                   </div>
+                   <div className="p-8 space-y-6 bg-surface-elevated/30">
+                      <div className="space-y-2">
+                         <p className="text-[9px] font-black uppercase tracking-widest text-primary">Sobre nosotros</p>
+                         <p className="text-[11px] text-muted-foreground leading-relaxed line-clamp-3 italic">
+                            {description || "Contanos un poco sobre tu sede para atraer a más jugadores..."}
+                         </p>
+                      </div>
+                      <div className="flex gap-2">
+                         {["F5", "F7", "F11"].map(type => (
+                            <div key={type} className="flex-1 h-12 rounded-xl bg-foreground/5 border border-white/5 flex items-center justify-center font-black italic font-kanit text-[10px] text-primary/40">
+                               {type}
+                            </div>
+                         ))}
+                      </div>
+                      <div className="h-0.5 w-full bg-white/5" />
+                      <button className="w-full py-4 bg-primary text-black font-black uppercase text-[10px] tracking-widest rounded-xl shadow-lg shadow-primary/10 transition-all hover:scale-105 active:scale-95">
+                         RESERVAR AHORA
+                      </button>
+                   </div>
+                </div>
+                
+                <div className="mt-8 p-6 rounded-[2rem] bg-amber-500/5 border border-amber-500/10 flex items-start gap-4">
+                   <Info className="w-5 h-5 text-amber-500 shrink-0 mt-1" />
+                   <p className="text-[10px] font-bold text-amber-500/80 uppercase tracking-widest leading-relaxed">
+                      Recordá usar imágenes de alta calidad para destacar entre los complejos.
+                   </p>
+                </div>
+             </div>
           </div>
        </div>
 

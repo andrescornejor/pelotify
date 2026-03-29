@@ -35,8 +35,8 @@ export default function EstablecimientoProfile() {
   const [loading, setLoading] = useState(true);
   const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0]);
   const [selectedField, setSelectedField] = useState<any>(null);
-  const [showBookingConfirm, setShowBookingConfirm] = useState(false);
   const [selectedSlot, setSelectedSlot] = useState<string | null>(null);
+  const [isBooking, setIsBooking] = useState(false);
 
   useEffect(() => {
     if (params.id) {
@@ -99,9 +99,36 @@ export default function EstablecimientoProfile() {
       alert("Debes iniciar sesión para reservar.");
       return;
     }
-    // Logic for creating booking and redirecting to MP
-    alert(`Iniciando reserva para ${selectedField?.name} a las ${selectedSlot}...`);
-    // Here we would call an API to create the booking and get MP preference
+    if (!selectedField || !selectedSlot) return;
+
+    try {
+      setIsBooking(true);
+      const response = await fetch('/api/bookings/checkout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          businessId: business.id,
+          fieldId: selectedField.id,
+          date: selectedDate,
+          time: selectedSlot,
+          userId: user.id,
+          totalPrice: selectedField.price_per_match,
+          downPayment: Math.round(selectedField.price_per_match * (selectedField.down_payment_percentage || 30) / 100)
+        }),
+      });
+
+      const data = await response.json();
+      if (data.init_point) {
+        window.location.href = data.init_point;
+      } else {
+        throw new Error(data.error || 'Error al generar la preferencia de pago');
+      }
+    } catch (err: any) {
+      console.error(err);
+      alert("Hubo un error al procesar la reserva: " + err.message);
+    } finally {
+      setIsBooking(false);
+    }
   };
 
   if (loading && !business) {
@@ -140,8 +167,8 @@ export default function EstablecimientoProfile() {
            className="absolute inset-0"
          >
             <img 
-              src="https://images.unsplash.com/photo-1574629810360-7efbbe195018?q=80&w=1200&auto=format&fit=crop" 
-              className="w-full h-full object-cover brightness-50 contrast-125"
+              src={business.profile_image_url || "https://images.unsplash.com/photo-1574629810360-7efbbe195018?q=80&w=1200&auto=format&fit=crop"} 
+              className="w-full h-full object-cover brightness-[0.4] contrast-125"
               alt={business.name}
             />
             <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-background/20" />
@@ -468,8 +495,19 @@ export default function EstablecimientoProfile() {
                      </div>
                      
                      <div className="space-y-4 px-4">
-                        <button onClick={handleBooking} className="w-full h-16 bg-primary text-black font-black uppercase text-[12px] tracking-widest rounded-2xl hover:scale-[1.02] active:scale-[0.98] transition-all shadow-[0_20px_40px_rgba(44,252,125,0.3)]">
-                           CONTINUAR AL PAGO
+                        <button 
+                           onClick={handleBooking} 
+                           disabled={isBooking}
+                           className="w-full h-16 bg-primary text-black font-black uppercase text-[12px] tracking-widest rounded-2xl hover:scale-[1.02] active:scale-[0.98] transition-all shadow-[0_20px_40px_rgba(44,252,125,0.3)] flex items-center justify-center gap-3"
+                        >
+                           {isBooking ? (
+                              <>
+                                 <div className="w-5 h-5 border-2 border-black/30 border-t-black rounded-full animate-spin"></div>
+                                 PROCESANDO...
+                              </>
+                           ) : (
+                              "CONTINUAR AL PAGO"
+                           )}
                         </button>
                         <button onClick={() => setShowBookingConfirm(false)} className="w-full h-14 bg-surface-elevated text-foreground/60 font-black uppercase text-[10px] tracking-widest rounded-2xl border border-white/10 hover:text-foreground transition-all">
                            VOLVER Y EDITAR
