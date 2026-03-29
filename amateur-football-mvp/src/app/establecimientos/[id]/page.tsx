@@ -38,6 +38,9 @@ export default function EstablecimientoProfile() {
   const [selectedSlot, setSelectedSlot] = useState<string | null>(null);
   const [isBooking, setIsBooking] = useState(false);
   const [showBookingConfirm, setShowBookingConfirm] = useState(false);
+  const [reviews, setReviews] = useState<any[]>([]);
+  const [isPostingReview, setIsPostingReview] = useState(false);
+  const [newReview, setNewReview] = useState({ rating: 5, comment: '' });
 
   useEffect(() => {
     if (params.id) {
@@ -82,6 +85,14 @@ export default function EstablecimientoProfile() {
         setBookings(bkData);
       }
 
+      // Fetch Reviews
+      const { data: revData } = await supabase
+        .from('canchas_reviews')
+        .select('*, profiles(full_name)')
+        .eq('business_id', params.id)
+        .order('created_at', { ascending: false });
+      if (revData) setReviews(revData);
+
     } catch (err) {
       console.error('Error fetching establecimiento:', err);
     } finally {
@@ -95,7 +106,34 @@ export default function EstablecimientoProfile() {
     return !bookings.some(b => b.field_id === fieldId && b.start_time.startsWith(time));
   };
 
-  const handleBooking = async () => {
+  
+  const handlePostReview = async () => {
+    if (!user) {
+       alert("Debes iniciar sesión para dejar una reseña.");
+       return;
+    }
+    if (!newReview.comment.trim()) return;
+
+    try {
+       setIsPostingReview(true);
+       const { data, error } = await supabase.from('canchas_reviews').insert({
+          business_id: business.id,
+          user_id: user.id,
+          rating: newReview.rating,
+          comment: newReview.comment
+       }).select('*, profiles(full_name)').single();
+
+       if (error) throw error;
+       setReviews([data, ...reviews]);
+       setNewReview({ rating: 5, comment: '' });
+       alert("¡Gracias por tu reseña!");
+    } catch (err: any) {
+       alert("Error al postear reseña: " + err.message);
+    } finally {
+       setIsPostingReview(false);
+    }
+  };
+const handleBooking = async () => {
     if (!user) {
       alert("Debes iniciar sesión para reservar.");
       return;
@@ -437,19 +475,57 @@ export default function EstablecimientoProfile() {
                      <button className="text-[9px] font-black text-primary uppercase tracking-widest border-b border-primary/30">Ver Todas</button>
                   </div>
                   
-                  <div className="space-y-6">
-                     {[
-                       { name: "Juan M.", text: "Cancha impecable, la mejor luz de la zona.", stars: 5 },
-                       { name: "Lauti R.", text: "Buen precio y trato de los dueños excelente.", stars: 5 }
-                     ].map((rev, i) => (
-                        <div key={i} className="space-y-2 pb-6 border-b border-white/5 last:border-0 last:pb-0">
-                           <div className="flex items-center gap-1">
-                              {[...Array(rev.stars)].map((_, s) => <Star key={s} className="w-2.5 h-2.5 fill-accent text-accent" />)}
+                  <div className="space-y-8">
+                     {/* ADD REVIEW FORM */}
+                     {user ? (
+                        <div className="p-6 rounded-3xl bg-surface-elevated/50 border border-white/5 space-y-4">
+                           <div className="flex items-center justify-between">
+                              <span className="text-[9px] font-black uppercase tracking-widest">Deja tu reseña</span>
+                              <div className="flex gap-1">
+                                 {[1,2,3,4,5].map(s => (
+                                    <button key={s} onClick={() => setNewReview({...newReview, rating: s})}>
+                                       <Star className={`w-4 h-4 ${newReview.rating >= s ? 'fill-accent text-accent' : 'text-muted-foreground'}`} />
+                                    </button>
+                                 ))}
+                              </div>
                            </div>
-                           <p className="text-[11px] text-foreground font-medium italic">"{rev.text}"</p>
-                           <p className="text-[8px] font-bold text-muted-foreground uppercase tracking-widest">— {rev.name}</p>
+                           <textarea 
+                              value={newReview.comment}
+                              onChange={e => setNewReview({...newReview, comment: e.target.value})}
+                              placeholder="¿Qué tal estuvo la cancha?"
+                              className="w-full bg-background/50 border border-white/10 rounded-2xl p-4 text-[11px] h-20 outline-none focus:border-primary/50 transition-all font-medium"
+                           />
+                           <button 
+                              onClick={handlePostReview}
+                              disabled={isPostingReview || !newReview.comment.trim()}
+                              className="w-full py-3 bg-primary text-black font-black uppercase text-[9px] tracking-widest rounded-xl hover:bg-white transition-all disabled:opacity-30"
+                           >
+                              {isPostingReview ? 'ENVIANDO...' : 'POSTEAR RESEÑA'}
+                           </button>
                         </div>
-                     ))}
+                     ) : (
+                        <div className="p-6 rounded-3xl bg-surface-elevated/30 border border-white/5 text-center">
+                           <p className="text-[9px] font-black text-muted-foreground uppercase tracking-widest">Inicia sesión para compartir tu experiencia</p>
+                        </div>
+                     )}
+
+                     {/* REVIEWS LIST */}
+                     {reviews.length > 0 ? reviews.map((rev, i) => (
+                        <div key={rev.id} className="space-y-2 pb-6 border-b border-white/5 last:border-0 last:pb-0">
+                           <div className="flex justify-between items-start">
+                              <div className="flex items-center gap-1">
+                                 {[...Array(5)].map((_, s) => <Star key={s} className={`w-2.5 h-2.5 ${rev.rating > s ? 'fill-accent text-accent' : 'text-muted-foreground'}`} />)}
+                              </div>
+                              <span className="text-[7px] text-muted-foreground uppercase font-black">{new Date(rev.created_at).toLocaleDateString()}</span>
+                           </div>
+                           <p className="text-[11px] text-foreground font-medium italic">"{rev.comment}"</p>
+                           <p className="text-[8px] font-bold text-muted-foreground uppercase tracking-widest">— {rev.profiles?.full_name || 'Jugador Pelotify'}</p>
+                        </div>
+                     )) : (
+                        <div className="text-center py-4">
+                           <p className="text-[9px] font-black text-muted-foreground uppercase tracking-widest opacity-40">Sin reseñas todavía</p>
+                        </div>
+                     )}
                   </div>
                </div>
             </div>

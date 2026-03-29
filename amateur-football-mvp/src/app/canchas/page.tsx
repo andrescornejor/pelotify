@@ -1145,6 +1145,7 @@ function SettingsTab({ business, fields, setFields, hasMP, setBusiness }: any) {
   const [businessName, setBusinessName] = useState(business?.name || '');
   const [phone, setPhone] = useState(business?.phone || '');
   const [profileImageUrl, setProfileImageUrl] = useState(business?.profile_image_url || '');
+  const [amenities, setAmenities] = useState<string[]>(business?.amenities || []);
   const [coords, setCoords] = useState({ 
     link: business?.google_maps_link || ''
   });
