@@ -15,8 +15,8 @@ export async function GET(request: Request) {
     return NextResponse.json({ error: 'MP_CLIENT_ID not set in environment variables' }, { status: 500 });
   }
 
-  // Pass userId in state to recover it in callback
-  const authUrl = `https://auth.mercadopago.com/authorization?client_id=${clientId}&response_type=code&platform_id=mp&state=${userId}&redirect_uri=${encodeURIComponent(redirectUri)}`;
+  // Use Argentina-specific URL to avoid country selection page
+  const authUrl = `https://auth.mercadopago.com.ar/authorization?client_id=${clientId}&response_type=code&platform_id=mp&state=${userId}&redirect_uri=${encodeURIComponent(redirectUri)}`;
 
   return NextResponse.redirect(authUrl);
 }
