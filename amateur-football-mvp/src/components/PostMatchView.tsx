@@ -509,7 +509,7 @@ export default function PostMatchView({ match, participants, stats }: PostMatchV
           </div>
 
           <div className="glass-premium rounded-[3.5rem] p-8 border border-foreground/10 relative overflow-hidden group/map">
-            <VenueMap location={match.location} lat={match.lat} lng={match.lng} />
+            <VenueMap location={match.location} />
           </div>
 
           <div className="px-4">
