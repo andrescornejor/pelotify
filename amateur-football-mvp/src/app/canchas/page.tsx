@@ -305,7 +305,7 @@ function OverviewTab({ business, bookings, fields, onNewBooking }: any) {
         <StatCard 
           icon={DollarSign} 
           title="Ingresos Hoy (Proyección)" 
-          value={formatMoney(todayIncome || 145000)} // Using mock fallback for demo if 0
+          value={formatMoney(todayIncome || 0)} 
           trend="Calculado..." 
           trendUp={true} 
           color="primary"
@@ -313,7 +313,7 @@ function OverviewTab({ business, bookings, fields, onNewBooking }: any) {
         <StatCard 
           icon={CalendarDays} 
           title="Reservas" 
-          value={bookings.filter((b: any) => b.date === new Date().toISOString().split('T')[0]).length || "14"} 
+          value={bookings.filter((b: any) => b.date === new Date().toISOString().split('T')[0]).length.toString()} 
           trend="Hoy" 
           trendUp={true} 
           color="accent"

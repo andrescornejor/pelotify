@@ -21,6 +21,7 @@ import {
 } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { createMatch } from '@/lib/matches';
+import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/contexts/AuthContext';
 import { ROSARIO_VENUES, findVenueByLocation } from '@/lib/venues';
 import LocationSearch from '@/components/LocationSearch';
@@ -179,6 +180,22 @@ export default function CreateMatchPage() {
   const { user } = useAuth();
   const [step, setStep] = useState(0);
   const [isCreating, setIsCreating] = useState(false);
+  const [dbVenues, setDbVenues] = useState<any[]>([]);
+  const [dbFields, setDbFields] = useState<any[]>([]);
+
+  useEffect(() => {
+    // Fetch real venues from database
+    const fetchVenues = async () => {
+      const { data: businesses } = await supabase.from('canchas_businesses').select('*').eq('is_active', true);
+      if (businesses) {
+         setDbVenues(businesses);
+         // Also prefetch fields for these venues to know their formats/prices
+         const { data: fields } = await supabase.from('canchas_fields').select('*').eq('is_active', true);
+         if (fields) setDbFields(fields);
+      }
+    };
+    fetchVenues();
+  }, []);
   const [formData, setFormData] = useState({
     location: '',
     date: '',
@@ -189,44 +206,68 @@ export default function CreateMatchPage() {
     is_private: false,
     is_recruitment: false,
     missing_players: 0,
+    field_id: '', // To link with canchas schema
+    business_id: '',
   });
 
-  const handleLocationSelect = (address: string) => {
-    const venue = findVenueByLocation(address);
+  const handleLocationSelect = (address: string, isRealDb = false, businessId?: string) => {
     let newType = formData.type;
     let newPrice = formData.price;
+    let fieldId = '';
 
-    if (venue?.formats && venue.formats.length > 0) {
-      const currentFormatValid = venue.formats.find(f => f.type === newType);
-      
-      if (!currentFormatValid) {
-        newType = venue.formats[0].type;
-        newPrice = venue.formats[0].pricePerPlayer;
-      } else {
-        newPrice = currentFormatValid.pricePerPlayer;
-      }
+    if (isRealDb && businessId) {
+       // Search first available field matching format, or any format
+       let validField = dbFields.find(f => f.business_id === businessId && f.type === formData.type);
+       if (!validField) validField = dbFields.find(f => f.business_id === businessId);
+       
+       if (validField) {
+         newType = validField.type as any;
+         newPrice = validField.price_per_match;
+         fieldId = validField.id;
+       }
+    } else {
+       const venue = findVenueByLocation(address);
+       if (venue?.formats && venue.formats.length > 0) {
+         const currentFormatValid = venue.formats.find((f: any) => f.type === newType);
+         
+         if (!currentFormatValid) {
+           newType = venue.formats[0].type;
+           newPrice = venue.formats[0].pricePerPlayer;
+         } else {
+           newPrice = currentFormatValid.pricePerPlayer;
+         }
+       }
     }
 
     setFormData({ 
       ...formData, 
       location: address,
       type: newType,
-      price: newPrice
+      price: newPrice,
+      business_id: businessId || '',
+      field_id: fieldId
     });
   };
 
   const handleTypeSelect = (type: 'F5' | 'F7' | 'F11') => {
-    const venue = findVenueByLocation(formData.location);
+    const venue = dbVenues.find(v => v.address === formData.location || v.name === formData.location) || findVenueByLocation(formData.location);
     let newPrice = formData.price;
+    let fieldId = formData.field_id;
 
-    if (venue?.formats) {
-      const formatData = venue.formats.find(f => f.type === type);
+    if (venue?.id) { // Real DB venue
+      const formatData = dbFields.find(f => f.business_id === venue.id && f.type === type);
+      if (formatData) {
+        newPrice = formatData.price_per_match;
+        fieldId = formatData.id;
+      }
+    } else if (venue?.formats) { // Hardcoded venue
+      const formatData = venue.formats.find((f: any) => f.type === type);
       if (formatData) {
         newPrice = formatData.pricePerPlayer;
       }
     }
 
-    setFormData({ ...formData, type, price: newPrice });
+    setFormData({ ...formData, type, price: newPrice, field_id: fieldId });
   };
 
   const handleCreate = async () => {
@@ -362,6 +403,47 @@ export default function CreateMatchPage() {
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  {/* Real DB Venues go first */}
+                  {dbVenues.map((v) => {
+                    const isSelected = formData.location === (v.address || v.name);
+                    return (
+                      <motion.button
+                        key={v.id}
+                        layout={false}
+                        initial={false}
+                        animate={{ opacity: 1, y: 0 }}
+                        type="button"
+                        onClick={() => handleLocationSelect((v.address || v.name), true, v.id)}
+                        className={`group relative p-4 sm:p-5 rounded-3xl border text-left transition-all duration-300 overflow-hidden ${
+                          isSelected
+                            ? 'border-primary bg-primary/[0.08]'
+                            : 'border-foreground/[0.06] bg-foreground/[0.02] hover:border-foreground/20'
+                        }`}
+                      >
+                        {isSelected && <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-transparent hidden sm:block" />}
+                        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/[0.02] to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700 hidden sm:block" />
+
+                        <div className="relative flex flex-col gap-3">
+                          <div className="flex items-start justify-between">
+                            <div className={`w-10 h-10 rounded-2xl flex items-center justify-center transition-all duration-500 ${isSelected ? 'bg-primary text-black' : 'bg-foreground/[0.04] text-foreground/20'}`}>
+                              <MapPin className="w-5 h-5" />
+                            </div>
+                            <span className="bg-primary/20 text-primary text-[9px] font-bold px-2 py-0.5 rounded-full uppercase">Socio</span>
+                          </div>
+                          <div>
+                            <span className={`text-base font-black italic uppercase tracking-tight block transition-colors ${isSelected ? 'text-foreground' : 'text-foreground/40'}`}>
+                              {v.name}
+                            </span>
+                            <span className="text-[10px] font-bold uppercase tracking-widest text-foreground/25 block mt-0.5 truncate">
+                              {v.address || "Complejo Pelotify"}
+                            </span>
+                          </div>
+                        </div>
+                      </motion.button>
+                    )
+                  })}
+                  
+                  {/* Hardcoded mock venues for fallback demonstration */}
                   {ROSARIO_VENUES.map((venue, i) => {
                     const isSelected = formData.location === venue.address;
                     return (
@@ -378,43 +460,14 @@ export default function CreateMatchPage() {
                             : 'border-foreground/[0.06] bg-foreground/[0.02] hover:border-foreground/20'
                         }`}
                       >
-                        {/* Selected glow - Hidden on mobile for performance */}
-                        {isSelected && (
-                          <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-transparent hidden sm:block" />
-                        )}
-                        {/* Hover shimmer - Hidden on mobile */}
-                        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/[0.02] to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700 hidden sm:block" />
-
                         <div className="relative flex flex-col gap-3">
                           <div className="flex items-start justify-between">
-                            <div
-                              className={`w-10 h-10 rounded-2xl flex items-center justify-center transition-all duration-500 ${
-                                isSelected
-                                  ? 'bg-primary text-black'
-                                  : 'bg-foreground/[0.04] text-foreground/20'
-                              }`}
-                            >
+                            <div className={`w-10 h-10 rounded-2xl flex items-center justify-center transition-all duration-500 ${isSelected ? 'bg-primary text-black' : 'bg-foreground/[0.04] text-foreground/20'}`}>
                               <MapPin className="w-5 h-5" />
                             </div>
-                            <AnimatePresence>
-                              {isSelected && (
-                                <motion.div
-                                  initial={{ scale: 0, opacity: 0 }}
-                                  animate={{ scale: 1, opacity: 1 }}
-                                  exit={{ scale: 0, opacity: 0 }}
-                                  className="w-6 h-6 rounded-full bg-primary flex items-center justify-center"
-                                >
-                                  <CheckCircle2 className="w-4 h-4 text-black" />
-                                </motion.div>
-                              )}
-                            </AnimatePresence>
                           </div>
                           <div>
-                            <span
-                              className={`text-base font-black italic uppercase tracking-tight block transition-colors ${
-                                isSelected ? 'text-foreground' : 'text-foreground/40'
-                              }`}
-                            >
+                            <span className={`text-base font-black italic uppercase tracking-tight block transition-colors ${isSelected ? 'text-foreground' : 'text-foreground/40'}`}>
                               {venue.displayName || venue.name}
                             </span>
                             <span className="text-[10px] font-bold uppercase tracking-widest text-foreground/25 block mt-0.5 truncate">

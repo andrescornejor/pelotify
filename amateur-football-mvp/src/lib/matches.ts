@@ -127,15 +127,52 @@ export async function getMatchById(id: string) {
   return matchData;
 }
 
-export async function createMatch(matchData: Partial<Match>) {
+export async function createMatch(matchData: Partial<Match> & { field_id?: string, business_id?: string }) {
+  // First, create the match
+  const { field_id, business_id, ...insertData } = matchData;
   const { data, error } = await supabase
     .from('matches')
-    .insert([{ ...matchData, is_completed: false, is_private: matchData.is_private ?? false }])
+    .insert([{ ...insertData, is_completed: false, is_private: insertData.is_private ?? false }])
     .select()
     .single();
 
   if (error) throw error;
   const match = data as Match;
+
+  // If this match happens in a registered venue field, automatically book it
+  if (field_id && match.date && match.time && match.price !== undefined) {
+    try {
+       // Convert match time (HH:MM or HH:MM AM/PM) roughly to a proper DB start_time and end_time.
+       // E.g. 20:00 to start_time: "20:00:00", end_time: "21:00:00"
+       let parsedHour = 20;
+       let parsedMin = 0;
+       try {
+         const timeParts = match.time.split(':');
+         parsedHour = parseInt(timeParts[0]);
+         parsedMin = parseInt(timeParts[1]);
+       } catch(e) {}
+
+       const endHour = (parsedHour + 1) >= 24 ? 0 : parsedHour + 1;
+       const startTime = `${parsedHour.toString().padStart(2, '0')}:${parsedMin.toString().padStart(2, '0')}:00`;
+       const endTime = `${endHour.toString().padStart(2, '0')}:${parsedMin.toString().padStart(2, '0')}:00`;
+
+       const { error: bookingError } = await supabase.from('canchas_bookings').insert([{
+         field_id: field_id,
+         booker_id: match.creator_id,
+         date: match.date,
+         start_time: startTime,
+         end_time: endTime,
+         title: `[Pelotify] Partido ${match.type}`,
+         total_price: match.price * (match.type === 'F5' ? 10 : match.type === 'F7' ? 14 : 22), // Total price calculation based on format
+         down_payment_paid: 0,
+         status: 'pending' // Starting as pending for user payment
+       }]);
+
+       if (bookingError) console.error("Could not create linked booking:", bookingError);
+    } catch(err) {
+       console.error("Match to Booking linking failed:", err);
+    }
+  }
 
   // Auto-confirm creator in team A
   try {
