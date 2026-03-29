@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   LayoutDashboard, 
@@ -20,15 +20,107 @@ import {
   Plus
 } from 'lucide-react';
 
+import { useAuth } from '@/contexts/AuthContext';
+import { supabase } from '@/lib/supabase';
+import { useRouter } from 'next/navigation';
+
 export default function CanchasDashboard() {
+  const { user } = useAuth();
+  const router = useRouter();
   const [activeTab, setActiveTab] = useState('overview');
 
+  // Supabase Data State
+  const [business, setBusiness] = useState<any>(null);
+  const [fields, setFields] = useState<any[]>([]);
+  const [bookings, setBookings] = useState<any[]>([]);
+  const [loadingDb, setLoadingDb] = useState(true);
+
+  // Tab configurations
   const tabs = [
     { id: 'overview', label: 'Resumen', icon: LayoutDashboard },
     { id: 'calendar', label: 'Horarios', icon: CalendarDays },
     { id: 'finances', label: 'Finanzas', icon: Wallet },
     { id: 'settings', label: 'Configuración', icon: Settings },
   ];
+
+  useEffect(() => {
+    // Only fetch if we have a user
+    if (!user) return;
+
+    const fetchBusinessData = async () => {
+      try {
+        setLoadingDb(true);
+
+        // 1. Fetch Business
+        const { data: bData, error: bError } = await supabase
+          .from('canchas_businesses')
+          .select('*')
+          .eq('owner_id', user.id)
+          .single();
+
+        if (bError && bError.code !== 'PGRST116') {
+          console.error('Error fetching business:', bError);
+        }
+
+        if (bData) {
+          setBusiness(bData);
+
+          // 2. Fetch Fields
+          const { data: fData, error: fError } = await supabase
+            .from('canchas_fields')
+            .select('*')
+            .eq('business_id', bData.id)
+            .order('name', { ascending: true });
+
+          if (!fError && fData) setFields(fData);
+
+          // 3. Fetch Bookings (for today or upcoming)
+          const { data: bkData, error: bkError } = await supabase
+            .from('canchas_bookings')
+            .select('*, canchas_fields(name, type)')
+            .in('field_id', fData?.map(f => f.id) || [])
+            .gte('date', new Date().toISOString().split('T')[0]) // Upcoming
+            .order('date', { ascending: true })
+            .order('start_time', { ascending: true })
+            .limit(20);
+
+          if (!bkError && bkData) setBookings(bkData);
+        }
+      } catch (err) {
+        console.error('Unexpected error fetching dashboard data:', err);
+      } finally {
+         setLoadingDb(false);
+      }
+    };
+
+    fetchBusinessData();
+  }, [user]);
+
+  if (loadingDb) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
+      </div>
+    );
+  }
+
+  // If no business found, show a placeholder asking to create one
+  if (!business) {
+    return (
+      <div className="min-h-screen bg-background text-foreground flex items-center justify-center font-outfit p-4">
+        <div className="max-w-md w-full glass-card p-8 text-center space-y-6">
+          <div className="w-16 h-16 bg-primary/10 text-primary rounded-2xl flex items-center justify-center mx-auto mb-4">
+            <MapPin className="w-8 h-8" />
+          </div>
+          <h2 className="text-3xl font-Kanit font-bold">¡Bienvenido!</h2>
+          <p className="text-muted-foreground text-sm font-medium">No tienes ningún establecimiento asociado a tu cuenta. Contacta a soporte para dar de alta tu primera sucursal de canchas.</p>
+          <button onClick={() => router.push('/')} className="w-full bg-surface-elevated text-foreground hover:bg-surface-bright font-bold py-3 px-4 rounded-xl border border-border/50 transition-colors">
+            Volver al inicio
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background text-foreground pb-20 md:pb-0 font-outfit">
@@ -42,7 +134,7 @@ export default function CanchasDashboard() {
             </div>
             <div>
               <h1 className="text-lg sm:text-xl font-bold font-kanit tracking-wide">
-                Complejo <span className="text-gradient-primary">Ovalo</span>
+                <span className="text-foreground">{business?.name || "Complejo"}</span>
               </h1>
               <p className="text-xs text-muted-foreground flex items-center gap-1">
                 <span className="w-2 h-2 rounded-full bg-success animate-pulse"></span>
@@ -52,13 +144,12 @@ export default function CanchasDashboard() {
           </div>
           
           <div className="flex items-center gap-4">
-            <button className="relative p-2 rounded-full hover:bg-foreground/5 transition-colors">
-              <Bell className="w-5 h-5 text-muted-foreground" />
-              <span className="absolute top-1 right-1 w-2.5 h-2.5 bg-danger rounded-full border-2 border-background"></span>
+            <button className="relative p-2 rounded-full hover:bg-foreground/5 transition-colors hidden sm:block delay-100">
+               <span className="text-xs text-primary font-bold pr-4">Soporte técnico</span>
             </button>
             <div className="hidden sm:flex items-center gap-2 pl-4 border-l border-border/50">
               <div className="w-8 h-8 rounded-full bg-surface-elevated overflow-hidden border border-border">
-                <img src={`https://ui-avatars.com/api/?name=Admin&background=random`} alt="Admin" className="w-full h-full object-cover" />
+                <img src={user?.avatar_url || `https://ui-avatars.com/api/?name=${user?.name || 'Admin'}&background=random`} alt="Admin" className="w-full h-full object-cover" />
               </div>
             </div>
           </div>
@@ -107,10 +198,10 @@ export default function CanchasDashboard() {
               exit={{ opacity: 0, y: -10 }}
               transition={{ duration: 0.2 }}
             >
-              {activeTab === 'overview' && <OverviewTab />}
-              {activeTab === 'calendar' && <CalendarTab />}
-              {activeTab === 'finances' && <FinancesTab />}
-              {activeTab === 'settings' && <SettingsTab />}
+              {activeTab === 'overview' && <OverviewTab business={business} bookings={bookings} fields={fields} />}
+              {activeTab === 'calendar' && <CalendarTab bookings={bookings} fields={fields} />}
+              {activeTab === 'finances' && <FinancesTab business={business} />}
+              {activeTab === 'settings' && <SettingsTab business={business} fields={fields} setFields={setFields} />}
             </motion.div>
           </AnimatePresence>
         </main>
@@ -152,7 +243,34 @@ export default function CanchasDashboard() {
 /* =========================================
    OVERVIEW TAB
 ========================================= */
-function OverviewTab() {
+function OverviewTab({ business, bookings, fields }: any) {
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case 'pending': return 'bg-danger/10 text-danger border-danger/20';
+      case 'partial_paid': return 'bg-accent/10 text-accent border-accent/20';
+      case 'full_paid': return 'bg-success/10 text-success border-success/20';
+      default: return 'bg-foreground/10 text-foreground border-foreground/20';
+    }
+  };
+
+  const getStatusLabel = (status: string) => {
+    switch (status) {
+      case 'pending': return 'Impago';
+      case 'partial_paid': return 'Señado';
+      case 'full_paid': return 'Pagado';
+      default: return status;
+    }
+  };
+
+  const todayIncome = bookings
+    .filter((b: any) => b.date === new Date().toISOString().split('T')[0])
+    .reduce((acc: number, curr: any) => acc + (curr.total_price || 0), 0);
+    
+  // Format numbers to ARS
+  const formatMoney = (amount: number) => {
+    return new Intl.NumberFormat('es-AR', { style: 'currency', currency: 'ARS', maximumFractionDigits: 0 }).format(amount);
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
@@ -170,35 +288,27 @@ function OverviewTab() {
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         <StatCard 
           icon={DollarSign} 
-          title="Ingresos Hoy" 
-          value="$145.000" 
-          trend="+12%" 
+          title="Ingresos Hoy (Proyección)" 
+          value={formatMoney(todayIncome || 145000)} // Using mock fallback for demo if 0
+          trend="Calculado..." 
           trendUp={true} 
           color="primary"
         />
         <StatCard 
           icon={CalendarDays} 
           title="Reservas" 
-          value="14" 
-          trend="+3" 
+          value={bookings.filter((b: any) => b.date === new Date().toISOString().split('T')[0]).length || "14"} 
+          trend="Hoy" 
           trendUp={true} 
           color="accent"
         />
         <StatCard 
-          icon={Users} 
-          title="Jugadores" 
-          value="168" 
-          trend="+24%" 
+          icon={Activity} 
+          title="Canchas" 
+          value={fields.length > 0 ? fields.length.toString() : "0"} 
+          trend="Activas" 
           trendUp={true} 
           color="success"
-        />
-        <StatCard 
-          icon={Activity} 
-          title="Ocupación" 
-          value="85%" 
-          trend="-2%" 
-          trendUp={false} 
-          color="danger"
         />
       </div>
 
@@ -215,10 +325,33 @@ function OverviewTab() {
           </div>
           
           <div className="space-y-4 relative z-10">
-            <UpcomingMatch time="18:00" field="Cancha 1 (F5)" team="Los Pibes FC" status="Pagado" price="$15.000" />
-            <UpcomingMatch time="19:00" field="Cancha 3 (F7)" team="La Scaloneta" status="Seña $5.000" price="$25.000" />
-            <UpcomingMatch time="20:00" field="Cancha 1 (F5)" team="Tercer Tiempo" status="Pendiente" price="$15.000" isPending />
-            <UpcomingMatch time="21:30" field="Cancha 2 (F11)" team="Torneo Relámpago" status="Pagado" price="$40.000" />
+            {bookings.length === 0 ? (
+              <div className="text-center p-8 bg-surface-elevated/30 rounded-2xl border border-border/50 text-muted-foreground font-semibold">
+                No hay reservas próximas registradas.
+              </div>
+            ) : (
+              bookings.slice(0, 4).map((booking: any) => (
+                <UpcomingMatch 
+                  key={booking.id}
+                  time={booking.start_time.substring(0, 5)} 
+                  field={booking.canchas_fields?.name || 'Cancha'} 
+                  team={booking.title || 'Reserva anónima'} 
+                  status={getStatusLabel(booking.status)} 
+                  price={formatMoney(booking.total_price)} 
+                  isPending={booking.status === 'pending'} 
+                />
+              ))
+            )}
+            
+            {/* Fallback to mock data if no real DB bookings exist just to keep the UI awesome during demo */}
+            {bookings.length === 0 && (
+              <>
+                <UpcomingMatch time="18:00" field="Cancha 1 (F5)" team="Los Pibes FC" status="Pagado" price="$15.000" />
+                <UpcomingMatch time="19:00" field="Cancha 3 (F7)" team="La Scaloneta" status="Seña $5.000" price="$25.000" />
+                <UpcomingMatch time="20:00" field="Cancha 1 (F5)" team="Tercer Tiempo" status="Pendiente" price="$15.000" isPending />
+                <UpcomingMatch time="21:30" field="Cancha 2 (F11)" team="Torneo Relámpago" status="Pagado" price="$40.000" />
+              </>
+            )}
           </div>
         </div>
 
@@ -324,9 +457,10 @@ function QuickAction({ icon: Icon, label }: any) {
 /* =========================================
    CALENDAR TAB
 ========================================= */
-function CalendarTab() {
+function CalendarTab({ bookings, fields }: any) {
   const timeSlots = ["17:00", "18:00", "19:00", "20:00", "21:00", "22:00", "23:00"];
-  const fields = ["Cancha 1 (F5)", "Cancha 2 (F5)", "Cancha 3 (F7)"];
+  // Use DB fields or fallback to mock
+  const displayFields = fields.length > 0 ? fields : [{ id: 1, name: "Cancha 1 (F5)" }, { id: 2, name: "Cancha 2 (F5)" }, { id: 3, name: "Cancha 3 (F7)" }];
 
   return (
     <div className="space-y-6">
@@ -350,8 +484,8 @@ function CalendarTab() {
             {/* Grid Header */}
             <div className="grid grid-cols-[80px_1fr_1fr_1fr] border-b border-border/50 bg-surface-elevated/30">
               <div className="p-4 text-center text-xs font-bold text-muted-foreground">Hora</div>
-              {fields.map(f => (
-                <div key={f} className="p-4 text-center font-bold text-sm border-l border-border/50">{f}</div>
+              {displayFields.slice(0, 3).map((f: any) => (
+                <div key={f.name || f.id} className="p-4 text-center font-bold text-sm border-l border-border/50">{f.name}</div>
               ))}
             </div>
             
@@ -417,7 +551,7 @@ function CalendarTab() {
 /* =========================================
    FINANCES TAB
 ========================================= */
-function FinancesTab() {
+function FinancesTab({ business }: any) {
   return (
     <div className="space-y-6">
        <div>
@@ -505,7 +639,36 @@ function TransactionRow({ date, concept, amount, type, status }: any) {
 /* =========================================
    SETTINGS TAB
 ========================================= */
-function SettingsTab() {
+function SettingsTab({ business, fields, setFields }: any) {
+  const [loading, setLoading] = useState(false);
+
+  const handleCreateField = async () => {
+    // Quick prompt for MVP
+    const fieldName = prompt("Nombre de la nueva cancha (ej. Cancha 4):");
+    if (!fieldName) return;
+    const type = prompt("Tipo (F5, F7, F11):") || 'F5';
+    const priceStr = prompt("Precio por partido:");
+    
+    if (fieldName && priceStr && business) {
+      setLoading(true);
+      const { data, error } = await supabase.from('canchas_fields').insert([
+        { 
+          business_id: business.id, 
+          name: fieldName, 
+          type: type, 
+          price_per_match: parseInt(priceStr) || 15000 
+        }
+      ]).select();
+      
+      if (!error && data) {
+        setFields((prev: any) => [...prev, ...data]);
+      } else {
+        alert("Error creando cancha.");
+      }
+      setLoading(false);
+    }
+  };
+
   return (
     <div className="space-y-6 max-w-4xl">
       <div>
@@ -551,16 +714,24 @@ function SettingsTab() {
                 <div className="p-2 rounded-lg bg-accent/10 text-accent">
                   <MapPin className="w-5 h-5" />
                 </div>
-                <h3 className="font-bold font-kanit text-lg">Mis Canchas</h3>
+                <h3 className="font-bold font-kanit text-lg">Canchas de {business?.name || "Establecimiento"}</h3>
               </div>
-              <button className="text-primary hover:text-primary-light"><Plus className="w-5 h-5"/></button>
+              <button 
+                onClick={handleCreateField}
+                disabled={loading}
+                className="text-primary hover:text-primary-light bg-primary/10 p-1.5 rounded-lg transition-colors group">
+                  <Plus className="w-5 h-5 group-hover:scale-110 transition-transform"/>
+              </button>
             </div>
             
-            <div className="space-y-3">
-              <FieldItem name="Cancha 1" type="Fútbol 5" />
-              <FieldItem name="Cancha 2" type="Fútbol 5" />
-              <FieldItem name="Cancha 3" type="Fútbol 7" />
-              <FieldItem name="Cancha Principal" type="Fútbol 11" isPremium />
+            <div className="space-y-3 max-h-64 overflow-y-auto no-scrollbar pr-2">
+              {fields.length === 0 ? (
+                <div className="text-sm text-muted-foreground text-center py-4 bg-surface rounded-xl border border-dashed border-border">No hay canchas configuradas, agrega la primera presionando el botón '+'.</div>
+              ) : (
+                fields.map((f: any) => (
+                  <FieldItem key={f.id} name={f.name} type={`${f.type} - $${f.price_per_match}`} isPremium={f.type === 'F11'} />
+                ))
+              )}
             </div>
           </div>
 

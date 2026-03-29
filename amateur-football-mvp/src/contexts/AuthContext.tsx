@@ -163,11 +163,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     if (isLoading) return;
 
     const isAuthRoute =
-      pathname === '/login' || pathname === '/register' || pathname === '/update-password';
+      pathname === '/login' || pathname === '/register' || pathname === '/update-password' || pathname === '/canchas/login';
     const isOnboardingRoute = pathname === '/onboarding';
+    const isCanchasRoute = pathname?.startsWith('/canchas');
 
-    if (!user && !isAuthRoute) {
+    if (!user && !isAuthRoute && !isCanchasRoute) {
       router.push('/login');
+    } else if (!user && !isAuthRoute && isCanchasRoute && pathname !== '/canchas/login') {
+      router.push('/canchas/login');
     } else if (user) {
       // Check if user has finished onboarding (we store this in user_metadata)
       // Existing users without this flag will bypass if we assume they are already set
@@ -175,10 +178,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       // or if they have a custom 'avatar_url' maybe? Let's just use the flag.
       const hasOnboarded = user.user_metadata?.onboarded === true;
 
-      if (!hasOnboarded && pathname !== '/onboarding') {
+      if (!hasOnboarded && pathname !== '/onboarding' && !isCanchasRoute) {
         router.push('/onboarding');
       } else if (hasOnboarded && (isAuthRoute || pathname === '/onboarding')) {
-        router.push('/');
+        if (isCanchasRoute) {
+          router.push('/canchas');
+        } else {
+          router.push('/');
+        }
       }
     }
   }, [user, isLoading, pathname, router]);
@@ -345,15 +352,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   const isAuthRoute =
-    pathname === '/login' || pathname === '/register' || pathname === '/update-password';
+    pathname === '/login' || pathname === '/register' || pathname === '/update-password' || pathname === '/canchas/login';
+  const isCanchasRoute = pathname?.startsWith('/canchas');
 
   // Verification and redirect logic for showing loader
   // 1. Initial loading of auth state (except on auth routes for faster perceived performance)
-  // 2. Not authenticated but trying to access protected route (redirecting to login)
+  // 2. Not authenticated but trying to access protected route (redirecting to login, unless it's /canchas)
   // 3. Authenticated but trying to access auth route (redirecting to home)
   const showLoader =
     (isLoading && !isAuthRoute) ||
-    (!isLoading && !user && !isAuthRoute) ||
+    (!isLoading && !user && !isAuthRoute && !isCanchasRoute) ||
+    (!isLoading && !user && isCanchasRoute && pathname !== '/canchas/login') ||
     (!isLoading && user && isAuthRoute);
 
   return (
