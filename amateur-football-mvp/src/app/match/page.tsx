@@ -231,25 +231,31 @@ function MatchLobbyContent() {
            .select('id, name, alias_cbu, mp_access_token, owner_id')
            .eq('is_active', true);
          
-         if (allBusinesses && data.location) {
-           const loc = data.location.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').trim();
-           const matchedBiz = allBusinesses.find((biz: any) => {
-             const bizName = (biz.name || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').trim();
-             return loc.includes(bizName) || bizName.includes(loc) || loc === bizName;
-           });
+          // Primero intentar por ID directo
+          let matchedBiz = allBusinesses.find((biz: any) => biz.id === data.business_id);
+          
+          // Si no, intentar por nombre/ubicación (fuzzy match)
+          if (!matchedBiz && data.location) {
+            const loc = data.location.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').trim();
+            matchedBiz = allBusinesses.find((biz: any) => {
+              const bizName = (biz.name || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').trim();
+              return loc.includes(bizName) || bizName.includes(loc) || loc === bizName;
+            });
+          }
            
-           if (matchedBiz) {
-             setVenueAliasCbu(matchedBiz.alias_cbu || null);
-             if (matchedBiz.mp_access_token) {
-               setVenueHasMP(true);
-             } else if (matchedBiz.owner_id) {
-               const { data: ownerProf } = await supabase.from('profiles').select('mp_access_token').eq('id', matchedBiz.owner_id).single();
-               setVenueHasMP(!!ownerProf?.mp_access_token);
-             } else {
-               setVenueHasMP(false);
-             }
-           }
-         }
+          if (matchedBiz) {
+            setVenueAliasCbu(matchedBiz.alias_cbu || null);
+            if (matchedBiz.mp_access_token) {
+              setVenueHasMP(true);
+            } else if (matchedBiz.owner_id) {
+              const { data: ownerProf } = await supabase.from('profiles').select('mp_access_token').eq('id', matchedBiz.owner_id).single();
+              setVenueHasMP(!!ownerProf?.mp_access_token);
+            } else {
+              setVenueHasMP(false);
+            }
+          } else {
+             setVenueHasMP(null);
+          }
       } catch(e) { console.error('Error buscando establecimiento:', e); }
       if (data.is_completed) {
         try {
@@ -1132,52 +1138,84 @@ function MatchLobbyContent() {
                 </div>
               )}
 
-              {/* PAYMENT SECTION */}
-              {isConfirmed && match.price > 0 && !isCompleted && !myEntry?.paid && (!isCreator || venueHasMP !== null) && (
+              {/* PAYMENT SECTION — Shown to anyone confirmed, but with special rules for creator */}
+              {isConfirmed && match.price > 0 && !isCompleted && !myEntry?.paid && (
                 <motion.div
                   initial={{ opacity: 0, x: 20 }}
                   animate={{ opacity: 1, x: 0 }}
                   className="p-6 rounded-[2.5rem] bg-[#009EE3]/5 border border-[#009EE3]/20 space-y-4"
                 >
-                  <div className="flex items-center gap-3 font-kanit">
-                    <div className="w-10 h-10 rounded-2xl bg-[#009EE3] flex items-center justify-center text-white shrink-0">
-                      <DollarSign className="w-5 h-5" />
-                    </div>
-                    <div>
-                      <h3 className="text-lg font-black italic uppercase tracking-tighter text-foreground leading-none">
-                        {match.payment_method === 'cash' ? 'Pago en el predio' : 'Confirmá tu lugar'}
-                      </h3>
-                      <p className={cn("text-[10px] font-bold uppercase tracking-widest mt-1", match.payment_method === 'cash' ? "text-amber-500" : "text-[#009EE3]")}>
-                        {match.payment_method === 'cash' ? 'Abonás al llegar a la cancha' : 'Pago seguro vía Mercado Pago'}
-                      </p>
-                    </div>
-                  </div>
-                  
-                  {/* Si NO es una cancha registrada con Alias PERO sin MP, mostramos botón MP */}
-                  {venueHasMP !== false && match.payment_method !== 'cash' && (
-                    <MercadoPagoButton 
-                      matchId={match.id} 
-                      title={`Lugar en ${venueName} - ${match.date}`} 
-                      price={match.price} 
-                    />
-                  )}
-
-                  {match.payment_method === 'cash' && (
-                    <div className="mt-4 p-5 rounded-2xl bg-amber-500/10 border border-amber-500/20 flex items-center gap-4">
-                      <div className="w-10 h-10 rounded-full bg-amber-500 flex items-center justify-center shrink-0">
-                        <DollarSign className="w-5 h-5 text-black" />
+                  {/* Si es creador Y es partido casual (sin establecimiento), no necesita pagarse a sí mismo */}
+                  {isCreator && venueHasMP === null ? (
+                    <div className="space-y-4">
+                      <div className="flex items-center gap-3 font-kanit">
+                        <div className="w-10 h-10 rounded-2xl bg-primary flex items-center justify-center text-black shrink-0">
+                          <Check className="w-5 h-5" />
+                        </div>
+                        <div>
+                          <h3 className="text-lg font-black italic uppercase tracking-tighter text-foreground leading-none">
+                            Sos el dueño
+                          </h3>
+                          <p className="text-[10px] text-primary font-bold uppercase tracking-widest mt-1">
+                            Tu lugar ya está confirmado
+                          </p>
+                        </div>
                       </div>
-                      <p className="text-xs font-bold text-amber-500 uppercase tracking-tight leading-snug">
-                        Recordá llevar el dinero en efectivo. El establecimiento te cobrará antes de jugar.
+                      <p className="text-[10px] text-foreground/40 font-bold uppercase tracking-widest leading-relaxed">
+                        Como sos quien armó el partido y recibe el dinero, no hace falta que pagues por Mercado Pago.
                       </p>
                     </div>
-                  )}
-                  
-                  {venueAliasCbu && (
-                    <div className="mt-4 p-4 rounded-xl bg-foreground/5 border border-foreground/10 text-center">
-                      <p className="text-[10px] text-foreground/40 font-bold uppercase tracking-widest mb-1">Pagá transfiriendo manualmente a este Alias/CBU:</p>
-                      <p className="text-sm font-black italic tracking-tighter text-foreground selectable select-all bg-background border border-border inline-block px-3 py-1.5 rounded-lg mt-2">{venueAliasCbu}</p>
+                  ) : (
+                    <>
+                    <div className="flex items-center gap-3 font-kanit">
+                      <div className="w-10 h-10 rounded-2xl bg-[#009EE3] flex items-center justify-center text-white shrink-0">
+                        <DollarSign className="w-5 h-5" />
+                      </div>
+                      <div>
+                        <h3 className="text-lg font-black italic uppercase tracking-tighter text-foreground leading-none">
+                          {match.payment_method === 'cash' ? 'Pago en el predio' : 'Confirmá tu lugar'}
+                        </h3>
+                        {match.payment_method !== 'cash' && venueHasMP !== false && (
+                           <p className="text-[10px] text-[#009EE3] font-bold uppercase tracking-widest mt-1">
+                             Pago seguro vía Mercado Pago
+                           </p>
+                        )}
+                        {match.payment_method === 'cash' && (
+                           <p className="text-[10px] text-amber-500 font-bold uppercase tracking-widest mt-1">
+                             Abonás al llegar a la cancha
+                           </p>
+                        )}
+                      </div>
                     </div>
+                    
+                    {/* Botón Mercado Pago: Solo si NO es Efectivo Y (tiene MP o es casual para el creador... wait) */}
+                    {/* En casual (venueHasMP === null), el creador ya retornó arriba */}
+                    {match.payment_method !== 'cash' && venueHasMP !== false && (
+                      <MercadoPagoButton 
+                        matchId={match.id} 
+                        title={`Lugar en ${venueName} - ${match.date}`} 
+                        price={match.price} 
+                      />
+                    )}
+
+                    {match.payment_method === 'cash' && (
+                      <div className="mt-4 p-5 rounded-2xl bg-amber-500/10 border border-amber-500/20 flex items-center gap-4">
+                        <div className="w-10 h-10 rounded-full bg-amber-500 flex items-center justify-center shrink-0">
+                          <DollarSign className="w-5 h-5 text-black" />
+                        </div>
+                        <p className="text-xs font-bold text-amber-500 uppercase tracking-tight leading-snug">
+                          Recordá llevar el dinero en efectivo. El establecimiento te cobrará antes de jugar.
+                        </p>
+                      </div>
+                    )}
+                    
+                    {venueAliasCbu && (
+                      <div className="mt-4 p-4 rounded-xl bg-foreground/5 border border-foreground/10 text-center">
+                        <p className="text-[10px] text-foreground/40 font-bold uppercase tracking-widest mb-1">Pagá transfiriendo manualmente a este Alias/CBU:</p>
+                        <p className="text-sm font-black italic tracking-tighter text-foreground selectable select-all bg-background border border-border inline-block px-3 py-1.5 rounded-lg mt-2">{venueAliasCbu}</p>
+                      </div>
+                    )}
+                    </>
                   )}
                   
                   <p className="text-[9px] text-foreground/40 font-bold uppercase tracking-widest text-center mt-4">

@@ -24,6 +24,8 @@ export interface Match {
   is_private?: boolean;
   is_recruitment?: boolean;
   payment_method?: 'mercado_pago' | 'cash';
+  field_id?: string;
+  business_id?: string;
   participants?: { count: number }[];
   user_team?: 'A' | 'B' | null;
 }
@@ -137,7 +139,9 @@ export async function createMatch(matchData: Partial<Match> & { field_id?: strin
       ...insertData, 
       is_completed: false, 
       is_private: insertData.is_private ?? false,
-      payment_method: insertData.payment_method || 'mercado_pago'
+      payment_method: insertData.payment_method || 'mercado_pago',
+      field_id: field_id,
+      business_id: business_id
     }])
     .select()
     .single();
