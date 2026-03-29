@@ -56,6 +56,8 @@ export default function CanchasDashboard() {
   const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0]);
   const [hasMP, setHasMP] = useState<boolean>(false);
   
+  const onNewBooking = () => setShowBookingModal(true);
+
   // Stats state
   const [stats, setStats] = useState({
     todayIncome: 0,
