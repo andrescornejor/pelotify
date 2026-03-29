@@ -49,9 +49,16 @@ export async function POST(request: Request) {
     let businessToken = null;
     let businessOwnerId = null;
 
-    if (bookingData && bookingData.canchas_fields && bookingData.canchas_fields.canchas_businesses) {
-      businessToken = bookingData.canchas_fields.canchas_businesses.mp_access_token;
-      businessOwnerId = bookingData.canchas_fields.canchas_businesses.owner_id;
+    const booking: any = bookingData;
+    if (booking?.canchas_fields) {
+      const field = Array.isArray(booking.canchas_fields) ? booking.canchas_fields[0] : booking.canchas_fields;
+      if (field?.canchas_businesses) {
+        const business = Array.isArray(field.canchas_businesses) ? field.canchas_businesses[0] : field.canchas_businesses;
+        if (business) {
+          businessToken = business.mp_access_token;
+          businessOwnerId = business.owner_id;
+        }
+      }
     }
 
     // Determinar si el creador o el establecimiento tienen MP Connect activo y establecer el cliente
