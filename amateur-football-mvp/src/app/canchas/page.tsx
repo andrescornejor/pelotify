@@ -644,6 +644,28 @@ function TransactionRow({ date, concept, amount, type, status }: any) {
 ========================================= */
 function SettingsTab({ business, fields, setFields }: any) {
   const [loading, setLoading] = useState(false);
+  // Inicializar seña con la primera cancha o 30 por defecto
+  const [deposit, setDeposit] = useState(fields?.[0]?.down_payment_percentage || 30);
+  const [isSavingPrices, setIsSavingPrices] = useState(false);
+
+  const handleSavePrices = async () => {
+    if (!business) return;
+    setIsSavingPrices(true);
+    // Actualizar porcentaje de seña en todas las canchas para este negocio
+    const { error } = await supabase
+      .from('canchas_fields')
+      .update({ down_payment_percentage: deposit })
+      .eq('business_id', business.id);
+
+    if (error) {
+      alert("Error al actualizar la seña requerida: " + error.message);
+    } else {
+      // Actualizamos estado local
+      setFields((prev: any) => prev.map((f: any) => ({ ...f, down_payment_percentage: deposit })));
+      alert("Seña requerida actualizada correctamente para todas tus canchas.");
+    }
+    setIsSavingPrices(false);
+  };
 
   const handleCreateField = async () => {
     // Quick prompt for MVP
@@ -697,15 +719,27 @@ function SettingsTab({ business, fields, setFields }: any) {
             <div className="pt-4 border-t border-border/50">
               <label className="text-sm font-semibold text-muted-foreground mb-2 block">Seña Requerida (%)</label>
               <div className="flex items-center gap-4">
-                <input type="range" min="0" max="100" step="10" defaultValue="30" className="flex-1 accent-primary" />
-                <span className="font-bold text-lg w-12 text-right">30%</span>
+                <input 
+                  type="range" 
+                  min="0" 
+                  max="100" 
+                  step="10" 
+                  value={deposit} 
+                  onChange={(e) => setDeposit(parseInt(e.target.value))} 
+                  className="flex-1 accent-primary" 
+                />
+                <span className="font-bold text-lg w-12 text-right">{deposit}%</span>
               </div>
               <p className="text-xs text-muted-foreground mt-2">Porcentaje mínimo del valor de la cancha para confirmar la reserva.</p>
             </div>
           </div>
           
-          <button onClick={() => alert("Precios actualizados para la próxima temporada.")} className="w-full py-2.5 bg-primary/10 text-primary hover:bg-primary/20 font-bold rounded-xl transition-colors">
-            Guardar Precios
+          <button 
+            onClick={handleSavePrices} 
+            disabled={isSavingPrices}
+            className="w-full py-2.5 bg-primary/10 text-primary hover:bg-primary/20 font-bold rounded-xl transition-colors disabled:opacity-50"
+          >
+            {isSavingPrices ? 'Guardando...' : 'Guardar Precios y Seña'}
           </button>
         </div>
 
