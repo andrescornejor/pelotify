@@ -1144,6 +1144,7 @@ function MatchLobbyContent() {
                       <DollarSign className="w-5 h-5" />
                     </div>
                     <div>
+                      <h3 className="text-lg font-black italic uppercase tracking-tighter text-foreground leading-none">
                         {match.payment_method === 'cash' ? 'Pago en el predio' : 'Confirmá tu lugar'}
                       </h3>
                       <p className={cn("text-[10px] font-bold uppercase tracking-widest mt-1", match.payment_method === 'cash' ? "text-amber-500" : "text-[#009EE3]")}>

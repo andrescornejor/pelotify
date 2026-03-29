@@ -174,7 +174,6 @@ export async function createMatch(matchData: Partial<Match> & { field_id?: strin
          down_payment_paid: 0,
          status: match.payment_method === 'cash' ? 'pending' : 'pending' // Still pending until paid on MP
        }]);
-       }]);
 
        if (bookingError) console.error("Could not create linked booking:", bookingError);
     } catch(err) {
