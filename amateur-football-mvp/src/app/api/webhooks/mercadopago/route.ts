@@ -13,7 +13,7 @@ export async function POST(request: Request) {
     const url = new URL(request.url);
     const type = url.searchParams.get('type');
     const paymentId = url.searchParams.get('data.id');
-    const creatorId = url.searchParams.get('creator_id');
+    const receiverId = url.searchParams.get('receiver_id');
 
     // MP sends notifications for several events. We only care about payments.
     if (type !== 'payment' || !paymentId) {
@@ -23,16 +23,28 @@ export async function POST(request: Request) {
     // Por default el token de la plataforma
     let accessTokenToUse = process.env.MP_ACCESS_TOKEN || '';
 
-    // Si recibimos el creator_id, intentamos usar su token para leer el pago (MP Connect)
-    if (creatorId) {
-      const { data: creatorProfile } = await supabaseAdmin
-        .from('profiles')
+    // Si recibimos el receiver_id, intentamos usar su token para leer el pago (MP Connect)
+    if (receiverId) {
+      // Intentamos primero ver si es un token de un establecimiento (Cancha)
+      const { data: businessData } = await supabaseAdmin
+        .from('canchas_businesses')
         .select('mp_access_token')
-        .eq('id', creatorId)
+        .eq('owner_id', receiverId)
         .single();
-      
-      if (creatorProfile && creatorProfile.mp_access_token) {
-        accessTokenToUse = creatorProfile.mp_access_token;
+        
+      if (businessData && businessData.mp_access_token) {
+        accessTokenToUse = businessData.mp_access_token;
+      } else {
+        // Fallback al profile
+        const { data: creatorProfile } = await supabaseAdmin
+          .from('profiles')
+          .select('mp_access_token')
+          .eq('id', receiverId)
+          .single();
+        
+        if (creatorProfile && creatorProfile.mp_access_token) {
+          accessTokenToUse = creatorProfile.mp_access_token;
+        }
       }
     }
 
@@ -56,16 +68,34 @@ export async function POST(request: Request) {
         return NextResponse.json({ error: 'Invalid reference' }, { status: 400 });
       }
 
-      // Update the database
-      const { error } = await supabaseAdmin
-        .from('match_participants')
-        .update({ paid: true })
-        .eq('match_id', matchId)
-        .eq('user_id', userId);
+      // Check if it's a seña via metadata
+      const isSena = paymentDetails.metadata?.is_sena === true;
 
-      if (error) {
-        console.error('Supabase update error:', error);
-        return NextResponse.json({ error: 'Database update failed' }, { status: 500 });
+      if (isSena) {
+        // Actualizamos canchas_bookings
+        const { error } = await supabaseAdmin
+          .from('canchas_bookings')
+          .update({ status: 'partial_paid', down_payment_paid: paymentDetails.transaction_amount })
+          .eq('match_id', matchId);
+
+        if (error) {
+          console.error('Supabase update error (canchas_bookings):', error);
+          return NextResponse.json({ error: 'Database update failed' }, { status: 500 });
+        }
+        console.log(`Seña payment confirmed for Match ${matchId}`);
+      } else {
+        // Update the database (normal match)
+        const { error } = await supabaseAdmin
+          .from('match_participants')
+          .update({ paid: true })
+          .eq('match_id', matchId)
+          .eq('user_id', userId);
+
+        if (error) {
+          console.error('Supabase update error:', error);
+          return NextResponse.json({ error: 'Database update failed' }, { status: 500 });
+        }
+        console.log(`Payment confirmed for Match ${matchId}, User ${userId}`);
       }
 
       console.log(`Payment confirmed for Match ${matchId}, User ${userId}`);

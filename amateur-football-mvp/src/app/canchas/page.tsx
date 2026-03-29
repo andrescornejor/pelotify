@@ -203,7 +203,7 @@ export default function CanchasDashboard() {
               transition={{ duration: 0.2 }}
             >
               {activeTab === 'overview' && <OverviewTab business={business} bookings={bookings} fields={fields} onNewBooking={() => setShowBookingModal(true)} />}
-              {activeTab === 'calendar' && <CalendarTab bookings={bookings} fields={fields} onSlotClick={(time: string, fieldId: string) => { setSelectedSlot({time, fieldId}); setShowBookingModal(true); }} />}
+              {activeTab === 'calendar' && <CalendarTab bookings={bookings} fields={fields} onSlotClick={(time: string, fieldId: string, date: string) => { setSelectedSlot({time, fieldId, date}); setShowBookingModal(true); }} />}
               {activeTab === 'finances' && <FinancesTab business={business} bookings={bookings} />}
               {activeTab === 'settings' && <SettingsTab business={business} fields={fields} setFields={setFields} />}
             </motion.div>
@@ -218,7 +218,7 @@ export default function CanchasDashboard() {
             onClose={() => { setShowBookingModal(false); setSelectedSlot(null); }} 
             fields={fields} 
             selectedSlot={selectedSlot}
-            onBooked={(newBooking: any) => setBookings(prev => [...prev, newBooking])}
+            onBooked={(newBooking: any) => setBookings((prev: any) => [...prev, newBooking])}
           />
         )}
       </AnimatePresence>
@@ -454,8 +454,15 @@ function QuickAction({ icon: Icon, label, onClick }: any) {
    CALENDAR TAB
 ========================================= */
 function CalendarTab({ bookings, fields, onSlotClick }: any) {
+  const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0]);
   const timeSlots = ["17:00", "18:00", "19:00", "20:00", "21:00", "22:00", "23:00"];
   const displayFields = fields;
+
+  const getTomorrowString = () => {
+    const d = new Date();
+    d.setDate(d.getDate() + 1);
+    return d.toISOString().split('T')[0];
+  };
 
   if (displayFields.length === 0) {
     return (
@@ -481,11 +488,27 @@ function CalendarTab({ bookings, fields, onSlotClick }: any) {
           <p className="text-muted-foreground text-sm">Organización de turnos</p>
         </div>
         <div className="flex bg-surface-elevated p-1 rounded-lg border border-border">
-           <button className="px-4 py-1.5 text-sm font-semibold rounded-md bg-surface border border-border/50 text-foreground">Hoy</button>
-           <button onClick={() => alert("Agenda de dīas futuros se habilitará próximamente")} className="px-4 py-1.5 text-sm font-semibold rounded-md text-muted-foreground hover:text-foreground">Mañana</button>
-           <button onClick={() => alert("Filtro de calendario se habilitará próximamente")} className="px-4 py-1.5 text-sm font-semibold rounded-md text-muted-foreground hover:text-foreground flex items-center gap-2">
-             <CalendarDays className="w-4 h-4"/> Fecha
+           <button 
+             onClick={() => setSelectedDate(new Date().toISOString().split('T')[0])}
+             className={`px-4 py-1.5 text-sm font-semibold rounded-md ${selectedDate === new Date().toISOString().split('T')[0] ? 'bg-surface border border-border/50 text-foreground' : 'text-muted-foreground hover:text-foreground'}`}
+           >
+             Hoy
            </button>
+           <button 
+             onClick={() => setSelectedDate(getTomorrowString())}
+             className={`px-4 py-1.5 text-sm font-semibold rounded-md ${selectedDate === getTomorrowString() ? 'bg-surface border border-border/50 text-foreground' : 'text-muted-foreground hover:text-foreground'}`}
+           >
+             Mañana
+           </button>
+           <label className="relative px-4 py-1.5 text-sm font-semibold rounded-md text-muted-foreground hover:text-foreground flex items-center gap-2 cursor-pointer">
+             <CalendarDays className="w-4 h-4"/> Fecha
+             <input 
+               type="date" 
+               className="absolute inset-0 opacity-0 cursor-pointer" 
+               value={selectedDate}
+               onChange={(e) => setSelectedDate(e.target.value)}
+             />
+           </label>
         </div>
       </div>
 
@@ -511,7 +534,7 @@ function CalendarTab({ bookings, fields, onSlotClick }: any) {
                   {displayFields.slice(0, 4).map((f: any) => {
                     const booking = bookings.find((b: any) => 
                       b.field_id === f.id && 
-                      b.date === new Date().toISOString().split('T')[0] && 
+                      b.date === selectedDate && 
                       b.start_time.startsWith(time)
                     );
 
@@ -527,7 +550,7 @@ function CalendarTab({ bookings, fields, onSlotClick }: any) {
                             <span className="text-muted-foreground truncate">{booking.title || 'Reserva'} - ${booking.total_price}</span>
                           </div>
                         ) : (
-                          <button onClick={() => onSlotClick(time, f.id)} className="h-full w-full min-h-[60px] rounded-lg border border-dashed border-border/50 hover:border-primary/50 hover:bg-primary/5 text-muted-foreground hover:text-primary flex items-center justify-center gap-1 transition-colors text-xs opacity-0 hover:opacity-100">
+                          <button onClick={() => onSlotClick(time, f.id, selectedDate)} className="h-full w-full min-h-[60px] rounded-lg border border-dashed border-border/50 hover:border-primary/50 hover:bg-primary/5 text-muted-foreground hover:text-primary flex items-center justify-center gap-1 transition-colors text-xs opacity-0 hover:opacity-100">
                             <Plus className="w-3 h-3" /> Turno
                           </button>
                         )}
@@ -840,7 +863,7 @@ function NewBookingModal({ onClose, fields, selectedSlot, onBooked }: any) {
     title: '',
     fieldId: selectedSlot?.fieldId || (fields[0]?.id || ''),
     time: selectedSlot?.time || '18:00',
-    date: new Date().toISOString().split('T')[0],
+    date: selectedSlot?.date || new Date().toISOString().split('T')[0],
     paid: false
   });
 
