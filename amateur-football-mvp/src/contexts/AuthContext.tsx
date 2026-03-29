@@ -11,6 +11,7 @@ interface User {
   email: string;
   avatar_url?: string;
   user_metadata?: any;
+  is_business?: boolean;
 }
 
 interface AuthContextType {
@@ -59,10 +60,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           console.error('Error fetching profile:', profileError);
         }
 
+        // 1.5. Check if user is a business owner
+        const { data: business } = await supabase
+          .from('canchas_businesses')
+          .select('id')
+          .eq('owner_id', authUser.id)
+          .maybeSingle();
+
+        const isBusiness = !!business;
+
         // 2. Ensure profile exists (especially for new Google users)
-        // Note: The database trigger 'on_auth_user_created' usually handles this,
-        // but we check here as a fallback for existing users or race conditions.
-        if (!profile) {
+        // Skip for business owners as they don't necessarily need a player profile
+        if (!profile && !isBusiness) {
           console.log('Ensuring profile for user:', authUser.id);
           const { data: newProfile, error: insertError } = await supabase
             .from('profiles')
@@ -90,6 +99,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           name: profile?.name || metadata.name || metadata.full_name || 'Jugador',
           avatar_url: profile?.avatar_url || metadata.avatar_url,
           user_metadata: { ...metadata, ...(profile || {}) },
+          is_business: isBusiness,
         });
       } catch (err) {
         console.error('Critical error in auth session sync:', err);
@@ -177,11 +187,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       // but for this MVP demo we will enforce onboarding unless they have 'onboarded: true'
       // or if they have a custom 'avatar_url' maybe? Let's just use the flag.
       const hasOnboarded = user.user_metadata?.onboarded === true;
+      const isBusiness = user.is_business;
 
-      if (!hasOnboarded && pathname !== '/onboarding' && !isCanchasRoute) {
+      if (isBusiness && !isCanchasRoute && !isOnboardingRoute && pathname === '/') {
+        router.push('/canchas');
+      } else if (!isBusiness && !hasOnboarded && pathname !== '/onboarding' && !isCanchasRoute) {
         router.push('/onboarding');
-      } else if (hasOnboarded && (isAuthRoute || pathname === '/onboarding')) {
-        if (isCanchasRoute) {
+      } else if ((hasOnboarded || isBusiness) && (isAuthRoute || pathname === '/onboarding')) {
+        if (isCanchasRoute || isBusiness) {
           router.push('/canchas');
         } else {
           router.push('/');
