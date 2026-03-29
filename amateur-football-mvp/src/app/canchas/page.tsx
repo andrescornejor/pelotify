@@ -688,6 +688,7 @@ function TransactionRow({ date, concept, amount, type, status }: any) {
    SETTINGS TAB
 ========================================= */
 function SettingsTab({ business, fields, setFields }: any) {
+  const { user } = useAuth();
   const [loading, setLoading] = useState(false);
   // Inicializar seña con la primera cancha o 30 por defecto
   const [deposit, setDeposit] = useState(fields?.[0]?.down_payment_percentage || 30);
