@@ -94,13 +94,13 @@ export default function LandingPage() {
                initial={{ opacity: 0, x: 20 }}
                animate={{ opacity: 1, x: 0 }}
                transition={{ duration: 0.8 }}
-               className="hidden md:flex items-center gap-10"
+               className="flex items-center gap-3 md:gap-10"
             >
                <Link href="/login">
                   <motion.button
                      whileHover={{ scale: 1.05 }}
                      whileTap={{ scale: 0.95 }}
-                     className="h-14 px-10 bg-white text-black font-black uppercase text-xs tracking-[0.2em] rounded-2xl hover:bg-primary hover:shadow-[0_0_30px_rgba(44,252,125,0.6)] transition-all duration-300"
+                     className="h-12 md:h-14 px-6 md:px-10 bg-white text-black font-black uppercase text-[10px] md:text-xs tracking-[0.2em] rounded-2xl hover:bg-primary hover:shadow-[0_0_30px_rgba(44,252,125,0.6)] transition-all duration-300 whitespace-nowrap"
                   >
                      INICIAR SESIÓN
                   </motion.button>
