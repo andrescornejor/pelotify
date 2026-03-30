@@ -122,35 +122,35 @@ export default function RegisterPage() {
   return (
     <div className="flex min-h-[100dvh] bg-background selection:bg-primary selection:text-background overflow-hidden relative">
       {/* ── LEFT PANEL: AUTH FORM ── */}
-      <div className="flex-1 flex flex-col items-center justify-center p-6 lg:p-12 relative z-10 transition-all duration-1000 overflow-y-auto">
+      <div className="flex-1 flex flex-col items-center justify-center p-4 lg:p-8 relative z-10 transition-all duration-1000 overflow-y-auto">
         <motion.div
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
-          className="w-full max-w-[420px] py-12"
+          className="w-full max-w-[380px] py-2"
         >
           {/* Header */}
-          <div className="flex flex-col items-center lg:items-start gap-4 mb-10">
-            <Link href="/" className="w-20 h-20 mb-2 block lg:hidden">
+          <div className="flex flex-col items-center lg:items-start gap-2 mb-6 mt-2 lg:mt-0">
+            <Link href="/" className="w-16 h-16 mb-2 block lg:hidden">
               <img src="/logo_pelotify.png" alt="Logo" className="w-full h-full object-contain" />
             </Link>
-            <h1 className="text-4xl lg:text-7xl font-black italic text-foreground tracking-tighter uppercase leading-[0.8] text-center lg:text-left font-kanit">
+            <h1 className="text-3xl lg:text-6xl font-black italic text-foreground tracking-tighter uppercase leading-[0.8] text-center lg:text-left font-kanit">
               Crear tu <br /> <span className="text-primary">Ficha</span>
             </h1>
-            <p className="text-[10px] font-black text-foreground/40 uppercase tracking-[0.4em] italic lg:ml-1 text-center lg:text-left w-full">
+            <p className="text-[10px] font-black text-foreground/40 uppercase tracking-[0.4em] italic lg:ml-1 text-center lg:text-left w-full mt-1">
               Agente Libre / Temporada 2026
             </p>
           </div>
 
-          <div className="flex flex-col gap-8">
+          <div className="flex flex-col gap-6">
             {/* Social Login */}
             <button
               onClick={handleGoogleLogin}
               disabled={isGoogleLoading}
-              className="w-full h-16 bg-white text-zinc-950 font-black text-[12px] uppercase tracking-[0.2em] rounded-2xl flex items-center justify-center gap-4 hover:bg-zinc-100 transition-all active:scale-95 disabled:opacity-50 shadow-xl shadow-white/5 group/google"
+              className="w-full h-12 bg-white text-zinc-950 font-black text-[12px] uppercase tracking-[0.2em] rounded-xl flex items-center justify-center gap-3 hover:bg-zinc-100 transition-all active:scale-95 disabled:opacity-50 shadow-lg shadow-white/5 group/google"
             >
               <img
                 src="https://www.google.com/favicon.ico"
-                className="w-5 h-5 group-hover/google:scale-110 transition-transform"
+                className="w-4 h-4 group-hover/google:scale-110 transition-transform"
                 alt="Google"
               />
               {isGoogleLoading ? 'Conectando...' : 'Ficharse con Google'}
@@ -163,43 +163,43 @@ export default function RegisterPage() {
             </div>
 
             {/* Traditional Form */}
-            <form onSubmit={handleRegister} className="flex flex-col gap-5">
+            <form onSubmit={handleRegister} className="flex flex-col gap-3">
               <div className="space-y-2">
                 <div className="relative group/input">
                   <div className="absolute inset-y-0 left-5 flex items-center pointer-events-none">
-                    <Mail className="w-5 h-5 text-foreground/20 group-focus-within/input:text-primary transition-colors" />
+                    <Mail className="w-4 h-4 text-foreground/20 group-focus-within/input:text-primary transition-colors" />
                   </div>
                   <input
                     type="email"
                     placeholder="jugador@ejemplo.com"
                     value={formData.email}
                     onChange={(e) => setFormData((prev) => ({ ...prev, email: e.target.value }))}
-                    className="w-full h-16 pl-14 pr-6 rounded-2xl bg-white/[0.02] border border-white/5 focus:bg-white/[0.04] focus:border-primary/50 outline-none transition-all text-sm font-bold text-foreground placeholder:text-zinc-700"
+                    className="w-full h-12 pl-12 pr-4 rounded-xl bg-white/[0.02] border border-white/5 focus:bg-white/[0.04] focus:border-primary/50 outline-none transition-all text-sm font-bold text-foreground placeholder:text-zinc-700"
                     required
                   />
                 </div>
               </div>
 
-              <div className="space-y-2">
+              <div className="space-y-1">
                 <div className="relative group/input">
-                  <div className="absolute inset-y-0 left-5 flex items-center pointer-events-none">
-                    <Lock className="w-5 h-5 text-foreground/20 group-focus-within/input:text-primary transition-colors" />
+                  <div className="absolute inset-y-0 left-4 flex items-center pointer-events-none">
+                    <Lock className="w-4 h-4 text-foreground/20 group-focus-within/input:text-primary transition-colors" />
                   </div>
                   <input
                     type="password"
                     placeholder="Contraseña Maestra"
                     value={formData.password}
                     onChange={(e) => setFormData((prev) => ({ ...prev, password: e.target.value }))}
-                    className="w-full h-16 pl-14 pr-6 rounded-2xl bg-white/[0.02] border border-white/5 focus:bg-white/[0.04] focus:border-primary/50 outline-none transition-all text-sm font-bold text-foreground placeholder:text-zinc-700"
+                    className="w-full h-12 pl-12 pr-4 rounded-xl bg-white/[0.02] border border-white/5 focus:bg-white/[0.04] focus:border-primary/50 outline-none transition-all text-sm font-bold text-foreground placeholder:text-zinc-700"
                     required
                   />
                 </div>
               </div>
 
-              <div className="space-y-2">
+              <div className="space-y-1">
                 <div className="relative group/input">
-                  <div className="absolute inset-y-0 left-5 flex items-center pointer-events-none">
-                    <Lock className="w-5 h-5 text-foreground/20 group-focus-within/input:text-primary transition-colors" />
+                  <div className="absolute inset-y-0 left-4 flex items-center pointer-events-none">
+                    <Lock className="w-4 h-4 text-foreground/20 group-focus-within/input:text-primary transition-colors" />
                   </div>
                   <input
                     type="password"
@@ -207,7 +207,7 @@ export default function RegisterPage() {
                     value={formData.confirmPassword}
                     onChange={(e) => setFormData((prev) => ({ ...prev, confirmPassword: e.target.value }))}
                     className={cn(
-                      "w-full h-16 pl-14 pr-6 rounded-2xl bg-white/[0.02] border outline-none transition-all text-sm font-bold text-foreground placeholder:text-zinc-700",
+                      "w-full h-12 pl-12 pr-4 rounded-xl bg-white/[0.02] border outline-none transition-all text-sm font-bold text-foreground placeholder:text-zinc-700",
                       formData.confirmPassword && formData.password !== formData.confirmPassword
                         ? 'border-red-500/50 focus:border-red-500'
                         : 'border-white/5 focus:border-primary/50'
@@ -230,15 +230,15 @@ export default function RegisterPage() {
                   !formData.password ||
                   formData.password !== formData.confirmPassword
                 }
-                className="w-full h-16 bg-primary text-zinc-950 font-black text-[12px] uppercase tracking-[0.3em] rounded-2xl flex items-center justify-center gap-3 hover:bg-white hover:scale-[1.02] transition-all active:scale-95 disabled:opacity-70 shadow-2xl shadow-primary/20 group/btn relative overflow-hidden mt-4"
+                className="w-full h-12 bg-primary text-zinc-950 font-black text-[12px] uppercase tracking-[0.3em] rounded-xl flex items-center justify-center gap-3 hover:bg-white hover:scale-[1.02] transition-all active:scale-95 disabled:opacity-70 shadow-xl shadow-primary/20 group/btn relative overflow-hidden mt-2"
               >
                 <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover/btn:translate-x-full transition-transform duration-1000" />
                 {isLoading ? 'FIRMANDO...' : 'UNIRSE AL PLANTEL'}
               </button>
             </form>
 
-            <div className="text-center mt-6">
-              <p className="text-[10px] font-black text-foreground/40 uppercase tracking-[0.2em]">
+            <div className="text-center mt-2 pb-6 lg:pb-0">
+              <p className="text-[9px] font-black text-foreground/40 uppercase tracking-[0.2em]">
                 ¿Ya tenés tu ficha?{' '}
                 <Link href="/login" className="text-primary hover:text-white transition-colors underline decoration-primary/30 underline-offset-4">
                   INGRESAR ACÁ
