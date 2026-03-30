@@ -17,9 +17,14 @@ export async function GET(request: Request) {
 
   const redirectUri = `${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/api/mercadopago/callback`;
   
-  // En MercadoPago Connect, client_secret es el ACCESS_TOKEN de la plataforma
-  const clientSecret = process.env.MP_ACCESS_TOKEN || ''; 
-  const clientId = process.env.NEXT_PUBLIC_MP_CLIENT_ID || '';
+  // El client_secret es obligatorio para el intercambio de tokens OAuth
+  const clientSecret = process.env.MP_CLIENT_SECRET;
+  const clientId = process.env.NEXT_PUBLIC_MP_CLIENT_ID;
+
+  if (!clientSecret || !clientId) {
+    console.error('Faltan credenciales de MP (MP_CLIENT_SECRET o MP_CLIENT_ID)');
+    return NextResponse.redirect(`${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/profile?error=missing_config`);
+  }
 
   try {
     const response = await fetch('https://api.mercadopago.com/oauth/token', {
