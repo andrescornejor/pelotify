@@ -216,20 +216,39 @@ export default function CreateMatchPage() {
     // Escuchar cambios de cancha y fecha para obtener horarios ocupados
     const fetchBookings = async () => {
       if (formData.field_id && formData.date) {
-        const { data } = await supabase
-          .from('canchas_bookings')
-          .select('start_time, end_time')
-          .eq('field_id', formData.field_id)
-          .eq('date', formData.date)
-          .neq('status', 'cancelled');
+        // Query both bookings and matches mapped to this field
+        const [bookingsRes, matchesRes] = await Promise.all([
+          supabase
+            .from('canchas_bookings')
+            .select('start_time, end_time')
+            .eq('field_id', formData.field_id)
+            .eq('date', formData.date)
+            .neq('status', 'cancelled'),
+          supabase
+            .from('matches')
+            .select('time')
+            .eq('field_id', formData.field_id)
+            .eq('date', formData.date)
+        ]);
 
-        if (data) {
-          const booked = data.map(b => b.start_time.substring(0, 5));
-          setBookedTimes(booked);
-          // Si el horario actual está ocupado, deseleccionarlo
-          if (booked.includes(formData.time)) {
-             setFormData(prev => ({ ...prev, time: '' }));
-          }
+        const bookedSet = new Set<string>();
+
+        if (bookingsRes.data) {
+          bookingsRes.data.forEach(b => bookedSet.add(b.start_time.substring(0, 5)));
+        }
+
+        if (matchesRes.data) {
+          matchesRes.data.forEach((m: any) => {
+             if (m.time) bookedSet.add(m.time.substring(0, 5));
+          });
+        }
+
+        const booked = Array.from(bookedSet);
+        setBookedTimes(booked);
+        
+        // Si el horario actual está ocupado, deseleccionarlo
+        if (booked.includes(formData.time)) {
+           setFormData(prev => ({ ...prev, time: '' }));
         }
       } else {
         setBookedTimes([]);
