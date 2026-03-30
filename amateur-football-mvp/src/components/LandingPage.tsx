@@ -97,9 +97,13 @@ export default function LandingPage() {
             className="hidden md:flex items-center gap-10"
          >
             <Link href="/login">
-               <button className="h-14 px-10 bg-white text-black font-black uppercase text-xs tracking-[0.2em] rounded-2xl hover:bg-primary hover:shadow-[0_0_30px_rgba(44,252,125,0.6)] hover:scale-105 active:scale-95 transition-all duration-300">
+               <motion.button 
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  className="h-14 px-10 bg-white text-black font-black uppercase text-xs tracking-[0.2em] rounded-2xl hover:bg-primary hover:shadow-[0_0_30px_rgba(44,252,125,0.6)] transition-all duration-300"
+               >
                   INICIAR SESIÓN
-               </button>
+               </motion.button>
             </Link>
          </motion.div>
       </nav>
@@ -190,24 +194,28 @@ export default function LandingPage() {
                className="flex flex-col sm:flex-row items-center justify-center pt-10"
             >
                <div className="flex bg-black border-2 border-white/10 p-2 rounded-full relative shadow-[0_40px_100px_rgba(0,0,0,1)]">
-                  <button 
+                  <motion.button 
+                     whileHover={{ scale: 1.05 }}
+                     whileTap={{ scale: 0.95 }}
                      onClick={() => setViewMode('jugador')}
-                     className={`relative px-12 md:px-16 py-6 md:py-8 rounded-full font-black uppercase tracking-[0.25em] text-xs md:text-sm transition-all duration-500 z-10 ${viewMode === 'jugador' ? 'text-black' : 'text-zinc-500 hover:text-white hover:scale-105'}`}
+                     className={`relative px-12 md:px-16 py-6 md:py-8 rounded-full font-black uppercase tracking-[0.25em] text-xs md:text-sm transition-all duration-500 z-10 ${viewMode === 'jugador' ? 'text-black' : 'text-zinc-500 hover:text-white'}`}
                   >
                      {viewMode === 'jugador' && (
                         <motion.div layoutId="viewModeIndicator" className="absolute inset-0 bg-primary rounded-full shadow-[0_0_40px_rgba(44,252,125,0.6)] -z-10" transition={{ type: 'spring', stiffness: 50, damping: 10 }} />
                      )}
                      SOY JUGADOR
-                  </button>
-                  <button 
+                  </motion.button>
+                  <motion.button 
+                     whileHover={{ scale: 1.05 }}
+                     whileTap={{ scale: 0.95 }}
                      onClick={() => setViewMode('dueno')}
-                     className={`relative px-12 md:px-16 py-6 md:py-8 rounded-full font-black uppercase tracking-[0.25em] text-xs md:text-sm transition-all duration-500 z-10 flex items-center gap-3 ${viewMode === 'dueno' ? 'text-black' : 'text-zinc-500 hover:text-white hover:scale-105'}`}
+                     className={`relative px-12 md:px-16 py-6 md:py-8 rounded-full font-black uppercase tracking-[0.25em] text-xs md:text-sm transition-all duration-500 z-10 flex items-center gap-3 ${viewMode === 'dueno' ? 'text-black' : 'text-zinc-500 hover:text-white'}`}
                   >
                      {viewMode === 'dueno' && (
                         <motion.div layoutId="viewModeIndicator" className="absolute inset-0 bg-primary rounded-full shadow-[0_0_40px_rgba(44,252,125,0.6)] -z-10" transition={{ type: 'spring', stiffness: 50, damping: 10 }} />
                      )}
                      SOY DUEÑO
-                  </button>
+                  </motion.button>
                </div>
             </motion.div>
          </motion.div>
@@ -375,10 +383,14 @@ export default function LandingPage() {
                      <div className="pt-10 flex flex-col items-center justify-center">
                         <Link href="/register" className="inline-block relative group">
                            <div className="absolute -inset-2 bg-primary/40 blur-xl rounded-full group-hover:scale-110 group-hover:bg-primary/60 transition-all duration-500" />
-                           <button className="px-16 h-24 bg-primary text-black font-black uppercase text-xl tracking-[0.3em] rounded-full hover:bg-white hover:scale-110 active:scale-95 transition-all duration-500 flex items-center gap-6 relative z-10 shadow-[0_0_50px_rgba(44,252,125,0.6)]">
+                           <motion.button 
+                              whileHover={{ scale: 1.05 }}
+                              whileTap={{ scale: 0.95 }}
+                              className="px-16 h-24 bg-primary text-black font-black uppercase text-xl tracking-[0.3em] rounded-full hover:bg-white transition-all duration-500 flex items-center gap-6 relative z-10 shadow-[0_0_50px_rgba(44,252,125,0.6)]"
+                           >
                               <span>VER MI CARTA</span>
                               <CheckCircle2 className="w-8 h-8" />
-                           </button>
+                           </motion.button>
                         </Link>
                      </div>
                   </motion.div>
@@ -630,10 +642,14 @@ export default function LandingPage() {
                                  </div>
                               </div>
 
-                              <button className="w-full mt-4 py-4 rounded-xl bg-primary text-black font-black uppercase tracking-widest text-sm hover:scale-105 transition-transform shadow-[0_0_20px_rgba(44,252,125,0.4)] relative overflow-hidden group">
+                              <motion.button 
+                                 whileHover={{ scale: 1.05 }}
+                                 whileTap={{ scale: 0.95 }}
+                                 className="w-full mt-4 py-4 rounded-xl bg-primary text-black font-black uppercase tracking-widest text-sm transition-shadow shadow-[0_0_20px_rgba(44,252,125,0.4)] relative overflow-hidden group"
+                              >
                                  <div className="absolute inset-0 w-full h-full bg-white/20 -translate-x-full group-hover:translate-x-full transition-transform duration-500 skew-x-12" />
                                  RESERVAR TURNO
-                              </button>
+                              </motion.button>
                            </div>
                         </div>
                      </motion.div>
@@ -661,10 +677,14 @@ export default function LandingPage() {
                      <div className="pt-10 flex flex-col items-center justify-center">
                         <Link href="/canchas/register" className="inline-block relative group">
                            <div className="absolute -inset-2 bg-primary/40 blur-xl rounded-full group-hover:scale-110 group-hover:bg-primary/60 transition-all duration-500" />
-                           <button className="px-16 h-24 bg-primary text-black font-black uppercase text-xl tracking-[0.3em] rounded-full hover:bg-white hover:scale-110 active:scale-95 transition-all duration-500 flex items-center gap-6 relative z-10 shadow-[0_0_50px_rgba(44,252,125,0.6)]">
+                           <motion.button 
+                              whileHover={{ scale: 1.05 }}
+                              whileTap={{ scale: 0.95 }}
+                              className="px-16 h-24 bg-primary text-black font-black uppercase text-xl tracking-[0.3em] rounded-full hover:bg-white transition-all duration-500 flex items-center gap-6 relative z-10 shadow-[0_0_50px_rgba(44,252,125,0.6)]"
+                           >
                               <span>SUMAR MI COMPLEJO</span>
                               <CheckCircle2 className="w-8 h-8" />
-                           </button>
+                           </motion.button>
                         </Link>
                      </div>
                   </motion.div>
