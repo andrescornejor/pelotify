@@ -637,37 +637,83 @@ export default function CreateMatchPage() {
                   </div>
                 </div>
 
-                {/* Time picker */}
-                <div className="space-y-4">
-                  <span className="text-[10px] font-black text-foreground/30 uppercase tracking-[0.4em] px-1">
-                    Horario
-                  </span>
+                {/* Time picker Agenda Style */}
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between px-1">
+                    <span className="text-[10px] font-black text-foreground/30 uppercase tracking-[0.4em]">
+                      Agenda de Horarios
+                    </span>
+                    <span className="text-[9px] font-bold text-foreground/20 italic">
+                      Deslizá para ver más
+                    </span>
+                  </div>
                   
-                  <div className="flex flex-wrap gap-2">
-                    {AVAILABLE_TIMES.map((t) => {
-                      const isBooked = bookedTimes.includes(t);
-                      const isSelected = formData.time === t;
-
-                      return (
-                        <button
-                          key={t}
-                          type="button"
-                          disabled={isBooked}
-                          onClick={() => setFormData({ ...formData, time: t })}
-                          className={`
-                            px-4 py-3 rounded-2xl border font-bold text-sm transition-all duration-200
-                            ${isSelected 
-                              ? 'border-primary bg-primary text-black shadow-md scale-105' 
-                              : isBooked 
-                                ? 'border-transparent bg-foreground/[0.02] text-foreground/15 cursor-not-allowed line-through'
-                                : 'border-foreground/[0.08] bg-foreground/[0.03] text-foreground/80 hover:bg-foreground/[0.08] hover:text-foreground hover:border-foreground/20'
-                            }
-                          `}
-                        >
-                          {t}
-                        </button>
-                      );
-                    })}
+                  <div className="relative rounded-3xl border border-foreground/10 bg-foreground/[0.02] p-1.5 overflow-hidden">
+                    {/* Top gradient mask for smooth scroll effect */}
+                    <div className="absolute top-0 left-0 right-0 h-4 bg-gradient-to-b from-background to-transparent z-10 pointer-events-none rounded-t-3xl" />
+                    
+                    <div className="max-h-[320px] overflow-y-auto no-scrollbar space-y-1.5 p-0.5 relative z-0">
+                      {AVAILABLE_TIMES.map((t) => {
+                        const isBooked = bookedTimes.includes(t);
+                        const isSelected = formData.time === t;
+                        const [h, m] = t.split(':');
+                        
+                        return (
+                          <button
+                            key={t}
+                            type="button"
+                            disabled={isBooked}
+                            onClick={() => setFormData({ ...formData, time: t })}
+                            className={`
+                              w-full flex items-center justify-between p-4 rounded-[1.25rem] transition-all duration-300 group
+                              ${isSelected 
+                                ? 'bg-primary text-black shadow-md scale-[1.01] z-10 relative' 
+                                : isBooked 
+                                  ? 'bg-transparent opacity-40 cursor-not-allowed'
+                                  : 'bg-background hover:bg-foreground/[0.03] border border-transparent hover:border-foreground/10 shadow-[0_2px_10px_-4px_rgba(0,0,0,0.05)]'
+                              }
+                            `}
+                          >
+                            <div className="flex items-center gap-4 sm:gap-6">
+                              <span className={`text-2xl sm:text-[28px] font-black italic tracking-tighter w-16 text-left ${isSelected ? 'text-black' : 'text-foreground'}`}>
+                                {h}:{m}
+                              </span>
+                              
+                              <div className="flex items-center gap-2">
+                                {isBooked ? (
+                                  <>
+                                    <div className="w-2 h-2 rounded-full bg-red-500/50" />
+                                    <span className="text-[10px] sm:text-[11px] font-bold uppercase tracking-widest text-foreground/50 mt-0.5">Ocupado</span>
+                                  </>
+                                ) : isSelected ? (
+                                  <>
+                                    <div className="w-2 h-2 rounded-full bg-black animate-pulse" />
+                                    <span className="text-[10px] sm:text-[11px] font-black uppercase tracking-widest text-black mt-0.5">Tu Horario</span>
+                                  </>
+                                ) : (
+                                  <>
+                                    <div className="w-2 h-2 rounded-full bg-emerald-500/40 group-hover:bg-emerald-500 transition-colors" />
+                                    <span className="text-[10px] sm:text-[11px] font-bold uppercase tracking-widest text-foreground/40 group-hover:text-foreground/70 transition-colors mt-0.5">Libre</span>
+                                  </>
+                                )}
+                              </div>
+                            </div>
+                            
+                            {!isBooked && (
+                              <div className={`
+                                w-7 h-7 rounded-full flex flex-shrink-0 items-center justify-center transition-all
+                                ${isSelected ? 'bg-black text-primary' : 'bg-foreground/[0.04] text-foreground/20 group-hover:bg-foreground/10 group-hover:text-foreground/40'}
+                              `}>
+                                <CheckCircle2 className="w-4 h-4" />
+                              </div>
+                            )}
+                          </button>
+                        );
+                      })}
+                    </div>
+                    
+                    {/* Bottom gradient mask for smooth scroll effect */}
+                    <div className="absolute bottom-0 left-0 right-0 h-6 bg-gradient-to-t from-background to-transparent z-10 pointer-events-none rounded-b-3xl" />
                   </div>
                 </div>
               </motion.div>
