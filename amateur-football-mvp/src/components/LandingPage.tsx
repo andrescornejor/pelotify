@@ -1,286 +1,245 @@
-'use client';
-
 import React from 'react';
 import { motion } from 'framer-motion';
 import { 
   Trophy, 
-  Target, 
+  Target as TargetIcon, 
   Users, 
   Zap, 
-  ChevronDown, 
   ArrowRight,
   Globe,
   MapPin,
-  Shield,
   Search,
   Activity,
   Award,
-  Crown,
   Sparkles,
   ChevronRight,
-  User,
-  Plus,
-  Compass,
-  LayoutGrid,
-  CreditCard,
-  Target as TargetIcon,
   DollarSign,
   BarChart3,
-  Calendar,
   ShieldCheck,
-  Smartphone
+  Smartphone,
+  CheckCircle2,
+  Medal
 } from 'lucide-react';
 import Link from 'next/link';
+import { FifaCard } from './FifaCard';
 import { cn } from '@/lib/utils';
 
-// --- COMPONENTS ---
+const dummyPlayer = {
+  name: "MAESTRO",
+  overall: 99,
+  position: "M C",
+  stats: {
+    pac: 92,
+    sho: 89,
+    pas: 91,
+    dri: 85,
+    def: 45,
+    phy: 78
+  },
+  mvpTrophies: 3,
+  badges: ["Leyenda", "Goleador"],
+  image: "https://api.dicebear.com/7.x/notionists/svg?seed=Maestro&backgroundColor=transparent"
+};
 
-const PlayerCard = ({ name = 'JUGADOR', rating = 88, position = 'M C' }) => (
-  <motion.div 
-    initial={{ opacity: 0, scale: 0.9, y: 20 }}
-    whileInView={{ opacity: 1, scale: 1, y: 0 }}
-    viewport={{ once: true }}
-    className="relative w-full max-w-[320px] aspect-[1/1.45] rounded-[2.5rem] bg-[#0A0A0F] border border-primary/40 shadow-[0_0_80px_rgba(44,252,125,0.15)] flex flex-col p-8 group perspective-1000"
+const FeatureCard = ({ title, desc, icon: Icon, delay }: any) => (
+  <motion.div
+    initial={{ opacity: 0, y: 20 }}
+    whileInView={{ opacity: 1, y: 0 }}
+    viewport={{ once: true, margin: "-50px" }}
+    transition={{ delay, duration: 0.5 }}
+    className="group relative p-8 md:p-10 rounded-[2.5rem] bg-zinc-900/30 border border-white/10 hover:border-primary/50 overflow-hidden transition-all duration-500 backdrop-blur-md"
   >
-    {/* FIFA Pattern Mesh */}
-    <div className="absolute inset-0 opacity-10 pointer-events-none overflow-hidden rounded-[2.5rem]">
-       <div className="w-full h-full bg-[radial-gradient(ellipse_at_top_right,rgba(44,252,125,0.1)_0%,transparent_60%)]" />
-       <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-10" />
+    <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+    <div className="absolute -top-24 -right-24 w-48 h-48 bg-primary/20 blur-[60px] rounded-full group-hover:bg-primary/30 transition-colors" />
+    
+    <div className="w-14 h-14 rounded-2xl bg-black border border-white/10 flex items-center justify-center mb-8 shadow-inner group-hover:scale-110 group-hover:-rotate-6 transition-transform">
+      <Icon className="w-6 h-6 text-primary drop-shadow-[0_0_12px_rgba(44,252,125,0.6)]" />
     </div>
     
-    {/* Header Info */}
-    <div className="relative z-10 space-y-0.5">
-       <span className="text-8xl font-black italic font-kanit text-white leading-none tracking-tighter block drop-shadow-2xl">{rating}</span>
-       <span className="text-primary font-black uppercase tracking-[0.4em] text-sm block ml-1">{position}</span>
-       <div className="mt-4 flex items-center gap-3 opacity-20 group-hover:opacity-100 transition-opacity">
-          <Shield className="w-4 h-4 text-white" />
-          <Award className="w-4 h-4 text-primary" />
-       </div>
-    </div>
-
-    {/* Center Character (Optimized and Reliable) */}
-    <div className="flex-1 relative flex items-center justify-center -mt-10 overflow-visible">
-       <div className="relative w-full h-full flex items-center justify-center">
-          <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-[#0A0A0F] to-transparent z-10" />
-          <div className="relative z-0 opacity-80 group-hover:opacity-100 transition-opacity duration-700">
-             <User className="w-48 h-48 text-white/5 stroke-[0.3]" />
-             <div className="absolute inset-0 bg-primary/10 blur-[60px] rounded-full scale-50 group-hover:scale-100 transition-transform duration-1000" />
-          </div>
-       </div>
-    </div>
-
-    {/* Name Ribbon (The Classic Look) */}
-    <div className="absolute left-0 right-0 top-[60%] py-4 bg-gradient-to-r from-transparent via-primary/10 to-transparent border-y border-primary/20 backdrop-blur-md z-20 overflow-hidden shadow-2xl">
-       <div className="absolute inset-0 bg-primary/5 animate-pulse" />
-       <h4 className="text-center text-4xl font-black italic font-kanit text-white uppercase tracking-tighter drop-shadow-[0_4px_8px_rgba(0,0,0,0.5)] relative z-10">
-          {name}
-       </h4>
-    </div>
-
-    {/* 6 Grid Stats (FIFA Standard) */}
-    <div className="grid grid-cols-2 gap-x-10 gap-y-4 pt-14 px-1 relative z-10 mt-auto">
-       {[
-         { label: 'VEL', val: 92 }, { label: 'REG', val: 85 },
-         { label: 'REM', val: 89 }, { label: 'DEF', val: 45 },
-         { label: 'PAS', val: 91 }, { label: 'FIS', val: 78 }
-       ].map((s, i) => (
-         <div key={i} className="flex items-center justify-between border-b border-white/5 pb-1 group/stat hover:border-primary/40 transition-colors">
-           <span className="text-2xl font-black italic font-kanit text-white leading-none tracking-tighter drop-shadow-sm">{s.val}</span>
-           <span className="text-[9px] font-bold text-primary/40 uppercase tracking-widest group-hover/stat:text-primary transition-colors">{s.label}</span>
-         </div>
-       ))}
-    </div>
-
-    {/* Hover Accent */}
-    <div className="absolute inset-0 rounded-[2.5rem] ring-1 ring-white/10 group-hover:ring-primary/40 transition-all pointer-events-none" />
-  </motion.div>
-);
-
-const FeatureBox = ({ title, desc, icon: Icon, delay }: any) => (
-  <motion.div
-    initial={{ opacity: 0, scale: 0.95 }}
-    whileInView={{ opacity: 1, scale: 1 }}
-    viewport={{ once: true }}
-    transition={{ delay, duration: 0.6 }}
-    className="p-8 rounded-[2.5rem] bg-[#0A0A0F] border border-white/5 hover:border-primary/20 transition-all relative overflow-hidden group shadow-2xl"
-  >
-    <div className="absolute -top-10 -right-10 w-32 h-32 bg-primary/5 blur-[50px] group-hover:bg-primary/20 transition-colors" />
-    <div className="w-14 h-14 rounded-2xl bg-black border border-white/5 flex items-center justify-center mb-6 shadow-inner group-hover:scale-110 group-hover:rotate-6 transition-transform">
-      <Icon className="w-6 h-6 text-primary" />
-    </div>
-    <h3 className="text-2xl font-black italic font-kanit uppercase tracking-tighter mb-3 text-white">{title}</h3>
-    <p className="text-[11px] font-black uppercase tracking-[0.3em] text-white/30 leading-relaxed italic">{desc}</p>
+    <h3 className="text-2xl font-black italic font-kanit uppercase tracking-tight mb-3 text-white">{title}</h3>
+    <p className="text-xs md:text-sm font-semibold text-zinc-400 tracking-wider leading-relaxed pr-4">{desc}</p>
   </motion.div>
 );
 
 export default function LandingPage() {
   return (
-    <div className="min-h-screen bg-[#020205] text-white selection:bg-primary selection:text-black overflow-x-hidden font-sans scroll-smooth">
+    <div className="min-h-screen bg-[#030303] text-white selection:bg-primary selection:text-black font-sans scroll-smooth overflow-x-hidden">
       
       {/* 🟢 TOP NAVIGATION */}
-      <nav className="fixed top-0 inset-x-0 h-24 z-[100] px-6 lg:px-20 flex items-center justify-between backdrop-blur-lg border-b border-white/5 bg-[#020205]/40">
-         <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-primary/20 border border-primary/40 flex items-center justify-center shadow-[0_0_20px_rgba(44,252,125,0.2)]">
-               <img src="/logo_pelotify.png" className="w-6 h-6 object-contain" alt="" />
+      <nav className="fixed top-0 inset-x-0 h-24 z-[100] px-6 lg:px-12 flex items-center justify-between border-b border-white/5 bg-[#030303]/80 backdrop-blur-xl">
+         <div className="flex items-center gap-3 group cursor-pointer">
+            <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-zinc-800 to-black flex items-center justify-center border border-white/10 group-hover:border-primary/50 transition-colors shadow-2xl">
+               <img src="/logo_pelotify.png" className="w-7 h-7 object-contain drop-shadow-[0_0_8px_rgba(255,255,255,0.4)]" alt="Pelotify" />
             </div>
-            <span className="text-3xl font-black italic uppercase tracking-tighter font-kanit leading-none">PELOTI<span className="text-primary">FY</span></span>
+            <span className="text-3xl font-black italic uppercase tracking-tighter font-kanit leading-none filter drop-shadow-md">PELOTI<span className="text-primary">FY</span></span>
          </div>
 
          <div className="hidden md:flex items-center gap-10">
-            {['Torneos', 'Sedes', 'Ranking'].map((link) => (
-               <Link key={link} href={link === 'Sedes' ? '/canchas/login' : `/login`} className="text-[11px] font-black uppercase tracking-[0.5em] text-white/40 hover:text-primary transition-colors">
+            {['Jugadores', 'Sedes', 'Ranking'].map((link) => (
+               <Link key={link} href={link === 'Sedes' ? '/canchas/login' : `/login`} className="text-[11px] font-black uppercase tracking-[0.2em] text-zinc-400 hover:text-white hover:drop-shadow-[0_0_10px_rgba(255,255,255,0.5)] transition-all">
                   {link}
                </Link>
             ))}
             <Link href="/login">
-               <button className="h-14 px-10 bg-primary text-black font-black uppercase text-[11px] tracking-[0.3em] rounded-2xl hover:bg-white hover:scale-105 active:scale-95 transition-all shadow-xl shadow-primary/20">
-                  ENTRAR
+               <button className="h-12 px-8 bg-white text-black font-black uppercase text-[11px] tracking-[0.2em] rounded-xl hover:bg-primary transition-colors shadow-[0_0_20px_rgba(255,255,255,0.1)] hover:shadow-[0_0_30px_rgba(44,252,125,0.4)]">
+                  INGRESAR
                </button>
             </Link>
          </div>
       </nav>
 
-      {/* 🔴 HERO SECTION (ABSOLUTE IMPACT: TYPOGRAPHY + CSS GRADIENTS) */}
-      <section className="relative min-h-[105vh] flex flex-col items-center justify-center px-6 pt-20 text-center">
-         {/* Optimized Background (CSS Mesh instead of massive images) */}
-         <div className="absolute inset-0 -z-10 bg-[#020205]">
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full max-h-[800px] max-w-[1200px] bg-primary/10 blur-[200px] rounded-full animate-pulse opacity-40 shrink-0" />
-            <div className="absolute inset-0 overflow-hidden opacity-5">
-               <div className="grid grid-cols-12 h-full gap-px">
-                  {Array.from({ length: 12 }).map((_, i) => (
-                     <div key={i} className="h-full border-x border-white/5" />
-                  ))}
-               </div>
-            </div>
-            {/* Focal Point Glow */}
-            <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(44,252,125,0.05)_0%,transparent_70%)]" />
+      {/* 🔴 NEW HERO SECTION: MINIMALIST & BOLD */}
+      <section className="relative min-h-[100vh] flex flex-col items-center justify-center px-4 pt-20 text-center pb-20">
+         <div className="absolute inset-0 -z-10 bg-[#030303] overflow-hidden">
+            <div className="absolute top-[20%] left-1/2 -translate-x-1/2 w-[80vw] max-w-[1000px] h-[600px] bg-primary/10 blur-[150px] opacity-60 rounded-full" />
+            <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-[0.03]" />
+            <div className="absolute bottom-0 left-0 w-full h-[300px] bg-gradient-to-t from-[#030303] to-transparent" />
          </div>
 
          <motion.div 
             initial={{ opacity: 0, y: 40 }}
             animate={{ opacity: 1, y: 0 }}
-            className="space-y-12 max-w-7xl relative z-10"
+            transition={{ duration: 0.8, ease: "easeOut" }}
+            className="space-y-12 max-w-5xl relative z-10 w-full"
          >
-            <div className="space-y-6">
+            <div className="space-y-6 flex flex-col items-center">
                <motion.div 
                   initial={{ opacity: 0, scale: 0.9 }}
                   animate={{ opacity: 1, scale: 1 }}
-                  className="inline-flex items-center gap-4 px-6 py-2 rounded-full border border-primary/30 bg-primary/5 backdrop-blur-md"
+                  transition={{ delay: 0.3 }}
+                  className="inline-flex items-center gap-3 px-6 py-2 rounded-full border border-primary/40 bg-primary/10 backdrop-blur-md shadow-[0_0_20px_rgba(44,252,125,0.2)]"
                >
-                  <Sparkles className="w-3 h-3 text-primary animate-pulse" />
-                  <span className="text-[10px] font-black uppercase tracking-[0.6em] text-primary">OPERACIÓN VICTORIA : TEMP 1</span>
+                  <Trophy className="w-4 h-4 text-primary" />
+                  <span className="text-[10px] font-black uppercase tracking-[0.3em] text-primary">LA NUEVA ERA DEL FÚTBOL AMATEUR</span>
                </motion.div>
 
-               <h1 className="text-[14vw] lg:text-[15rem] font-black font-kanit italic uppercase tracking-tighter leading-[0.7] drop-shadow-[0_25px_50px_rgba(0,0,0,0.9)] mix-blend-difference">
-                  LA CANCHA <br /> <span className="text-primary italic animate-pulse [text-shadow:0_0_80px_rgba(44,252,125,0.4)]">ES TUYA.</span>
+               <h1 className="text-[5.5rem] md:text-[8rem] lg:text-[10rem] font-black font-kanit italic uppercase tracking-tighter leading-[0.8] text-white drop-shadow-2xl px-4">
+                  ELEVA TU <br />
+                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary via-emerald-400 to-white">JUEGO.</span>
                </h1>
                
-               <p className="text-sm md:text-2xl font-black uppercase tracking-[1em] text-white/20 max-w-4xl mx-auto italic pt-12 animate-slide-up-fade">
-                  EL FÚTBOL AMATEUR EN OTRO NIVEL.
+               <p className="text-sm md:text-lg font-bold uppercase tracking-[0.3em] text-zinc-400 max-w-3xl mx-auto pt-8 leading-relaxed border-t border-white/10 mt-6">
+                  Reserva predios al instante. Domina el ranking de la ciudad. Juega como un verdadero profesional.
                </p>
             </div>
 
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-8 pt-12 overflow-visible">
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-6 pt-10">
                <Link href="/register" className="w-full sm:w-auto">
-                  <button className="w-full h-24 px-16 bg-primary text-black font-black uppercase text-[18px] tracking-[0.5em] rounded-[2.5rem] shadow-[0_20px_80px_rgba(44,252,125,0.5)] hover:bg-white hover:scale-105 active:scale-95 transition-all flex items-center justify-center gap-6 group">
-                     <span>FICHARME</span>
-                     <ArrowRight className="w-8 h-8 group-hover:translate-x-4 transition-transform duration-500" />
+                  <button className="w-full h-16 px-14 bg-primary text-black font-black uppercase text-[15px] tracking-[0.2em] rounded-2xl hover:bg-white hover:scale-105 active:scale-95 transition-all flex items-center justify-center gap-4 shadow-[0_0_40px_rgba(44,252,125,0.4)] group">
+                     <span>UNIRSE AHORA</span>
+                     <ArrowRight className="w-6 h-6 group-hover:translate-x-2 transition-transform" />
                   </button>
                </Link>
                <Link href="/canchas/login" className="w-full sm:w-auto">
-                  <button className="w-full h-24 px-16 border border-white/10 text-white font-black uppercase text-[15px] tracking-[0.4em] rounded-[2.5rem] hover:bg-white/5 active:scale-95 transition-all flex items-center justify-center gap-4 shadow-2xl">
-                     <Users className="w-6 h-6" />
-                     <span>SOY DUEÑO</span>
+                  <button className="w-full h-16 px-10 border border-white/20 text-white font-black uppercase text-[14px] tracking-[0.2em] rounded-2xl hover:bg-zinc-900 active:scale-95 transition-all flex items-center justify-center gap-3 bg-black/40 backdrop-blur shadow-xl">
+                     <TargetIcon className="w-5 h-5 text-zinc-400" />
+                     <span>ACCESO DUEÑOS</span>
                   </button>
                </Link>
             </div>
          </motion.div>
-
-         {/* Scroll Indicator (Refined) */}
-         <div className="absolute bottom-16 flex flex-col items-center gap-6 opacity-30 select-none">
-            <span className="text-[10px] font-black uppercase tracking-[1em]">SCROLL</span>
-            <div className="w-[1.5px] h-24 bg-gradient-to-b from-primary via-primary/50 to-transparent animate-shimmer" />
-         </div>
       </section>
 
-      {/* 🟡 SECTION: THE LEGEND (PLAYER CARD PERFORMANCE) */}
-      <section className="py-52 px-6 lg:px-20 max-w-[1500px] mx-auto overflow-visible relative">
-         <div className="absolute top-1/2 left-1/4 w-[600px] h-[600px] bg-primary/5 blur-[150px] -z-10 rounded-full" />
-         
-         <div className="flex flex-col lg:flex-row items-center gap-24 lg:gap-48">
-            {/* CARD CONTAINER: Optimized Perspective */}
-            <div className="flex-1 w-full flex justify-center perspective-1000">
-               <PlayerCard name="MAESTRO" rating={99} position="M C" />
-            </div>
-
-            {/* INFO WRAPPER */}
-            <div className="flex-1 space-y-14">
-               <div className="space-y-8">
-                  <div className="flex items-center gap-6 text-primary">
-                     <span className="w-16 h-px bg-primary opacity-40" />
-                     <p className="text-[11px] font-black uppercase tracking-[0.6em]">REPUTACIÓN & STATUS</p>
-                  </div>
-                  <h2 className="text-6xl md:text-9xl font-black font-kanit italic uppercase tracking-tighter leading-[0.8] drop-shadow-lg">
-                     TU PROPIA <br /> <span className="text-primary">PELOTIFY CARD.</span>
+      {/* 🔵 THE PLAYER IDENTITY (MARKETING FOCUSED ON FIFA CARD) */}
+      <section className="py-32 px-6 lg:px-12 bg-[#050505] relative border-y border-white/5 overflow-hidden">
+         <div className="max-w-[1400px] mx-auto flex flex-col lg:flex-row items-center gap-16 lg:gap-32">
+            
+            <motion.div 
+               initial={{ opacity: 0, x: -50 }}
+               whileInView={{ opacity: 1, x: 0 }}
+               viewport={{ once: true }}
+               transition={{ duration: 0.8 }}
+               className="flex-1 space-y-10 order-2 lg:order-1"
+            >
+               <div className="space-y-6">
+                  <h2 className="text-5xl md:text-7xl font-black font-kanit italic uppercase tracking-tighter leading-[0.9] text-white">
+                     TU IDENTIDAD <br />
+                     <span className="text-primary">EN LA CANCHA.</span>
                   </h2>
-                  <p className="text-sm md:text-xl font-black uppercase tracking-[0.4em] text-white/30 leading-relaxed italic max-w-xl">
-                     Tu desempeño define tu ficha. Goles, victorias y el respeto de la liga se reflejan en tu rating global.
+                  <p className="text-base md:text-lg font-medium text-zinc-400 leading-relaxed max-w-lg">
+                     Por cada partido ganado y por cada MVP obtenido, tus atributos mejoran. Nuestro algoritmo de ELO convierte tu rendimiento real en estadísticas visibles para toda la comunidad.
                   </p>
                </div>
 
-               <div className="grid grid-cols-1 sm:grid-cols-2 gap-10">
-                  {[
-                     { icon: Activity, title: 'Rating Vivo', desc: 'Sube y baja tras cada partido oficial.' },
-                     { icon: TargetIcon, title: 'Atributos Pro', desc: 'Fuerza, regate, velocidad y pase real.' },
-                     { icon: Trophy, title: 'Liga Elite', desc: 'Competí para entrar al Top Ranking.' },
-                     { icon: Award, title: 'MVPs Reales', desc: 'Sumá medallas por cada actuación destacada.' }
-                  ].map((feat, i) => (
-                     <div key={i} className="p-8 rounded-[2.5rem] bg-[#0A0A0F] border border-white/5 space-y-4 hover:border-primary/20 transition-all shadow-xl">
-                        <feat.icon className="w-7 h-7 text-primary" />
-                        <div>
-                           <h4 className="text-sm font-black uppercase tracking-widest text-white">{feat.title}</h4>
-                           <p className="text-[10px] font-black uppercase tracking-[0.2em] text-white/20 mt-1">{feat.desc}</p>
-                        </div>
+               <div className="space-y-6 border-l-2 border-primary/30 pl-6">
+                  <div className="space-y-2">
+                     <div className="flex items-center gap-3">
+                        <Activity className="w-5 h-5 text-primary" />
+                        <h4 className="text-base font-black uppercase tracking-wider text-white">RATING DINÁMICO (ELO)</h4>
                      </div>
-                  ))}
+                     <p className="text-xs font-semibold tracking-wider text-zinc-500">Gana partidos oficiales para escalar en la tabla general de la liga.</p>
+                  </div>
+                  <div className="space-y-2 pt-4 border-t border-white/10">
+                     <div className="flex items-center gap-3">
+                        <Medal className="w-5 h-5 text-primary" />
+                        <h4 className="text-base font-black uppercase tracking-wider text-white">CONDECORACIONES MVP</h4>
+                     </div>
+                     <p className="text-xs font-semibold tracking-wider text-zinc-500">Tus compañeros y rivales pueden votarte como la figura del partido.</p>
+                  </div>
                </div>
+
+               <Link href="/register" className="inline-block pt-8">
+                  <button className="h-14 px-8 border border-primary/50 text-white font-black uppercase text-xs tracking-widest rounded-xl hover:bg-primary hover:text-black transition-colors flex items-center gap-3 group">
+                     <span>CREAR MI CARTA DE JUGADOR</span>
+                     <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                  </button>
+               </Link>
+            </motion.div>
+
+            <motion.div 
+               initial={{ opacity: 0, scale: 0.9 }}
+               whileInView={{ opacity: 1, scale: 1 }}
+               viewport={{ once: true }}
+               transition={{ duration: 0.8 }}
+               className="flex-1 w-full flex justify-center order-1 lg:order-2 perspective-1000 relative"
+            >
+               <div className="absolute inset-0 bg-primary/20 blur-[120px] rounded-full scale-75 -z-10" />
+               <div className="scale-110 sm:scale-125 lg:scale-150 transform-gpu z-10 my-10 lg:my-20">
+                 <div className="animate-float">
+                   <FifaCard player={dummyPlayer} />
+                 </div>
+               </div>
+            </motion.div>
+         </div>
+      </section>
+
+      {/* 🟡 THE ECOSYSTEM BENTO GRID */}
+      <section className="py-32 px-6 lg:px-12 bg-[#020202] overflow-hidden">
+         <div className="max-w-[1400px] mx-auto space-y-20">
+            <div className="text-center space-y-6 max-w-4xl mx-auto">
+               <h2 className="text-4xl md:text-6xl font-black font-kanit italic uppercase tracking-tighter">
+                  UN ECOSISTEMA PREPARADO <br className="hidden md:block"/> PARA <span className="text-primary">LA GLORIA.</span>
+               </h2>
+               <p className="text-xs md:text-sm font-bold text-zinc-500 uppercase tracking-[0.2em]">
+                  Todo el flujo de tu equipo, desde encontrar horarios disponibles hasta definir quién se lleva la copa.
+               </p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+               <FeatureCard 
+                  title="Reservas al Instante"
+                  desc="Buscador inteligente con disponibilidad 100% real. Elige tu sede, cruza horarios con tu equipo y asegúrate tu lugar."
+                  icon={Search}
+                  delay={0.1}
+               />
+               <FeatureCard 
+                  title="Integración Segura"
+                  desc="Mercado Pago nativo. Todos apañan su seña directamente por la plataforma, cero transferencias al aire y total transparencia."
+                  icon={Zap}
+                  delay={0.2}
+               />
+               <FeatureCard 
+                  title="Planteles Completos"
+                  desc="Arma tu Dream Team, convoca jugadores de otras posiciones y enfréntate en duelos que afectan tus stats directamente."
+                  icon={Users}
+                  delay={0.3}
+               />
             </div>
          </div>
       </section>
 
-      {/* 🟡 SECTION: FEATURES (THE BENTO GRID ECOSYSTEM) */}
-      <section className="py-40 px-6 lg:px-20 max-w-[1500px] mx-auto space-y-16">
-         <div className="text-center mb-28 space-y-6">
-            <h2 className="text-5xl md:text-8xl font-black font-kanit italic uppercase tracking-tighter leading-none">
-               DOMINÁ EL <span className="text-primary italic">RANKING.</span>
-            </h2>
-            <p className="text-[11px] font-black text-white/30 uppercase tracking-[0.8em] italic leading-loose">TODO LO QUE EL JUGADOR AMATEUR NECESITA.</p>
-         </div>
-
-         <div className="grid grid-cols-1 md:grid-cols-3 gap-10 lg:gap-14">
-            <FeatureBox 
-               title="Buscador PRO"
-               desc="Sedes verificadas con geolocalización. Filtrá por tipo de césped, amenities y disponibilidad real."
-               icon={Search}
-               delay={0.1}
-            />
-            <FeatureBox 
-               title="Payments Seguros"
-               desc="Señá tu turno al instante con Mercado Pago. Olvidate de las señas por transferencia."
-               icon={Zap}
-               delay={0.2}
-            />
-            <FeatureBox 
-               title="Hub Social"
-               desc="Creá equipos, armá planteles y desafiá a otros clubes de tu ciudad."
-               icon={Users}
-               delay={0.3}
-            />
-         </div>
-      </section>
-
-      {/* 🔴 MARKETING PARA DUEÑOS (SELLING TO VENUE OWNERS) */}
-      <section className="py-32 px-6 lg:px-12 relative overflow-hidden bg-[#050505]">
+      {/* 🔴 MARKETING PARA DUEÑOS (SELLING TO VENUE OWNERS) - KEPT FROM PREVIOUS VERSION */}
+      <section className="py-32 px-6 lg:px-12 relative overflow-hidden bg-[#050505] border-y border-white/5">
          <div className="max-w-[1400px] mx-auto rounded-[3rem] bg-zinc-900 border border-white/10 p-10 lg:p-20 relative overflow-hidden shadow-2xl">
             {/* Owner Section Background Effects */}
             <div className="absolute inset-0 bg-gradient-to-tr from-black/80 to-transparent pointer-events-none z-0" />
@@ -371,51 +330,55 @@ export default function LandingPage() {
          </div>
       </section>
 
-      {/* 🔴 FINAL CTA (LAST IMPACT) */}
-      <section className="py-72 px-6 text-center overflow-hidden">
-         <div className="max-w-6xl mx-auto space-y-20 relative z-10">
-            <h2 className="text-7xl md:text-[14rem] font-black font-kanit italic uppercase tracking-tighter leading-[0.7] drop-shadow-[0_20px_60px_rgba(0,0,0,0.8)]">
-               TU DESTINO <br /> ES EL <span className="text-primary italic animate-pulse [text-shadow:0_0_80px_rgba(44,252,125,0.4)]">GREEN.</span>
+      {/* 🔴 FINAL CTA BLOCK */}
+      <section className="py-40 px-6 text-center border-b border-white/5 relative bg-[#020202]">
+         <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-primary/10 blur-[150px]" />
+         
+         <div className="max-w-4xl mx-auto space-y-12 relative z-10">
+            <h2 className="text-6xl md:text-8xl font-black font-kanit italic uppercase tracking-tighter leading-[0.8] drop-shadow-2xl">
+               TU DESTINO ES EL <span className="text-primary hover:text-white transition-colors cursor-default">GREEN.</span>
             </h2>
-            <Link href="/register">
-               <button className="px-28 h-28 bg-primary text-black font-black uppercase text-[20px] tracking-[0.6em] rounded-[2.5rem] shadow-[0_30px_100px_rgba(44,252,125,0.4)] hover:scale-110 active:scale-95 transition-all outline-none">
-                  UNIRSE AHORA
-               </button>
-            </Link>
+            <p className="text-sm md:text-xl font-bold uppercase tracking-[0.3em] text-zinc-400 italic">
+               EMPIEZA A CREAR TU LEGADO AHORA MISMO.
+            </p>
+            <div className="pt-8">
+               <Link href="/register" className="inline-block">
+                  <button className="px-16 h-24 bg-primary text-black font-black uppercase text-xl tracking-[0.3em] rounded-[2rem] hover:scale-105 active:scale-95 transition-all outline-none shadow-[0_0_50px_rgba(44,252,125,0.4)] flex items-center gap-4">
+                     <CheckCircle2 className="w-8 h-8" />
+                     <span>EMPEZAR GRATIS</span>
+                  </button>
+               </Link>
+            </div>
          </div>
-         {/* Background accent */}
-         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full max-w-[1000px] max-h-[1000px] bg-primary/10 blur-[200px] rounded-full -z-10 animate-pulse" />
       </section>
 
-      {/* 🟢 FOOTER (CLEAN & PRO) */}
-      <footer className="py-24 px-6 lg:px-20 border-t border-white/5 bg-[#020205] relative z-10">
-         <div className="max-w-[1500px] mx-auto flex flex-col md:flex-row items-center justify-between gap-16">
-            <div className="space-y-6 max-w-sm text-center md:text-left">
+      {/* 🟢 FOOTER */}
+      <footer className="py-16 px-6 lg:px-12 bg-[#050505]">
+         <div className="max-w-[1400px] mx-auto flex flex-col md:flex-row items-center justify-between gap-10">
+            <div className="space-y-4 text-center md:text-left">
                <div className="flex items-center gap-3 justify-center md:justify-start">
-                  <img src="/logo_pelotify.png" className="w-12 h-12" alt="" />
-                  <span className="text-3xl font-black italic uppercase tracking-tighter font-kanit">PELOTIFY</span>
+                  <img src="/logo_pelotify.png" className="w-8 h-8 drop-shadow-[0_0_8px_rgba(255,255,255,0.2)]" alt="Pelotify" />
+                  <span className="text-2xl font-black italic uppercase tracking-tighter font-kanit text-white">PELOTIFY</span>
                </div>
-               <p className="text-[10px] font-black uppercase tracking-[0.2em] text-white/20 leading-loose">
-                  LIDERANDO LA REVOLUCIÓN DEL FÚTBOL AMATEUR. PRECISIÓN, RANKING Y GESTIÓN INTEGRAL.
+               <p className="text-[10px] font-bold uppercase tracking-widest text-zinc-500">
+                  PLATAFORMA INTEGRAL PARA EL FÚTBOL AMATEUR
                </p>
             </div>
             
-            <div className="flex gap-20 text-[10px] font-black uppercase tracking-[0.4em] text-white/30">
-               <div className="flex flex-col gap-5">
-                  <Link href="/help" className="hover:text-primary transition-colors">Ayuda</Link>
-                  <Link href="/terms" className="hover:text-primary transition-colors">Legales</Link>
-               </div>
-               <div className="flex flex-col gap-5">
-                  <Link href="/canchas/login" className="hover:text-primary transition-colors">Sedes</Link>
-                  <Link href="/login" className="hover:text-primary transition-colors">Login</Link>
-               </div>
+            <div className="flex flex-wrap justify-center gap-8 md:gap-12 text-[10px] font-bold uppercase tracking-widest text-zinc-400">
+               <Link href="/help" className="hover:text-primary transition-colors">Soporte</Link>
+               <Link href="/terms" className="hover:text-primary transition-colors">Legales</Link>
+               <Link href="/canchas/login" className="hover:text-primary transition-colors flex items-center gap-1">
+                  <ShieldCheck className="w-3 h-3" /> Acceso Sedes
+               </Link>
+               <Link href="/login" className="hover:text-primary transition-colors">Iniciar Sesión</Link>
             </div>
             
             <div className="text-center md:text-right space-y-3">
-               <p className="text-[10px] font-black uppercase tracking-[0.5em] text-white/20">© 2026 PELOTIFY GLOBAL SYSTEMS.</p>
-               <div className="flex items-center gap-4 justify-center md:justify-end opacity-20 group">
-                  <Globe className="w-5 h-5 group-hover:text-primary transition-colors" />
-                  <TargetIcon className="w-5 h-5 group-hover:text-primary transition-colors" />
+               <p className="text-[10px] font-bold uppercase tracking-widest text-zinc-600">© 2026 PELOTIFY.</p>
+               <div className="flex items-center justify-center md:justify-end gap-3 opacity-40">
+                  <Globe className="w-4 h-4" />
+                  <TargetIcon className="w-4 h-4" />
                </div>
             </div>
          </div>
