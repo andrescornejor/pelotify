@@ -133,7 +133,7 @@ export default function LandingPage() {
          </div>
          <div className="hidden md:flex items-center gap-10">
             {['Inicia Sesion', 'Registrate', 'Sedes'].map((link) => (
-               <Link key={link} href={link === 'Sedes' ? '/canchas' : `/login`} className="text-[10px] font-black uppercase tracking-[0.3em] text-foreground/40 hover:text-primary transition-colors">
+               <Link key={link} href={link === 'Sedes' ? '/canchas/login' : `/login`} className="text-[10px] font-black uppercase tracking-[0.3em] text-foreground/40 hover:text-primary transition-colors">
                   {link}
                </Link>
             ))}
@@ -324,7 +324,7 @@ export default function LandingPage() {
                      ))}
                   </div>
 
-                  <Link href="/canchas" className="inline-block mt-4">
+                  <Link href="/canchas/login" className="inline-block mt-4">
                      <button className="px-12 h-16 bg-foreground text-background font-black uppercase text-[12px] tracking-[0.4em] rounded-2xl hover:scale-105 active:scale-95 transition-all flex items-center gap-4 group">
                         <span>REGISTRAR MI SEDE</span>
                         <ArrowRight className="w-5 h-5 group-hover:translate-x-2 transition-transform" />

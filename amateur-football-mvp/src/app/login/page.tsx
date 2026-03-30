@@ -154,7 +154,7 @@ export default function LoginPage() {
                <div className="pt-4 border-t border-white/5 opacity-30 hover:opacity-100 transition-opacity">
                  <p className="text-[9px] font-black text-foreground/30 uppercase tracking-[0.2em]">
                    ¿Tenés un complejo?{' '}
-                   <Link href="/canchas" className="text-primary hover:text-white transition-colors underline decoration-primary/30 underline-offset-4">
+                   <Link href="/canchas/login" className="text-primary hover:text-white transition-colors underline decoration-primary/30 underline-offset-4">
                      ADMINISTRÁ TU SEDE
                    </Link>
                  </p>

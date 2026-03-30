@@ -1509,7 +1509,7 @@ export default function HomePage() {
             </div>
             
             <div className="pt-6">
-              <Link href="/canchas">
+              <Link href="/canchas/login">
                 <button className="px-12 h-16 bg-primary text-black font-black uppercase text-[12px] tracking-[0.4em] rounded-[1.5rem] shadow-[0_15px_40px_rgba(44,252,125,0.3)] hover:shadow-[0_20px_60px_rgba(44,252,125,0.5)] hover:scale-105 active:scale-95 transition-all flex items-center gap-4 mx-auto group/btn">
                   <span>REGISTRÁ TU SEDE</span>
                   <ArrowRight className="w-5 h-5 group-hover/btn:translate-x-2 transition-transform" />
