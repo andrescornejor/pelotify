@@ -638,49 +638,111 @@ export default function CreateMatchPage() {
                 </div>
 
                 {/* Time picker */}
-                <div className="space-y-4">
-                  <span className="text-[10px] font-black text-foreground/30 uppercase tracking-[0.4em] px-1">
-                    Horario
-                  </span>
-                  <div className="relative group">
-                    <Clock className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-foreground/20 group-focus-within:text-primary transition-colors z-10 pointer-events-none" />
-                    <select
-                      value={formData.time}
-                      onChange={(e) => setFormData({ ...formData, time: e.target.value })}
-                      className="w-full h-16 pl-14 pr-12 rounded-2xl bg-foreground/[0.03] border border-foreground/10 focus:bg-foreground/[0.05] focus:border-primary/40 outline-none text-lg font-black italic text-foreground appearance-none cursor-pointer transition-all"
-                    >
-                      <option value="" disabled className="bg-background">
-                        ¿A qué hora?
-                      </option>
-                      {AVAILABLE_TIMES.map((t) => {
-                        const [h, m] = t.split(':');
-                        const hour = parseInt(h);
-                        const displayHour = hour % 12 === 0 ? 12 : hour % 12;
-                        const ampm = hour >= 12 ? 'PM' : 'AM';
-                        const isBooked = bookedTimes.includes(t);
-                        return (
-                          <option
-                            key={t}
-                            value={t}
-                            disabled={isBooked}
-                            className={`bg-background font-bold ${isBooked ? 'text-foreground/20' : 'text-foreground'}`}
-                          >
-                            {displayHour}:{m} {ampm} {isBooked ? '(Ocupado)' : ''}
-                          </option>
-                        );
-                      })}
-                    </select>
-                    <div className="absolute right-5 top-1/2 -translate-y-1/2 pointer-events-none text-foreground/20">
-                      <svg width="12" height="8" viewBox="0 0 12 8" fill="none">
-                        <path
-                          d="M1 1L6 6L11 1"
-                          stroke="currentColor"
-                          strokeWidth="2"
-                          strokeLinecap="round"
-                        />
-                      </svg>
-                    </div>
+                <div className="space-y-6">
+                  <div className="flex items-center gap-3 px-1">
+                    <span className="text-[10px] font-black text-foreground/30 uppercase tracking-[0.4em]">
+                      Horario
+                    </span>
+                    <div className="h-px flex-1 bg-foreground/5" />
                   </div>
+                  
+                  {[
+                    { 
+                      label: 'Mañana', 
+                      icon: (
+                        <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+                        </svg>
+                      ),
+                      times: AVAILABLE_TIMES.filter(t => {
+                        const h = parseInt(t.split(':')[0]);
+                        return h >= 6 && h < 12;
+                      })
+                    },
+                    { 
+                      label: 'Tarde', 
+                      icon: (
+                        <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z" />
+                        </svg>
+                      ),
+                      times: AVAILABLE_TIMES.filter(t => {
+                        const h = parseInt(t.split(':')[0]);
+                        return h >= 12 && h < 19;
+                      })
+                    },
+                    { 
+                      label: 'Noche', 
+                      icon: (
+                        <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+                        </svg>
+                      ),
+                      times: AVAILABLE_TIMES.filter(t => {
+                        const h = parseInt(t.split(':')[0]);
+                        return h >= 19 || h < 6;
+                      })
+                    },
+                  ].map((group) => {
+                    if (group.times.length === 0) return null;
+                    const hasSelectedInGroup = group.times.includes(formData.time);
+                    
+                    return (
+                      <div key={group.label} className="space-y-3">
+                         <div className="flex items-center gap-2 px-1">
+                           <div className={`flex items-center justify-center p-1.5 rounded-lg ${hasSelectedInGroup ? 'bg-primary/20 text-primary' : 'bg-foreground/[0.03] text-foreground/40'}`}>
+                             {group.icon}
+                           </div>
+                           <span className={`text-[11px] font-black uppercase tracking-widest ${hasSelectedInGroup ? 'text-primary' : 'text-foreground/40'}`}>
+                             {group.label}
+                           </span>
+                         </div>
+                         <div className="grid grid-cols-4 sm:grid-cols-6 gap-2">
+                           {group.times.map((t) => {
+                             const [h, m] = t.split(':');
+                             const hour = parseInt(h);
+                             const displayHour = hour % 12 === 0 ? 12 : hour % 12;
+                             const ampm = hour >= 12 && hour < 24 ? 'PM' : 'AM';
+                             const isBooked = bookedTimes.includes(t);
+                             const isSelected = formData.time === t;
+
+                             return (
+                               <button
+                                 key={t}
+                                 type="button"
+                                 disabled={isBooked}
+                                 onClick={() => setFormData({ ...formData, time: t })}
+                                 className={`
+                                   h-14 rounded-2xl border flex flex-col items-center justify-center transition-all duration-200 relative overflow-hidden group
+                                   ${isSelected 
+                                     ? 'border-primary bg-primary text-black scale-105 shadow-lg shadow-primary/20 z-10' 
+                                     : isBooked 
+                                       ? 'border-foreground/[0.03] bg-background opacity-50 cursor-not-allowed'
+                                       : 'border-foreground/[0.06] bg-foreground/[0.02] hover:border-foreground/20 hover:bg-foreground/[0.04]'
+                                   }
+                                 `}
+                               >
+                                 <span className={`text-[15px] font-black italic tracking-tighter leading-none transition-colors ${isSelected ? 'text-black' : isBooked ? 'text-foreground/30' : 'text-foreground/80 group-hover:text-foreground'}`}>
+                                   {displayHour}:{m}
+                                 </span>
+                                 <span className={`text-[9px] font-bold tracking-widest mt-0.5 transition-colors ${isSelected ? 'text-black/70' : isBooked ? 'text-foreground/20' : 'text-foreground/40 group-hover:text-foreground/60'}`}>
+                                   {ampm}
+                                 </span>
+                                 
+                                 {isBooked && (
+                                   <div className="absolute inset-0 flex items-center justify-center bg-background/60 backdrop-blur-[0.5px]">
+                                     <span className="text-[8px] font-black uppercase tracking-widest text-[#EF4444] bg-red-500/10 border border-red-500/20 px-1.5 py-0.5 rounded shadow-sm">
+                                       Lleno
+                                     </span>
+                                   </div>
+                                 )}
+                               </button>
+                             );
+                           })}
+                         </div>
+                      </div>
+                    )
+                  })}
                 </div>
               </motion.div>
             )}
