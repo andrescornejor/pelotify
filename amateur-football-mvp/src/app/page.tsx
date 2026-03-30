@@ -1,8 +1,8 @@
 'use client';
 
-import React, { useState, useEffect, useMemo, useRef } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import Link from 'next/link';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import {
   Trophy,
   Target,
@@ -35,257 +35,11 @@ import { OnboardingTour } from '@/components/OnboardingTour';
 import { JerseyVisualizer } from '@/components/JerseyVisualizer';
 import { getHighlights, Highlight } from '@/lib/highlights';
 import LandingPage from '@/components/LandingPage';
+import { StatCard, TeamCard, RankBadgeInline, EmptyState, SectionDivider, LazyVideo, HomePageSkeleton, RANKS, getRankByElo } from '@/components/home';
 
-// --- TYPES & CONSTANTS ---
+// --- TYPES & CONSTANTS (extracted to @/components/home) ---
 
-interface Rank {
-  name: string;
-  minElo: number;
-  color: string;
-  icon: any;
-}
 
-const RANKS: Rank[] = [
-  { name: 'HIERRO', minElo: 0, color: '#94a3b8', icon: Shield },
-  { name: 'BRONCE', minElo: 500, color: '#d97706', icon: Activity },
-  { name: 'PLATA', minElo: 1000, color: '#94a3b8', icon: Target },
-  { name: 'ORO', minElo: 1500, color: '#fbbf24', icon: Trophy },
-  { name: 'PLATINO', minElo: 2000, color: '#2dd4bf', icon: Award },
-  { name: 'DIAMANTE', minElo: 2500, color: '#3b82f6', icon: Sparkles },
-  { name: 'ELITE', minElo: 3000, color: '#8b5cf6', icon: Star },
-  { name: 'MAESTRO', minElo: 3500, color: '#f43f5e', icon: Crown },
-  { name: 'PELOTIFY', minElo: 4000, color: '#2cfc7d', icon: Zap },
-];
-
-const getRankByElo = (elo: number) => {
-  for (let i = RANKS.length - 1; i >= 0; i--) {
-    if (elo >= RANKS[i].minElo) return RANKS[i];
-  }
-  return RANKS[0];
-};
-
-// --- COMPONENTS ---
-
-const SectionDivider = () => (
-  <div className="flex items-center gap-6 py-10 opacity-30 select-none">
-    <div className="h-[1px] flex-1 bg-gradient-to-r from-transparent via-primary/30 to-transparent" />
-    <div className="flex items-center gap-1.5">
-      <div className="w-1 h-1 rounded-full bg-primary/40" />
-      <div className="w-2 h-2 rounded-full bg-primary animate-pulse shadow-[0_0_10px_rgba(44,252,125,0.5)]" />
-      <div className="w-1 h-1 rounded-full bg-primary/40" />
-    </div>
-    <div className="h-[1px] flex-1 bg-gradient-to-r from-transparent via-primary/30 to-transparent" />
-  </div>
-);
-
-const RankBadge = ({ rankName, size = 'md', className }: { rankName: string; size?: 'sm' | 'md' | 'lg'; className?: string }) => {
-  const rank = RANKS.find(r => r.name === rankName) || RANKS[0];
-  const Icon = rank.icon;
-
-  const sizeMap = {
-    sm: 'w-10 h-10',
-    md: 'w-16 h-16',
-    lg: 'w-24 h-24',
-  };
-
-  const iconSizeMap = {
-    sm: 'w-5 h-5',
-    md: 'w-8 h-8',
-    lg: 'w-12 h-12',
-  };
-
-  return (
-    <div className={cn("relative flex items-center justify-center", sizeMap[size], className)}>
-      <div 
-        className="absolute inset-0 blur-xl rounded-full opacity-40" 
-        style={{ backgroundColor: rank.color }}
-      />
-      <div className="relative z-10 flex items-center justify-center">
-        <Icon 
-          className={cn(iconSizeMap[size], "drop-shadow-lg")} 
-          style={{ color: rank.color }} 
-        />
-      </div>
-    </div>
-  );
-};
-
-const StatCard = ({ stat, i, performanceMode, fadeUp }: any) => (
-  <motion.div
-    variants={fadeUp}
-    custom={i}
-    whileHover={performanceMode ? {} : { y: -8, scale: 1.02, rotate: 1 }}
-    className={cn(
-      'group relative overflow-hidden p-6 rounded-[2.5rem] glass-premium transition-all duration-500 border-white/5 shadow-2xl',
-      performanceMode && 'bg-surface shadow-none'
-    )}
-  >
-    {/* Dynamic Background Glow */}
-    {!performanceMode && (
-      <div
-        className="absolute -right-6 -top-6 w-32 h-32 blur-[50px] opacity-0 group-hover:opacity-30 transition-opacity duration-700 rounded-full"
-        style={{ backgroundColor: stat.color }}
-      />
-    )}
-
-    <div className="relative z-10 space-y-4">
-      <div
-        className="w-12 h-12 rounded-2xl flex items-center justify-center glass border-white/10 shadow-inner group-hover:rotate-12 transition-transform duration-500"
-        style={{ backgroundColor: `${stat.color}15` }}
-      >
-        <stat.icon className="w-6 h-6" style={{ color: stat.color }} />
-      </div>
-      <div>
-        <p className="text-[10px] font-black text-foreground/30 uppercase tracking-[0.3em] font-outfit">
-          {stat.label}
-        </p>
-        <div className="flex items-end gap-1.5 mt-1">
-          <h3 className="text-3xl font-black italic tracking-tighter text-foreground font-kanit leading-none">
-            {stat.value}
-          </h3>
-          {!performanceMode && (
-            <div className="mb-1 flex items-center gap-0.5 text-primary opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all duration-500">
-               <TrendingUp className="w-3 h-3" />
-               <span className="text-[8px] font-black">+4%</span>
-            </div>
-          )}
-        </div>
-      </div>
-    </div>
-  </motion.div>
-);
-
-const TeamCard = ({ team, performanceMode }: any) => {
-  const teamColor = team.primary_color || '#2cfc7d';
-  
-  return (
-    <Link href={`/team?id=${team.id}`} className="block">
-      <motion.div
-        whileHover={performanceMode ? {} : { scale: 1.01, y: -6 }}
-        className="group flex flex-col sm:flex-row items-center justify-between gap-6 p-7 rounded-[3rem] glass-premium border-white/5 hover:border-primary/20 transition-all cursor-pointer relative overflow-hidden shadow-2xl"
-      >
-        {/* Dynamic Ray Background */}
-        {!performanceMode && (
-          <>
-            <div 
-              className="absolute top-0 right-0 w-64 h-64 blur-[100px] rounded-full opacity-0 group-hover:opacity-10 transition-opacity duration-1000"
-              style={{ backgroundColor: teamColor }}
-            />
-            <div className="absolute inset-0 bg-gradient-to-r from-primary/5 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
-          </>
-        )}
-        
-        <div className="flex items-center gap-8 relative z-10 w-full sm:w-auto">
-          <div className="flex flex-col items-center min-w-[100px]">
-            <div className="relative group/avatar">
-              {!performanceMode && (
-                <div 
-                  className="absolute inset-0 blur-3xl rounded-full scale-0 group-hover/avatar:scale-150 transition-transform duration-1000 opacity-0 group-hover/avatar:opacity-40"
-                  style={{ backgroundColor: teamColor }}
-                />
-              )}
-              
-              <div 
-                className="w-24 h-24 rounded-[3rem] bg-gradient-to-br from-surface to-background flex items-center justify-center overflow-hidden border-2 border-white/5 group-hover:border-primary/50 transition-all duration-700 shadow-2xl relative z-10 p-1"
-              >
-                <div className="w-full h-full rounded-[2.8rem] overflow-hidden">
-                  {team.logo_url ? (
-                    <img 
-                    src={team.logo_url} 
-                    alt={team.name} 
-                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-1000"
-                    />
-                  ) : (
-                    <div className="p-4 w-full h-full bg-background">
-                      <JerseyVisualizer 
-                        primaryColor={team.primary_color || '#18181b'} 
-                        secondaryColor={team.secondary_color || '#10b981'} 
-                        pattern={team.jersey_pattern || 'solid'}
-                        className="w-full h-full"
-                      />
-                    </div>
-                  )}
-                </div>
-              </div>
-
-              {/* LVL Floating Badge */}
-              <div className="absolute -bottom-2 right-0 px-2.5 py-1 rounded-lg bg-primary text-background text-[10px] font-black italic shadow-lg z-20 transform group-hover:translate-y--1 transition-transform">
-                Lvl {Math.floor((team.elo / 500) + 1)}
-              </div>
-            </div>
-          </div>
- 
-          <div className="flex-1 space-y-3">
-            <h4 className="text-3xl font-black italic uppercase tracking-tighter text-foreground font-kanit leading-none group-hover:text-primary transition-colors duration-300">
-              {team.name}
-            </h4>
-            <div className="flex items-center gap-5">
-              <div className="flex -space-x-3.5">
-                {[1, 2, 3].map((i) => (
-                  <div 
-                  key={i} 
-                  className="w-9 h-9 rounded-full border-2 border-background bg-surface-elevated overflow-hidden hover:z-20 hover:scale-125 transition-transform flex items-center justify-center shadow-lg"
-                  >
-                    <User2 className="w-5 h-5 text-foreground/10" />
-                  </div>
-                ))}
-                <div className="w-9 h-9 rounded-full border-2 border-background bg-primary text-[10px] font-black text-background flex items-center justify-center z-10 shadow-lg">
-                  +{team.members_count || 0}
-                </div>
-              </div>
-              <div className="h-5 w-[1px] bg-white/10 hidden sm:block" />
-              <div className="hidden sm:flex items-center gap-2.5 px-3 py-1 rounded-full bg-foreground/[0.03] border border-white/5">
-                <Shield className="w-3.5 h-3.5 text-primary" />
-                <span className="text-[10px] font-black text-foreground/40 uppercase tracking-[0.2em] font-outfit">
-                  {team.elo > 1000 ? 'ELITE CLUB' : 'VERIFICADO'}
-                </span>
-              </div>
-            </div>
-          </div>
-        </div>
- 
-        {/* Action Button */}
-        <div className="flex items-center gap-6 relative z-10 w-full sm:w-auto mt-6 sm:mt-0">
-          <div className="hidden xl:flex flex-col items-end opacity-0 group-hover:opacity-100 translate-x-8 group-hover:translate-x-0 transition-all duration-700">
-            <span className="text-[11px] font-black text-primary uppercase tracking-[0.3em] font-outfit">Sede Central</span>
-            <span className="text-[9px] font-medium text-foreground/30 italic mt-1 uppercase">Entrar al vestuario</span>
-          </div>
-          <div 
-            className="w-16 h-16 rounded-[2rem] bg-foreground/[0.04] border border-white/5 flex items-center justify-center group-hover:bg-primary group-hover:text-background transition-all duration-700 shadow-xl group-hover:shadow-[0_15px_30px_rgba(44,252,125,0.3)] group-hover:scale-110"
-          >
-            <ArrowRight className="w-8 h-8 group-hover:translate-x-1.5 transition-transform duration-500" />
-          </div>
-        </div>
-      </motion.div>
-    </Link>
-  );
-};
-
-const EmptyState = ({ icon: Icon, title, description, actionText, actionHref }: any) => (
-  <motion.div
-    initial={{ opacity: 0, scale: 0.95 }}
-    whileInView={{ opacity: 1, scale: 1 }}
-    className="w-full py-12 px-6 rounded-[2.5rem] flex flex-col items-center justify-center text-center gap-6 glass-premium border-white/5 bg-foreground/[0.01] relative overflow-hidden group"
-  >
-    <div className="absolute inset-0 bg-gradient-to-b from-primary/5 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-    <div className="w-16 h-16 rounded-[2rem] bg-surface flex items-center justify-center border border-white/10 shadow-inner group-hover:scale-110 transition-transform">
-      <Icon className="w-8 h-8 text-foreground/20 group-hover:text-primary/40 transition-colors" />
-    </div>
-    <div className="space-y-2 relative z-10">
-      <h5 className="text-lg font-black italic uppercase tracking-tighter text-foreground font-kanit">{title}</h5>
-      <p className="text-[10px] font-black text-foreground/30 uppercase tracking-[0.2em] max-w-[240px] leading-relaxed">
-        {description}
-      </p>
-    </div>
-    {actionText && actionHref && (
-      <Link href={actionHref}>
-        <button className="px-8 h-10 rounded-xl bg-foreground/[0.03] hover:bg-primary hover:text-background border border-white/10 text-[9px] font-black uppercase tracking-[0.2em] transition-all">
-          {actionText}
-        </button>
-      </Link>
-    )}
-  </motion.div>
-);
 
 export default function HomePage() {
   const { user } = useAuth();
@@ -506,28 +260,7 @@ export default function HomePage() {
   );
 
   if (isLoading) {
-    return (
-      <div className="min-h-screen bg-background flex flex-col items-center justify-center gap-6">
-        <motion.div 
-           initial={{ scale: 0.8, opacity: 0 }}
-           animate={{ scale: 1, opacity: 1 }}
-           className="w-24 h-24"
-        >
-           <img src="/logo_pelotify.png" className="w-full h-full object-contain mix-blend-screen opacity-20" alt="" />
-        </motion.div>
-        <div className="flex flex-col items-center gap-1.5 opacity-20">
-           <p className="text-[10px] font-black uppercase tracking-[0.5em] text-primary">Cargando la Liga</p>
-           <div className="w-40 h-[1.5px] bg-white/5 overflow-hidden rounded-full">
-              <motion.div 
-                 initial={{ x: '-100%' }}
-                 animate={{ x: '100%' }}
-                 transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
-                 className="w-1/2 h-full bg-primary"
-              />
-           </div>
-        </div>
-      </div>
-    );
+    return <HomePageSkeleton />;
   }
 
   if (!user) {
@@ -698,7 +431,7 @@ export default function HomePage() {
                   {/* Avatar with rank glow */}
                   <div id="hero-avatar" className="relative group/avatar">
                     <div
-                      className="absolute -inset-4 blur-3xl rounded-full opacity-40 group-hover/avatar:opacity-70 transition-opacity"
+                      className="absolute -inset-4 blur-3xl rounded-full opacity-25 group-hover/avatar:opacity-45 transition-opacity"
                       style={{ backgroundColor: rankCalculation.rank.glow }}
                     />
                     <div
@@ -780,10 +513,10 @@ export default function HomePage() {
                 />
 
                 <div className="flex items-center gap-6 relative z-10">
-                  <RankBadge rankName={rankCalculation.info.name} size="lg" />
+                  <RankBadgeInline rankName={rankCalculation.info.name} size="lg" />
                   <div className="flex-1 space-y-2">
-                    <p className="text-[10px] font-black text-foreground/40 uppercase tracking-widest leading-none">
-                      PROGRESO DE LIGA
+                    <p className="text-[10px] font-semibold text-foreground/40 tracking-wide leading-none font-outfit">
+                      Progreso de liga
                     </p>
                     <div className="flex items-center gap-2">
                       <h3 className="text-2xl font-black italic text-foreground leading-none font-kanit uppercase tracking-tighter">
@@ -791,8 +524,8 @@ export default function HomePage() {
                       </h3>
                       <rankCalculation.rank.icon className="w-5 h-5" style={{ color: rankCalculation.rank.hex }} />
                     </div>
-                    <span className="text-[9px] font-black text-primary uppercase tracking-[0.2em]">
-                      ESTADO DE TEMPORADA
+                    <span className="text-[9px] font-semibold text-primary/80 tracking-wide font-outfit">
+                      Estado de temporada
                     </span>
                   </div>
                   <div className="text-right flex flex-col items-end">
@@ -817,16 +550,16 @@ export default function HomePage() {
                       className="h-full rounded-full relative"
                       style={{
                         background: `linear-gradient(90deg, ${rankCalculation.info.color}, #5dfd9d)`,
-                        boxShadow: `0 0 15px ${rankCalculation.info.color}40`,
+                        boxShadow: `0 0 10px ${rankCalculation.info.color}30`,
                       }}
                     >
                       <div className="absolute inset-0 animate-shimmer opacity-30 bg-gradient-to-r from-transparent via-white/40 to-transparent" />
                     </motion.div>
                   </div>
 
-                  <div className="flex justify-between text-[8px] font-black text-foreground/30 uppercase tracking-[0.3em]">
-                    <span>PROGRESO DE TEMPORADA</span>
-                    <span>SIGUIENTE NIVEL</span>
+                  <div className="flex justify-between text-[8px] font-medium text-foreground/30 tracking-wide">
+                    <span>Progreso de temporada</span>
+                    <span>Siguiente nivel</span>
                   </div>
                 </div>
               </div>
@@ -853,16 +586,14 @@ export default function HomePage() {
                   >
                     {/* Background Layer: Video or Gradient */}
                     {highlights.length > 0 ? (
-                      <div className="absolute inset-0 overflow-hidden opacity-30 group-hover:opacity-50 transition-opacity duration-700">
-                        <video 
+                      <div className="absolute inset-0 overflow-hidden opacity-20 group-hover:opacity-40 transition-opacity duration-700">
+                        <LazyVideo 
                           src={highlights[0].video_url} 
                           className="w-full h-full object-cover blur-[1px] scale-110 group-hover:scale-125 transition-transform duration-[2s]" 
                           autoPlay 
-                          muted 
                           loop 
-                          playsInline 
                         />
-                        <div className="absolute inset-0 bg-gradient-to-br from-primary/40 to-black/60 mix-blend-overlay" />
+                        <div className="absolute inset-0 bg-gradient-to-br from-primary/30 to-black/60 mix-blend-overlay" />
                       </div>
                     ) : (
                       <div className="absolute inset-0 bg-gradient-to-br from-zinc-800 to-black opacity-80" />
@@ -870,7 +601,7 @@ export default function HomePage() {
 
                     <div className="absolute inset-x-0 top-0 h-[1px] bg-white/20 shadow-[0_0_10px_white]" />
                     
-                    <Play className="w-6 h-6 relative z-10 text-primary fill-primary/20 group-hover:scale-125 transition-transform drop-shadow-[0_0_15px_rgba(44,252,125,0.6)]" />
+                    <Play className="w-6 h-6 relative z-10 text-primary fill-primary/20 group-hover:scale-125 transition-transform drop-shadow-[0_0_10px_rgba(44,252,125,0.4)]" />
                     <span className="relative z-10 italic font-bold tracking-[0.2em] group-hover:text-primary transition-colors">FUTTOK</span>
                     
                     <div className="absolute top-2.5 right-3 flex items-center gap-1.5 z-20">
@@ -979,20 +710,20 @@ export default function HomePage() {
                   <h2 className="text-xl lg:text-2xl font-black italic text-foreground uppercase tracking-tighter leading-none font-kanit">
                     Road to Glory
                   </h2>
-                  <span className="text-[9px] font-black text-primary uppercase tracking-[0.4em] font-outfit">
-                    TU CAMINO HACIA LA LEYENDA
+                  <span className="text-[9px] font-semibold text-primary/80 tracking-wide font-outfit">
+                    Tu camino hacia la leyenda
                   </span>
                 </div>
                 <div className="flex items-center gap-2 text-foreground/30">
-                  <span className="text-[9px] font-black uppercase tracking-widest hidden sm:inline">
-                    Nivel de Sistema
+                  <span className="text-[9px] font-medium tracking-wide hidden sm:inline">
+                    Nivel de sistema
                   </span>
                   <Sparkles className="w-5 h-5 text-primary/30 shrink-0 mb-1 animate-pulse" />
                 </div>
               </div>
 
               <div className="glass-premium p-8 rounded-[2.5rem] border-white/5 relative overflow-hidden">
-                <div className="absolute inset-0 opacity-5 pointer-events-none">
+                <div className="absolute inset-0 opacity-[0.03] pointer-events-none">
                   <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_center,_var(--primary)_0%,_transparent_70%)]" />
                 </div>
 
@@ -1027,7 +758,7 @@ export default function HomePage() {
                                 : 'bg-surface/50 border-white/5 opacity-40 group-hover:opacity-100'
                             )}
                           >
-                            <RankBadge rankName={rankItem.name} size="sm" className="scale-75" />
+                            <RankBadgeInline rankName={rankItem.name} size="sm" className="scale-75" />
                           </motion.div>
 
                           <div
@@ -1114,14 +845,14 @@ export default function HomePage() {
 
               <div className="flex items-center gap-6 relative z-10">
                 <div className="relative">
-                  <div className="absolute inset-0 bg-primary/20 blur-xl rounded-full animate-pulse" />
-                  <RankBadge rankName={rankCalculation.info.name} size="md" />
+                  <div className="absolute inset-0 bg-primary/10 blur-xl rounded-full animate-pulse" />
+                  <RankBadgeInline rankName={rankCalculation.info.name} size="md" />
                 </div>
                 <div className="space-y-1">
                   <h4 className="text-2xl font-black text-foreground italic uppercase tracking-tighter leading-none font-kanit">
                     Dominio de la Liga {rankCalculation.info.name}
                   </h4>
-                  <p className="text-[10px] text-foreground/40 font-black uppercase tracking-[0.2em] max-w-sm">
+                  <p className="text-[11px] text-foreground/40 font-medium tracking-wide max-w-sm leading-relaxed">
                     Estás en el top{' '}
                     <span className="text-primary">{Math.max(1, 100 - statsSummary.winRate)}%</span> de
                     jugadores en tu categoría. Seguí ganando para desbloquear{' '}
@@ -1156,8 +887,8 @@ export default function HomePage() {
                 <h2 className="text-xl lg:text-2xl font-black text-foreground italic uppercase tracking-tighter font-kanit">
                   Tendencias en FutTok
                 </h2>
-                <span className="text-[9px] font-black text-primary uppercase tracking-[0.4em]">
-                  LO MEJOR DE LA COMUNIDAD
+                <span className="text-[9px] font-semibold text-primary/80 tracking-wide font-outfit">
+                  Lo mejor de la comunidad
                 </span>
               </div>
                 <Link
@@ -1173,11 +904,9 @@ export default function HomePage() {
                 highlights.map((h) => (
                   <Link key={h.id} href={`/highlights?v=${h.id}`} className="shrink-0 aspect-[9/16] h-full rounded-[2rem] overflow-hidden relative group snap-start border border-white/5 shadow-xl">
                     <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent z-10" />
-                    <video 
+                    <LazyVideo 
                       src={h.video_url} 
                       className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 opacity-60 group-hover:opacity-100"
-                      muted
-                      playsInline
                     />
                     <div className="absolute top-2 right-2 px-1.5 py-0.5 bg-red-500 text-[6px] rounded-full font-black text-white italic z-20">LIVE</div>
                     <div className="absolute bottom-4 left-4 right-4 z-20">
@@ -1209,7 +938,7 @@ export default function HomePage() {
                  <div className="w-10 h-10 rounded-full bg-surface flex items-center justify-center group-hover:scale-110 transition-transform">
                     <PlusCircle className="w-5 h-5 text-emerald-500" />
                  </div>
-                 <span className="text-[8px] font-black uppercase tracking-widest text-center px-4">Subir mi Jugada</span>
+                 <span className="text-[8px] font-semibold tracking-wide text-center px-4">Subir mi jugada</span>
               </Link>
             </div>
 
@@ -1220,8 +949,8 @@ export default function HomePage() {
                 <h2 className="text-xl lg:text-2xl font-black text-foreground italic uppercase tracking-tighter font-kanit">
                   Tus Equipos
                 </h2>
-                <span className="text-[9px] font-black text-primary uppercase tracking-[0.4em]">
-                  PLANTEL PROFESIONAL
+                <span className="text-[9px] font-semibold text-primary/80 tracking-wide font-outfit">
+                  Plantel profesional
                 </span>
               </div>
               <Link
@@ -1250,8 +979,8 @@ export default function HomePage() {
                   <h2 className="text-xl lg:text-2xl font-black text-foreground italic uppercase tracking-tighter font-kanit">
                     Feed de Actividad
                   </h2>
-                  <span className="text-[9px] font-black text-primary uppercase tracking-[0.4em]">
-                    COMUNIDAD EN TIEMPO REAL
+                  <span className="text-[9px] font-semibold text-primary/80 tracking-wide font-outfit">
+                    Comunidad en tiempo real
                   </span>
                 </div>
                 <Activity className="w-5 h-5 text-primary/30" />
@@ -1294,8 +1023,8 @@ export default function HomePage() {
                {/* Background Effects */}
                {!performanceMode && (
                  <>
-                   <div className="absolute top-0 right-0 w-64 h-64 bg-primary/10 blur-[100px] rounded-full -translate-y-1/2 translate-x-1/2 group-hover/match:bg-primary/20 transition-all duration-700" />
-                   <div className="absolute bottom-0 left-0 w-64 h-64 bg-emerald-500/5 blur-[80px] rounded-full translate-y-1/2 -translate-x-1/2" />
+                   <div className="absolute top-0 right-0 w-64 h-64 bg-primary/5 blur-[100px] rounded-full -translate-y-1/2 translate-x-1/2 group-hover/match:bg-primary/10 transition-all duration-700" />
+                   <div className="absolute bottom-0 left-0 w-64 h-64 bg-emerald-500/[0.03] blur-[80px] rounded-full translate-y-1/2 -translate-x-1/2" />
                    <div className="absolute inset-0 bg-[url('/noise.png')] opacity-[0.03] mix-blend-overlay pointer-events-none" />
                  </>
                )}
@@ -1305,10 +1034,10 @@ export default function HomePage() {
                  <div className="flex items-center justify-between">
                    <div className="flex flex-col gap-1">
                       <div className="flex items-center gap-2">
-                         <div className="w-2 h-2 rounded-full bg-primary animate-pulse shadow-[0_0_10px_#2cfc7d]" />
+                         <div className="w-2 h-2 rounded-full bg-primary animate-pulse shadow-[0_0_6px_#2cfc7d]" />
                          <span className="text-[10px] font-black text-primary uppercase tracking-[0.4em] font-outfit">PRÓXIMO PARTIDO</span>
                       </div>
-                      <h3 className="text-[11px] font-medium text-foreground/30 uppercase tracking-[0.2em] font-outfit">Agenda Prioritaria</h3>
+                      <h3 className="text-[11px] font-medium text-foreground/30 tracking-wide font-outfit">Agenda prioritaria</h3>
                    </div>
                    {nextMatch && (
                      <div className="px-4 py-2 rounded-2xl bg-primary/10 border border-primary/20 backdrop-blur-md">
@@ -1425,7 +1154,7 @@ export default function HomePage() {
                  ) : (
                    <div className="relative group/agenda overflow-hidden rounded-[2.5rem] p-10 flex flex-col items-center text-center gap-8 border border-white/5 bg-gradient-to-b from-surface/50 to-transparent">
                       {/* Cinematic Spotlight */}
-                      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-48 h-48 bg-primary/10 blur-[60px] rounded-full pointer-events-none opacity-0 group-hover/agenda:opacity-100 transition-opacity duration-700" />
+                      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-48 h-48 bg-primary/5 blur-[60px] rounded-full pointer-events-none opacity-0 group-hover/agenda:opacity-100 transition-opacity duration-700" />
                       
                       <div className="relative">
                         <div className="absolute inset-0 bg-primary/20 blur-xl rounded-full scale-0 group-hover/agenda:scale-150 transition-transform duration-1000 opacity-20" />
@@ -1434,7 +1163,7 @@ export default function HomePage() {
 
                       <div className="space-y-2 relative z-10">
                         <h4 className="text-2xl font-black italic uppercase tracking-tighter text-foreground font-kanit">Agenda Libre</h4>
-                        <p className="text-[10px] font-black text-foreground/30 uppercase tracking-[0.2em] leading-relaxed max-w-[200px]">
+                        <p className="text-[11px] font-medium text-foreground/40 tracking-wide leading-relaxed max-w-[220px]">
                           No tenés próximos partidos.<br/>¡Salí a reclutar leyendas!
                         </p>
                       </div>
@@ -1451,7 +1180,7 @@ export default function HomePage() {
                       </Link>
 
                       <div className="flex flex-col gap-2 pt-4 border-t border-white/5 w-full opacity-60">
-                        <span className="text-[8px] font-black text-primary uppercase tracking-[0.4em]">Sugerencia de hoy</span>
+                        <span className="text-[8px] font-semibold text-primary/80 tracking-wide font-outfit">Sugerencia de hoy</span>
                         <p className="text-[9px] font-medium text-foreground/40 italic leading-relaxed">
                           "Un equipo unido vale más que 11 estrellas individuales."
                         </p>
@@ -1462,7 +1191,7 @@ export default function HomePage() {
             </div>
 
             <div className="glass-premium p-6 rounded-[2.5rem] border-white/5 space-y-4">
-               <h3 className="text-[10px] font-black text-foreground/40 uppercase tracking-[0.2em]">Accesos Rápidos</h3>
+               <h3 className="text-[10px] font-semibold text-foreground/40 tracking-wide font-outfit">Accesos rápidos</h3>
                <div className="grid grid-cols-1 gap-2">
                   {[
                     { label: 'Mercado', icon: Target, href: '/scouting' },
@@ -1494,13 +1223,13 @@ export default function HomePage() {
                 <img src="/logo_pelotify.png" alt="Pelotify Logo" className="w-12 h-12 object-contain" />
                 <span className="text-xl font-black italic uppercase tracking-tighter text-foreground font-kanit">PELOTIFY</span>
               </div>
-              <p className="text-[10px] text-foreground/40 font-black uppercase tracking-[0.2em] leading-relaxed max-w-sm">
-                LA PLATAFORMA DEFINITIVA PARA EL FÚTBOL AMATEUR COMPETITIVO. DOMINA LA CANCHA.
+              <p className="text-[11px] text-foreground/40 font-medium tracking-wide leading-relaxed max-w-sm">
+                La plataforma definitiva para el fútbol amateur competitivo. Domina la cancha.
               </p>
             </div>
           </div>
-          <div className="mt-20 pt-8 border-t border-foreground/5 flex flex-col md:flex-row items-center justify-between gap-4 text-[9px] font-black uppercase tracking-[0.3em] text-foreground/30">
-            <span> 2026 Pelotify. Todos los derechos reservados.</span>
+          <div className="mt-20 pt-8 border-t border-foreground/5 flex flex-col md:flex-row items-center justify-between gap-4 text-[9px] font-medium tracking-wide text-foreground/30">
+            <span>© 2026 Pelotify. Todos los derechos reservados.</span>
             <span className="flex items-center gap-2">Diseñado con <Sparkles className="w-3 h-3 text-primary" /> para campeones</span>
           </div>
         </footer>
