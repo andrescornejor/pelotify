@@ -478,6 +478,135 @@ export default function LandingPage() {
                   </div>
                </section>
 
+               {/* 🔴 NUEVA SECCIÓN: PERFIL DE ESTABLECIMIENTO (ESCAPARATE) */}
+               <section className="py-40 px-6 lg:px-12 bg-[#050505] relative border-y border-primary/20 overflow-hidden">
+                  <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full text-center pointer-events-none z-0 opacity-[0.03]">
+                     <h1 className="text-[12rem] md:text-[20rem] font-black italic font-kanit uppercase leading-none whitespace-nowrap text-primary">
+                        APARIENCIA
+                     </h1>
+                  </div>
+                  
+                  <div className="absolute top-0 right-0 w-[1000px] h-[1000px] bg-primary/15 blur-[180px] pointer-events-none z-0" />
+                  <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-[0.05] pointer-events-none" />
+                  
+                  <div className="max-w-[1500px] mx-auto flex flex-col lg:flex-row items-center gap-20 lg:gap-32 relative z-10">
+                     
+                     <motion.div 
+                        initial={{ opacity: 0, x: -50 }}
+                        whileInView={{ opacity: 1, x: 0 }}
+                        viewport={{ once: true }}
+                        transition={{ duration: 0.8 }}
+                        className="flex-1 space-y-14 order-2 lg:order-1"
+                     >
+                        <div className="space-y-6">
+                           <div className="inline-flex items-center gap-3 px-6 py-3 rounded-xl bg-primary/10 border border-primary/30 shadow-[0_0_20px_rgba(44,252,125,0.2)]">
+                              <Sparkles className="w-5 h-5 text-primary" />
+                              <span className="text-xs font-black uppercase tracking-[0.3em] text-primary">TU PREDIO EN VITRINA</span>
+                           </div>
+                           <h2 className="text-6xl md:text-8xl lg:text-[7rem] font-black font-kanit italic uppercase tracking-tighter leading-[0.85] text-white">
+                              ATRAE A <br />
+                              <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-white drop-shadow-[0_0_30px_rgba(44,252,125,0.4)]">MÁS EQUIPOS.</span>
+                           </h2>
+                           <p className="text-lg md:text-xl font-medium text-zinc-300 leading-relaxed max-w-lg pt-4">
+                              No eres unas canchas más. Tendrás tu propio perfil público digital con información de interés que impulsará las reservas de tu complejo.
+                           </p>
+                        </div>
+
+                        <div className="space-y-8 border-l-4 border-primary pl-8">
+                           <motion.div 
+                              initial={{ opacity: 0, x: -20 }}
+                              whileInView={{ opacity: 1, x: 0 }}
+                              transition={{ delay: 0.2, duration: 0.5 }}
+                              className="space-y-3 hover:-translate-y-1 transition-transform"
+                           >
+                              <div className="flex items-center gap-4">
+                                 <Activity className="w-8 h-8 text-primary drop-shadow-[0_0_10px_rgba(44,252,125,0.5)]" />
+                                 <h4 className="text-xl font-black uppercase tracking-widest text-white">FOTOS Y CALIFICACIONES</h4>
+                              </div>
+                              <p className="text-sm font-bold text-zinc-400 uppercase tracking-widest pl-12">Destaca tus instalaciones. El boca a boca en forma de estrellitas y reseñas de jugadores reales.</p>
+                           </motion.div>
+                           <motion.div 
+                              initial={{ opacity: 0, x: -20 }}
+                              whileInView={{ opacity: 1, x: 0 }}
+                              transition={{ delay: 0.4, duration: 0.5 }}
+                              className="space-y-3 pt-6 border-t border-white/10 hover:-translate-y-1 transition-transform"
+                           >
+                              <div className="flex items-center gap-4">
+                                 <MapPin className="w-8 h-8 text-primary drop-shadow-[0_0_10px_rgba(44,252,125,0.5)]" />
+                                 <h4 className="text-xl font-black uppercase tracking-widest text-white">AMENIDADES Y UBICACIÓN</h4>
+                              </div>
+                              <p className="text-sm font-bold text-zinc-400 uppercase tracking-widest pl-12">Desde duchas, bar para el 3er tiempo, parking exclusivo... muestra por qué deben alquilarte.</p>
+                           </motion.div>
+                        </div>
+                     </motion.div>
+
+                     <motion.div 
+                        initial={{ opacity: 0, scale: 0.8, rotateY: 25 }}
+                        whileInView={{ opacity: 1, scale: 1, rotateY: 0 }}
+                        viewport={{ once: true }}
+                        transition={{ duration: 1.5, type: "spring", stiffness: 40 }}
+                        className="flex-1 w-full flex justify-center order-1 lg:order-2 perspective-[2000px] relative"
+                     >
+                        <div className="absolute inset-0 bg-primary/30 blur-[150px] rounded-full scale-110 -z-10 animate-pulse" />
+                        
+                        <div className="w-full max-w-sm rounded-[3rem] bg-[#0A0A0A] border-2 border-primary/40 shadow-[0_40px_80px_rgba(0,0,0,0.8),0_0_40px_rgba(44,252,125,0.2)] overflow-hidden transform-gpu z-10 animate-[float_6s_ease-in-out_infinite] hover:scale-105 hover:-rotate-y-12 transition-transform duration-700">
+                           {/* Cover photo */}
+                           <div className="h-48 bg-zinc-800 relative">
+                              <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1579952363873-27f3bade9f55?q=80&w=1000&auto=format&fit=crop')] bg-cover bg-center opacity-80" />
+                              <div className="absolute inset-0 bg-gradient-to-t from-[#0A0A0A] to-transparent" />
+                              <div className="absolute bottom-4 left-6 flex items-center gap-2">
+                                 <ShieldCheck className="w-5 h-5 text-primary drop-shadow-[0_0_5px_rgba(44,252,125,1)]" />
+                                 <span className="text-white font-black text-xs uppercase tracking-widest bg-black/60 px-2 py-1 rounded-md backdrop-blur-sm">Sede Verificada</span>
+                              </div>
+                           </div>
+                           
+                           {/* Info */}
+                           <div className="p-8 space-y-6 relative">
+                              <div className="absolute -top-12 right-6 w-20 h-20 rounded-2xl bg-black border-2 border-primary overflow-hidden shadow-[0_0_20px_rgba(44,252,125,0.4)] flex items-center justify-center p-2">
+                                 <img src="/logo_pelotify.png" className="w-full h-full object-contain" alt="Logo" />
+                              </div>
+
+                              <div>
+                                 <h3 className="text-3xl font-black italic font-kanit uppercase text-white tracking-tighter">Complejo La Gambeta</h3>
+                                 <div className="flex items-center gap-2 text-zinc-400 mt-2">
+                                    <MapPin className="w-4 h-4 text-primary" />
+                                    <span className="text-xs font-bold uppercase tracking-widest">Av. Siempre Viva 123</span>
+                                 </div>
+                              </div>
+
+                              <div className="flex gap-4 border-y border-white/10 py-5">
+                                 <div className="flex-1 text-center border-r border-white/10">
+                                    <p className="text-2xl font-black text-white">4.9</p>
+                                    <p className="text-[10px] uppercase tracking-widest font-bold text-zinc-500">Valoración</p>
+                                 </div>
+                                 <div className="flex-1 text-center border-r border-white/10">
+                                    <p className="text-2xl font-black text-white">+500</p>
+                                    <p className="text-[10px] uppercase tracking-widest font-bold text-zinc-500">Partidos</p>
+                                 </div>
+                                 <div className="flex-1 text-center">
+                                    <p className="text-2xl font-black text-white">6</p>
+                                    <p className="text-[10px] uppercase tracking-widest font-bold text-zinc-500">Canchas</p>
+                                 </div>
+                              </div>
+
+                              <div className="space-y-3">
+                                 <p className="text-[10px] uppercase tracking-widest font-black text-zinc-500">Servicios Destacados</p>
+                                 <div className="flex flex-wrap gap-2">
+                                    <span className="text-[10px] font-black uppercase tracking-widest text-primary bg-primary/10 px-3 py-1.5 rounded-lg border border-primary/20">⚽ Césped Sintético</span>
+                                    <span className="text-[10px] font-black uppercase tracking-widest text-white bg-white/5 px-3 py-1.5 rounded-lg border border-white/10">🚿 Vestuarios</span>
+                                    <span className="text-[10px] font-black uppercase tracking-widest text-white bg-white/5 px-3 py-1.5 rounded-lg border border-white/10">🍔 Bar</span>
+                                 </div>
+                              </div>
+
+                              <button className="w-full mt-4 py-4 rounded-xl bg-primary text-black font-black uppercase tracking-widest text-sm hover:scale-105 transition-transform shadow-[0_0_20px_rgba(44,252,125,0.4)] relative overflow-hidden group">
+                                 <div className="absolute inset-0 w-full h-full bg-white/20 -translate-x-full group-hover:translate-x-full transition-transform duration-500 skew-x-12" />
+                                 RESERVAR TURNO
+                              </button>
+                           </div>
+                        </div>
+                     </motion.div>
+                  </div>
+               </section>
                {/* 🔴 FINAL CTA BLOCK DUEÑO */}
                <section className="py-40 px-6 text-center border-b border-primary/20 relative bg-[#050505] overflow-hidden">
                   <div className="absolute top-0 right-0 w-[1000px] h-[1000px] bg-primary/5 blur-[200px] pointer-events-none" />
