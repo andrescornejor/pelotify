@@ -88,17 +88,17 @@ export function FifaCard({ player }: FifaCardProps) {
       <div
         className={cn(
           "w-full h-full rounded-[2.5rem] overflow-hidden relative transition-all duration-700",
-          isLight ? "border-zinc-200/80 shadow-2xl" : "border-primary/20 shadow-black/80"
+          isLight ? "border-zinc-200/80 shadow-2xl" : "border-[#2cfc7d]/30 shadow-2xl"
         )}
         style={{
           background: isLight 
             ? 'linear-gradient(145deg, #ffffff 0%, #f8fafc 50%, #f1f5f9 100%)'
-            : 'linear-gradient(165deg, #0a0a0f 0%, #050508 50%, #020205 100%)',
+            : 'linear-gradient(165deg, #111115 0%, #050505 50%, #000000 100%)',
           borderWidth: '2px',
           borderStyle: 'solid',
           boxShadow: isLight
             ? '0 30px 60px -12px rgba(0,0,0,0.12), inset 0 2px 0 rgba(255,255,255,1), 0 0 0 1px rgba(0,0,0,0.02)'
-            : '0 40px 80px rgba(0,0,0,0.8), 0 0 0 1px rgba(44,252,125,0.08), inset 0 1px 0 rgba(255,255,255,0.05)',
+            : '0 40px 80px rgba(0,0,0,0.9), 0 0 0 1px rgba(44,252,125,0.2), inset 0 1px 0 rgba(255,255,255,0.05)',
         }}
       >
         {/* Texture overlay */}
@@ -179,7 +179,7 @@ export function FifaCard({ player }: FifaCardProps) {
               style={{
                 backgroundImage: isLight
                   ? 'linear-gradient(180deg, #10b981 0%, #059669 100%)'
-                  : 'linear-gradient(180deg, #ffffff 0%, #c8d8d0 70%, #8ab0a0 100%)',
+                  : 'linear-gradient(180deg, #ffffff 0%, #2cfc7d 100%)',
                 backgroundClip: 'text',
                 WebkitBackgroundClip: 'text',
                 WebkitTextFillColor: 'transparent',
@@ -273,7 +273,7 @@ export function FifaCard({ player }: FifaCardProps) {
               crossOrigin="anonymous"
               className={cn(
                 'w-full h-full object-bottom transition-all duration-700',
-                player.image ? 'object-cover scale-100' : 'object-contain scale-90 translate-x-10',
+                player.image ? 'object-cover scale-100' : 'object-contain scale-110 translate-y-4',
                 isLight && !player.image && 'filter saturate-150 brightness-95'
               )}
               style={{
@@ -297,12 +297,12 @@ export function FifaCard({ player }: FifaCardProps) {
           <div
             className={cn(
                "mx-5 py-2 text-center transition-all duration-500",
-               isLight ? "bg-white/40 border-slate-200" : "bg-black/40 border-primary/30"
+               isLight ? "bg-white/40 border-slate-200" : "bg-[#2cfc7d]/10 border-[#2cfc7d]/30 shadow-[0_0_15px_rgba(44,252,125,0.1)]"
             )}
             style={{
               background: isLight 
                 ? 'linear-gradient(90deg, transparent, rgba(255,255,255,0.9), transparent)'
-                : 'linear-gradient(90deg, transparent, rgba(0,0,0,0.8), transparent)',
+                : 'linear-gradient(90deg, transparent, rgba(44,252,125,0.15), transparent)',
               borderTopWidth: '1px',
               borderBottomWidth: '1px',
               borderStyle: 'solid',
