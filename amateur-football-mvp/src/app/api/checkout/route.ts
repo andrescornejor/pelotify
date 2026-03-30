@@ -106,23 +106,33 @@ export async function POST(request: Request) {
     // Y también enviar creator_id para gestionar webhooks si es necesario
     const externalReference = `${matchId}:${userId}`;
 
+    // Aseguramos que la URL base tenga protocolo
+    let baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
+    if (baseUrl.includes('vercel.app') && !baseUrl.startsWith('http')) {
+      baseUrl = `https://${baseUrl}`;
+    }
+
     const preferenceBody: any = {
       items: [
         {
           id: matchId,
           title: title || `Reserva de lugar - Pelotify`,
-          unit_price: finalPricePerItem,
+          unit_price: Math.round(finalPricePerItem), // Aseguramos enteros
           quantity: Number(quantity),
           currency_id: 'ARS',
         },
       ],
       back_urls: {
-        success: `${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/match?id=${matchId}&payment=success`,
-        failure: `${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/match?id=${matchId}&payment=failure`,
-        pending: `${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/match?id=${matchId}&payment=pending`,
+        success: `${baseUrl}/match?id=${matchId}&payment=success`,
+        failure: `${baseUrl}/match?id=${matchId}&payment=failure`,
+        pending: `${baseUrl}/match?id=${matchId}&payment=pending`,
       },
       auto_return: 'approved',
-      notification_url: `${process.env.NEXT_PUBLIC_BASE_URL}/api/webhooks/mercadopago?creator_id=${businessOwnerId || match.creator_id}`,
+      binary_mode: true, // Evita pagos pendientes
+      // Simplificamos la URL de notificación para evitar errores de parseo
+      notification_url: baseUrl.startsWith('https') 
+        ? `${baseUrl}/api/webhooks/mercadopago?cid=${businessOwnerId || match.creator_id}`
+        : undefined, 
       external_reference: externalReference,
       metadata: {
         match_id: matchId,
@@ -130,17 +140,23 @@ export async function POST(request: Request) {
       }
     };
 
-    // Agregar la comisión (fee) si usamos MP Connect
+    // Agregar la comisión si usamos MP Connect
     if (marketplaceFee > 0) {
-      preferenceBody.marketplace_fee = marketplaceFee;
+      // Mercado Pago requiere que marketplace_fee sea un número limpio
+      preferenceBody.marketplace_fee = Math.round(marketplaceFee);
     }
 
+    console.log("Creando preferencia con cuerpo:", JSON.stringify(preferenceBody, null, 2));
+    
     const result = await preference.create({ body: preferenceBody });
 
     return NextResponse.json({ id: result.id, init_point: result.init_point });
   } catch (error: any) {
-    console.error('Mercado Pago Error:', error);
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    console.error('Mercado Pago Error Detail:', error.message, error.stack);
+    return NextResponse.json({ 
+      error: error.message,
+      detail: error.cause 
+    }, { status: 500 });
   }
 }
 
