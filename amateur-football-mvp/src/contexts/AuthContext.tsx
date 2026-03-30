@@ -173,7 +173,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     if (isLoading) return;
 
     const isAuthRoute =
-      pathname === '/login' || pathname === '/register' || pathname === '/update-password' || pathname === '/canchas/login' || pathname === '/canchas/register';
+      pathname === '/login' || pathname === '/register' || pathname === '/update-password' || pathname === '/canchas/login' || pathname === '/canchas/register' || pathname === '/email-confirmed';
     const isOnboardingRoute = pathname === '/onboarding';
     const isCanchasRoute = pathname?.startsWith('/canchas');
 
@@ -182,10 +182,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     } else if (!user && !isAuthRoute && isCanchasRoute && pathname !== '/canchas/login' && pathname !== '/canchas/register' && pathname !== '/canchas') {
       router.push('/canchas/login');
     } else if (user) {
+      if (pathname === '/email-confirmed') {
+        return; // Let user see the confirmation success screen before proceeding
+      }
+
       // Check if user has finished onboarding (we store this in user_metadata)
-      // Existing users without this flag will bypass if we assume they are already set
-      // but for this MVP demo we will enforce onboarding unless they have 'onboarded: true'
-      // or if they have a custom 'avatar_url' maybe? Let's just use the flag.
       const hasOnboarded = user.user_metadata?.onboarded === true;
       const isBusiness = user.is_business;
 
@@ -295,6 +296,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       email: data.email,
       password: data.password || '123456',
       options: {
+        emailRedirectTo: `${getURL()}/email-confirmed`,
         data: {
           name: data.name,
           age: data.age,
@@ -365,7 +367,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   const isAuthRoute =
-    pathname === '/login' || pathname === '/register' || pathname === '/update-password' || pathname === '/canchas/login' || pathname === '/canchas/register';
+    pathname === '/login' || pathname === '/register' || pathname === '/update-password' || pathname === '/canchas/login' || pathname === '/canchas/register' || pathname === '/email-confirmed';
   const isCanchasRoute = pathname?.startsWith('/canchas');
 
   // Verification and redirect logic for showing loader
