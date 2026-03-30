@@ -840,29 +840,24 @@ function QuickAction({ icon: Icon, label, onClick }: any) {
 ========================================= */
 function CalendarTab({ bookings, fields, selectedDate, setSelectedDate, onSlotClick, onBookingClick }: any) {
   const timeSlots = ["08:00", "09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00", "19:00", "20:00", "21:00", "22:00", "23:00"];
-  const displayFields = fields;
+  const [activeFieldId, setActiveFieldId] = useState<string>('all');
 
   const getDayName = (dateStr: string) => {
+    const days = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
+    const d = new Date(dateStr + 'T00:00:00');
+    return days[d.getDay()];
+  };
+
+  const getDayNameShort = (dateStr: string) => {
     const days = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'];
     const d = new Date(dateStr + 'T00:00:00');
     return days[d.getDay()];
   };
 
-  const getWeekDays = () => {
-    const days = [];
-    const today = new Date();
-    for (let i = -2; i < 5; i++) {
-      const d = new Date();
-      d.setDate(today.getDate() + i);
-      days.push(d.toISOString().split('T')[0]);
-    }
-    return days;
-  };
-
-  const handleDateChange = (daysToAdd: number) => {
-    const d = new Date();
-    d.setDate(d.getDate() + daysToAdd);
-    setSelectedDate(d.toISOString().split('T')[0]);
+  const getMonthName = (dateStr: string) => {
+    const months = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
+    const d = new Date(dateStr + 'T00:00:00');
+    return months[d.getMonth()];
   };
 
   const getTodayStr = () => new Date().toISOString().split('T')[0];
@@ -872,7 +867,48 @@ function CalendarTab({ bookings, fields, selectedDate, setSelectedDate, onSlotCl
     return d.toISOString().split('T')[0];
   };
 
-  if (displayFields.length === 0) {
+  const getWeekDays = () => {
+    const days = [];
+    const today = new Date();
+    for (let i = 0; i < 7; i++) {
+      const d = new Date();
+      d.setDate(today.getDate() + i);
+      days.push(d.toISOString().split('T')[0]);
+    }
+    return days;
+  };
+
+  // Day stats
+  const dayBookings = bookings.filter((b: any) => b.date === selectedDate && b.status !== 'cancelled');
+  const dayIncome = dayBookings.reduce((acc: number, curr: any) => acc + (curr.total_price || 0), 0);
+  const dayPending = dayBookings.filter((b: any) => b.status === 'pending').length;
+  const dayPaid = dayBookings.filter((b: any) => b.status === 'full_paid').length;
+  const totalSlots = timeSlots.length * fields.length;
+  const occupancy = totalSlots > 0 ? Math.round((dayBookings.length / totalSlots) * 100) : 0;
+
+  const isToday = selectedDate === getTodayStr();
+  const isTomorrow = selectedDate === getTomorrowStr();
+
+  // Filtered fields
+  const displayFields = activeFieldId === 'all' ? fields : fields.filter((f: any) => f.id === activeFieldId);
+
+  const formatMoney = (amount: number) => {
+    return new Intl.NumberFormat('es-AR', { style: 'currency', currency: 'ARS', maximumFractionDigits: 0 }).format(amount);
+  };
+
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case 'pending': return { bg: 'bg-danger/8', border: 'border-danger/30', text: 'text-danger', dot: 'bg-danger', label: 'Impago' };
+      case 'partial_paid': return { bg: 'bg-accent/8', border: 'border-accent/30', text: 'text-accent', dot: 'bg-accent', label: 'Señado' };
+      case 'full_paid': return { bg: 'bg-primary/8', border: 'border-primary/30', text: 'text-primary', dot: 'bg-primary', label: 'Pagado' };
+      default: return { bg: 'bg-foreground/5', border: 'border-white/10', text: 'text-muted-foreground', dot: 'bg-muted-foreground', label: status };
+    }
+  };
+
+  // Current hour for "now" indicator
+  const currentHour = new Date().getHours();
+
+  if (fields.length === 0) {
     return (
       <div className="space-y-6">
         <div>
@@ -889,101 +925,294 @@ function CalendarTab({ bookings, fields, selectedDate, setSelectedDate, onSlotCl
   }
 
   return (
-    <div className="space-y-8 animate-reveal-up">
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6">
-        <div className="space-y-1">
-          <h2 className="text-3xl font-black font-kanit italic uppercase tracking-tighter text-foreground">
-            Gestión <span className="text-primary">Turnos</span>
-          </h2>
-          <p className="text-[10px] font-black uppercase tracking-[0.4em] text-muted-foreground">Calendario de Ocupación</p>
+    <div className="space-y-6 animate-reveal-up">
+      {/* ── HEADER ── */}
+      <div className="flex flex-col gap-1">
+        <h2 className="text-3xl font-black font-kanit italic uppercase tracking-tighter text-foreground">
+          Gestión <span className="text-primary">Turnos</span>
+        </h2>
+        <p className="text-[10px] font-black uppercase tracking-[0.4em] text-muted-foreground">Agenda de Ocupación</p>
+      </div>
+
+      {/* ── DATE NAVIGATION ── */}
+      <div className="space-y-4">
+        {/* Quick buttons + selected date */}
+        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => setSelectedDate(getTodayStr())}
+              className={`px-5 py-2.5 rounded-xl text-[11px] font-black uppercase tracking-widest transition-all press-effect ${
+                isToday
+                  ? 'bg-primary text-black shadow-lg shadow-primary/20'
+                  : 'bg-surface-elevated border border-white/5 text-muted-foreground hover:text-foreground hover:border-primary/30'
+              }`}
+            >
+              Hoy
+            </button>
+            <button
+              onClick={() => setSelectedDate(getTomorrowStr())}
+              className={`px-5 py-2.5 rounded-xl text-[11px] font-black uppercase tracking-widest transition-all press-effect ${
+                isTomorrow
+                  ? 'bg-primary text-black shadow-lg shadow-primary/20'
+                  : 'bg-surface-elevated border border-white/5 text-muted-foreground hover:text-foreground hover:border-primary/30'
+              }`}
+            >
+              Mañana
+            </button>
+          </div>
+
+          {/* Selected day label */}
+          <div className="flex items-center gap-3 flex-1">
+            <div className="flex items-center gap-2">
+              <CalendarDays className="w-4 h-4 text-primary" />
+              <span className="text-sm font-black uppercase tracking-tight text-foreground">
+                {getDayName(selectedDate)} {selectedDate.split('-')[2]} de {getMonthName(selectedDate)}
+              </span>
+            </div>
+          </div>
+
+          {/* Hidden date input */}
+          <div className="relative">
+            <input
+              type="date"
+              value={selectedDate}
+              onChange={(e) => setSelectedDate(e.target.value)}
+              className="absolute inset-0 opacity-0 cursor-pointer w-full h-full z-20"
+            />
+            <div className="px-4 py-2.5 rounded-xl bg-surface-elevated border border-white/5 text-[11px] font-black uppercase tracking-widest text-muted-foreground hover:border-primary/30 transition-all flex items-center gap-2 cursor-pointer">
+              <CalendarDays className="w-4 h-4" />
+              Elegir Fecha
+            </div>
+          </div>
         </div>
-        <div className="flex items-center gap-4 bg-surface-elevated p-2 rounded-[2rem] border border-white/5 shadow-inner">
-           {getWeekDays().map(date => {
-             const isSelected = selectedDate === date;
-             const isToday = date === getTodayStr();
-             return (
-               <button 
-                 key={date}
-                 onClick={() => setSelectedDate(date)} 
-                 className={`relative h-14 w-14 sm:h-16 sm:w-16 rounded-2xl transition-all flex flex-col items-center justify-center gap-0.5 ${
-                   isSelected 
-                    ? 'bg-primary text-black font-black shadow-lg shadow-primary/20 scale-110 z-10' 
-                    : 'text-muted-foreground hover:text-foreground hover:bg-surface-bright'
-                 }`}
-               >
-                 <span className={`text-[8px] font-black uppercase tracking-widest ${isSelected ? 'text-black/60' : 'opacity-70'}`}>{getDayName(date)}</span>
-                 <span className="text-lg font-black font-kanit italic leading-none">{date.split('-')[2]}</span>
-                 {isToday && !isSelected && <div className="absolute top-2 right-2 w-1.5 h-1.5 rounded-full bg-primary animate-pulse shadow-[0_0_8px_rgba(44,252,125,0.8)]"></div>}
-               </button>
-             );
-           })}
-           <div className="h-10 w-px bg-white/5 mx-2 hidden sm:block"></div>
-           <div className="relative h-14 w-14 flex items-center justify-center rounded-2xl bg-surface-bright/50 border border-white/5">
-               <input 
-                 type="date" 
-                 value={selectedDate} 
-                 onChange={(e) => setSelectedDate(e.target.value)} 
-                 className="absolute inset-0 opacity-0 cursor-pointer w-full h-full z-20" 
-               />
-               <CalendarDays className="w-5 h-5 text-muted-foreground group-hover:text-primary transition-colors"/>
-           </div>
+
+        {/* Day chips scroll */}
+        <div className="flex gap-2 overflow-x-auto no-scrollbar pb-1">
+          {getWeekDays().map(date => {
+            const isSelected = selectedDate === date;
+            const hasBookings = bookings.some((b: any) => b.date === date);
+            return (
+              <button
+                key={date}
+                onClick={() => setSelectedDate(date)}
+                className={`shrink-0 flex flex-col items-center gap-0.5 px-4 py-3 rounded-2xl transition-all press-effect ${
+                  isSelected
+                    ? 'bg-primary text-black shadow-lg shadow-primary/20 scale-105'
+                    : 'bg-surface-elevated border border-white/5 text-muted-foreground hover:text-foreground hover:border-primary/20'
+                }`}
+              >
+                <span className={`text-[9px] font-black uppercase tracking-widest ${isSelected ? 'text-black/60' : ''}`}>
+                  {getDayNameShort(date)}
+                </span>
+                <span className="text-lg font-black font-kanit italic leading-none">{date.split('-')[2]}</span>
+                {hasBookings && !isSelected && (
+                  <div className="w-1.5 h-1.5 rounded-full bg-primary/60 mt-0.5"></div>
+                )}
+              </button>
+            );
+          })}
         </div>
       </div>
 
-      <div className="glass-premium rounded-[3rem] border-white/5 overflow-hidden shadow-2xl">
-        <div className="overflow-x-auto no-scrollbar">
-          <div className="min-w-[800px]">
-            {/* Grid Header */}
-            <div className="grid border-b border-white/5 bg-foreground/[0.02]" style={{ gridTemplateColumns: `100px repeat(${Math.max(displayFields.length, 1)}, 1fr)` }}>
-              <div className="p-6 text-center text-[10px] font-black uppercase tracking-[0.3em] text-muted-foreground italic">Reloj</div>
-              {displayFields.map((f: any) => (
-                <div key={f.id} className="p-6 text-center font-black text-xs uppercase tracking-widest border-l border-white/5 italic text-foreground/80">{f.name}</div>
-              ))}
-            </div>
-            
-            {/* Grid Body */}
-            <div className="divide-y divide-white/5">
-              {timeSlots.map(time => (
-                <div key={time} className="grid hover:bg-primary/[0.02] transition-colors group/row" style={{ gridTemplateColumns: `100px repeat(${Math.max(displayFields.length, 1)}, 1fr)` }}>
-                  <div className="p-6 text-center text-lg font-black font-kanit italic text-muted-foreground/40 group-hover/row:text-primary transition-colors flex items-center justify-center">
-                    {time}
-                  </div>
-                  
-                  {displayFields.map((f: any) => {
-                    const booking = bookings.find((b: any) => 
-                      b.field_id === f.id && 
-                      b.date === selectedDate && 
-                      b.start_time.startsWith(time)
-                    );
+      {/* ── DAY SUMMARY ── */}
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+        <div className="glass-card p-4 flex items-center gap-3">
+          <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center border border-primary/20">
+            <CalendarDays className="w-5 h-5 text-primary" />
+          </div>
+          <div>
+            <p className="text-[9px] font-black uppercase tracking-widest text-muted-foreground">Turnos</p>
+            <p className="text-xl font-black font-kanit italic leading-none text-foreground">{dayBookings.length}</p>
+          </div>
+        </div>
+        <div className="glass-card p-4 flex items-center gap-3">
+          <div className="w-10 h-10 rounded-xl bg-accent/10 flex items-center justify-center border border-accent/20">
+            <DollarSign className="w-5 h-5 text-accent" />
+          </div>
+          <div>
+            <p className="text-[9px] font-black uppercase tracking-widest text-muted-foreground">Ingresos</p>
+            <p className="text-xl font-black font-kanit italic leading-none text-foreground">{formatMoney(dayIncome)}</p>
+          </div>
+        </div>
+        <div className="glass-card p-4 flex items-center gap-3">
+          <div className="w-10 h-10 rounded-xl bg-danger/10 flex items-center justify-center border border-danger/20">
+            <Clock className="w-5 h-5 text-danger" />
+          </div>
+          <div>
+            <p className="text-[9px] font-black uppercase tracking-widest text-muted-foreground">Impagos</p>
+            <p className="text-xl font-black font-kanit italic leading-none text-foreground">{dayPending}</p>
+          </div>
+        </div>
+        <div className="glass-card p-4 flex items-center gap-3">
+          <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center border border-primary/20">
+            <TrendingUp className="w-5 h-5 text-primary" />
+          </div>
+          <div>
+            <p className="text-[9px] font-black uppercase tracking-widest text-muted-foreground">Ocupación</p>
+            <p className="text-xl font-black font-kanit italic leading-none text-foreground">{occupancy}%</p>
+          </div>
+        </div>
+      </div>
 
-                    return (
-                      <div key={f.id} className="p-3 border-l border-white/5 relative min-h-[100px]">
-                        {booking ? (
-                          <div onClick={() => onBookingClick(booking)} className={`cursor-pointer h-full w-full rounded-2xl p-4 text-[10px] flex flex-col justify-center border-l-4 transition-all hover:scale-[1.02] hover:shadow-xl ${
-                            booking.status === 'pending' ? 'bg-danger/5 border-l-danger text-danger border-white/5' :
-                            booking.status === 'partial_paid' ? 'bg-accent/5 border-l-accent text-accent border-white/5 shadow-accent/5' :
-                            'bg-primary/5 border-l-primary text-primary border-white/5 shadow-primary/5'
-                          }`}>
-                            <div className="flex items-center justify-between mb-1">
-                               <span className="font-black uppercase tracking-widest">{booking.status === 'pending' ? 'Impago' : booking.status === 'partial_paid' ? 'Señado' : 'Pagado'}</span>
-                               {booking.match_id && <Zap className="w-3 h-3 text-primary animate-pulse" />}
+      {/* ── FIELD FILTER ── */}
+      <div className="flex gap-2 overflow-x-auto no-scrollbar">
+        <button
+          onClick={() => setActiveFieldId('all')}
+          className={`shrink-0 px-5 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all press-effect ${
+            activeFieldId === 'all'
+              ? 'bg-primary text-black shadow-lg shadow-primary/20'
+              : 'bg-surface-elevated border border-white/5 text-muted-foreground hover:text-foreground hover:border-primary/20'
+          }`}
+        >
+          <Layers className="w-3.5 h-3.5 inline-block mr-1.5 -mt-0.5" />
+          Todas
+        </button>
+        {fields.map((f: any) => (
+          <button
+            key={f.id}
+            onClick={() => setActiveFieldId(f.id)}
+            className={`shrink-0 px-5 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all press-effect ${
+              activeFieldId === f.id
+                ? 'bg-primary text-black shadow-lg shadow-primary/20'
+                : 'bg-surface-elevated border border-white/5 text-muted-foreground hover:text-foreground hover:border-primary/20'
+            }`}
+          >
+            {f.name}
+            <span className="ml-1.5 opacity-60">{f.type}</span>
+          </button>
+        ))}
+      </div>
+
+      {/* ── STATUS LEGEND ── */}
+      <div className="flex items-center gap-5 px-2">
+        <div className="flex items-center gap-1.5">
+          <div className="w-2.5 h-2.5 rounded-full bg-primary shadow-[0_0_6px_rgba(44,252,125,0.5)]"></div>
+          <span className="text-[9px] font-bold uppercase tracking-widest text-muted-foreground">Pagado</span>
+        </div>
+        <div className="flex items-center gap-1.5">
+          <div className="w-2.5 h-2.5 rounded-full bg-accent shadow-[0_0_6px_rgba(245,158,11,0.5)]"></div>
+          <span className="text-[9px] font-bold uppercase tracking-widest text-muted-foreground">Señado</span>
+        </div>
+        <div className="flex items-center gap-1.5">
+          <div className="w-2.5 h-2.5 rounded-full bg-danger shadow-[0_0_6px_rgba(244,63,94,0.5)]"></div>
+          <span className="text-[9px] font-bold uppercase tracking-widest text-muted-foreground">Impago</span>
+        </div>
+        <div className="flex items-center gap-1.5">
+          <div className="w-2.5 h-2.5 rounded-full bg-foreground/10 border border-white/20"></div>
+          <span className="text-[9px] font-bold uppercase tracking-widest text-muted-foreground">Libre</span>
+        </div>
+      </div>
+
+      {/* ── TIMELINE GRID ── */}
+      <div className="glass-premium rounded-[2rem] border-white/5 overflow-hidden shadow-xl">
+        <div className="divide-y divide-white/[0.04]">
+          {timeSlots.map(time => {
+            const hour = parseInt(time.split(':')[0]);
+            const isCurrentHour = isToday && hour === currentHour;
+            const isPastHour = isToday && hour < currentHour;
+
+            // Find bookings for this time across displayed fields
+            const slotBookings = displayFields.map((f: any) => {
+              const booking = bookings.find((b: any) =>
+                b.field_id === f.id &&
+                b.date === selectedDate &&
+                b.start_time.startsWith(time)
+              );
+              return { field: f, booking };
+            });
+
+            const hasAnyBooking = slotBookings.some((s: any) => s.booking);
+
+            return (
+              <div
+                key={time}
+                className={`flex gap-0 transition-colors relative ${
+                  isPastHour ? 'opacity-40' : ''
+                } ${isCurrentHour ? 'bg-primary/[0.03]' : 'hover:bg-foreground/[0.01]'}`}
+              >
+                {/* Now indicator */}
+                {isCurrentHour && (
+                  <div className="absolute left-0 top-0 bottom-0 w-1 bg-primary shadow-[0_0_10px_rgba(44,252,125,0.6)]"></div>
+                )}
+
+                {/* Time label */}
+                <div className={`w-20 sm:w-24 shrink-0 p-4 flex flex-col items-center justify-center border-r border-white/[0.04] ${
+                  isCurrentHour ? 'text-primary' : 'text-muted-foreground/50'
+                }`}>
+                  <span className={`text-lg font-black font-kanit italic leading-none ${isCurrentHour ? 'text-primary' : ''}`}>
+                    {time}
+                  </span>
+                  {isCurrentHour && (
+                    <span className="text-[7px] font-black uppercase tracking-widest text-primary mt-1 flex items-center gap-1">
+                      <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse"></span>
+                      Ahora
+                    </span>
+                  )}
+                </div>
+
+                {/* Slots */}
+                <div className={`flex-1 p-2 sm:p-3 ${displayFields.length > 1 ? 'grid gap-2 sm:gap-3' : ''}`}
+                     style={displayFields.length > 1 ? { gridTemplateColumns: `repeat(${displayFields.length}, 1fr)` } : {}}>
+                  {slotBookings.map(({ field, booking }: any) => {
+                    if (booking) {
+                      const status = getStatusColor(booking.status);
+                      return (
+                        <button
+                          key={field.id}
+                          onClick={() => onBookingClick(booking)}
+                          className={`w-full rounded-xl sm:rounded-2xl p-3 sm:p-4 ${status.bg} border ${status.border} transition-all hover:scale-[1.01] hover:shadow-lg press-effect text-left relative overflow-hidden group`}
+                        >
+                          {/* Field label when "all" is active */}
+                          {activeFieldId === 'all' && displayFields.length > 1 && (
+                            <div className="absolute top-2 right-2 sm:top-3 sm:right-3">
+                              <span className="text-[7px] sm:text-[8px] font-black uppercase tracking-widest px-1.5 py-0.5 rounded-md bg-foreground/5 text-muted-foreground">
+                                {field.name}
+                              </span>
                             </div>
-                            <span className="font-black uppercase tracking-tighter text-sm text-foreground truncate">{booking.title || 'Reserva Directa'}</span>
-                            <span className="text-[9px] font-bold text-muted-foreground mt-1">${new Intl.NumberFormat('es-AR').format(booking.total_price)}</span>
+                          )}
+                          <div className="flex items-center gap-2 mb-1">
+                            <div className={`w-2 h-2 rounded-full ${status.dot} shrink-0`}></div>
+                            <span className={`text-[9px] sm:text-[10px] font-black uppercase tracking-widest ${status.text}`}>
+                              {status.label}
+                            </span>
+                            {booking.match_id && <Zap className="w-3 h-3 text-primary" />}
                           </div>
-                        ) : (
-                          <button onClick={() => onSlotClick(time, f.id)} className="h-full w-full rounded-2xl border-2 border-dashed border-white/5 hover:border-primary/30 hover:bg-primary/5 text-muted-foreground hover:text-primary flex items-center justify-center gap-2 transition-all opacity-0 hover:opacity-100 group/btn">
-                            <Plus className="w-4 h-4 group-hover:rotate-90 transition-transform" />
-                            <span className="text-[10px] font-black uppercase tracking-widest">Crear Turno</span>
-                          </button>
-                        )}
-                      </div>
-                    );
+                          <p className="font-black uppercase tracking-tight text-sm text-foreground truncate pr-12 sm:pr-16">
+                            {booking.title || 'Reserva Directa'}
+                          </p>
+                          <p className="text-[9px] sm:text-[10px] font-bold text-muted-foreground mt-0.5">
+                            {formatMoney(booking.total_price)}
+                          </p>
+                        </button>
+                      );
+                    } else {
+                      return (
+                        <button
+                          key={field.id}
+                          onClick={() => onSlotClick(time, field.id)}
+                          className="w-full rounded-xl sm:rounded-2xl p-3 sm:p-4 border border-dashed border-white/[0.06] hover:border-primary/30 hover:bg-primary/[0.04] transition-all press-effect group flex items-center gap-3"
+                        >
+                          <div className="w-8 h-8 rounded-xl bg-foreground/[0.03] group-hover:bg-primary/10 flex items-center justify-center transition-colors border border-white/5 group-hover:border-primary/20">
+                            <Plus className="w-4 h-4 text-muted-foreground/30 group-hover:text-primary transition-colors" />
+                          </div>
+                          <div className="text-left">
+                            {activeFieldId === 'all' && displayFields.length > 1 && (
+                              <p className="text-[8px] font-black uppercase tracking-widest text-muted-foreground/40 group-hover:text-primary/60 transition-colors">
+                                {field.name}
+                              </p>
+                            )}
+                            <p className="text-[10px] font-bold text-muted-foreground/30 group-hover:text-primary/70 transition-colors uppercase tracking-widest">
+                              Disponible
+                            </p>
+                          </div>
+                        </button>
+                      );
+                    }
                   })}
                 </div>
-              ))}
-            </div>
-          </div>
+              </div>
+            );
+          })}
         </div>
       </div>
     </div>
