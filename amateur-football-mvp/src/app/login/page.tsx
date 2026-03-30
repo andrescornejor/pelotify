@@ -56,75 +56,72 @@ export default function LoginPage() {
   return (
     <div className="flex min-h-[100dvh] bg-background selection:bg-primary selection:text-background overflow-hidden relative">
       {/* ── LEFT PANEL: AUTH FORM ── */}
-      <div className="flex-1 flex flex-col items-center justify-center p-6 lg:p-12 relative z-10 transition-all duration-1000">
+      <div className="flex-1 flex flex-col items-center justify-center p-4 lg:p-8 relative z-10 overflow-hidden">
         <motion.div
-          initial={{ opacity: 0, x: -20 }}
-          animate={{ opacity: 1, x: 0 }}
-          className="w-full max-w-[420px]"
+           initial={{ opacity: 0, x: -20 }}
+           animate={{ opacity: 1, x: 0 }}
+           className="w-full max-w-[380px] flex flex-col justify-center h-full"
         >
-          {/* Header (Simplified for split screen) */}
-          <div className="flex flex-col items-center lg:items-start gap-4 mb-10">
-             <Link href="/" className="w-20 h-20 mb-2 block lg:hidden">
+          {/* Header */}
+          <div className="flex flex-col items-center lg:items-start gap-2 mb-6">
+             <Link href="/" className="w-16 h-16 mb-2 block lg:hidden">
                <img src="/logo_pelotify.png" alt="Logo" className="w-full h-full object-contain" />
              </Link>
-             <h1 className="text-4xl lg:text-7xl font-black italic text-foreground tracking-tighter uppercase leading-[0.8] text-center lg:text-left font-kanit">
+             <h1 className="text-3xl lg:text-5xl font-black italic text-foreground tracking-tighter uppercase leading-[0.85] text-center lg:text-left font-kanit">
                Entrar a la <br /> <span className="text-primary">Cancha</span>
              </h1>
-             <p className="text-[10px] font-black text-foreground/40 uppercase tracking-[0.4em] italic lg:ml-1 text-center lg:text-left w-full">
+             <p className="text-[9px] font-black text-foreground/40 uppercase tracking-[0.3em] italic lg:ml-1 text-center lg:text-left w-full">
                Tu ficha personal de jugador
              </p>
           </div>
 
-          <div className="flex flex-col gap-8">
+          <div className="flex flex-col gap-6">
             {/* Social Login */}
             <button
-              onClick={handleGoogleLogin}
-              disabled={isGoogleLoading}
-              className="w-full h-16 bg-white text-zinc-950 font-black text-[12px] uppercase tracking-[0.2em] rounded-2xl flex items-center justify-center gap-4 hover:bg-zinc-100 transition-all active:scale-95 disabled:opacity-50 shadow-xl shadow-white/5 group/google"
+               onClick={handleGoogleLogin}
+               disabled={isGoogleLoading}
+               className="w-full h-14 bg-white text-zinc-950 font-black text-[11px] uppercase tracking-[0.15em] rounded-2xl flex items-center justify-center gap-4 hover:bg-zinc-100 transition-all active:scale-95 disabled:opacity-50 shadow-xl shadow-white/5 group/google"
             >
-              <img
-                src="https://www.google.com/favicon.ico"
-                className="w-5 h-5 group-hover/google:scale-110 transition-transform"
-                alt="Google"
-              />
-              {isGoogleLoading ? 'Conectando...' : 'Entrar con Google'}
+               <img
+                 src="https://www.google.com/favicon.ico"
+                 className="w-4 h-4 group-hover/google:scale-110 transition-transform"
+                 alt="Google"
+               />
+               {isGoogleLoading ? 'Conectando...' : 'Google'}
             </button>
 
             <div className="flex items-center gap-4 px-4 font-kanit">
-              <div className="h-px flex-1 bg-white/10" />
-              <span className="text-[10px] font-black text-white/20 uppercase tracking-[0.5em]">O</span>
-              <div className="h-px flex-1 bg-white/10" />
+               <div className="h-px flex-1 bg-white/10" />
+               <span className="text-[9px] font-black text-white/20 uppercase tracking-[0.4em]">O</span>
+               <div className="h-px flex-1 bg-white/10" />
             </div>
 
             {/* Traditional Form */}
-            <form onSubmit={handleLogin} className="flex flex-col gap-5">
-              <div className="space-y-2">
-                <div className="relative group/input">
+            <form onSubmit={handleLogin} className="flex flex-col gap-4">
+               <div className="relative group/input">
                   <div className="absolute inset-y-0 left-5 flex items-center pointer-events-none">
-                    <Mail className="w-5 h-5 text-foreground/20 group-focus-within/input:text-primary transition-colors" />
+                    <Mail className="w-4 h-4 text-foreground/20 group-focus-within/input:text-primary transition-colors" />
                   </div>
                   <input
                     type="email"
                     placeholder="jugador@ejemplo.com"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="w-full h-16 pl-14 pr-6 rounded-2xl bg-white/[0.02] border border-white/5 focus:bg-white/[0.04] focus:border-primary/50 outline-none transition-all text-sm font-bold text-foreground placeholder:text-zinc-700"
+                    className="w-full h-14 pl-12 pr-6 rounded-2xl bg-white/[0.02] border border-white/5 focus:bg-white/[0.04] focus:border-primary/50 outline-none transition-all text-sm font-bold text-foreground placeholder:text-zinc-700"
                     required
                   />
-                </div>
-              </div>
+               </div>
 
-              <div className="space-y-2">
-                <div className="relative group/input">
+               <div className="relative group/input">
                   <div className="absolute inset-y-0 left-5 flex items-center pointer-events-none">
-                    <Lock className="w-5 h-5 text-foreground/20 group-focus-within/input:text-primary transition-colors" />
+                    <Lock className="w-4 h-4 text-foreground/20 group-focus-within/input:text-primary transition-colors" />
                   </div>
                   <input
                     type="password"
                     placeholder="••••••••"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    className="w-full h-16 pl-14 pr-6 rounded-2xl bg-white/[0.02] border border-white/5 focus:bg-white/[0.04] focus:border-primary/50 outline-none transition-all text-sm font-bold text-foreground placeholder:text-zinc-700"
+                    className="w-full h-14 pl-12 pr-6 rounded-2xl bg-white/[0.02] border border-white/5 focus:bg-white/[0.04] focus:border-primary/50 outline-none transition-all text-sm font-bold text-foreground placeholder:text-zinc-700"
                     required
                   />
                   <button
@@ -134,35 +131,34 @@ export default function LoginPage() {
                   >
                     ¿Olvido?
                   </button>
-                </div>
-              </div>
+               </div>
 
-              <button
-                type="submit"
-                disabled={isLoading}
-                className="w-full h-16 bg-primary text-zinc-950 font-black text-[12px] uppercase tracking-[0.3em] rounded-2xl flex items-center justify-center gap-3 hover:bg-white hover:scale-[1.02] transition-all active:scale-95 disabled:opacity-70 shadow-2xl shadow-primary/20 group/btn relative overflow-hidden mt-4"
-              >
-                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover/btn:translate-x-full transition-transform duration-1000" />
-                {isLoading ? 'CALENTANDO...' : 'PISAR EL CÉSPED'}
-              </button>
+               <button
+                 type="submit"
+                 disabled={isLoading}
+                 className="w-full h-14 bg-primary text-zinc-950 font-black text-[11px] uppercase tracking-[0.2em] rounded-2xl flex items-center justify-center gap-3 hover:bg-white hover:scale-[1.02] transition-all active:scale-95 disabled:opacity-70 shadow-2xl shadow-primary/20 group/btn relative overflow-hidden mt-2"
+               >
+                 <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover/btn:translate-x-full transition-transform duration-1000" />
+                 {isLoading ? 'CALENTANDO...' : 'PISAR EL CÉSPED'}
+               </button>
             </form>
 
-            <div className="text-center mt-6 space-y-4">
-              <p className="text-[10px] font-black text-foreground/40 uppercase tracking-[0.2em]">
-                ¿No tenés equipo?{' '}
-                <Link href="/register" className="text-primary hover:text-white transition-colors underline decoration-primary/30 underline-offset-4">
-                  FICHATE ACÁ
-                </Link>
-              </p>
-              
-              <div className="pt-4 border-t border-white/5 opacity-30 hover:opacity-100 transition-opacity">
-                <p className="text-[9px] font-black text-foreground/30 uppercase tracking-[0.3em]">
-                  ¿Tenés un complejo?{' '}
-                  <Link href="/canchas" className="text-primary hover:text-white transition-colors underline decoration-primary/30 underline-offset-4">
-                    ADMINISTRÁ TU SEDE
-                  </Link>
-                </p>
-              </div>
+            <div className="text-center mt-4 space-y-4">
+               <p className="text-[10px] font-black text-foreground/40 uppercase tracking-[0.15em]">
+                 ¿No tenés equipo?{' '}
+                 <Link href="/register" className="text-primary hover:text-white transition-colors underline decoration-primary/30 underline-offset-4">
+                   FICHATE ACÁ
+                 </Link>
+               </p>
+               
+               <div className="pt-4 border-t border-white/5 opacity-30 hover:opacity-100 transition-opacity">
+                 <p className="text-[9px] font-black text-foreground/30 uppercase tracking-[0.2em]">
+                   ¿Tenés un complejo?{' '}
+                   <Link href="/canchas" className="text-primary hover:text-white transition-colors underline decoration-primary/30 underline-offset-4">
+                     ADMINISTRÁ TU SEDE
+                   </Link>
+                 </p>
+               </div>
             </div>
           </div>
         </motion.div>
