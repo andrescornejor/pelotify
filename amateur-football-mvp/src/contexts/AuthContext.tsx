@@ -177,9 +177,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const isOnboardingRoute = pathname === '/onboarding';
     const isCanchasRoute = pathname?.startsWith('/canchas');
 
-    if (!user && !isAuthRoute && !isCanchasRoute) {
+    if (!user && !isAuthRoute && !isCanchasRoute && pathname !== '/') {
       router.push('/login');
-    } else if (!user && !isAuthRoute && isCanchasRoute && pathname !== '/canchas/login' && pathname !== '/canchas/register') {
+    } else if (!user && !isAuthRoute && isCanchasRoute && pathname !== '/canchas/login' && pathname !== '/canchas/register' && pathname !== '/canchas') {
       router.push('/canchas/login');
     } else if (user) {
       // Check if user has finished onboarding (we store this in user_metadata)
@@ -336,7 +336,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const logout = async () => {
     await supabase.auth.signOut();
     setUser(null);
-    router.replace('/login');
+    router.replace('/');
   };
 
   const deleteAccount = async () => {
@@ -374,8 +374,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   // 3. Authenticated but trying to access auth route (redirecting to home)
   const showLoader =
     (isLoading && !isAuthRoute) ||
-    (!isLoading && !user && !isAuthRoute && !isCanchasRoute) ||
-    (!isLoading && !user && isCanchasRoute && pathname !== '/canchas/login' && pathname !== '/canchas/register') ||
+    (!isLoading && !user && !isAuthRoute && !isCanchasRoute && pathname !== '/') ||
+    (!isLoading && !user && isCanchasRoute && pathname !== '/canchas/login' && pathname !== '/canchas/register' && pathname !== '/canchas') ||
     (!isLoading && user && isAuthRoute);
 
   return (
