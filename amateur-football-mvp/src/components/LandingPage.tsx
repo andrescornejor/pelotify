@@ -69,22 +69,22 @@ export default function LandingPage() {
       <div className="min-h-screen bg-[#050505] text-white selection:bg-primary selection:text-black font-sans scroll-smooth overflow-x-hidden">
 
          {/* 🟢 TOP NAVIGATION */}
-         <nav className="fixed top-0 inset-x-0 h-28 z-[100] px-6 lg:px-12 flex items-center justify-between border-b border-primary/10 bg-[#050505]/80 backdrop-blur-3xl transition-all shadow-2xl">
+         <nav className="fixed top-0 inset-x-0 h-20 sm:h-28 z-[100] px-4 sm:px-6 lg:px-12 flex items-center justify-between border-b border-primary/10 bg-[#050505]/80 backdrop-blur-3xl transition-all shadow-2xl">
             <motion.div
                initial={{ opacity: 0, x: -20 }}
                animate={{ opacity: 1, x: 0 }}
                transition={{ duration: 0.8 }}
-               className="flex items-center gap-4 group cursor-pointer"
+               className="flex items-center gap-2 sm:gap-4 group cursor-pointer"
             >
-               <div className="w-16 h-16 sm:w-20 sm:h-20 flex items-center justify-center relative transition-transform duration-500 group-hover:scale-110 shrink-0">
+               <div className="w-12 h-12 sm:w-20 sm:h-20 flex items-center justify-center relative transition-transform duration-500 group-hover:scale-110 shrink-0">
                   <div className="absolute inset-0 bg-primary/15 blur-[20px] rounded-full opacity-40 shrink-0" />
                   <img src="/logo_pelotify.png" className="w-full h-full object-contain relative z-10 drop-shadow-[0_0_15px_rgba(44,252,125,0.2)] animate-float" alt="Pelotify" />
                </div>
                <div className="flex flex-col justify-center">
-                  <span className="text-3xl sm:text-4xl font-black italic uppercase tracking-tighter font-kanit leading-none drop-shadow-lg text-white">
+                  <span className="text-2xl sm:text-4xl font-black italic uppercase tracking-tighter font-kanit leading-none drop-shadow-lg text-white">
                      PELOTI<span className="text-primary drop-shadow-[0_0_15px_rgba(44,252,125,0.5)]">FY</span>
                   </span>
-                  <span className="text-[10px] sm:text-xs font-black uppercase tracking-widest text-primary text-center mt-1">
+                  <span className="text-[8px] sm:text-xs font-black uppercase tracking-widest text-primary text-center mt-1">
                      DOMINA EL POTRERO
                   </span>
                </div>
@@ -100,9 +100,9 @@ export default function LandingPage() {
                   <motion.button
                      whileHover={{ scale: 1.05 }}
                      whileTap={{ scale: 0.95 }}
-                     className="h-12 md:h-14 px-6 md:px-10 bg-white text-black font-black uppercase text-[10px] md:text-xs tracking-[0.2em] rounded-2xl hover:bg-primary hover:shadow-[0_0_30px_rgba(44,252,125,0.6)] transition-all duration-300 whitespace-nowrap"
+                     className="h-9 sm:h-12 md:h-14 px-4 sm:px-6 md:px-10 bg-white text-black font-black uppercase text-[10px] md:text-xs tracking-[0.05em] sm:tracking-[0.2em] rounded-xl sm:rounded-2xl hover:bg-primary hover:shadow-[0_0_30px_rgba(44,252,125,0.6)] transition-all duration-300 whitespace-nowrap"
                   >
-                     INICIAR SESIÓN
+                     INGRESAR
                   </motion.button>
                </Link>
             </motion.div>
@@ -119,7 +119,7 @@ export default function LandingPage() {
 
             {/* Massive back text watermark */}
             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full text-center pointer-events-none z-0 opacity-[0.03]">
-               <h1 className="text-[20rem] md:text-[35rem] font-black italic font-kanit uppercase leading-none whitespace-nowrap text-primary">
+               <h1 className="text-[8rem] sm:text-[20rem] md:text-[35rem] font-black italic font-kanit uppercase leading-none whitespace-nowrap text-primary">
                   FÚTBOL
                </h1>
             </div>
@@ -140,13 +140,13 @@ export default function LandingPage() {
                      className="relative group perspective-1000"
                   >
                      <div className="absolute -inset-10 bg-primary/30 blur-[60px] rounded-full group-hover:bg-primary/50 transition-all duration-700 animate-pulse" />
-                     <div className="w-48 h-48 md:w-56 md:h-56 relative rounded-[3rem] bg-gradient-to-br from-[#0A0A0A] to-black flex items-center justify-center border-2 border-primary/30 shadow-[0_40px_80px_rgba(0,0,0,0.8),inset_0_0_40px_rgba(44,252,125,0.2)] backdrop-blur-3xl group-hover:scale-110 group-hover:border-primary/60 transition-all duration-700 z-10 preserve-3d">
-                        <img src="/logo_pelotify.png" className="w-36 h-36 md:w-40 md:h-40 object-contain drop-shadow-[0_0_25px_rgba(44,252,125,1)] animate-float" alt="Pelotify Main Logo" />
+                     <div className="w-36 h-36 md:w-56 md:h-56 relative rounded-[3rem] bg-gradient-to-br from-[#0A0A0A] to-black flex items-center justify-center border-2 border-primary/30 shadow-[0_40px_80px_rgba(0,0,0,0.8),inset_0_0_40px_rgba(44,252,125,0.2)] backdrop-blur-3xl group-hover:scale-110 group-hover:border-primary/60 transition-all duration-700 z-10 preserve-3d">
+                        <img src="/logo_pelotify.png" className="w-24 h-24 md:w-40 md:h-40 object-contain drop-shadow-[0_0_25px_rgba(44,252,125,1)] animate-float" alt="Pelotify Main Logo" />
                      </div>
                   </motion.div>
 
                   <div className="space-y-4">
-                     <h1 className="text-7xl md:text-[10rem] lg:text-[11rem] font-black font-kanit italic uppercase tracking-tighter leading-[0.8] text-white drop-shadow-2xl">
+                     <h1 className="text-5xl sm:text-7xl md:text-[10rem] lg:text-[11rem] font-black font-kanit italic uppercase tracking-tighter leading-[0.8] text-white drop-shadow-2xl">
                         EL FÚTBOL ES <br />
                         <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-white drop-shadow-[0_0_30px_rgba(44,252,125,0.3)]">NUESTRO.</span>
                      </h1>
@@ -179,7 +179,7 @@ export default function LandingPage() {
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         transition={{ delay: 1, duration: 1 }}
-                        className="text-sm md:text-xl font-bold tracking-[0.25em] uppercase text-zinc-400 max-w-4xl mx-auto pt-8 border-t border-white/10 mt-6 leading-relaxed"
+                        className="text-sm md:text-xl font-bold tracking-widest md:tracking-[0.25em] uppercase text-zinc-400 max-w-4xl mx-auto pt-8 border-t border-white/10 mt-6 leading-relaxed"
                      >
                         Sube tu nivel. Crea tu carta, domina la ciudad, alquila predios sin fricciones. La plataforma definitiva.
                      </motion.p>
@@ -193,15 +193,15 @@ export default function LandingPage() {
                   transition={{ delay: 1.2, duration: 0.8 }}
                   className="flex flex-col sm:flex-row items-center justify-center pt-10"
                >
-                  <div className="flex bg-black border-2 border-white/10 p-2 rounded-full relative shadow-[0_40px_100px_rgba(0,0,0,1)]">
+                  <div className="flex flex-row items-stretch bg-black border-2 border-white/10 p-1.5 sm:p-2 rounded-3xl sm:rounded-full relative shadow-[0_40px_100px_rgba(0,0,0,1)] w-[95%] sm:w-auto max-w-sm sm:max-w-md mx-auto">
                      <motion.button
                         whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.95 }}
                         onClick={() => setViewMode('jugador')}
-                        className={`relative px-12 md:px-16 py-6 md:py-8 rounded-full font-black uppercase tracking-[0.25em] text-xs md:text-sm transition-all duration-500 z-10 ${viewMode === 'jugador' ? 'text-black' : 'text-zinc-500 hover:text-white'}`}
+                        className={`relative flex-1 sm:flex-none px-2 sm:px-12 md:px-16 py-4 sm:py-6 md:py-8 rounded-3xl sm:rounded-full font-black uppercase tracking-[0.05em] sm:tracking-[0.25em] text-[10px] sm:text-xs md:text-sm transition-all duration-500 z-10 flex items-center justify-center text-center leading-none ${viewMode === 'jugador' ? 'text-black' : 'text-zinc-500 hover:text-white'}`}
                      >
                         {viewMode === 'jugador' && (
-                           <motion.div layoutId="viewModeIndicator" className="absolute inset-0 bg-primary rounded-full shadow-[0_0_40px_rgba(44,252,125,0.6)] -z-10" transition={{ type: 'spring', stiffness: 50, damping: 10 }} />
+                           <motion.div layoutId="viewModeIndicator" className="absolute inset-0 bg-primary rounded-3xl sm:rounded-full shadow-[0_0_40px_rgba(44,252,125,0.6)] -z-10" transition={{ type: 'spring', stiffness: 50, damping: 10 }} />
                         )}
                         SOY JUGADOR
                      </motion.button>
@@ -209,10 +209,10 @@ export default function LandingPage() {
                         whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.95 }}
                         onClick={() => setViewMode('dueno')}
-                        className={`relative px-12 md:px-16 py-6 md:py-8 rounded-full font-black uppercase tracking-[0.25em] text-xs md:text-sm transition-all duration-500 z-10 flex items-center gap-3 ${viewMode === 'dueno' ? 'text-black' : 'text-zinc-500 hover:text-white'}`}
+                        className={`relative flex-1 sm:flex-none px-2 sm:px-12 md:px-16 py-4 sm:py-6 md:py-8 rounded-3xl sm:rounded-full font-black uppercase tracking-[0.05em] sm:tracking-[0.25em] text-[10px] sm:text-xs md:text-sm transition-all duration-500 z-10 flex items-center justify-center gap-1.5 sm:gap-3 text-center leading-none ${viewMode === 'dueno' ? 'text-black' : 'text-zinc-500 hover:text-white'}`}
                      >
                         {viewMode === 'dueno' && (
-                           <motion.div layoutId="viewModeIndicator" className="absolute inset-0 bg-primary rounded-full shadow-[0_0_40px_rgba(44,252,125,0.6)] -z-10" transition={{ type: 'spring', stiffness: 50, damping: 10 }} />
+                           <motion.div layoutId="viewModeIndicator" className="absolute inset-0 bg-primary rounded-3xl sm:rounded-full shadow-[0_0_40px_rgba(44,252,125,0.6)] -z-10" transition={{ type: 'spring', stiffness: 50, damping: 10 }} />
                         )}
                         SOY DUEÑO
                      </motion.button>
@@ -233,7 +233,7 @@ export default function LandingPage() {
                {viewMode === 'jugador' ? (
                   <>
                      {/* 🔵 SECCIÓN EXPLÍCATIVA PARA JUGADOR */}
-                     <section className="py-40 px-6 lg:px-12 bg-[#020202] border-t border-white/5 relative overflow-hidden">
+                     <section className="py-20 md:py-40 px-6 lg:px-12 bg-[#020202] border-t border-white/5 relative overflow-hidden">
                         <div className="absolute top-0 right-1/4 w-[600px] h-[600px] bg-primary/10 blur-[150px] pointer-events-none" />
                         <div className="absolute bottom-0 left-1/4 w-[800px] h-[800px] bg-primary/5 blur-[200px] pointer-events-none" />
 
@@ -245,7 +245,7 @@ export default function LandingPage() {
                               transition={{ duration: 0.8 }}
                               className="text-center mb-24 space-y-6"
                            >
-                              <h2 className="text-5xl md:text-7xl lg:text-8xl font-black uppercase font-kanit italic tracking-tighter text-white">
+                              <h2 className="text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-black uppercase font-kanit italic tracking-tighter text-white">
                                  EL ECOSISTEMA <span className="text-primary drop-shadow-[0_0_20px_rgba(44,252,125,0.3)]">PERFECTO.</span>
                               </h2>
                               <p className="text-base md:text-xl text-zinc-400 font-bold max-w-3xl mx-auto uppercase tracking-widest leading-relaxed">
@@ -283,9 +283,9 @@ export default function LandingPage() {
                      </section>
 
                      {/* 🔵 THE PLAYER IDENTITY (MARKETING FOCUSED ON FIFA CARD - FULL GREEN AESTHETIC) */}
-                     <section className="py-40 px-6 lg:px-12 bg-[#050505] relative border-y border-primary/20 overflow-hidden">
+                     <section className="py-20 md:py-40 px-6 lg:px-12 bg-[#050505] relative border-y border-primary/20 overflow-hidden">
                         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full text-center pointer-events-none z-0 opacity-[0.03]">
-                           <h1 className="text-[15rem] md:text-[25rem] font-black italic font-kanit uppercase leading-none whitespace-nowrap text-primary">
+                           <h1 className="text-[6rem] sm:text-[15rem] md:text-[25rem] font-black italic font-kanit uppercase leading-none whitespace-nowrap text-primary">
                               TU LEGADO
                            </h1>
                         </div>
@@ -293,7 +293,7 @@ export default function LandingPage() {
                         <div className="absolute top-0 right-0 w-[1000px] h-[1000px] bg-primary/15 blur-[180px] pointer-events-none z-0" />
                         <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-[0.05] pointer-events-none" />
 
-                        <div className="max-w-[1500px] mx-auto flex flex-col lg:flex-row items-center gap-20 lg:gap-32 relative z-10">
+                        <div className="max-w-[1500px] mx-auto flex flex-col lg:flex-row items-center gap-10 md:gap-20 lg:gap-16 md:gap-32 relative z-10">
 
                            <motion.div
                               initial={{ opacity: 0, x: -50 }}
@@ -307,7 +307,7 @@ export default function LandingPage() {
                                     <Award className="w-5 h-5 text-primary" />
                                     <span className="text-xs font-black uppercase tracking-[0.3em] text-primary">SISTEMA COMPETITIVO ELO</span>
                                  </div>
-                                 <h2 className="text-6xl md:text-8xl lg:text-[8rem] font-black font-kanit italic uppercase tracking-tighter leading-[0.85] text-white">
+                                 <h2 className="text-4xl sm:text-6xl md:text-8xl lg:text-[8rem] font-black font-kanit italic uppercase tracking-tighter leading-[0.85] text-white">
                                     TU IDENTIDAD <br />
                                     <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-white drop-shadow-[0_0_30px_rgba(44,252,125,0.4)]">EN LA CANCHA.</span>
                                  </h2>
@@ -362,7 +362,7 @@ export default function LandingPage() {
                      </section>
 
                      {/* 🔴 FINAL CTA BLOCK JUGADOR */}
-                     <section className="py-40 px-6 text-center border-b border-primary/20 relative bg-[#050505] overflow-hidden">
+                     <section className="py-20 md:py-40 px-6 text-center border-b border-primary/20 relative bg-[#050505] overflow-hidden">
                         <div className="absolute top-0 right-0 w-[1000px] h-[1000px] bg-primary/5 blur-[200px] pointer-events-none" />
                         <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[1200px] h-[600px] bg-primary/15 blur-[250px] pointer-events-none" />
 
@@ -373,7 +373,7 @@ export default function LandingPage() {
                            transition={{ duration: 1 }}
                            className="max-w-5xl mx-auto space-y-16 relative z-10"
                         >
-                           <h2 className="text-6xl md:text-8xl lg:text-[9rem] font-black font-kanit italic uppercase tracking-tighter leading-[0.85] drop-shadow-2xl text-white">
+                           <h2 className="text-5xl sm:text-6xl md:text-8xl lg:text-[9rem] font-black font-kanit italic uppercase tracking-tighter leading-[0.85] drop-shadow-2xl text-white">
                               ENTRA A <br />
                               <span className="text-primary drop-shadow-[0_0_30px_rgba(44,252,125,0.3)]">LA CANCHA.</span>
                            </h2>
@@ -386,7 +386,7 @@ export default function LandingPage() {
                                  <motion.button
                                     whileHover={{ scale: 1.05 }}
                                     whileTap={{ scale: 0.95 }}
-                                    className="px-16 h-24 bg-primary text-black font-black uppercase text-xl tracking-[0.3em] rounded-full hover:bg-white transition-all duration-500 flex items-center gap-6 relative z-10 shadow-[0_0_50px_rgba(44,252,125,0.6)]"
+                                    className="px-8 sm:px-16 h-16 sm:h-24 bg-primary text-black font-black uppercase text-[11px] sm:text-base lg:text-xl tracking-[0.3em] rounded-full hover:bg-white transition-all duration-500 flex items-center gap-6 relative z-10 shadow-[0_0_50px_rgba(44,252,125,0.6)]"
                                  >
                                     <span>VER MI CARTA</span>
                                     <CheckCircle2 className="w-8 h-8" />
@@ -399,9 +399,9 @@ export default function LandingPage() {
                ) : (
                   <>
                      {/* 🔴 MARKETING PARA DUEÑOS (SELLING TO VENUE OWNERS) - TITANIC SCALE */}
-                     <section className="py-40 px-6 lg:px-12 relative overflow-hidden bg-[#020202] border-y border-primary/10">
+                     <section className="py-20 md:py-40 px-6 lg:px-12 relative overflow-hidden bg-[#020202] border-y border-primary/10">
                         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full text-center pointer-events-none z-0 opacity-[0.02]">
-                           <h1 className="text-[12rem] md:text-[22rem] font-black italic font-kanit uppercase leading-none whitespace-nowrap text-white pr-10">
+                           <h1 className="text-[5rem] sm:text-[12rem] md:text-[22rem] font-black italic font-kanit uppercase leading-none whitespace-nowrap text-white pr-10">
                               CERO FRICCIÓN
                            </h1>
                         </div>
@@ -411,7 +411,7 @@ export default function LandingPage() {
                            <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-[0.08] pointer-events-none" />
                            <div className="absolute -left-40 -top-40 w-[1200px] h-[1200px] bg-primary/15 blur-[250px] rounded-full pointer-events-none transition-opacity duration-1000 group-hover:opacity-100 opacity-70" />
 
-                           <div className="relative z-10 grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
+                           <div className="relative z-10 grid grid-cols-1 lg:grid-cols-2 gap-10 md:gap-20 items-center">
                               <motion.div
                                  initial={{ opacity: 0, y: 50 }}
                                  whileInView={{ opacity: 1, y: 0 }}
@@ -424,9 +424,9 @@ export default function LandingPage() {
                                        <MapPin className="w-6 h-6 text-primary drop-shadow-[0_0_8px_rgba(44,252,125,0.8)]" />
                                        <span className="text-sm font-black uppercase tracking-[0.3em] text-white">POTENCIA TU PREDIO DEPORTIVO</span>
                                     </div>
-                                    <h2 className="text-6xl md:text-8xl lg:text-[7.5rem] font-black font-kanit italic uppercase tracking-tighter leading-[0.85] drop-shadow-2xl text-white">
+                                    <h2 className="text-4xl sm:text-6xl md:text-8xl lg:text-[7.5rem] font-black font-kanit italic uppercase tracking-tighter leading-[0.85] drop-shadow-2xl text-white">
                                        MÁXIMA <span className="text-zinc-500 pr-4 block lg:inline-block">OCUPACIÓN.</span><br />
-                                       <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-white whitespace-normal text-[12vw] sm:text-6xl md:text-7xl lg:text-[5.5rem] xl:text-[6rem] mt-4 block drop-shadow-[0_0_20px_rgba(44,252,125,0.3)] pr-6 pb-2 leading-none max-w-full break-words">CERO FRICCIÓN.</span>
+                                       <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-white whitespace-normal text-[13vw] sm:text-6xl md:text-7xl lg:text-[5.5rem] xl:text-[6rem] mt-4 block drop-shadow-[0_0_20px_rgba(44,252,125,0.3)] pr-6 pb-2 leading-none max-w-full break-words">CERO FRICCIÓN.</span>
                                     </h2>
                                     <p className="text-lg md:text-2xl font-bold text-zinc-400 max-w-xl leading-relaxed pt-6">
                                        Despídete de los huecos vacíos y tu plata al aire. Pelotify automatiza las reservas, los pagos y la carga administrativa de tus canchas.
@@ -523,9 +523,9 @@ export default function LandingPage() {
                      </section>
 
                      {/* 🔴 NUEVA SECCIÓN: PERFIL DE ESTABLECIMIENTO (ESCAPARATE) */}
-                     <section className="py-40 px-6 lg:px-12 bg-[#050505] relative border-y border-primary/20 overflow-hidden">
+                     <section className="py-20 md:py-40 px-6 lg:px-12 bg-[#050505] relative border-y border-primary/20 overflow-hidden">
                         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full text-center pointer-events-none z-0 opacity-[0.03]">
-                           <h1 className="text-[12rem] md:text-[20rem] font-black italic font-kanit uppercase leading-none whitespace-nowrap text-primary">
+                           <h1 className="text-[5rem] sm:text-[12rem] md:text-[20rem] font-black italic font-kanit uppercase leading-none whitespace-nowrap text-primary">
                               APARIENCIA
                            </h1>
                         </div>
@@ -533,7 +533,7 @@ export default function LandingPage() {
                         <div className="absolute top-0 right-0 w-[1000px] h-[1000px] bg-primary/15 blur-[180px] pointer-events-none z-0" />
                         <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-[0.05] pointer-events-none" />
 
-                        <div className="max-w-[1500px] mx-auto flex flex-col lg:flex-row items-center gap-20 lg:gap-32 relative z-10">
+                        <div className="max-w-[1500px] mx-auto flex flex-col lg:flex-row items-center gap-10 md:gap-20 lg:gap-16 md:gap-32 relative z-10">
 
                            <motion.div
                               initial={{ opacity: 0, x: -50 }}
@@ -547,7 +547,7 @@ export default function LandingPage() {
                                     <Sparkles className="w-5 h-5 text-primary" />
                                     <span className="text-xs font-black uppercase tracking-[0.3em] text-primary">TU PREDIO EN VITRINA</span>
                                  </div>
-                                 <h2 className="text-6xl md:text-8xl lg:text-[7rem] font-black font-kanit italic uppercase tracking-tighter leading-[0.85] text-white">
+                                 <h2 className="text-4xl sm:text-6xl md:text-8xl lg:text-[7rem] font-black font-kanit italic uppercase tracking-tighter leading-[0.85] text-white">
                                     ATRAE A <br />
                                     <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-white drop-shadow-[0_0_30px_rgba(44,252,125,0.4)]">MÁS EQUIPOS.</span>
                                  </h2>
@@ -656,7 +656,7 @@ export default function LandingPage() {
                         </div>
                      </section>
                      {/* 🔴 FINAL CTA BLOCK DUEÑO */}
-                     <section className="py-40 px-6 text-center border-b border-primary/20 relative bg-[#050505] overflow-hidden">
+                     <section className="py-20 md:py-40 px-6 text-center border-b border-primary/20 relative bg-[#050505] overflow-hidden">
                         <div className="absolute top-0 right-0 w-[1000px] h-[1000px] bg-primary/5 blur-[200px] pointer-events-none" />
                         <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[1200px] h-[600px] bg-primary/15 blur-[250px] pointer-events-none" />
 
@@ -680,7 +680,7 @@ export default function LandingPage() {
                                  <motion.button
                                     whileHover={{ scale: 1.05 }}
                                     whileTap={{ scale: 0.95 }}
-                                    className="px-16 h-24 bg-primary text-black font-black uppercase text-xl tracking-[0.3em] rounded-full hover:bg-white transition-all duration-500 flex items-center gap-6 relative z-10 shadow-[0_0_50px_rgba(44,252,125,0.6)]"
+                                    className="px-8 sm:px-16 h-16 sm:h-24 bg-primary text-black font-black uppercase text-[11px] sm:text-base lg:text-xl tracking-[0.3em] rounded-full hover:bg-white transition-all duration-500 flex items-center gap-6 relative z-10 shadow-[0_0_50px_rgba(44,252,125,0.6)]"
                                  >
                                     <span>SUMAR MI COMPLEJO</span>
                                     <CheckCircle2 className="w-8 h-8" />
