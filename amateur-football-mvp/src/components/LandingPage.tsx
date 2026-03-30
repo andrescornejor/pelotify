@@ -188,29 +188,26 @@ export default function LandingPage() {
             </motion.div>
          </motion.div>
 
-         {/* Animación de Scroll / Mouse Indicator */}
-         <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 1.5, duration: 1 }}
-            className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-3 cursor-pointer z-50 group"
-            onClick={() => {
-               window.scrollTo({
-                  top: window.innerHeight,
-                  behavior: 'smooth'
-               });
-            }}
+         {/* ⬇️ SCROLL INDICATOR */}
+         <motion.div 
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 2, duration: 1 }}
+            onClick={() => window.scrollBy({ top: window.innerHeight * 0.8, behavior: 'smooth' })}
+            className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-3 z-30 cursor-pointer group"
          >
-            <span className="text-[10px] font-black uppercase tracking-[0.4em] text-zinc-600 group-hover:text-primary transition-colors duration-500">
-               DESCUBRIR
-            </span>
-            <div className="w-6 h-10 border-2 border-zinc-700 group-hover:border-primary/50 flex justify-center p-1 rounded-full shadow-[0_0_15px_rgba(0,0,0,0.5)] bg-black/50 backdrop-blur-sm transition-colors duration-500">
-               <motion.div
-                  animate={{ y: [0, 16, 0], opacity: [1, 0, 1] }}
-                  transition={{ repeat: Infinity, duration: 1.5, ease: "easeInOut" }}
-                  className="w-1 h-2 bg-primary rounded-full shadow-[0_0_8px_rgba(44,252,125,1)]"
+            <span className="text-[9px] font-black uppercase tracking-[0.3em] text-zinc-500 group-hover:text-primary transition-colors duration-300">SCROLL</span>
+            <motion.div 
+               animate={{ y: [0, 8, 0] }}
+               transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' }}
+               className="w-8 h-12 rounded-full border-2 border-primary/30 flex items-start justify-center p-2 group-hover:border-primary transition-colors duration-300 bg-black/50 backdrop-blur-sm"
+            >
+               <motion.div 
+                  animate={{ y: [0, 12, 0], opacity: [1, 0, 1] }}
+                  transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' }}
+                  className="w-1 h-3 bg-primary rounded-full shadow-[0_0_10px_rgba(44,252,125,0.8)]"
                />
-            </div>
+            </motion.div>
          </motion.div>
       </section>
 
