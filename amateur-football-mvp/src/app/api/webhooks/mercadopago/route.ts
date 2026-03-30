@@ -79,7 +79,15 @@ export async function POST(request: Request) {
                .from('matches')
                .update({ status: 'published' })
                .eq('id', booking.match_id);
-             console.log(`Match ${booking.match_id} activated via booking payment.`);
+
+             // Mark creator as paid in this match
+             await supabaseAdmin
+               .from('match_participants')
+               .update({ paid: true })
+               .eq('match_id', booking.match_id)
+               .eq('user_id', booking.booker_id);
+                
+             console.log(`Match ${booking.match_id} activated and creator ${booking.booker_id} marked as paid via booking payment.`);
           }
           console.log(`Booking confirmed: ${bookingId} (${isFullPayment ? 'FULL' : 'PARTIAL'})`);
         }

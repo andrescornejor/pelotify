@@ -255,6 +255,26 @@ function MatchLobbyContent() {
             } else {
               setVenueHasMP(false);
             }
+
+            // Fetch booking info to check for deposit
+            const { data: booking } = await supabase
+              .from('canchas_bookings')
+              .select('id, down_payment_paid, total_price, status')
+              .eq('match_id', data.id)
+              .single();
+            
+            if (booking) {
+              setMatch((prev: any) => {
+                const updatedParticipants = prev.participants.map((p: any) => 
+                   p.user_id === prev.creator_id ? { ...p, paid: p.paid || booking.down_payment_paid > 0 } : p
+                );
+                return {
+                  ...prev,
+                  participants: updatedParticipants,
+                  booking: booking
+                };
+              });
+            }
           } else {
              setVenueInfo(null);
              setVenueHasMP(null);
@@ -1149,8 +1169,32 @@ function MatchLobbyContent() {
                   animate={{ opacity: 1, x: 0 }}
                   className="p-6 rounded-[2.5rem] bg-[#009EE3]/5 border border-[#009EE3]/20 space-y-4"
                 >
-                  {/* Si es creador Y es partido casual (sin establecimiento), no necesita pagarse a sí mismo */}
-                  {isCreator && venueHasMP === null ? (
+                  {/* Si es creador Y es partido en establecimiento, no paga extra si ya pagó la seña */}
+                  {isCreator && (venueHasMP !== null || match.booking) ? (
+                    <div className="space-y-4">
+                      <div className="flex items-center gap-3 font-kanit">
+                        <div className="w-10 h-10 rounded-2xl bg-primary flex items-center justify-center text-black shrink-0">
+                          <Check className="w-5 h-5" />
+                        </div>
+                        <div>
+                          <h3 className="text-lg font-black italic uppercase tracking-tighter text-foreground leading-none">
+                            Seña Abonada
+                          </h3>
+                          <p className="text-[10px] text-primary font-bold uppercase tracking-widest mt-1">
+                            Tu lugar ya está confirmado
+                          </p>
+                        </div>
+                      </div>
+                      <p className="text-[10px] text-foreground/40 font-bold uppercase tracking-widest leading-relaxed">
+                        Como creador y pagador de la seña ({match.booking?.down_payment_paid > 0 ? `$${match.booking.down_payment_paid.toLocaleString('es-AR')}` : 'pendiente'}), tu lugar se considera confirmado automáticamente.
+                        {match.booking?.down_payment_paid > (match.booking?.total_price / totalPlayers) && (
+                          <span className="text-primary block mt-2">
+                             Pagaste ${match.booking.down_payment_paid - (match.booking.total_price / totalPlayers)} de más. Este excedente te será devuelto a medida que otros jugadores abonen su parte.
+                          </span>
+                        )}
+                      </p>
+                    </div>
+                  ) : isCreator && venueHasMP === null ? (
                     <div className="space-y-4">
                       <div className="flex items-center gap-3 font-kanit">
                         <div className="w-10 h-10 rounded-2xl bg-primary flex items-center justify-center text-black shrink-0">
@@ -1222,9 +1266,16 @@ function MatchLobbyContent() {
                     </>
                   )}
                   
-                  <p className="text-[9px] text-foreground/40 font-bold uppercase tracking-widest text-center mt-4">
-                    * Cada jugador abona su lugar individualmente. El organizador NO paga el total de la reserva.
+                  <p className="text-[9px] text-foreground/40 font-bold uppercase tracking-widest text-center mt-4 italic">
+                    {match.booking?.down_payment_paid > 0 
+                      ? `* El organizador ya abonó una seña de $${match.booking.down_payment_paid.toLocaleString('es-AR')}. Tu pago completa el total del turno.`
+                      : "* El organizador abona la seña para reservar el turno y luego cada jugador completa su parte."}
                   </p>
+                  {match.booking?.down_payment_paid > (match.booking?.total_price / totalPlayers) && (
+                    <p className="text-[9px] text-primary font-bold uppercase tracking-widest text-center mt-2">
+                       * Como la seña es mayor a una cuota, el excedente se le devuelve al organizador automáticamente.
+                    </p>
+                  )}
                   <p className="text-[9px] text-foreground/20 font-bold uppercase tracking-widest text-center mt-2">
                     * El pago confirma tu asistencia definitiva.
                   </p>
