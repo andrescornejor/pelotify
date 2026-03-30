@@ -139,7 +139,7 @@ export default function LoginPage() {
                  className="w-full h-14 bg-primary text-zinc-950 font-black text-[11px] uppercase tracking-[0.2em] rounded-2xl flex items-center justify-center gap-3 hover:bg-white hover:scale-[1.02] transition-all active:scale-95 disabled:opacity-70 shadow-2xl shadow-primary/20 group/btn relative overflow-hidden mt-2"
                >
                  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover/btn:translate-x-full transition-transform duration-1000" />
-                 {isLoading ? 'CALENTANDO...' : 'PISAR EL CÉSPED'}
+                 {isLoading ? 'CALENTANDO...' : 'SALTAR A LA CANCHA'}
                </button>
             </form>
 
