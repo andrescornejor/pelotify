@@ -179,7 +179,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     if (!user && !isAuthRoute && !isCanchasRoute && pathname !== '/') {
       router.push('/login');
-    } else if (!user && !isAuthRoute && isCanchasRoute && pathname !== '/canchas/login' && pathname !== '/canchas/register' && pathname !== '/canchas') {
+    } else if (!user && !isAuthRoute && isCanchasRoute && pathname !== '/canchas/login' && pathname !== '/canchas/register') {
       router.push('/canchas/login');
     } else if (user) {
       if (pathname === '/email-confirmed') {
@@ -377,7 +377,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const showLoader =
     (isLoading && !isAuthRoute) ||
     (!isLoading && !user && !isAuthRoute && !isCanchasRoute && pathname !== '/') ||
-    (!isLoading && !user && isCanchasRoute && pathname !== '/canchas/login' && pathname !== '/canchas/register' && pathname !== '/canchas') ||
+    (!isLoading && !user && isCanchasRoute && pathname !== '/canchas/login' && pathname !== '/canchas/register') ||
     (!isLoading && user && isAuthRoute);
 
   return (
