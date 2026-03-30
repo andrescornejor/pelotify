@@ -202,7 +202,7 @@ function MatchLobbyContent() {
   const [isLoading, setIsLoading] = useState(true);
   const [isPostMatchModalOpen, setIsPostMatchModalOpen] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [actionLoading, setActionLoading] = useState<'A' | 'B' | 'delete' | 'leave' | null>(null);
+  const [actionLoading, setActionLoading] = useState<'A' | 'B' | 'delete' | 'leave' | 'join' | null>(null);
   const [inviteModalOpen, setInviteModalOpen] = useState(false);
   const [matchStats, setMatchStats] = useState<any>(null);
   const [friends, setFriends] = useState<FriendshipData[]>([]);
@@ -864,6 +864,55 @@ function MatchLobbyContent() {
                     {unassigned.map((p) => (
                       <PlayerSlot key={p.id} participant={p} isSelf={p.user_id === user?.id} />
                     ))}
+                  </div>
+                </motion.div>
+              )}
+
+              {/* ── JOIN MATCH BUTTON for public matches (non-joined players) ── */}
+              {user && !hasJoined && !match.is_private && !match.is_recruitment && !isCompleted && !isFull && (
+                <motion.div
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="relative overflow-hidden rounded-[2rem] border border-primary/30 bg-primary/5 p-6"
+                >
+                  <div className="absolute inset-0 bg-gradient-to-r from-primary/10 via-transparent to-transparent" />
+                  <div className="relative flex flex-col sm:flex-row items-center gap-5">
+                    <div className="w-14 h-14 bg-primary rounded-2xl flex items-center justify-center text-black shrink-0">
+                      <UserPlus className="w-7 h-7" />
+                    </div>
+                    <div className="flex-1 text-center sm:text-left">
+                      <h3 className="text-xl font-black text-foreground italic uppercase tracking-tighter">
+                        ¿Querés jugar?
+                      </h3>
+                      <p className="text-[10px] text-foreground/50 font-bold uppercase tracking-widest mt-1">
+                        Unite al banquillo y esperá asignación de equipo
+                      </p>
+                    </div>
+                    <button
+                      onClick={async () => {
+                        if (!user || !match) return;
+                        setActionLoading('join');
+                        try {
+                          await joinMatch(match.id, user.id, null);
+                          await fetchMatch();
+                        } catch (err: any) {
+                          alert(`Error: ${err.message}`);
+                        } finally {
+                          setActionLoading(null);
+                        }
+                      }}
+                      disabled={actionLoading !== null}
+                      className="shrink-0 h-14 px-10 bg-primary text-black font-black text-[10px] uppercase tracking-widest rounded-2xl shadow-lg shadow-primary/20 hover:scale-105 active:scale-95 transition-all disabled:opacity-50 flex items-center justify-center gap-2"
+                    >
+                      {actionLoading === 'join' ? (
+                        <Loader2 className="w-5 h-5 animate-spin" />
+                      ) : (
+                        <>
+                          <Zap className="w-4 h-4 fill-current" />
+                          Unirme al Partido
+                        </>
+                      )}
+                    </button>
                   </div>
                 </motion.div>
               )}

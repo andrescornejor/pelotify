@@ -197,6 +197,7 @@ export default function CreateMatchPage() {
     };
     fetchVenues();
   }, []);
+  const [priceManuallyEdited, setPriceManuallyEdited] = useState(false);
   const [formData, setFormData] = useState({
     location: '',
     date: '',
@@ -262,6 +263,10 @@ export default function CreateMatchPage() {
     let newPrice = formData.price;
     let fieldId = '';
 
+    // Selecting a new venue resets the manual price flag since it's a new pricing context
+    const isNewVenue = address !== formData.location;
+    if (isNewVenue) setPriceManuallyEdited(false);
+
     if (isRealDb && businessId) {
        // Search first available field matching format, or any format
        let validField = dbFields.find(f => f.business_id === businessId && f.type === formData.type);
@@ -303,17 +308,26 @@ export default function CreateMatchPage() {
     let newPrice = formData.price;
     let fieldId = formData.field_id;
 
-    if (venue?.id) { // Real DB venue
-      const formatData = dbFields.find(f => f.business_id === venue.id && f.type === type);
-      if (formatData) {
-        const divider = type === 'F5' ? 10 : type === 'F7' ? 14 : type === 'F11' ? 22 : 10;
-        newPrice = Math.round((formatData.price_per_match || 0) / divider);
-        fieldId = formatData.id;
+    // Only auto-fill price from venue data if user hasn't manually edited the price
+    if (!priceManuallyEdited) {
+      if (venue?.id) { // Real DB venue
+        const formatData = dbFields.find(f => f.business_id === venue.id && f.type === type);
+        if (formatData) {
+          const divider = type === 'F5' ? 10 : type === 'F7' ? 14 : type === 'F11' ? 22 : 10;
+          newPrice = Math.round((formatData.price_per_match || 0) / divider);
+          fieldId = formatData.id;
+        }
+      } else if (venue?.formats) { // Hardcoded venue
+        const formatData = venue.formats.find((f: any) => f.type === type);
+        if (formatData) {
+          newPrice = formatData.pricePerPlayer;
+        }
       }
-    } else if (venue?.formats) { // Hardcoded venue
-      const formatData = venue.formats.find((f: any) => f.type === type);
-      if (formatData) {
-        newPrice = formatData.pricePerPlayer;
+    } else {
+      // Still update fieldId even if price is manually edited
+      if (venue?.id) {
+        const formatData = dbFields.find(f => f.business_id === venue.id && f.type === type);
+        if (formatData) fieldId = formatData.id;
       }
     }
 
@@ -999,9 +1013,10 @@ export default function CreateMatchPage() {
                       min="0"
                       placeholder="0 · Partido libre"
                       value={formData.price || ''}
-                      onChange={(e) =>
-                        setFormData({ ...formData, price: parseInt(e.target.value) || 0 })
-                      }
+                      onChange={(e) => {
+                        setPriceManuallyEdited(true);
+                        setFormData({ ...formData, price: parseInt(e.target.value) || 0 });
+                      }}
                       className="w-full h-16 pl-14 pr-4 rounded-2xl bg-foreground/[0.03] border border-foreground/10 focus:bg-foreground/[0.05] focus:border-primary/40 outline-none text-2xl font-black italic text-foreground tracking-tighter transition-all"
                     />
                     <span className="absolute right-5 top-1/2 -translate-y-1/2 text-[10px] font-black text-foreground/20 uppercase tracking-widest">
