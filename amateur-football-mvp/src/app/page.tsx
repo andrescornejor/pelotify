@@ -1485,39 +1485,7 @@ export default function HomePage() {
           </div>
         </div>
 
-        {/* VENUE OWNER CTA */}
-        <motion.section 
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="relative overflow-hidden rounded-[3rem] p-12 lg:p-20 glass-premium border-primary/20 text-center space-y-8 bg-surface-elevated/40 shadow-[0_0_80px_rgba(44,252,125,0.1)] group"
-        >
-          <div className="absolute top-0 right-0 w-96 h-96 blur-[150px] bg-primary/10 rounded-full -mr-48 -mt-48 transition-all group-hover:scale-110" />
-          <div className="absolute bottom-0 left-0 w-64 h-64 blur-[100px] bg-accent/5 rounded-full -ml-32 -mb-32" />
-          
-          <div className="relative z-10 space-y-6 max-w-2xl mx-auto">
-            <div className="w-16 h-16 bg-primary/10 rounded-[2rem] flex items-center justify-center mx-auto border border-primary/20 shadow-inner group-hover:rotate-12 transition-transform">
-              <MapPin className="w-8 h-8 text-primary shadow-glow" />
-            </div>
-            <div className="space-y-3">
-              <h2 className="text-4xl md:text-5xl font-black font-kanit italic uppercase tracking-tighter leading-none">
-                ¿Tenés un <span className="text-primary">complejo de canchas?</span>
-              </h2>
-              <p className="text-[11px] md:text-[13px] font-black uppercase tracking-[0.3em] text-foreground/40 text-balance leading-relaxed">
-                Unite a la red de sedes oficiales de Pelotify. Gestioná tus reservas, recibí pagos automáticos y llená tus canchas con los mejores jugadores.
-              </p>
-            </div>
-            
-            <div className="pt-6">
-              <Link href="/canchas/login">
-                <button className="px-12 h-16 bg-primary text-black font-black uppercase text-[12px] tracking-[0.4em] rounded-[1.5rem] shadow-[0_15px_40px_rgba(44,252,125,0.3)] hover:shadow-[0_20px_60px_rgba(44,252,125,0.5)] hover:scale-105 active:scale-95 transition-all flex items-center gap-4 mx-auto group/btn">
-                  <span>REGISTRÁ TU SEDE</span>
-                  <ArrowRight className="w-5 h-5 group-hover/btn:translate-x-2 transition-transform" />
-                </button>
-              </Link>
-            </div>
-          </div>
-        </motion.section>
+
 
         <footer className="mt-20 pt-16 pb-24 lg:pb-12 border-t border-foreground/[0.05]">
           <div className="grid grid-cols-1 md:grid-cols-12 gap-12 lg:gap-8">
