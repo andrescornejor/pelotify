@@ -193,7 +193,7 @@ export default function LandingPage() {
                   transition={{ delay: 1.2, duration: 0.8 }}
                   className="flex flex-col sm:flex-row items-center justify-center pt-10"
                >
-                  <div className="flex flex-row items-stretch bg-black border-2 border-white/10 p-1.5 sm:p-2 rounded-3xl sm:rounded-full relative shadow-[0_40px_100px_rgba(0,0,0,1)] w-[95%] sm:w-auto max-w-sm sm:max-w-md mx-auto">
+                  <div className="flex flex-row items-stretch bg-black border-2 border-white/10 p-1.5 sm:p-2 rounded-3xl sm:rounded-full relative shadow-[0_40px_100px_rgba(0,0,0,1)] w-[95%] sm:w-auto max-w-[400px] sm:max-w-none mx-auto">
                      <motion.button
                         whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.95 }}
