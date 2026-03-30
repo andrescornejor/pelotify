@@ -466,7 +466,7 @@ export default function LandingPage() {
                <p className="text-[10px] font-black uppercase tracking-[0.6em] text-white/10 italic">© 2026 PELOTIFY GLOBAL ARCHITECTURE. TOKYO | MADRID | BS AS.</p>
             </div>
          </div>
-      </section>
+      </footer>
     </div>
   );
 }
