@@ -653,8 +653,30 @@ export default function CreateMatchPage() {
                     <div className="absolute top-0 left-0 right-0 h-4 bg-gradient-to-b from-background to-transparent z-10 pointer-events-none rounded-t-3xl" />
                     
                     <div className="max-h-[320px] overflow-y-auto no-scrollbar space-y-1.5 p-0.5 relative z-0">
-                      {AVAILABLE_TIMES.map((t) => {
-                        const isBooked = bookedTimes.includes(t);
+                      {(() => {
+                        const today = new Date();
+                        const todayLocal = `${today.getFullYear()}-${(today.getMonth() + 1).toString().padStart(2, '0')}-${today.getDate().toString().padStart(2, '0')}`;
+                        const isToday = formData.date === todayLocal;
+                        const currentHour = today.getHours();
+
+                        const validTimes = AVAILABLE_TIMES.filter((t) => {
+                          if (!isToday) return true;
+                          const h = parseInt(t.split(':')[0]);
+                          if (h === 0) return true; // Midnight is end of day
+                          return h > currentHour;
+                        });
+
+                        if (validTimes.length === 0) {
+                          return (
+                            <div className="p-8 text-center bg-background rounded-2xl border border-foreground/5">
+                              <span className="text-[12px] font-bold uppercase tracking-widest text-foreground/40 block">Ya no quedan</span>
+                              <span className="text-xl font-black italic tracking-tighter text-foreground/60 block mt-1">horarios para hoy</span>
+                            </div>
+                          );
+                        }
+
+                        return validTimes.map((t) => {
+                          const isBooked = bookedTimes.includes(t);
                         const isSelected = formData.time === t;
                         const [h, m] = t.split(':');
                         
@@ -709,7 +731,7 @@ export default function CreateMatchPage() {
                             )}
                           </button>
                         );
-                      })}
+                      })()
                     </div>
                     
                     {/* Bottom gradient mask for smooth scroll effect */}
