@@ -54,7 +54,7 @@ export async function POST(request: Request) {
         // Fetch booking to see if it was a down payment or full
         const { data: booking } = await supabaseAdmin
           .from('canchas_bookings')
-          .select('total_price, down_payment_paid')
+          .select('total_price, down_payment_paid, match_id')
           .eq('id', bookingId)
           .single();
         
@@ -72,6 +72,15 @@ export async function POST(request: Request) {
             .eq('id', bookingId);
             
           if (error) throw error;
+
+          // Si la reserva está ligada a un partido de Pelotify, activamos el partido
+          if (booking.match_id) {
+             await supabaseAdmin
+               .from('matches')
+               .update({ status: 'published' })
+               .eq('id', booking.match_id);
+             console.log(`Match ${booking.match_id} activated via booking payment.`);
+          }
           console.log(`Booking confirmed: ${bookingId} (${isFullPayment ? 'FULL' : 'PARTIAL'})`);
         }
       } 

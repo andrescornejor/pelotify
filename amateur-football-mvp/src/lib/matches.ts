@@ -8,6 +8,7 @@ export interface Match {
   type: 'F5' | 'F7' | 'F11';
   level: string;
   missing_players: number;
+  status: 'published' | 'waiting_deposit';
   price: number;
   creator_id: string;
   created_at: string;
@@ -75,6 +76,7 @@ export async function getMatches() {
             participants:match_participants(count)
         `
     )
+    .eq('status', 'published') // Only show active matches
     .order('date', { ascending: true });
 
   if (error) throw error;
@@ -141,7 +143,8 @@ export async function createMatch(matchData: Partial<Match> & { field_id?: strin
       is_private: insertData.is_private ?? false,
       payment_method: insertData.payment_method || 'mercado_pago',
       field_id: field_id,
-      business_id: business_id
+      business_id: business_id,
+      status: (business_id && insertData.payment_method === 'mercado_pago') ? 'waiting_deposit' : 'published'
     }])
     .select()
     .single();

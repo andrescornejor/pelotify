@@ -11,6 +11,10 @@ CREATE TABLE IF NOT EXISTS public.canchas_businesses (
   address text,
   city text,
   phone text,
+  description text, -- New
+  profile_image_url text, -- New
+  amenities text[] DEFAULT '{}', -- New
+  google_maps_link text, -- New
   mp_access_token text, -- Mercado Pago Access Token for split payments
   mp_public_key text,
   alias_cbu text, -- CBU o Alias bancario para depósito
