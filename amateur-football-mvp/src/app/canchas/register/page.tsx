@@ -84,23 +84,23 @@ export default function CanchasRegisterPage() {
   return (
     <div className="flex min-h-[100dvh] bg-background selection:bg-primary selection:text-background overflow-hidden relative font-outfit">
       {/* ── LEFT PANEL: AUTH FORM ── */}
-      <div className="flex-1 flex flex-col items-center justify-center p-6 lg:p-12 relative z-10 overflow-y-auto pt-24 lg:pt-12">
+      <div className="flex-1 flex flex-col items-center justify-center p-4 lg:p-8 relative z-10 overflow-y-auto pt-12 lg:pt-8">
         <motion.div
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
-          className="w-full max-w-[420px]"
+          className="w-full max-w-[380px] py-2"
         >
           {/* Header */}
-          <div className="flex flex-col items-center lg:items-start gap-3 mb-10">
-             <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-primary to-primary-dark flex items-center justify-center glow-primary mb-2">
-                <MapPin className="w-8 h-8 text-black" />
+          <div className="flex flex-col items-center lg:items-start gap-2 mb-6">
+             <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-primary to-primary-dark flex items-center justify-center glow-primary mb-1">
+                <MapPin className="w-7 h-7 text-black" />
              </div>
-             <h1 className="text-4xl lg:text-5xl font-black italic text-foreground tracking-tighter uppercase leading-[0.9] text-center lg:text-left font-kanit">
+             <h1 className="text-3xl lg:text-5xl font-black italic text-foreground tracking-tighter uppercase leading-[0.9] text-center lg:text-left font-kanit">
                Alta de <br /> <span className="text-primary">Establecimiento</span>
              </h1>
           </div>
 
-          <div className="flex flex-col gap-8">
+          <div className="flex flex-col gap-6">
             {error && (
               <div className="bg-danger/10 text-danger border border-danger/20 p-4 rounded-xl text-sm font-semibold">
                 {error}
@@ -114,59 +114,59 @@ export default function CanchasRegisterPage() {
             )}
 
             {/* Form */}
-            <form onSubmit={handleRegister} className="flex flex-col gap-5">
-              <div className="space-y-2">
+            <form onSubmit={handleRegister} className="flex flex-col gap-3">
+              <div className="space-y-1">
                 <div className="relative group/input">
-                  <div className="absolute inset-y-0 left-5 flex items-center pointer-events-none">
-                    <Building className="w-5 h-5 text-foreground/20 group-focus-within/input:text-primary transition-colors" />
+                  <div className="absolute inset-y-0 left-4 flex items-center pointer-events-none">
+                    <Building className="w-4 h-4 text-foreground/20 group-focus-within/input:text-primary transition-colors" />
                   </div>
                   <input
                     type="text"
                     placeholder="Nombre del Complejo (ej. El Óvalo)"
                     value={formData.businessName}
                     onChange={(e) => setFormData(prev => ({...prev, businessName: e.target.value}))}
-                    className="w-full h-16 pl-14 pr-6 rounded-2xl bg-white/[0.02] border border-white/5 focus:bg-white/[0.04] focus:border-primary/50 outline-none transition-all text-sm font-bold text-foreground placeholder:text-zinc-700 font-kanit"
+                    className="w-full h-12 pl-12 pr-4 rounded-xl bg-white/[0.02] border border-white/5 focus:bg-white/[0.04] focus:border-primary/50 outline-none transition-all text-sm font-bold text-foreground placeholder:text-zinc-700 font-kanit"
                     required
                   />
                 </div>
               </div>
 
-              <div className="space-y-2">
+              <div className="space-y-1">
                 <div className="relative group/input">
-                  <div className="absolute inset-y-0 left-5 flex items-center pointer-events-none">
-                    <Mail className="w-5 h-5 text-foreground/20 group-focus-within/input:text-primary transition-colors" />
+                  <div className="absolute inset-y-0 left-4 flex items-center pointer-events-none">
+                    <Mail className="w-4 h-4 text-foreground/20 group-focus-within/input:text-primary transition-colors" />
                   </div>
                   <input
                     type="email"
                     placeholder="dueño@complejo.com"
                     value={formData.email}
                     onChange={(e) => setFormData(prev => ({...prev, email: e.target.value}))}
-                    className="w-full h-16 pl-14 pr-6 rounded-2xl bg-white/[0.02] border border-white/5 focus:bg-white/[0.04] focus:border-primary/50 outline-none transition-all text-sm font-bold text-foreground placeholder:text-zinc-700 font-kanit"
+                    className="w-full h-12 pl-12 pr-4 rounded-xl bg-white/[0.02] border border-white/5 focus:bg-white/[0.04] focus:border-primary/50 outline-none transition-all text-sm font-bold text-foreground placeholder:text-zinc-700 font-kanit"
                     required
                   />
                 </div>
               </div>
 
-              <div className="space-y-2">
+              <div className="space-y-1">
                 <div className="relative group/input">
-                  <div className="absolute inset-y-0 left-5 flex items-center pointer-events-none">
-                    <Lock className="w-5 h-5 text-foreground/20 group-focus-within/input:text-primary transition-colors" />
+                  <div className="absolute inset-y-0 left-4 flex items-center pointer-events-none">
+                    <Lock className="w-4 h-4 text-foreground/20 group-focus-within/input:text-primary transition-colors" />
                   </div>
                   <input
                     type="password"
                     placeholder="Contraseña"
                     value={formData.password}
                     onChange={(e) => setFormData(prev => ({...prev, password: e.target.value}))}
-                    className="w-full h-16 pl-14 pr-6 rounded-2xl bg-white/[0.02] border border-white/5 focus:bg-white/[0.04] focus:border-primary/50 outline-none transition-all text-sm font-bold text-foreground placeholder:text-zinc-700 font-kanit"
+                    className="w-full h-12 pl-12 pr-4 rounded-xl bg-white/[0.02] border border-white/5 focus:bg-white/[0.04] focus:border-primary/50 outline-none transition-all text-sm font-bold text-foreground placeholder:text-zinc-700 font-kanit"
                     required
                   />
                 </div>
               </div>
 
-              <div className="space-y-2">
+              <div className="space-y-1">
                 <div className="relative group/input">
-                  <div className="absolute inset-y-0 left-5 flex items-center pointer-events-none">
-                    <Lock className="w-5 h-5 text-foreground/20 group-focus-within/input:text-primary transition-colors" />
+                  <div className="absolute inset-y-0 left-4 flex items-center pointer-events-none">
+                    <Lock className="w-4 h-4 text-foreground/20 group-focus-within/input:text-primary transition-colors" />
                   </div>
                   <input
                     type="password"
@@ -174,7 +174,7 @@ export default function CanchasRegisterPage() {
                     value={formData.confirmPassword}
                     onChange={(e) => setFormData(prev => ({...prev, confirmPassword: e.target.value}))}
                     className={cn(
-                      "w-full h-16 pl-14 pr-6 rounded-2xl bg-white/[0.02] border outline-none transition-all text-sm font-bold text-foreground placeholder:text-zinc-700 font-kanit",
+                      "w-full h-12 pl-12 pr-4 rounded-xl bg-white/[0.02] border outline-none transition-all text-sm font-bold text-foreground placeholder:text-zinc-700 font-kanit",
                       formData.confirmPassword && formData.password !== formData.confirmPassword
                         ? 'border-red-500/50 focus:border-red-500'
                         : 'border-white/5 focus:border-primary/50'
@@ -187,15 +187,15 @@ export default function CanchasRegisterPage() {
               <button
                 type="submit"
                 disabled={isLoading || success}
-                className="w-full h-16 bg-primary text-zinc-950 font-black text-[12px] uppercase tracking-[0.3em] rounded-2xl flex items-center justify-center gap-3 hover:bg-white hover:scale-[1.02] transition-all active:scale-95 disabled:opacity-70 shadow-2xl shadow-primary/20 group/btn relative overflow-hidden mt-2"
+                className="w-full h-12 bg-primary text-zinc-950 font-black text-[12px] uppercase tracking-[0.3em] rounded-xl flex items-center justify-center gap-3 hover:bg-white hover:scale-[1.02] transition-all active:scale-95 disabled:opacity-70 shadow-xl shadow-primary/20 group/btn relative overflow-hidden mt-1"
               >
                 <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover/btn:translate-x-full transition-transform duration-1000" />
                 {isLoading ? <Loader2 className="w-5 h-5 animate-spin" /> : 'CONVERTIRSE EN SOCIO'}
               </button>
             </form>
             
-            <div className="text-center">
-              <p className="text-[10px] font-black text-foreground/40 uppercase tracking-[0.2em] font-kanit">
+            <div className="text-center pb-6 lg:pb-0">
+              <p className="text-[9px] font-black text-foreground/40 uppercase tracking-[0.2em] font-kanit">
                 ¿YA TENÉS CUENTA?{' '}
                 <Link href="/canchas/login" className="text-primary hover:text-white transition-colors underline decoration-primary/30 underline-offset-4">
                   INGRESAR ACÁ
