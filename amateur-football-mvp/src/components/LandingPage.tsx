@@ -124,26 +124,26 @@ export default function LandingPage() {
                </h1>
             </div>
 
+            {/* Aesthetic Logo Container */}
+            <motion.div
+               initial={{ opacity: 0, scale: 0.5, rotateY: 180 }}
+               animate={{ opacity: 1, scale: 1, rotateY: 0 }}
+               transition={{ duration: 1.5, type: "spring", stiffness: 40 }}
+               className="relative group perspective-1000 z-[110] mt-24 flex flex-col items-center"
+            >
+               <div className="absolute -inset-10 bg-primary/30 blur-[60px] rounded-full group-hover:bg-primary/50 transition-all duration-700 animate-pulse" />
+               <div className="w-36 h-36 md:w-56 md:h-56 relative rounded-[3rem] bg-gradient-to-br from-[#0A0A0A] to-black flex items-center justify-center border-2 border-primary/30 shadow-[0_40px_80px_rgba(0,0,0,0.8),inset_0_0_40px_rgba(44,252,125,0.2)] backdrop-blur-3xl group-hover:scale-110 group-hover:border-primary/60 transition-all duration-700 z-10 preserve-3d">
+                  <img src="/logo_pelotify.png" className="w-24 h-24 md:w-40 md:h-40 object-contain drop-shadow-[0_0_25px_rgba(44,252,125,1)] animate-float" alt="Pelotify Main Logo" />
+               </div>
+            </motion.div>
+
             <motion.div
                initial={{ opacity: 0, y: 50 }}
                animate={{ opacity: 1, y: 0 }}
                transition={{ duration: 1, ease: "easeOut", delay: 0.2 }}
-               className="space-y-12 max-w-6xl relative z-10 w-full mt-24"
+               className="space-y-12 max-w-6xl relative z-10 w-full mt-10"
             >
                <div className="space-y-10 flex flex-col items-center">
-
-                  {/* Aesthetic Logo Container */}
-                  <motion.div
-                     initial={{ opacity: 0, scale: 0.5, rotateY: 180 }}
-                     animate={{ opacity: 1, scale: 1, rotateY: 0 }}
-                     transition={{ duration: 1.5, type: "spring", stiffness: 40 }}
-                     className="relative group perspective-1000"
-                  >
-                     <div className="absolute -inset-10 bg-primary/30 blur-[60px] rounded-full group-hover:bg-primary/50 transition-all duration-700 animate-pulse" />
-                     <div className="w-36 h-36 md:w-56 md:h-56 relative rounded-[3rem] bg-gradient-to-br from-[#0A0A0A] to-black flex items-center justify-center border-2 border-primary/30 shadow-[0_40px_80px_rgba(0,0,0,0.8),inset_0_0_40px_rgba(44,252,125,0.2)] backdrop-blur-3xl group-hover:scale-110 group-hover:border-primary/60 transition-all duration-700 z-10 preserve-3d">
-                        <img src="/logo_pelotify.png" className="w-24 h-24 md:w-40 md:h-40 object-contain drop-shadow-[0_0_25px_rgba(44,252,125,1)] animate-float" alt="Pelotify Main Logo" />
-                     </div>
-                  </motion.div>
 
                   <div className="space-y-4">
                      <h1 className="text-5xl sm:text-7xl md:text-[10rem] lg:text-[11rem] font-black font-kanit italic uppercase tracking-tighter leading-[0.8] text-white drop-shadow-2xl">
