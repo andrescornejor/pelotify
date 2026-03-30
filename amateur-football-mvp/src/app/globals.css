@@ -747,26 +747,3 @@
 .perspective-1000 {
   perspective: 1000px;
 }
-
-@keyframes glow-pulse {
-  0%, 100% { opacity: 0.3; filter: blur(100px); transform: scale(0.95); }
-  50% { opacity: 0.6; filter: blur(150px); transform: scale(1.05); }
-}
-
-.animate-glow-pulse {
-  animation: glow-pulse 6s ease-in-out infinite;
-}
-
-@keyframes shimmer {
-  0% { transform: translateY(0); opacity: 0.1; }
-  50% { transform: translateY(20px); opacity: 0.4; }
-  100% { transform: translateY(0); opacity: 0.1; }
-}
-
-.animate-shimmer {
-  animation: shimmer 4s ease-in-out infinite;
-}
-
-.shadow-glow {
-  box-shadow: 0 0 40px rgba(44,252,125,0.4);
-}
