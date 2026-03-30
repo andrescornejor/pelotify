@@ -34,6 +34,7 @@ import { cn } from '@/lib/utils';
 import { OnboardingTour } from '@/components/OnboardingTour';
 import { JerseyVisualizer } from '@/components/JerseyVisualizer';
 import { getHighlights, Highlight } from '@/lib/highlights';
+import LandingPage from '@/components/LandingPage';
 
 // --- TYPES & CONSTANTS ---
 
@@ -312,7 +313,10 @@ export default function HomePage() {
 
   useEffect(() => {
     async function fetchData() {
-      if (!user?.id) return;
+      if (!user?.id) {
+         setIsLoading(false);
+         return;
+      }
       try {
         const [teamsRes, matchesRes, playersCountRes] = await Promise.all([
           supabase.from('team_members').select('team_id, teams(*)').eq('user_id', user.id).limit(3),
@@ -500,6 +504,35 @@ export default function HomePage() {
     ],
     [statsSummary, metadata?.mvp_count]
   );
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-background flex flex-col items-center justify-center gap-6">
+        <motion.div 
+           initial={{ scale: 0.8, opacity: 0 }}
+           animate={{ scale: 1, opacity: 1 }}
+           className="w-24 h-24"
+        >
+           <img src="/logo_pelotify.png" className="w-full h-full object-contain mix-blend-screen opacity-20" alt="" />
+        </motion.div>
+        <div className="flex flex-col items-center gap-1.5 opacity-20">
+           <p className="text-[10px] font-black uppercase tracking-[0.5em] text-primary">Cargando la Liga</p>
+           <div className="w-40 h-[1.5px] bg-white/5 overflow-hidden rounded-full">
+              <motion.div 
+                 initial={{ x: '-100%' }}
+                 animate={{ x: '100%' }}
+                 transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
+                 className="w-1/2 h-full bg-primary"
+              />
+           </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (!user) {
+    return <LandingPage />;
+  }
 
   return (
     <div
