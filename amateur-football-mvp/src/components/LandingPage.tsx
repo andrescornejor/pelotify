@@ -17,7 +17,13 @@ import {
   Activity,
   Award,
   Crown,
-  Play
+  Play,
+  CreditCard,
+  BarChart3,
+  Calendar,
+  MessageSquare,
+  Sparkles,
+  DollarSign
 } from 'lucide-react';
 import Link from 'next/link';
 
@@ -47,11 +53,6 @@ const FeatureCard = ({ icon: Icon, title, description, color, delay }: any) => (
     <p className="text-[11px] font-black uppercase tracking-[0.3em] text-foreground/40 leading-relaxed group-hover:text-foreground/60 transition-colors">
       {description}
     </p>
-    
-    <div className="mt-8 flex items-center gap-2 text-primary opacity-0 group-hover:opacity-100 translate-x-[-10px] group-hover:translate-x-0 transition-all">
-       <span className="text-[9px] font-black uppercase tracking-widest">DESCUBRIR</span>
-       <ArrowRight className="w-4 h-4" />
-    </div>
   </motion.div>
 );
 
@@ -70,6 +71,47 @@ const RankCard = ({ name, icon: Icon, color, minElo }: any) => (
       <div className="text-center relative z-10 space-y-1">
          <span className="block text-sm font-black italic font-kanit uppercase tracking-tighter text-foreground">{name}</span>
          <span className="block text-[8px] font-black uppercase tracking-[0.2em] text-foreground/30">{minElo} ELO</span>
+      </div>
+   </motion.div>
+);
+
+const FifaCardMockup = () => (
+   <motion.div 
+     initial={{ rotateY: 30, rotateX: 10 }}
+     whileHover={{ rotateY: 0, rotateX: 0, scale: 1.05 }}
+     className="relative w-64 h-96 rounded-[2rem] bg-gradient-to-b from-primary via-primary-dark to-black p-0.5 shadow-[0_30px_60px_rgba(44,252,125,0.3)] group perspective-1000"
+   >
+      <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-20 pointer-events-none" />
+      <div className="w-full h-full bg-surface-bright rounded-[1.95rem] overflow-hidden flex flex-col relative">
+         {/* Rank Badge */}
+         <div className="absolute top-6 left-6 z-20 flex flex-col items-center">
+            <span className="text-4xl font-black italic font-kanit text-primary leading-none">99</span>
+            <span className="text-[8px] font-bold uppercase tracking-widest text-primary">PELOTIFY</span>
+         </div>
+         
+         {/* Avatar Mask */}
+         <div className="flex-1 flex items-center justify-center p-6 mt-4">
+            <div className="w-full h-full rounded-[2rem] bg-surface-elevated overflow-hidden border border-white/5 shadow-2xl relative">
+               <img src="https://images.unsplash.com/photo-1543351611-58f69d7c1781?auto=format&fit=crop&q=80&w=400" className="w-full h-full object-cover grayscale opacity-40 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-700" alt="Player" />
+               <div className="absolute inset-x-0 bottom-0 p-4 bg-gradient-to-t from-black to-transparent">
+                  <span className="text-2xl font-black italic font-kanit text-white uppercase tracking-tighter">EL MAESTRO</span>
+               </div>
+            </div>
+         </div>
+
+         {/* Stats */}
+         <div className="p-6 bg-surface grid grid-cols-3 gap-2 border-t border-white/5">
+            {[
+               { label: 'VEL', val: 95 },
+               { label: 'TIR', val: 99 },
+               { label: 'PAS', val: 88 }
+            ].map(s => (
+               <div key={s.label} className="text-center">
+                  <p className="text-[8px] font-black text-foreground/30">{s.label}</p>
+                  <p className="text-xl font-black italic font-kanit text-primary leading-none">{s.val}</p>
+               </div>
+            ))}
+         </div>
       </div>
    </motion.div>
 );
@@ -176,7 +218,7 @@ export default function LandingPage() {
          </motion.div>
       </section>
 
-      {/* 🟡 FEATURES GRID (THE EXPERIENCE) */}
+      {/* 🔴 FEATURES GRID (THE EXPERIENCE) */}
       <section className="py-40 px-6 lg:px-20 max-w-[1400px] mx-auto space-y-40">
          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
             <FeatureCard 
@@ -202,61 +244,134 @@ export default function LandingPage() {
             />
          </div>
 
-         {/* HIGHLIGHT: SEARCH EXPERIENCE */}
-         <div className="flex flex-col lg:flex-row items-center gap-20">
+         {/* 🔴 FIFA CARDS SECTION: PLAYER IDENTITY */}
+         <div className="flex flex-col-reverse lg:flex-row items-center gap-20">
             <motion.div 
-               initial={{ opacity: 0, x: -50 }}
+               initial={{ opacity: 0, scale: 0.8 }}
+               whileInView={{ opacity: 1, scale: 1 }}
+               className="flex-1 flex justify-center"
+            >
+               <FifaCardMockup />
+            </motion.div>
+
+            <motion.div 
+               initial={{ opacity: 0, x: 50 }}
                whileInView={{ opacity: 1, x: 0 }}
                className="flex-1 space-y-10"
             >
                <div className="space-y-4">
                   <div className="flex items-center gap-4 text-primary">
                      <div className="w-12 h-[1px] bg-primary" />
-                     <span className="text-[10px] font-black uppercase tracking-[0.5em]">TECNOLOGÍA DE VANGUARDIA</span>
+                     <span className="text-[10px] font-black uppercase tracking-[0.5em]">IDENTIDAD DIGITAL</span>
                   </div>
                   <h2 className="text-5xl md:text-8xl font-black font-kanit italic uppercase tracking-tighter leading-none">
-                     NO PIERDAS <br /> <span className="text-primary italic">EL TURNO.</span>
+                     TU PERFIL, <br /> <span className="text-primary italic">TU LEYENDA.</span>
                   </h2>
                   <p className="text-sm md:text-lg font-black uppercase tracking-[0.3em] text-foreground/40 leading-relaxed italic max-w-xl">
-                     Nuestra integración con Google Places te permite encontrar los mejores complejos con precisión absoluta.
+                     Convertí tu historial de juego en una **FIFA Card** dinámica. Posición, pierna hábil, edad y altura: todo importa para el ranking oficial de Pelotify.
                   </p>
                </div>
                
-               <div className="grid grid-cols-2 gap-8 pt-4">
+               <div className="space-y-6">
                   {[
-                     { label: 'DISPONIBILIDAD', value: 'REAL-TIME', icon: Activity },
-                     { label: 'COMPLEJOS', value: 'A NIVEL PAÍS', icon: Globe }
-                  ].map((stat) => (
-                     <div key={stat.label} className="space-y-4">
-                        <stat.icon className="w-6 h-6 text-primary" />
-                        <div>
-                           <p className="text-[10px] font-black text-foreground/30 uppercase tracking-widest">{stat.label}</p>
-                           <p className="text-3xl font-black italic font-kanit text-foreground tracking-tighter">{stat.value}</p>
+                     { icon: Activity, title: 'Estadísticas en Tiempo Real', desc: 'Tu ELO sube o baja con cada resultado.' },
+                     { icon: Medal, title: 'Vitrina de Logros', desc: 'Coleccioná MVPs y medallas de torneo.' }
+                  ].map((item, i) => (
+                     <div key={i} className="flex gap-6 items-start">
+                        <div className="w-12 h-12 rounded-xl bg-surface border border-white/5 flex items-center justify-center shrink-0">
+                           <item.icon className="w-6 h-6 text-primary" />
+                        </div>
+                        <div className="space-y-1">
+                           <h4 className="text-sm font-black uppercase tracking-widest text-foreground">{item.title}</h4>
+                           <p className="text-[10px] font-black uppercase tracking-widest text-foreground/30">{item.desc}</p>
                         </div>
                      </div>
                   ))}
                </div>
             </motion.div>
+         </div>
 
-            <motion.div 
-               initial={{ opacity: 0, scale: 0.8 }}
-               whileInView={{ opacity: 1, scale: 1 }}
-               className="flex-1 w-full aspect-square rounded-[4rem] overflow-hidden relative group shadow-[0_50px_100px_rgba(0,0,0,0.5)] border-2 border-white/5"
-            >
-               <img 
-                 src="https://images.unsplash.com/photo-1574629810360-7efbbe195018?auto=format&fit=crop&q=80&w=1200" 
-                 className="w-full h-full object-cover grayscale-[0.5] group-hover:grayscale-0 group-hover:scale-110 transition-all duration-1000"
-                 alt="App Preview"
-               />
-               <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent opacity-60" />
-               <div className="absolute inset-x-0 bottom-0 p-12 text-center pointer-events-none">
-                  <p className="text-[12px] font-black text-primary uppercase tracking-[0.5em] animate-pulse">Interfaz Optimizada</p>
+         {/* 🔴 VENUE MANAGEMENT: BUSINESS SIDE */}
+         <div className="rounded-[4rem] glass-premium p-12 lg:p-24 border-primary/20 relative overflow-hidden">
+            <div className="absolute top-0 right-0 w-full h-full bg-[radial-gradient(circle_at_70%_50%,rgba(44,252,125,0.05),transparent)] pointer-events-none" />
+            
+            <div className="relative z-10 grid grid-cols-1 lg:grid-cols-2 gap-20">
+               <div className="space-y-10">
+                  <div className="space-y-6">
+                     <div className="w-20 h-20 bg-primary/10 rounded-3xl flex items-center justify-center border border-primary/20 shadow-[0_0_30px_rgba(44,252,125,0.1)]">
+                        <MapPin className="w-10 h-10 text-primary shadow-glow" />
+                     </div>
+                     <h2 className="text-5xl md:text-7xl font-black font-kanit italic uppercase tracking-tighter leading-none">
+                        EL ALIADO DE <br /> <span className="text-primary">TU COMPLEJO.</span>
+                     </h2>
+                     <p className="text-sm md:text-xl font-black uppercase tracking-[0.3em] text-foreground/40 leading-relaxed italic">
+                        Pelotify no solo trae jugadores, te da el control total de tu negocio desde la palma de tu mano.
+                     </p>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                     {[
+                        { icon: DollarSign, title: 'Pagos Directos', desc: 'Recibí señas y totales directo a tu Mercado Pago.' },
+                        { icon: Calendar, title: 'Agenda Digital', desc: 'Olvidate del cuaderno. Turnos síncronizados 24/7.' },
+                        { icon: BarChart3, title: 'Análisis Financiero', desc: 'Reportes diarios de ingresos y ocupación.' },
+                        { icon: MessageSquare, title: 'Opiniones Reales', desc: 'Gestioná reseñas y mejorá tu reputación.' }
+                     ].map((box, i) => (
+                        <div key={i} className="space-y-3 p-6 rounded-3xl bg-surface/50 border border-white/5 hover:border-primary/20 transition-all">
+                           <box.icon className="w-6 h-6 text-primary" />
+                           <h5 className="text-[11px] font-black uppercase tracking-widest text-foreground">{box.title}</h5>
+                           <p className="text-[9px] font-black uppercase tracking-widest text-foreground/30 leading-relaxed">{box.desc}</p>
+                        </div>
+                     ))}
+                  </div>
+
+                  <Link href="/canchas" className="inline-block mt-4">
+                     <button className="px-12 h-16 bg-foreground text-background font-black uppercase text-[12px] tracking-[0.4em] rounded-2xl hover:scale-105 active:scale-95 transition-all flex items-center gap-4 group">
+                        <span>REGISTRAR MI SEDE</span>
+                        <ArrowRight className="w-5 h-5 group-hover:translate-x-2 transition-transform" />
+                     </button>
+                  </Link>
                </div>
-            </motion.div>
+
+               <div className="flex items-center justify-center">
+                  <div className="relative w-full aspect-square max-w-sm">
+                     {/* Dashboard Mockup Elements */}
+                     <motion.div 
+                        initial={{ opacity: 0, x: 30 }}
+                        whileInView={{ opacity: 1, x: 0 }}
+                        className="p-6 glass-premium rounded-3xl border-primary/40 absolute -top-4 -right-4 z-20 shadow-2xl space-y-3 w-48"
+                     >
+                        <BarChart3 className="w-6 h-6 text-primary" />
+                        <p className="text-[9px] font-black text-white/50 uppercase tracking-widest">INGRESOS NETOS</p>
+                        <p className="text-2xl font-black italic font-kanit text-white">$145.200</p>
+                     </motion.div>
+                     
+                     <div className="w-full h-full rounded-[4rem] bg-surface-elevated overflow-hidden border border-white/10 shadow-inner relative group">
+                        <img 
+                          src="https://images.unsplash.com/photo-1529900948638-19f94ff446a1?auto=format&fit=crop&q=80&w=800" 
+                          className="w-full h-full object-cover grayscale opacity-20" 
+                          alt="Sede" 
+                        />
+                        <div className="absolute inset-0 flex items-center justify-center p-12">
+                           <div className="w-full space-y-4">
+                              {[1, 2, 3].map(row => (
+                                 <div key={row} className="h-4 bg-white/5 rounded-full w-full overflow-hidden">
+                                    <motion.div 
+                                       initial={{ width: 0 }}
+                                       whileInView={{ width: `${Math.random() * 80 + 20}%` }}
+                                       className="h-full bg-primary/30" 
+                                    />
+                                 </div>
+                              ))}
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+               </div>
+            </div>
          </div>
       </section>
 
-      {/* 🔵 RANKS CAROUSEL (THE GLORY) */}
+      {/* 🔴 RANKS CAROUSEL (THE GLORY) */}
       <section className="py-40 bg-foreground/[0.02] border-y border-white/5 space-y-20 overflow-hidden">
          <div className="px-6 lg:px-20 space-y-4 text-center">
             <h2 className="text-4xl md:text-8xl font-black font-kanit italic uppercase tracking-tighter leading-none">
@@ -295,10 +410,19 @@ export default function LandingPage() {
          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-[800px] bg-primary/10 blur-[200px] rounded-full -z-10" />
          
          <div className="space-y-6">
+            <motion.div 
+               initial={{ opacity: 0 }}
+               whileInView={{ opacity: 1 }}
+               className="flex items-center justify-center gap-3 mb-8"
+            >
+               <Sparkles className="w-5 h-5 text-primary" />
+               <span className="text-[10px] font-black uppercase tracking-[0.5em] text-primary">Beta Cerrada Finalizada</span>
+               <Sparkles className="w-5 h-5 text-primary" />
+            </motion.div>
             <h2 className="text-6xl md:text-[10rem] font-black font-kanit italic uppercase tracking-tighter leading-[0.8] mix-blend-difference">
                TU DESTINO <br /> ES EL <span className="text-primary italic [text-shadow:0_0_60px_rgba(44,252,125,0.4)]">GREEN.</span>
             </h2>
-            <p className="text-[10px] md:text-sm font-black uppercase tracking-[0.5em] text-foreground/40 italic">La temporada ya empezó. ¿Dónde estás vos?</p>
+            <p className="text-[10px] md:text-sm font-black uppercase tracking-[0.5em] text-foreground/40 italic italic">La temporada ya empezó. ¿Dónde estás vos?</p>
          </div>
 
          <div className="flex flex-col sm:flex-row items-center justify-center gap-8">
@@ -307,12 +431,6 @@ export default function LandingPage() {
                   UNIRSE AHORA
                </button>
             </Link>
-         </div>
-
-         <div className="pt-20 opacity-30">
-            <p className="text-[10px] font-black uppercase tracking-[0.4em] flex items-center justify-center gap-4">
-               <Shield className="w-4 h-4" /> REGLAMENTO OFICIAL <Globe className="w-4 h-4" /> FAIR PLAY LIGA
-            </p>
          </div>
       </section>
 
@@ -355,3 +473,10 @@ export default function LandingPage() {
     </div>
   );
 }
+
+const Medal = ({ className, style }: any) => (
+   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className} style={style}>
+      <circle cx="12" cy="8" r="7" />
+      <polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88" />
+   </svg>
+);
