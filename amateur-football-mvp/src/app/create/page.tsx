@@ -857,8 +857,13 @@ export default function CreateMatchPage() {
                         (typeof FORMAT_DATA)[keyof typeof FORMAT_DATA],
                       ][]
                     ).map(([key, data], i) => {
-                      const venue = findVenueByLocation(formData.location);
-                      const isAvailable = !venue?.formats || venue.formats.some(f => f.type === key);
+                      let isAvailable = true;
+                      if (formData.business_id) {
+                        isAvailable = dbFields.some(f => f.business_id === formData.business_id && f.type === key);
+                      } else {
+                        const venue = findVenueByLocation(formData.location);
+                        isAvailable = !venue?.formats || venue.formats.some((f: any) => f.type === key);
+                      }
                       
                       if (!isAvailable) return null;
 
