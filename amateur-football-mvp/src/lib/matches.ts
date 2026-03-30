@@ -135,6 +135,11 @@ export async function getMatchById(id: string) {
 export async function createMatch(matchData: Partial<Match> & { field_id?: string, business_id?: string }) {
   // First, create the match
   const { field_id, business_id, ...insertData } = matchData;
+  
+  // Limpiamos los IDs si vienen como strings vacíos para evitar error de sintaxis UUID en Postgres
+  const finalFieldId = field_id === "" ? undefined : field_id;
+  const finalBusinessId = business_id === "" ? undefined : business_id;
+
   const { data, error } = await supabase
     .from('matches')
     .insert([{ 
@@ -142,9 +147,9 @@ export async function createMatch(matchData: Partial<Match> & { field_id?: strin
       is_completed: false, 
       is_private: insertData.is_private ?? false,
       payment_method: insertData.payment_method || 'mercado_pago',
-      field_id: field_id,
-      business_id: business_id,
-      status: (business_id && insertData.payment_method === 'mercado_pago') ? 'waiting_deposit' : 'published'
+      field_id: finalFieldId,
+      business_id: finalBusinessId,
+      status: (finalBusinessId && insertData.payment_method === 'mercado_pago') ? 'waiting_deposit' : 'published'
     }])
     .select()
     .single();
@@ -153,7 +158,7 @@ export async function createMatch(matchData: Partial<Match> & { field_id?: strin
   const match = data as Match;
 
   // If this match happens in a registered venue field, automatically book it
-  if (field_id && match.date && match.time && match.price !== undefined) {
+  if (finalFieldId && match.date && match.time && match.price !== undefined) {
     try {
        // Convert match time (HH:MM or HH:MM AM/PM) roughly to a proper DB start_time and end_time.
        // E.g. 20:00 to start_time: "20:00:00", end_time: "21:00:00"
@@ -170,7 +175,7 @@ export async function createMatch(matchData: Partial<Match> & { field_id?: strin
        const endTime = `${endHour.toString().padStart(2, '0')}:${parsedMin.toString().padStart(2, '0')}:00`;
 
        const { error: bookingError } = await supabase.from('canchas_bookings').insert([{
-         field_id: field_id,
+         field_id: finalFieldId,
          booker_id: match.creator_id,
          match_id: match.id,
          date: match.date,
