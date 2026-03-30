@@ -4,7 +4,7 @@ import { createContext, useContext, useState, useEffect, ReactNode } from 'react
 import { useRouter, usePathname } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
 import { getURL } from '@/lib/utils';
-import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
+
 
 interface User {
   id: string;
@@ -36,7 +36,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [isLoading, setIsLoading] = useState(true);
   const router = useRouter();
   const pathname = usePathname();
-  const supabaseAuth = createClientComponentClient();
+  const supabaseAuth = supabase;
 
   useEffect(() => {
     // Shared logic to fetch profile and normalize user state
@@ -111,16 +111,30 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     };
 
     // Initial session check
-    supabaseAuth.auth.getSession().then(({ data: { session } }) => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
       handleUserSession(session);
     });
 
     // Listen for auth changes
     const {
       data: { subscription },
-    } = supabaseAuth.auth.onAuthStateChange(async (_event, session) => {
+    } = supabase.auth.onAuthStateChange(async (_event, session) => {
       console.log('Auth event:', _event);
       handleUserSession(session);
+
+      // CUSTOM NEXT.JS 15 COOKIE SYNC
+      // Since we had to remove createClientComponentClient due to SSR crashing issues,
+      // we manually sync the cookie payload so `page.tsx` can read it natively!
+      if (typeof window !== 'undefined') {
+        const projectId = process.env.NEXT_PUBLIC_SUPABASE_URL?.split('://')[1]?.split('.')[0] || 'ijrahvpgxlsfawezxijv';
+        const cookieName = `sb-${projectId}-auth-token`;
+        if (session) {
+          const authPayload = JSON.stringify([session.access_token, session.refresh_token, null, null, null]);
+          document.cookie = `${cookieName}=${encodeURIComponent(authPayload)}; path=/; max-age=31536000; SameSite=Lax; Secure`;
+        } else if (_event === 'SIGNED_OUT') {
+          document.cookie = `${cookieName}=; path=/; max-age=0; SameSite=Lax; Secure`;
+        }
+      }
     });
 
     return () => subscription.unsubscribe();

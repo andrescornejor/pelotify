@@ -20,7 +20,9 @@ import { getHighlights } from '@/lib/highlights';
 export const dynamic = 'force-dynamic';
 
 async function HomeDataWrapper({ user }: { user: any }) {
-  const supabase = createServerComponentClient({ cookies });
+  const cookieStore = await cookies();
+  // @ts-ignore - Bypass Next.js 15 / Supabase Auth Helpers async type mismatch
+  const supabase = createServerComponentClient({ cookies: () => cookieStore });
 
   const [teamsRes, matchesRes, playersCountRes, recentProfiles, highlightsData] = await Promise.all([
     supabase.from('team_members').select('team_id, teams(*)').eq('user_id', user.id).limit(3),
@@ -258,7 +260,9 @@ async function HomeDataWrapper({ user }: { user: any }) {
 
 // Ensure the outer page stays dynamic because of cookies() and auth.
 export default async function HomePage() {
-  const supabase = createServerComponentClient({ cookies });
+  const cookieStore = await cookies();
+  // @ts-ignore - Bypass Next.js 15 / Supabase Auth Helpers async type mismatch
+  const supabase = createServerComponentClient({ cookies: () => cookieStore });
   
   // This fails gracefully and returns null if there's no cookie. 
   // It handles the RSC authentication nicely
