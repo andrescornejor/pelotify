@@ -1037,25 +1037,25 @@ function CalendarTab({ bookings, fields, selectedDate, setSelectedDate, onSlotCl
       </div>
 
       {/* ── WEEKLY GRID ── */}
-      <div className="glass-premium rounded-[2rem] border-white/5 overflow-hidden shadow-xl">
+      <div className="rounded-[2rem] border border-white/10 overflow-hidden shadow-xl bg-surface-elevated/50">
         <div className="overflow-x-auto no-scrollbar">
           <div className="min-w-[700px]">
             {/* Column headers: days */}
-            <div className="grid border-b border-white/[0.06] bg-foreground/[0.02]" style={{ gridTemplateColumns: '72px repeat(7, 1fr)' }}>
+            <div className="grid border-b border-white/15 bg-foreground/[0.05]" style={{ gridTemplateColumns: '72px repeat(7, 1fr)' }}>
               <div className="p-3 flex items-center justify-center">
-                <Clock className="w-3.5 h-3.5 text-muted-foreground/40" />
+                <Clock className="w-3.5 h-3.5 text-muted-foreground/70" />
               </div>
               {weekDays.map(date => {
                 const isToday = date === todayStr;
                 return (
                   <div
                     key={date}
-                    className={`p-3 text-center border-l border-white/[0.04] transition-colors ${isToday ? 'bg-primary/[0.06]' : ''}`}
+                    className={`p-3 text-center border-l border-white/10 transition-colors ${isToday ? 'bg-primary/[0.08]' : ''}`}
                   >
-                    <p className={`text-[9px] font-black uppercase tracking-widest ${isToday ? 'text-primary' : 'text-muted-foreground/60'}`}>
+                    <p className={`text-[9px] font-black uppercase tracking-widest ${isToday ? 'text-primary' : 'text-muted-foreground'}`}>
                       {getDayNameShort(date)}
                     </p>
-                    <p className={`text-base font-black font-kanit italic leading-none mt-0.5 ${isToday ? 'text-primary' : 'text-foreground/80'}`}>
+                    <p className={`text-base font-black font-kanit italic leading-none mt-0.5 ${isToday ? 'text-primary' : 'text-foreground'}`}>
                       {date.split('-')[2]}
                     </p>
                     {isToday && (
@@ -1067,7 +1067,7 @@ function CalendarTab({ bookings, fields, selectedDate, setSelectedDate, onSlotCl
             </div>
 
             {/* Rows: time slots */}
-            <div className="divide-y divide-white/[0.03]">
+            <div className="divide-y divide-white/10">
               {timeSlots.map(time => {
                 const hour = parseInt(time.split(':')[0]);
                 const isCurrentHour = weekOffset === 0 && hour === currentHour;
@@ -1076,17 +1076,17 @@ function CalendarTab({ bookings, fields, selectedDate, setSelectedDate, onSlotCl
                 return (
                   <div
                     key={time}
-                    className={`grid transition-colors ${isCurrentHour ? 'bg-primary/[0.03]' : 'hover:bg-foreground/[0.01]'}`}
+                    className={`grid transition-colors ${isCurrentHour ? 'bg-primary/[0.06]' : hour % 2 === 0 ? 'bg-foreground/[0.02]' : ''} hover:bg-foreground/[0.04]`}
                     style={{ gridTemplateColumns: '72px repeat(7, 1fr)' }}
                   >
                     {/* Hour label */}
-                    <div className={`p-2 flex items-center justify-center border-r border-white/[0.04] relative ${
-                      isCurrentHour ? '' : ''
+                    <div className={`p-2 flex items-center justify-center border-r border-white/10 relative ${
+                      isCurrentHour ? 'bg-primary/[0.05]' : ''
                     }`}>
                       {isCurrentHour && (
                         <div className="absolute left-0 top-0 bottom-0 w-[3px] bg-primary rounded-r shadow-[0_0_8px_rgba(44,252,125,0.6)]"></div>
                       )}
-                      <span className={`text-xs font-black font-kanit italic ${isCurrentHour ? 'text-primary' : 'text-muted-foreground/30'}`}>
+                      <span className={`text-xs font-black font-kanit italic ${isCurrentHour ? 'text-primary' : 'text-muted-foreground'}`}>
                         {time}
                       </span>
                     </div>
@@ -1106,8 +1106,8 @@ function CalendarTab({ bookings, fields, selectedDate, setSelectedDate, onSlotCl
                       return (
                         <div
                           key={date}
-                          className={`border-l border-white/[0.04] p-1 min-h-[52px] flex items-center justify-center ${
-                            isToday && weekOffset === 0 ? 'bg-primary/[0.02]' : ''
+                          className={`border-l border-white/10 p-1.5 min-h-[56px] flex items-center justify-center ${
+                            isToday && weekOffset === 0 ? 'bg-primary/[0.04]' : ''
                           } ${isCellPast ? 'opacity-30' : ''}`}
                         >
                           {booking ? (
@@ -1141,7 +1141,7 @@ function CalendarTab({ bookings, fields, selectedDate, setSelectedDate, onSlotCl
                                 setSelectedDate(date);
                                 onSlotClick(time, activeFieldId);
                               }}
-                              className="w-full h-full min-h-[42px] rounded-lg border border-dashed border-white/[0.04] hover:border-primary/25 hover:bg-primary/[0.04] transition-all group flex items-center justify-center"
+                              className="w-full h-full min-h-[44px] rounded-lg border border-dashed border-white/10 hover:border-primary/40 hover:bg-primary/[0.06] transition-all group flex items-center justify-center"
                             >
                               <Plus className="w-3 h-3 text-transparent group-hover:text-primary transition-colors" />
                             </button>
