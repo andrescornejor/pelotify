@@ -15,7 +15,8 @@ export async function GET(request: Request) {
     return NextResponse.redirect(`${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/profile?error=invalid_callback`);
   }
 
-  const redirectUri = `${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/api/mercadopago/callback`;
+  // Este redirectUri DEBE coincidir con el usado en la petición inicial de authorize
+  const redirectUri = process.env.NEXT_PUBLIC_MP_REDIRECT_URL || `${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/api/mercadopago/callback`;
   
   // El client_secret es obligatorio para el intercambio de tokens OAuth
   const clientSecret = process.env.MP_CLIENT_SECRET;

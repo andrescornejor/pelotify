@@ -8,7 +8,9 @@ export async function GET(request: Request) {
     return NextResponse.json({ error: 'Missing userId' }, { status: 400 });
   }
 
-  const redirectUri = `${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/api/mercadopago/callback`;
+  // Forzamos que la URL sea la de producción aunque estemos en un preview de Vercel
+  // Esto evita tener que agregar cientos de URLs de previsualización al Dashboard de MP
+  const redirectUri = process.env.NEXT_PUBLIC_MP_REDIRECT_URL || `${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/api/mercadopago/callback`;
   const clientId = process.env.NEXT_PUBLIC_MP_CLIENT_ID;
 
   if (!clientId) {
