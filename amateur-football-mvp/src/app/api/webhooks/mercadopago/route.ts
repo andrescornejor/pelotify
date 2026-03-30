@@ -54,7 +54,7 @@ export async function POST(request: Request) {
         // Fetch booking to see if it was a down payment or full
         const { data: booking } = await supabaseAdmin
           .from('canchas_bookings')
-          .select('total_price, down_payment_paid, match_id')
+          .select('total_price, down_payment_paid, match_id, booker_id')
           .eq('id', bookingId)
           .single();
         
