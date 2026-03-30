@@ -30,7 +30,8 @@ import {
   ChevronLeft,
   Shield,
   ExternalLink,
-  Info
+  Info,
+  LogOut
 } from 'lucide-react';
 
 import { useAuth } from '@/contexts/AuthContext';
@@ -38,7 +39,7 @@ import { supabase } from '@/lib/supabase';
 import { useRouter } from 'next/navigation';
 
 export default function CanchasDashboard() {
-  const { user } = useAuth();
+  const { user, logout } = useAuth();
   const router = useRouter();
   const [activeTab, setActiveTab] = useState('overview');
 
@@ -236,6 +237,10 @@ export default function CanchasDashboard() {
             <button className="relative p-3 rounded-xl bg-surface-elevated border border-white/5 hover:bg-surface-bright transition-all group" onClick={() => alert("Soporte Técnico pronto estará disponible por WhatsApp.")}>
                <Bell className="w-5 h-5 text-muted-foreground group-hover:text-primary transition-colors" />
                <div className="absolute top-2.5 right-2.5 w-2 h-2 rounded-full bg-accent border-2 border-background animate-bounce shadow-[0_0_8px_rgba(255,107,107,0.5)]"></div>
+            </button>
+
+            <button onClick={async () => { await logout(); router.push('/canchas/login'); }} className="relative p-3 rounded-xl bg-surface-elevated border border-white/5 hover:bg-danger/10 hover:border-danger/30 transition-all group" title="Cerrar Sesión">
+               <LogOut className="w-5 h-5 text-muted-foreground group-hover:text-danger transition-colors" />
             </button>
 
             <div className="flex items-center gap-3 pl-4 border-l border-border/50">
