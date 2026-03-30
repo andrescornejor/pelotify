@@ -461,7 +461,7 @@ const handleBooking = async () => {
                         <div className="flex justify-between items-end">
                            <div className="space-y-1">
                               <p className="text-[10px] font-black text-primary uppercase tracking-widest leading-none">Monto de la Seña</p>
-                              <p className="text-[8px] font-bold text-muted-foreground uppercase tracking-widest">(30% del valor total)</p>
+                              <p className="text-[8px] font-bold text-muted-foreground uppercase tracking-widest">({selectedField?.down_payment_percentage || 30}% del valor total)</p>
                            </div>
                            <p className="text-4xl font-black font-kanit italic tracking-tighter text-white">
                               ${selectedField ? new Intl.NumberFormat('es-AR').format(Math.round(selectedField.price_per_match * (selectedField.down_payment_percentage || 30) / 100)) : "0"}

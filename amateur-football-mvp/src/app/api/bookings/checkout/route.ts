@@ -13,7 +13,7 @@ export async function POST(request: Request) {
   );
 
   try {
-    const { businessId, fieldId, date, time, userId, totalPrice, downPayment } = await request.json();
+    const { businessId, fieldId, date, time, userId, totalPrice, downPayment, bookingId } = await request.json();
 
     if (!businessId || !fieldId || !date || !time || !userId) {
       return NextResponse.json({ error: 'Faltan datos obligatorios' }, { status: 400 });
@@ -22,7 +22,7 @@ export async function POST(request: Request) {
     // 1. Obtener info del negocio y su token de MP
     const { data: business, error: bError } = await supabaseAdmin
       .from('canchas_businesses')
-      .select('name, mp_access_token, owner_id')
+      .select('name, id, mp_access_token, owner_id')
       .eq('id', businessId)
       .single();
 
@@ -41,24 +41,35 @@ export async function POST(request: Request) {
        finalToken = owner?.mp_access_token;
     }
 
-    // 3. Crear la reserva en estado PENDING
-    const { data: booking, error: bkError } = await supabaseAdmin
-      .from('canchas_bookings')
-      .insert([{
-        field_id: fieldId,
-        date,
-        start_time: time,
-        end_time: (parseInt(time.split(':')[0]) + 1) + ":00", // Asumimos 1 hora
-        booker_id: userId,
-        status: 'pending',
-        total_price: totalPrice,
-        down_payment_paid: 0,
-        title: 'Reserva Directa'
-      }])
-      .select()
-      .single();
-
-    if (bkError) throw bkError;
+    // 3. Obtener o crear la reserva en estado PENDING
+    let booking;
+    if (bookingId) {
+       const { data: existingBooking, error: exError } = await supabaseAdmin
+         .from('canchas_bookings')
+         .select('*')
+         .eq('id', bookingId)
+         .single();
+       if (exError) throw exError;
+       booking = existingBooking;
+    } else {
+       const { data: newBooking, error: bkError } = await supabaseAdmin
+         .from('canchas_bookings')
+         .insert([{
+           field_id: fieldId,
+           date,
+           start_time: time,
+           end_time: (parseInt(time.split(':')[0]) + 1) + ":00", // Asumimos 1 hora
+           booker_id: userId,
+           status: 'pending',
+           total_price: totalPrice,
+           down_payment_paid: 0,
+           title: 'Reserva Directa'
+         }])
+         .select()
+         .single();
+       if (bkError) throw bkError;
+       booking = newBooking;
+    }
 
     // 4. Crear Preferencia de Mercado Pago
     let clientToUse = platformClient;

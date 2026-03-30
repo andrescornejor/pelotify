@@ -328,6 +328,42 @@ export default function CreateMatchPage() {
         ...formData,
         creator_id: user.id,
       });
+
+      // Si es un establecimiento registrado y elige Mercado Pago, redirigir a pagar la seña
+      if (formData.business_id && formData.field_id && formData.payment_method === 'mercado_pago') {
+         const { data: booking } = await supabase
+           .from('canchas_bookings')
+           .select('id, total_price')
+           .eq('match_id', match.id)
+           .single();
+
+         if (booking) {
+            const field = dbFields.find(f => f.id === formData.field_id);
+            const dpPercent = field?.down_payment_percentage || 30;
+            const downPayment = Math.round(booking.total_price * dpPercent / 100);
+
+            const response = await fetch('/api/bookings/checkout', {
+               method: 'POST',
+               headers: { 'Content-Type': 'application/json' },
+               body: JSON.stringify({
+                  businessId: formData.business_id,
+                  fieldId: formData.field_id,
+                  date: formData.date,
+                  time: formData.time,
+                  userId: user.id,
+                  totalPrice: booking.total_price,
+                  downPayment: downPayment,
+                  bookingId: booking.id
+               }),
+            });
+            const data = await response.json();
+            if (data.init_point) {
+               window.location.href = data.init_point;
+               return;
+            }
+         }
+      }
+
       router.push(`/match?id=${match.id}`);
     } catch (error: any) {
       console.error('Error creating match:', error);
@@ -1234,6 +1270,11 @@ export default function CreateMatchPage() {
                         label: 'Pago',
                         value: formData.payment_method === 'mercado_pago' ? 'Online (Reserva)' : 'Efectivo (Predio)',
                       },
+                      ...(formData.business_id && formData.payment_method === 'mercado_pago' ? [{
+                        icon: <Zap className="w-4 h-4 text-primary" />,
+                        label: 'Seña a pagar ahora',
+                        value: `$${Math.round((formData.price * (formData.type === 'F5' ? 10 : formData.type === 'F7' ? 14 : 22)) * (dbFields.find(f => f.id === formData.field_id)?.down_payment_percentage || 30) / 100).toLocaleString('es-AR')} ARS`
+                      }] : []),
                     ].map(({ icon, label, value }) => (
                       <div key={label} className="flex items-start gap-3">
                         <div className="w-7 h-7 rounded-xl bg-primary/10 flex items-center justify-center text-primary flex-shrink-0 mt-0.5">

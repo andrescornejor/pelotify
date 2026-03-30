@@ -995,6 +995,12 @@ function SettingsTab({ business, fields, setFields, hasMP, setBusiness }: any) {
   const { user } = useAuth();
   const [loading, setLoading] = useState(false);
   const [deposit, setDeposit] = useState(fields?.[0]?.down_payment_percentage || 30);
+  const [depositMode, setDepositMode] = useState<'percentage' | 'share'>(() => {
+    // Detect if it matches any standard share percentage roughly
+    const d = fields?.[0]?.down_payment_percentage;
+    if (d === 10 || d === 7 || d === 5 || d === 15) return 'share';
+    return 'percentage';
+  });
   const [aliasCbu, setAliasCbu] = useState(business?.alias_cbu || '');
   const [description, setDescription] = useState(business?.description || '');
   const [address, setAddress] = useState(business?.address || '');
@@ -1243,18 +1249,67 @@ function SettingsTab({ business, fields, setFields, hasMP, setBusiness }: any) {
              </div>
 
              <div className="space-y-6">
-                <div className="p-6 rounded-3xl bg-surface-elevated/50 border border-white/5">
-                   <div className="flex justify-between items-center mb-4">
-                      <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Porcentaje de Seña</label>
-                      <span className="text-2xl font-black italic font-kanit text-primary">{deposit}%</span>
-                   </div>
-                   <input 
-                     type="range" min="0" max="100" step="10"
-                     value={deposit}
-                     onChange={(e) => setDeposit(Number(e.target.value))}
-                     className="w-full accent-primary h-2 bg-foreground/10 rounded-full"
-                   />
-                </div>
+                 <div className="p-8 rounded-[2.5rem] bg-surface-elevated/50 border border-white/5 space-y-6">
+                    <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                       <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Lógica de la Seña</label>
+                       <div className="flex gap-2 bg-background/50 p-1 rounded-xl border border-white/5">
+                          <button 
+                            onClick={() => setDepositMode('share')}
+                            className={`px-4 py-2 rounded-lg text-[9px] font-black uppercase transition-all ${depositMode === 'share' ? 'bg-primary text-black' : 'text-muted-foreground hover:text-foreground'}`}
+                          >
+                             Una Parte (1/N)
+                          </button>
+                          <button 
+                            onClick={() => setDepositMode('percentage')}
+                            className={`px-4 py-2 rounded-lg text-[9px] font-black uppercase transition-all ${depositMode === 'percentage' ? 'bg-primary text-black' : 'text-muted-foreground hover:text-foreground'}`}
+                          >
+                             Porcentaje Fijo
+                          </button>
+                       </div>
+                    </div>
+
+                    {depositMode === 'share' ? (
+                       <div className="grid grid-cols-3 gap-3">
+                          {[
+                             { label: 'Fútbol 5', value: 10, desc: '10% del total' },
+                             { label: 'Fútbol 7', value: 7, desc: '7% aprox.' },
+                             { label: 'Fútbol 11', value: 5, desc: '5% aprox.' }
+                          ].map(opt => (
+                             <button 
+                                key={opt.value}
+                                onClick={() => setDeposit(opt.value)}
+                                className={`p-4 rounded-2xl border transition-all text-center ${deposit === opt.value ? 'bg-primary/10 border-primary' : 'bg-background/40 border-white/5 hover:border-white/10'}`}
+                             >
+                                <p className={`text-[10px] font-black uppercase tracking-tighter ${deposit === opt.value ? 'text-primary' : 'text-foreground'}`}>{opt.label}</p>
+                                <p className="text-[10px] font-bold text-muted-foreground mt-1">{opt.desc}</p>
+                             </button>
+                          ))}
+                       </div>
+                    ) : (
+                       <div className="space-y-4">
+                          <div className="flex justify-between items-center px-1">
+                             <div className="flex items-center gap-2">
+                                <span className="w-2 h-2 rounded-full bg-primary animate-pulse" />
+                                <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground italic">Monto Personalizado</label>
+                             </div>
+                             <span className="text-2xl font-black italic font-kanit text-primary">{deposit}%</span>
+                          </div>
+                          <input 
+                            type="range" min="0" max="100" step="5"
+                            value={deposit}
+                            onChange={(e) => setDeposit(Number(e.target.value))}
+                            className="w-full accent-primary h-2 bg-foreground/10 rounded-full"
+                          />
+                       </div>
+                    )}
+
+                    <div className="p-4 rounded-2xl bg-primary/5 border border-primary/10">
+                       <p className="text-[9px] font-bold text-primary/80 uppercase tracking-widest leading-relaxed italic">
+                          💡 REGLA DE NEGOCIO: El creador del partido pagará este monto para reservar. 
+                          {depositMode === 'share' ? ' Al elegir una parte, el creador paga exactamente lo mismo que el resto de los jugadores.' : ' Al elegir porcentaje, el creador puede pagar más o menos que su cuota individual.'}
+                       </p>
+                    </div>
+                 </div>
 
                 <div>
                    <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground mb-4 block">Precios por Cancha (1 Hora)</label>
