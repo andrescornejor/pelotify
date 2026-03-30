@@ -8,7 +8,6 @@ import {
   Wallet, 
   Settings, 
   TrendingUp, 
-  Users, 
   Clock, 
   ChevronRight,
   Bell,
@@ -16,17 +15,11 @@ import {
   DollarSign,
   ArrowUpRight,
   ArrowDownRight,
-  Activity,
+  BarChart3,
   Plus,
   Check,
   Zap,
-  Share2,
-  BarChart3,
-  QrCode,
-  Tag,
-  Gamepad2,
   Trash2,
-  Layers,
   ChevronLeft,
   Shield,
   ExternalLink,
@@ -72,9 +65,8 @@ export default function CanchasDashboard() {
   const tabs = [
     { id: 'overview', label: 'Resumen', icon: LayoutDashboard },
     { id: 'calendar', label: 'Horarios', icon: CalendarDays },
-    { id: 'marketing', label: 'Marketing', icon: Zap },
     { id: 'finances', label: 'Finanzas', icon: Wallet },
-    { id: 'settings', label: 'Configuración', icon: Settings },
+    { id: 'settings', label: 'Ajustes', icon: Settings },
   ];
 
   useEffect(() => {
@@ -300,7 +292,7 @@ export default function CanchasDashboard() {
             >
               {activeTab === 'overview' && <OverviewTab business={business} bookings={bookings} fields={fields} onNewBooking={() => setShowBookingModal(true)} onBookingClick={(booking: any) => { setSelectedBooking(booking); setShowEditBookingModal(true); }} onTabChange={setActiveTab} />}
               {activeTab === 'calendar' && <CalendarTab bookings={bookings} fields={fields} selectedDate={selectedDate} setSelectedDate={setSelectedDate} onSlotClick={(time: string, fieldId: string) => { setSelectedSlot({time, fieldId}); setShowBookingModal(true); }} onBookingClick={(booking: any) => { setSelectedBooking(booking); setShowEditBookingModal(true); }} />}
-              {activeTab === 'marketing' && <MarketingTab business={business} />}
+
               {activeTab === 'finances' && <FinancesTab business={business} bookings={bookings} hasMP={hasMP} user={user} />}
               {activeTab === 'settings' && <SettingsTab business={business} fields={fields} setFields={setFields} hasMP={hasMP} setBusiness={setBusiness} />}
             </motion.div>
@@ -363,17 +355,17 @@ export default function CanchasDashboard() {
 }
 
 /* =========================================
-   OVERVIEW TAB
+   OVERVIEW TAB — Simplified
 ========================================= */
 function OverviewTab({ business, bookings, fields, onNewBooking, onBookingClick, onTabChange }: any) {
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case 'pending': return 'bg-danger/10 text-danger border-danger/20';
-      case 'partial_paid': return 'bg-accent/10 text-accent border-accent/20';
-      case 'full_paid': return 'bg-success/10 text-success border-success/20';
-      default: return 'bg-foreground/10 text-foreground border-foreground/20';
-    }
-  };
+  const today = new Date().toISOString().split('T')[0];
+  const todayBookings = bookings.filter((b: any) => b.date === today && b.status !== 'cancelled');
+  const todayIncome = todayBookings.reduce((acc: number, curr: any) => acc + (curr.total_price || 0), 0);
+  const pendingCount = todayBookings.filter((b: any) => b.status === 'pending').length;
+  const occupancy = fields.length > 0 ? Math.round((todayBookings.length / (16 * fields.length)) * 100) : 0;
+
+  const formatMoney = (amount: number) =>
+    new Intl.NumberFormat('es-AR', { style: 'currency', currency: 'ARS', maximumFractionDigits: 0 }).format(amount);
 
   const getStatusLabel = (status: string) => {
     switch (status) {
@@ -384,438 +376,138 @@ function OverviewTab({ business, bookings, fields, onNewBooking, onBookingClick,
     }
   };
 
-  const todayIncome = bookings
-    .filter((b: any) => b.date === new Date().toISOString().split('T')[0])
-    .reduce((acc: number, curr: any) => acc + (curr.total_price || 0), 0);
-    
-  // Format numbers to ARS
-  const formatMoney = (amount: number) => {
-    return new Intl.NumberFormat('es-AR', { style: 'currency', currency: 'ARS', maximumFractionDigits: 0 }).format(amount);
-  };
-
   return (
-    <div className="space-y-8 animate-reveal-up">
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6">
-        <div className="space-y-1">
-          <h2 className="text-3xl font-black font-kanit italic uppercase tracking-tighter text-foreground">
-            Sede <span className="text-primary">{business?.name || "Central"}</span>
+    <div className="space-y-6 animate-reveal-up">
+      {/* Header */}
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+        <div>
+          <h2 className="text-2xl font-black font-kanit italic uppercase tracking-tighter">
+            Hoy en <span className="text-primary">{business?.name || "tu sede"}</span>
           </h2>
-          <p className="text-[10px] font-black uppercase tracking-[0.4em] text-muted-foreground">Panel de Control & Analytics</p>
+          <p className="text-xs text-muted-foreground mt-0.5">
+            {new Date().toLocaleDateString('es-AR', { weekday: 'long', day: 'numeric', month: 'long' })}
+          </p>
         </div>
-        <div className="flex items-center gap-3 w-full sm:w-auto">
-          <button className="flex-1 sm:flex-initial p-3 rounded-2xl bg-surface-elevated border border-border/50 hover:bg-surface-bright transition-all">
-            <Share2 className="w-5 h-5 mx-auto" />
-          </button>
-          <button onClick={onNewBooking} className="flex-[3] sm:flex-initial bg-primary text-black font-black uppercase text-[11px] tracking-widest py-3.5 px-8 rounded-2xl flex items-center justify-center gap-2 hover:bg-primary-light transition-all shadow-[0_10px_30px_rgba(44,252,125,0.3)] press-effect">
-            <Plus className="w-5 h-5" />
-            Nueva Reserva
-          </button>
-        </div>
+        <button onClick={onNewBooking} className="bg-primary text-black font-bold text-sm py-3 px-6 rounded-xl flex items-center gap-2 hover:bg-primary-light transition-all shadow-lg shadow-primary/20 press-effect">
+          <Plus className="w-4 h-4" /> Nueva Reserva
+        </button>
       </div>
 
-      {/* STATS CARDS */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
-        <StatCard 
-          icon={DollarSign} 
-          title="Ingresos Hoy" 
-          value={formatMoney(todayIncome || 0)} 
-          trend="+12%" 
-          trendUp={true} 
-          color="primary"
-        />
-        <StatCard 
-          icon={CalendarDays} 
-          title="Reservas Totales" 
-          value={bookings.length.toString()} 
-          trend="+5" 
-          trendUp={true} 
-          color="accent"
-        />
-        <StatCard 
-          icon={Activity} 
-          title="Canchas Activas" 
-          value={`${fields.filter((f: any) => f.is_active).length}/${fields.length}`} 
-          trend="Full" 
-          trendUp={true} 
-          color="success"
-        />
-        <StatCard 
-          icon={TrendingUp} 
-          title="Ocupación" 
-          value={fields.length > 0 ? `${Math.round((bookings.filter((b:any) => b.date === new Date().toISOString().split('T')[0]).length / (16 * fields.length)) * 100)}%` : '0%'} 
-          trend="Real" 
-          trendUp={true} 
-          color="primary"
-        />
-      </div>
-
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8">
-        {/* REVENUE CHART PLACEHOLDER (CUSTOM SVG) */}
-        <div className="lg:col-span-2 glass-premium rounded-[2.5rem] p-8 border-white/5 relative overflow-hidden group">
-          <div className="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-full blur-[80px] -z-10 group-hover:bg-primary/10 transition-colors"></div>
-          
-          <div className="flex justify-between items-center mb-10">
-            <div>
-              <h3 className="text-xl font-black font-kanit italic uppercase tracking-tighter">Actividad Semanal</h3>
-              <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest mt-1">Comparativa de reservas x día</p>
-            </div>
-            <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-foreground/5 border border-white/5">
-              <BarChart3 className="w-4 h-4 text-primary" />
-              <span className="text-[9px] font-black uppercase tracking-widest">Live</span>
-            </div>
-          </div>
-
-        </div>
-
-        {/* QUICK ACTIONS */}
-        <div className="glass-premium rounded-[2.5rem] p-8 border-white/5">
-           <h3 className="text-xl font-black font-kanit italic uppercase tracking-tighter mb-6">Acceso Rápido</h3>
-           <div className="grid grid-cols-2 gap-4">
-             <QuickActionPremium icon={CalendarDays} label="Agenda" sub="Revisar Turnos" color="primary" onClick={() => onTabChange('calendar')} />
-             <QuickActionPremium icon={Zap} label="Marketing" sub="Subir Promo" color="accent" onClick={() => onTabChange('marketing')} />
-             <QuickActionPremium icon={Settings} label="Ajustes" sub="Configuración" color="primary" onClick={() => onTabChange('settings')} />
-             <QuickActionPremium icon={Wallet} label="Cobros" sub="Finanzas" color="accent" onClick={() => onTabChange('finances')} />
-           </div>
-           
-           <div className="mt-8 p-6 rounded-3xl bg-surface-elevated/50 border border-white/5 space-y-4">
-              <div className="flex items-center gap-3">
-                 <div className="w-8 h-8 rounded-xl bg-accent/20 flex items-center justify-center">
-                    < Bell className="w-4 h-4 text-accent" />
-                 </div>
-                 <h4 className="text-xs font-black uppercase tracking-widest">Aviso Importante</h4>
-              </div>
-              <p className="text-[10px] text-muted-foreground leading-relaxed">No tienes avisos críticos en este momento. Los pedidos de reserva aparecerán aquí automáticamente.</p>
-           </div>
-        </div>
-      </div>
-
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        {/* UPCOMING MATCHES */}
-        <div className="lg:col-span-2 glass-premium rounded-[2.5rem] p-8 border-white/5">
-          <div className="flex justify-between items-center mb-8">
-            <div>
-              <h3 className="text-xl font-black font-kanit italic uppercase tracking-tighter">Agenda Próxima</h3>
-              <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Turnos de las próximas 24 horas</p>
-            </div>
-            <button onClick={() => onTabChange('calendar')} className="px-4 py-2 rounded-xl bg-foreground/5 hover:bg-foreground/10 text-[9px] font-black uppercase tracking-widest transition-all">
-              Ver Agenda Completa
-            </button>
-          </div>
-          
-          <div className="space-y-3">
-            {bookings.length === 0 ? (
-              <div className="text-center py-12 bg-surface-elevated/30 rounded-[2rem] border border-dashed border-white/10 text-muted-foreground font-black uppercase text-[10px] tracking-widest">
-                No hay movimientos detectados
-              </div>
-            ) : (
-              bookings.slice(0, 5).map((booking: any) => (
-                <UpcomingMatch 
-                  key={booking.id}
-                  time={booking.start_time.substring(0, 5)} 
-                  field={booking.canchas_fields?.name || 'Cancha'} 
-                  team={booking.title || 'Turno Manual'} 
-                  status={getStatusLabel(booking.status)} 
-                  price={formatMoney(booking.total_price)} 
-                  isPending={booking.status === 'pending'} 
-                  isApp={!!booking.match_id}
-                  onClick={() => onBookingClick?.(booking)}
-                />
-              ))
-            )}
-          </div>
-        </div>
-
-        <div className="glass-premium rounded-[2.5rem] p-8 border-white/5 flex flex-col items-center justify-center text-center space-y-4">
-           <div className="w-16 h-16 rounded-3xl bg-primary/10 flex items-center justify-center border border-primary/20">
-              <Users className="w-8 h-8 text-primary" />
-           </div>
-           <h3 className="text-xl font-black font-kanit italic uppercase tracking-tighter">Comunidad Activa</h3>
-           <p className="text-[10px] text-muted-foreground leading-relaxed uppercase tracking-widest font-bold">Pronto verás aquí el ranking de tus jugadores más fieles y sus estadísticas de juego.</p>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function QuickActionPremium({ icon: Icon, label, sub, color, onClick }: any) {
-  return (
-    <button onClick={onClick} className="flex flex-col items-start gap-4 p-5 rounded-[1.8rem] bg-surface-elevated/50 hover:bg-surface-elevated border border-white/5 hover:border-primary/20 transition-all press-effect relative overflow-hidden group">
-      <div className={`p-2.5 rounded-xl bg-background border border-white/10 group-hover:bg-primary transition-colors`}>
-        <Icon className={`w-5 h-5 group-hover:text-black transition-colors ${color === 'primary' ? 'text-primary' : color === 'accent' ? 'text-accent' : 'text-success'}`} />
-      </div>
-      <div>
-        <p className="text-xs font-black uppercase tracking-tighter">{label}</p>
-        <p className="text-[8px] font-bold text-muted-foreground uppercase tracking-widest mt-1 opacity-0 group-hover:opacity-100 transition-opacity">{sub}</p>
-      </div>
-      <Plus className="absolute top-4 right-4 w-4 h-4 text-muted-foreground/20 group-hover:text-primary transition-colors" />
-    </button>
-  );
-}
-
-/* =========================================
-   MARKETING TAB
- ========================================= */
-function MarketingTab({ business }: any) {
-  return (
-    <div className="space-y-8 animate-reveal-up">
-       <div className="flex flex-col gap-1">
-          <h2 className="text-3xl font-black font-kanit italic uppercase tracking-tighter text-foreground">
-            Promo <span className="text-primary">Radar</span>
-          </h2>
-          <p className="text-[10px] font-black uppercase tracking-[0.4em] text-muted-foreground">Marketing & Fidelización</p>
-       </div>
-
-       <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          <div className="md:col-span-2 space-y-6">
-             {/* QR Section */}
-             <div className="glass-premium rounded-[2.5rem] p-8 border-white/5 relative overflow-hidden">
-                <div className="flex flex-col lg:flex-row gap-8 items-center">
-                   <div className="w-48 h-48 bg-white rounded-[2rem] p-4 flex items-center justify-center shadow-2xl">
-                      <QrCode className="w-full h-full text-black" />
-                   </div>
-                   <div className="flex-1 space-y-4 text-center lg:text-left">
-                      <h3 className="text-2xl font-black font-kanit italic uppercase tracking-tighter">Tu Perfil Directo</h3>
-                      <p className="text-xs text-muted-foreground leading-relaxed max-w-sm">Este QR lleva a los jugadores directamente a tu complejo en Pelotify. Imprimilo y pegalo en la administración para que todos se unan!</p>
-                      <div className="flex flex-col sm:flex-row gap-3 pt-2">
-                         <button className="bg-primary text-black font-black uppercase text-[10px] tracking-widest py-3 px-6 rounded-xl flex items-center justify-center gap-2 hover:bg-primary-light transition-all">
-                            <Share2 className="w-4 h-4" /> Copiar Link
-                         </button>
-                         <button className="bg-surface-elevated text-foreground font-black uppercase text-[10px] tracking-widest py-3 px-6 rounded-xl border border-white/10 hover:bg-surface-bright transition-all">
-                            Descargar PNG
-                         </button>
-                      </div>
-                   </div>
-                </div>
-             </div>
-
-             {/* active Promotions */}
-             <div className="glass-premium rounded-[2.5rem] p-8 border-white/5">
-                <div className="flex justify-between items-center mb-8">
-                   <h3 className="text-xl font-black font-kanit italic uppercase tracking-tighter">Promociones Activas</h3>
-                   <button className="px-5 py-2.5 bg-primary/20 text-primary border border-primary/30 rounded-xl text-[9px] font-black uppercase tracking-widest hover:bg-primary transition-all hover:text-black">
-                      Nueva Campaña
-                   </button>
-                </div>
-                
-                <div className="p-10 text-center flex flex-col items-center justify-center border-dashed border-2 border-white/5 rounded-[2rem] bg-surface-elevated/30">
-                   <Tag className="w-12 h-12 text-muted-foreground/30 mb-4" />
-                   <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">No hay promociones activas actualmente.</p>
-                   <p className="text-[8px] font-bold text-muted-foreground uppercase tracking-widest mt-2 px-6">Crea una nueva campaña para incentivar a tus jugadores en horas muertas.</p>
-                </div>
-             </div>
-          </div>
-
-          <div className="space-y-6">
-             <div className="glass-premium rounded-[2.5rem] p-8 border-white/5 bg-gradient-to-br from-primary/10 to-transparent">
-                <h3 className="text-lg font-black font-kanit italic uppercase tracking-tighter mb-4">Tips de Crecimiento</h3>
-                <ul className="space-y-4">
-                   <GrowthTip icon={Gamepad2} text="Ofrece un 10% de descuento a equipos que usen el uniforme oficial de su equipo en Pelotify." />
-                   <GrowthTip icon={Users} text="Crea un partido 'Open Recruit' para completar tus horas muertas." />
-                   <GrowthTip icon={Tag} text="Habilitá el pago por Mercado Pago para reducir ausencias (No-Shows) en un 40%." />
-                </ul>
-             </div>
-          </div>
-       </div>
-    </div>
-  );
-}
-
-function PromoCard({ title, discount, period, status, icon: Icon, inactive = false }: any) {
-  return (
-    <div className={`p-6 rounded-[2rem] border transition-all ${inactive ? 'bg-surface-elevated/50 border-white/5 opacity-60' : 'bg-surface-elevated border-primary/20 shadow-lg shadow-primary/5'}`}>
-       <div className="flex justify-between items-start mb-4">
-          <div className={`p-2 rounded-lg ${inactive ? 'bg-background' : 'bg-primary/20 text-primary'}`}>
-             <Icon className="w-5 h-5" />
-          </div>
-          <span className={`text-[8px] font-black uppercase tracking-widest px-2 py-1 rounded-md ${inactive ? 'bg-background text-muted-foreground' : 'bg-primary text-black'}`}>
-             {status}
-          </span>
-       </div>
-       <h4 className="text-sm font-black uppercase tracking-tighter">{title}</h4>
-       <div className="mt-4 flex items-end justify-between">
+      {/* Stats Row */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+        <div className="glass-card p-4 flex items-center gap-3">
+          <div className="p-2 rounded-xl bg-primary/10"><DollarSign className="w-5 h-5 text-primary" /></div>
           <div>
-             <p className="text-xl font-black italic font-kanit text-primary">{discount}</p>
-             <p className="text-[8px] font-bold text-muted-foreground uppercase tracking-widest mt-1">{period}</p>
+            <p className="text-[10px] text-muted-foreground font-semibold uppercase">Ingresos Hoy</p>
+            <p className="text-lg font-black font-kanit tracking-tight">{formatMoney(todayIncome)}</p>
           </div>
-          <button className="p-2 rounded-lg bg-background border border-white/5 hover:border-primary/50 transition-colors">
-             <Settings className="w-4 h-4 text-muted-foreground" />
-          </button>
-       </div>
-    </div>
-  );
-}
-
-function GrowthTip({ icon: Icon, text }: any) {
-  return (
-    <li className="flex gap-4">
-       <div className="w-8 h-8 shrink-0 rounded-lg bg-background flex items-center justify-center border border-white/10">
-          <Icon className="w-4 h-4 text-primary" />
-       </div>
-       <p className="text-[10px] text-muted-foreground font-medium leading-relaxed">{text}</p>
-    </li>
-  );
-}
-
-/* =========================================
-   INVENTORY TAB
- ========================================= */
-function InventoryTab() {
-  const items = [
-    { name: 'Gatorade Blue 500ml', stock: 24, price: 1200, category: 'Bebidas' },
-    { name: 'Agua Villavicencio 500ml', stock: 48, price: 800, category: 'Bebidas' },
-    { name: 'Barrita de Cereal', stock: 12, price: 500, category: 'Snacks' },
-    { name: 'Alquiler de Chalecos', stock: 10, price: 1000, category: 'Servicios' },
-  ];
-
-  return (
-    <div className="space-y-8 animate-reveal-up">
-       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6">
-          <div className="flex flex-col gap-1">
-             <h2 className="text-3xl font-black font-kanit italic uppercase tracking-tighter text-foreground">
-               Control <span className="text-primary">Stock</span>
-             </h2>
-             <p className="text-[10px] font-black uppercase tracking-[0.4em] text-muted-foreground">Inventario & Ventas del Bar</p>
-          </div>
-          <button className="w-full sm:w-auto bg-primary text-black font-black uppercase text-[11px] tracking-widest py-3.5 px-8 rounded-2xl flex items-center justify-center gap-2 hover:bg-primary-light transition-all shadow-lg press-effect">
-            <Plus className="w-5 h-5" />
-            Cargar Compra
-          </button>
-       </div>
-
-       <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
-          <div className="lg:col-span-3">
-             <div className="glass-premium rounded-[2.5rem] border-white/5 overflow-hidden">
-                <table className="w-full text-left">
-                   <thead className="bg-surface-elevated/50 border-b border-white/5">
-                      <tr>
-                         <th className="px-8 py-5 text-[10px] font-black uppercase tracking-widest text-muted-foreground">Producto</th>
-                         <th className="px-8 py-5 text-[10px] font-black uppercase tracking-widest text-muted-foreground">Stock</th>
-                         <th className="px-8 py-5 text-[10px] font-black uppercase tracking-widest text-muted-foreground">Precio</th>
-                         <th className="px-8 py-5 text-[10px] font-black uppercase tracking-widest text-muted-foreground">Acción</th>
-                      </tr>
-                   </thead>
-                   <tbody className="divide-y divide-white/5">
-                      {items.map((item, i) => (
-                        <tr key={i} className="hover:bg-foreground/[0.02] transition-colors group">
-                           <td className="px-8 py-6">
-                              <p className="text-sm font-black uppercase tracking-tighter group-hover:text-primary transition-colors">{item.name}</p>
-                              <p className="text-[8px] font-black text-muted-foreground uppercase mt-1 tracking-widest">{item.category}</p>
-                           </td>
-                           <td className="px-8 py-6">
-                              <div className="flex items-center gap-2">
-                                 <span className={`text-sm font-black italic font-kanit ${item.stock < 15 ? 'text-accent' : 'text-foreground'}`}>{item.stock}</span>
-                                 {item.stock < 15 && <span className="text-[8px] font-black text-accent uppercase tracking-widest">Bajo</span>}
-                              </div>
-                           </td>
-                           <td className="px-8 py-6">
-                              <span className="text-sm font-black text-foreground">${item.price}</span>
-                           </td>
-                           <td className="px-8 py-6">
-                              <div className="flex items-center gap-2">
-                                 <button className="p-2 rounded-lg bg-foreground/5 hover:bg-primary hover:text-black transition-all">
-                                    <Plus className="w-4 h-4" />
-                                 </button>
-                                 <button className="p-2 rounded-lg bg-foreground/5 hover:bg-danger hover:text-white transition-all">
-                                    <Trash2 className="w-4 h-4" />
-                                 </button>
-                              </div>
-                           </td>
-                        </tr>
-                      ))}
-                   </tbody>
-                </table>
-             </div>
-          </div>
-
-          <div className="space-y-6">
-             <div className="glass-premium rounded-[2.5rem] p-8 border-white/5">
-                <h3 className="text-lg font-black font-kanit italic uppercase tracking-tighter mb-6">Resumen del Turno</h3>
-                <div className="space-y-6">
-                   <div className="flex justify-between items-center">
-                      <p className="text-[10px] font-black text-muted-foreground uppercase">Ventas Hoy</p>
-                      <p className="text-xl font-black italic font-kanit text-primary">$12.400</p>
-                   </div>
-                   <div className="flex justify-between items-center">
-                      <p className="text-[10px] font-black text-muted-foreground uppercase">Rentabilidad</p>
-                      <p className="text-xl font-black italic font-kanit text-accent">35%</p>
-                   </div>
-                   <button className="w-full py-4 bg-foreground/5 hover:bg-foreground/10 rounded-2xl text-[9px] font-black uppercase tracking-widest transition-all">
-                      Ver Reporte Detallado
-                   </button>
-                </div>
-             </div>
-          </div>
-       </div>
-    </div>
-  );
-}
-
-
-function StatCard({ icon: Icon, title, value, trend, trendUp, color }: any) {
-  const getGlow = () => {
-    if(color === 'primary') return 'group-hover:shadow-[0_0_30px_rgba(44,252,125,0.2)]';
-    if(color === 'accent') return 'group-hover:shadow-[0_0_30px_rgba(245,158,11,0.2)]';
-    if(color === 'danger') return 'group-hover:shadow-[0_0_30px_rgba(244,63,94,0.2)]';
-    return '';
-  };
-
-  const getTextColor = () => {
-    if(color === 'primary') return 'text-primary';
-    if(color === 'accent') return 'text-accent';
-    if(color === 'success') return 'text-success';
-    return 'text-danger';
-  };
-
-  return (
-    <div className={`glass-card p-5 flex flex-col gap-3 group transition-all duration-300 ${getGlow()}`}>
-      <div className="flex justify-between items-start">
-        <div className={`p-2.5 rounded-xl bg-surface-elevated border border-border/50`}>
-          <Icon className={`w-5 h-5 ${getTextColor()}`} />
         </div>
-        <div className={`flex items-center gap-1 text-xs font-bold px-2 py-1 rounded-full ${trendUp ? 'bg-success/10 text-success' : 'bg-danger/10 text-danger'}`}>
-          {trendUp ? <ArrowUpRight className="w-3 h-3" /> : <ArrowDownRight className="w-3 h-3" />}
-          {trend}
+        <div className="glass-card p-4 flex items-center gap-3">
+          <div className="p-2 rounded-xl bg-accent/10"><CalendarDays className="w-5 h-5 text-accent" /></div>
+          <div>
+            <p className="text-[10px] text-muted-foreground font-semibold uppercase">Turnos Hoy</p>
+            <p className="text-lg font-black font-kanit tracking-tight">{todayBookings.length}</p>
+          </div>
+        </div>
+        <div className="glass-card p-4 flex items-center gap-3">
+          <div className="p-2 rounded-xl bg-danger/10"><Clock className="w-5 h-5 text-danger" /></div>
+          <div>
+            <p className="text-[10px] text-muted-foreground font-semibold uppercase">Impagos</p>
+            <p className="text-lg font-black font-kanit tracking-tight">{pendingCount}</p>
+          </div>
+        </div>
+        <div className="glass-card p-4 flex items-center gap-3">
+          <div className="p-2 rounded-xl bg-primary/10"><TrendingUp className="w-5 h-5 text-primary" /></div>
+          <div>
+            <p className="text-[10px] text-muted-foreground font-semibold uppercase">Ocupación</p>
+            <p className="text-lg font-black font-kanit tracking-tight">{occupancy}%</p>
+          </div>
         </div>
       </div>
-      <div>
-        <p className="text-xs text-muted-foreground font-medium mb-1">{title}</p>
-        <p className="text-2xl sm:text-3xl font-bold font-kanit tracking-tight">{value}</p>
+
+      {/* Today's Bookings List */}
+      <div className="glass-premium rounded-2xl p-6 border-white/5">
+        <div className="flex justify-between items-center mb-4">
+          <h3 className="text-base font-black font-kanit uppercase tracking-tight">Turnos del día</h3>
+          <button onClick={() => onTabChange('calendar')} className="text-xs text-primary font-bold hover:underline">
+            Ver semana →
+          </button>
+        </div>
+
+        {todayBookings.length === 0 ? (
+          <div className="text-center py-10 text-muted-foreground text-sm">
+            <CalendarDays className="w-8 h-8 mx-auto mb-2 opacity-30" />
+            No hay turnos para hoy
+          </div>
+        ) : (
+          <div className="space-y-2">
+            {todayBookings.map((booking: any) => (
+              <UpcomingMatch
+                key={booking.id}
+                time={booking.start_time.substring(0, 5)}
+                field={booking.canchas_fields?.name || 'Cancha'}
+                team={booking.title || 'Reserva'}
+                status={getStatusLabel(booking.status)}
+                price={formatMoney(booking.total_price)}
+                isPending={booking.status === 'pending'}
+                isApp={!!booking.match_id}
+                onClick={() => onBookingClick?.(booking)}
+              />
+            ))}
+          </div>
+        )}
+      </div>
+
+      {/* Quick nav */}
+      <div className="grid grid-cols-3 gap-3">
+        <button onClick={() => onTabChange('calendar')} className="glass-card p-4 flex flex-col items-center gap-2 hover:border-primary/30 transition-all press-effect">
+          <CalendarDays className="w-5 h-5 text-primary" />
+          <span className="text-[10px] font-bold text-muted-foreground uppercase">Agenda</span>
+        </button>
+        <button onClick={() => onTabChange('finances')} className="glass-card p-4 flex flex-col items-center gap-2 hover:border-primary/30 transition-all press-effect">
+          <Wallet className="w-5 h-5 text-accent" />
+          <span className="text-[10px] font-bold text-muted-foreground uppercase">Finanzas</span>
+        </button>
+        <button onClick={() => onTabChange('settings')} className="glass-card p-4 flex flex-col items-center gap-2 hover:border-primary/30 transition-all press-effect">
+          <Settings className="w-5 h-5 text-muted-foreground" />
+          <span className="text-[10px] font-bold text-muted-foreground uppercase">Ajustes</span>
+        </button>
       </div>
     </div>
   );
 }
+
 
 function UpcomingMatch({ time, field, team, status, price, isPending = false, isApp = false, onClick }: any) {
   return (
-    <div onClick={onClick} className="cursor-pointer flex items-center justify-between p-5 rounded-[2rem] bg-surface-elevated/40 hover:bg-surface-elevated border border-white/5 hover:border-primary/20 transition-all group relative overflow-hidden">
+    <div onClick={onClick} className="cursor-pointer flex items-center justify-between p-4 rounded-xl bg-surface-elevated/40 hover:bg-surface-elevated border border-white/5 hover:border-primary/20 transition-all group relative overflow-hidden">
       {isApp && (
-        <div className="absolute top-0 left-0 w-1 h-full bg-primary shadow-[0_0_15px_rgba(44,252,125,0.8)]"></div>
+        <div className="absolute top-0 left-0 w-1 h-full bg-primary shadow-[0_0_10px_rgba(44,252,125,0.6)]"></div>
       )}
-      <div className="flex items-center gap-6">
-        <div className="text-center w-14 shrink-0">
-          <span className="block text-xl font-black font-kanit italic text-foreground tracking-tighter group-hover:text-primary transition-colors">{time}</span>
-          <span className="text-[8px] font-black text-muted-foreground uppercase tracking-widest">HS</span>
+      <div className="flex items-center gap-4">
+        <div className="text-center w-12 shrink-0">
+          <span className="block text-lg font-black font-kanit italic tracking-tighter group-hover:text-primary transition-colors">{time}</span>
         </div>
-        <div className="w-px h-12 bg-white/5 hidden sm:block"></div>
+        <div className="w-px h-10 bg-white/5 hidden sm:block"></div>
         <div>
           <div className="flex items-center gap-2">
-            <h4 className="font-black text-sm uppercase tracking-tighter text-foreground">{field}</h4>
+            <h4 className="font-bold text-sm text-foreground">{field}</h4>
             {isApp && (
               <div className="flex items-center gap-1 px-1.5 py-0.5 rounded-md bg-primary/10 border border-primary/20">
                 <Zap className="w-2.5 h-2.5 text-primary" />
-                <span className="text-[7px] font-black text-primary uppercase tracking-widest">APP</span>
+                <span className="text-[7px] font-bold text-primary uppercase">APP</span>
               </div>
             )}
           </div>
-          <p className="text-[10px] text-muted-foreground font-bold uppercase tracking-widest mt-0.5">{team}</p>
+          <p className="text-xs text-muted-foreground mt-0.5">{team}</p>
         </div>
       </div>
       <div className="text-right">
-        <p className="font-black text-base italic font-kanit text-foreground">{price}</p>
-        <p className={`text-[8px] font-black uppercase tracking-[0.2em] px-2 py-1 rounded-lg mt-1 inline-block ${
+        <p className="font-bold text-sm font-kanit">{price}</p>
+        <p className={`text-[9px] font-bold uppercase px-2 py-0.5 rounded-md mt-1 inline-block ${
           isPending ? 'bg-danger/10 text-danger border border-danger/20' : 
-          status.includes('Seña') ? 'bg-accent/10 text-accent border border-accent/20 text-glow-accent' : 
-          'bg-primary/10 text-primary border border-primary/20 text-glow-primary'
+          status.includes('Seña') ? 'bg-accent/10 text-accent border border-accent/20' : 
+          'bg-primary/10 text-primary border border-primary/20'
         }`}>
           {status}
         </p>
@@ -824,16 +516,6 @@ function UpcomingMatch({ time, field, team, status, price, isPending = false, is
   );
 }
 
-function QuickAction({ icon: Icon, label, onClick }: any) {
-  return (
-    <button onClick={onClick} className="flex flex-col items-center gap-2 p-3 rounded-xl bg-surface-elevated/50 hover:bg-surface-elevated border border-border/50 transition-all press-effect text-center group">
-      <div className="w-10 h-10 rounded-full bg-background flex items-center justify-center border border-border group-hover:border-primary/50 group-hover:text-primary transition-colors">
-        <Icon className="w-5 h-5" />
-      </div>
-      <span className="text-xs font-semibold text-muted-foreground group-hover:text-foreground">{label}</span>
-    </button>
-  );
-}
 
 /* =========================================
    CALENDAR TAB
