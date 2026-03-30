@@ -5,7 +5,6 @@ import { useRouter, usePathname } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
 import { getURL } from '@/lib/utils';
 
-
 interface User {
   id: string;
   name: string;
@@ -36,7 +35,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [isLoading, setIsLoading] = useState(true);
   const router = useRouter();
   const pathname = usePathname();
-  const supabaseAuth = supabase;
 
   useEffect(() => {
     // Shared logic to fetch profile and normalize user state
@@ -148,7 +146,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             const refresh_token = params.get('refresh_token');
 
             if (access_token && refresh_token) {
-              const { error } = await supabaseAuth.auth.setSession({
+              const { error } = await supabase.auth.setSession({
                 access_token,
                 refresh_token,
               });
@@ -226,7 +224,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     // pero idealmente deberia ser un login real
     const loginPassword = password || '123456';
 
-    const { error } = await supabaseAuth.auth.signInWithPassword({
+    const { error } = await supabase.auth.signInWithPassword({
       email,
       password: loginPassword,
     });
@@ -242,7 +240,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const loginWithGoogle = async () => {
     if (!checkConfig()) return;
 
-    const { error } = await supabaseAuth.auth.signInWithOAuth({
+    const { error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: {
         redirectTo: getURL(),
@@ -264,7 +262,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const updatePassword = async (newPassword: string) => {
     if (!checkConfig()) return;
 
-    const { error } = await supabaseAuth.auth.updateUser({
+    const { error } = await supabase.auth.updateUser({
       password: newPassword,
     });
 
@@ -279,7 +277,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const sendPasswordResetEmail = async (email: string) => {
     if (!checkConfig()) return;
 
-    const { error } = await supabaseAuth.auth.resetPasswordForEmail(email, {
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
       redirectTo: `${getURL()}/update-password`,
     });
 
@@ -294,7 +292,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const register = async (data: any): Promise<{ needsConfirmation: boolean }> => {
     if (!checkConfig()) return { needsConfirmation: false };
 
-    const { data: signUpData, error } = await supabaseAuth.auth.signUp({
+    const { data: signUpData, error } = await supabase.auth.signUp({
       email: data.email,
       password: data.password || '123456',
       options: {
@@ -338,7 +336,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   const logout = async () => {
-    await supabaseAuth.auth.signOut();
+    await supabase.auth.signOut();
     setUser(null);
     router.replace('/');
   };
@@ -347,7 +345,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     try {
       const {
         data: { session },
-      } = await supabaseAuth.auth.getSession();
+      } = await supabase.auth.getSession();
       if (!session) throw new Error('No hay sesión activa');
 
       // --- MOBILE / CAPACITOR FIX ---
@@ -359,7 +357,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         throw new Error(rpcError.message || 'Error al eliminar cuenta desde la BD');
       }
 
-      await supabaseAuth.auth.signOut();
+      await supabase.auth.signOut();
       setUser(null);
       router.replace('/login');
     } catch (error: any) {
@@ -397,7 +395,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         completeTour: async () => {
           if (!user) return;
           console.log('Completing tour for user:', user.id);
-          const { error } = await supabaseAuth.auth.updateUser({
+          const { error } = await supabase.auth.updateUser({
             data: { tour_completed: true }
           });
           if (!error) {
