@@ -357,8 +357,8 @@ export default function LandingPage() {
                {/* 🔴 MARKETING PARA DUEÑOS (SELLING TO VENUE OWNERS) - TITANIC SCALE */}
                <section className="py-40 px-6 lg:px-12 relative overflow-hidden bg-[#020202] border-y border-primary/10">                 
                   <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full text-center pointer-events-none z-0 opacity-[0.02]">
-                     <h1 className="text-[12rem] md:text-[22rem] font-black italic font-kanit uppercase leading-none whitespace-nowrap text-white">
-                        CERO FRICCIONES
+                     <h1 className="text-[12rem] md:text-[22rem] font-black italic font-kanit uppercase leading-none whitespace-nowrap text-white pr-10">
+                        CERO FRICCIÓN
                      </h1>
                   </div>
 
@@ -381,24 +381,34 @@ export default function LandingPage() {
                                  <span className="text-sm font-black uppercase tracking-[0.3em] text-white">POTENCIA TU PREDIO DEPORTIVO</span>
                               </div>
                               <h2 className="text-6xl md:text-8xl lg:text-[7.5rem] font-black font-kanit italic uppercase tracking-tighter leading-[0.85] drop-shadow-2xl text-white">
-                                 MÁXIMA <span className="text-zinc-500">OCUPACIÓN.</span><br/>
-                                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-white whitespace-nowrap text-5xl md:text-7xl lg:text-[6rem] mt-4 block drop-shadow-[0_0_20px_rgba(44,252,125,0.3)]">CERO FRICCIONES.</span>
+                                 MÁXIMA <span className="text-zinc-500 pr-4 block lg:inline-block">OCUPACIÓN.</span><br/>
+                                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-white whitespace-nowrap text-5xl md:text-7xl lg:text-[6rem] mt-4 block drop-shadow-[0_0_20px_rgba(44,252,125,0.3)] pr-6 pb-2">CERO FRICCIÓN.</span>
                               </h2>
                               <p className="text-lg md:text-2xl font-bold text-zinc-400 max-w-xl leading-relaxed pt-6">
                                  Despídete de los huecos vacíos y tu plata al aire. Pelotify automatiza las reservas, los pagos y la carga administrativa de tus canchas.
                               </p>
                            </div>
 
-                           <div className="grid grid-cols-1 sm:grid-cols-2 gap-12 border-y border-white/5 py-12">
-                              <div className="space-y-5 pl-8 border-l-4 border-primary hover:-translate-y-2 transition-transform duration-300">
-                                 <DollarSign className="w-10 h-10 text-primary drop-shadow-[0_0_15px_rgba(44,252,125,0.6)]" />
-                                 <h5 className="text-lg font-black uppercase tracking-widest text-white">Protege tu Caja Fuerte</h5>
-                                 <p className="text-sm font-bold text-zinc-500 leading-relaxed uppercase tracking-widest">Señas automatizadas 100% integradas a MercadoPago. Directo a tu banco.</p>
+                           <div className="grid grid-cols-1 sm:grid-cols-2 gap-10 border-y border-white/5 py-12">
+                              <div className="space-y-4 pl-6 border-l-4 border-primary hover:-translate-y-1 transition-transform duration-300">
+                                 <DollarSign className="w-8 h-8 text-primary drop-shadow-[0_0_15px_rgba(44,252,125,0.6)]" />
+                                 <h5 className="text-base font-black uppercase tracking-widest text-white">Protege tu Caja Fuerte</h5>
+                                 <p className="text-xs font-bold text-zinc-500 leading-relaxed uppercase tracking-widest">Señas automatizadas 100% integradas a MercadoPago. Directo a tu banco.</p>
                               </div>
-                              <div className="space-y-5 pl-8 border-l-4 border-primary hover:-translate-y-2 transition-transform duration-300">
-                                 <BarChart3 className="w-10 h-10 text-primary drop-shadow-[0_0_15px_rgba(44,252,125,0.6)]" />
-                                 <h5 className="text-lg font-black uppercase tracking-widest text-white">Métricas de Emperador</h5>
-                                 <p className="text-sm font-bold text-zinc-500 leading-relaxed uppercase tracking-widest">Analíticas de ingresos, picos calientes de alquiler e historial de clientes.</p>
+                              <div className="space-y-4 pl-6 border-l-4 border-primary hover:-translate-y-1 transition-transform duration-300">
+                                 <BarChart3 className="w-8 h-8 text-primary drop-shadow-[0_0_15px_rgba(44,252,125,0.6)]" />
+                                 <h5 className="text-base font-black uppercase tracking-widest text-white">Métricas de Emperador</h5>
+                                 <p className="text-xs font-bold text-zinc-500 leading-relaxed uppercase tracking-widest">Analíticas de ingresos, picos calientes de alquiler e historial de clientes.</p>
+                              </div>
+                              <div className="space-y-4 pl-6 border-l-4 border-primary hover:-translate-y-1 transition-transform duration-300">
+                                 <Zap className="w-8 h-8 text-primary drop-shadow-[0_0_15px_rgba(44,252,125,0.6)]" />
+                                 <h5 className="text-base font-black uppercase tracking-widest text-white">Autogestión Completa</h5>
+                                 <p className="text-xs font-bold text-zinc-500 leading-relaxed uppercase tracking-widest">El jugador arma su equipo y paga. Tú solo recibes la reserva lista y el dinero.</p>
+                              </div>
+                              <div className="space-y-4 pl-6 border-l-4 border-primary hover:-translate-y-1 transition-transform duration-300">
+                                 <Globe className="w-8 h-8 text-primary drop-shadow-[0_0_15px_rgba(44,252,125,0.6)]" />
+                                 <h5 className="text-base font-black uppercase tracking-widest text-white">Visibilidad Total</h5>
+                                 <p className="text-xs font-bold text-zinc-500 leading-relaxed uppercase tracking-widest">Aparece en el mapa frente a miles de jugadores. Aumenta tu demanda y llena tus horarios.</p>
                               </div>
                            </div>
                         </motion.div>
