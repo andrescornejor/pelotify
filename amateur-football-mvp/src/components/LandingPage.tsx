@@ -76,10 +76,18 @@ export default function LandingPage() {
             transition={{ duration: 0.8 }}
             className="flex items-center gap-4 group cursor-pointer"
          >
-            <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-zinc-900 to-black flex items-center justify-center border border-primary/30 group-hover:border-primary group-hover:shadow-[0_0_30px_rgba(44,252,125,0.5)] transition-all duration-500">
-               <img src="/logo_pelotify.png" className="w-10 h-10 object-contain drop-shadow-[0_0_12px_rgba(44,252,125,0.8)] animate-float" alt="Pelotify" />
+            <div className="w-16 h-16 sm:w-20 sm:h-20 flex items-center justify-center relative transition-transform duration-500 group-hover:scale-110 shrink-0">
+               <div className="absolute inset-0 bg-primary/15 blur-[20px] rounded-full opacity-40 shrink-0" />
+               <img src="/logo_pelotify.png" className="w-full h-full object-contain relative z-10 drop-shadow-[0_0_15px_rgba(44,252,125,0.2)] animate-float" alt="Pelotify" />
             </div>
-            <span className="text-4xl font-black italic uppercase tracking-tighter font-kanit leading-none drop-shadow-lg text-white">PELOTI<span className="text-primary drop-shadow-[0_0_15px_rgba(44,252,125,0.5)]">FY</span></span>
+            <div className="flex flex-col justify-center">
+               <span className="text-3xl sm:text-4xl font-black italic uppercase tracking-tighter font-kanit leading-none drop-shadow-lg text-white">
+                 PELOTI<span className="text-primary drop-shadow-[0_0_15px_rgba(44,252,125,0.5)]">FY</span>
+               </span>
+               <span className="text-[10px] sm:text-xs font-black uppercase tracking-widest text-primary text-center mt-1">
+                 DOMINA EL PROTRERO
+               </span>
+            </div>
          </motion.div>
 
          <motion.div 

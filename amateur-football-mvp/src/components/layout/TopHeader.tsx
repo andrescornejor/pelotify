@@ -200,11 +200,8 @@ export const TopHeader = memo(function TopHeader() {
                         className="hidden lg:block w-2.5 h-2.5 rounded-full bg-primary shadow-[0_0_15px_rgba(44,252,125,0.8)]"
                       />
                     </div>
-                    <span className="hidden sm:block lg:hidden 2xl:block text-[7px] sm:text-[9px] lg:text-[10px] font-black uppercase tracking-[0.3em] text-foreground/25 leading-none mt-0.5 group-hover/logo:text-primary transition-colors duration-500">
-                      Dominá el{' '}
-                      <span className="text-primary/50 group-hover/logo:text-primary transition-colors duration-500">
-                        Potrero
-                      </span>
+                    <span className="hidden sm:block lg:hidden 2xl:block text-[7px] sm:text-[9px] lg:text-[10px] font-black uppercase tracking-[0.3em] text-primary leading-none mt-0.5 group-hover/logo:drop-shadow-[0_0_8px_rgba(44,252,125,0.8)] transition-all duration-500 text-center">
+                      DOMINA EL PROTRERO
                     </span>
                   </div>
                 </Link>
