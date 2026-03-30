@@ -23,7 +23,10 @@ import {
   Compass,
   LayoutGrid,
   CreditCard,
-  Target as TargetIcon
+  Target as TargetIcon,
+  DollarSign,
+  BarChart3,
+  Calendar
 } from 'lucide-react';
 import Link from 'next/link';
 import { cn } from '@/lib/utils';
