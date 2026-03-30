@@ -147,6 +147,30 @@ export default function LandingPage() {
                      <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-white drop-shadow-[0_0_30px_rgba(44,252,125,0.3)]">NUESTRO.</span>
                   </h1>
                   
+                  {/* ⬇️ SCROLL INDICATOR */}
+                  <div className="flex justify-center w-full py-4 relative z-20">
+                     <motion.div 
+                        initial={{ opacity: 0, y: -10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 2, duration: 1 }}
+                        onClick={() => window.scrollBy({ top: window.innerHeight * 0.8, behavior: 'smooth' })}
+                        className="flex flex-col items-center gap-3 cursor-pointer group"
+                     >
+                        <span className="text-[9px] font-black uppercase tracking-[0.3em] text-zinc-500 group-hover:text-primary transition-colors duration-300">SCROLL</span>
+                        <motion.div 
+                           animate={{ y: [0, 8, 0] }}
+                           transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' }}
+                           className="w-8 h-12 rounded-full border-2 border-primary/30 flex items-start justify-center p-2 group-hover:border-primary transition-colors duration-300 bg-black/50 backdrop-blur-sm shadow-[0_0_15px_rgba(44,252,125,0.05)]"
+                        >
+                           <motion.div 
+                              animate={{ y: [0, 12, 0], opacity: [1, 0, 1] }}
+                              transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' }}
+                              className="w-1 h-3 bg-primary rounded-full shadow-[0_0_10px_rgba(44,252,125,0.8)]"
+                           />
+                        </motion.div>
+                     </motion.div>
+                  </div>
+
                   <motion.p 
                      initial={{ opacity: 0 }}
                      animate={{ opacity: 1 }}
@@ -185,28 +209,6 @@ export default function LandingPage() {
                      SOY DUEÑO
                   </button>
                </div>
-            </motion.div>
-         </motion.div>
-
-         {/* ⬇️ SCROLL INDICATOR */}
-         <motion.div 
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 2, duration: 1 }}
-            onClick={() => window.scrollBy({ top: window.innerHeight * 0.8, behavior: 'smooth' })}
-            className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-3 z-30 cursor-pointer group"
-         >
-            <span className="text-[9px] font-black uppercase tracking-[0.3em] text-zinc-500 group-hover:text-primary transition-colors duration-300">SCROLL</span>
-            <motion.div 
-               animate={{ y: [0, 8, 0] }}
-               transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' }}
-               className="w-8 h-12 rounded-full border-2 border-primary/30 flex items-start justify-center p-2 group-hover:border-primary transition-colors duration-300 bg-black/50 backdrop-blur-sm"
-            >
-               <motion.div 
-                  animate={{ y: [0, 12, 0], opacity: [1, 0, 1] }}
-                  transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' }}
-                  className="w-1 h-3 bg-primary rounded-full shadow-[0_0_10px_rgba(44,252,125,0.8)]"
-               />
             </motion.div>
          </motion.div>
       </section>
