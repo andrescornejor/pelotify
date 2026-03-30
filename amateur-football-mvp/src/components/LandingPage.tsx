@@ -187,6 +187,31 @@ export default function LandingPage() {
                </div>
             </motion.div>
          </motion.div>
+
+         {/* Animación de Scroll / Mouse Indicator */}
+         <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 1.5, duration: 1 }}
+            className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-3 cursor-pointer z-50 group"
+            onClick={() => {
+               window.scrollTo({
+                  top: window.innerHeight,
+                  behavior: 'smooth'
+               });
+            }}
+         >
+            <span className="text-[10px] font-black uppercase tracking-[0.4em] text-zinc-600 group-hover:text-primary transition-colors duration-500">
+               DESCUBRIR
+            </span>
+            <div className="w-6 h-10 border-2 border-zinc-700 group-hover:border-primary/50 flex justify-center p-1 rounded-full shadow-[0_0_15px_rgba(0,0,0,0.5)] bg-black/50 backdrop-blur-sm transition-colors duration-500">
+               <motion.div
+                  animate={{ y: [0, 16, 0], opacity: [1, 0, 1] }}
+                  transition={{ repeat: Infinity, duration: 1.5, ease: "easeInOut" }}
+                  className="w-1 h-2 bg-primary rounded-full shadow-[0_0_8px_rgba(44,252,125,1)]"
+               />
+            </div>
+         </motion.div>
       </section>
 
       {/* PAGE CONTENT DYNAMICALLY RENDERED BASED ON TOGGLE */}
