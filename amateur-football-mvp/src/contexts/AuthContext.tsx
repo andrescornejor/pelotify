@@ -121,20 +121,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     } = supabase.auth.onAuthStateChange(async (_event, session) => {
       console.log('Auth event:', _event);
       handleUserSession(session);
-
-      // CUSTOM NEXT.JS 15 COOKIE SYNC
-      // Since we had to remove createClientComponentClient due to SSR crashing issues,
-      // we manually sync the cookie payload so `page.tsx` can read it natively!
-      if (typeof window !== 'undefined') {
-        const projectId = process.env.NEXT_PUBLIC_SUPABASE_URL?.split('://')[1]?.split('.')[0] || 'ijrahvpgxlsfawezxijv';
-        const cookieName = `sb-${projectId}-auth-token`;
-        if (session) {
-          const authPayload = JSON.stringify([session.access_token, session.refresh_token, null, null, null]);
-          document.cookie = `${cookieName}=${encodeURIComponent(authPayload)}; path=/; max-age=31536000; SameSite=Lax; Secure`;
-        } else if (_event === 'SIGNED_OUT') {
-          document.cookie = `${cookieName}=; path=/; max-age=0; SameSite=Lax; Secure`;
-        }
-      }
     });
 
     return () => subscription.unsubscribe();

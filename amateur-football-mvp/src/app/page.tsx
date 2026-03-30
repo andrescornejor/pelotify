@@ -1,6 +1,4 @@
 import React, { Suspense } from 'react';
-import { cookies } from 'next/headers';
-import { createServerComponentClient } from '@supabase/auth-helpers-nextjs';
 import LandingPage from '@/components/LandingPage';
 import { HomePageSkeleton } from '@/components/home/HomePageSkeleton';
 import { PerfLayout, PerfStatCardsGrid } from '@/components/home/PerfLayout';
@@ -13,43 +11,71 @@ import { StatCard } from '@/components/home/StatCard';
 import { TeamCard } from '@/components/home/TeamCard';
 import { FuttokHighlightsList } from '@/components/home/FuttokHighlights';
 import { SectionDivider } from '@/components/home/HomeSections';
-import { Trophy, Target, Award, Star, TrendingUp, Calendar, ChevronRight, MessageSquare, ArrowRight, Users, Sparkles, Activity } from 'lucide-react';
+import { 
+  Trophy, 
+  Target, 
+  Award, 
+  Star, 
+  TrendingUp, 
+  Calendar, 
+  ChevronRight, 
+  MessageSquare, 
+  ArrowRight, 
+  Users, 
+  Sparkles, 
+  Activity 
+} from 'lucide-react';
 import Link from 'next/link';
 import { getHighlights } from '@/lib/highlights';
+import { createClient } from '@/lib/supabaseServer';
 
 export const dynamic = 'force-dynamic';
 
 async function HomeDataWrapper({ user }: { user: any }) {
-  const cookieStore = await cookies();
-  // @ts-ignore - Bypass Next.js 15 / Supabase Auth Helpers async type mismatch
-  const supabase = createServerComponentClient({ cookies: () => cookieStore });
+  const supabase = await createClient();
 
-  const [teamsRes, matchesRes, playersCountRes, recentProfiles, highlightsData] = await Promise.all([
-    supabase.from('team_members').select('team_id, teams(*)').eq('user_id', user.id).limit(3),
-    supabase
-      .from('match_participants')
-      .select('matches:matches!inner(*)')
-      .eq('user_id', user.id)
-      .gte('matches.date', new Date().toISOString().split('T')[0])
-      .order('date', { foreignTable: 'matches', ascending: true })
-      .limit(1),
-    supabase.from('profiles').select('id', { count: 'exact', head: true }),
-    supabase.from('profiles').select('full_name, created_at, elo').order('created_at', { ascending: false }).limit(5),
-    getHighlights(6)
-  ]);
+  let teamsRes: any = { data: [] };
+  let matchesRes: any = { data: [] };
+  let playersCountRes: any = { count: 0 };
+  let recentProfiles: any = { data: [] };
+  let highlightsData: any = [];
 
-  const userTeams = teamsRes.data ? teamsRes.data.map((t: any) => t.teams).filter(Boolean) : [];
+  try {
+    const results = await Promise.all([
+      supabase.from('team_members').select('team_id, teams(*)').eq('user_id', user.id).limit(3),
+      supabase
+        .from('match_participants')
+        .select('matches:matches!inner(*)')
+        .eq('user_id', user.id)
+        .gte('matches.date', new Date().toISOString().split('T')[0])
+        .order('date', { foreignTable: 'matches', ascending: true })
+        .limit(1),
+      supabase.from('profiles').select('id', { count: 'exact', head: true }),
+      supabase.from('profiles').select('full_name, created_at, elo').order('created_at', { ascending: false }).limit(5),
+      getHighlights(6, supabase)
+    ]);
+    
+    teamsRes = results[0];
+    matchesRes = results[1];
+    playersCountRes = results[2];
+    recentProfiles = results[3];
+    highlightsData = results[4];
+  } catch (err) {
+    console.error('Error during RSC fetching:', err);
+  }
+
+  const userTeams = teamsRes?.data ? teamsRes.data.map((t: any) => t.teams).filter(Boolean) : [];
   
   let nextMatch = null;
-  if (matchesRes.data?.[0]) {
+  if (matchesRes?.data?.[0]) {
     const m = (matchesRes.data[0] as any).matches;
     nextMatch = Array.isArray(m) ? m[0] : m;
   }
 
-  const totalPlayers = playersCountRes.count || 0;
+  const totalPlayers = playersCountRes?.count || 0;
 
   let activities: any[] = [];
-  if (recentProfiles.data) {
+  if (recentProfiles?.data) {
     activities = recentProfiles.data.map((p: any) => ({
       type: 'RANK_UP',
       user: p.full_name || 'Nuevo Jugador',
@@ -88,8 +114,8 @@ async function HomeDataWrapper({ user }: { user: any }) {
     {
       icon: Trophy,
       label: 'Rango Actual',
-      value: elo > 0 ? 'CALCULADO' : 'NVL 1', // Renderized inside stat card properly with useRank
-      color: '#2cfc7d', // generic fallback
+      value: elo > 0 ? 'CALCULADO' : 'NVL 1',
+      color: '#2cfc7d',
       tooltip: 'Tu rango competitivo',
     },
     {
@@ -144,7 +170,6 @@ async function HomeDataWrapper({ user }: { user: any }) {
 
           <SectionDivider />
 
-          {/* NEW: FEATURED HIGHLIGHTS SECTION */}
           <div className="flex items-center justify-between px-1">
             <div className="flex flex-col gap-1">
               <h2 className="text-xl lg:text-2xl font-black text-foreground italic uppercase tracking-tighter font-kanit">
@@ -260,21 +285,22 @@ async function HomeDataWrapper({ user }: { user: any }) {
 
 // Ensure the outer page stays dynamic because of cookies() and auth.
 export default async function HomePage() {
-  const cookieStore = await cookies();
-  // @ts-ignore - Bypass Next.js 15 / Supabase Auth Helpers async type mismatch
-  const supabase = createServerComponentClient({ cookies: () => cookieStore });
-  
-  // This fails gracefully and returns null if there's no cookie. 
-  // It handles the RSC authentication nicely
-  const { data: { session } } = await supabase.auth.getSession();
+  try {
+    const supabase = await createClient();
+    const { data: { user } } = await supabase.auth.getUser();
 
-  if (!session?.user) {
+    if (!user) {
+      return <LandingPage />;
+    }
+
+    return (
+      <Suspense fallback={<HomePageSkeleton />}>
+        <HomeDataWrapper user={user} />
+      </Suspense>
+    );
+  } catch (err) {
+    console.error('Fatal crash on HomePage RSC:', err);
+    // Silent fail to LandingPage instead of showing 500 error on Vercel
     return <LandingPage />;
   }
-
-  return (
-    <Suspense fallback={<HomePageSkeleton />}>
-       <HomeDataWrapper user={session.user} />
-    </Suspense>
-  );
 }

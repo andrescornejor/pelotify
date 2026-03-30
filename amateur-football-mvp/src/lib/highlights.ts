@@ -30,8 +30,9 @@ export interface Comment {
   };
 }
 
-export async function getHighlights(limit = 10) {
-  const { data, error } = await supabase
+export async function getHighlights(limit = 10, supabaseInstance?: any) {
+  const client = supabaseInstance || supabase;
+  const { data, error } = await client
     .from('match_highlights')
     .select(`
       *,
