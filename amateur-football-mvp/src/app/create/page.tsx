@@ -731,7 +731,7 @@ export default function CreateMatchPage() {
                             )}
                           </button>
                         );
-                      })()
+                      })()}
                     </div>
                     
                     {/* Bottom gradient mask for smooth scroll effect */}
