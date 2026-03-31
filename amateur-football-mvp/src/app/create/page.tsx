@@ -312,6 +312,7 @@ export default function CreateMatchPage() {
   };
 
   const handleTypeSelect = (type: 'F5' | 'F7' | 'F11') => {
+    // If it's a real business, use business_id. Otherwise look it up in hardcoded venues.
     const venue = formData.business_id 
       ? dbVenues.find(v => v.id === formData.business_id) 
       : findVenueByLocation(formData.location);
@@ -319,21 +320,39 @@ export default function CreateMatchPage() {
     let newPrice = formData.price;
     let fieldId = formData.field_id;
 
-    if (venue?.id) { // Real DB venue (canchas_businesses)
+    if (formData.business_id && venue) { // Real DB venue (canchas_businesses)
       const formatData = dbFields.find(f => f.business_id === venue.id && f.type === type);
       if (formatData) {
         const divider = type === 'F5' ? 10 : type === 'F7' ? 14 : type === 'F11' ? 22 : 10;
         newPrice = Math.round((formatData.price_per_match || 0) / divider);
         fieldId = formatData.id;
       }
-    } else if (venue?.formats) { // Hardcoded venue (lib/venues)
-      const formatData = venue.formats.find((f: any) => f.type === type);
+    } else if (venue && 'formats' in venue && venue.formats) { // Hardcoded venue (lib/venues)
+      const formatData = (venue as any).formats.find((f: any) => f.type === type);
       if (formatData) {
         newPrice = formatData.pricePerPlayer;
       }
     }
 
-    setFormData({ ...formData, type, price: newPrice, field_id: fieldId });
+    // Reset manual edit flag if changing format, to allow venue price to take over
+    setPriceManuallyEdited(false);
+
+    // Update missing players if they exceed the new format's limit
+    let newMissingPlayers = formData.missing_players;
+    if (formData.is_recruitment) {
+      const maxPlayersMap = { F5: 9, F7: 13, F11: 21 };
+      if (newMissingPlayers > maxPlayersMap[type]) {
+        newMissingPlayers = maxPlayersMap[type];
+      }
+    }
+
+    setFormData({ 
+      ...formData, 
+      type, 
+      price: newPrice, 
+      field_id: fieldId,
+      missing_players: newMissingPlayers 
+    });
   };
 
   const handleCreate = async () => {
