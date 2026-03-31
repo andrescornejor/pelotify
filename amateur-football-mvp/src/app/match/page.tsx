@@ -545,7 +545,7 @@ function MatchLobbyContent() {
         </div>
 
         {/* ── MAIN HERO CONTENT ── */}
-        <div className="max-w-screen-2xl mx-auto absolute bottom-0 left-0 right-0 px-4 sm:px-6 lg:px-12 pb-12 z-10 w-full">
+        <div className="absolute bottom-0 left-0 right-0 px-6 lg:px-12 pb-12 z-10">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
@@ -613,7 +613,7 @@ function MatchLobbyContent() {
       {/* ═══════════════════════════════════════════════════════════
                 STATS BAR — floating card
             ═══════════════════════════════════════════════════════════ */}
-      <div className="max-w-screen-2xl mx-auto relative z-30 px-4 sm:px-6 lg:px-12 -mt-6">
+      <div className="relative z-30 px-4 lg:px-12 -mt-6">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -682,7 +682,7 @@ function MatchLobbyContent() {
                 OCCUPANCY PROGRESS BAR
             ═══════════════════════════════════════════════════════════ */}
       {!isCompleted && (
-        <div className="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-12 mt-4 relative z-20">
+        <div className="px-4 lg:px-12 mt-4 relative z-20">
           <div className="flex items-center justify-between mb-2 px-1">
             <span className="text-[9px] font-black text-foreground/30 uppercase tracking-widest">
               Ocupación
@@ -712,7 +712,7 @@ function MatchLobbyContent() {
       {/* ═══════════════════════════════════════════════════════════
                 MAIN CONTENT
             ═══════════════════════════════════════════════════════════ */}
-      <div className="max-w-screen-2xl mx-auto relative z-20 px-4 sm:px-6 lg:px-12 mt-8 pb-32 space-y-8">
+      <div className="relative z-20 px-4 lg:px-12 mt-8 pb-32 space-y-8">
         {/* ── PENDING INVITATION BANNER ── */}
         <AnimatePresence>
           {hasJoined && myEntry?.status === 'pending' && (

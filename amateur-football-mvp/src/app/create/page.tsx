@@ -472,7 +472,7 @@ export default function CreateMatchPage() {
         <div className="absolute inset-0 bg-[repeating-linear-gradient(0deg,transparent,transparent_2px,rgba(255,255,255,0.01)_2px,rgba(255,255,255,0.01)_4px)] opacity-50 sm:opacity-100" />
       </div>
 
-      <div className="relative z-10 flex flex-col max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-12 pt-6 pb-28 min-h-screen">
+      <div className="relative z-10 flex flex-col max-w-4xl mx-auto p-4 pt-6 pb-28 min-h-screen">
         {/* ── HEADER ── */}
         <motion.div
           initial={{ opacity: 0, y: -16 }}
