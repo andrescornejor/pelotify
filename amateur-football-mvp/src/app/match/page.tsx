@@ -416,7 +416,7 @@ function MatchLobbyContent() {
   const isPast = matchTime ? new Date() > new Date(matchTime.getTime() + 60 * 60 * 1000) : false;
   const isCompleted =
     match?.is_completed || isPast || (matchStats && matchStats.goalScorers.length > 0);
-  const userParticipant = user ? participants.find((p) => p.user_id === user.id) : null;
+  const userParticipant = user ? participants.find((p: any) => p.user_id === user.id) : null;
 
   const venueName = (() => {
     if (venueInfo?.name) return venueInfo.name;
