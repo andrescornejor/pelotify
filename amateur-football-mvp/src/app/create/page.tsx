@@ -820,7 +820,10 @@ export default function CreateMatchPage() {
                     
                     {/* Bottom gradient mask for smooth scroll effect */}
                     <div className="absolute bottom-0 left-0 right-0 h-6 bg-gradient-to-t from-background to-transparent z-10 pointer-events-none rounded-b-3xl" />
-                        {/* ── STEP 2: DETALLES ── */}
+                  </motion.div>
+                )}
+
+                {/* ── STEP 2: DETALLES ── */}
             {step === 2 && (
               <motion.div
                 key="step-2"
@@ -1219,13 +1222,14 @@ export default function CreateMatchPage() {
                         <span className={cn("block text-[10px] font-bold tracking-wide mt-0.5", formData.payment_method === 'cash' ? "text-foreground/50" : "text-foreground/15")}>Pagás en el complejo</span>
                       </div>
                     </button>
-                  <p className="text-[10px] font-bold text-primary/80 uppercase tracking-widest px-1 bg-primary/5 py-2 rounded-lg border border-primary/10 mt-2">
-                    💡 En Pelotify, el organizador NO paga el total. Cada jugador abona SU PARTE individualmente al sumarse al partido.
-                  </p>
-                  <p className="text-[9px] font-medium text-foreground/30 px-1 mt-2">
-                    * Si seleccionas pago online, recuerda que Pelotify no se hace responsable por reembolsos fuera de los términos del complejo.
-                  </p>
+                  </div>
                 </div>
+                <p className="text-[10px] font-bold text-primary/80 uppercase tracking-widest px-1 bg-primary/5 py-2 rounded-lg border border-primary/10 mt-2">
+                  💡 En Pelotify, el organizador NO paga el total. Cada jugador abona SU PARTE individualmente al sumarse al partido.
+                </p>
+                <p className="text-[9px] font-medium text-foreground/30 px-1 mt-2">
+                  * Si seleccionas pago online, recuerda que Pelotify no se hace responsable por reembolsos fuera de los términos del complejo.
+                </p>
               </motion.div>
             )}
 
