@@ -744,7 +744,7 @@ function MatchLobbyContent() {
             <PostMatchView
               match={match}
               participants={participants}
-              stats={matchStats || { goalScorers: [], mvp: null }}
+              stats={(matchStats || { goalScorers: [], mvp: null }) as any}
             />
           </div>
         ) : (
