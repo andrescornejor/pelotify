@@ -353,6 +353,15 @@ function MatchLobbyContent() {
     }
   };
 
+  const handleKickPlayer = async (userId: string, userName: string) => {
+    if (!match || !confirm(`¿Estás seguro que querés echar a ${userName} del partido?`)) return;
+    try {
+      await leaveMutation.mutateAsync({ matchId: match.id, userId });
+    } catch (err: any) {
+      alert(`Error echando jugador: ${err.message}`);
+    }
+  };
+
   const handleDelete = async () => {
     if (!user || !match || !confirm('¿Eliminar este partido?')) return;
     try {
@@ -909,6 +918,13 @@ function MatchLobbyContent() {
                                >
                                   <ChevronRight className="w-4 h-4 rotate-90" />
                                </button>
+                               <button 
+                                 onClick={() => handleKickPlayer(p.user_id, p.profiles?.name || 'este jugador')}
+                                 className="w-7 h-7 bg-red-600 rounded-lg flex items-center justify-center text-white shadow-lg hover:scale-110 active:scale-90 transition-transform mt-1"
+                                 title="Echar del Partido"
+                               >
+                                  <Trash2 className="w-3.5 h-3.5" />
+                               </button>
                             </div>
                          )}
                       </div>
@@ -1055,16 +1071,27 @@ function MatchLobbyContent() {
                                <motion.div 
                                  key={p.id} 
                                  whileHover={{ scale: 1.02 }}
-                                 className="p-5 rounded-[1.8rem] glass-premium border-white/5 flex items-center gap-4 transition-all"
+                                 className="p-5 rounded-[1.8rem] glass-premium border-white/5 flex items-center justify-between gap-4 transition-all"
                                >
-                                  <PlayerSlot participant={p} isSelf={p.user_id === user?.id} />
-                                  <div className="flex flex-col">
-                                     <span className="text-sm font-black italic uppercase text-foreground">{p.profiles?.name}</span>
-                                     <div className="flex items-center gap-1.5 mt-0.5">
-                                        <div className="w-1.5 h-1.5 rounded-full bg-primary" />
-                                        <span className="text-[8px] font-black text-primary/70 uppercase tracking-widest">REFUERZO CONFIRMADO</span>
+                                  <div className="flex items-center gap-4">
+                                     <PlayerSlot participant={p} isSelf={p.user_id === user?.id} />
+                                     <div className="flex flex-col">
+                                        <span className="text-sm font-black italic uppercase text-foreground">{p.profiles?.name}</span>
+                                        <div className="flex items-center gap-1.5 mt-0.5">
+                                           <div className="w-1.5 h-1.5 rounded-full bg-primary" />
+                                           <span className="text-[8px] font-black text-primary/70 uppercase tracking-widest">REFUERZO CONFIRMADO</span>
+                                        </div>
                                      </div>
                                   </div>
+                                  {isCreator && !isCompleted && p.user_id !== user?.id && (
+                                     <button 
+                                       onClick={() => handleKickPlayer(p.user_id, p.profiles?.name || 'este jugador')}
+                                       className="w-8 h-8 rounded-xl bg-red-500/10 text-red-500 hover:bg-red-500 hover:text-white flex items-center justify-center transition-all shrink-0"
+                                       title="Echar del Partido"
+                                     >
+                                        <Trash2 className="w-4 h-4" />
+                                     </button>
+                                  )}
                                </motion.div>
                              ))}
                              
@@ -1230,6 +1257,15 @@ function MatchLobbyContent() {
                                       >
                                         <LogOut className="w-3 h-3 rotate-90" />
                                       </button>
+                                      {participant.user_id !== user?.id && (
+                                      <button 
+                                        onClick={() => handleKickPlayer(participant.user_id, participant.profiles?.name || 'este jugador')}
+                                        className="w-6 h-6 bg-red-600 rounded-lg flex items-center justify-center text-white shadow-lg hover:scale-110 active:scale-90 mt-1"
+                                        title="Echar del Partido"
+                                      >
+                                        <Trash2 className="w-3 h-3" />
+                                      </button>
+                                      )}
                                     </div>
                                   )}
                                 </div>
@@ -1645,7 +1681,7 @@ function MatchLobbyContent() {
                     </div>
                     <div className="min-h-[200px] p-4 rounded-[2rem] bg-blue-500/[0.03] border border-blue-500/10 space-y-2">
                        {teamA.map((p: any) => (
-                         <TacticalPlayerCard key={p.id} participant={p} onMove={handleMovePlayer} current="A" />
+                         <TacticalPlayerCard key={p.id} participant={p} onMove={handleMovePlayer} onKick={p.user_id !== user?.id ? handleKickPlayer : undefined} current="A" />
                        ))}
                        {teamA.length === 0 && <div className="py-12 text-center text-[10px] font-bold text-white/10 uppercase italic">Vacío</div>}
                     </div>
@@ -1658,7 +1694,7 @@ function MatchLobbyContent() {
                     </div>
                     <div className="min-h-[200px] p-4 rounded-[2rem] bg-white/[0.02] border border-white/5 space-y-2">
                        {unassigned.map((p: any) => (
-                         <TacticalPlayerCard key={p.id} participant={p} onMove={handleMovePlayer} current={null} />
+                         <TacticalPlayerCard key={p.id} participant={p} onMove={handleMovePlayer} onKick={p.user_id !== user?.id ? handleKickPlayer : undefined} current={null} />
                        ))}
                        {unassigned.length === 0 && <div className="py-12 text-center text-[10px] font-bold text-white/10 uppercase italic">Todo asignado</div>}
                     </div>
@@ -1675,7 +1711,7 @@ function MatchLobbyContent() {
                     </div>
                     <div className="min-h-[200px] p-4 rounded-[2rem] bg-rose-500/[0.03] border border-rose-500/10 space-y-2">
                        {teamB.map((p: any) => (
-                         <TacticalPlayerCard key={p.id} participant={p} onMove={handleMovePlayer} current="B" />
+                         <TacticalPlayerCard key={p.id} participant={p} onMove={handleMovePlayer} onKick={p.user_id !== user?.id ? handleKickPlayer : undefined} current="B" />
                        ))}
                        {teamB.length === 0 && <div className="py-12 text-center text-[10px] font-bold text-white/10 uppercase italic">Vacío</div>}
                     </div>
@@ -1718,7 +1754,7 @@ function MatchLobbyContent() {
   );
 }
 
-function TacticalPlayerCard({ participant, onMove, current }: { participant: any, onMove: any, current: 'A' | 'B' | null }) {
+function TacticalPlayerCard({ participant, onMove, onKick, current }: { participant: any, onMove: any, onKick?: any, current: 'A' | 'B' | null }) {
   return (
     <motion.div 
       layout
@@ -1734,7 +1770,10 @@ function TacticalPlayerCard({ participant, onMove, current }: { participant: any
          </div>
          <span className="text-[10px] font-black italic uppercase text-white/80">{participant.profiles?.name}</span>
       </div>
-      <div className="flex items-center gap-1">
+      <div className="flex items-center gap-1 opacity-100 lg:opacity-0 lg:group-hover:opacity-100 transition-opacity">
+         {onKick && (
+           <button onClick={() => onKick(participant.user_id, participant.profiles?.name || 'jugador')} className="w-7 h-7 bg-red-500/20 text-red-500 rounded-lg flex items-center justify-center hover:bg-red-500 hover:text-white transition-all mr-1" title="Echar"><Trash2 className="w-3.5 h-3.5" /></button>
+         )}
          {current !== 'A' && (
            <button onClick={() => onMove(participant.user_id, 'A')} className="w-7 h-7 bg-blue-500/20 text-blue-400 rounded-lg flex items-center justify-center hover:bg-blue-500 hover:text-white transition-all"><ChevronRight className="w-3.5 h-3.5 rotate-180" /></button>
          )}
