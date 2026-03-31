@@ -1342,10 +1342,10 @@ function TeamProfileContent() {
                     .map((match: Match) => {
                       const isHome = match.team_a_id === team.id;
                       const result =
-                        (isHome ? match.team_a_score : match.team_b_score) >
-                        (isHome ? match.team_b_score : match.team_a_score)
+                        ((isHome ? match.team_a_score : match.team_b_score) ?? 0) >
+                        ((isHome ? match.team_b_score : match.team_a_score) ?? 0)
                           ? 'victory'
-                          : match.team_a_score === match.team_b_score
+                          : (match.team_a_score ?? 0) === (match.team_b_score ?? 0)
                             ? 'draw'
                             : 'defeat';
 
@@ -1381,7 +1381,7 @@ function TeamProfileContent() {
                                 </span>
                                 <div className="flex items-center gap-3">
                                   <span className="text-xl font-black text-foreground uppercase italic tracking-tighter">
-                                    {match.team_a_score} - {match.team_b_score}
+                                    {match.team_a_score ?? 0} - {match.team_b_score ?? 0}
                                   </span>
                                 </div>
                               </div>
