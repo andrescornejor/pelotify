@@ -312,7 +312,7 @@ function MatchLobbyContent() {
   const handleRandomizeTeams = async () => {
     if (!match || confirmedParticipants.length === 0) return;
     const shuffled = [...confirmedParticipants].sort(() => Math.random() - 0.5);
-    const updates = shuffled.map((p, i) => ({
+    const updates = shuffled.map((p: any, i: number) => ({
       user_id: p.user_id,
       team: i % 2 === 0 ? ('A' as const) : ('B' as const)
     }));
@@ -325,7 +325,7 @@ function MatchLobbyContent() {
 
   const handleBenchAll = async () => {
     if (!match || confirmedParticipants.length === 0) return;
-    const updates = confirmedParticipants.map(p => ({
+    const updates = confirmedParticipants.map((p: any) => ({
       user_id: p.user_id,
       team: null
     }));
