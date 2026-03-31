@@ -111,54 +111,62 @@ function MiniPitch({ type }: { type: string }) {
   return (
     <svg
       viewBox="0 0 120 80"
-      className="w-full h-full"
+      className="w-full h-full drop-shadow-2xl"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
     >
       <defs>
-        <radialGradient id="pitchGlow" cx="60" cy="40" r="40" gradientUnits="userSpaceOnUse">
-          <stop stopColor="rgba(44,252,125,0.05)" />
+        <radialGradient id="pitchGlow" cx="60" cy="40" r="60" gradientUnits="userSpaceOnUse">
+          <stop stopColor="rgba(44,252,125,0.08)" />
           <stop offset="1" stopColor="transparent" />
         </radialGradient>
+        <linearGradient id="lineGrad" x1="0" y1="0" x2="1" y2="1">
+          <stop stopColor="rgba(255,255,255,0.2)" />
+          <stop offset="1" stopColor="rgba(255,255,255,0.05)" />
+        </linearGradient>
       </defs>
+      
+      {/* Pitch Surface */}
+      <rect x="0" y="0" width="120" height="80" rx="6" fill="rgba(255,255,255,0.01)" />
       <rect x="0" y="0" width="120" height="80" fill="url(#pitchGlow)" />
-      <rect
-        x="2"
-        y="2"
-        width="116"
-        height="76"
-        rx="4"
-        stroke="rgba(255,255,255,0.08)"
-        strokeWidth="1.5"
-      />
-      <line x1="60" y1="2" x2="60" y2="78" stroke="rgba(255,255,255,0.08)" strokeWidth="1" />
-      <circle cx="60" cy="40" r="14" stroke="rgba(255,255,255,0.08)" strokeWidth="1" />
-      <circle cx="60" cy="40" r="2" fill="rgba(255,255,255,0.2)" />
       
-      {/* Area A */}
+      {/* Outer Boundary */}
       <rect
-        x="2"
-        y="28"
-        width={isF5 ? 8 : isF11 ? 12 : 10}
-        height="24"
-        stroke="rgba(44,252,125,0.1)"
-        strokeWidth="1"
-      />
-      {/* Area B */}
-      <rect
-        x={isF5 ? 110 : isF11 ? 106 : 108}
-        y="28"
-        width={isF5 ? 8 : isF11 ? 12 : 10}
-        height="24"
-        stroke="rgba(44,252,125,0.1)"
-        strokeWidth="1"
+        x="4"
+        y="4"
+        width="112"
+        height="72"
+        rx="2"
+        stroke="url(#lineGrad)"
+        strokeWidth="0.8"
+        strokeOpacity="0.5"
       />
       
-      {/* Grass lines (decorative) */}
-      {[...Array(6)].map((_, i) => (
+      {/* Center Line & Circle */}
+      <line x1="60" y1="4" x2="60" y2="76" stroke="rgba(255,255,255,0.15)" strokeWidth="0.8" />
+      <circle cx="60" cy="40" r="12" stroke="rgba(255,255,255,0.15)" strokeWidth="0.8" />
+      <circle cx="60" cy="40" r="1.5" fill="rgba(255,255,255,0.3)" />
+      
+      {/* Penalty Areas */}
+      {/* Left */}
+      <rect x="4" y="24" width="12" height="32" stroke="rgba(255,255,255,0.1)" strokeWidth="0.8" />
+      <rect x="4" y="32" width="5" height="16" stroke="rgba(255,255,255,0.15)" strokeWidth="0.8" />
+      
+      {/* Right */}
+      <rect x="104" y="24" width="12" height="32" stroke="rgba(255,255,255,0.1)" strokeWidth="0.8" />
+      <rect x="111" y="32" width="5" height="16" stroke="rgba(255,255,255,0.15)" strokeWidth="0.8" />
+      
+      {/* Corners */}
+      <path d="M 4 8 A 4 4 0 0 1 8 4" stroke="rgba(255,255,255,0.1)" strokeWidth="0.8" />
+      <path d="M 112 8 A 4 4 0 0 0 116 4" stroke="rgba(255,255,255,0.1)" strokeWidth="0.8" />
+      <path d="M 4 72 A 4 4 0 0 0 8 76" stroke="rgba(255,255,255,0.1)" strokeWidth="0.8" />
+      <path d="M 112 72 A 4 4 0 0 1 116 76" stroke="rgba(255,255,255,0.1)" strokeWidth="0.8" />
+
+      {/* Decorative Grass Lines */}
+      {[...Array(8)].map((_, i) => (
         <line 
           key={i} 
-          x1={20 * (i + 1)} y1="2" x2={20 * (i + 1)} y2="78" 
+          x1={14 * (i + 1)} y1="4" x2={14 * (i + 1)} y2="76" 
           stroke="rgba(255,255,255,0.03)" strokeWidth="0.5" 
         />
       ))}
@@ -169,26 +177,26 @@ function MiniPitch({ type }: { type: string }) {
 // ── TEAM COLORS ───────────────────────────────────────────────────────────────
 const TEAM_CONFIG = {
   A: {
-    bg: 'bg-[#3b82f6]',
-    border: 'border-blue-500/10',
+    bg: 'bg-blue-600',
+    border: 'border-blue-500/20',
     borderActive: 'border-blue-400',
-    shadow: 'shadow-[0_20px_40px_rgba(59,130,246,0.12)]',
-    glow: 'rgba(59,130,246,0.15)',
-    text: 'text-blue-300',
-    btn: 'bg-blue-600 hover:bg-blue-500 shadow-blue-500/20',
-    gradient: 'from-blue-600/15 via-blue-600/5 to-transparent',
-    accent: '#3b82f6'
+    shadow: 'shadow-[0_20px_60px_rgba(37,99,235,0.15)]',
+    glow: 'rgba(37,99,235,0.2)',
+    text: 'text-blue-400',
+    btn: 'bg-blue-600 hover:bg-blue-500 shadow-blue-600/30',
+    gradient: 'from-blue-600/20 via-blue-600/5 to-transparent',
+    accent: '#2563eb'
   },
   B: {
-    bg: 'bg-[#f43f5e]',
-    border: 'border-rose-500/10',
+    bg: 'bg-rose-600',
+    border: 'border-rose-500/20',
     borderActive: 'border-rose-400',
-    shadow: 'shadow-[0_20px_40px_rgba(244,63,94,0.12)]',
-    glow: 'rgba(244,63,94,0.15)',
-    text: 'text-rose-300',
-    btn: 'bg-rose-600 hover:bg-rose-500 shadow-rose-500/20',
-    gradient: 'from-rose-600/15 via-rose-600/5 to-transparent',
-    accent: '#f43f5e'
+    shadow: 'shadow-[0_20px_60px_rgba(225,29,72,0.15)]',
+    glow: 'rgba(225,29,72,0.2)',
+    text: 'text-rose-400',
+    btn: 'bg-rose-600 hover:bg-rose-500 shadow-rose-600/30',
+    gradient: 'from-rose-600/20 via-rose-600/5 to-transparent',
+    accent: '#e11d48'
   },
 } as const;
 
@@ -557,32 +565,45 @@ function MatchLobbyContent() {
               </div>
             )}
 
-            <h1 className="text-5xl sm:text-7xl lg:text-8xl font-black italic uppercase leading-[0.85] tracking-[-0.051em] text-white drop-shadow-[0_20px_50px_rgba(0,0,0,0.5)] font-kanit">
+            <h1 className="text-6xl sm:text-8xl lg:text-9xl font-black italic uppercase leading-[0.8] tracking-[-0.08em] text-white drop-shadow-[0_20px_80px_rgba(0,0,0,0.8)] font-kanit">
               {venueName}
             </h1>
 
-            <div className="flex flex-wrap items-center gap-x-12 gap-y-3">
-              <div className="flex items-center gap-3">
-                <div className="p-2 rounded-xl bg-primary/10 border border-primary/20">
-                  <Calendar className="w-4 h-4 text-primary" />
+            <div className="flex flex-wrap items-center gap-x-10 gap-y-4">
+              <div className="flex items-center gap-4">
+                <div className="w-12 h-12 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center backdrop-blur-xl">
+                  <Calendar className="w-5 h-5 text-primary" />
                 </div>
-                <span className="text-base font-black text-white/90 italic uppercase tracking-tighter">
-                  {formatDate(match.date)}
-                </span>
+                <div className="flex flex-col">
+                  <span className="text-[10px] font-black text-white/30 uppercase tracking-widest">Fecha</span>
+                  <span className="text-xl font-black text-white italic uppercase tracking-tighter leading-none">
+                    {formatDate(match.date)}
+                  </span>
+                </div>
               </div>
-              <div className="flex items-center gap-3">
-                <div className="p-2 rounded-xl bg-primary/10 border border-primary/20">
-                  <Clock className="w-4 h-4 text-primary" />
+              
+              <div className="flex items-center gap-4">
+                <div className="w-12 h-12 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center backdrop-blur-xl">
+                  <Clock className="w-5 h-5 text-primary" />
                 </div>
-                <span className="text-base font-black text-white/90 italic">
-                  {formatTime(match.time)}
-                </span>
+                <div className="flex flex-col">
+                  <span className="text-[10px] font-black text-white/30 uppercase tracking-widest">Horario</span>
+                  <span className="text-xl font-black text-white italic uppercase tracking-tighter leading-none">
+                    {formatTime(match.time)}
+                  </span>
+                </div>
               </div>
-              <div className="hidden sm:flex items-center gap-3">
-                <div className="p-2 rounded-xl bg-white/5 border border-white/10">
-                  <MapPin className="w-4 h-4 text-white/50" />
+
+              <div className="hidden sm:flex items-center gap-4">
+                <div className="w-12 h-12 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center backdrop-blur-xl">
+                  <MapPin className="w-5 h-5 text-white/40" />
                 </div>
-                <span className="text-xs font-bold text-white/40 italic">{match.location}</span>
+                <div className="flex flex-col">
+                  <span className="text-[10px] font-black text-white/30 uppercase tracking-widest">Ubicación</span>
+                  <span className="text-xs font-bold text-white/40 italic truncate max-w-[200px] leading-none uppercase tracking-tight">
+                    {match.location}
+                  </span>
+                </div>
               </div>
             </div>
           </motion.div>
@@ -842,40 +863,49 @@ function MatchLobbyContent() {
                 <motion.div
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
-                  className="rounded-[1.8rem] border border-foreground/[0.07] bg-foreground/[0.02] p-6 space-y-4"
+                  className="rounded-[2.5rem] border border-foreground/[0.08] bg-foreground/[0.02] p-8 space-y-6 backdrop-blur-xl relative overflow-hidden"
                 >
-                  <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-xl bg-foreground/5 border border-foreground/10 flex items-center justify-center">
-                      <Users className="w-4 h-4 text-foreground/30" />
-                    </div>
-                    <div>
-                      <h3 className="text-sm font-black italic uppercase tracking-tighter text-foreground">
-                        Banquillo de Espera
-                      </h3>
-                      <p className="text-[9px] text-foreground/30 font-bold uppercase tracking-widest">
-                        Sin equipo asignado
-                      </p>
+                  <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 blur-3xl rounded-full" />
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-4">
+                      <div className="w-12 h-12 rounded-2xl bg-foreground/5 border border-foreground/10 flex items-center justify-center">
+                        <Users className="w-6 h-6 text-primary" />
+                      </div>
+                      <div>
+                        <h3 className="text-xl font-black italic uppercase tracking-tighter text-foreground leading-none">
+                          Banquillo de Espera
+                        </h3>
+                        <p className="text-[10px] text-foreground/30 font-black uppercase tracking-[0.2em] mt-1">
+                          {unassigned.length} {unassigned.length === 1 ? 'jugador esperando' : 'jugadores esperando'} equipo
+                        </p>
+                      </div>
                     </div>
                   </div>
-                  <div className="flex flex-wrap gap-6 px-1">
+                  
+                  <div className="flex flex-wrap gap-8 px-2">
                     {unassigned.map((p: any) => (
                       <div key={p.id} className="relative group/slot">
                          <PlayerSlot participant={p} isSelf={p.user_id === user?.id} />
+                         <div className="mt-2 text-center">
+                            <span className="text-[8px] font-black text-foreground/40 uppercase tracking-widest block truncate max-w-[60px]">
+                               {p.profiles?.name?.split(' ')[0]}
+                            </span>
+                         </div>
                          {isCreator && !isCompleted && (
-                            <div className="absolute top-0 right-0 z-50 flex flex-col gap-1 opacity-0 group-hover/slot:opacity-100 transition-opacity">
+                            <div className="absolute top-0 right-0 z-50 flex flex-col gap-1 opacity-0 group-hover/slot:opacity-100 transition-all scale-75 group-hover/slot:scale-100 origin-top-right">
                                <button 
                                  onClick={() => handleMovePlayer(p.user_id, 'A')}
-                                 className="w-6 h-6 bg-blue-500 rounded-lg flex items-center justify-center text-white shadow-lg hover:scale-110 active:scale-90"
+                                 className="w-7 h-7 bg-blue-500 rounded-lg flex items-center justify-center text-white shadow-lg hover:scale-110 active:scale-90 transition-transform"
                                  title="Mover al Equipo A"
                                >
-                                  <ChevronRight className="w-3 h-3 -rotate-90" />
+                                  <ChevronRight className="w-4 h-4 -rotate-90" />
                                </button>
                                <button 
                                  onClick={() => handleMovePlayer(p.user_id, 'B')}
-                                 className="w-6 h-6 bg-rose-500 rounded-lg flex items-center justify-center text-white shadow-lg hover:scale-110 active:scale-90"
+                                 className="w-7 h-7 bg-rose-500 rounded-lg flex items-center justify-center text-white shadow-lg hover:scale-110 active:scale-90 transition-transform"
                                  title="Mover al Equipo B"
                                >
-                                  <ChevronRight className="w-3 h-3 rotate-90" />
+                                  <ChevronRight className="w-4 h-4 rotate-90" />
                                </button>
                             </div>
                          )}
@@ -885,135 +915,168 @@ function MatchLobbyContent() {
                 </motion.div>
               )}
 
-              {/* ── JOIN MATCH BUTTON for public matches (non-joined players) ── */}
-              {user && !hasJoined && !match.is_private && !match.is_recruitment && !isCompleted && !isFull && (
+              {/* ── JOIN MATCH HERO (for non-joined players) ── */}
+              {user && !hasJoined && !match.is_private && !isCompleted && !isFull && (
                 <motion.div
-                  initial={{ opacity: 0, y: 10 }}
+                  initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
-                  className="relative overflow-hidden rounded-[2rem] border border-primary/30 bg-primary/5 p-6"
+                  className="relative overflow-hidden rounded-[2.5rem] border border-primary/20 bg-surface-elevated group"
                 >
-                  <div className="absolute inset-0 bg-gradient-to-r from-primary/10 via-transparent to-transparent" />
-                  <div className="relative flex flex-col sm:flex-row items-center gap-5">
-                    <div className="w-14 h-14 bg-primary rounded-2xl flex items-center justify-center text-black shrink-0">
-                      <UserPlus className="w-7 h-7" />
-                    </div>
-                    <div className="flex-1 text-center sm:text-left">
-                      <h3 className="text-xl font-black text-foreground italic uppercase tracking-tighter">
-                        ¿Querés jugar?
-                      </h3>
-                      <p className="text-[10px] text-foreground/50 font-bold uppercase tracking-widest mt-1">
-                        Unite al banquillo y esperá asignación de equipo
+                  {/* Cinematic Background */}
+                  <div className="absolute inset-0 z-0">
+                    <img 
+                      src="https://images.unsplash.com/photo-1574629810360-7efbbe195018?q=80&w=800&auto=format&fit=crop" 
+                      className="w-full h-full object-cover opacity-10 grayscale brightness-50"
+                      alt=""
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-r from-surface-elevated via-surface-elevated/80 to-transparent" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-primary/5 via-transparent to-transparent" />
+                  </div>
+
+                  {/* Content */}
+                  <div className="relative z-10 p-8 sm:p-10 flex flex-col sm:flex-row items-center justify-between gap-8">
+                    <div className="max-w-md space-y-4 text-center sm:text-left">
+                      <div className="inline-flex items-center gap-2 px-3 py-1 bg-primary/10 border border-primary/20 rounded-full">
+                        <Zap className="w-3 h-3 text-primary animate-pulse" />
+                        <span className="text-[10px] font-black text-primary uppercase tracking-widest">Inscripciones Abiertas</span>
+                      </div>
+                      
+                      <h2 className="text-3xl sm:text-4xl font-black italic uppercase tracking-tighter text-foreground leading-tight">
+                        {match.is_recruitment ? '¡Se buscan refuerzos!' : '¿Entrás a jugar?'}
+                      </h2>
+                      
+                      <p className="text-sm font-bold text-foreground/40 leading-relaxed uppercase tracking-tight">
+                        {match.is_recruitment 
+                          ? `Sumate como uno de los ${match.missing_players} jugadores restantes para completar el partido.`
+                          : 'Unite al banquillo de reserva y esperá que el organizador te asigne a un equipo.'}
                       </p>
+
+                      <div className="flex flex-wrap items-center justify-center sm:justify-start gap-4 pt-2">
+                        <div className="flex items-center gap-2">
+                          <Users className="w-4 h-4 text-primary/40" />
+                          <span className="text-[10px] font-black text-foreground/30 uppercase tracking-widest">
+                            {confirmedParticipants.length} jugadores unidos
+                          </span>
+                        </div>
+                        <div className="w-1 h-1 rounded-full bg-foreground/10" />
+                        <div className="flex items-center gap-2">
+                          <Trophy className="w-4 h-4 text-primary/40" />
+                          <span className="text-[10px] font-black text-foreground/30 uppercase tracking-widest">
+                            Formato {match.type}
+                          </span>
+                        </div>
+                      </div>
                     </div>
+
                     <button
-                      onClick={() => handleJoinTeam(null)}
+                      onClick={() => handleJoinTeam(match.is_recruitment ? 'A' : null)}
                       disabled={joinMutation.isPending}
-                      className="shrink-0 h-14 px-10 bg-primary text-black font-black text-[10px] uppercase tracking-widest rounded-2xl shadow-lg shadow-primary/20 hover:scale-105 active:scale-95 transition-all disabled:opacity-50 flex items-center justify-center gap-2"
+                      className="shrink-0 group/join relative flex flex-col items-center gap-4 focus:outline-none"
                     >
-                      {joinMutation.isPending ? (
-                        <Loader2 className="w-5 h-5 animate-spin" />
-                      ) : (
-                        <>
-                          <Zap className="w-4 h-4 fill-current" />
-                          Unirme al Partido
-                        </>
-                      )}
+                      <div className="relative w-24 h-24 sm:w-32 sm:h-32 mb-2">
+                        {/* Outer Glow Ring */}
+                        <div className="absolute inset-0 rounded-full bg-primary/20 animate-radar-pulse" />
+                        <div className="absolute inset-0 rounded-full border-2 border-primary/10 scale-90 group-hover/join:scale-110 transition-transform duration-500" />
+                        
+                        {/* Main Button Circle */}
+                        <div className={cn(
+                          "absolute inset-2 rounded-full flex flex-col items-center justify-center text-black font-black transition-all duration-300 shadow-2xl",
+                          joinMutation.isPending ? "bg-white/20" : "bg-primary group-hover/join:scale-105 group-hover/join:shadow-primary/40"
+                        )}>
+                          {joinMutation.isPending ? (
+                            <Loader2 className="w-8 h-8 animate-spin" />
+                          ) : (
+                            <>
+                              <PlusCircle className="w-8 h-8 sm:w-10 sm:h-10 mb-1" />
+                              <span className="text-[10px] sm:text-xs uppercase tracking-widest leading-none">UNIRME</span>
+                            </>
+                          )}
+                        </div>
+                      </div>
+                      
+                      <span className="text-[9px] font-black text-primary uppercase tracking-[0.4em] animate-shimmer opacity-0 group-hover/join:opacity-100 transition-opacity">
+                        CLICK PARA ENTRAR
+                      </span>
                     </button>
                   </div>
+                  
+                  {/* Decorative Scanline */}
+                  <div className="absolute top-0 bottom-0 left-0 w-[1px] bg-primary/20 animate-scan-line pointer-events-none" />
                 </motion.div>
               )}
 
-              {/* Team panels / Recruitment View */}
+              {/* ── NOT LOGGED IN CTA ── */}
+              {!user && !isCompleted && (
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="relative overflow-hidden rounded-[2.5rem] border border-foreground/10 bg-surface-elevated p-8 sm:p-10 flex flex-col sm:flex-row items-center justify-between gap-8"
+                >
+                  <div className="flex-1 text-center sm:text-left">
+                    <h3 className="text-2xl font-black italic uppercase tracking-tighter text-foreground">
+                      ¿Querés sumarte a este partido?
+                    </h3>
+                    <p className="text-sm font-bold text-foreground/40 mt-2 uppercase tracking-tight">
+                      Iniciá sesión o registrate para poder unirte a las alineaciones y chatear con los pibes.
+                    </p>
+                  </div>
+                  <Link
+                    href={`/login?redirect=/match?id=${match.id}`}
+                    className="shrink-0 h-14 px-10 bg-primary text-black font-black text-[10px] uppercase tracking-[0.2em] rounded-2xl shadow-xl shadow-primary/20 hover:scale-105 active:scale-95 transition-all flex items-center justify-center gap-3"
+                  >
+                    <UserPlus className="w-4 h-4" />
+                    Iniciar Sesión
+                  </Link>
+                </motion.div>
+              )}
+
+              {/* Team panels / Recruitment List */}
               {match.is_recruitment ? (
                 <div className="space-y-6">
-                   <div className="p-8 rounded-[2.5rem] bg-amber-500/[0.03] border border-amber-500/10 relative overflow-hidden group">
-                      <div className="absolute top-0 right-0 w-32 h-32 bg-amber-500/5 blur-3xl rounded-full translate-x-1/2 -translate-y-1/2" />
+                   {/* Recruitment Players List */}
+                   <div className="space-y-4">
+                      <div className="flex items-center justify-between px-1">
+                        <span className="text-[10px] font-black text-foreground/40 uppercase tracking-[0.4em]">
+                          Lista de Refuerzos ({confirmedParticipants.length})
+                        </span>
+                        {isFull && (
+                          <span className="text-[10px] font-black text-amber-500 uppercase tracking-widest flex items-center gap-2">
+                            <Check className="w-3 h-3" /> CUPO COMPLETO
+                          </span>
+                        )}
+                      </div>
                       
-                      <div className="flex flex-col sm:flex-row items-center justify-between gap-6 relative z-10">
-                        <div className="space-y-3 text-center sm:text-left">
-                           <div className="flex items-center justify-center sm:justify-start gap-2">
-                              <Zap className="w-5 h-5 text-amber-500" />
-                              <h3 className="text-xl font-black italic uppercase tracking-tighter text-foreground">
-                                Objetivo: {match.missing_players} {match.missing_players === 1 ? 'Refuerzo' : 'Refuerzos'}
-                              </h3>
-                           </div>
-                           <p className="text-[10px] text-foreground/40 font-bold uppercase tracking-widest max-w-sm">
-                              Este partido ya tiene jugadores confirmados fuera de la plataforma. 
-                              Estamos buscando {match.missing_players} jugadores más para completar.
-                           </p>
-                        </div>
-                        
-                        <div className="flex flex-col items-center sm:items-end gap-2 shrink-0">
-                           <div className="flex items-center gap-3">
-                              <div className="flex -space-x-3">
-                                {confirmedParticipants.map((p: any, i: number) => (
-                                   <div key={p.id} className="w-10 h-10 rounded-full border-2 border-background bg-surface overflow-hidden relative" style={{ zIndex: 10 - i }}>
-                                      {p.profiles?.avatar_url ? (
-                                        <img src={p.profiles.avatar_url} alt="" className="w-full h-full object-cover" />
-                                      ) : (
-                                        <div className="w-full h-full flex items-center justify-center text-[10px] font-black">{p.profiles?.name?.[0].toUpperCase()}</div>
-                                      )}
-                                   </div>
-                                ))}
-                                {Array.from({ length: Math.max(0, match.missing_players - confirmedParticipants.length) }).map((_, i) => (
-                                   <div key={i} className="w-10 h-10 rounded-full border-2 border-dashed border-amber-500/20 bg-amber-500/5 flex items-center justify-center">
-                                      <Users className="w-4 h-4 text-amber-500/20" />
-                                   </div>
-                                ))}
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                         {confirmedParticipants.map((p: any) => (
+                           <motion.div 
+                             key={p.id} 
+                             whileHover={{ scale: 1.02 }}
+                             className="p-5 rounded-[1.8rem] glass-premium border-white/5 flex items-center gap-4 transition-all"
+                           >
+                              <PlayerSlot participant={p} isSelf={p.user_id === user?.id} />
+                              <div className="flex flex-col">
+                                 <span className="text-sm font-black italic uppercase text-foreground">{p.profiles?.name}</span>
+                                 <div className="flex items-center gap-1.5 mt-0.5">
+                                    <div className="w-1.5 h-1.5 rounded-full bg-primary" />
+                                    <span className="text-[8px] font-black text-primary/70 uppercase tracking-widest">REFUERZO CONFIRMADO</span>
+                                 </div>
+                              </div>
+                           </motion.div>
+                         ))}
+                         
+                         {Array.from({ length: Math.max(0, (match.missing_players || 0) - confirmedParticipants.length) }).map((_, i) => (
+                           <div key={`empty-${i}`} className="p-5 rounded-[1.8rem] border-2 border-dashed border-foreground/5 bg-foreground/[0.01] flex items-center gap-4 opacity-40">
+                              <div className="w-12 h-12 rounded-2xl border border-foreground/10 flex items-center justify-center bg-foreground/5">
+                                 <Users className="w-5 h-5 text-foreground/20" />
+                              </div>
+                              <div className="flex flex-col">
+                                 <span className="text-xs font-black italic uppercase text-foreground/20 italic tracking-tighter">Buscando Jugador...</span>
+                                 <span className="text-[8px] font-bold text-foreground/10 uppercase tracking-widest">VACANTE DISPONIBLE</span>
                               </div>
                            </div>
-                           <span className="text-[9px] font-black text-amber-500 uppercase tracking-widest">
-                             {confirmedParticipants.length} UNIDOS · {match.missing_players - confirmedParticipants.length} POR CUBRIR
-                           </span>
-                        </div>
+                         ))}
                       </div>
-                      
-                      {!hasJoined && !isFull && !isCompleted && (
-                        <div className="mt-8">
-                           <button 
-                             onClick={() => handleJoinTeam('A')}
-                             disabled={joinMutation.isPending}
-                             className="w-full h-16 bg-amber-500 text-black font-black uppercase tracking-widest rounded-2xl shadow-[0_15px_40px_rgba(245,158,11,0.2)] hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-3"
-                           >
-                             {joinMutation.isPending ? (
-                               <Loader2 className="w-6 h-6 animate-spin" />
-                             ) : (
-                               <>
-                                 <PlusCircle className="w-5 h-5" />
-                                 Cubrir Vacante Ahora
-                               </>
-                             )}
-                           </button>
-                        </div>
-                      )}
-
-                      {hasJoined && !isCompleted && (
-                        <div className="mt-8 p-4 rounded-2xl bg-primary/10 border border-primary/20 flex items-center justify-center gap-3">
-                           <Check className="w-5 h-5 text-primary" />
-                           <span className="text-[10px] font-black text-primary uppercase tracking-widest">Ya estás anotado como refuerzo</span>
-                        </div>
-                      )}
                    </div>
-
-                   {/* List of Joined Recruitment Players */}
-                   {confirmedParticipants.length > 0 && (
-                      <div className="space-y-4">
-                        <span className="text-[9px] font-black text-foreground/20 uppercase tracking-[0.4em] px-1">
-                          Refuerzos via Pelotify
-                        </span>
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                           {confirmedParticipants.map((p: any) => (
-                             <div key={p.id} className="p-4 rounded-2xl bg-foreground/[0.02] border border-foreground/5 flex items-center gap-4">
-                                <PlayerSlot participant={p} isSelf={p.user_id === user?.id} />
-                                <div className="flex flex-col">
-                                   <span className="text-xs font-black italic uppercase text-foreground">{p.profiles?.name}</span>
-                                   <span className="text-[8px] font-bold text-primary uppercase tracking-widest">CONFIRMADO</span>
-                                </div>
-                             </div>
-                           ))}
-                        </div>
-                      </div>
-                   )}
                 </div>
               ) : (
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
@@ -1032,11 +1095,10 @@ function MatchLobbyContent() {
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: teamIdx * 0.1 }}
                       className={cn(
-                        'relative rounded-[2rem] border-2 p-6 transition-all duration-500 overflow-hidden',
+                        'relative rounded-[2.5rem] border-2 p-8 transition-all duration-500 overflow-hidden',
                         isMine
-                          ? `${cfg.borderActive} ${cfg.shadow}`
-                          : `${cfg.border} hover:border-opacity-50`,
-                        'bg-foreground/[0.02]'
+                          ? `${cfg.borderActive} ${cfg.shadow} bg-surface-elevated`
+                          : `${cfg.border} hover:border-foreground/20 bg-foreground/[0.01]`,
                       )}
                     >
                       {/* Background gradient */}
