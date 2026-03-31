@@ -817,7 +817,6 @@ export default function CreateMatchPage() {
                         })
                       )}
                     </div>
-                    
                   </div>
                 </motion.div>
               )}
