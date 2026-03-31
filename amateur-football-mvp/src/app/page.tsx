@@ -1,4 +1,175 @@
-'use client';\n\nimport React, { useState, useEffect, useMemo } from 'react';\nimport Link from 'next/link';\nimport { motion } from 'framer-motion';\nimport {\n  Trophy,\n  Target,\n  Users,\n  Calendar,\n  Zap,\n  Star,\n  Activity,\n  ChevronRight,\n  TrendingUp,\n  MapPin,\n  Clock,\n  ArrowRight,\n  PlusCircle,\n  Search,\n  MessageSquare,\n  Flame,\n  User2,\n  Sparkles,\n  Award,\n  Shield,\n  Crown,\n  Play,\n} from 'lucide-react';\nimport { useAuth } from '@/contexts/AuthContext';\nimport { useSettings } from '@/contexts/SettingsContext';\nimport { supabase } from '@/lib/supabase';\nimport { cn } from '@/lib/utils';\nimport { OnboardingTour } from '@/components/OnboardingTour';\nimport { JerseyVisualizer } from '@/components/JerseyVisualizer';\nimport { getHighlights, Highlight } from '@/lib/highlights';\nimport LandingPage from '@/components/LandingPage';\nimport { StatCard, TeamCard, RankBadgeInline, EmptyState, SectionDivider, LazyVideo, HomePageSkeleton, RANKS, getRankByElo } from '@/components/home';\nimport { useHomeData } from '@/hooks/useHomeData';\n\n// --- TYPES & CONSTANTS (extracted to @/components/home) ---\n\n\n\nexport default function HomePage() {\n  const { user } = useAuth();\n  \n  const { data: homeData, isLoading: isDataLoading } = useHomeData(user?.id);\n  \n  const userTeams = homeData?.userTeams || [];\n  const nextMatch = homeData?.nextMatch || null;\n  const activities = homeData?.activities || [];\n  const totalPlayers = homeData?.totalPlayers || 0;\n  const highlights = homeData?.highlights || [];\n\n  const [greeting, setGreeting] = useState('');\n  const [countdownText, setCountdownText] = useState<string | null>(null);\n  const [isRatingOpen, setIsRatingOpen] = useState(false);\n  const { performanceMode, setPerformanceMode } = useSettings();\n  const [scrollProgress, setScrollProgress] = useState(0);\n\n  // Local sync to set global perf-mode if user previously toggled it here (Legacy compatibility)\n  useEffect(() => {\n    const handleScroll = () => {\n      const total = document.documentElement.scrollHeight - window.innerHeight;\n      setScrollProgress(window.scrollY / total);\n    };\n    window.addEventListener('scroll', handleScroll, { passive: true });\n    return () => window.removeEventListener('scroll', handleScroll);\n  }, []);\n\n  useEffect(() => {\n    const hour = new Date().getHours();\n    if (hour < 12) setGreeting('Buen dia');\n    else if (hour < 20) setGreeting('Buenas tardes');\n    else setGreeting('Buenas noches');\n  }, []);\n\n  const isLoading = isDataLoading && !homeData;\n\n  // Handle Countdown Update\n  useEffect(() => {\n    if (!nextMatch) {\n      setCountdownText(null);\n      return;\n    }\n\n    const updateCountdown = () => {\n      const target = new Date(`${nextMatch.date}T${nextMatch.time}`);\n      const now = new Date();\n      const diff = target.getTime() - now.getTime();\n\n      if (diff <= 0) {\n        setCountdownText('YA EMPIEZA! ');\n        return;\n      }\n\n      const hours = Math.floor(diff / (1000 * 60 * 60));\n      const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));\n\n      if (hours >= 24) {\n        setCountdownText(null);\n        return;\n      }\n\n      if (hours > 0) {\n        setCountdownText(`FALTAN ${hours}H ${minutes}M`);\n      } else {\n        setCountdownText(`EN SOLO ${minutes} MINUTOS`);\n      }\n    };\n\n    updateCountdown();\n    const interval = setInterval(updateCountdown, 60000);\n    return () => clearInterval(interval);\n  }, [nextMatch]);\n\n  const metadata = user?.user_metadata || {};\n\n  const statsSummary = useMemo(() => {\n    const elo = metadata?.elo || 0;\n    const totalMatches = metadata?.matches || 0;\n    const matchesWon = metadata?.matches_won || 0;\n    const winRate =\n      totalMatches > 0 ? Math.min(100, Math.round((matchesWon / totalMatches) * 100)) : 0;\n\n    return { elo, totalMatches, matchesWon, winRate };\n  }, [metadata]);\n\n  const rankCalculation = useMemo(() => {\n    const info = getRankByElo(statsSummary.elo);\n    const nextR = RANKS[RANKS.findIndex((rank) => rank.name === info.name) + 1] || info;\n    const progress =\n      nextR.minElo > 0 ? Math.min(100, (statsSummary.elo / nextR.minElo) * 100) : 100;\n\n    const rankObj = {\n      name: info.name,\n      color: 'text-primary',\n      glow: `${info.color}40`,\n      hex: info.color,\n      icon: info.icon,\n    };\n\n    if (rankObj.name === 'HIERRO') {\n      rankObj.color = 'text-slate-400';\n    } else if (rankObj.name === 'BRONCE') {\n      rankObj.color = 'text-amber-600';\n    } else if (rankObj.name === 'PLATA') {\n      rankObj.color = 'text-slate-300';\n    } else if (rankObj.name === 'ORO') {\n      rankObj.color = 'text-yellow-400';\n    } else if (rankObj.name === 'PLATINO') {\n      rankObj.color = 'text-emerald-400';\n    } else if (rankObj.name === 'DIAMANTE') {\n      rankObj.color = 'text-blue-400';\n    } else if (rankObj.name === 'ELITE') {\n      rankObj.color = 'text-violet-400';\n    } else if (rankObj.name === 'MAESTRO') {\n      rankObj.color = 'text-rose-400';\n    } else {\n      rankObj.color = 'text-primary';\n    }\n\n    return { info, nextRank: nextR, progress, rank: rankObj };\n  }, [statsSummary.elo]);\n\n  const userName = user?.name || 'Jugador';\n\n  const fadeUp = {\n    hidden: { opacity: 0, y: 20 },\n    visible: (i = 0) => ({\n      opacity: 1,\n      y: 0,\n      transition: { type: 'spring' as const, stiffness: 280, damping: 24, delay: i * 0.07 },\n    }),\n  };\n\n  const statCardsData = useMemo(\n    () => [\n      {\n        icon: Trophy,\n        label: 'Rango Actual',\n        value: rankCalculation.rank.name,\n        color: rankCalculation.rank.hex,\n        glow: rankCalculation.rank.glow,\n        tooltip: 'Tu rango competitivo',\n      },\n      {\n        icon: Activity,\n        label: 'Partidos',\n        value: statsSummary.totalMatches,\n        color: '#6366f1',\n        glow: 'rgba(99,102,241,0.2)',\n        tooltip: 'Partidos jugados',\n      },\n      {\n        icon: Star,\n        label: 'MVPs',\n        value: metadata?.mvp_count || 0,\n        color: '#f59e0b',\n        glow: 'rgba(245,158,11,0.2)',\n        tooltip: 'Veces elegido MVP',\n      },\n      {\n        icon: TrendingUp,\n        label: 'Win Rate',\n        value: '0%',\n        color: '#f43f5e',\n        glow: 'rgba(244,63,94,0.2)',\n        tooltip: 'Tu efectividad de victoria',\n      },\n    ],\n    [statsSummary, metadata?.mvp_count]\n  );\n\n  if (isLoading) {\n    return <HomePageSkeleton />;\n  }\n\n  if (!user) {\n    return <LandingPage />;\n  }\n\n  return (\n    <div
+'use client';
+
+import React, { useState, useEffect, useMemo } from 'react';
+import Link from 'next/link';
+import { motion } from 'framer-motion';
+import {
+  Trophy,
+  Target,
+  Users,
+  Calendar,
+  Zap,
+  Star,
+  Activity,
+  ChevronRight,
+  TrendingUp,
+  MapPin,
+  Clock,
+  ArrowRight,
+  PlusCircle,
+  Search,
+  MessageSquare,
+  Flame,
+  User2,
+  Sparkles,
+  Award,
+  Shield,
+  Crown,
+  Play,
+} from 'lucide-react';
+import { useAuth } from '@/contexts/AuthContext';
+import { useSettings } from '@/contexts/SettingsContext';
+import { supabase } from '@/lib/supabase';
+import { cn } from '@/lib/utils';
+import { OnboardingTour } from '@/components/OnboardingTour';
+import { JerseyVisualizer } from '@/components/JerseyVisualizer';
+import { getHighlights, Highlight } from '@/lib/highlights';
+import LandingPage from '@/components/LandingPage';
+import { StatCard, TeamCard, RankBadgeInline, EmptyState, SectionDivider, LazyVideo, HomePageSkeleton, RANKS, getRankByElo } from '@/components/home';
+import { useHomeData } from '@/hooks/useHomeData';
+
+export default function HomePage() {
+  const { user } = useAuth();
+  
+  const { data: homeData, isLoading: isDataLoading } = useHomeData(user?.id);
+  
+  const userTeams = homeData?.userTeams || [];
+  const nextMatch = homeData?.nextMatch || null;
+  const activities = homeData?.activities || [];
+  const totalPlayers = homeData?.totalPlayers || 0;
+  const highlights = homeData?.highlights || [];
+
+  const [greeting, setGreeting] = useState('');
+  const [countdownText, setCountdownText] = useState<string | null>(null);
+  const [isRatingOpen, setIsRatingOpen] = useState(false);
+  const { performanceMode, setPerformanceMode } = useSettings();
+  const [scrollProgress, setScrollProgress] = useState(0);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const total = document.documentElement.scrollHeight - window.innerHeight;
+      setScrollProgress(window.scrollY / total);
+    };
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  useEffect(() => {
+    const hour = new Date().getHours();
+    if (hour < 12) setGreeting('Buen dia');
+    else if (hour < 20) setGreeting('Buenas tardes');
+    else setGreeting('Buenas noches');
+  }, []);
+
+  const isLoading = isDataLoading && !homeData;
+
+  useEffect(() => {
+    if (!nextMatch) {
+      setCountdownText(null);
+      return;
+    }
+
+    const updateCountdown = () => {
+      const target = new Date(`${nextMatch.date}T${nextMatch.time}`);
+      const now = new Date();
+      const diff = target.getTime() - now.getTime();
+
+      if (diff <= 0) {
+        setCountdownText('YA EMPIEZA! ');
+        return;
+      }
+
+      const hours = Math.floor(diff / (1000 * 60 * 60));
+      const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+
+      if (hours >= 24) {
+        setCountdownText(null);
+        return;
+      }
+
+      if (hours > 0) {
+        setCountdownText(`FALTAN ${hours}H ${minutes}M`);
+      } else {
+        setCountdownText(`EN SOLO ${minutes} MINUTOS`);
+      }
+    };
+
+    updateCountdown();
+    const interval = setInterval(updateCountdown, 60000);
+    return () => clearInterval(interval);
+  }, [nextMatch]);
+
+  const metadata = user?.user_metadata || {};
+
+  const statsSummary = useMemo(() => {
+    const elo = metadata?.elo || 0;
+    const totalMatches = metadata?.matches || 0;
+    const matchesWon = metadata?.matches_won || 0;
+    const winRate =
+      totalMatches > 0 ? Math.min(100, Math.round((matchesWon / totalMatches) * 100)) : 0;
+
+    return { elo, totalMatches, matchesWon, winRate };
+  }, [metadata]);
+
+  const rankCalculation = useMemo(() => {
+    const info = getRankByElo(statsSummary.elo);
+    const nextR = RANKS[RANKS.findIndex((rank) => rank.name === info.name) + 1] || info;
+    const progress =
+      nextR.minElo > 0 ? Math.min(100, (statsSummary.elo / nextR.minElo) * 100) : 100;
+
+    const rankObj = {
+      name: info.name,
+      color: 'text-primary',
+      glow: `${info.color}40`,
+      hex: info.color,
+      icon: info.icon,
+    };
+
+    if (rankObj.name === 'HIERRO') {
+      rankObj.color = 'text-slate-400';
+    } else if (rankObj.name === 'BRONCE') {
+      rankObj.color = 'text-amber-600';
+    } else if (rankObj.name === 'PLATA') {
+      rankObj.color = 'text-slate-300';
+    } else if (rankObj.name === 'ORO') {
+      rankObj.color = 'text-yellow-400';
+    } else if (rankObj.name === 'PLATINO') {
+      rankObj.color = 'text-emerald-400';
+    } else if (rankObj.name === 'DIAMANTE') {
+      rankObj.color = 'text-blue-400';
+    } else if (rankObj.name === 'ELITE') {
+      rankObj.color = 'text-violet-400';
+    } else if (rankObj.name === 'MAESTRO') {
+      rankObj.color = 'text-rose-400';
+    } else {
+      rankObj.color = 'text-primary';
+    }
+
+    return { info, nextRank: nextR, progress, rank: rankObj };
+  }, [statsSummary.elo]);
+
+  const userName = user?.name || 'Jugador';
+
+  if (isLoading) {
+    return <HomePageSkeleton />;
+  }
+
+  if (!user) {
+    return <LandingPage />;
+  }
+
+  return (
+    <div
       className={cn(
         'relative min-h-screen bg-background font-sans selection:bg-primary selection:text-background pb-20 md:pb-0',
         performanceMode && 'perf-mode'
@@ -65,7 +236,7 @@
           <div className="flex items-center gap-3">
              <Link href="/settings">
                 <button className="w-10 h-10 rounded-full glass border border-white/10 flex items-center justify-center text-foreground/60 hover:text-primary transition-colors hover:border-primary/30">
-                  <Zap className="w-5 h-5" />
+                   <Zap className="w-5 h-5" />
                 </button>
              </Link>
           </div>
@@ -137,7 +308,7 @@
             <div className="relative overflow-hidden rounded-[2rem] glass-premium p-8 sm:p-12 border border-white/5 flex flex-col sm:flex-row items-center justify-between gap-8 group">
                <div className="absolute inset-0 bg-gradient-to-r from-primary/10 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                <div className="flex flex-col sm:flex-row items-center gap-6 relative z-10 flex-1 text-center sm:text-left">
-                 <div className="w-20 h-20 rounded-full bg-surface/50 flex flex-col items-center justify-center border border-white/5 text-primary/40">
+                 <div className="w-20 h-20 rounded-full bg-surface/50 flex flex-col items-center justify-center border border-white/10 text-primary/40">
                     <Calendar className="w-8 h-8 opacity-50 mb-1" />
                  </div>
                  <div className="space-y-2">
@@ -280,7 +451,7 @@
             
             <div className="flex gap-4 overflow-x-auto pb-6 scrollbar-none snap-x h-[320px] sm:h-[400px]">
               {highlights.length > 0 ? (
-                highlights.map((h) => (
+                highlights.map((h: Highlight) => (
                   <Link key={h.id} href={`/highlights?v=${h.id}`} className="shrink-0 aspect-[9/16] h-full rounded-[2rem] overflow-hidden relative group snap-start border border-white/5 bg-surface">
                     <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/10 to-transparent z-10 pointer-events-none" />
                     <LazyVideo 
@@ -309,7 +480,7 @@
                   </Link>
                 ))
               ) : (
-                [1, 2].map((i) => (
+                [1, 2].map((i: number) => (
                   <div key={i} className="shrink-0 aspect-[9/16] h-full rounded-[2rem] bg-surface/50 border border-white/5 animate-pulse" />
                 ))
               )}
@@ -333,7 +504,7 @@
 
             <div className="flex flex-col gap-3">
               {activities.length > 0 ? (
-                activities.slice(0, 5).map((activity, idx) => (
+                activities.slice(0, 5).map((activity: any, idx: number) => (
                   <motion.div
                     key={idx}
                     initial={{ opacity: 0, y: 10 }}
@@ -378,4 +549,4 @@
       </div>
     </div>
   );
-}\n}\n
+}
