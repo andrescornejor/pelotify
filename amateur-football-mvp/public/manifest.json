@@ -2,22 +2,64 @@
   "name": "Pelotify - Fútbol Amateur",
   "short_name": "Pelotify",
   "description": "Dominá el potrero con la mejor app de gestión de fútbol amateur.",
+  "id": "/",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#04040a",
+  "background_color": "#09090b",
   "theme_color": "#10b981",
   "orientation": "portrait",
+  "scope": "/",
+  "categories": ["sports", "social", "productivity"],
   "icons": [
     {
       "src": "/logo_pelotify.png",
       "sizes": "192x192",
       "type": "image/png",
-      "purpose": "any maskable"
+      "purpose": "any"
     },
     {
       "src": "/logo_pelotify.png",
       "sizes": "512x512",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+        "src": "/logo_pelotify.png",
+        "sizes": "512x512",
+        "type": "image/png",
+        "purpose": "maskable"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "/login_hero.png",
+      "sizes": "1080x1920",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Domina el potrero"
+    },
+    {
+      "src": "/app_bg.png",
+      "sizes": "1920x1080",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "Pelotify Web"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Armar Partido",
+      "short_name": "Armar",
+      "description": "Crea un nuevo partido rápidamente",
+      "url": "/create",
+      "icons": [{ "src": "/logo_pelotify.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Ver Mi Perfil",
+      "short_name": "Perfil",
+      "description": "Ver tus estadísticas y partidos",
+      "url": "/profile",
+      "icons": [{ "src": "/logo_pelotify.png", "sizes": "192x192" }]
     }
   ]
 }

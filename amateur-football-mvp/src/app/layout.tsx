@@ -7,6 +7,7 @@ import { ThemeProvider } from '@/contexts/ThemeContext';
 import { QueryProvider } from '@/providers/QueryProvider';
 import ClientLayout from '@/components/layout/ClientLayout';
 import PostMatchManager from '@/components/PostMatchManager';
+import PWARegistration from '@/components/PWARegistration';
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-inter' });
 const outfit = Outfit({ subsets: ['latin'], variable: '--font-outfit' });
@@ -58,6 +59,7 @@ export default function RootLayout({
               <AuthProvider>
                 <SidebarProvider>
                   <ClientLayout>
+                    <PWARegistration />
                     {children}
                     <PostMatchManager />
                   </ClientLayout>
