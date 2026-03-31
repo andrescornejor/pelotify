@@ -1,5 +1,5 @@
 'use client';
-
+import { useState, useMemo } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { findVenueByLocation, normalizeVenueString } from '@/lib/venues';
 import { useMatches, useUserMatches } from '@/hooks/useMatchQueries';
