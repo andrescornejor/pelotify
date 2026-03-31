@@ -36,6 +36,7 @@ import { JerseyVisualizer } from '@/components/JerseyVisualizer';
 import { getHighlights, Highlight } from '@/lib/highlights';
 import LandingPage from '@/components/LandingPage';
 import { StatCard, TeamCard, RankBadgeInline, EmptyState, SectionDivider, LazyVideo, HomePageSkeleton, RANKS, getRankByElo } from '@/components/home';
+import { useHomeData } from '@/hooks/useHomeData';
 
 // --- TYPES & CONSTANTS (extracted to @/components/home) ---
 
@@ -43,17 +44,20 @@ import { StatCard, TeamCard, RankBadgeInline, EmptyState, SectionDivider, LazyVi
 
 export default function HomePage() {
   const { user } = useAuth();
-  const [userTeams, setUserTeams] = useState<any[]>([]);
-  const [nextMatch, setNextMatch] = useState<any>(null);
-  const [activities, setActivities] = useState<any[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [totalPlayers, setTotalPlayers] = useState(0);
+  
+  const { data: homeData, isLoading: isDataLoading } = useHomeData(user?.id);
+  
+  const userTeams = homeData?.userTeams || [];
+  const nextMatch = homeData?.nextMatch || null;
+  const activities = homeData?.activities || [];
+  const totalPlayers = homeData?.totalPlayers || 0;
+  const highlights = homeData?.highlights || [];
+
   const [greeting, setGreeting] = useState('');
   const [countdownText, setCountdownText] = useState<string | null>(null);
   const [isRatingOpen, setIsRatingOpen] = useState(false);
   const { performanceMode, setPerformanceMode } = useSettings();
   const [scrollProgress, setScrollProgress] = useState(0);
-  const [highlights, setHighlights] = useState<Highlight[]>([]);
 
   // Local sync to set global perf-mode if user previously toggled it here (Legacy compatibility)
   useEffect(() => {
@@ -66,63 +70,13 @@ export default function HomePage() {
   }, []);
 
   useEffect(() => {
-    async function fetchData() {
-      if (!user?.id) {
-         setIsLoading(false);
-         return;
-      }
-      try {
-        const [teamsRes, matchesRes, playersCountRes] = await Promise.all([
-          supabase.from('team_members').select('team_id, teams(*)').eq('user_id', user.id).limit(3),
-          supabase.from('match_participants')
-            .select('matches:matches!inner(*)')
-            .eq('user_id', user.id)
-            .gte('matches.date', new Date().toISOString().split('T')[0])
-            .order('date', { foreignTable: 'matches', ascending: true })
-            .limit(1),
-          supabase.from('profiles').select('id', { count: 'exact', head: true }),
-        ]);
-
-        if (teamsRes.data) setUserTeams(teamsRes.data.map((t) => t.teams).filter(Boolean));
-        if (matchesRes.data?.[0]) {
-          const m = (matchesRes.data[0] as any).matches;
-          const mData = Array.isArray(m) ? m[0] : m;
-          setNextMatch(mData);
-        }
-        if (playersCountRes.count) setTotalPlayers(playersCountRes.count);
-
-        // Fetch Recent Members as real activity
-        const { data: recentProfiles } = await supabase
-          .from('profiles')
-          .select('full_name, created_at, elo')
-          .order('created_at', { ascending: false })
-          .limit(5);
-
-        if (recentProfiles) {
-          setActivities(recentProfiles.map(p => ({
-            type: 'RANK_UP',
-            user: p.full_name || 'Nuevo Jugador',
-            detail: `se ha unido a la liga`,
-            time: 'Reciente'
-          })));
-        }
-        // Fetch Highlights
-        const highlightsData = await getHighlights(6);
-        if (highlightsData) setHighlights(highlightsData);
-      } catch (err) {
-        console.error(err);
-      } finally {
-        setIsLoading(false);
-      }
-    }
-
     const hour = new Date().getHours();
     if (hour < 12) setGreeting('Buen dia');
     else if (hour < 20) setGreeting('Buenas tardes');
     else setGreeting('Buenas noches');
+  }, []);
 
-    fetchData();
-  }, [user?.id]);
+  const isLoading = isDataLoading && !homeData;
 
   // Handle Countdown Update
   useEffect(() => {

@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "gen-types": "supabase gen types typescript --project-id ijrahvpgxlsfawezxijv > src/lib/database.types.ts"
   },
   "dependencies": {
     "@capacitor/android": "^7.1.0",
@@ -47,6 +48,7 @@
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "16.1.6",
+    "supabase": "^2.1.0",
     "tailwindcss": "^4",
     "typescript": "^5"
   }

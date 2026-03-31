@@ -1,37 +1,29 @@
 'use client';
 
-import { useState, useEffect, useMemo } from 'react';
-import { getMatches, getUserMatches, Match } from '@/lib/matches';
 import { useAuth } from '@/contexts/AuthContext';
 import { findVenueByLocation, normalizeVenueString } from '@/lib/venues';
+import { useMatches, useUserMatches } from '@/hooks/useMatchQueries';
 
 export function useMatchSearch() {
   const { user } = useAuth();
-  const [matches, setMatches] = useState<Match[]>([]);
-  const [joinedIds, setJoinedIds] = useState<Set<string>>(new Set());
-  const [isLoading, setIsLoading] = useState(true);
+  
+  // Use TanStack Query hooks
+  const { data: allMatches = [], isLoading: isLoadingAll } = useMatches();
+  const { data: userMatches = [], isLoading: isLoadingUser } = useUserMatches(user?.id);
+  
   const [searchQuery, setSearchQuery] = useState('');
   const [typeFilter, setTypeFilter] = useState<'All' | 'F5' | 'F7' | 'F11'>('All');
   const [maxPrice, setMaxPrice] = useState<number>(Infinity);
   const [onlyAvailable, setOnlyAvailable] = useState(false);
 
-  useEffect(() => {
-    const fetchMatches = async () => {
-      try {
-        const [allMatches, userMatches] = await Promise.all([
-          getMatches(),
-          user ? getUserMatches(user.id) : Promise.resolve([]),
-        ]);
-        setMatches(allMatches);
-        setJoinedIds(new Set((userMatches as any[]).filter(Boolean).map((m: any) => m?.id)));
-      } catch (err) {
-        console.error('Error fetching matches:', err);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-    fetchMatches();
-  }, [user?.id]);
+  const isLoading = isLoadingAll || (!!user && isLoadingUser);
+
+  const joinedIds = useMemo(() => 
+    new Set(userMatches.filter(Boolean).map(m => m.id)),
+    [userMatches]
+  );
+  
+  const matches = allMatches;
 
   const filteredMatches = useMemo(() => {
     return matches.filter((match) => {

@@ -4,6 +4,7 @@ import './globals.css';
 import { AuthProvider } from '@/contexts/AuthContext';
 import { SidebarProvider } from '@/contexts/SidebarContext';
 import { ThemeProvider } from '@/contexts/ThemeContext';
+import { QueryProvider } from '@/providers/QueryProvider';
 import ClientLayout from '@/components/layout/ClientLayout';
 import PostMatchManager from '@/components/PostMatchManager';
 
@@ -51,18 +52,20 @@ export default function RootLayout({
       <body
         className={`${inter.variable} ${outfit.variable} ${kanit.variable} font-sans antialiased bg-background text-foreground min-h-[100dvh] flex flex-col selection:bg-primary/30`}
       >
-        <SettingsProvider>
-          <ThemeProvider>
-            <AuthProvider>
-              <SidebarProvider>
-                <ClientLayout>
-                  {children}
-                  <PostMatchManager />
-                </ClientLayout>
-              </SidebarProvider>
-            </AuthProvider>
-          </ThemeProvider>
-        </SettingsProvider>
+        <QueryProvider>
+          <SettingsProvider>
+            <ThemeProvider>
+              <AuthProvider>
+                <SidebarProvider>
+                  <ClientLayout>
+                    {children}
+                    <PostMatchManager />
+                  </ClientLayout>
+                </SidebarProvider>
+              </AuthProvider>
+            </ThemeProvider>
+          </SettingsProvider>
+        </QueryProvider>
       </body>
     </html>
   );
