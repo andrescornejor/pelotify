@@ -44,7 +44,8 @@ import {
   useInvitePlayer, 
   useRespondToInvitation,
   useUpdateMatch,
-  useMatchStats
+  useMatchStats,
+  useBulkUpdateParticipants
 } from '@/hooks/useMatchQueries';
 import { useFriends } from '@/hooks/useFriendQueries';
 import { findVenueByLocation } from '@/lib/venues';
@@ -210,6 +211,7 @@ function MatchLobbyContent() {
   const inviteMutation = useInvitePlayer();
   const respondMutation = useRespondToInvitation();
   const updateMutation = useUpdateMatch();
+  const bulkUpdateMutation = useBulkUpdateParticipants();
 
   const [isPostMatchModalOpen, setIsPostMatchModalOpen] = useState(false);
   const [inviteModalOpen, setInviteModalOpen] = useState(false);
@@ -220,6 +222,7 @@ function MatchLobbyContent() {
   const [venueAliasCbu, setVenueAliasCbu] = useState<string | null>(null);
   const [venueHasMP, setVenueHasMP] = useState<boolean | null>(null); 
   const [venueInfo, setVenueInfo] = useState<any>(null);
+  const [isTacticalModalOpen, setIsTacticalModalOpen] = useState(false);
 
   // Sync editing names when match loads
   useEffect(() => {
@@ -303,6 +306,33 @@ function MatchLobbyContent() {
       await switchMutation.mutateAsync({ matchId: match.id, userId, team: newTeam });
     } catch (err: any) {
       alert(`Error moving player: ${err.message}`);
+    }
+  };
+
+  const handleRandomizeTeams = async () => {
+    if (!match || confirmedParticipants.length === 0) return;
+    const shuffled = [...confirmedParticipants].sort(() => Math.random() - 0.5);
+    const updates = shuffled.map((p, i) => ({
+      user_id: p.user_id,
+      team: i % 2 === 0 ? ('A' as const) : ('B' as const)
+    }));
+    try {
+      await bulkUpdateMutation.mutateAsync({ matchId: match.id, updates });
+    } catch (err: any) {
+      alert(`Error randomization: ${err.message}`);
+    }
+  };
+
+  const handleBenchAll = async () => {
+    if (!match || confirmedParticipants.length === 0) return;
+    const updates = confirmedParticipants.map(p => ({
+      user_id: p.user_id,
+      team: null
+    }));
+    try {
+      await bulkUpdateMutation.mutateAsync({ matchId: match.id, updates });
+    } catch (err: any) {
+      alert(`Error benching all: ${err.message}`);
     }
   };
 
@@ -774,6 +804,14 @@ function MatchLobbyContent() {
                     </button>
                   )}
                   {isCreator && !isCompleted && (
+                    <>
+                    <button
+                      onClick={() => setIsTacticalModalOpen(true)}
+                      className="h-10 px-5 bg-white/5 border border-white/10 hover:bg-white/10 hover:border-primary/40 text-primary rounded-xl flex items-center gap-2 text-[10px] font-black uppercase tracking-widest transition-all active:scale-95 shadow-lg shadow-black/20"
+                    >
+                      <Shield className="w-3.5 h-3.5" />
+                      Gestionar Equipos
+                    </button>
                     <button
                       onClick={() =>
                         isEditingTeamNames ? handleSaveTeamNames() : setIsEditingTeamNames(true)
@@ -794,6 +832,7 @@ function MatchLobbyContent() {
                         <Edit2 className="w-4 h-4" />
                       )}
                     </button>
+                    </>
                   )}
                 </div>
               </div>
@@ -1474,6 +1513,126 @@ function MatchLobbyContent() {
         )}
       </AnimatePresence>
 
+      {/* ═══════════════════════════════════════════════════════════
+                 TACTICAL BOARD MODAL
+            ═══════════════════════════════════════════════════════════ */}
+      <AnimatePresence>
+        {isTacticalModalOpen && (
+          <div className="fixed inset-0 z-[300] flex items-center justify-center p-0 lg:p-12 overflow-hidden">
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setIsTacticalModalOpen(false)}
+              className="absolute inset-0 bg-black/95 backdrop-blur-3xl"
+            />
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              className="relative z-10 w-full h-full lg:max-w-7xl lg:max-h-[90vh] bg-[#050508] border-y lg:border border-white/5 lg:rounded-[3rem] flex flex-col shadow-2xl"
+            >
+              <div className="p-6 lg:p-8 flex items-center justify-between border-b border-white/5">
+                <div className="flex items-center gap-4">
+                  <div className="w-12 h-12 rounded-[1.2rem] bg-primary/10 border border-primary/20 flex items-center justify-center">
+                    <Shield className="w-6 h-6 text-primary" />
+                  </div>
+                  <div>
+                    <h2 className="text-2xl font-black italic uppercase tracking-tighter text-white">Pizarra Táctica</h2>
+                    <p className="text-[10px] text-white/30 font-bold uppercase tracking-widest">Gestión de Equipos</p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-3">
+                   <button 
+                     onClick={handleRandomizeTeams}
+                     className="hidden sm:flex h-11 px-6 bg-white/[0.03] border border-white/5 hover:bg-white/5 rounded-2xl items-center gap-2 text-[10px] font-black uppercase tracking-widest transition-all"
+                   >
+                     <Zap className="w-4 h-4 text-amber-400" /> Mezclar al azar
+                   </button>
+                   <button 
+                     onClick={handleBenchAll}
+                     className="hidden sm:flex h-11 px-6 bg-white/[0.03] border border-white/5 hover:bg-white/5 rounded-2xl items-center gap-2 text-[10px] font-black uppercase tracking-widest transition-all text-rose-400"
+                   >
+                     <LogOut className="w-4 h-4 rotate-90" /> Vaciar Cancha
+                   </button>
+                   <button 
+                     onClick={() => setIsTacticalModalOpen(false)}
+                     className="w-11 h-11 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-white/40 hover:text-white transition-colors"
+                   >
+                     <X className="w-5 h-5" />
+                   </button>
+                </div>
+              </div>
+
+              <div className="flex-1 overflow-y-auto p-4 lg:p-12 space-y-8 no-scrollbar">
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                  {/* Column A */}
+                  <div className="space-y-4">
+                    <div className="flex items-center justify-between px-2">
+                       <div className="flex items-center gap-3">
+                          <div className={cn("w-3 h-3 rounded-full bg-blue-500")} />
+                          <span className="text-xs font-black italic uppercase text-white">{match.team_a_name || 'Local'}</span>
+                       </div>
+                       <span className="text-[10px] font-bold text-white/30 uppercase">{teamA.length}/{teamSize}</span>
+                    </div>
+                    <div className="min-h-[200px] p-4 rounded-[2rem] bg-blue-500/[0.03] border border-blue-500/10 space-y-2">
+                       {teamA.map((p: any) => (
+                         <TacticalPlayerCard key={p.id} participant={p} onMove={handleMovePlayer} current="A" />
+                       ))}
+                       {teamA.length === 0 && <div className="py-12 text-center text-[10px] font-bold text-white/10 uppercase italic">Vacío</div>}
+                    </div>
+                  </div>
+
+                  {/* Column Bench */}
+                  <div className="space-y-4">
+                    <div className="flex items-center justify-center px-2">
+                       <span className="text-xs font-black italic uppercase text-white/40">Banquillo</span>
+                    </div>
+                    <div className="min-h-[200px] p-4 rounded-[2rem] bg-white/[0.02] border border-white/5 space-y-2">
+                       {unassigned.map((p: any) => (
+                         <TacticalPlayerCard key={p.id} participant={p} onMove={handleMovePlayer} current={null} />
+                       ))}
+                       {unassigned.length === 0 && <div className="py-12 text-center text-[10px] font-bold text-white/10 uppercase italic">Todo asignado</div>}
+                    </div>
+                  </div>
+
+                  {/* Column B */}
+                  <div className="space-y-4">
+                    <div className="flex items-center justify-between px-2">
+                       <div className="flex items-center gap-3">
+                          <div className={cn("w-3 h-3 rounded-full bg-rose-500")} />
+                          <span className="text-xs font-black italic uppercase text-white">{match.team_b_name || 'Visitante'}</span>
+                       </div>
+                       <span className="text-[10px] font-bold text-white/30 uppercase">{teamB.length}/{teamSize}</span>
+                    </div>
+                    <div className="min-h-[200px] p-4 rounded-[2rem] bg-rose-500/[0.03] border border-rose-500/10 space-y-2">
+                       {teamB.map((p: any) => (
+                         <TacticalPlayerCard key={p.id} participant={p} onMove={handleMovePlayer} current="B" />
+                       ))}
+                       {teamB.length === 0 && <div className="py-12 text-center text-[10px] font-bold text-white/10 uppercase italic">Vacío</div>}
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              <div className="lg:hidden p-6 border-t border-white/5 grid grid-cols-2 gap-4">
+                   <button 
+                     onClick={handleRandomizeTeams}
+                     className="h-12 px-6 bg-white/[0.03] border border-white/5 rounded-2xl flex items-center justify-center gap-2 text-[10px] font-black uppercase tracking-widest transition-all"
+                   >
+                     <Zap className="w-4 h-4 text-amber-400" /> Mezclar
+                   </button>
+                   <button 
+                     onClick={handleBenchAll}
+                     className="h-12 px-6 bg-white/[0.03] border border-white/5 rounded-2xl flex items-center justify-center gap-2 text-[10px] font-black uppercase tracking-widest transition-all text-rose-400"
+                   >
+                    Limpiar
+                   </button>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
       {isPostMatchModalOpen && user && (
         <PostMatchModal
           matchId={match.id}
@@ -1488,6 +1647,37 @@ function MatchLobbyContent() {
         />
       )}
     </div>
+  );
+}
+
+function TacticalPlayerCard({ participant, onMove, current }: { participant: any, onMove: any, current: 'A' | 'B' | null }) {
+  return (
+    <motion.div 
+      layout
+      className="p-3 rounded-2xl bg-white/[0.03] border border-white/5 flex items-center justify-between group"
+    >
+      <div className="flex items-center gap-3">
+         <div className="w-8 h-8 rounded-xl overflow-hidden bg-white/5 border border-white/10 flex items-center justify-center">
+            {participant.profiles?.avatar_url ? (
+              <img src={participant.profiles.avatar_url} alt="" className="w-full h-full object-cover" />
+            ) : (
+              <span className="text-[10px] font-black">{participant.profiles?.name?.[0].toUpperCase()}</span>
+            )}
+         </div>
+         <span className="text-[10px] font-black italic uppercase text-white/80">{participant.profiles?.name}</span>
+      </div>
+      <div className="flex items-center gap-1">
+         {current !== 'A' && (
+           <button onClick={() => onMove(participant.user_id, 'A')} className="w-7 h-7 bg-blue-500/20 text-blue-400 rounded-lg flex items-center justify-center hover:bg-blue-500 hover:text-white transition-all"><ChevronRight className="w-3.5 h-3.5 rotate-180" /></button>
+         )}
+         {current !== null && (
+           <button onClick={() => onMove(participant.user_id, null)} className="w-7 h-7 bg-white/10 text-white/40 rounded-lg flex items-center justify-center hover:bg-white/20 hover:text-white transition-all"><X className="w-3 h-3" /></button>
+         )}
+         {current !== 'B' && (
+           <button onClick={() => onMove(participant.user_id, 'B')} className="w-7 h-7 bg-rose-500/20 text-rose-400 rounded-lg flex items-center justify-center hover:bg-rose-500 hover:text-white transition-all"><ChevronRight className="w-3.5 h-3.5" /></button>
+         )}
+      </div>
+    </motion.div>
   );
 }
 

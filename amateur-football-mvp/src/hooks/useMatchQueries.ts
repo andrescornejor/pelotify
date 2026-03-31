@@ -16,6 +16,7 @@ import {
   deleteMatch,
   switchTeam,
   updateMatch,
+  bulkUpdateParticipants,
   submitMatchResult,
   submitPlayerRatings,
   reportMatchScore,
@@ -437,6 +438,54 @@ export function useRespondToInvitation() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: queryKeys.matches.all });
       queryClient.invalidateQueries({ queryKey: queryKeys.userMatches.all });
+    },
+  });
+}
+
+/**
+ * Bulk update match participants (e.g. for randomize/bench all).
+ */
+export function useBulkUpdateParticipants() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({
+      matchId,
+      updates,
+    }: {
+      matchId: string;
+      updates: { user_id: string; team: 'A' | 'B' | null }[];
+    }) => bulkUpdateParticipants(matchId, updates),
+    
+    // OPTIMISTIC UPDATE
+    onMutate: async ({ matchId, updates }) => {
+      await queryClient.cancelQueries({ queryKey: queryKeys.matches.byId(matchId) });
+      const previousMatch = queryClient.getQueryData<any>(queryKeys.matches.byId(matchId));
+
+      if (previousMatch) {
+        const updateMap = Object.fromEntries(updates.map(u => [u.user_id, u.team ?? null]));
+        const updatedParticipants = previousMatch.participants.map((p: any) => ({
+          ...p,
+          team: updateMap[p.user_id] !== undefined ? updateMap[p.user_id] : (p.team ?? null)
+        }));
+
+        queryClient.setQueryData(queryKeys.matches.byId(matchId), {
+          ...previousMatch,
+          participants: updatedParticipants,
+        });
+      }
+
+      return { previousMatch };
+    },
+    
+    onError: (err, { matchId }, context) => {
+      if (context?.previousMatch) {
+        queryClient.setQueryData(queryKeys.matches.byId(matchId), context.previousMatch);
+      }
+    },
+    
+    onSettled: (data, error, { matchId }) => {
+      queryClient.invalidateQueries({ queryKey: queryKeys.matches.byId(matchId) });
     },
   });
 }

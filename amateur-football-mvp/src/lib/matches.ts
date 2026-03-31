@@ -239,6 +239,24 @@ export async function switchTeam(matchId: string, userId: string, team: 'A' | 'B
   }
 }
 
+export async function bulkUpdateParticipants(matchId: string, updates: { user_id: string, team: 'A' | 'B' | null }[]) {
+  // We'll do this in a loop or a single call if possible. 
+  // Supabase/Postgres doesn't have a built-in multiple row distinct update easily via JS client, 
+  // so we'll use a loop or upsert if schema allows. 
+  // For now, a Promise.all is fine as we usually have < 22 players.
+  const promises = updates.map(u => 
+    supabase
+      .from('match_participants')
+      .update({ team: u.team })
+      .eq('match_id', matchId)
+      .eq('user_id', u.user_id)
+  );
+  
+  const results = await Promise.all(promises);
+  const firstError = results.find(r => r.error)?.error;
+  if (firstError) throw firstError;
+}
+
 export async function getUserMatches(userId: string) {
   const { data, error } = await supabase
     .from('match_participants')
