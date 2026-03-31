@@ -978,7 +978,7 @@ function MatchLobbyContent() {
                 </div>
               ) : (
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-                {(['A', 'B'] as const).map((team: any, teamIdx: number) => {
+                {(['A', 'B'] as const).map((team: 'A' | 'B', teamIdx: number) => {
                   const members = team === 'A' ? teamA : teamB;
                   const cfg = TEAM_CONFIG[team];
                   const isMine = myTeam === team;
