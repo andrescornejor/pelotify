@@ -281,7 +281,7 @@ function MatchLobbyContent() {
   const isCreator = user?.id === match?.creator_id;
   const isCompleted = match?.status === 'completed' || match?.is_completed;
   const isFull = confirmedParticipants.length >= totalPlayers;
-  const isPast = match ? new Date(`${match.date}T${match.time}`) < new Date() : false;
+  const isPast = (match?.date && match?.time) ? new Date(`${match.date}T${match.time}`) < new Date() : false;
   const userParticipant = participants.find((p: any) => p.user_id === user?.id);
 
   const handleJoinTeam = async (team: 'A' | 'B' | null) => {
