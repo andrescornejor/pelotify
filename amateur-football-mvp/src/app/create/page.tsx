@@ -23,6 +23,8 @@ import { useState, useEffect } from 'react';
 import { createMatch } from '@/lib/matches';
 import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/contexts/AuthContext';
+import { useQueryClient } from '@tanstack/react-query';
+import { queryKeys } from '@/lib/queryKeys';
 import { ROSARIO_VENUES, findVenueByLocation } from '@/lib/venues';
 import LocationSearch from '@/components/LocationSearch';
 import { cn } from '@/lib/utils';
@@ -178,6 +180,7 @@ function StepIndicator({ current, total }: { current: number; total: number }) {
 export default function CreateMatchPage() {
   const router = useRouter();
   const { user } = useAuth();
+  const queryClient = useQueryClient();
   const [step, setStep] = useState(0);
   const [isCreating, setIsCreating] = useState(false);
   const [dbVenues, setDbVenues] = useState<any[]>([]);
@@ -342,6 +345,10 @@ export default function CreateMatchPage() {
         ...formData,
         creator_id: user.id,
       });
+
+      // Invalidate cache immediately so the match shows on Home
+      queryClient.invalidateQueries({ queryKey: queryKeys.home.all });
+      queryClient.invalidateQueries({ queryKey: queryKeys.userMatches.all });
 
       // Si es un establecimiento registrado y elige Mercado Pago, redirigir a pagar la seña
       if (formData.business_id && formData.field_id && formData.payment_method === 'mercado_pago') {

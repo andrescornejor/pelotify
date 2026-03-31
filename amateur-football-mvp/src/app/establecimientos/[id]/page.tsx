@@ -24,12 +24,15 @@ import {
 import { useParams, useRouter, useSearchParams } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/contexts/AuthContext';
+import { useQueryClient } from '@tanstack/react-query';
+import { queryKeys } from '@/lib/queryKeys';
 import confetti from 'canvas-confetti';
 
 export default function EstablecimientoProfile() {
   const params = useParams();
   const router = useRouter();
   const { user } = useAuth();
+  const queryClient = useQueryClient();
   const [business, setBusiness] = useState<any>(null);
   const [fields, setFields] = useState<any[]>([]);
   const [bookings, setBookings] = useState<any[]>([]);
@@ -49,6 +52,10 @@ export default function EstablecimientoProfile() {
     const paymentStatus = searchParams.get('payment');
     if (paymentStatus === 'success') {
       setShowSuccessModal(true);
+      // Invalidate home data since a new match/booking was created
+      queryClient.invalidateQueries({ queryKey: queryKeys.home.all });
+      queryClient.invalidateQueries({ queryKey: queryKeys.userMatches.all });
+      
       confetti({
         particleCount: 150,
         spread: 70,

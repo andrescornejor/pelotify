@@ -137,6 +137,7 @@ export function useCreateMatch() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: queryKeys.matches.all });
       queryClient.invalidateQueries({ queryKey: queryKeys.userMatches.all });
+      queryClient.invalidateQueries({ queryKey: queryKeys.home.all });
     },
   });
 }
@@ -198,6 +199,7 @@ export function useJoinMatch() {
       queryClient.invalidateQueries({ queryKey: queryKeys.matches.byId(matchId) });
       queryClient.invalidateQueries({ queryKey: queryKeys.userMatches.all });
       queryClient.invalidateQueries({ queryKey: queryKeys.matches.lists() });
+      queryClient.invalidateQueries({ queryKey: queryKeys.home.all });
     },
   });
 }
@@ -217,6 +219,7 @@ export function useLeaveMatch() {
       });
       queryClient.invalidateQueries({ queryKey: queryKeys.userMatches.all });
       queryClient.invalidateQueries({ queryKey: queryKeys.matches.lists() });
+      queryClient.invalidateQueries({ queryKey: queryKeys.home.all });
     },
   });
 }
@@ -232,6 +235,7 @@ export function useDeleteMatch() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: queryKeys.matches.all });
       queryClient.invalidateQueries({ queryKey: queryKeys.userMatches.all });
+      queryClient.invalidateQueries({ queryKey: queryKeys.home.all });
     },
   });
 }
@@ -278,6 +282,7 @@ export function useSwitchTeam() {
     
     onSettled: (data, error, { matchId }) => {
       queryClient.invalidateQueries({ queryKey: queryKeys.matches.byId(matchId) });
+      queryClient.invalidateQueries({ queryKey: queryKeys.home.all });
     },
   });
 }
@@ -438,6 +443,7 @@ export function useRespondToInvitation() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: queryKeys.matches.all });
       queryClient.invalidateQueries({ queryKey: queryKeys.userMatches.all });
+      queryClient.invalidateQueries({ queryKey: queryKeys.home.all });
     },
   });
 }
@@ -486,6 +492,7 @@ export function useBulkUpdateParticipants() {
     
     onSettled: (data, error, { matchId }) => {
       queryClient.invalidateQueries({ queryKey: queryKeys.matches.byId(matchId) });
+      queryClient.invalidateQueries({ queryKey: queryKeys.home.all });
     },
   });
 }
