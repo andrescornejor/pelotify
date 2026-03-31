@@ -130,13 +130,13 @@ function PitchSVG({ type }: { type: 'F5' | 'F7' | 'F11' }) {
 
 function StepIndicator({ current, total }: { current: number; total: number }) {
   return (
-    <div className="flex items-center gap-2">
+    <div className="flex flex-row lg:flex-col items-center lg:items-start gap-2 lg:gap-0 lg:mt-10 lg:w-full">
       {STEPS.map((label, i) => (
-        <div key={i} className="flex items-center gap-2">
-          <div className="flex flex-col items-center gap-1">
+        <div key={i} className="flex flex-row lg:flex-col items-center lg:items-start lg:w-full">
+          <div className="flex flex-col lg:flex-row items-center lg:gap-4 lg:w-full">
             <motion.div
               animate={{
-                scale: i === current ? 1.05 : 1,
+                scale: i === current ? 1.1 : 1,
                 backgroundColor:
                   i < current
                     ? 'rgb(16 185 129)'
@@ -146,7 +146,7 @@ function StepIndicator({ current, total }: { current: number; total: number }) {
                 borderColor: i <= current ? 'rgb(16 185 129)' : 'rgba(255,255,255,0.1)',
               }}
               transition={{ duration: 0.2 }}
-              className="w-7 h-7 sm:w-8 sm:h-8 rounded-full border flex items-center justify-center"
+              className="w-7 h-7 sm:w-8 sm:h-8 rounded-full border flex items-center justify-center relative z-10"
             >
               {i < current ? (
                 <CheckCircle2 className="w-3 h-3 sm:w-4 sm:h-4 text-black" />
@@ -158,17 +158,22 @@ function StepIndicator({ current, total }: { current: number; total: number }) {
                 </span>
               )}
             </motion.div>
-            <span
-              className={`text-[7px] sm:text-[8px] font-black uppercase tracking-widest transition-colors ${i === current ? 'text-primary' : i < current ? 'text-primary/60' : 'text-foreground/20'}`}
-            >
-              {label}
-            </span>
+            <div className="flex flex-col items-center lg:items-start">
+              <span
+                className={`text-[7px] sm:text-[8px] lg:text-[11px] font-black uppercase tracking-[0.2em] lg:tracking-[0.3em] transition-colors ${i === current ? 'text-primary' : i < current ? 'text-primary/60' : 'text-foreground/20'}`}
+              >
+                {label}
+              </span>
+              <span className="hidden lg:block text-[9px] font-bold text-foreground/20 uppercase tracking-widest mt-0.5">
+                {i === 0 ? "Selección de sede" : i === 1 ? "Fecha y hora" : i === 2 ? "Configuración" : "Revisión final"}
+              </span>
+            </div>
           </div>
           {i < total - 1 && (
             <motion.div
               animate={{ opacity: i < current ? 1 : 0.15 }}
               transition={{ duration: 0.2 }}
-              className="w-4 sm:w-8 h-0.5 bg-primary mb-5"
+              className="w-4 sm:w-8 lg:w-[1.5px] h-[1px] lg:h-12 bg-primary mb-5 lg:mb-0 lg:ml-[15px] lg:my-2"
             />
           )}
         </div>
@@ -472,39 +477,46 @@ export default function CreateMatchPage() {
         <div className="absolute inset-0 bg-[repeating-linear-gradient(0deg,transparent,transparent_2px,rgba(255,255,255,0.01)_2px,rgba(255,255,255,0.01)_4px)] opacity-50 sm:opacity-100" />
       </div>
 
-      <div className="relative z-10 flex flex-col max-w-4xl mx-auto p-4 pt-6 pb-28 min-h-screen">
-        {/* ── HEADER ── */}
-        <motion.div
-          initial={{ opacity: 0, y: -16 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="flex flex-col gap-6 mb-8"
-        >
-          <div className="flex items-center gap-3">
-            <div className="flex items-center gap-2">
-              <div className="w-1.5 h-1.5 rounded-full bg-primary hidden sm:block animate-pulse" />
-              <div className="w-1.5 h-1.5 rounded-full bg-primary sm:hidden" />
-              <span className="text-[9px] font-black uppercase tracking-[0.6em] text-primary">
-                Crear Partido
-              </span>
+      <div className="relative z-10 max-w-4xl lg:max-w-7xl mx-auto p-4 pt-6 pb-28 min-h-screen">
+        <div className="flex flex-col lg:flex-row lg:items-start lg:gap-16">
+          {/* ── HEADER COLUMN ── */}
+          <motion.div
+            initial={{ opacity: 0, y: -16 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="flex flex-col gap-6 mb-8 lg:mb-0 lg:w-1/3 lg:sticky lg:top-12"
+          >
+            <div className="flex items-center gap-3">
+              <div className="flex items-center gap-2">
+                <div className="w-1.5 h-1.5 rounded-full bg-primary hidden sm:block animate-pulse" />
+                <div className="w-1.5 h-1.5 rounded-full bg-primary sm:hidden" />
+                <span className="text-[9px] font-black uppercase tracking-[0.6em] text-primary">
+                  Crear Partido
+                </span>
+              </div>
             </div>
-          </div>
 
-          <div>
-            <h1 className="text-[clamp(2.5rem,8vw,5rem)] font-black italic uppercase leading-none tracking-tighter text-foreground">
-              Armá el
-            </h1>
-            <h1 className="text-[clamp(2.5rem,8vw,5rem)] font-black italic uppercase leading-none tracking-tighter">
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary via-emerald-400 to-teal-300">
-                Partido
-              </span>
-            </h1>
-          </div>
+            <div>
+              <h1 className="text-[clamp(2.5rem,8vw,5rem)] lg:text-7xl font-black italic uppercase leading-none tracking-tighter text-foreground">
+                Armá el
+              </h1>
+              <h1 className="text-[clamp(2.5rem,8vw,5rem)] lg:text-7xl font-black italic uppercase leading-none tracking-tighter">
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary via-emerald-400 to-teal-300">
+                  Partido
+                </span>
+              </h1>
+            </div>
 
-          <StepIndicator current={step} total={STEPS.length} />
-        </motion.div>
+            <div className="hidden lg:block">
+              <p className="text-sm font-bold text-foreground/40 uppercase tracking-widest leading-relaxed">
+                Seguí los pasos para configurar tu próximo encuentro y empezá a convocar.
+              </p>
+            </div>
 
-        {/* ── STEP CONTENT ── */}
-        <div className="flex-1">
+            <StepIndicator current={step} total={STEPS.length} />
+          </motion.div>
+
+          {/* ── CONTENT COLUMN ── */}
+          <div className="flex-1 w-full lg:max-w-3xl">
           <AnimatePresence mode="wait">
             {/* ── STEP 0: CANCHA ── */}
             {step === 0 && (
@@ -1327,7 +1339,6 @@ export default function CreateMatchPage() {
               </motion.div>
             )}
           </AnimatePresence>
-        </div>
 
         {/* ── NAVIGATION ── */}
         <motion.div
@@ -1390,6 +1401,8 @@ export default function CreateMatchPage() {
             </motion.button>
           )}
         </motion.div>
+          </div>
+        </div>
       </div>
     </div>
   );
