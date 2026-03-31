@@ -802,64 +802,66 @@ function MatchLobbyContent() {
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
             {/* ── LEFT: TEAMS ── */}
             <div className="lg:col-span-8 space-y-8">
-              {/* Header */}
-              <div className="flex items-center justify-between">
-                <div>
-                  <h2 className="text-2xl font-black italic uppercase tracking-tighter text-foreground leading-none">
-                    {match.is_recruitment ? 'Hub de Reclutamiento' : 'Alineaciones'}
-                  </h2>
-                  <p className="text-[9px] font-black text-foreground/30 uppercase tracking-[0.4em] mt-1">
-                    {match.is_recruitment 
-                      ? 'Sumate al equipo que busca refuerzos' 
-                      : 'Elegí tu equipo y entrá a jugar'}
-                  </p>
+              {/* Header - Only visible if joined */}
+              {hasJoined && (
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h2 className="text-2xl font-black italic uppercase tracking-tighter text-foreground leading-none">
+                      {match.is_recruitment ? 'Hub de Reclutamiento' : 'Alineaciones'}
+                    </h2>
+                    <p className="text-[9px] font-black text-foreground/30 uppercase tracking-[0.4em] mt-1">
+                      {match.is_recruitment 
+                        ? 'Sumate al equipo que busca refuerzos' 
+                        : 'Elegí tu equipo y entrá a jugar'}
+                    </p>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    {!isCompleted && (
+                      <button
+                        onClick={handleOpenInviteModal}
+                        className="h-10 px-5 bg-primary text-black rounded-xl flex items-center gap-2 text-[10px] font-black uppercase tracking-widest hover:scale-105 active:scale-95 transition-all shadow-lg shadow-primary/20"
+                      >
+                        <UserPlus className="w-3.5 h-3.5" />
+                        Convocar
+                      </button>
+                    )}
+                    {isCreator && !isCompleted && (
+                      <>
+                      <button
+                        onClick={() => setIsTacticalModalOpen(true)}
+                        className="h-10 px-5 bg-white/5 border border-white/10 hover:bg-white/10 hover:border-primary/40 text-primary rounded-xl flex items-center gap-2 text-[10px] font-black uppercase tracking-widest transition-all active:scale-95 shadow-lg shadow-black/20"
+                      >
+                        <Shield className="w-3.5 h-3.5" />
+                        Gestionar Equipos
+                      </button>
+                      <button
+                        onClick={() =>
+                          isEditingTeamNames ? handleSaveTeamNames() : setIsEditingTeamNames(true)
+                        }
+                        disabled={updateMutation.isPending}
+                        className={cn(
+                          'h-10 w-10 rounded-xl flex items-center justify-center border transition-all active:scale-95',
+                          isEditingTeamNames
+                            ? 'bg-foreground text-background border-foreground'
+                            : 'bg-foreground/5 border-foreground/10 text-foreground/30 hover:text-primary hover:border-primary/30'
+                        )}
+                      >
+                        {updateMutation.isPending ? (
+                          <Loader2 className="w-4 h-4 animate-spin" />
+                        ) : isEditingTeamNames ? (
+                          <Save className="w-4 h-4" />
+                        ) : (
+                          <Edit2 className="w-4 h-4" />
+                        )}
+                      </button>
+                      </>
+                    )}
+                  </div>
                 </div>
-                <div className="flex items-center gap-2">
-                  {!isCompleted && (
-                    <button
-                      onClick={handleOpenInviteModal}
-                      className="h-10 px-5 bg-primary text-black rounded-xl flex items-center gap-2 text-[10px] font-black uppercase tracking-widest hover:scale-105 active:scale-95 transition-all shadow-lg shadow-primary/20"
-                    >
-                      <UserPlus className="w-3.5 h-3.5" />
-                      Convocar
-                    </button>
-                  )}
-                  {isCreator && !isCompleted && (
-                    <>
-                    <button
-                      onClick={() => setIsTacticalModalOpen(true)}
-                      className="h-10 px-5 bg-white/5 border border-white/10 hover:bg-white/10 hover:border-primary/40 text-primary rounded-xl flex items-center gap-2 text-[10px] font-black uppercase tracking-widest transition-all active:scale-95 shadow-lg shadow-black/20"
-                    >
-                      <Shield className="w-3.5 h-3.5" />
-                      Gestionar Equipos
-                    </button>
-                    <button
-                      onClick={() =>
-                        isEditingTeamNames ? handleSaveTeamNames() : setIsEditingTeamNames(true)
-                      }
-                      disabled={updateMutation.isPending}
-                      className={cn(
-                        'h-10 w-10 rounded-xl flex items-center justify-center border transition-all active:scale-95',
-                        isEditingTeamNames
-                          ? 'bg-foreground text-background border-foreground'
-                          : 'bg-foreground/5 border-foreground/10 text-foreground/30 hover:text-primary hover:border-primary/30'
-                      )}
-                    >
-                      {updateMutation.isPending ? (
-                        <Loader2 className="w-4 h-4 animate-spin" />
-                      ) : isEditingTeamNames ? (
-                        <Save className="w-4 h-4" />
-                      ) : (
-                        <Edit2 className="w-4 h-4" />
-                      )}
-                    </button>
-                    </>
-                  )}
-                </div>
-              </div>
+              )}
 
-              {/* Unassigned bench */}
-              {unassigned.length > 0 && (
+              {/* Unassigned bench - Only visible if joined */}
+              {hasJoined && unassigned.length > 0 && (
                 <motion.div
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
@@ -1007,236 +1009,217 @@ function MatchLobbyContent() {
 
               {/* ── NOT LOGGED IN CTA ── */}
               {!user && !isCompleted && (
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  className="relative overflow-hidden rounded-[2.5rem] border border-foreground/10 bg-surface-elevated p-8 sm:p-10 flex flex-col sm:flex-row items-center justify-between gap-8"
-                >
-                  <div className="flex-1 text-center sm:text-left">
-                    <h3 className="text-2xl font-black italic uppercase tracking-tighter text-foreground">
-                      ¿Querés sumarte a este partido?
-                    </h3>
-                    <p className="text-sm font-bold text-foreground/40 mt-2 uppercase tracking-tight">
-                      Iniciá sesión o registrate para poder unirte a las alineaciones y chatear con los pibes.
-                    </p>
-                  </div>
-                  <Link
-                    href={`/login?redirect=/match?id=${match.id}`}
-                    className="shrink-0 h-14 px-10 bg-primary text-black font-black text-[10px] uppercase tracking-[0.2em] rounded-2xl shadow-xl shadow-primary/20 hover:scale-105 active:scale-95 transition-all flex items-center justify-center gap-3"
-                  >
-                    <UserPlus className="w-4 h-4" />
-                    Iniciar Sesión
-                  </Link>
-                </motion.div>
-              )}
-
-              {/* Team panels / Recruitment List */}
-              {match.is_recruitment ? (
-                <div className="space-y-6">
-                   {/* Recruitment Players List */}
-                   <div className="space-y-4">
-                      <div className="flex items-center justify-between px-1">
-                        <span className="text-[10px] font-black text-foreground/40 uppercase tracking-[0.4em]">
-                          Lista de Refuerzos ({confirmedParticipants.length})
-                        </span>
-                        {isFull && (
-                          <span className="text-[10px] font-black text-amber-500 uppercase tracking-widest flex items-center gap-2">
-                            <Check className="w-3 h-3" /> CUPO COMPLETO
-                          </span>
-                        )}
-                      </div>
-                      
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                         {confirmedParticipants.map((p: any) => (
-                           <motion.div 
-                             key={p.id} 
-                             whileHover={{ scale: 1.02 }}
-                             className="p-5 rounded-[1.8rem] glass-premium border-white/5 flex items-center gap-4 transition-all"
-                           >
-                              <PlayerSlot participant={p} isSelf={p.user_id === user?.id} />
-                              <div className="flex flex-col">
-                                 <span className="text-sm font-black italic uppercase text-foreground">{p.profiles?.name}</span>
-                                 <div className="flex items-center gap-1.5 mt-0.5">
-                                    <div className="w-1.5 h-1.5 rounded-full bg-primary" />
-                                    <span className="text-[8px] font-black text-primary/70 uppercase tracking-widest">REFUERZO CONFIRMADO</span>
-                                 </div>
-                              </div>
-                           </motion.div>
-                         ))}
-                         
-                         {Array.from({ length: Math.max(0, (match.missing_players || 0) - confirmedParticipants.length) }).map((_, i) => (
-                           <div key={`empty-${i}`} className="p-5 rounded-[1.8rem] border-2 border-dashed border-foreground/5 bg-foreground/[0.01] flex items-center gap-4 opacity-40">
-                              <div className="w-12 h-12 rounded-2xl border border-foreground/10 flex items-center justify-center bg-foreground/5">
-                                 <Users className="w-5 h-5 text-foreground/20" />
-                              </div>
-                              <div className="flex flex-col">
-                                 <span className="text-xs font-black italic uppercase text-foreground/20 italic tracking-tighter">Buscando Jugador...</span>
-                                 <span className="text-[8px] font-bold text-foreground/10 uppercase tracking-widest">VACANTE DISPONIBLE</span>
-                              </div>
-                           </div>
-                         ))}
-                      </div>
-                   </div>
-                </div>
-              ) : (
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-                {(['A', 'B'] as const).map((team: 'A' | 'B', teamIdx: number) => {
-                  const members = team === 'A' ? teamA : teamB;
-                  const cfg = TEAM_CONFIG[team];
-                  const isMine = myTeam === team;
-                  const teamFull = members.length >= teamSize;
-                  const canJoin = (!hasJoined || myEntry?.status === 'pending') && !teamFull;
-                  const canSwitch = hasJoined && isConfirmed && myTeam !== team && !teamFull;
-
-                  return (
-                    <motion.div
-                      key={team}
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: teamIdx * 0.1 }}
-                      className={cn(
-                        'relative rounded-[2.5rem] border-2 p-8 transition-all duration-500 overflow-hidden',
-                        isMine
-                          ? `${cfg.borderActive} ${cfg.shadow} bg-surface-elevated`
-                          : `${cfg.border} hover:border-foreground/20 bg-foreground/[0.01]`,
-                      )}
-                    >
-                      {/* Background gradient */}
-                      {isMine && (
-                        <div
-                          className={cn(
-                            'absolute inset-0 bg-gradient-to-br opacity-30',
-                            cfg.gradient
-                          )}
-                        />
-                      )}
-
-                      {/* Team header */}
-                      <div className="relative flex items-center gap-4 mb-5">
-                        <div
-                          className={cn(
-                            'w-12 h-12 rounded-xl flex items-center justify-center font-black text-xl italic text-white shadow-lg',
-                            cfg.bg
-                          )}
-                        >
-                          {team}
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          {isEditingTeamNames ? (
-                            <input
-                              value={team === 'A' ? editingNames.A : editingNames.B}
-                              onChange={(e) =>
-                                setEditingNames({ ...editingNames, [team]: e.target.value })
-                              }
-                              className="bg-foreground/5 border border-foreground/10 rounded-xl px-3 py-1.5 text-sm font-black italic uppercase tracking-tighter text-foreground outline-none focus:border-primary/50 w-full"
-                              onClick={(e) => e.stopPropagation()}
-                            />
-                          ) : (
-                            <h3 className="text-lg font-black italic uppercase tracking-tighter text-foreground leading-none">
-                              {team === 'A'
-                                ? match.team_a_name || 'Local'
-                                : match.team_b_name || 'Visitante'}
-                            </h3>
-                          )}
-                          <p
-                            className={cn(
-                              'text-[9px] font-black uppercase tracking-widest mt-1',
-                              cfg.text
+                    {/* Team panels / Recruitment List - Only visible if joined */}
+              {hasJoined && (
+                <>
+                  {match.is_recruitment ? (
+                    <div className="space-y-6">
+                       {/* Recruitment Players List */}
+                       <div className="space-y-4">
+                          <div className="flex items-center justify-between px-1">
+                            <span className="text-[10px] font-black text-foreground/40 uppercase tracking-[0.4em]">
+                              Lista de Refuerzos ({confirmedParticipants.length})
+                            </span>
+                            {isFull && (
+                              <span className="text-[10px] font-black text-amber-500 uppercase tracking-widest flex items-center gap-2">
+                                <Check className="w-3 h-3" /> CUPO COMPLETO
+                              </span>
                             )}
-                          >
-                            {members.length}/{teamSize} jugadores
-                          </p>
-                        </div>
-                        {isMine && (
-                          <div className="w-6 h-6 bg-primary rounded-full flex items-center justify-center">
-                            <Check className="w-3 h-3 text-black" />
                           </div>
-                        )}
-                      </div>
-
-                      {/* Occupancy mini-bar */}
-                      <div className="h-1 bg-foreground/5 rounded-full overflow-hidden mb-5">
+                          
+                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                             {confirmedParticipants.map((p: any) => (
+                               <motion.div 
+                                 key={p.id} 
+                                 whileHover={{ scale: 1.02 }}
+                                 className="p-5 rounded-[1.8rem] glass-premium border-white/5 flex items-center gap-4 transition-all"
+                               >
+                                  <PlayerSlot participant={p} isSelf={p.user_id === user?.id} />
+                                  <div className="flex flex-col">
+                                     <span className="text-sm font-black italic uppercase text-foreground">{p.profiles?.name}</span>
+                                     <div className="flex items-center gap-1.5 mt-0.5">
+                                        <div className="w-1.5 h-1.5 rounded-full bg-primary" />
+                                        <span className="text-[8px] font-black text-primary/70 uppercase tracking-widest">REFUERZO CONFIRMADO</span>
+                                     </div>
+                                  </div>
+                               </motion.div>
+                             ))}
+                             
+                             {Array.from({ length: Math.max(0, (match.missing_players || 0) - confirmedParticipants.length) }).map((_, i) => (
+                               <div key={`empty-${i}`} className="p-5 rounded-[1.8rem] border-2 border-dashed border-foreground/5 bg-foreground/[0.01] flex items-center gap-4 opacity-40">
+                                  <div className="w-12 h-12 rounded-2xl border border-foreground/10 flex items-center justify-center bg-foreground/5">
+                                     <Users className="w-5 h-5 text-foreground/20" />
+                                  </div>
+                                  <div className="flex flex-col">
+                                     <span className="text-xs font-black italic uppercase text-foreground/20 italic tracking-tighter">Buscando Jugador...</span>
+                                     <span className="text-[8px] font-bold text-foreground/10 uppercase tracking-widest">VACANTE DISPONIBLE</span>
+                                  </div>
+                               </div>
+                             ))}
+                          </div>
+                       </div>
+                    </div>
+                  ) : (
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                    {(['A', 'B'] as const).map((team: 'A' | 'B', teamIdx: number) => {
+                      const members = team === 'A' ? teamA : teamB;
+                      const cfg = TEAM_CONFIG[team];
+                      const isMine = myTeam === team;
+                      const teamFull = members.length >= teamSize;
+                      const canJoin = (!hasJoined || myEntry?.status === 'pending') && !teamFull;
+                      const canSwitch = hasJoined && isConfirmed && myTeam !== team && !teamFull;
+    
+                      return (
                         <motion.div
-                          initial={{ width: 0 }}
-                          animate={{ width: `${(members.length / teamSize) * 100}%` }}
-                          transition={{ duration: 1, ease: 'circOut', delay: 0.5 + teamIdx * 0.15 }}
+                          key={team}
+                          initial={{ opacity: 0, y: 20 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          transition={{ delay: teamIdx * 0.1 }}
                           className={cn(
-                            'h-full rounded-full',
-                            team === 'A' ? 'bg-blue-500' : 'bg-red-500'
-                          )}
-                        />
-                      </div>
-
-                      {/* Join button */}
-                      {!match.is_completed && (
-                        <button
-                          onClick={() => (canJoin || canSwitch) && handleJoinTeam(team)}
-                          disabled={joinMutation.isPending || switchMutation.isPending || (teamFull && !isMine)}
-                          className={cn(
-                            'w-full h-12 rounded-xl font-black text-[10px] uppercase tracking-widest flex items-center justify-center gap-2 transition-all active:scale-95 disabled:opacity-40 mb-5 shadow-lg',
+                            'relative rounded-[2.5rem] border-2 p-8 transition-all duration-500 overflow-hidden',
                             isMine
-                              ? 'bg-foreground/5 border border-foreground/10 text-foreground/50 cursor-default'
-                              : teamFull
-                                ? 'bg-foreground/[0.03] border border-foreground/5 text-foreground/20 cursor-not-allowed'
-                                : `${cfg.btn} text-white shadow-lg`
+                              ? `${cfg.borderActive} ${cfg.shadow} bg-surface-elevated`
+                              : `${cfg.border} hover:border-foreground/20 bg-foreground/[0.01]`,
                           )}
                         >
-                          {(joinMutation.isPending || switchMutation.isPending) ? (
-                            <Loader2 className="w-4 h-4 animate-spin" />
-                          ) : isMine ? (
-                            <>
-                              <Check className="w-4 h-4 text-primary" /> Estás acá
-                            </>
-                          ) : teamFull ? (
-                            'Equipo lleno'
-                          ) : (
-                            <>
-                              <Zap className="w-4 h-4 fill-current" /> Entrar a jugar
-                            </>
-                          )}
-                        </button>
-                      )}
-
-                      {/* Player slots grid */}
-                      <div className="grid grid-cols-4 lg:grid-cols-5 gap-4 gap-y-6">
-                        {Array.from({ length: teamSize }).map((_: any, idx: number) => {
-                          const participant = members[idx];
-                          return (
-                            <div key={idx} className="relative group/slot">
-                              <PlayerSlot
-                                participant={participant}
-                                isSelf={participant?.user_id === user?.id}
-                              />
-                              {isCreator && !isCompleted && participant && (
-                                <div className="absolute top-0 right-0 z-50 flex flex-col gap-1 opacity-0 group-hover/slot:opacity-100 transition-opacity">
-                                  <button 
-                                    onClick={() => handleMovePlayer(participant.user_id, team === 'A' ? 'B' : 'A')}
-                                    className={cn(
-                                      "w-6 h-6 rounded-lg flex items-center justify-center text-white shadow-lg hover:scale-110 active:scale-90",
-                                      team === 'A' ? "bg-rose-500" : "bg-blue-500"
-                                    )}
-                                    title={team === 'A' ? "Mover al Equipo B" : "Mover al Equipo A"}
-                                  >
-                                    <ChevronRight className="w-3 h-3" />
-                                  </button>
-                                  <button 
-                                    onClick={() => handleMovePlayer(participant.user_id, null)}
-                                    className="w-6 h-6 bg-zinc-700 rounded-lg flex items-center justify-center text-white shadow-lg hover:scale-110 active:scale-90"
-                                    title="Mover al Banquillo"
-                                  >
-                                    <LogOut className="w-3 h-3 rotate-90" />
-                                  </button>
-                                </div>
+                          {/* Background gradient */}
+                          {isMine && (
+                            <div
+                              className={cn(
+                                'absolute inset-0 bg-gradient-to-br opacity-30',
+                                cfg.gradient
                               )}
+                            />
+                          )}
+    
+                          {/* Team header */}
+                          <div className="relative flex items-center gap-4 mb-5">
+                            <div
+                              className={cn(
+                                'w-12 h-12 rounded-xl flex items-center justify-center font-black text-xl italic text-white shadow-lg',
+                                cfg.bg
+                              )}
+                            >
+                              {team}
                             </div>
-                          );
-                        })}
-                      </div>
-                    </motion.div>
-                  );
-                })}
-              </div>
-            )}
+                            <div className="flex-1 min-w-0">
+                              {isEditingTeamNames ? (
+                                <input
+                                  value={team === 'A' ? editingNames.A : editingNames.B}
+                                  onChange={(e) =>
+                                    setEditingNames({ ...editingNames, [team]: e.target.value })
+                                  }
+                                  className="bg-foreground/5 border border-foreground/10 rounded-xl px-3 py-1.5 text-sm font-black italic uppercase tracking-tighter text-foreground outline-none focus:border-primary/50 w-full"
+                                  onClick={(e) => e.stopPropagation()}
+                                />
+                              ) : (
+                                <h3 className="text-lg font-black italic uppercase tracking-tighter text-foreground leading-none">
+                                  {team === 'A'
+                                    ? match.team_a_name || 'Local'
+                                    : match.team_b_name || 'Visitante'}
+                                </h3>
+                              )}
+                              <p
+                                className={cn(
+                                  'text-[9px] font-black uppercase tracking-widest mt-1',
+                                  cfg.text
+                                )}
+                              >
+                                {members.length}/{teamSize} jugadores
+                              </p>
+                            </div>
+                            {isMine && (
+                              <div className="w-6 h-6 bg-primary rounded-full flex items-center justify-center">
+                                <Check className="w-3 h-3 text-black" />
+                              </div>
+                            )}
+                          </div>
+    
+                          {/* Occupancy mini-bar */}
+                          <div className="h-1 bg-foreground/5 rounded-full overflow-hidden mb-5">
+                            <motion.div
+                              initial={{ width: 0 }}
+                              animate={{ width: `${(members.length / teamSize) * 100}%` }}
+                              transition={{ duration: 1, ease: 'circOut', delay: 0.5 + teamIdx * 0.15 }}
+                              className={cn(
+                                'h-full rounded-full',
+                                team === 'A' ? 'bg-blue-500' : 'bg-red-500'
+                              )}
+                            />
+                          </div>
+    
+                          {/* Join button */}
+                          {!match.is_completed && (
+                            <button
+                              onClick={() => (canJoin || canSwitch) && handleJoinTeam(team)}
+                              disabled={joinMutation.isPending || switchMutation.isPending || (teamFull && !isMine)}
+                              className={cn(
+                                'w-full h-12 rounded-xl font-black text-[10px] uppercase tracking-widest flex items-center justify-center gap-2 transition-all active:scale-95 disabled:opacity-40 mb-5 shadow-lg',
+                                isMine
+                                  ? 'bg-foreground/5 border border-foreground/10 text-foreground/50 cursor-default'
+                                  : teamFull
+                                    ? 'bg-foreground/[0.03] border border-foreground/5 text-foreground/20 cursor-not-allowed'
+                                    : `${cfg.btn} text-white shadow-lg`
+                              )}
+                            >
+                              {(joinMutation.isPending || switchMutation.isPending) ? (
+                                <Loader2 className="w-4 h-4 animate-spin" />
+                              ) : isMine ? (
+                                <>
+                                  <Check className="w-4 h-4 text-primary" /> Estás acá
+                                </>
+                              ) : teamFull ? (
+                                'Equipo lleno'
+                              ) : (
+                                <>
+                                  <Zap className="w-4 h-4 fill-current" /> Entrar a jugar
+                                </>
+                              )}
+                            </button>
+                          )}
+    
+                          {/* Player slots grid */}
+                          <div className="grid grid-cols-4 lg:grid-cols-5 gap-4 gap-y-6">
+                            {Array.from({ length: teamSize }).map((_: any, idx: number) => {
+                              const participant = members[idx];
+                              return (
+                                <div key={idx} className="relative group/slot">
+                                  <PlayerSlot
+                                    participant={participant}
+                                    isSelf={participant?.user_id === user?.id}
+                                  />
+                                  {isCreator && !isCompleted && participant && (
+                                    <div className="absolute top-0 right-0 z-50 flex flex-col gap-1 opacity-0 group-hover/slot:opacity-100 transition-opacity">
+                                      <button 
+                                        onClick={() => handleMovePlayer(participant.user_id, team === 'A' ? 'B' : 'A')}
+                                        className={cn(
+                                          "w-6 h-6 rounded-lg flex items-center justify-center text-white shadow-lg hover:scale-110 active:scale-90",
+                                          team === 'A' ? "bg-rose-500" : "bg-blue-500"
+                                        )}
+                                        title={team === 'A' ? "Mover al Equipo B" : "Mover al Equipo A"}
+                                      >
+                                        <ChevronRight className="w-3 h-3" />
+                                      </button>
+                                      <button 
+                                        onClick={() => handleMovePlayer(participant.user_id, null)}
+                                        className="w-6 h-6 bg-zinc-700 rounded-lg flex items-center justify-center text-white shadow-lg hover:scale-110 active:scale-90"
+                                        title="Mover al Banquillo"
+                                      >
+                                        <LogOut className="w-3 h-3 rotate-90" />
+                                      </button>
+                                    </div>
+                                  )}
+                                </div>
+                              );
+                            })}
+                          </div>
+                        </motion.div>
+                      );
+                    })}
+                  </div>
+                  )}
+                </>
+              )}
 
               {/* Action buttons */}
               <div className="space-y-3">
