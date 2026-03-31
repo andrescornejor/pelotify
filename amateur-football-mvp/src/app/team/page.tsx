@@ -45,6 +45,7 @@ import {
 import { getTeamChallenges, respondToChallenge, TeamChallenge } from '@/lib/teamChallenges';
 import Link from 'next/link';
 import { useAuth } from '@/contexts/AuthContext';
+import { type Match } from '@/lib/matches';
 
 import { uploadTeamLogo } from '@/lib/storage';
 import { getFriends } from '@/lib/friends';
@@ -1250,7 +1251,7 @@ function TeamProfileContent() {
                         new Date(`${a.date}T${a.time}`).getTime() -
                         new Date(`${b.date}T${b.time}`).getTime()
                     )
-                    .map((match) => (
+                    .map((match: Match) => (
                       <Link key={match.id} href={`/match?id=${match.id}`}>
                         <motion.div
                           whileHover={{ x: 10 }}
@@ -1338,7 +1339,7 @@ function TeamProfileContent() {
                         new Date(`${b.date}T${b.time}`).getTime() -
                         new Date(`${a.date}T${a.time}`).getTime()
                     )
-                    .map((match) => {
+                    .map((match: Match) => {
                       const isHome = match.team_a_id === team.id;
                       const result =
                         (isHome ? match.team_a_score : match.team_b_score) >

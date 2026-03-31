@@ -22,6 +22,7 @@ import dynamic from 'next/dynamic';
 import { useMatchSearch } from '@/hooks/useMatchSearch';
 import { useSettings } from '@/contexts/SettingsContext';
 import { supabase } from '@/lib/supabase';
+import { type Match } from '@/lib/matches';
 
 const MapSearch = dynamic(() => import('@/components/MapSearch'), {
   ssr: false,
@@ -246,7 +247,7 @@ export default function SearchPage() {
         ) : activeTab === 'list' ? (
           <div className="flex flex-col gap-6">
             {filteredMatches.length > 0 ? (
-              filteredMatches.map((match, i) => (
+              filteredMatches.map((match: Match, i: number) => (
                 <motion.div
                   key={match.id}
                   initial={isPerfMode ? { opacity: 1 } : { opacity: 0, scale: 0.98, y: 15 }}
