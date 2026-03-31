@@ -27,6 +27,7 @@ import {
   MessageSquare,
   PlusCircle,
   ExternalLink,
+  X,
 } from 'lucide-react';
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
