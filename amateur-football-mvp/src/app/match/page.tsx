@@ -1009,7 +1009,30 @@ function MatchLobbyContent() {
 
               {/* ── NOT LOGGED IN CTA ── */}
               {!user && !isCompleted && (
-                    {/* Team panels / Recruitment List - Only visible if joined */}
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="relative overflow-hidden rounded-[2.5rem] border border-foreground/10 bg-surface-elevated p-8 sm:p-10 flex flex-col sm:flex-row items-center justify-between gap-8"
+                >
+                  <div className="flex-1 text-center sm:text-left">
+                    <h3 className="text-2xl font-black italic uppercase tracking-tighter text-foreground">
+                      ¿Querés sumarte a este partido?
+                    </h3>
+                    <p className="text-sm font-bold text-foreground/40 mt-2 uppercase tracking-tight">
+                      Iniciá sesión o registrate para poder unirte a las alineaciones y chatear con los pibes.
+                    </p>
+                  </div>
+                  <Link
+                    href={`/login?redirect=/match?id=${match.id}`}
+                    className="shrink-0 h-14 px-10 bg-primary text-black font-black text-[10px] uppercase tracking-[0.2em] rounded-2xl shadow-xl shadow-primary/20 hover:scale-105 active:scale-95 transition-all flex items-center justify-center gap-3"
+                  >
+                    <UserPlus className="w-4 h-4" />
+                    Iniciar Sesión
+                  </Link>
+                </motion.div>
+              )}
+
+              {/* Team panels / Recruitment List - Only visible if joined */}
               {hasJoined && (
                 <>
                   {match.is_recruitment ? (
