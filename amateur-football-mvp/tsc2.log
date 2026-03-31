@@ -1,0 +1,104 @@
+src/app/page.tsx(1,14): error TS1127: Invalid character.
+src/app/page.tsx(1,16): error TS1127: Invalid character.
+src/app/page.tsx(1,17): error TS1435: Unknown keyword or identifier. Did you mean 'import'?
+src/app/page.tsx(1,65): error TS1005: ';' expected.
+src/app/page.tsx(1,78): error TS1127: Invalid character.
+src/app/page.tsx(1,79): error TS1435: Unknown keyword or identifier. Did you mean 'import'?
+src/app/page.tsx(1,87): error TS1434: Unexpected keyword or identifier.
+src/app/page.tsx(1,92): error TS1434: Unexpected keyword or identifier.
+src/app/page.tsx(1,109): error TS1127: Invalid character.
+src/app/page.tsx(1,110): error TS1435: Unknown keyword or identifier. Did you mean 'import'?
+src/app/page.tsx(1,129): error TS1434: Unexpected keyword or identifier.
+src/app/page.tsx(1,150): error TS1127: Invalid character.
+src/app/page.tsx(1,151): error TS1435: Unknown keyword or identifier. Did you mean 'import'?
+src/app/page.tsx(1,160): error TS1127: Invalid character.
+src/app/page.tsx(1,161): error TS1434: Unexpected keyword or identifier.
+src/app/page.tsx(1,171): error TS1127: Invalid character.
+src/app/page.tsx(1,172): error TS1434: Unexpected keyword or identifier.
+src/app/page.tsx(1,182): error TS1127: Invalid character.
+src/app/page.tsx(1,183): error TS1434: Unexpected keyword or identifier.
+src/app/page.tsx(1,192): error TS1127: Invalid character.
+src/app/page.tsx(1,193): error TS1434: Unexpected keyword or identifier.
+src/app/page.tsx(1,205): error TS1127: Invalid character.
+src/app/page.tsx(1,206): error TS1434: Unexpected keyword or identifier.
+src/app/page.tsx(1,213): error TS1127: Invalid character.
+src/app/page.tsx(1,214): error TS1434: Unexpected keyword or identifier.
+src/app/page.tsx(1,222): error TS1127: Invalid character.
+src/app/page.tsx(1,223): error TS1434: Unexpected keyword or identifier.
+src/app/page.tsx(1,235): error TS1127: Invalid character.
+src/app/page.tsx(1,236): error TS1434: Unexpected keyword or identifier.
+src/app/page.tsx(1,252): error TS1127: Invalid character.
+src/app/page.tsx(1,253): error TS1434: Unexpected keyword or identifier.
+src/app/page.tsx(1,267): error TS1127: Invalid character.
+src/app/page.tsx(1,268): error TS1434: Unexpected keyword or identifier.
+src/app/page.tsx(1,278): error TS1127: Invalid character.
+src/app/page.tsx(1,279): error TS1434: Unexpected keyword or identifier.
+src/app/page.tsx(1,288): error TS1127: Invalid character.
+src/app/page.tsx(1,289): error TS1434: Unexpected keyword or identifier.
+src/app/page.tsx(1,303): error TS1127: Invalid character.
+src/app/page.tsx(1,304): error TS1434: Unexpected keyword or identifier.
+src/app/page.tsx(1,318): error TS1127: Invalid character.
+src/app/page.tsx(1,319): error TS1434: Unexpected keyword or identifier.
+src/app/page.tsx(1,329): error TS1127: Invalid character.
+src/app/page.tsx(1,330): error TS1434: Unexpected keyword or identifier.
+src/app/page.tsx(1,347): error TS1127: Invalid character.
+src/app/page.tsx(1,348): error TS1434: Unexpected keyword or identifier.
+src/app/page.tsx(1,357): error TS1127: Invalid character.
+src/app/page.tsx(1,358): error TS1434: Unexpected keyword or identifier.
+src/app/page.tsx(1,367): error TS1127: Invalid character.
+src/app/page.tsx(1,368): error TS1434: Unexpected keyword or identifier.
+src/app/page.tsx(1,380): error TS1127: Invalid character.
+src/app/page.tsx(1,381): error TS1434: Unexpected keyword or identifier.
+src/app/page.tsx(1,390): error TS1127: Invalid character.
+src/app/page.tsx(1,391): error TS1434: Unexpected keyword or identifier.
+src/app/page.tsx(1,401): error TS1127: Invalid character.
+src/app/page.tsx(1,402): error TS1434: Unexpected keyword or identifier.
+src/app/page.tsx(1,411): error TS1127: Invalid character.
+src/app/page.tsx(1,412): error TS1434: Unexpected keyword or identifier.
+src/app/page.tsx(1,420): error TS1127: Invalid character.
+src/app/page.tsx(1,424): error TS1434: Unexpected keyword or identifier.
+src/app/page.tsx(1,444): error TS1127: Invalid character.
+src/app/page.tsx(1,445): error TS1435: Unknown keyword or identifier. Did you mean 'import'?
+src/app/page.tsx(1,465): error TS1434: Unexpected keyword or identifier.
+src/app/page.tsx(1,495): error TS1127: Invalid character.
+src/app/page.tsx(1,496): error TS1435: Unknown keyword or identifier. Did you mean 'import'?
+src/app/page.tsx(1,520): error TS1434: Unexpected keyword or identifier.
+src/app/page.tsx(1,554): error TS1127: Invalid character.
+src/app/page.tsx(1,555): error TS1435: Unknown keyword or identifier. Did you mean 'import'?
+src/app/page.tsx(1,576): error TS1434: Unexpected keyword or identifier.
+src/app/page.tsx(1,598): error TS1127: Invalid character.
+src/app/page.tsx(1,599): error TS1435: Unknown keyword or identifier. Did you mean 'import'?
+src/app/page.tsx(1,614): error TS1434: Unexpected keyword or identifier.
+src/app/page.tsx(1,633): error TS1127: Invalid character.
+src/app/page.tsx(1,634): error TS1435: Unknown keyword or identifier. Did you mean 'import'?
+src/app/page.tsx(1,661): error TS1434: Unexpected keyword or identifier.
+src/app/page.tsx(1,696): error TS1127: Invalid character.
+src/app/page.tsx(1,697): error TS1435: Unknown keyword or identifier. Did you mean 'import'?
+src/app/page.tsx(1,726): error TS1434: Unexpected keyword or identifier.
+src/app/page.tsx(1,763): error TS1127: Invalid character.
+src/app/page.tsx(1,764): error TS1435: Unknown keyword or identifier. Did you mean 'import'?
+src/app/page.tsx(1,801): error TS1434: Unexpected keyword or identifier.
+src/app/page.tsx(1,825): error TS1127: Invalid character.
+src/app/page.tsx(1,826): error TS1435: Unknown keyword or identifier. Did you mean 'import'?
+src/app/page.tsx(1,834): error TS1434: Unexpected keyword or identifier.
+src/app/page.tsx(1,846): error TS1434: Unexpected keyword or identifier.
+src/app/page.tsx(1,878): error TS1127: Invalid character.
+src/app/page.tsx(1,879): error TS1435: Unknown keyword or identifier. Did you mean 'import'?
+src/app/page.tsx(1,1005): error TS1434: Unexpected keyword or identifier.
+src/app/page.tsx(1,1030): error TS1127: Invalid character.
+src/app/page.tsx(1,1031): error TS1435: Unknown keyword or identifier. Did you mean 'import'?
+src/app/page.tsx(1,1055): error TS1434: Unexpected keyword or identifier.
+src/app/page.tsx(1,1082): error TS1127: Invalid character.
+src/app/page.tsx(1,1084): error TS1127: Invalid character.
+src/app/page.tsx(3,9): error TS1003: Identifier expected.
+src/app/page.tsx(3,117): error TS1138: Parameter declaration expected.
+src/app/page.tsx(4,25): error TS1005: ',' expected.
+src/app/page.tsx(5,7): error TS1128: Declaration or statement expected.
+src/app/page.tsx(5,8): error TS1128: Declaration or statement expected.
+src/app/page.tsx(6,5): error TS1109: Expression expected.
+src/app/page.tsx(379,5): error TS1128: Declaration or statement expected.
+src/app/page.tsx(380,3): error TS1109: Expression expected.
+src/app/page.tsx(381,1): error TS1128: Declaration or statement expected.
+src/app/page.tsx(381,2): error TS1127: Invalid character.
+src/app/page.tsx(381,4): error TS1128: Declaration or statement expected.
+src/app/page.tsx(381,5): error TS1127: Invalid character.
