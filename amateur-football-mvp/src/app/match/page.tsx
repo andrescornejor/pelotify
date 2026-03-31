@@ -31,6 +31,8 @@ import {
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
+import { useQueryClient } from '@tanstack/react-query';
+import { queryKeys } from '@/lib/queryKeys';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/lib/supabase';
 import { 
@@ -194,6 +196,7 @@ function MatchLobbyContent() {
   const router = useRouter();
   const { user } = useAuth();
   const id = searchParams.get('id');
+  const queryClient = useQueryClient();
 
   // React Query Hooks
   const { data: match, isLoading, error } = useMatchById(id || undefined);
@@ -1485,7 +1488,7 @@ function MatchLobbyContent() {
           onClose={() => setIsPostMatchModalOpen(false)}
           onSuccess={() => {
             setIsPostMatchModalOpen(false);
-            fetchMatch();
+            queryClient.invalidateQueries({ queryKey: queryKeys.matches.byId(match.id) });
           }}
         />
       )}
