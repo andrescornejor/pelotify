@@ -818,14 +818,12 @@ export default function CreateMatchPage() {
                       )}
                     </div>
                     
-                    {/* Bottom gradient mask for smooth scroll effect */}
-                    <div className="absolute bottom-0 left-0 right-0 h-6 bg-gradient-to-t from-background to-transparent z-10 pointer-events-none rounded-b-3xl" />
                   </div>
                 </motion.div>
               )}
 
                 {/* ── STEP 2: DETALLES ── */}
-            {step === 2 && (
+                {step === 2 && (
               <motion.div
                 key="step-2"
                 initial={{ opacity: 0, x: 40 }}
