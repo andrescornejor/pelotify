@@ -907,7 +907,7 @@ function MatchLobbyContent() {
                         <div className="flex flex-col items-center sm:items-end gap-2 shrink-0">
                            <div className="flex items-center gap-3">
                               <div className="flex -space-x-3">
-                                {confirmedParticipants.map((p, i) => (
+                                {confirmedParticipants.map((p: any, i: number) => (
                                    <div key={p.id} className="w-10 h-10 rounded-full border-2 border-background bg-surface overflow-hidden relative" style={{ zIndex: 10 - i }}>
                                       {p.profiles?.avatar_url ? (
                                         <img src={p.profiles.avatar_url} alt="" className="w-full h-full object-cover" />
@@ -963,7 +963,7 @@ function MatchLobbyContent() {
                           Refuerzos via Pelotify
                         </span>
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                           {confirmedParticipants.map(p => (
+                           {confirmedParticipants.map((p: any) => (
                              <div key={p.id} className="p-4 rounded-2xl bg-foreground/[0.02] border border-foreground/5 flex items-center gap-4">
                                 <PlayerSlot participant={p} isSelf={p.user_id === user?.id} />
                                 <div className="flex flex-col">
@@ -978,7 +978,7 @@ function MatchLobbyContent() {
                 </div>
               ) : (
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-                {(['A', 'B'] as const).map((team, teamIdx) => {
+                {(['A', 'B'] as const).map((team: any, teamIdx: number) => {
                   const members = team === 'A' ? teamA : teamB;
                   const cfg = TEAM_CONFIG[team];
                   const isMine = myTeam === team;
@@ -1098,7 +1098,7 @@ function MatchLobbyContent() {
 
                       {/* Player slots grid */}
                       <div className="grid grid-cols-4 lg:grid-cols-5 gap-4 gap-y-6">
-                        {Array.from({ length: teamSize }).map((_, idx) => {
+                        {Array.from({ length: teamSize }).map((_: any, idx: number) => {
                           const participant = members[idx];
                           return (
                             <div key={idx} className="relative group/slot">
@@ -1417,9 +1417,9 @@ function MatchLobbyContent() {
                 </div>
               ) : (
                 <div className="space-y-2 max-h-[50vh] overflow-y-auto no-scrollbar">
-                  {friends.map((f) => {
+                  {friends.map((f: any) => {
                     const otherUserId = f.user_id === user?.id ? f.friend_id : f.user_id;
-                    const participant = participants.find((p) => p.user_id === otherUserId);
+                    const participant = participants.find((p: any) => p.user_id === otherUserId);
                     const isInvited = participant?.status === 'pending';
                     const isJoined = participant?.status === 'confirmed';
 
