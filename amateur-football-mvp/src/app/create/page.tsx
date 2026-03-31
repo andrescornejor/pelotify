@@ -818,8 +818,9 @@ export default function CreateMatchPage() {
                       )}
                     </div>
                   </div>
-                </motion.div>
-              )}
+                </div>
+              </motion.div>
+            )}
 
                 {/* ── STEP 2: DETALLES ── */}
                 {step === 2 && (
