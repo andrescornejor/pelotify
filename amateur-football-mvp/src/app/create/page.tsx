@@ -30,7 +30,7 @@ import LocationSearch from '@/components/LocationSearch';
 import { cn } from '@/lib/utils';
 import { AVAILABLE_TIMES } from '@/lib/constants';
 
-const STEPS = ['Cancha', 'Cuándo', 'Detalles', 'Confirmar'];
+const STEPS = ['Cancha', 'Cuándo', 'Detalles', 'Cobro', 'Confirmar'];
 
 const FORMAT_DATA = {
   F5: {
@@ -165,7 +165,7 @@ function StepIndicator({ current, total }: { current: number; total: number }) {
                 {label}
               </span>
               <span className="hidden lg:block text-[9px] font-bold text-foreground/20 uppercase tracking-widest mt-0.5">
-                {i === 0 ? "Selección de sede" : i === 1 ? "Fecha y hora" : i === 2 ? "Configuración" : "Revisión final"}
+                {i === 0 ? "Selección de sede" : i === 1 ? "Fecha y hora" : i === 2 ? "Formato y modo" : i === 3 ? "Precio y privacidad" : "Revisión final"}
               </span>
             </div>
           </div>
@@ -312,30 +312,24 @@ export default function CreateMatchPage() {
   };
 
   const handleTypeSelect = (type: 'F5' | 'F7' | 'F11') => {
-    const venue = dbVenues.find(v => v.address === formData.location || v.name === formData.location) || findVenueByLocation(formData.location);
+    const venue = formData.business_id 
+      ? dbVenues.find(v => v.id === formData.business_id) 
+      : findVenueByLocation(formData.location);
+      
     let newPrice = formData.price;
     let fieldId = formData.field_id;
 
-    // Only auto-fill price from venue data if user hasn't manually edited the price
-    if (!priceManuallyEdited) {
-      if (venue?.id) { // Real DB venue
-        const formatData = dbFields.find(f => f.business_id === venue.id && f.type === type);
-        if (formatData) {
-          const divider = type === 'F5' ? 10 : type === 'F7' ? 14 : type === 'F11' ? 22 : 10;
-          newPrice = Math.round((formatData.price_per_match || 0) / divider);
-          fieldId = formatData.id;
-        }
-      } else if (venue?.formats) { // Hardcoded venue
-        const formatData = venue.formats.find((f: any) => f.type === type);
-        if (formatData) {
-          newPrice = formatData.pricePerPlayer;
-        }
+    if (venue?.id) { // Real DB venue (canchas_businesses)
+      const formatData = dbFields.find(f => f.business_id === venue.id && f.type === type);
+      if (formatData) {
+        const divider = type === 'F5' ? 10 : type === 'F7' ? 14 : type === 'F11' ? 22 : 10;
+        newPrice = Math.round((formatData.price_per_match || 0) / divider);
+        fieldId = formatData.id;
       }
-    } else {
-      // Still update fieldId even if price is manually edited
-      if (venue?.id) {
-        const formatData = dbFields.find(f => f.business_id === venue.id && f.type === type);
-        if (formatData) fieldId = formatData.id;
+    } else if (venue?.formats) { // Hardcoded venue (lib/venues)
+      const formatData = venue.formats.find((f: any) => f.type === type);
+      if (formatData) {
+        newPrice = formatData.pricePerPlayer;
       }
     }
 
@@ -402,6 +396,7 @@ export default function CreateMatchPage() {
   const canProceed = () => {
     if (step === 0) return !!formData.location;
     if (step === 1) return !!formData.date && !!formData.time;
+    if (step === 2) return !!formData.type;
     return true;
   };
 
@@ -825,12 +820,7 @@ export default function CreateMatchPage() {
                     
                     {/* Bottom gradient mask for smooth scroll effect */}
                     <div className="absolute bottom-0 left-0 right-0 h-6 bg-gradient-to-t from-background to-transparent z-10 pointer-events-none rounded-b-3xl" />
-                  </div>
-                </div>
-              </motion.div>
-            )}
-
-            {/* ── STEP 2: DETALLES ── */}
+                        {/* ── STEP 2: DETALLES ── */}
             {step === 2 && (
               <motion.div
                 key="step-2"
@@ -845,93 +835,9 @@ export default function CreateMatchPage() {
                     Detalles del Partido
                   </h2>
                   <p className="text-[11px] text-foreground/40 font-bold uppercase tracking-widest">
-                    Formato, reclutamiento y privacidad
+                    Formato y modo de convocatoria
                   </p>
                 </div>
-
-                {/* Match Mode Selection */}
-                <div className="space-y-4">
-                  <span className="text-[10px] font-black text-foreground/30 uppercase tracking-[0.4em] px-1">
-                    Tipo de Convocatoria
-                  </span>
-                  <div className="grid grid-cols-2 gap-4">
-                    <button
-                      type="button"
-                      onClick={() => setFormData({ ...formData, is_recruitment: false, missing_players: 0 })}
-                      className={cn(
-                        "p-5 rounded-3xl border text-left transition-all duration-300 flex flex-col gap-3 relative overflow-hidden",
-                        !formData.is_recruitment 
-                          ? "border-primary bg-primary/[0.08]" 
-                          : "border-foreground/[0.06] bg-foreground/[0.02] hover:border-foreground/15"
-                      )}
-                    >
-                      <div className={cn(
-                        "w-10 h-10 rounded-2xl flex items-center justify-center transition-all",
-                        !formData.is_recruitment ? "bg-primary text-black" : "bg-foreground/[0.04] text-foreground/20"
-                      )}>
-                        <Users className="w-5 h-5" />
-                      </div>
-                      <div>
-                        <span className={cn("block text-sm font-black italic uppercase tracking-tight", !formData.is_recruitment ? "text-foreground" : "text-foreground/30")}>Partido Completo</span>
-                        <span className={cn("block text-[10px] font-bold tracking-wide mt-0.5", !formData.is_recruitment ? "text-foreground/50" : "text-foreground/15")}>Todos se unen por la App</span>
-                      </div>
-                    </button>
-
-                    <button
-                      type="button"
-                      onClick={() => setFormData({ ...formData, is_recruitment: true, missing_players: 1 })}
-                      className={cn(
-                        "p-5 rounded-3xl border text-left transition-all duration-300 flex flex-col gap-3 relative overflow-hidden",
-                        formData.is_recruitment 
-                          ? "border-amber-500 bg-amber-500/[0.08]" 
-                          : "border-foreground/[0.06] bg-foreground/[0.02] hover:border-foreground/15"
-                      )}
-                    >
-                      <div className={cn(
-                        "w-10 h-10 rounded-2xl flex items-center justify-center transition-all",
-                        formData.is_recruitment ? "bg-amber-500 text-black" : "bg-foreground/[0.04] text-foreground/20"
-                      )}>
-                        <Zap className="w-5 h-5" />
-                      </div>
-                      <div>
-                        <span className={cn("block text-sm font-black italic uppercase tracking-tight", formData.is_recruitment ? "text-foreground" : "text-foreground/30")}>Búsqueda de Emergencia</span>
-                        <span className={cn("block text-[10px] font-bold tracking-wide mt-0.5", formData.is_recruitment ? "text-foreground/50" : "text-foreground/15")}>Solo busco algunos jugadores</span>
-                      </div>
-                    </button>
-                  </div>
-                </div>
-
-                {/* Recruiting Count Slider (Only if is_recruitment is true) */}
-                <AnimatePresence>
-                  {formData.is_recruitment && (
-                    <motion.div
-                      initial={{ opacity: 0, height: 0 }}
-                      animate={{ opacity: 1, height: 'auto' }}
-                      exit={{ opacity: 0, height: 0 }}
-                      className="space-y-4"
-                    >
-                      <div className="flex items-center justify-between px-1">
-                        <span className="text-[10px] font-black text-amber-500 uppercase tracking-[0.4em]">
-                          ¿Cuántos te faltan?
-                        </span>
-                        <span className="text-2xl font-black italic text-amber-500 font-kanit">
-                          {formData.missing_players} {formData.missing_players === 1 ? 'JUGADOR' : 'JUGADORES'}
-                        </span>
-                      </div>
-                      <input 
-                        type="range"
-                        min="1"
-                        max={formData.type === 'F5' ? 9 : formData.type === 'F7' ? 13 : 21}
-                        value={formData.missing_players}
-                        onChange={(e) => setFormData({ ...formData, missing_players: parseInt(e.target.value) })}
-                        className="w-full h-2 bg-foreground/10 rounded-lg appearance-none cursor-pointer accent-amber-500"
-                      />
-                      <p className="text-[9px] font-medium text-foreground/30 italic">
-                        * Los otros {formData.type === 'F5' ? 10 - formData.missing_players : formData.type === 'F7' ? 14 - formData.missing_players : 22 - formData.missing_players} jugadores se consideran ya confirmados fuera de la plataforma.
-                      </p>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
 
                 {/* Format selector */}
                 <div className="space-y-4">
@@ -1018,6 +924,111 @@ export default function CreateMatchPage() {
                       );
                     })}
                   </div>
+                </div>
+
+                {/* Match Mode Selection */}
+                <div className="space-y-4">
+                  <span className="text-[10px] font-black text-foreground/30 uppercase tracking-[0.4em] px-1">
+                    Tipo de Convocatoria
+                  </span>
+                  <div className="grid grid-cols-2 gap-4">
+                    <button
+                      type="button"
+                      onClick={() => setFormData({ ...formData, is_recruitment: false, missing_players: 0 })}
+                      className={cn(
+                        "p-5 rounded-3xl border text-left transition-all duration-300 flex flex-col gap-3 relative overflow-hidden",
+                        !formData.is_recruitment 
+                          ? "border-primary bg-primary/[0.08]" 
+                          : "border-foreground/[0.06] bg-foreground/[0.02] hover:border-foreground/15"
+                      )}
+                    >
+                      <div className={cn(
+                        "w-10 h-10 rounded-2xl flex items-center justify-center transition-all",
+                        !formData.is_recruitment ? "bg-primary text-black" : "bg-foreground/[0.04] text-foreground/20"
+                      )}>
+                        <Users className="w-5 h-5" />
+                      </div>
+                      <div>
+                        <span className={cn("block text-sm font-black italic uppercase tracking-tight", !formData.is_recruitment ? "text-foreground" : "text-foreground/30")}>Partido Completo</span>
+                        <span className={cn("block text-[10px] font-bold tracking-wide mt-0.5", !formData.is_recruitment ? "text-foreground/50" : "text-foreground/15")}>Todos se unen por la App</span>
+                      </div>
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() => setFormData({ ...formData, is_recruitment: true, missing_players: 1 })}
+                      className={cn(
+                        "p-5 rounded-3xl border text-left transition-all duration-300 flex flex-col gap-3 relative overflow-hidden",
+                        formData.is_recruitment 
+                          ? "border-amber-500 bg-amber-500/[0.08]" 
+                          : "border-foreground/[0.06] bg-foreground/[0.02] hover:border-foreground/15"
+                      )}
+                    >
+                      <div className={cn(
+                        "w-10 h-10 rounded-2xl flex items-center justify-center transition-all",
+                        formData.is_recruitment ? "bg-amber-500 text-black" : "bg-foreground/[0.04] text-foreground/20"
+                      )}>
+                        <Zap className="w-5 h-5" />
+                      </div>
+                      <div>
+                        <span className={cn("block text-sm font-black italic uppercase tracking-tight", formData.is_recruitment ? "text-foreground" : "text-foreground/30")}>Búsqueda de Emergencia</span>
+                        <span className={cn("block text-[10px] font-bold tracking-wide mt-0.5", formData.is_recruitment ? "text-foreground/50" : "text-foreground/15")}>Solo busco algunos jugadores</span>
+                      </div>
+                    </button>
+                  </div>
+                </div>
+
+                {/* Recruiting Count Slider (Only if is_recruitment is true) */}
+                <AnimatePresence>
+                  {formData.is_recruitment && (
+                    <motion.div
+                      initial={{ opacity: 0, height: 0 }}
+                      animate={{ opacity: 1, height: 'auto' }}
+                      exit={{ opacity: 0, height: 0 }}
+                      className="space-y-4"
+                    >
+                      <div className="flex items-center justify-between px-1">
+                        <span className="text-[10px] font-black text-amber-500 uppercase tracking-[0.4em]">
+                          ¿Cuántos te faltan?
+                        </span>
+                        <span className="text-2xl font-black italic text-amber-500 font-kanit">
+                          {formData.missing_players} {formData.missing_players === 1 ? 'JUGADOR' : 'JUGADORES'}
+                        </span>
+                      </div>
+                      <input 
+                        type="range"
+                        min="1"
+                        max={formData.type === 'F5' ? 9 : formData.type === 'F7' ? 13 : 21}
+                        value={formData.missing_players}
+                        onChange={(e) => setFormData({ ...formData, missing_players: parseInt(e.target.value) })}
+                        className="w-full h-2 bg-foreground/10 rounded-lg appearance-none cursor-pointer accent-amber-500"
+                      />
+                      <p className="text-[9px] font-medium text-foreground/30 italic">
+                        * Los otros {formData.type === 'F5' ? 10 - formData.missing_players : formData.type === 'F7' ? 14 - formData.missing_players : 22 - formData.missing_players} jugadores se consideran ya confirmados fuera de la plataforma.
+                      </p>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </motion.div>
+            )}
+
+            {/* ── STEP 3: COBRO ── */}
+            {step === 3 && (
+              <motion.div
+                key="step-3"
+                initial={{ opacity: 0, x: 40 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -40 }}
+                transition={{ duration: 0.2, ease: "easeOut" }}
+                className="space-y-8"
+              >
+                <div className="space-y-2">
+                  <h2 className="text-2xl font-black italic uppercase tracking-tighter text-foreground">
+                    Configuración de Cobro
+                  </h2>
+                  <p className="text-[11px] text-foreground/40 font-bold uppercase tracking-widest">
+                    Precio, privacidad y método de pago
+                  </p>
                 </div>
 
                 {/* Price */}
@@ -1208,7 +1219,6 @@ export default function CreateMatchPage() {
                         <span className={cn("block text-[10px] font-bold tracking-wide mt-0.5", formData.payment_method === 'cash' ? "text-foreground/50" : "text-foreground/15")}>Pagás en el complejo</span>
                       </div>
                     </button>
-                  </div>
                   <p className="text-[10px] font-bold text-primary/80 uppercase tracking-widest px-1 bg-primary/5 py-2 rounded-lg border border-primary/10 mt-2">
                     💡 En Pelotify, el organizador NO paga el total. Cada jugador abona SU PARTE individualmente al sumarse al partido.
                   </p>
@@ -1219,8 +1229,8 @@ export default function CreateMatchPage() {
               </motion.div>
             )}
 
-            {/* ── STEP 3: CONFIRMAR ── */}
-            {step === 3 && (
+            {/* ── STEP 4: CONFIRMAR ── */}
+            {step === 4 && (
               <motion.div
                 key="step-3"
                 initial={{ opacity: 0, x: 40 }}
