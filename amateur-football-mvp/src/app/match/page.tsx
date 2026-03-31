@@ -31,22 +31,19 @@ import {
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
-import {
-  getMatchById,
-  Match,
-  MatchParticipant,
-  joinMatch,
-  switchTeam,
-  deleteMatch,
-  leaveMatch,
-  invitePlayer,
-  respondToInvitation,
-  getMatchStats,
-  updateMatch,
-} from '@/lib/matches';
-import { getFriends, FriendshipData } from '@/lib/friends';
-import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/contexts/AuthContext';
+import { 
+  useMatchById, 
+  useJoinMatch, 
+  useSwitchTeam, 
+  useDeleteMatch, 
+  useLeaveMatch, 
+  useInvitePlayer, 
+  useRespondToInvitation,
+  useUpdateMatch,
+  useMatchStats
+} from '@/hooks/useMatchQueries';
+import { useFriends } from '@/hooks/useFriendQueries';
 import { findVenueByLocation } from '@/lib/venues';
 import { cn } from '@/lib/utils';
 import PlayerSlot from '@/components/PlayerSlot';
@@ -195,196 +192,154 @@ function MatchLobbyContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const { user } = useAuth();
-
   const id = searchParams.get('id');
 
-  const [match, setMatch] = useState<any>(null);
-  const [isLoading, setIsLoading] = useState(true);
+  // React Query Hooks
+  const { data: match, isLoading, error } = useMatchById(id || undefined);
+  const { data: matchStats } = useMatchStats(match?.id);
+  const { data: friends = [], isLoading: loadingFriends } = useFriends(user?.id);
+  
+  const joinMutation = useJoinMatch();
+  const switchMutation = useSwitchTeam();
+  const leaveMutation = useLeaveMatch();
+  const deleteMutation = useDeleteMatch();
+  const inviteMutation = useInvitePlayer();
+  const respondMutation = useRespondToInvitation();
+  const updateMutation = useUpdateMatch();
+
   const [isPostMatchModalOpen, setIsPostMatchModalOpen] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [actionLoading, setActionLoading] = useState<'A' | 'B' | 'delete' | 'leave' | 'join' | null>(null);
   const [inviteModalOpen, setInviteModalOpen] = useState(false);
-  const [matchStats, setMatchStats] = useState<any>(null);
-  const [friends, setFriends] = useState<FriendshipData[]>([]);
-  const [loadingFriends, setLoadingFriends] = useState(false);
   const [invitingId, setInvitingId] = useState<string | null>(null);
   const [isEditingTeamNames, setIsEditingTeamNames] = useState(false);
   const [editingNames, setEditingNames] = useState({ A: '', B: '' });
-  const [isSavingNames, setIsSavingNames] = useState(false);
   const [showChat, setShowChat] = useState(false);
   const [venueAliasCbu, setVenueAliasCbu] = useState<string | null>(null);
-  const [venueHasMP, setVenueHasMP] = useState<boolean | null>(null); // null means no venue. false means venue without MP. true means venue with MP.
+  const [venueHasMP, setVenueHasMP] = useState<boolean | null>(null); 
   const [venueInfo, setVenueInfo] = useState<any>(null);
 
-  const fetchMatch = async () => {
-    if (!id) return;
-    setIsLoading(true);
-    try {
-      const data = await getMatchById(id as string);
-      setMatch(data);
-      setEditingNames({ A: data.team_a_name || 'Local', B: data.team_b_name || 'Visitante' });
+  // Sync editing names when match loads
+  useEffect(() => {
+    if (match) {
+      setEditingNames({ 
+        A: match.team_a_name || 'Local', 
+        B: match.team_b_name || 'Visitante' 
+      });
       
-      // Buscar si el partido es en un establecimiento registrado
-      // Usamos canchas_businesses directamente (tiene RLS público para is_active=true)
-      // en vez de canchas_bookings (bloqueado por RLS para usuarios que no son booker/owner)
-       try {
-          const { data: allBusinesses } = await supabase
-            .from('canchas_businesses')
-            .select('id, name, alias_cbu, mp_access_token, owner_id, google_maps_link')
-            .eq('is_active', true);
-         
-          // Primero intentar por ID directo
-          let matchedBiz = allBusinesses?.find((biz: any) => biz.id === data.business_id);
-          
-          if (allBusinesses && !matchedBiz && data.location) {
-            const loc = data.location.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').trim();
-            matchedBiz = allBusinesses.find((biz: any) => {
-              const bizName = (biz.name || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').trim();
-              return loc.includes(bizName) || bizName.includes(loc) || loc === bizName;
-            });
-          }
+      const checkVenue = async () => {
+         try {
+            const { data: allBusinesses } = await supabase
+              .from('canchas_businesses')
+              .select('id, name, alias_cbu, mp_access_token, owner_id, google_maps_link')
+              .eq('is_active', true);
            
-          if (matchedBiz) {
-            setVenueInfo(matchedBiz);
-            setVenueAliasCbu(matchedBiz.alias_cbu || null);
-            if (matchedBiz.mp_access_token) {
-              setVenueHasMP(true);
-            } else if (matchedBiz.owner_id) {
-              const { data: ownerProf } = await supabase.from('profiles').select('mp_access_token').eq('id', matchedBiz.owner_id).single();
-              setVenueHasMP(!!ownerProf?.mp_access_token);
-            } else {
-              setVenueHasMP(false);
-            }
-
-            // Fetch booking info to check for deposit
-            const { data: booking } = await supabase
-              .from('canchas_bookings')
-              .select('id, down_payment_paid, total_price, status')
-              .eq('match_id', data.id)
-              .single();
+            let matchedBiz = allBusinesses?.find((biz: any) => biz.id === match.business_id);
             
-            if (booking) {
-              setMatch((prev: any) => {
-                const updatedParticipants = prev.participants.map((p: any) => 
-                   p.user_id === prev.creator_id ? { ...p, paid: p.paid || booking.down_payment_paid > 0 } : p
-                );
-                return {
-                  ...prev,
-                  participants: updatedParticipants,
-                  booking: booking
-                };
+            if (allBusinesses && !matchedBiz && match.location) {
+              const loc = match.location.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').trim();
+              matchedBiz = allBusinesses.find((biz: any) => {
+                const bizName = (biz.name || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').trim();
+                return loc.includes(bizName) || bizName.includes(loc) || loc === bizName;
               });
             }
-          } else {
-             setVenueInfo(null);
-             setVenueHasMP(null);
-          }
-      } catch(e) { console.error('Error buscando establecimiento:', e); }
-      if (data.is_completed) {
-        try {
-          setMatchStats(await getMatchStats(data.id));
-        } catch {}
-      }
-    } catch (err: any) {
-      setError(err.message);
-    } finally {
-      setIsLoading(false);
+             
+            if (matchedBiz) {
+              setVenueInfo(matchedBiz);
+              setVenueAliasCbu(matchedBiz.alias_cbu || null);
+              if (matchedBiz.mp_access_token) {
+                setVenueHasMP(true);
+              } else if (matchedBiz.owner_id) {
+                const { data: ownerProf } = await supabase.from('profiles').select('mp_access_token').eq('id', matchedBiz.owner_id).single();
+                setVenueHasMP(!!ownerProf?.mp_access_token);
+              } else {
+                setVenueHasMP(false);
+              }
+            } else {
+               setVenueInfo(null);
+               setVenueHasMP(null);
+            }
+        } catch(e) { console.error('Error buscando establecimiento:', e); }
+      };
+      checkVenue();
     }
-  };
+  }, [match]);
 
-  useEffect(() => {
-    fetchMatch();
-  }, [id]);
-
-  const participants: MatchParticipant[] = match?.participants || [];
-  const confirmedParticipants = participants.filter((p) => p.status === 'confirmed');
-  const myEntry = participants.find((p) => p.user_id === user?.id);
+  const participants = match?.participants || [];
+  const confirmedParticipants = participants.filter((p: any) => p.status === 'confirmed');
+  const myEntry = participants.find((p: any) => p.user_id === user?.id);
   const hasJoined = !!myEntry;
   const isConfirmed = myEntry?.status === 'confirmed';
   const myTeam = myEntry?.team;
   const teamSize = match?.type === 'F5' ? 5 : match?.type === 'F7' ? 7 : 11;
   const totalPlayers = teamSize * 2;
-  const teamA = confirmedParticipants.filter((p) => p.team === 'A');
-  const teamB = confirmedParticipants.filter((p) => p.team === 'B');
-  const unassigned = confirmedParticipants.filter((p) => !p.team);
+  const teamA = confirmedParticipants.filter((p: any) => p.team === 'A');
+  const teamB = confirmedParticipants.filter((p: any) => p.team === 'B');
+  const unassigned = confirmedParticipants.filter((p: any) => !p.team);
 
   const handleJoinTeam = async (team: 'A' | 'B' | null) => {
     if (!user || !match) return;
-    setActionLoading(team);
     try {
       if (!hasJoined) {
-        await joinMatch(match.id, user.id, team);
+        await joinMutation.mutateAsync({ matchId: match.id, userId: user.id, team });
       } else {
-        if (myEntry?.status === 'pending') await respondToInvitation(myEntry.id, 'confirmed');
-        if (myTeam !== team) await switchTeam(match.id, user.id, team);
+        if (myEntry?.status === 'pending') {
+          await respondMutation.mutateAsync({ participantId: myEntry.id, status: 'confirmed' });
+        }
+        if (myTeam !== team) {
+          await switchMutation.mutateAsync({ matchId: match.id, userId: user.id, team });
+        }
       }
-      await fetchMatch();
     } catch (err: any) {
       alert(`Error: ${err.message}`);
-    } finally {
-      setActionLoading(null);
+    }
+  };
+
+  const handleMovePlayer = async (userId: string, newTeam: 'A' | 'B' | null) => {
+    if (!match) return;
+    try {
+      await switchMutation.mutateAsync({ matchId: match.id, userId, team: newTeam });
+    } catch (err: any) {
+      alert(`Error moving player: ${err.message}`);
     }
   };
 
   const handleLeave = async () => {
     if (!user || !match || !confirm('¿Salir del partido?')) return;
-    setActionLoading('leave');
     try {
-      await leaveMatch(match.id, user.id);
-      await fetchMatch();
+      await leaveMutation.mutateAsync({ matchId: match.id, userId: user.id });
     } catch (err: any) {
       alert(`Error: ${err.message}`);
-    } finally {
-      setActionLoading(null);
     }
   };
 
   const handleDelete = async () => {
     if (!user || !match || !confirm('¿Eliminar este partido?')) return;
-    setActionLoading('delete');
     try {
-      await deleteMatch(match.id);
+      await deleteMutation.mutateAsync(match.id);
       router.replace('/search');
     } catch (err: any) {
       alert(`Error: ${err.message}`);
-      setActionLoading(null);
     }
   };
 
   const handleInviteResponse = async (status: 'confirmed' | 'rejected') => {
     if (!user || !myEntry) return;
-    setActionLoading(status === 'confirmed' ? 'A' : 'leave');
     try {
-      await respondToInvitation(myEntry.id, status);
-      await fetchMatch();
+      await respondMutation.mutateAsync({ participantId: myEntry.id, status });
     } catch (err: any) {
       alert(`Error: ${err.message}`);
-    } finally {
-      setActionLoading(null);
     }
   };
 
   const handleOpenInviteModal = async () => {
     if (!user) return;
     setInviteModalOpen(true);
-    if (friends.length === 0) {
-      setLoadingFriends(true);
-      try {
-        setFriends(await getFriends(user.id));
-      } catch (err) {
-        console.error(err);
-      } finally {
-        setLoadingFriends(false);
-      }
-    }
   };
 
   const handleInviteFriend = async (friendId: string) => {
     if (!match) return;
     setInvitingId(friendId);
     try {
-      await invitePlayer(match.id, friendId);
-      await fetchMatch();
+      await inviteMutation.mutateAsync({ matchId: match.id, userId: friendId });
     } catch (err: any) {
       alert(err.message);
     } finally {
@@ -394,15 +349,14 @@ function MatchLobbyContent() {
 
   const handleSaveTeamNames = async () => {
     if (!match || !id) return;
-    setIsSavingNames(true);
     try {
-      await updateMatch(id as string, { team_a_name: editingNames.A, team_b_name: editingNames.B });
-      await fetchMatch();
+      await updateMutation.mutateAsync({ 
+        matchId: id as string, 
+        updates: { team_a_name: editingNames.A, team_b_name: editingNames.B } 
+      });
       setIsEditingTeamNames(false);
     } catch (err: any) {
       alert(`Error: ${err.message}`);
-    } finally {
-      setIsSavingNames(false);
     }
   };
 
@@ -729,10 +683,10 @@ function MatchLobbyContent() {
                 <div className="flex gap-3 w-full sm:w-auto">
                   <button
                     onClick={() => handleInviteResponse('confirmed')}
-                    disabled={actionLoading !== null}
+                    disabled={respondMutation.isPending}
                     className="flex-1 sm:flex-none h-12 px-8 bg-primary text-black font-black text-xs uppercase tracking-widest rounded-2xl shadow-lg shadow-primary/20 hover:scale-105 active:scale-95 transition-all disabled:opacity-50"
                   >
-                    {actionLoading === 'A' ? (
+                    {respondMutation.isPending ? (
                       <Loader2 className="w-4 h-4 animate-spin mx-auto" />
                     ) : (
                       '¡Dale!'
@@ -740,7 +694,7 @@ function MatchLobbyContent() {
                   </button>
                   <button
                     onClick={() => handleInviteResponse('rejected')}
-                    disabled={actionLoading !== null}
+                    disabled={respondMutation.isPending}
                     className="flex-1 sm:flex-none h-12 px-6 bg-foreground/5 border border-foreground/10 text-foreground/40 font-black text-xs uppercase tracking-widest rounded-2xl hover:text-foreground transition-all"
                   >
                     Paso
@@ -820,7 +774,7 @@ function MatchLobbyContent() {
                       onClick={() =>
                         isEditingTeamNames ? handleSaveTeamNames() : setIsEditingTeamNames(true)
                       }
-                      disabled={isSavingNames}
+                      disabled={updateMutation.isPending}
                       className={cn(
                         'h-10 w-10 rounded-xl flex items-center justify-center border transition-all active:scale-95',
                         isEditingTeamNames
@@ -828,7 +782,7 @@ function MatchLobbyContent() {
                           : 'bg-foreground/5 border-foreground/10 text-foreground/30 hover:text-primary hover:border-primary/30'
                       )}
                     >
-                      {isSavingNames ? (
+                      {updateMutation.isPending ? (
                         <Loader2 className="w-4 h-4 animate-spin" />
                       ) : isEditingTeamNames ? (
                         <Save className="w-4 h-4" />
@@ -861,8 +815,28 @@ function MatchLobbyContent() {
                     </div>
                   </div>
                   <div className="flex flex-wrap gap-6 px-1">
-                    {unassigned.map((p) => (
-                      <PlayerSlot key={p.id} participant={p} isSelf={p.user_id === user?.id} />
+                    {unassigned.map((p: any) => (
+                      <div key={p.id} className="relative group/slot">
+                         <PlayerSlot participant={p} isSelf={p.user_id === user?.id} />
+                         {isCreator && !isCompleted && (
+                            <div className="absolute top-0 right-0 z-50 flex flex-col gap-1 opacity-0 group-hover/slot:opacity-100 transition-opacity">
+                               <button 
+                                 onClick={() => handleMovePlayer(p.user_id, 'A')}
+                                 className="w-6 h-6 bg-blue-500 rounded-lg flex items-center justify-center text-white shadow-lg hover:scale-110 active:scale-90"
+                                 title="Mover al Equipo A"
+                               >
+                                  <ChevronRight className="w-3 h-3 -rotate-90" />
+                               </button>
+                               <button 
+                                 onClick={() => handleMovePlayer(p.user_id, 'B')}
+                                 className="w-6 h-6 bg-rose-500 rounded-lg flex items-center justify-center text-white shadow-lg hover:scale-110 active:scale-90"
+                                 title="Mover al Equipo B"
+                               >
+                                  <ChevronRight className="w-3 h-3 rotate-90" />
+                               </button>
+                            </div>
+                         )}
+                      </div>
                     ))}
                   </div>
                 </motion.div>
@@ -889,22 +863,11 @@ function MatchLobbyContent() {
                       </p>
                     </div>
                     <button
-                      onClick={async () => {
-                        if (!user || !match) return;
-                        setActionLoading('join');
-                        try {
-                          await joinMatch(match.id, user.id, null);
-                          await fetchMatch();
-                        } catch (err: any) {
-                          alert(`Error: ${err.message}`);
-                        } finally {
-                          setActionLoading(null);
-                        }
-                      }}
-                      disabled={actionLoading !== null}
+                      onClick={() => handleJoinTeam(null)}
+                      disabled={joinMutation.isPending}
                       className="shrink-0 h-14 px-10 bg-primary text-black font-black text-[10px] uppercase tracking-widest rounded-2xl shadow-lg shadow-primary/20 hover:scale-105 active:scale-95 transition-all disabled:opacity-50 flex items-center justify-center gap-2"
                     >
-                      {actionLoading === 'join' ? (
+                      {joinMutation.isPending ? (
                         <Loader2 className="w-5 h-5 animate-spin" />
                       ) : (
                         <>
@@ -966,10 +929,10 @@ function MatchLobbyContent() {
                         <div className="mt-8">
                            <button 
                              onClick={() => handleJoinTeam('A')}
-                             disabled={actionLoading !== null}
+                             disabled={joinMutation.isPending}
                              className="w-full h-16 bg-amber-500 text-black font-black uppercase tracking-widest rounded-2xl shadow-[0_15px_40px_rgba(245,158,11,0.2)] hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-3"
                            >
-                             {actionLoading === 'A' ? (
+                             {joinMutation.isPending ? (
                                <Loader2 className="w-6 h-6 animate-spin" />
                              ) : (
                                <>
@@ -1103,7 +1066,7 @@ function MatchLobbyContent() {
                       {!match.is_completed && (
                         <button
                           onClick={() => (canJoin || canSwitch) && handleJoinTeam(team)}
-                          disabled={actionLoading !== null || (teamFull && !isMine)}
+                          disabled={joinMutation.isPending || switchMutation.isPending || (teamFull && !isMine)}
                           className={cn(
                             'w-full h-12 rounded-xl font-black text-[10px] uppercase tracking-widest flex items-center justify-center gap-2 transition-all active:scale-95 disabled:opacity-40 mb-5 shadow-lg',
                             isMine
@@ -1113,7 +1076,7 @@ function MatchLobbyContent() {
                                 : `${cfg.btn} text-white shadow-lg`
                           )}
                         >
-                          {actionLoading === team ? (
+                          {(joinMutation.isPending || switchMutation.isPending) ? (
                             <Loader2 className="w-4 h-4 animate-spin" />
                           ) : isMine ? (
                             <>
@@ -1134,11 +1097,33 @@ function MatchLobbyContent() {
                         {Array.from({ length: teamSize }).map((_, idx) => {
                           const participant = members[idx];
                           return (
-                            <PlayerSlot
-                              key={idx}
-                              participant={participant}
-                              isSelf={participant?.user_id === user?.id}
-                            />
+                            <div key={idx} className="relative group/slot">
+                              <PlayerSlot
+                                participant={participant}
+                                isSelf={participant?.user_id === user?.id}
+                              />
+                              {isCreator && !isCompleted && participant && (
+                                <div className="absolute top-0 right-0 z-50 flex flex-col gap-1 opacity-0 group-hover/slot:opacity-100 transition-opacity">
+                                  <button 
+                                    onClick={() => handleMovePlayer(participant.user_id, team === 'A' ? 'B' : 'A')}
+                                    className={cn(
+                                      "w-6 h-6 rounded-lg flex items-center justify-center text-white shadow-lg hover:scale-110 active:scale-90",
+                                      team === 'A' ? "bg-rose-500" : "bg-blue-500"
+                                    )}
+                                    title={team === 'A' ? "Mover al Equipo B" : "Mover al Equipo A"}
+                                  >
+                                    <ChevronRight className="w-3 h-3" />
+                                  </button>
+                                  <button 
+                                    onClick={() => handleMovePlayer(participant.user_id, null)}
+                                    className="w-6 h-6 bg-zinc-700 rounded-lg flex items-center justify-center text-white shadow-lg hover:scale-110 active:scale-90"
+                                    title="Mover al Banquillo"
+                                  >
+                                    <LogOut className="w-3 h-3 rotate-90" />
+                                  </button>
+                                </div>
+                              )}
+                            </div>
                           );
                         })}
                       </div>
@@ -1153,19 +1138,19 @@ function MatchLobbyContent() {
                 {hasJoined && (
                   <button
                     onClick={handleLeave}
-                    disabled={actionLoading !== null || match.is_completed}
+                    disabled={leaveMutation.isPending || match.is_completed}
                     className="w-full h-13 py-3.5 bg-foreground/[0.03] border border-foreground/[0.07] rounded-2xl flex items-center justify-center gap-3 text-foreground/30 hover:text-red-400 hover:bg-red-500/[0.06] hover:border-red-500/20 transition-all text-[10px] font-black uppercase tracking-widest active:scale-[0.98] disabled:opacity-40"
                   >
-                    <LogOut className="w-4 h-4" /> Bajarme del partido
+                    {leaveMutation.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : <><LogOut className="w-4 h-4" /> Bajarme del partido</>}
                   </button>
                 )}
                 {isCreator && (
                   <button
                     onClick={handleDelete}
-                    disabled={actionLoading !== null || match.is_completed}
+                    disabled={deleteMutation.isPending || match.is_completed}
                     className="w-full h-13 py-3.5 bg-foreground/[0.03] border border-foreground/[0.07] rounded-2xl flex items-center justify-center gap-3 text-foreground/30 hover:text-red-500 hover:bg-red-600/[0.06] hover:border-red-600/20 transition-all text-[10px] font-black uppercase tracking-widest active:scale-[0.98] disabled:opacity-40"
                   >
-                    <Trash2 className="w-4 h-4" /> Suspender partido
+                    {deleteMutation.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : <><Trash2 className="w-4 h-4" /> Suspender partido</>}
                   </button>
                 )}
               </div>

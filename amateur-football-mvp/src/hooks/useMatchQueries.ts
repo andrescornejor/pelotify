@@ -156,10 +156,45 @@ export function useJoinMatch() {
       userId: string;
       team?: 'A' | 'B' | null;
     }) => joinMatch(matchId, userId, team ?? null),
-    onSuccess: (_, { matchId }) => {
-      queryClient.invalidateQueries({
-        queryKey: queryKeys.matches.byId(matchId),
-      });
+    
+    // OPTIMISTIC UPDATE
+    onMutate: async ({ matchId, userId, team }) => {
+      // Cancel any outgoing refetches (so they don't overwrite our optimistic update)
+      await queryClient.cancelQueries({ queryKey: queryKeys.matches.byId(matchId) });
+
+      // Snapshot the previous value
+      const previousMatch = queryClient.getQueryData<any>(queryKeys.matches.byId(matchId));
+
+      // Optimistically update to the new value
+      if (previousMatch) {
+        queryClient.setQueryData(queryKeys.matches.byId(matchId), {
+          ...previousMatch,
+          participants: [
+            ...(previousMatch.participants || []),
+            { 
+              user_id: userId, 
+              team: team ?? null, 
+              status: 'confirmed',
+              // Mock profile data if possible, or just minimal fields
+              profiles: { id: userId, name: 'Tú...', avatar_url: null } 
+            },
+          ],
+        });
+      }
+
+      return { previousMatch };
+    },
+    
+    onError: (err, { matchId }, context) => {
+      // If the mutation fails, use the context returned from onMutate to roll back
+      if (context?.previousMatch) {
+        queryClient.setQueryData(queryKeys.matches.byId(matchId), context.previousMatch);
+      }
+    },
+    
+    onSettled: (data, error, { matchId }) => {
+      // Always refetch after error or success to guarantee we are in sync with the server
+      queryClient.invalidateQueries({ queryKey: queryKeys.matches.byId(matchId) });
       queryClient.invalidateQueries({ queryKey: queryKeys.userMatches.all });
       queryClient.invalidateQueries({ queryKey: queryKeys.matches.lists() });
     },
@@ -216,10 +251,32 @@ export function useSwitchTeam() {
       userId: string;
       team: 'A' | 'B' | null;
     }) => switchTeam(matchId, userId, team),
-    onSuccess: (_, { matchId }) => {
-      queryClient.invalidateQueries({
-        queryKey: queryKeys.matches.byId(matchId),
-      });
+    
+    // OPTIMISTIC UPDATE
+    onMutate: async ({ matchId, userId, team }) => {
+      await queryClient.cancelQueries({ queryKey: queryKeys.matches.byId(matchId) });
+      const previousMatch = queryClient.getQueryData<any>(queryKeys.matches.byId(matchId));
+
+      if (previousMatch) {
+        queryClient.setQueryData(queryKeys.matches.byId(matchId), {
+          ...previousMatch,
+          participants: previousMatch.participants.map((p: any) => 
+            p.user_id === userId ? { ...p, team: team } : p
+          ),
+        });
+      }
+
+      return { previousMatch };
+    },
+    
+    onError: (err, { matchId }, context) => {
+      if (context?.previousMatch) {
+        queryClient.setQueryData(queryKeys.matches.byId(matchId), context.previousMatch);
+      }
+    },
+    
+    onSettled: (data, error, { matchId }) => {
+      queryClient.invalidateQueries({ queryKey: queryKeys.matches.byId(matchId) });
     },
   });
 }
