@@ -182,7 +182,7 @@ export default function HomePage() {
       opacity: 1, 
       y: 0, 
       scale: 1,
-      transition: { type: 'spring', stiffness: 300, damping: 30, duration: 0.4 } 
+      transition: { type: 'spring' as const, stiffness: 300, damping: 30, duration: 0.4 } 
     },
     exit: { 
       opacity: 0, 
