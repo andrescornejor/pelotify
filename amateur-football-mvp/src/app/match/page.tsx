@@ -133,7 +133,7 @@ function MatchLobbyContent() {
   const teamB = participants.filter(p => p.team === 'B');
   const unassigned = participants.filter(p => p.team === null);
   
-  const formatNum = parseInt(match?.format?.replace('F', '') || '5');
+  const formatNum = parseInt(match?.type?.replace('F', '') || '5');
   const teamSize = formatNum;
   
   const isCreator = user?.id === match?.creator_id;
@@ -292,14 +292,14 @@ function MatchLobbyContent() {
             <div className="space-y-6 max-w-2xl">
               <div className="flex items-center gap-3">
                 <span className="px-3 py-1 rounded-full bg-primary/10 border border-primary/20 text-primary text-[10px] font-black uppercase tracking-widest">
-                  {match.format} \u2022 {match.is_private ? 'Privado' : 'P\u00fablico'}
+                  {match.type} \u2022 {match.is_private ? 'Privado' : 'P\u00fablico'}
                 </span>
                 <span className="px-3 py-1 rounded-full bg-white/5 border border-white/10 text-foreground/40 text-[10px] font-black uppercase tracking-widest">
                   {participants.length} / {teamSize * 2} Jugadores
                 </span>
               </div>
               <h1 className="text-5xl md:text-8xl font-black italic uppercase tracking-tighter text-foreground leading-[0.8]">
-                {match.location}
+                {venueInfo?.name || match.location}
               </h1>
               <div className="flex flex-wrap items-center gap-8 text-foreground/60 font-black italic uppercase text-sm">
                 <div className="flex items-center gap-3">
@@ -433,7 +433,7 @@ function MatchLobbyContent() {
             <div className="space-y-4">
               <div className="flex items-center gap-3">
                 <span className="px-3 py-1 rounded-full bg-primary/10 border border-primary/20 text-primary text-[10px] font-black uppercase tracking-widest">
-                  {match.format} \u2022 {match.is_private ? 'Privado' : 'P\u00fablico'}
+                  {match.type} \u2022 {match.is_private ? 'Privado' : 'P\u00fablico'}
                 </span>
                 {isCompleted && (
                   <span className="px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-500 text-[10px] font-black uppercase tracking-widest flex items-center gap-1.5">
@@ -442,7 +442,7 @@ function MatchLobbyContent() {
                 )}
               </div>
               <h1 className="text-4xl md:text-6xl font-black italic uppercase tracking-tighter text-foreground leading-[0.9]">
-                {match.location}
+                {venueInfo?.name || match.location}
               </h1>
               <div className="flex flex-wrap items-center gap-6 text-foreground/40 font-black italic uppercase text-xs">
                 <div className="flex items-center gap-2">
@@ -478,8 +478,8 @@ function MatchLobbyContent() {
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
               {[
                 { icon: Users, label: 'Cupos', value: `${participants.length}/${teamSize * 2}`, color: 'text-primary' },
+                { icon: Shield, label: 'Formato', value: match.type || 'F5', color: 'text-blue-400' },
                 { icon: DollarSign, label: 'Costo', value: match.price > 0 ? `$${match.price}` : 'Gratis', color: 'text-emerald-400' },
-                { icon: Shield, label: 'Nivel', value: match.min_rank || 'Abierto', color: 'text-blue-400' },
                 { icon: Zap, label: 'Estado', value: isCompleted ? 'Finalizado' : 'En Lobby', color: 'text-amber-400' },
               ].map((stat, i) => (
                 <div key={i} className="p-6 rounded-[2rem] glass-premium border-white/5 space-y-1">
