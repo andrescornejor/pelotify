@@ -209,7 +209,7 @@ const handleBooking = async () => {
   if (!business) {
     return (
       <div className="min-h-screen bg-background flex flex-col items-center justify-center p-8 text-center">
-        <div className="w-20 h-20 rounded-[2rem] bg-foreground/5 border border-foreground/10 flex items-center justify-center mb-6">
+        <div className="w-20 h-20 rounded-[2.5rem] bg-foreground/5 border border-foreground/10 flex items-center justify-center mb-6">
            <MapPin className="w-10 h-10 text-primary opacity-50" />
         </div>
         <h2 className="text-3xl font-black font-kanit italic uppercase mb-2">Establecimiento no encontrado</h2>
@@ -320,7 +320,7 @@ const handleBooking = async () => {
                      <button 
                        key={field.id}
                        onClick={() => setSelectedField(field)}
-                       className={`shrink-0 flex items-center gap-6 p-6 rounded-[2rem] border transition-all duration-300 relative overflow-hidden group ${
+                       className={`shrink-0 flex items-center gap-6 p-6 rounded-[2.5rem] border transition-all duration-300 relative overflow-hidden group ${
                          selectedField?.id === field.id 
                            ? 'bg-primary border-primary shadow-[0_20px_40px_rgba(44,252,125,0.2)] scale-[1.05] z-10' 
                            : 'bg-surface-elevated/30 border-white/5 hover:border-primary/40'
@@ -363,7 +363,7 @@ const handleBooking = async () => {
                               : 'bg-surface-elevated/30 text-muted-foreground border-white/5 hover:border-white/20'
                           }`}
                         >
-                           <span className={`text-[10px] font-black uppercase tracking-[0.3em] ${isSelected ? 'opacity-40' : 'opacity-60'}`}>{dayName}</span>
+                           <span className={`text-[9px] font-black uppercase tracking-[0.3em] ${isSelected ? 'opacity-40' : 'opacity-60'}`}>{dayName}</span>
                            <span className="text-2xl font-black font-kanit italic leading-none">{dayNum}</span>
                         </button>
                      );
@@ -389,7 +389,7 @@ const handleBooking = async () => {
                           }`}
                         >
                            <span className={`text-base font-black font-kanit italic tracking-tighter transition-colors ${available && !isSelected ? 'text-foreground/70 group-hover:text-primary' : ''}`}>{time}</span>
-                           {!available && <div className="absolute inset-0 bg-danger/5 flex items-center justify-center rotate-[15deg]"><span className="text-[10px] font-black uppercase text-danger/30">OCUPADO</span></div>}
+                           {!available && <div className="absolute inset-0 bg-danger/5 flex items-center justify-center rotate-[15deg]"><span className="text-[8px] font-black uppercase text-danger/30">OCUPADO</span></div>}
                         </button>
                      );
                   })}
@@ -397,7 +397,7 @@ const handleBooking = async () => {
             </section>
 
             {/* DESCRIPTION & SERVICES */}
-            <section className="glass-premium rounded-[2rem] p-12 border-white/5 space-y-12 relative overflow-hidden group">
+            <section className="glass-premium rounded-[3.5rem] p-12 border-white/5 space-y-12 relative overflow-hidden group">
                <div className="absolute top-0 right-0 w-80 h-80 bg-primary/5 rounded-full blur-[100px] -z-10 group-hover:bg-primary/10 transition-colors"></div>
                
                <div className="space-y-6">
@@ -433,7 +433,7 @@ const handleBooking = async () => {
          {/* RIGHT COL: STICKY BOOKING CARD */}
          <div className="lg:col-span-4">
             <div className="sticky top-32 space-y-8">
-               <div className="glass-premium rounded-[2rem] p-10 border-white/10 shadow-[0_50px_100px_rgba(0,0,0,0.5)] relative overflow-hidden group">
+               <div className="glass-premium rounded-[3rem] p-10 border-white/10 shadow-[0_50px_100px_rgba(0,0,0,0.5)] relative overflow-hidden group">
                   <div className="absolute top-0 right-0 w-40 h-40 bg-primary/20 rounded-full blur-[60px] -z-10 group-hover:bg-primary/30 transition-colors"></div>
                   
                   <div className="space-y-2 mb-10">
@@ -468,7 +468,7 @@ const handleBooking = async () => {
                         <div className="flex justify-between items-end">
                            <div className="space-y-1">
                               <p className="text-[10px] font-black text-primary uppercase tracking-widest leading-none">Monto de la Seña</p>
-                              <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">({selectedField?.down_payment_percentage || 30}% del valor total)</p>
+                              <p className="text-[8px] font-bold text-muted-foreground uppercase tracking-widest">({selectedField?.down_payment_percentage || 30}% del valor total)</p>
                            </div>
                            <p className="text-4xl font-black font-kanit italic tracking-tighter text-white">
                               ${selectedField ? new Intl.NumberFormat('es-AR').format(Math.round(selectedField.price_per_match * (selectedField.down_payment_percentage || 30) / 100)) : "0"}
@@ -487,17 +487,17 @@ const handleBooking = async () => {
                   
                   <div className="flex items-center justify-center gap-2 mt-6">
                      <Shield className="w-3.5 h-3.5 text-primary/60" />
-                     <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">
+                     <p className="text-[8px] font-black text-muted-foreground uppercase tracking-widest">
                         Pago 100% Protegido por Pelotify
                      </p>
                   </div>
                </div>
 
                {/* REVIEWS CARD */}
-               <div className="glass-premium rounded-[2rem] p-10 border-white/5 space-y-8">
+               <div className="glass-premium rounded-[2.5rem] p-10 border-white/5 space-y-8">
                   <div className="flex items-center justify-between">
                      <h4 className="text-lg font-black font-kanit italic uppercase tracking-tighter">Últimas Reseñas</h4>
-                     <button className="text-[10px] font-black text-primary uppercase tracking-widest border-b border-primary/30">Ver Todas</button>
+                     <button className="text-[9px] font-black text-primary uppercase tracking-widest border-b border-primary/30">Ver Todas</button>
                   </div>
                   
                   <div className="space-y-8">
@@ -505,7 +505,7 @@ const handleBooking = async () => {
                      {user ? (
                         <div className="p-6 rounded-3xl bg-surface-elevated/50 border border-white/5 space-y-4">
                            <div className="flex items-center justify-between">
-                              <span className="text-[10px] font-black uppercase tracking-widest">Deja tu reseña</span>
+                              <span className="text-[9px] font-black uppercase tracking-widest">Deja tu reseña</span>
                               <div className="flex gap-1">
                                  {[1,2,3,4,5].map(s => (
                                     <button key={s} onClick={() => setNewReview({...newReview, rating: s})}>
@@ -523,14 +523,14 @@ const handleBooking = async () => {
                            <button 
                               onClick={handlePostReview}
                               disabled={isPostingReview || !newReview.comment.trim()}
-                              className="w-full py-3 bg-primary text-black font-black uppercase text-[10px] tracking-widest rounded-xl hover:bg-white transition-all disabled:opacity-30"
+                              className="w-full py-3 bg-primary text-black font-black uppercase text-[9px] tracking-widest rounded-xl hover:bg-white transition-all disabled:opacity-30"
                            >
                               {isPostingReview ? 'ENVIANDO...' : 'POSTEAR RESEÑA'}
                            </button>
                         </div>
                      ) : (
                         <div className="p-6 rounded-3xl bg-surface-elevated/30 border border-white/5 text-center">
-                           <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">Inicia sesión para compartir tu experiencia</p>
+                           <p className="text-[9px] font-black text-muted-foreground uppercase tracking-widest">Inicia sesión para compartir tu experiencia</p>
                         </div>
                      )}
 
@@ -541,14 +541,14 @@ const handleBooking = async () => {
                               <div className="flex items-center gap-1">
                                  {[...Array(5)].map((_, s) => <Star key={s} className={`w-2.5 h-2.5 ${rev.rating > s ? 'fill-accent text-accent' : 'text-muted-foreground'}`} />)}
                               </div>
-                              <span className="text-[10px] text-muted-foreground uppercase font-black">{new Date(rev.created_at).toLocaleDateString()}</span>
+                              <span className="text-[7px] text-muted-foreground uppercase font-black">{new Date(rev.created_at).toLocaleDateString()}</span>
                            </div>
                            <p className="text-[11px] text-foreground font-medium italic">"{rev.comment}"</p>
-                           <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">— {rev.profiles?.full_name || 'Jugador Pelotify'}</p>
+                           <p className="text-[8px] font-bold text-muted-foreground uppercase tracking-widest">— {rev.profiles?.full_name || 'Jugador Pelotify'}</p>
                         </div>
                      )) : (
                         <div className="text-center py-4">
-                           <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest opacity-40">Sin reseñas todavía</p>
+                           <p className="text-[9px] font-black text-muted-foreground uppercase tracking-widest opacity-40">Sin reseñas todavía</p>
                         </div>
                      )}
                   </div>
@@ -572,12 +572,12 @@ const handleBooking = async () => {
                  initial={{ scale: 0.9, opacity: 0, y: 30 }}
                  animate={{ scale: 1, opacity: 1, y: 0 }}
                  exit={{ scale: 0.9, opacity: 0, y: 30 }}
-                 className="relative w-full max-w-lg glass-premium rounded-[2rem] p-12 border-white/10 shadow-[0_50px_150px_rgba(0,0,0,0.8)] text-center overflow-hidden"
+                 className="relative w-full max-w-lg glass-premium rounded-[4rem] p-12 border-white/10 shadow-[0_50px_150px_rgba(0,0,0,0.8)] text-center overflow-hidden"
                >
                   <div className="absolute -top-20 -left-20 w-80 h-80 bg-primary/10 rounded-full blur-[100px] pointer-events-none" />
                   
                   <div className="relative z-10">
-                     <div className="w-24 h-24 bg-primary/10 rounded-[2rem] flex items-center justify-center mx-auto mb-8 border border-primary/20 shadow-inner">
+                     <div className="w-24 h-24 bg-primary/10 rounded-[2.5rem] flex items-center justify-center mx-auto mb-8 border border-primary/20 shadow-inner">
                         <Zap className="w-12 h-12 text-primary drop-shadow-[0_0_15px_rgba(44,252,125,0.8)]" />
                      </div>
                      <h3 className="text-4xl font-black font-kanit italic uppercase tracking-tighter mb-4">Confirmar <span className="text-primary text-glow">Reserva</span></h3>
@@ -585,13 +585,13 @@ const handleBooking = async () => {
                         Estás a un paso de confirmar tu turno en <strong>{business.name}</strong> para la cancha <strong>{selectedField.name}</strong>. Serás redirigido a Mercado Pago para abonar la seña.
                      </p>
                      
-                     <div className="grid grid-cols-2 gap-4 mb-10 bg-surface-elevated/50 p-6 rounded-[2rem] border border-white/5 mx-4">
+                     <div className="grid grid-cols-2 gap-4 mb-10 bg-surface-elevated/50 p-6 rounded-[2.5rem] border border-white/5 mx-4">
                         <div className="text-left">
-                           <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest mb-1">Día Elegido</p>
+                           <p className="text-[9px] font-black text-muted-foreground uppercase tracking-widest mb-1">Día Elegido</p>
                            <p className="text-sm font-black text-foreground">{new Intl.DateTimeFormat('es-AR', { day: 'numeric', month: 'short' }).format(new Date(selectedDate))}</p>
                         </div>
                         <div className="text-right">
-                           <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest mb-1">Hora inicio</p>
+                           <p className="text-[9px] font-black text-muted-foreground uppercase tracking-widest mb-1">Hora inicio</p>
                            <p className="text-sm font-black text-foreground">{selectedSlot} HS</p>
                         </div>
                      </div>
@@ -629,7 +629,7 @@ const handleBooking = async () => {
                  initial={{ scale: 0.8, opacity: 0 }}
                  animate={{ scale: 1, opacity: 1 }}
                  exit={{ scale: 0.8, opacity: 0 }}
-                 className="relative w-full max-w-sm glass-premium rounded-[2rem] p-10 border-primary/20 text-center shadow-[0_0_100px_rgba(44,252,125,0.15)]"
+                 className="relative w-full max-w-sm glass-premium rounded-[3rem] p-10 border-primary/20 text-center shadow-[0_0_100px_rgba(44,252,125,0.15)]"
                >
                   <div className="w-20 h-20 bg-primary rounded-[2rem] flex items-center justify-center mx-auto mb-8 rotate-12 shadow-[0_15px_30px_rgba(44,252,125,0.4)]">
                      <Check className="w-10 h-10 text-black stroke-[3]" />

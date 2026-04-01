@@ -66,10 +66,10 @@ export default function SettingsPage() {
             animate={{ opacity: 1, y: 0 }}
             className="text-4xl md:text-5xl font-black text-foreground italic uppercase tracking-tighter"
           >
-            ConfiguraciÃ³n
+            Configuración
           </motion.h1>
           <p className="text-foreground/50 font-medium text-sm mt-2 max-w-sm">
-            AjustÃ¡ la apariencia, notificaciones y tu cuenta para llevar tu juego al siguiente
+            Ajustá la apariencia, notificaciones y tu cuenta para llevar tu juego al siguiente
             nivel.
           </p>
         </div>
@@ -82,7 +82,7 @@ export default function SettingsPage() {
         animate="visible"
         className="max-w-4xl mx-auto w-full px-6 py-8 space-y-10 relative z-10"
       >
-        {/* â”€â”€ APARIENCIA â”€â”€ */}
+        {/* ── APARIENCIA ── */}
         <motion.section variants={itemVariants} className="space-y-4">
           <div className="flex items-center gap-3 pl-2">
             <Sun className="w-4 h-4 text-foreground/50" />
@@ -97,7 +97,7 @@ export default function SettingsPage() {
               className={`flex-1 flex flex-col items-center gap-2 p-6 rounded-[1.5rem] transition-all duration-300 ${theme === 'light' ? 'bg-primary border-primary shadow-[0_10px_30px_rgba(16,185,129,0.3)] text-black' : 'bg-transparent text-foreground/50 hover:bg-foreground/5 border-transparent'} border`}
             >
               <Sun className="w-6 h-6" />
-              <span className="text-[10px] font-black uppercase tracking-[0.2em]">DÃ­a</span>
+              <span className="text-[10px] font-black uppercase tracking-[0.2em]">Día</span>
             </button>
             <button
               onClick={() => setTheme('dark')}
@@ -116,7 +116,7 @@ export default function SettingsPage() {
           </div>
         </motion.section>
 
-        {/* â”€â”€ RENDIMIENTO â”€â”€ */}
+        {/* ── RENDIMIENTO ── */}
         <motion.section variants={itemVariants} className="space-y-4">
           <div className="flex items-center gap-3 pl-2">
             <Cpu className="w-4 h-4 text-foreground/50" />
@@ -145,7 +145,7 @@ export default function SettingsPage() {
                     Modo Rendimiento
                   </span>
                   <span className="text-[10px] text-foreground/50 font-black uppercase tracking-widest mt-0.5">
-                    {performanceMode ? 'Activado (MÃ¡s fluido)' : 'Desactivado (MÃ¡s efectos)'}
+                    {performanceMode ? 'Activado (Más fluido)' : 'Desactivado (Más efectos)'}
                   </span>
                 </div>
               </div>
@@ -159,13 +159,13 @@ export default function SettingsPage() {
                 />
               </div>
             </button>
-            <p className="px-4 text-[10px] text-foreground/30 font-black uppercase tracking-widest leading-relaxed">
+            <p className="px-4 text-[9px] text-foreground/30 font-black uppercase tracking-widest leading-relaxed">
               Desactiva efectos de desenfoque y animaciones pesadas para celulares de gama baja.
             </p>
           </div>
         </motion.section>
 
-        {/* â”€â”€ CUENTA â”€â”€ */}
+        {/* ── CUENTA ── */}
         <motion.section variants={itemVariants} className="space-y-4">
           <div className="flex items-center gap-3 pl-2">
             <User className="w-4 h-4 text-foreground/50" />
@@ -184,7 +184,7 @@ export default function SettingsPage() {
                       Editar Perfil
                     </span>
                     <span className="text-[10px] text-foreground/50 font-black uppercase tracking-widest mt-0.5">
-                      Avatar, Nombre, PosiciÃ³n
+                      Avatar, Nombre, Posición
                     </span>
                   </div>
                 </div>
@@ -200,7 +200,7 @@ export default function SettingsPage() {
                 <div className="flex flex-col">
                   <span className="text-sm font-black text-foreground uppercase">Privacidad</span>
                   <span className="text-[10px] text-foreground/50 font-black uppercase tracking-widest mt-0.5">
-                    PrÃ³ximamente
+                    Próximamente
                   </span>
                 </div>
               </div>
@@ -208,7 +208,7 @@ export default function SettingsPage() {
           </div>
         </motion.section>
 
-        {/* â”€â”€ PELIGRO â”€â”€ */}
+        {/* ── PELIGRO ── */}
         <motion.section
           variants={itemVariants}
           className="pt-8 border-t border-foreground/5 space-y-4"
@@ -228,7 +228,7 @@ export default function SettingsPage() {
                 <LogOut className="w-5 h-5" />
               </div>
               <span className="text-sm font-black text-red-500 uppercase tracking-widest">
-                Cerrar SesiÃ³n
+                Cerrar Sesión
               </span>
             </div>
           </button>

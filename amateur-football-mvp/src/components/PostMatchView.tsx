@@ -26,7 +26,7 @@ import { ShareStory } from './ShareStory';
 const VenueMap = dynamic(() => import('./VenueMap'), {
   ssr: false,
   loading: () => (
-    <div className="w-full h-80 bg-foreground/5 rounded-[2rem] animate-pulse flex items-center justify-center border border-foreground/10">
+    <div className="w-full h-80 bg-foreground/5 rounded-[3rem] animate-pulse flex items-center justify-center border border-foreground/10">
       <Loader2 className="w-8 h-8 animate-spin text-primary/20" />
     </div>
   ),
@@ -61,7 +61,7 @@ export default function PostMatchView({ match, participants, stats }: PostMatchV
 
   return (
     <div className="space-y-12 pb-20">
-      {/* Ã¢â€â‚¬Ã¢â€â‚¬ CINEMATIC SCOREBOARD Ã¢â€â‚¬Ã¢â€â‚¬ */}
+      {/* ── CINEMATIC SCOREBOARD ── */}
       <motion.div
         initial={{ opacity: 0, y: 40 }}
         animate={{ opacity: 1, y: 0 }}
@@ -70,7 +70,7 @@ export default function PostMatchView({ match, participants, stats }: PostMatchV
         {/* Background Effects */}
         <div className="absolute inset-x-0 -top-20 h-64 bg-primary/10 blur-[120px] rounded-full pointer-events-none opacity-50 group-hover:opacity-100 transition-opacity duration-1000" />
 
-        <div className="glass-premium rounded-[2rem] p-12 border border-white/10 relative overflow-hidden shadow-[0_40px_100px_rgba(0,0,0,0.5)]">
+        <div className="glass-premium rounded-[4rem] p-12 border border-white/10 relative overflow-hidden shadow-[0_40px_100px_rgba(0,0,0,0.5)]">
           <div className="absolute top-0 right-0 w-full h-full bg-gradient-to-br from-primary/5 via-transparent to-blue-500/5 pointer-events-none" />
 
           <div className="flex flex-col md:flex-row items-center justify-between gap-16 relative z-10">
@@ -78,7 +78,7 @@ export default function PostMatchView({ match, participants, stats }: PostMatchV
             <div className="flex flex-col items-center md:items-start gap-6 group/team">
               <div
                 className={cn(
-                  'w-28 h-28 rounded-[2rem] flex items-center justify-center text-4xl font-black italic shadow-2xl transition-all duration-500 group-hover/team:scale-110 relative',
+                  'w-28 h-28 rounded-[2.5rem] flex items-center justify-center text-4xl font-black italic shadow-2xl transition-all duration-500 group-hover/team:scale-110 relative',
                   winner === 'A'
                     ? 'bg-blue-600 scale-105'
                     : 'bg-zinc-800 scale-100 grayscale opacity-60'
@@ -90,7 +90,7 @@ export default function PostMatchView({ match, participants, stats }: PostMatchV
                   </div>
                 )}
                 <span className="text-white">A</span>
-                <div className="absolute inset-0 rounded-[2rem] border-2 border-white/20" />
+                <div className="absolute inset-0 rounded-[2.5rem] border-2 border-white/20" />
               </div>
               <div className="space-y-1 text-center md:text-left">
                 <h3 className="text-3xl font-black text-foreground italic uppercase tracking-tighter leading-none">
@@ -154,7 +154,7 @@ export default function PostMatchView({ match, participants, stats }: PostMatchV
             <div className="flex flex-col items-center md:items-end gap-6 group/team">
               <div
                 className={cn(
-                  'w-28 h-28 rounded-[2rem] flex items-center justify-center text-4xl font-black italic shadow-2xl transition-all duration-500 group-hover/team:scale-110 relative',
+                  'w-28 h-28 rounded-[2.5rem] flex items-center justify-center text-4xl font-black italic shadow-2xl transition-all duration-500 group-hover/team:scale-110 relative',
                   winner === 'B'
                     ? 'bg-red-600 scale-105'
                     : 'bg-zinc-800 scale-100 grayscale opacity-60'
@@ -166,7 +166,7 @@ export default function PostMatchView({ match, participants, stats }: PostMatchV
                   </div>
                 )}
                 <span className="text-white">B</span>
-                <div className="absolute inset-0 rounded-[2rem] border-2 border-white/20" />
+                <div className="absolute inset-0 rounded-[2.5rem] border-2 border-white/20" />
               </div>
               <div className="space-y-1 text-center md:text-right">
                 <h3 className="text-3xl font-black text-foreground italic uppercase tracking-tighter leading-none">
@@ -194,7 +194,7 @@ export default function PostMatchView({ match, participants, stats }: PostMatchV
         </div>
       </motion.div>
 
-      {/* Ã¢â€â‚¬Ã¢â€â‚¬ SHARE ACTION Ã¢â€â‚¬Ã¢â€â‚¬ */}
+      {/* ── SHARE ACTION ── */}
       <motion.div
         initial={{ opacity: 0, scale: 0.9 }}
         animate={{ opacity: 1, scale: 1 }}
@@ -211,18 +211,18 @@ export default function PostMatchView({ match, participants, stats }: PostMatchV
             score_a: scoreA,
             score_b: scoreB,
           }}
-          className="h-20 px-12 rounded-[2rem] text-sm shadow-[0_20px_50px_rgba(16,185,129,0.3)] hover:scale-105"
+          className="h-20 px-12 rounded-[2.5rem] text-sm shadow-[0_20px_50px_rgba(16,185,129,0.3)] hover:scale-105"
         />
       </motion.div>
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
-        {/* Ã¢â€â‚¬Ã¢â€â‚¬ MAIN CONTENT (STATS & TEAMS) Ã¢â€â‚¬Ã¢â€â‚¬ */}
+        {/* ── MAIN CONTENT (STATS & TEAMS) ── */}
         <div className="lg:col-span-8 space-y-12">
           {/* GOAL SCORERS SECTION */}
           <motion.div
             initial={{ opacity: 0, x: -30 }}
             animate={{ opacity: 1, x: 0 }}
-            className="glass-premium rounded-[2rem] p-10 border border-foreground/10 relative overflow-hidden"
+            className="glass-premium rounded-[3.5rem] p-10 border border-foreground/10 relative overflow-hidden"
           >
             <div className="flex items-center justify-between mb-10 px-2">
               <div className="flex items-center gap-5">
@@ -265,7 +265,7 @@ export default function PostMatchView({ match, participants, stats }: PostMatchV
                         <span className="font-black text-foreground uppercase italic tracking-tighter text-lg leading-none">
                           {scorer.name}
                         </span>
-                        <p className="text-[10px] font-black text-foreground/30 uppercase tracking-widest">
+                        <p className="text-[9px] font-black text-foreground/30 uppercase tracking-widest">
                           Killer de Area
                         </p>
                       </div>
@@ -284,7 +284,7 @@ export default function PostMatchView({ match, participants, stats }: PostMatchV
                     <Goal className="w-8 h-8" />
                   </div>
                   <p className="text-sm font-black uppercase tracking-[0.4em] italic">
-                    Red en Cero Ã‚Â· Sin Reportes
+                    Red en Cero · Sin Reportes
                   </p>
                 </div>
               )}
@@ -297,7 +297,7 @@ export default function PostMatchView({ match, participants, stats }: PostMatchV
               <div
                 key={team}
                 className={cn(
-                  'glass-premium rounded-[2rem] p-10 border border-foreground/10 relative overflow-hidden transition-all duration-500 group/squad',
+                  'glass-premium rounded-[3rem] p-10 border border-foreground/10 relative overflow-hidden transition-all duration-500 group/squad',
                   team === 'A' ? 'hover:border-blue-500/30' : 'hover:border-red-500/30'
                 )}
               >
@@ -349,7 +349,7 @@ export default function PostMatchView({ match, participants, stats }: PostMatchV
                         <span className="text-[11px] font-black text-foreground uppercase italic tracking-tighter truncate">
                           {p.profiles?.name?.split(' ')[0]}
                         </span>
-                        <span className="text-[10px] font-black text-foreground/30 uppercase tracking-[0.2em]">
+                        <span className="text-[8px] font-black text-foreground/30 uppercase tracking-[0.2em]">
                           {p.profiles?.position || 'Jugador'}
                         </span>
                       </div>
@@ -361,13 +361,13 @@ export default function PostMatchView({ match, participants, stats }: PostMatchV
           </div>
         </div>
 
-        {/* Ã¢â€â‚¬Ã¢â€â‚¬ SIDEBAR: MVP & MATCH INFO Ã¢â€â‚¬Ã¢â€â‚¬ */}
+        {/* ── SIDEBAR: MVP & MATCH INFO ── */}
         <div className="lg:col-span-4 space-y-12">
           {/* MVP PRESTIGE CARD */}
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="glass-premium rounded-[2rem] p-10 border border-primary/30 bg-primary/5 relative overflow-hidden group shadow-[0_40px_80px_rgba(16,185,129,0.15)]"
+            className="glass-premium rounded-[3.5rem] p-10 border border-primary/30 bg-primary/5 relative overflow-hidden group shadow-[0_40px_80px_rgba(16,185,129,0.15)]"
           >
             {/* Animated Aura */}
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(16,185,129,0.15),transparent_70%)] animate-pulse" />
@@ -386,7 +386,7 @@ export default function PostMatchView({ match, participants, stats }: PostMatchV
                     Man of Match
                   </h2>
                   <p className="text-[10px] font-black uppercase tracking-[0.3em] text-foreground/40 italic">
-                    VotaciÃƒÂ³n popular
+                    Votación popular
                   </p>
                 </div>
               </div>
@@ -395,7 +395,7 @@ export default function PostMatchView({ match, participants, stats }: PostMatchV
                 <div className="flex flex-col items-center gap-10 py-6">
                   <div className="relative">
                     {/* Golden Frame */}
-                    <div className="absolute -inset-4 bg-gradient-to-br from-yellow-500 via-primary to-emerald-500 rounded-[2rem] blur-2xl opacity-40 group-hover:opacity-70 transition-opacity duration-700" />
+                    <div className="absolute -inset-4 bg-gradient-to-br from-yellow-500 via-primary to-emerald-500 rounded-[3rem] blur-2xl opacity-40 group-hover:opacity-70 transition-opacity duration-700" />
 
                     <div className="w-44 h-44 rounded-[2.8rem] bg-zinc-950 border-4 border-primary relative z-10 shadow-2xl group-hover:scale-105 transition-all duration-700 overflow-hidden">
                       {stats.mvp.avatar_url ? (
@@ -445,7 +445,7 @@ export default function PostMatchView({ match, participants, stats }: PostMatchV
                     <Star className="w-10 h-10 text-foreground/20" />
                   </div>
                   <p className="text-xs font-black uppercase text-foreground/30 italic tracking-[0.4em]">
-                    Escrutinio VacÃƒÂ­o
+                    Escrutinio Vacío
                   </p>
                 </div>
               )}
@@ -453,7 +453,7 @@ export default function PostMatchView({ match, participants, stats }: PostMatchV
           </motion.div>
 
           {/* MATCH INFO SUMMARY */}
-          <div className="glass-premium rounded-[2rem] p-10 border border-foreground/10 space-y-8 relative overflow-hidden group/info">
+          <div className="glass-premium rounded-[3.5rem] p-10 border border-foreground/10 space-y-8 relative overflow-hidden group/info">
             <div className="absolute top-0 right-0 w-32 h-32 bg-foreground/5 blur-[50px] -mr-16 -mt-16 rounded-full group-hover/info:scale-150 transition-transform duration-1000" />
 
             <div className="flex items-center gap-4 relative z-10 px-2">
@@ -508,7 +508,7 @@ export default function PostMatchView({ match, participants, stats }: PostMatchV
             </div>
           </div>
 
-          <div className="glass-premium rounded-[2rem] p-8 border border-foreground/10 relative overflow-hidden group/map">
+          <div className="glass-premium rounded-[3.5rem] p-8 border border-foreground/10 relative overflow-hidden group/map">
             <VenueMap location={match.location} />
           </div>
 

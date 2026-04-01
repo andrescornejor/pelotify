@@ -50,7 +50,7 @@ export function ShareStory({ type, data, trigger, className }: ShareStoryProps) 
               await navigator.share({
                  files: [file],
                  title: type === 'profile' ? `Ficha de ${data.name}` : `Resultado: ${data.location}`,
-                 text: 'MirÃ¡ mi progreso en Pelotify ðŸŸï¸',
+                 text: 'Mirá mi progreso en Pelotify 🏟️',
               });
             } catch (e) {
               console.log('Web share cancelled or failed', e);
@@ -78,7 +78,7 @@ export function ShareStory({ type, data, trigger, className }: ShareStoryProps) 
             // Share native file
             await Share.share({
               title: type === 'profile' ? `Ficha de ${data.name}` : `Resultado: ${data.location}`,
-              text: 'MirÃ¡ mi progreso en Pelotify ðŸŸï¸',
+              text: 'Mirá mi progreso en Pelotify 🏟️',
               url: result.uri,
             });
           } catch (shareErr) {
@@ -92,7 +92,7 @@ export function ShareStory({ type, data, trigger, className }: ShareStoryProps) 
       };
     } catch (err: any) {
       console.error('Sharing error:', err);
-      alert(`Error generando la imagen: ${err.message || 'Error tÃ©cnico'}`);
+      alert(`Error generando la imagen: ${err.message || 'Error técnico'}`);
     } finally {
       setIsGenerating(false);
     }
@@ -142,7 +142,7 @@ export function ShareStory({ type, data, trigger, className }: ShareStoryProps) 
                 PELOTI<span className="text-primary">FY</span>
               </h1>
               <span className="text-2xl font-black uppercase tracking-[0.5em] text-white/40 italic">
-                {type === 'profile' ? 'Identidad Digital' : 'Reporte de MisiÃ³n'}
+                {type === 'profile' ? 'Identidad Digital' : 'Reporte de Misión'}
               </span>
             </div>
             <div className="w-24 h-24 rounded-3xl bg-primary/10 border border-primary/20 flex items-center justify-center">
@@ -155,7 +155,7 @@ export function ShareStory({ type, data, trigger, className }: ShareStoryProps) 
             {type === 'profile' ? (
               <FifaCard player={data} />
             ) : (
-              <div className="glass-premium-dark p-12 rounded-[2rem] border border-primary/20 w-[400px] flex flex-col gap-8 text-center">
+              <div className="glass-premium-dark p-12 rounded-[4rem] border border-primary/20 w-[400px] flex flex-col gap-8 text-center">
                  <Trophy className="w-20 h-20 text-primary mx-auto" />
                  <h2 className="text-4xl font-black italic text-white uppercase">{data.location}</h2>
                  <div className="flex justify-center items-baseline gap-4">

@@ -87,7 +87,7 @@ export function FifaCard({ player }: FifaCardProps) {
 
       <div
         className={cn(
-          "w-full h-full rounded-[2rem] overflow-hidden relative transition-all duration-700",
+          "w-full h-full rounded-[2.5rem] overflow-hidden relative transition-all duration-700",
           isLight ? "border-zinc-200/80 shadow-2xl" : "border-[#2cfc7d]/30 shadow-2xl"
         )}
         style={{
@@ -191,7 +191,7 @@ export function FifaCard({ player }: FifaCardProps) {
           <div className="flex flex-col items-center gap-1">
             <span
               className={cn(
-                "text-[10px] font-black uppercase tracking-[0.3em] border-t pt-1 w-full text-center transition-all duration-500",
+                "text-[9px] font-black uppercase tracking-[0.3em] border-t pt-1 w-full text-center transition-all duration-500",
                 isLight ? "text-slate-900 border-zinc-200" : "text-primary border-primary/50"
               )}
               style={isLight ? {} : { textShadow: '0 2px 4px rgba(0,0,0,0.8)' }}
@@ -245,7 +245,7 @@ export function FifaCard({ player }: FifaCardProps) {
               >
                 <Award className={cn("w-3.5 h-3.5", isLight ? "text-primary" : "text-primary-light")} />
                 <div
-                  className="absolute left-full ml-1.5 px-2 py-1 rounded text-[10px] font-black text-white uppercase tracking-wider opacity-0 group-hover/badge:opacity-100 transition-opacity whitespace-nowrap pointer-events-none z-50 shadow-2xl"
+                  className="absolute left-full ml-1.5 px-2 py-1 rounded text-[7px] font-black text-white uppercase tracking-wider opacity-0 group-hover/badge:opacity-100 transition-opacity whitespace-nowrap pointer-events-none z-50 shadow-2xl"
                   style={{ background: 'rgba(0,0,0,0.9)', backdropFilter: 'blur(8px)' }}
                 >
                   {badge}
@@ -346,7 +346,7 @@ export function FifaCard({ player }: FifaCardProps) {
                   {statBoost(stat.val)}
                 </span>
                 <span
-                  className="text-[10px] font-black uppercase tracking-widest mb-0.5 transition-colors duration-500"
+                  className="text-[7px] font-black uppercase tracking-widest mb-0.5 transition-colors duration-500"
                   style={{ color: isLight ? 'rgba(0,0,0,0.4)' : 'rgba(16,185,129,0.5)' }}
                 >
                   {stat.label}

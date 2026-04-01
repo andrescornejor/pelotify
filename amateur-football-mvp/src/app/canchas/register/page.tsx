@@ -30,7 +30,7 @@ export default function CanchasRegisterPage() {
     setError('');
 
     if (formData.password !== formData.confirmPassword) {
-      setError('Las contraseÃ±as no coinciden.');
+      setError('Las contraseñas no coinciden.');
       setIsLoading(false);
       return;
     }
@@ -83,7 +83,7 @@ export default function CanchasRegisterPage() {
 
   return (
     <div className="flex min-h-[100dvh] bg-background selection:bg-primary selection:text-background overflow-hidden relative font-outfit">
-      {/* â”€â”€ LEFT PANEL: AUTH FORM â”€â”€ */}
+      {/* ── LEFT PANEL: AUTH FORM ── */}
       <div className="flex-1 flex flex-col items-center justify-center p-4 lg:p-8 relative z-10 overflow-y-auto pt-12 lg:pt-8">
         <motion.div
           initial={{ opacity: 0, x: -20 }}
@@ -109,7 +109,7 @@ export default function CanchasRegisterPage() {
             
             {success && (
               <div className="bg-success/10 text-success border border-success/20 p-4 rounded-xl text-sm font-semibold flex items-center gap-2">
-                <Loader2 className="animate-spin w-4 h-4"/> Â¡Cuenta creada! Redirigiendo al panel...
+                <Loader2 className="animate-spin w-4 h-4"/> ¡Cuenta creada! Redirigiendo al panel...
               </div>
             )}
 
@@ -122,7 +122,7 @@ export default function CanchasRegisterPage() {
                   </div>
                   <input
                     type="text"
-                    placeholder="Nombre del Complejo (ej. El Ã“valo)"
+                    placeholder="Nombre del Complejo (ej. El Óvalo)"
                     value={formData.businessName}
                     onChange={(e) => setFormData(prev => ({...prev, businessName: e.target.value}))}
                     className="w-full h-12 pl-12 pr-4 rounded-xl bg-white/[0.02] border border-white/5 focus:bg-white/[0.04] focus:border-primary/50 outline-none transition-all text-sm font-bold text-foreground placeholder:text-zinc-700 font-kanit"
@@ -138,7 +138,7 @@ export default function CanchasRegisterPage() {
                   </div>
                   <input
                     type="email"
-                    placeholder="dueÃ±o@complejo.com"
+                    placeholder="dueño@complejo.com"
                     value={formData.email}
                     onChange={(e) => setFormData(prev => ({...prev, email: e.target.value}))}
                     className="w-full h-12 pl-12 pr-4 rounded-xl bg-white/[0.02] border border-white/5 focus:bg-white/[0.04] focus:border-primary/50 outline-none transition-all text-sm font-bold text-foreground placeholder:text-zinc-700 font-kanit"
@@ -154,7 +154,7 @@ export default function CanchasRegisterPage() {
                   </div>
                   <input
                     type="password"
-                    placeholder="ContraseÃ±a"
+                    placeholder="Contraseña"
                     value={formData.password}
                     onChange={(e) => setFormData(prev => ({...prev, password: e.target.value}))}
                     className="w-full h-12 pl-12 pr-4 rounded-xl bg-white/[0.02] border border-white/5 focus:bg-white/[0.04] focus:border-primary/50 outline-none transition-all text-sm font-bold text-foreground placeholder:text-zinc-700 font-kanit"
@@ -170,7 +170,7 @@ export default function CanchasRegisterPage() {
                   </div>
                   <input
                     type="password"
-                    placeholder="Confirmar ContraseÃ±a"
+                    placeholder="Confirmar Contraseña"
                     value={formData.confirmPassword}
                     onChange={(e) => setFormData(prev => ({...prev, confirmPassword: e.target.value}))}
                     className={cn(
@@ -195,10 +195,10 @@ export default function CanchasRegisterPage() {
             </form>
             
             <div className="text-center pb-6 lg:pb-0">
-              <p className="text-[10px] font-black text-foreground/40 uppercase tracking-[0.2em] font-kanit">
-                Â¿YA TENÃ‰S CUENTA?{' '}
+              <p className="text-[9px] font-black text-foreground/40 uppercase tracking-[0.2em] font-kanit">
+                ¿YA TENÉS CUENTA?{' '}
                 <Link href="/canchas/login" className="text-primary hover:text-white transition-colors underline decoration-primary/30 underline-offset-4">
-                  INGRESAR ACÃ
+                  INGRESAR ACÁ
                 </Link>
               </p>
             </div>
@@ -206,7 +206,7 @@ export default function CanchasRegisterPage() {
         </motion.div>
       </div>
 
-      {/* â”€â”€ RIGHT PANEL: CINEMATIC HERO â”€â”€ */}
+      {/* ── RIGHT PANEL: CINEMATIC HERO ── */}
       <div className="hidden lg:flex flex-[1.2] relative overflow-hidden bg-zinc-950 border-l border-white/5">
          <motion.div 
            initial={{ scale: 1.1, opacity: 0 }}
@@ -236,10 +236,10 @@ export default function CanchasRegisterPage() {
                  <span className="text-xs font-black uppercase tracking-[0.5em] text-primary italic">Registra tu complejo</span>
                </div>
                <h2 className="text-7xl font-black italic text-white uppercase tracking-tighter leading-[0.8] drop-shadow-2xl font-kanit">
-                 LA RED MÃS <br /> GRANDE TE <br /> <span className="text-primary">ESPERA.</span>
+                 LA RED MÁS <br /> GRANDE TE <br /> <span className="text-primary">ESPERA.</span>
                </h2>
                <p className="text-sm text-white/60 font-medium tracking-wide max-w-md leading-relaxed mt-4">
-                 Ãšnite a los mÃ¡s de 50 recintos que ya automatizan sus reservas diarias. Conecta tu cuenta y olvÃ­date del papel.
+                 Únite a los más de 50 recintos que ya automatizan sus reservas diarias. Conecta tu cuenta y olvídate del papel.
                </p>
             </motion.div>
          </div>

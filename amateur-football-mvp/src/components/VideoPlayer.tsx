@@ -368,7 +368,7 @@ export default function VideoPlayer({
                 <span className="text-white font-black text-xl italic tracking-tight font-kanit drop-shadow-2xl leading-none group-hover:text-emerald-400 transition-colors">
                   @{userName || 'crack_anonimo'}
                 </span>
-                <div className="flex items-center gap-1.5 text-[10px] font-black text-emerald-400 uppercase tracking-[0.2em] mt-1 shadow-sm">
+                <div className="flex items-center gap-1.5 text-[8px] font-black text-emerald-400 uppercase tracking-[0.2em] mt-1 shadow-sm">
                   <div className="w-1 h-1 rounded-full bg-emerald-400 animate-pulse" />
                   DESTACADO
                 </div>

@@ -104,7 +104,7 @@ function formatTime(timeStr: string) {
   return `${display}:${m} ${ampm}`;
 }
 
-// Ã¢â€â‚¬Ã¢â€â‚¬ PREMIUM PITCH SVG Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬
+// ── PREMIUM PITCH SVG ──────────────────────────────────────────────────────────
 function MiniPitch({ type }: { type: string }) {
   const isF5 = type === 'F5';
   const isF11 = type === 'F11';
@@ -174,7 +174,7 @@ function MiniPitch({ type }: { type: string }) {
   );
 }
 
-// Ã¢â€â‚¬Ã¢â€â‚¬ TEAM COLORS Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬
+// ── TEAM COLORS ───────────────────────────────────────────────────────────────
 const TEAM_CONFIG = {
   A: {
     bg: 'bg-blue-600',
@@ -356,7 +356,7 @@ function MatchLobbyContent() {
   };
 
   const handleLeave = async () => {
-    if (!user || !match || !confirm('Ã‚Â¿Salir del partido?')) return;
+    if (!user || !match || !confirm('¿Salir del partido?')) return;
     try {
       await leaveMutation.mutateAsync({ matchId: match.id, userId: user.id });
     } catch (err: any) {
@@ -365,7 +365,7 @@ function MatchLobbyContent() {
   };
 
   const handleDelete = async () => {
-    if (!user || !match || !confirm('Ã‚Â¿Eliminar este partido?')) return;
+    if (!user || !match || !confirm('¿Eliminar este partido?')) return;
     try {
       await deleteMutation.mutateAsync(match.id);
       router.replace('/search');
@@ -430,7 +430,7 @@ function MatchLobbyContent() {
             Partido Privado
           </p>
           <p className="text-sm text-foreground/40 font-bold uppercase tracking-widest leading-relaxed max-w-xs mx-auto">
-            NecesitÃƒÂ¡s una invitaciÃƒÂ³n del organizador para entrar.
+            Necesitás una invitación del organizador para entrar.
           </p>
         </div>
         <Link
@@ -453,7 +453,7 @@ function MatchLobbyContent() {
           href="/search"
           className="px-8 py-3 bg-foreground/5 border border-foreground/10 text-foreground font-black uppercase text-xs tracking-widest rounded-2xl hover:bg-foreground/10 transition-all"
         >
-          Volver a BÃƒÂºsqueda
+          Volver a Búsqueda
         </Link>
       </div>
     );
@@ -479,15 +479,15 @@ function MatchLobbyContent() {
 
   return (
     <div className="flex flex-col min-h-screen bg-background relative overflow-x-hidden">
-      {/* Ã¢â€â‚¬Ã¢â€â‚¬ AMBIENT BLOBS Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬ */}
+      {/* ── AMBIENT BLOBS ─────────────────────────────────────────── */}
       <div className="pointer-events-none fixed inset-0 -z-0 overflow-hidden">
         <div className="absolute -top-40 -right-40 w-[500px] h-[500px] bg-primary/6 blur-[130px] rounded-full" />
         <div className="absolute bottom-0 -left-20 w-[400px] h-[400px] bg-blue-500/4 blur-[120px] rounded-full" />
       </div>
 
-      {/* Ã¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢Â
-                HERO Ã¢â‚¬â€ cinematic full-bleed header
-            Ã¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢Â */}
+      {/* ═══════════════════════════════════════════════════════════
+                HERO — cinematic full-bleed header
+            ═══════════════════════════════════════════════════════════ */}
       <div className="relative w-full h-[45dvh] lg:h-[55dvh] shrink-0 overflow-hidden bg-[#020205]">
         {/* Background image */}
         <motion.img
@@ -513,7 +513,7 @@ function MatchLobbyContent() {
         <div className="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent" />
         <div className="absolute inset-0 bg-gradient-to-b from-background/40 via-transparent to-background/60" />
 
-        {/* Ã¢â€â‚¬Ã¢â€â‚¬ TOP BAR Ã¢â€â‚¬Ã¢â€â‚¬ */}
+        {/* ── TOP BAR ── */}
         <div className="absolute top-0 left-0 right-0 z-20 px-6 pt-40 lg:pt-32 flex items-center justify-between">
           <motion.button
             whileHover={{ scale: 1.05, backgroundColor: 'rgba(255,255,255,0.1)' }}
@@ -555,7 +555,7 @@ function MatchLobbyContent() {
           </motion.div>
         </div>
 
-        {/* Ã¢â€â‚¬Ã¢â€â‚¬ MAIN HERO CONTENT Ã¢â€â‚¬Ã¢â€â‚¬ */}
+        {/* ── MAIN HERO CONTENT ── */}
         <div className="absolute bottom-0 left-0 right-0 px-6 lg:px-12 pb-12 z-10">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
@@ -571,7 +571,7 @@ function MatchLobbyContent() {
                   <div className={cn("relative w-full h-full rounded-full", match.is_recruitment ? "bg-amber-500" : "bg-primary")} />
                 </div>
                 <span className={cn("text-[10px] font-black uppercase tracking-[0.5em] italic", match.is_recruitment ? "text-amber-500" : "text-primary")}>
-                  {match.is_recruitment ? "BÃƒÅ¡SQUEDA DE REFUERZOS" : "CONVOCATORIA ABIERTA"}
+                  {match.is_recruitment ? "BÚSQUEDA DE REFUERZOS" : "CONVOCATORIA ABIERTA"}
                 </span>
               </div>
             )}
@@ -610,7 +610,7 @@ function MatchLobbyContent() {
                   <MapPin className="w-5 h-5 text-white/40" />
                 </div>
                 <div className="flex flex-col">
-                  <span className="text-[10px] font-black text-white/30 uppercase tracking-widest">UbicaciÃƒÂ³n</span>
+                  <span className="text-[10px] font-black text-white/30 uppercase tracking-widest">Ubicación</span>
                   <span className="text-xs font-bold text-white/40 italic truncate max-w-[200px] leading-none uppercase tracking-tight">
                     {match.location}
                   </span>
@@ -621,9 +621,9 @@ function MatchLobbyContent() {
         </div>
       </div>
 
-      {/* Ã¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢Â
-                STATS BAR Ã¢â‚¬â€ floating card
-            Ã¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢Â */}
+      {/* ═══════════════════════════════════════════════════════════
+                STATS BAR — floating card
+            ═══════════════════════════════════════════════════════════ */}
       <div className="relative z-30 px-4 lg:px-12 -mt-6">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -660,7 +660,7 @@ function MatchLobbyContent() {
             {
               icon: match.is_private ? <Lock className="w-4 h-4" /> : <Globe className="w-4 h-4" />,
               label: 'Acceso',
-              value: match.is_private ? 'Privado' : 'PÃƒÂºblico',
+              value: match.is_private ? 'Privado' : 'Público',
               accent: match.is_private ? 'text-violet-400' : 'text-primary',
               sub: match.is_private ? 'Solo invitados' : 'Abierto',
             },
@@ -678,29 +678,29 @@ function MatchLobbyContent() {
                 {icon}
               </div>
               <div className="min-w-0">
-                <p className="text-[10px] font-black text-foreground/30 uppercase tracking-widest">
+                <p className="text-[8px] font-black text-foreground/30 uppercase tracking-widest">
                   {label}
                 </p>
                 <p className={cn('text-base font-black italic tracking-tight', accent)}>{value}</p>
-                <p className="text-[10px] text-foreground/30 font-bold">{sub}</p>
+                <p className="text-[9px] text-foreground/30 font-bold">{sub}</p>
               </div>
             </div>
           ))}
         </motion.div>
       </div>
 
-      {/* Ã¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢Â
+      {/* ═══════════════════════════════════════════════════════════
                 OCCUPANCY PROGRESS BAR
-            Ã¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢Â */}
+            ═══════════════════════════════════════════════════════════ */}
       {!isCompleted && (
         <div className="px-4 lg:px-12 mt-4 relative z-20">
           <div className="flex items-center justify-between mb-2 px-1">
-            <span className="text-[10px] font-black text-foreground/30 uppercase tracking-widest">
-              OcupaciÃƒÂ³n
+            <span className="text-[9px] font-black text-foreground/30 uppercase tracking-widest">
+              Ocupación
             </span>
             <span
               className={cn(
-                'text-[10px] font-black uppercase tracking-widest',
+                'text-[9px] font-black uppercase tracking-widest',
                 isFull ? 'text-red-400' : 'text-primary'
               )}
             >
@@ -720,11 +720,11 @@ function MatchLobbyContent() {
         </div>
       )}
 
-      {/* Ã¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢Â
+      {/* ═══════════════════════════════════════════════════════════
                 MAIN CONTENT
-            Ã¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢Â */}
+            ═══════════════════════════════════════════════════════════ */}
       <div className="relative z-20 px-4 lg:px-12 mt-8 pb-32 space-y-8">
-        {/* Ã¢â€â‚¬Ã¢â€â‚¬ PENDING INVITATION BANNER Ã¢â€â‚¬Ã¢â€â‚¬ */}
+        {/* ── PENDING INVITATION BANNER ── */}
         <AnimatePresence>
           {hasJoined && myEntry?.status === 'pending' && (
             <motion.div
@@ -740,10 +740,10 @@ function MatchLobbyContent() {
                 </div>
                 <div className="flex-1 text-center sm:text-left">
                   <h3 className="text-xl font-black text-foreground italic uppercase tracking-tighter">
-                    Ã‚Â¡Te invitaron a jugar!
+                    ¡Te invitaron a jugar!
                   </h3>
                   <p className="text-[10px] text-foreground/50 font-bold uppercase tracking-widest mt-1">
-                    AceptÃƒÂ¡ o rechazÃƒÂ¡ la invitaciÃƒÂ³n
+                    Aceptá o rechazá la invitación
                   </p>
                 </div>
                 <div className="flex gap-3 w-full sm:w-auto">
@@ -755,7 +755,7 @@ function MatchLobbyContent() {
                     {respondMutation.isPending ? (
                       <Loader2 className="w-4 h-4 animate-spin mx-auto" />
                     ) : (
-                      'Ã‚Â¡Dale!'
+                      '¡Dale!'
                     )}
                   </button>
                   <button
@@ -771,7 +771,7 @@ function MatchLobbyContent() {
           )}
         </AnimatePresence>
 
-        {/* Ã¢â€â‚¬Ã¢â€â‚¬ POST-MATCH PROMPT Ã¢â€â‚¬Ã¢â€â‚¬ */}
+        {/* ── POST-MATCH PROMPT ── */}
         {!match?.is_completed && isPast && userParticipant && (
           <motion.div
             initial={{ opacity: 0, y: 10 }}
@@ -787,7 +787,7 @@ function MatchLobbyContent() {
                   Resultados Pendientes
                 </h3>
                 <p className="text-[10px] text-foreground/40 font-bold uppercase tracking-widest">
-                  El partido ya terminÃƒÂ³. ReportÃƒÂ¡ el resultado.
+                  El partido ya terminó. Reportá el resultado.
                 </p>
               </div>
             </div>
@@ -800,7 +800,7 @@ function MatchLobbyContent() {
           </motion.div>
         )}
 
-        {/* Ã¢â€â‚¬Ã¢â€â‚¬ COMPLETED MATCH VIEW Ã¢â€â‚¬Ã¢â€â‚¬ */}
+        {/* ── COMPLETED MATCH VIEW ── */}
         {isCompleted ? (
           <div className="space-y-8">
             <PostMatchView
@@ -811,7 +811,7 @@ function MatchLobbyContent() {
           </div>
         ) : (
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-            {/* Ã¢â€â‚¬Ã¢â€â‚¬ LEFT: TEAMS Ã¢â€â‚¬Ã¢â€â‚¬ */}
+            {/* ── LEFT: TEAMS ── */}
             <div className="lg:col-span-8 space-y-8">
               {/* Header - Only visible if joined */}
               {hasJoined && (
@@ -820,10 +820,10 @@ function MatchLobbyContent() {
                     <h2 className="text-2xl font-black italic uppercase tracking-tighter text-foreground leading-none">
                       {match.is_recruitment ? 'Hub de Reclutamiento' : 'Alineaciones'}
                     </h2>
-                    <p className="text-[10px] font-black text-foreground/30 uppercase tracking-[0.4em] mt-1">
+                    <p className="text-[9px] font-black text-foreground/30 uppercase tracking-[0.4em] mt-1">
                       {match.is_recruitment 
                         ? 'Sumate al equipo que busca refuerzos' 
-                        : 'ElegÃƒÂ­ tu equipo y entrÃƒÂ¡ a jugar'}
+                        : 'Elegí tu equipo y entrá a jugar'}
                     </p>
                   </div>
                   <div className="flex items-center gap-2">
@@ -876,7 +876,7 @@ function MatchLobbyContent() {
                 <motion.div
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
-                  className="rounded-[2rem] border border-foreground/[0.08] bg-foreground/[0.02] p-8 space-y-6 backdrop-blur-xl relative overflow-hidden"
+                  className="rounded-[2.5rem] border border-foreground/[0.08] bg-foreground/[0.02] p-8 space-y-6 backdrop-blur-xl relative overflow-hidden"
                 >
                   <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 blur-3xl rounded-full" />
                   <div className="flex items-center justify-between">
@@ -905,7 +905,7 @@ function MatchLobbyContent() {
                            <PlayerSlot participant={p} isSelf={p.user_id === user?.id} />
                          </div>
                          <div className="mt-2 text-center">
-                            <span className="text-[10px] font-black text-foreground/40 uppercase tracking-widest block truncate max-w-[60px]">
+                            <span className="text-[8px] font-black text-foreground/40 uppercase tracking-widest block truncate max-w-[60px]">
                                {p.profiles?.name?.split(' ')[0]}
                             </span>
                          </div>
@@ -933,12 +933,12 @@ function MatchLobbyContent() {
                 </motion.div>
               )}
 
-              {/* Ã¢â€â‚¬Ã¢â€â‚¬ JOIN MATCH HERO (for non-joined players) Ã¢â€â‚¬Ã¢â€â‚¬ */}
+              {/* ── JOIN MATCH HERO (for non-joined players) ── */}
               {user && !hasJoined && !match.is_private && !isCompleted && !isFull && (
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
-                  className="relative overflow-hidden rounded-[2rem] border border-primary/20 bg-surface-elevated group"
+                  className="relative overflow-hidden rounded-[2.5rem] border border-primary/20 bg-surface-elevated group"
                 >
                   {/* Cinematic Background */}
                   <div className="absolute inset-0 z-0">
@@ -960,13 +960,13 @@ function MatchLobbyContent() {
                       </div>
                       
                       <h2 className="text-3xl sm:text-4xl font-black italic uppercase tracking-tighter text-foreground leading-tight">
-                        {match.is_recruitment ? 'Ã‚Â¡Se buscan refuerzos!' : 'Ã‚Â¿EntrÃƒÂ¡s a jugar?'}
+                        {match.is_recruitment ? '¡Se buscan refuerzos!' : '¿Entrás a jugar?'}
                       </h2>
                       
                       <p className="text-sm font-bold text-foreground/40 leading-relaxed uppercase tracking-tight">
                         {match.is_recruitment 
                           ? `Sumate como uno de los ${match.missing_players} jugadores restantes para completar el partido.`
-                          : 'Unite al banquillo de reserva y esperÃƒÂ¡ que el organizador te asigne a un equipo.'}
+                          : 'Unite al banquillo de reserva y esperá que el organizador te asigne a un equipo.'}
                       </p>
 
                       <div className="flex flex-wrap items-center justify-center sm:justify-start gap-4 pt-2">
@@ -1012,7 +1012,7 @@ function MatchLobbyContent() {
                         </div>
                       </div>
                       
-                      <span className="text-[10px] font-black text-primary uppercase tracking-[0.4em] animate-shimmer opacity-0 group-hover/join:opacity-100 transition-opacity">
+                      <span className="text-[9px] font-black text-primary uppercase tracking-[0.4em] animate-shimmer opacity-0 group-hover/join:opacity-100 transition-opacity">
                         CLICK PARA ENTRAR
                       </span>
                     </button>
@@ -1023,19 +1023,19 @@ function MatchLobbyContent() {
                 </motion.div>
               )}
 
-              {/* Ã¢â€â‚¬Ã¢â€â‚¬ NOT LOGGED IN CTA Ã¢â€â‚¬Ã¢â€â‚¬ */}
+              {/* ── NOT LOGGED IN CTA ── */}
               {!user && !isCompleted && (
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
-                  className="relative overflow-hidden rounded-[2rem] border border-foreground/10 bg-surface-elevated p-8 sm:p-10 flex flex-col sm:flex-row items-center justify-between gap-8"
+                  className="relative overflow-hidden rounded-[2.5rem] border border-foreground/10 bg-surface-elevated p-8 sm:p-10 flex flex-col sm:flex-row items-center justify-between gap-8"
                 >
                   <div className="flex-1 text-center sm:text-left">
                     <h3 className="text-2xl font-black italic uppercase tracking-tighter text-foreground">
-                      Ã‚Â¿QuerÃƒÂ©s sumarte a este partido?
+                      ¿Querés sumarte a este partido?
                     </h3>
                     <p className="text-sm font-bold text-foreground/40 mt-2 uppercase tracking-tight">
-                      IniciÃƒÂ¡ sesiÃƒÂ³n o registrate para poder unirte a las alineaciones y chatear con los pibes.
+                      Iniciá sesión o registrate para poder unirte a las alineaciones y chatear con los pibes.
                     </p>
                   </div>
                   <Link
@@ -1043,7 +1043,7 @@ function MatchLobbyContent() {
                     className="shrink-0 h-14 px-10 bg-primary text-black font-black text-[10px] uppercase tracking-[0.2em] rounded-2xl shadow-xl shadow-primary/20 hover:scale-105 active:scale-95 transition-all flex items-center justify-center gap-3"
                   >
                     <UserPlus className="w-4 h-4" />
-                    Iniciar SesiÃƒÂ³n
+                    Iniciar Sesión
                   </Link>
                 </motion.div>
               )}
@@ -1079,7 +1079,7 @@ function MatchLobbyContent() {
                                      <span className="text-sm font-black italic uppercase text-foreground">{p.profiles?.name}</span>
                                      <div className="flex items-center gap-1.5 mt-0.5">
                                         <div className="w-1.5 h-1.5 rounded-full bg-primary" />
-                                        <span className="text-[10px] font-black text-primary/70 uppercase tracking-widest">REFUERZO CONFIRMADO</span>
+                                        <span className="text-[8px] font-black text-primary/70 uppercase tracking-widest">REFUERZO CONFIRMADO</span>
                                      </div>
                                   </div>
                                </motion.div>
@@ -1092,7 +1092,7 @@ function MatchLobbyContent() {
                                   </div>
                                   <div className="flex flex-col">
                                      <span className="text-xs font-black italic uppercase text-foreground/20 italic tracking-tighter">Buscando Jugador...</span>
-                                     <span className="text-[10px] font-bold text-foreground/10 uppercase tracking-widest">VACANTE DISPONIBLE</span>
+                                     <span className="text-[8px] font-bold text-foreground/10 uppercase tracking-widest">VACANTE DISPONIBLE</span>
                                   </div>
                                </div>
                              ))}
@@ -1116,7 +1116,7 @@ function MatchLobbyContent() {
                           animate={{ opacity: 1, y: 0 }}
                           transition={{ delay: teamIdx * 0.1 }}
                           className={cn(
-                            'relative rounded-[2rem] border-2 p-8 transition-all duration-500 overflow-hidden',
+                            'relative rounded-[2.5rem] border-2 p-8 transition-all duration-500 overflow-hidden',
                             isMine
                               ? `${cfg.borderActive} ${cfg.shadow} bg-surface-elevated`
                               : `${cfg.border} hover:border-foreground/20 bg-foreground/[0.01]`,
@@ -1161,7 +1161,7 @@ function MatchLobbyContent() {
                               )}
                               <p
                                 className={cn(
-                                  'text-[10px] font-black uppercase tracking-widest mt-1',
+                                  'text-[9px] font-black uppercase tracking-widest mt-1',
                                   cfg.text
                                 )}
                               >
@@ -1206,7 +1206,7 @@ function MatchLobbyContent() {
                                 <Loader2 className="w-4 h-4 animate-spin" />
                               ) : isMine ? (
                                 <>
-                                  <Check className="w-4 h-4 text-primary" /> EstÃƒÂ¡s acÃƒÂ¡
+                                  <Check className="w-4 h-4 text-primary" /> Estás acá
                                 </>
                               ) : teamFull ? (
                                 'Equipo lleno'
@@ -1289,7 +1289,7 @@ function MatchLobbyContent() {
               </div>
             </div>
 
-            {/* Ã¢â€â‚¬Ã¢â€â‚¬ RIGHT: SIDEBAR Ã¢â€â‚¬Ã¢â€â‚¬ */}
+            {/* ── RIGHT: SIDEBAR ── */}
             <div className="lg:col-span-4 space-y-6">
               {/* CHAT TOGGLE on mobile */}
               {hasJoined && !isCompleted && (
@@ -1329,14 +1329,14 @@ function MatchLobbyContent() {
                 </div>
               )}
 
-              {/* PAYMENT SECTION Ã¢â‚¬â€ Shown to anyone confirmed, but with special rules for creator */}
+              {/* PAYMENT SECTION — Shown to anyone confirmed, but with special rules for creator */}
               {isConfirmed && match.price > 0 && !isCompleted && !myEntry?.paid && (
                 <motion.div
                   initial={{ opacity: 0, x: 20 }}
                   animate={{ opacity: 1, x: 0 }}
-                  className="p-6 rounded-[2rem] bg-[#009EE3]/5 border border-[#009EE3]/20 space-y-4"
+                  className="p-6 rounded-[2.5rem] bg-[#009EE3]/5 border border-[#009EE3]/20 space-y-4"
                 >
-                  {/* Si es creador Y es partido en establecimiento, no paga extra si ya pagÃƒÂ³ la seÃƒÂ±a */}
+                  {/* Si es creador Y es partido en establecimiento, no paga extra si ya pagó la seña */}
                   {isCreator && (venueHasMP !== null || match.booking) ? (
                     <div className="space-y-4">
                       <div className="flex items-center gap-3 font-kanit">
@@ -1345,18 +1345,18 @@ function MatchLobbyContent() {
                         </div>
                         <div>
                           <h3 className="text-lg font-black italic uppercase tracking-tighter text-foreground leading-none">
-                            SeÃƒÂ±a Abonada
+                            Seña Abonada
                           </h3>
                           <p className="text-[10px] text-primary font-bold uppercase tracking-widest mt-1">
-                            Tu lugar ya estÃƒÂ¡ confirmado
+                            Tu lugar ya está confirmado
                           </p>
                         </div>
                       </div>
                       <p className="text-[10px] text-foreground/40 font-bold uppercase tracking-widest leading-relaxed">
-                        Como creador y pagador de la seÃƒÂ±a ({match.booking?.down_payment_paid > 0 ? `$${match.booking.down_payment_paid.toLocaleString('es-AR')}` : 'pendiente'}), tu lugar se considera confirmado automÃƒÂ¡ticamente.
+                        Como creador y pagador de la seña ({match.booking?.down_payment_paid > 0 ? `$${match.booking.down_payment_paid.toLocaleString('es-AR')}` : 'pendiente'}), tu lugar se considera confirmado automáticamente.
                         {match.booking?.down_payment_paid > (match.booking?.total_price / totalPlayers) && (
                           <span className="text-primary block mt-2">
-                             Pagaste ${match.booking.down_payment_paid - (match.booking.total_price / totalPlayers)} de mÃƒÂ¡s. Este excedente te serÃƒÂ¡ devuelto a medida que otros jugadores abonen su parte.
+                             Pagaste ${match.booking.down_payment_paid - (match.booking.total_price / totalPlayers)} de más. Este excedente te será devuelto a medida que otros jugadores abonen su parte.
                           </span>
                         )}
                       </p>
@@ -1369,15 +1369,15 @@ function MatchLobbyContent() {
                         </div>
                         <div>
                           <h3 className="text-lg font-black italic uppercase tracking-tighter text-foreground leading-none">
-                            Sos el dueÃƒÂ±o
+                            Sos el dueño
                           </h3>
                           <p className="text-[10px] text-primary font-bold uppercase tracking-widest mt-1">
-                            Tu lugar ya estÃƒÂ¡ confirmado
+                            Tu lugar ya está confirmado
                           </p>
                         </div>
                       </div>
                       <p className="text-[10px] text-foreground/40 font-bold uppercase tracking-widest leading-relaxed">
-                        Como sos quien armÃƒÂ³ el partido y recibe el dinero, no hace falta que pagues por Mercado Pago.
+                        Como sos quien armó el partido y recibe el dinero, no hace falta que pagues por Mercado Pago.
                       </p>
                     </div>
                   ) : (
@@ -1388,23 +1388,23 @@ function MatchLobbyContent() {
                       </div>
                       <div>
                         <h3 className="text-lg font-black italic uppercase tracking-tighter text-foreground leading-none">
-                          {match.payment_method === 'cash' ? 'Pago en el predio' : 'ConfirmÃƒÂ¡ tu lugar'}
+                          {match.payment_method === 'cash' ? 'Pago en el predio' : 'Confirmá tu lugar'}
                         </h3>
                         {match.payment_method !== 'cash' && venueHasMP !== false && (
                            <p className="text-[10px] text-[#009EE3] font-bold uppercase tracking-widest mt-1">
-                             Pago seguro vÃƒÂ­a Mercado Pago
+                             Pago seguro vía Mercado Pago
                            </p>
                         )}
                         {match.payment_method === 'cash' && (
                            <p className="text-[10px] text-amber-500 font-bold uppercase tracking-widest mt-1">
-                             AbonÃƒÂ¡s al llegar a la cancha
+                             Abonás al llegar a la cancha
                            </p>
                         )}
                       </div>
                     </div>
                     
-                    {/* BotÃƒÂ³n Mercado Pago: Solo si NO es Efectivo Y (tiene MP o es casual para el creador... wait) */}
-                    {/* En casual (venueHasMP === null), el creador ya retornÃƒÂ³ arriba */}
+                    {/* Botón Mercado Pago: Solo si NO es Efectivo Y (tiene MP o es casual para el creador... wait) */}
+                    {/* En casual (venueHasMP === null), el creador ya retornó arriba */}
                     {match.payment_method !== 'cash' && venueHasMP !== false && (
                       <MercadoPagoButton 
                         matchId={match.id} 
@@ -1419,31 +1419,31 @@ function MatchLobbyContent() {
                           <DollarSign className="w-5 h-5 text-black" />
                         </div>
                         <p className="text-xs font-bold text-amber-500 uppercase tracking-tight leading-snug">
-                          RecordÃƒÂ¡ llevar el dinero en efectivo. El establecimiento te cobrarÃƒÂ¡ antes de jugar.
+                          Recordá llevar el dinero en efectivo. El establecimiento te cobrará antes de jugar.
                         </p>
                       </div>
                     )}
                     
                     {venueAliasCbu && (
                       <div className="mt-4 p-4 rounded-xl bg-foreground/5 border border-foreground/10 text-center">
-                        <p className="text-[10px] text-foreground/40 font-bold uppercase tracking-widest mb-1">PagÃƒÂ¡ transfiriendo manualmente a este Alias/CBU:</p>
+                        <p className="text-[10px] text-foreground/40 font-bold uppercase tracking-widest mb-1">Pagá transfiriendo manualmente a este Alias/CBU:</p>
                         <p className="text-sm font-black italic tracking-tighter text-foreground selectable select-all bg-background border border-border inline-block px-3 py-1.5 rounded-lg mt-2">{venueAliasCbu}</p>
                       </div>
                     )}
                     </>
                   )}
                   
-                  <p className="text-[10px] text-foreground/40 font-bold uppercase tracking-widest text-center mt-4 italic">
+                  <p className="text-[9px] text-foreground/40 font-bold uppercase tracking-widest text-center mt-4 italic">
                     {match.booking?.down_payment_paid > 0 
-                      ? `* El organizador ya abonÃƒÂ³ una seÃƒÂ±a de $${match.booking.down_payment_paid.toLocaleString('es-AR')}. Tu pago completa el total del turno.`
-                      : "* El organizador abona la seÃƒÂ±a para reservar el turno y luego cada jugador completa su parte."}
+                      ? `* El organizador ya abonó una seña de $${match.booking.down_payment_paid.toLocaleString('es-AR')}. Tu pago completa el total del turno.`
+                      : "* El organizador abona la seña para reservar el turno y luego cada jugador completa su parte."}
                   </p>
                   {match.booking?.down_payment_paid > (match.booking?.total_price / totalPlayers) && (
-                    <p className="text-[10px] text-primary font-bold uppercase tracking-widest text-center mt-2">
-                       * Como la seÃƒÂ±a es mayor a una cuota, el excedente se le devuelve al organizador automÃƒÂ¡ticamente.
+                    <p className="text-[9px] text-primary font-bold uppercase tracking-widest text-center mt-2">
+                       * Como la seña es mayor a una cuota, el excedente se le devuelve al organizador automáticamente.
                     </p>
                   )}
-                  <p className="text-[10px] text-foreground/20 font-bold uppercase tracking-widest text-center mt-2">
+                  <p className="text-[9px] text-foreground/20 font-bold uppercase tracking-widest text-center mt-2">
                     * El pago confirma tu asistencia definitiva.
                   </p>
                 </motion.div>
@@ -1488,9 +1488,9 @@ function MatchLobbyContent() {
         )}
       </div>
 
-      {/* Ã¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢Â
+      {/* ═══════════════════════════════════════════════════════════
                 INVITE MODAL
-            Ã¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢Â */}
+            ═══════════════════════════════════════════════════════════ */}
       <AnimatePresence>
         {inviteModalOpen && (
           <div className="fixed inset-0 z-[200] flex items-end sm:items-center justify-center p-0 sm:p-6">
@@ -1505,7 +1505,7 @@ function MatchLobbyContent() {
               initial={{ opacity: 0, y: 40 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: 40 }}
-              className="relative z-10 w-full sm:max-w-md bg-zinc-950 border border-foreground/10 rounded-t-[2.5rem] sm:rounded-[2rem] p-6 overflow-hidden"
+              className="relative z-10 w-full sm:max-w-md bg-zinc-950 border border-foreground/10 rounded-t-[2.5rem] sm:rounded-[2.5rem] p-6 overflow-hidden"
             >
               {/* Ambient */}
               <div className="absolute top-0 right-0 w-40 h-40 bg-primary/5 blur-[60px] rounded-full pointer-events-none" />
@@ -1515,7 +1515,7 @@ function MatchLobbyContent() {
                   <h3 className="text-xl font-black italic uppercase tracking-tighter text-foreground">
                     Invitar Pibes
                   </h3>
-                  <p className="text-[10px] text-foreground/30 font-bold uppercase tracking-widest mt-0.5">
+                  <p className="text-[9px] text-foreground/30 font-bold uppercase tracking-widest mt-0.5">
                     Tus amigos en Pelotify
                   </p>
                 </div>
@@ -1534,7 +1534,7 @@ function MatchLobbyContent() {
               ) : friends.length === 0 ? (
                 <div className="text-center py-16 flex flex-col items-center gap-5">
                   <p className="text-lg font-black italic uppercase tracking-tighter text-foreground/50">
-                    Sin amigos aÃƒÂºn
+                    Sin amigos aún
                   </p>
                   <Link
                     href="/friends"
@@ -1570,13 +1570,13 @@ function MatchLobbyContent() {
                         {isJoined ? (
                           <div className="flex items-center gap-1.5 px-3 py-1.5 bg-primary/10 rounded-xl">
                             <Check className="w-3 h-3 text-primary" />
-                            <span className="text-[10px] font-black text-primary uppercase tracking-widest">
+                            <span className="text-[8px] font-black text-primary uppercase tracking-widest">
                               Jugando
                             </span>
                           </div>
                         ) : isInvited ? (
                           <div className="px-3 py-1.5 bg-foreground/5 rounded-xl">
-                            <span className="text-[10px] font-black text-foreground/30 uppercase tracking-widest">
+                            <span className="text-[8px] font-black text-foreground/30 uppercase tracking-widest">
                               Invitado
                             </span>
                           </div>
@@ -1584,7 +1584,7 @@ function MatchLobbyContent() {
                           <button
                             onClick={() => handleInviteFriend(otherUserId)}
                             disabled={invitingId === otherUserId}
-                            className="h-9 px-5 bg-primary text-black font-black text-[10px] uppercase tracking-widest rounded-xl hover:scale-105 active:scale-95 transition-all shadow-md shadow-primary/20"
+                            className="h-9 px-5 bg-primary text-black font-black text-[9px] uppercase tracking-widest rounded-xl hover:scale-105 active:scale-95 transition-all shadow-md shadow-primary/20"
                           >
                             {invitingId === otherUserId ? (
                               <Loader2 className="w-3.5 h-3.5 animate-spin" />
@@ -1603,9 +1603,9 @@ function MatchLobbyContent() {
         )}
       </AnimatePresence>
 
-      {/* Ã¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢Â
+      {/* ═══════════════════════════════════════════════════════════
                  TACTICAL BOARD MODAL
-            Ã¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢Â */}
+            ═══════════════════════════════════════════════════════════ */}
       <AnimatePresence>
         {isTacticalModalOpen && (
           <div className="fixed inset-0 z-[300] flex items-center justify-center p-0 lg:p-12 overflow-hidden">
@@ -1620,7 +1620,7 @@ function MatchLobbyContent() {
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.95 }}
-              className="relative z-10 w-full h-full lg:max-w-7xl lg:max-h-[90vh] bg-[#050508] border-y lg:border border-white/5 lg:rounded-[2rem] flex flex-col shadow-2xl"
+              className="relative z-10 w-full h-full lg:max-w-7xl lg:max-h-[90vh] bg-[#050508] border-y lg:border border-white/5 lg:rounded-[3rem] flex flex-col shadow-2xl"
             >
               <div className="p-6 lg:p-8 flex items-center justify-between border-b border-white/5">
                 <div className="flex items-center gap-4">
@@ -1628,8 +1628,8 @@ function MatchLobbyContent() {
                     <Shield className="w-6 h-6 text-primary" />
                   </div>
                   <div>
-                    <h2 className="text-2xl font-black italic uppercase tracking-tighter text-white">Pizarra TÃƒÂ¡ctica</h2>
-                    <p className="text-[10px] text-white/30 font-bold uppercase tracking-widest">GestiÃƒÂ³n de Equipos</p>
+                    <h2 className="text-2xl font-black italic uppercase tracking-tighter text-white">Pizarra Táctica</h2>
+                    <p className="text-[10px] text-white/30 font-bold uppercase tracking-widest">Gestión de Equipos</p>
                   </div>
                 </div>
                 <div className="flex items-center gap-3">
@@ -1669,7 +1669,7 @@ function MatchLobbyContent() {
                        {teamA.map((p: any) => (
                          <TacticalPlayerCard key={p.id} participant={p} onMove={handleMovePlayer} current="A" onKick={p.user_id !== user?.id ? () => setPlayerToKick(p) : undefined} />
                        ))}
-                       {teamA.length === 0 && <div className="py-12 text-center text-[10px] font-bold text-white/10 uppercase italic">VacÃƒÂ­o</div>}
+                       {teamA.length === 0 && <div className="py-12 text-center text-[10px] font-bold text-white/10 uppercase italic">Vacío</div>}
                     </div>
                   </div>
 
@@ -1699,7 +1699,7 @@ function MatchLobbyContent() {
                        {teamB.map((p: any) => (
                          <TacticalPlayerCard key={p.id} participant={p} onMove={handleMovePlayer} current="B" onKick={p.user_id !== user?.id ? () => setPlayerToKick(p) : undefined} />
                        ))}
-                       {teamB.length === 0 && <div className="py-12 text-center text-[10px] font-bold text-white/10 uppercase italic">VacÃƒÂ­o</div>}
+                       {teamB.length === 0 && <div className="py-12 text-center text-[10px] font-bold text-white/10 uppercase italic">Vacío</div>}
                     </div>
                   </div>
                 </div>
@@ -1724,9 +1724,9 @@ function MatchLobbyContent() {
         )}
       </AnimatePresence>
 
-      {/* Ã¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢Â
+      {/* ═══════════════════════════════════════════════════════════
                  PLAYER ACTION MODAL (KICK)
-            Ã¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢Â */}
+            ═══════════════════════════════════════════════════════════ */}
       <AnimatePresence>
         {playerToKick && (
           <div className="fixed inset-0 z-[400] flex items-end sm:items-center justify-center p-0 sm:p-6">
@@ -1741,7 +1741,7 @@ function MatchLobbyContent() {
               initial={{ opacity: 0, y: '100%' }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: '100%' }}
-              className="relative z-10 w-full sm:max-w-sm bg-zinc-950 border border-foreground/10 rounded-t-[2.5rem] sm:rounded-[2rem] p-6 overflow-hidden flex flex-col items-center text-center shadow-2xl"
+              className="relative z-10 w-full sm:max-w-sm bg-zinc-950 border border-foreground/10 rounded-t-[2.5rem] sm:rounded-[2.5rem] p-6 overflow-hidden flex flex-col items-center text-center shadow-2xl"
             >
               <div className="w-16 h-16 rounded-2xl bg-red-500/10 border border-red-500/20 flex items-center justify-center mb-4">
                 <UserMinus className="w-8 h-8 text-red-500" />
@@ -1750,7 +1750,7 @@ function MatchLobbyContent() {
                 Echar a {playerToKick.profiles?.name?.split(' ')[0] || 'Jugador'}
               </h3>
               <p className="text-[10px] font-bold text-foreground/40 uppercase tracking-widest mb-6">
-                Ã‚Â¿EstÃƒÂ¡s seguro que querÃƒÂ©s sacar a este jugador del partido?
+                ¿Estás seguro que querés sacar a este jugador del partido?
               </p>
 
               <div className="flex w-full gap-3">

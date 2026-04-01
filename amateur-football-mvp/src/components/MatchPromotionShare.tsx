@@ -54,8 +54,8 @@ export function MatchPromotionShare({ match, teamALogo, teamBLogo, className }: 
             try {
               await navigator.share({
                 files: [file],
-                title: `Â¡Se viene un partidazo! ${teamAName} vs ${teamBName}`,
-                text: 'DescargÃ¡ Pelotify y sumate al partido âš½ðŸ”¥',
+                title: `¡Se viene un partidazo! ${teamAName} vs ${teamBName}`,
+                text: 'Descargá Pelotify y sumate al partido ⚽🔥',
               });
             } catch (e) {
               console.log('Web share cancelled or failed', e);
@@ -80,8 +80,8 @@ export function MatchPromotionShare({ match, teamALogo, teamBLogo, className }: 
             });
 
             await Share.share({
-              title: `Â¡Se viene un partidazo! ${teamAName} vs ${teamBName}`,
-              text: 'DescargÃ¡ Pelotify y sumate al partido âš½ðŸ”¥',
+              title: `¡Se viene un partidazo! ${teamAName} vs ${teamBName}`,
+              text: 'Descargá Pelotify y sumate al partido ⚽🔥',
               url: result.uri,
             });
           } catch (shareErr) {
@@ -95,7 +95,7 @@ export function MatchPromotionShare({ match, teamALogo, teamBLogo, className }: 
       };
     } catch (err: any) {
       console.error('Sharing error:', err);
-      alert(`Error generando poster: ${err.message || 'Error tÃ©cnico'}`);
+      alert(`Error generando poster: ${err.message || 'Error técnico'}`);
     } finally {
       setIsGenerating(false);
     }
@@ -116,7 +116,7 @@ export function MatchPromotionShare({ match, teamALogo, teamBLogo, className }: 
         ) : (
           <Instagram className="w-3.5 h-3.5 text-white" />
         )}
-        <span className="font-black text-[10px] uppercase tracking-[0.2em] italic">
+        <span className="font-black text-[9px] uppercase tracking-[0.2em] italic">
           Hypear
         </span>
       </button>

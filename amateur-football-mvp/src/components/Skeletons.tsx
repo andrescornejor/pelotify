@@ -37,7 +37,7 @@ export function ProfileSkeleton() {
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 relative z-10">
         {/* Left Col (Card) */}
         <div className="lg:col-span-4 flex flex-col items-center">
-          <SkeletonPremium className="w-full max-w-[340px] aspect-[2/3] rounded-[2rem] shadow-2xl" />
+          <SkeletonPremium className="w-full max-w-[340px] aspect-[2/3] rounded-[3rem] shadow-2xl" />
           <SkeletonPremium className="w-48 h-12 mt-8 rounded-full" />
         </div>
 
@@ -98,7 +98,7 @@ export function MatchSkeleton() {
         <div className="lg:col-span-8 space-y-12">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12">
             {/* Team A */}
-            <div className="glass-premium rounded-[2rem] p-8 border-2 border-foreground/5 space-y-10">
+            <div className="glass-premium rounded-[3rem] p-8 border-2 border-foreground/5 space-y-10">
               <SkeletonPremium className="w-full h-16 rounded-2xl" />
               <SkeletonPremium className="w-full h-16 rounded-2xl" />
               <div className="grid grid-cols-4 lg:grid-cols-5 gap-6 gap-y-10 mt-8">
@@ -108,7 +108,7 @@ export function MatchSkeleton() {
               </div>
             </div>
             {/* Team B */}
-            <div className="glass-premium rounded-[2rem] p-8 border-2 border-foreground/5 space-y-10">
+            <div className="glass-premium rounded-[3rem] p-8 border-2 border-foreground/5 space-y-10">
               <SkeletonPremium className="w-full h-16 rounded-2xl" />
               <SkeletonPremium className="w-full h-16 rounded-2xl" />
               <div className="grid grid-cols-4 lg:grid-cols-5 gap-6 gap-y-10 mt-8">
@@ -122,8 +122,8 @@ export function MatchSkeleton() {
 
         {/* Sidebar */}
         <div className="lg:col-span-4 space-y-8">
-          <SkeletonPremium className="w-full h-64 rounded-[2rem]" />
-          <SkeletonPremium className="w-full h-40 rounded-[2rem]" />
+          <SkeletonPremium className="w-full h-64 rounded-[3.5rem]" />
+          <SkeletonPremium className="w-full h-40 rounded-[3rem]" />
         </div>
       </div>
     </div>
@@ -136,7 +136,7 @@ export function GridListSkeleton({ count = 8 }: { count?: number }) {
       {[...Array(count)].map((_, i) => (
         <div
           key={i}
-          className="glass-premium p-6 rounded-[2rem] flex items-center justify-between gap-4 border border-foreground/5 bg-surface relative overflow-hidden"
+          className="glass-premium p-6 rounded-[2.5rem] flex items-center justify-between gap-4 border border-foreground/5 bg-surface relative overflow-hidden"
         >
           <div className="flex-1 flex items-center gap-4 w-full">
             <SkeletonPremium className="w-16 h-16 rounded-2xl shrink-0" />
@@ -161,7 +161,7 @@ export function SocialHubSkeleton() {
         <SkeletonPremium className="w-72 h-4 rounded-full mt-4" />
       </div>
       <div className="relative z-20 px-4 w-full max-w-4xl mx-auto flex justify-center">
-        <SkeletonPremium className="w-full h-16 rounded-[2rem]" />
+        <SkeletonPremium className="w-full h-16 rounded-[2.5rem]" />
       </div>
       <GridListSkeleton count={8} />
     </div>
@@ -179,7 +179,7 @@ export function TeamsSkeleton() {
       </div>
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 relative z-20">
         <div className="lg:col-span-3 space-y-4">
-          <SkeletonPremium className="w-full h-64 rounded-[2rem]" />
+          <SkeletonPremium className="w-full h-64 rounded-[3.5rem]" />
         </div>
         <div className="lg:col-span-9 space-y-12">
           <GridListSkeleton count={8} />

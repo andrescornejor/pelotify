@@ -60,7 +60,7 @@ export function BottomNav() {
     <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 w-[94%] max-w-[440px] lg:hidden">
       <nav
         className={cn(
-          'relative overflow-hidden rounded-[2rem] transition-all duration-500',
+          'relative overflow-hidden rounded-[2.5rem] transition-all duration-500',
           performanceMode
             ? 'bg-surface border border-border shadow-lg'
             : 'glass-premium bg-background/40 backdrop-blur-3xl border-white/10 shadow-[0_25px_60px_rgba(0,0,0,0.5),inset_0_1px_1px_rgba(255,255,255,0.1)]'
@@ -155,7 +155,7 @@ export function BottomNav() {
 
                 <span
                   className={cn(
-                    'text-[10px] font-black uppercase tracking-[0.2em] mt-2 transition-all duration-500',
+                    'text-[9px] font-black uppercase tracking-[0.2em] mt-2 transition-all duration-500',
                     isActive ? 'text-primary italic scale-105' : 'text-foreground/25 group-hover:text-foreground/45'
                   )}
                 >

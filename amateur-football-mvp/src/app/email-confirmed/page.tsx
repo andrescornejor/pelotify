@@ -12,7 +12,7 @@ export default function EmailConfirmedPage() {
           initial={{ opacity: 0, y: 20, scale: 0.95 }}
           animate={{ opacity: 1, y: 0, scale: 1 }}
           transition={{ duration: 0.5, ease: 'easeOut' }}
-          className="w-full max-w-md flex flex-col items-center justify-center text-center space-y-8 glass-premium p-10 rounded-[2rem] border border-white/10 shadow-[0_50px_100px_rgba(0,0,0,0.5)] relative overflow-hidden"
+          className="w-full max-w-md flex flex-col items-center justify-center text-center space-y-8 glass-premium p-10 rounded-[2.5rem] border border-white/10 shadow-[0_50px_100px_rgba(0,0,0,0.5)] relative overflow-hidden"
         >
           {/* Background Highlight */}
           <div className="absolute top-0 right-0 w-32 h-32 bg-primary/10 blur-[50px] -mr-16 -mt-16 rounded-full pointer-events-none" />
@@ -31,7 +31,7 @@ export default function EmailConfirmedPage() {
               EMAIL <br /> <span className="text-primary">CONFIRMADO</span>
             </h1>
             <p className="text-sm font-bold text-foreground/60 uppercase tracking-widest max-w-xs mx-auto leading-relaxed">
-              Ya estÃ¡s listo para salir a la cancha.
+              Ya estás listo para salir a la cancha.
             </p>
           </div>
 
@@ -47,7 +47,7 @@ export default function EmailConfirmedPage() {
         </motion.div>
       </div>
 
-      {/* â”€â”€ BACKGROUND â”€â”€ */}
+      {/* ── BACKGROUND ── */}
       <div className="absolute inset-0 z-0 pointer-events-none">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.03)_1px,transparent_1px)] bg-[size:24px_24px] opacity-20" />
       </div>

@@ -36,8 +36,8 @@ export const HomePageSkeleton = () => (
 
     <div className="max-w-full mx-auto px-4 sm:px-6 lg:px-10 xl:px-16 py-4 lg:py-8 space-y-8 lg:space-y-12">
       
-      {/* â”€â”€â”€ HERO SECTION â”€â”€â”€ */}
-      <div className="relative overflow-hidden rounded-[2rem] lg:rounded-[2rem] shadow-2xl border border-foreground/[0.06]">
+      {/* ─── HERO SECTION ─── */}
+      <div className="relative overflow-hidden rounded-[2.5rem] lg:rounded-[3rem] shadow-2xl border border-foreground/[0.06]">
         {/* Background placeholder */}
         <div className="absolute inset-0 bg-gradient-to-br from-foreground/[0.02] to-transparent" />
         
@@ -77,7 +77,7 @@ export const HomePageSkeleton = () => (
           {/* Right: Rank card + CTAs */}
           <div className="lg:shrink-0 w-full lg:w-[400px] space-y-4">
             {/* Rank progress card */}
-            <div className="rounded-[2rem] border border-foreground/[0.04] p-6 space-y-6 bg-foreground/[0.01]">
+            <div className="rounded-[2.5rem] border border-foreground/[0.04] p-6 space-y-6 bg-foreground/[0.01]">
               <div className="flex items-center gap-6">
                 <Bone className="w-24 h-24 rounded-2xl" />
                 <div className="flex-1 space-y-3">
@@ -110,16 +110,16 @@ export const HomePageSkeleton = () => (
         </div>
       </div>
 
-      {/* â”€â”€â”€ MAIN GRID â”€â”€â”€ */}
+      {/* ─── MAIN GRID ─── */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
         
-        {/* â”€â”€â”€ LEFT COLUMN â”€â”€â”€ */}
+        {/* ─── LEFT COLUMN ─── */}
         <div className="lg:col-span-8 xl:col-span-8 space-y-6">
           
           {/* StatCards Grid */}
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
             {[...Array(4)].map((_, i) => (
-              <div key={i} className="rounded-[2rem] border border-foreground/[0.04] p-6 space-y-4 bg-foreground/[0.01]">
+              <div key={i} className="rounded-[2.5rem] border border-foreground/[0.04] p-6 space-y-4 bg-foreground/[0.01]">
                 <Bone className="w-12 h-12 rounded-2xl" />
                 <div className="space-y-2">
                   <Bone className="w-16 h-2 rounded-full" />
@@ -137,7 +137,7 @@ export const HomePageSkeleton = () => (
           </div>
 
           {/* Community Banner */}
-          <div className="rounded-[2rem] border border-foreground/[0.04] p-6 bg-foreground/[0.01] flex flex-col sm:flex-row items-center justify-between gap-6">
+          <div className="rounded-[2.5rem] border border-foreground/[0.04] p-6 bg-foreground/[0.01] flex flex-col sm:flex-row items-center justify-between gap-6">
             <div className="flex items-center gap-5">
               <Bone className="w-14 h-14 rounded-2xl" />
               <div className="space-y-2">
@@ -166,7 +166,7 @@ export const HomePageSkeleton = () => (
                 <Bone className="w-48 h-3 rounded-full" />
               </div>
             </div>
-            <div className="rounded-[2rem] border border-foreground/[0.04] p-8 bg-foreground/[0.01] space-y-8">
+            <div className="rounded-[2.5rem] border border-foreground/[0.04] p-8 bg-foreground/[0.01] space-y-8">
               {/* Rank progress line */}
               <div className="flex items-center justify-between px-4 sm:px-10">
                 {[...Array(9)].map((_, i) => (
@@ -228,8 +228,8 @@ export const HomePageSkeleton = () => (
               <Bone className="w-24 h-8 rounded-2xl" />
             </div>
             {[...Array(2)].map((_, i) => (
-              <div key={i} className="rounded-[2rem] border border-foreground/[0.04] p-7 bg-foreground/[0.01] flex items-center gap-8">
-                <Bone className="w-24 h-24 rounded-[2rem] shrink-0" />
+              <div key={i} className="rounded-[3rem] border border-foreground/[0.04] p-7 bg-foreground/[0.01] flex items-center gap-8">
+                <Bone className="w-24 h-24 rounded-[3rem] shrink-0" />
                 <div className="flex-1 space-y-3">
                   <Bone className="w-40 h-8 rounded-lg" />
                   <div className="flex gap-3">
@@ -244,10 +244,10 @@ export const HomePageSkeleton = () => (
           </div>
         </div>
 
-        {/* â”€â”€â”€ RIGHT COLUMN (SIDEBAR) â”€â”€â”€ */}
+        {/* ─── RIGHT COLUMN (SIDEBAR) ─── */}
         <div className="lg:col-span-4 xl:col-span-4 space-y-6">
           {/* Next Match Card */}
-          <div className="rounded-[2rem] border border-foreground/[0.04] bg-foreground/[0.01] overflow-hidden">
+          <div className="rounded-[3rem] border border-foreground/[0.04] bg-foreground/[0.01] overflow-hidden">
             <div className="p-8 space-y-8">
               {/* Header */}
               <div className="flex items-center justify-between">
@@ -261,7 +261,7 @@ export const HomePageSkeleton = () => (
               {/* Matchup */}
               <div className="flex items-center justify-between px-4 gap-4">
                 <div className="flex flex-col items-center gap-4 flex-1">
-                  <Bone className="w-20 h-20 rounded-[2rem]" />
+                  <Bone className="w-20 h-20 rounded-[2.5rem]" />
                   <div className="space-y-1 flex flex-col items-center">
                     <Bone className="w-16 h-4 rounded-lg" />
                     <Bone className="w-12 h-2 rounded-full" />
@@ -269,7 +269,7 @@ export const HomePageSkeleton = () => (
                 </div>
                 <Bone className="w-14 h-14 rounded-full shrink-0" />
                 <div className="flex flex-col items-center gap-4 flex-1">
-                  <Bone className="w-20 h-20 rounded-[2rem]" />
+                  <Bone className="w-20 h-20 rounded-[2.5rem]" />
                   <div className="space-y-1 flex flex-col items-center">
                     <Bone className="w-16 h-4 rounded-lg" />
                     <Bone className="w-12 h-2 rounded-full" />
@@ -301,7 +301,7 @@ export const HomePageSkeleton = () => (
           </div>
 
           {/* Quick Links */}
-          <div className="rounded-[2rem] border border-foreground/[0.04] bg-foreground/[0.01] p-6 space-y-4">
+          <div className="rounded-[2.5rem] border border-foreground/[0.04] bg-foreground/[0.01] p-6 space-y-4">
             <Bone className="w-24 h-3 rounded-full" />
             <div className="space-y-2">
               {[...Array(4)].map((_, i) => (

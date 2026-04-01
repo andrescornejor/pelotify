@@ -143,12 +143,12 @@ export default function TeamsPage() {
         parseInt(challengePrice),
         challengeVenues
       );
-      alert('Ã‚Â¡DesafÃƒÂ­o enviado con ÃƒÂ©xito!');
+      alert('¡Desafío enviado con éxito!');
       setChallengeModalOpen(false);
       setTargetTeam(null);
     } catch (err: any) {
       console.error(err);
-      alert('Error al enviar el desafÃƒÂ­o: ' + err.message);
+      alert('Error al enviar el desafío: ' + err.message);
     } finally {
       setIsSendingChallenge(false);
     }
@@ -179,10 +179,10 @@ export default function TeamsPage() {
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 relative z-10 max-w-screen-2xl mx-auto">
           <div className="flex flex-col">
             <h1 className="text-4xl md:text-5xl font-black italic text-foreground uppercase tracking-tighter leading-none">
-              AsociaciÃƒÂ³n <span className="text-foreground/40">de Clubes</span>
+              Asociación <span className="text-foreground/40">de Clubes</span>
             </h1>
             <p className="text-[10px] font-black uppercase tracking-[0.3em] text-primary mt-2">
-              GestionÃƒÂ¡, ExplorÃƒÂ¡, DesafiÃƒÂ¡
+              Gestioná, Explorá, Desafiá
             </p>
           </div>
 
@@ -207,7 +207,7 @@ export default function TeamsPage() {
         </div>
       </div>
       <div className="space-y-12">
-        {/* Mi InstituciÃƒÂ³n Quick Access */}
+        {/* Mi Institución Quick Access */}
         <AnimatePresence>
           {myTeam && (
             <motion.div
@@ -216,10 +216,10 @@ export default function TeamsPage() {
               exit={{ opacity: 0, height: 0, marginBottom: 0 }}
               className="relative group overflow-hidden"
             >
-              <div className="absolute inset-0 bg-gradient-to-r from-primary/20 via-primary/5 to-transparent rounded-[2rem] blur-xl opacity-50 group-hover:opacity-100 transition-opacity" />
+              <div className="absolute inset-0 bg-gradient-to-r from-primary/20 via-primary/5 to-transparent rounded-[2.5rem] blur-xl opacity-50 group-hover:opacity-100 transition-opacity" />
               <Link
                 href={`/team?id=${myTeam.id}`}
-                className="relative flex items-center justify-between p-6 bg-surface border border-primary/20 rounded-[2rem] hover:border-primary/50 transition-all shadow-xl shadow-primary/5 group/link overflow-hidden"
+                className="relative flex items-center justify-between p-6 bg-surface border border-primary/20 rounded-[2.5rem] hover:border-primary/50 transition-all shadow-xl shadow-primary/5 group/link overflow-hidden"
               >
                 <div className="absolute inset-y-0 right-0 w-64 bg-gradient-to-l from-primary/5 to-transparent pointer-events-none" />
 
@@ -288,7 +288,7 @@ export default function TeamsPage() {
             <Search className="absolute left-6 top-1/2 -translate-y-1/2 w-5 h-5 text-foreground/50 group-focus-within:text-primary transition-colors" />
             <input
               type="text"
-              placeholder="BUSCÃƒÂ TU PRÃƒâ€œXIMO RIVAL..."
+              placeholder="BUSCÁ TU PRÓXIMO RIVAL..."
               className="w-full h-16 bg-foreground/[0.02] border border-foreground/5 rounded-[2rem] pl-14 pr-6 text-[11px] font-black uppercase tracking-[0.3em] text-foreground outline-none focus:border-primary/40 focus:bg-foreground/[0.04] transition-all shadow-inner"
             />
           </div>
@@ -301,9 +301,9 @@ export default function TeamsPage() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {teams.map((team) => (
             <motion.div key={team.id} whileHover={{ y: -5 }} className="group relative">
-              <div className="absolute inset-0 bg-gradient-to-b from-primary/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity rounded-[2rem] blur-xl" />
+              <div className="absolute inset-0 bg-gradient-to-b from-primary/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity rounded-[3rem] blur-xl" />
 
-              <div className="glass-premium p-8 border border-foreground/5 space-y-8 relative overflow-hidden group-hover:border-primary/30 transition-all rounded-[2rem] bg-surface">
+              <div className="glass-premium p-8 border border-foreground/5 space-y-8 relative overflow-hidden group-hover:border-primary/30 transition-all rounded-[3rem] bg-surface">
                 <div className="flex justify-between items-start">
                   <div className="w-20 h-20 bg-surface-elevated rounded-[1.5rem] border border-foreground/5 flex items-center justify-center overflow-hidden group-hover:scale-110 shadow-2xl transition-transform duration-700 relative">
                     <div className="absolute inset-0 bg-gradient-to-tr from-foreground/10 to-transparent z-10" />
@@ -336,7 +336,7 @@ export default function TeamsPage() {
                     <span className="text-xl font-black text-primary italic uppercase tracking-tighter leading-none">
                       {team.elo}
                     </span>
-                    <span className="text-[10px] font-black text-foreground/60 uppercase tracking-widest mt-0.5">
+                    <span className="text-[8px] font-black text-foreground/60 uppercase tracking-widest mt-0.5">
                       NIVEL
                     </span>
                   </div>
@@ -346,7 +346,7 @@ export default function TeamsPage() {
                   <h3 className="text-2xl font-black italic text-foreground uppercase tracking-tighter truncate leading-none">
                     {team.name}
                   </h3>
-                  <div className="flex items-center gap-3 text-[10px] font-black text-foreground/50 uppercase tracking-widest py-1">
+                  <div className="flex items-center gap-3 text-[9px] font-black text-foreground/50 uppercase tracking-widest py-1">
                     <span className="flex items-center gap-1">
                       <Users className="w-3 h-3 text-foreground" /> {team.members_count}/
                     </span>
@@ -381,7 +381,7 @@ export default function TeamsPage() {
 
         {teams.length === 0 && (
           <div className="flex flex-col items-center justify-center py-24 text-center gap-6">
-            <div className="w-24 h-24 bg-foreground/[0.02] rounded-[2rem] flex items-center justify-center border border-dashed border-foreground/10">
+            <div className="w-24 h-24 bg-foreground/[0.02] rounded-[3rem] flex items-center justify-center border border-dashed border-foreground/10">
               <Search className="w-8 h-8 text-foreground/50" />
             </div>
             <div className="space-y-2">
@@ -389,7 +389,7 @@ export default function TeamsPage() {
                 Sin Oponentes en la Mira
               </p>
               <p className="text-[10px] text-foreground/60 font-bold uppercase tracking-[0.2em] max-w-xs mx-auto">
-                El ecosistema estÃƒÂ¡ vacÃƒÂ­o. SÃƒÂ© el pionero fundando tu club.
+                El ecosistema está vacío. Sé el pionero fundando tu club.
               </p>
             </div>
             {!myTeam && (
@@ -404,7 +404,7 @@ export default function TeamsPage() {
         )}
       </div>
 
-      {/* Ã¢â€â‚¬Ã¢â€â‚¬ CHALLENGE MODAL Ã¢â€â‚¬Ã¢â€â‚¬ */}
+      {/* ── CHALLENGE MODAL ── */}
       <AnimatePresence>
         {challengeModalOpen && targetTeam && (
           <div className="fixed inset-0 z-[200] flex items-center justify-center p-6">
@@ -419,7 +419,7 @@ export default function TeamsPage() {
               initial={{ opacity: 0, scale: 0.95, y: 30 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 30 }}
-              className="w-full max-w-xl glass-premium border border-foreground/10 rounded-[2rem] p-8 md:p-12 shadow-2xl relative z-10 overflow-hidden bg-surface"
+              className="w-full max-w-xl glass-premium border border-foreground/10 rounded-[3rem] p-8 md:p-12 shadow-2xl relative z-10 overflow-hidden bg-surface"
             >
               {/* Decorative Background Glows */}
               <div className="absolute top-0 right-0 w-64 h-64 bg-accent/10 rounded-full blur-[80px] pointer-events-none" />
@@ -450,7 +450,7 @@ export default function TeamsPage() {
               <form onSubmit={handleSendChallenge} className="space-y-6 relative z-10">
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <label className="text-[10px] font-black text-foreground/50 uppercase tracking-[0.2em] flex items-center gap-2 pl-2">
+                    <label className="text-[9px] font-black text-foreground/50 uppercase tracking-[0.2em] flex items-center gap-2 pl-2">
                       <CalendarDays className="w-3 h-3 text-primary" /> Fecha
                     </label>
                     <div className="flex gap-2 overflow-x-auto no-scrollbar pb-2 scroll-smooth">
@@ -479,7 +479,7 @@ export default function TeamsPage() {
                             <span className="text-lg font-black italic leading-none">
                               {dayNumber}
                             </span>
-                            <span className="text-[10px] font-black uppercase tracking-widest">
+                            <span className="text-[7px] font-black uppercase tracking-widest">
                               {dayName}
                             </span>
                           </button>
@@ -505,7 +505,7 @@ export default function TeamsPage() {
                           }`}
                         >
                           <CalendarDays className="w-4 h-4" />
-                          <span className="text-[10px] font-black uppercase tracking-widest">
+                          <span className="text-[7px] font-black uppercase tracking-widest">
                             OTRO
                           </span>
                         </div>
@@ -513,7 +513,7 @@ export default function TeamsPage() {
                     </div>
                   </div>
                   <div className="space-y-2">
-                    <label className="text-[10px] font-black text-foreground/50 uppercase tracking-[0.2em] flex items-center gap-2 pl-2">
+                    <label className="text-[9px] font-black text-foreground/50 uppercase tracking-[0.2em] flex items-center gap-2 pl-2">
                       <Clock className="w-3 h-3 text-primary" /> Hora
                     </label>
                     <div className="relative group">
@@ -524,7 +524,7 @@ export default function TeamsPage() {
                         className="w-full h-14 bg-foreground/[0.02] border border-foreground/5 rounded-2xl px-4 text-xs font-bold uppercase text-foreground outline-none focus:border-primary/50 transition-colors appearance-none cursor-pointer"
                       >
                         <option value="" disabled className="bg-background">
-                          Ã‚Â¿A quÃƒÂ© hora?
+                          ¿A qué hora?
                         </option>
                         {AVAILABLE_TIMES.map((t) => {
                           const [h, m] = t.split(':');
@@ -560,7 +560,7 @@ export default function TeamsPage() {
 
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <label className="text-[10px] font-black text-foreground/50 uppercase tracking-[0.2em] flex items-center gap-2 pl-2">
+                    <label className="text-[9px] font-black text-foreground/50 uppercase tracking-[0.2em] flex items-center gap-2 pl-2">
                       <DollarSign className="w-3 h-3 text-primary" /> Pesos (x Jugador)
                     </label>
                     <input
@@ -572,8 +572,8 @@ export default function TeamsPage() {
                     />
                   </div>
                   <div className="space-y-2">
-                    <label className="text-[10px] font-black text-foreground/50 uppercase tracking-[0.2em] flex items-center gap-2 pl-2">
-                      <MapPin className="w-3 h-3 text-primary" /> Predio especÃƒÂ­fico
+                    <label className="text-[9px] font-black text-foreground/50 uppercase tracking-[0.2em] flex items-center gap-2 pl-2">
+                      <MapPin className="w-3 h-3 text-primary" /> Predio específico
                     </label>
                     <input
                       type="text"
@@ -589,9 +589,9 @@ export default function TeamsPage() {
                 </div>
 
                 <div className="space-y-3">
-                  <label className="text-[10px] font-black text-foreground/50 uppercase tracking-[0.2em] flex items-center gap-2 pl-2">
+                  <label className="text-[9px] font-black text-foreground/50 uppercase tracking-[0.2em] flex items-center gap-2 pl-2">
                     <Swords className="w-3 h-3 text-primary" /> O proponer candidatos para votar
-                    (mÃƒÂ¡x 3)
+                    (máx 3)
                   </label>
                   <div className="grid grid-cols-2 gap-2 max-h-[150px] overflow-y-auto no-scrollbar p-1">
                     {ROSARIO_VENUES.map((v) => (
@@ -621,7 +621,7 @@ export default function TeamsPage() {
                 </div>
 
                 <div className="space-y-2">
-                  <label className="text-[10px] font-black text-foreground/50 uppercase tracking-[0.2em] pl-2">
+                  <label className="text-[9px] font-black text-foreground/50 uppercase tracking-[0.2em] pl-2">
                     Mensajito para el rival (Opcional)
                   </label>
                   <textarea
@@ -644,7 +644,7 @@ export default function TeamsPage() {
                       </>
                     ) : (
                       <>
-                        <Swords className="w-5 h-5" /> ENVIAR DESAFÃƒÂO OFICIAL
+                        <Swords className="w-5 h-5" /> ENVIAR DESAFÍO OFICIAL
                       </>
                     )}
                   </button>

@@ -24,7 +24,7 @@ export const StatCard = ({ stat, i, performanceMode, fadeUp }: StatCardProps) =>
     custom={i}
     whileHover={performanceMode ? {} : { y: -8, scale: 1.02, rotate: 1 }}
     className={cn(
-      'group relative overflow-hidden p-6 rounded-[2rem] glass-premium transition-all duration-500 border-white/5 shadow-2xl',
+      'group relative overflow-hidden p-6 rounded-[2.5rem] glass-premium transition-all duration-500 border-white/5 shadow-2xl',
       performanceMode && 'bg-surface shadow-none'
     )}
   >
@@ -54,7 +54,7 @@ export const StatCard = ({ stat, i, performanceMode, fadeUp }: StatCardProps) =>
           {!performanceMode && (
             <div className="mb-1 flex items-center gap-0.5 text-primary opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all duration-500">
                <TrendingUp className="w-3 h-3" />
-               <span className="text-[10px] font-bold">+4%</span>
+               <span className="text-[8px] font-bold">+4%</span>
             </div>
           )}
         </div>

@@ -36,7 +36,7 @@ export default function RegisterPage() {
     e.preventDefault();
 
     if (formData.password !== formData.confirmPassword) {
-      alert('Ã¢Å¡Â Ã¯Â¸Â Las contraseÃƒÂ±as no coinciden. RevisÃƒÂ¡ la tÃƒÂ¡ctica y probÃƒÂ¡ de nuevo.');
+      alert('⚠️ Las contraseñas no coinciden. Revisá la táctica y probá de nuevo.');
       return;
     }
 
@@ -75,7 +75,7 @@ export default function RegisterPage() {
           animate={{ opacity: 1, scale: 1 }}
           className="w-full max-w-[450px] relative z-10"
         >
-          <div className="glass-premium rounded-[2rem] p-12 border border-primary/30 text-center space-y-8 shadow-[0_50px_100px_rgba(0,0,0,0.5)]">
+          <div className="glass-premium rounded-[3.5rem] p-12 border border-primary/30 text-center space-y-8 shadow-[0_50px_100px_rgba(0,0,0,0.5)]">
             <div className="relative mx-auto w-24 h-24">
               <div className="absolute inset-0 bg-primary/20 blur-2xl rounded-full animate-pulse" />
               <div className="relative w-24 h-24 rounded-[2rem] bg-primary/10 border-2 border-primary/30 flex items-center justify-center">
@@ -88,21 +88,21 @@ export default function RegisterPage() {
 
             <div className="space-y-3">
               <h1 className="text-3xl font-black italic text-white uppercase tracking-tighter">
-                Ã‚Â¡Ficha Enviada!
+                ¡Ficha Enviada!
               </h1>
               <p className="text-zinc-400 text-sm leading-relaxed font-medium">
-                Te mandamos un link de confirmaciÃƒÂ³n a <br />
+                Te mandamos un link de confirmación a <br />
                 <span className="text-primary font-black italic tracking-tight">
                   {registeredEmail}
                 </span>
                 . <br />
-                ConfirmÃƒÂ¡ tu ingreso para saltar al campo.
+                Confirmá tu ingreso para saltar al campo.
               </p>
             </div>
 
             <div className="p-5 rounded-2xl bg-white/[0.03] border border-white/5 text-left">
               <p className="text-[10px] text-zinc-500 font-bold uppercase tracking-widest leading-relaxed">
-                Ã°Å¸â€™Â¡ El ÃƒÂ¡rbitro dice: Si no ves el correo, revisÃƒÂ¡ en la carpeta de{' '}
+                💡 El árbitro dice: Si no ves el correo, revisá en la carpeta de{' '}
                 <span className="text-foreground">Spam</span> o Correo No Deseado.
               </p>
             </div>
@@ -121,7 +121,7 @@ export default function RegisterPage() {
 
   return (
     <div className="flex min-h-[100dvh] bg-background selection:bg-primary selection:text-background overflow-hidden relative">
-      {/* Ã¢â€â‚¬Ã¢â€â‚¬ LEFT PANEL: AUTH FORM Ã¢â€â‚¬Ã¢â€â‚¬ */}
+      {/* ── LEFT PANEL: AUTH FORM ── */}
       <div className="flex-1 flex flex-col items-center justify-center p-4 lg:p-8 relative z-10 transition-all duration-1000 overflow-y-auto">
         <motion.div
           initial={{ opacity: 0, x: -20 }}
@@ -187,7 +187,7 @@ export default function RegisterPage() {
                   </div>
                   <input
                     type="password"
-                    placeholder="ContraseÃƒÂ±a Maestra"
+                    placeholder="Contraseña Maestra"
                     value={formData.password}
                     onChange={(e) => setFormData((prev) => ({ ...prev, password: e.target.value }))}
                     className="w-full h-12 pl-12 pr-4 rounded-xl bg-white/[0.02] border border-white/5 focus:bg-white/[0.04] focus:border-primary/50 outline-none transition-all text-sm font-bold text-foreground placeholder:text-zinc-700"
@@ -203,7 +203,7 @@ export default function RegisterPage() {
                   </div>
                   <input
                     type="password"
-                    placeholder="Confirmar TÃƒÂ¡ctica"
+                    placeholder="Confirmar Táctica"
                     value={formData.confirmPassword}
                     onChange={(e) => setFormData((prev) => ({ ...prev, confirmPassword: e.target.value }))}
                     className={cn(
@@ -217,7 +217,7 @@ export default function RegisterPage() {
                 </div>
                 {formData.confirmPassword && formData.password !== formData.confirmPassword && (
                   <p className="text-[10px] font-black text-red-500 uppercase tracking-widest ml-4 animate-in fade-in slide-in-from-top-1">
-                    Las contraseÃƒÂ±as no coinciden
+                    Las contraseñas no coinciden
                   </p>
                 )}
               </div>
@@ -238,10 +238,10 @@ export default function RegisterPage() {
             </form>
 
             <div className="text-center mt-2 pb-6 lg:pb-0">
-              <p className="text-[10px] font-black text-foreground/40 uppercase tracking-[0.2em]">
-                Ã‚Â¿Ya tenÃƒÂ©s tu ficha?{' '}
+              <p className="text-[9px] font-black text-foreground/40 uppercase tracking-[0.2em]">
+                ¿Ya tenés tu ficha?{' '}
                 <Link href="/login" className="text-primary hover:text-white transition-colors underline decoration-primary/30 underline-offset-4">
-                  INGRESAR ACÃƒÂ
+                  INGRESAR ACÁ
                 </Link>
               </p>
             </div>
@@ -249,7 +249,7 @@ export default function RegisterPage() {
         </motion.div>
       </div>
 
-      {/* Ã¢â€â‚¬Ã¢â€â‚¬ RIGHT PANEL: CINEMATIC HERO Ã¢â€â‚¬Ã¢â€â‚¬ */}
+      {/* ── RIGHT PANEL: CINEMATIC HERO ── */}
       <div className="hidden lg:flex flex-[1.2] relative overflow-hidden bg-zinc-950">
         <motion.div
           initial={{ scale: 1.1, opacity: 0 }}
@@ -275,13 +275,13 @@ export default function RegisterPage() {
           >
             <div className="flex items-center gap-4">
               <div className="w-12 h-1 bg-primary rounded-full" />
-              <span className="text-xs font-black uppercase tracking-[0.5em] text-primary italic">RegistraciÃƒÂ³n ÃƒÅ¡nica</span>
+              <span className="text-xs font-black uppercase tracking-[0.5em] text-primary italic">Registración Única</span>
             </div>
             <h2 className="text-8xl font-black italic text-white uppercase tracking-tighter leading-[0.8] drop-shadow-2xl">
               LA GLORIA <br /> SE ESCRIBE <br /> <span className="text-primary">EN LA CANCHA.</span>
             </h2>
             <p className="text-lg text-white/50 font-bold uppercase tracking-widest max-w-md leading-relaxed">
-              CargÃƒÂ¡ tus estadÃƒÂ­sticas, subÃƒÂ­ de ELO y demostrÃƒÂ¡ que sos el mejor en la red de fÃƒÂºtbol amateur mÃƒÂ¡s competitiva.
+              Cargá tus estadísticas, subí de ELO y demostrá que sos el mejor en la red de fútbol amateur más competitiva.
             </p>
           </motion.div>
         </div>

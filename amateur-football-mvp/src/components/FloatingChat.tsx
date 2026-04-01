@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import { useState, useEffect } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
@@ -78,7 +78,7 @@ export function FloatingChat() {
                       <h4 className="text-[11px] font-black uppercase italic tracking-tighter text-foreground leading-none">
                         {chat.name}
                       </h4>
-                      <span className="text-[10px] font-black text-primary uppercase tracking-[0.2em] mt-0.5">En Línea</span>
+                      <span className="text-[7px] font-black text-primary uppercase tracking-[0.2em] mt-0.5">En Línea</span>
                    </div>
                 </div>
                 <div className="flex items-center gap-1">

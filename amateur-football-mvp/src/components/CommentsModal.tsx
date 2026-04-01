@@ -64,7 +64,7 @@ export default function CommentsModal({ highlightId, onClose, onCommentAdded }: 
         initial={{ y: "100%" }}
         animate={{ y: 0 }}
         exit={{ y: "100%" }}
-        className="w-full max-w-lg bg-zinc-900/90 border border-white/10 rounded-t-[2.5rem] sm:rounded-[2rem] overflow-hidden flex flex-col h-[70vh] sm:h-[600px] shadow-2xl"
+        className="w-full max-w-lg bg-zinc-900/90 border border-white/10 rounded-t-[2.5rem] sm:rounded-[2.5rem] overflow-hidden flex flex-col h-[70vh] sm:h-[600px] shadow-2xl"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
@@ -91,7 +91,7 @@ export default function CommentsModal({ highlightId, onClose, onCommentAdded }: 
           ) : comments.length === 0 ? (
             <div className="flex flex-col items-center justify-center h-full gap-4 text-white/20">
               <MessageSquare className="w-12 h-12" />
-              <p className="text-sm font-medium">SÃ© el primero en comentar</p>
+              <p className="text-sm font-medium">Sé el primero en comentar</p>
             </div>
           ) : (
             comments.map((comment) => (
@@ -129,7 +129,7 @@ export default function CommentsModal({ highlightId, onClose, onCommentAdded }: 
                 type="text"
                 value={newComment}
                 onChange={(e) => setNewComment(e.target.value)}
-                placeholder="AÃ±ade un comentario..."
+                placeholder="Añade un comentario..."
                 className="flex-1 bg-white/10 border border-white/10 rounded-full px-5 py-3 text-white text-sm focus:outline-none focus:border-primary/50 transition-colors font-outfit"
               />
               <motion.button
@@ -143,7 +143,7 @@ export default function CommentsModal({ highlightId, onClose, onCommentAdded }: 
             </form>
           ) : (
             <div className="text-center p-2">
-              <p className="text-white/40 text-sm italic">Inicia sesiÃ³n para comentar</p>
+              <p className="text-white/40 text-sm italic">Inicia sesión para comentar</p>
             </div>
           )}
         </div>

@@ -62,7 +62,7 @@ const TEMPLATES: Record<MatchType, { name: string; nodes: PositionNode[] }[]> = 
   ],
   F7: [
     {
-      name: '2-3-1 (ClÃƒÂ¡sico)',
+      name: '2-3-1 (Clásico)',
       nodes: [
         { id: 'gk-1', role: 'GK', x: 50, y: 90 },
         { id: 'def-1', role: 'DEF', x: 30, y: 75 },
@@ -76,7 +76,7 @@ const TEMPLATES: Record<MatchType, { name: string; nodes: PositionNode[] }[]> = 
   ],
   F11: [
     {
-      name: '4-4-2 (ClÃƒÂ¡sico)',
+      name: '4-4-2 (Clásico)',
       nodes: [
         { id: 'gk-1', role: 'GK', x: 50, y: 90 },
         { id: 'def-1', role: 'DEF', x: 15, y: 75 },
@@ -164,9 +164,9 @@ export default function TeamTactics({ teamId, isCaptain, members }: TeamTacticsP
         is_active: true,
       });
       setActiveFormation(resp);
-      alert('Ã‚Â¡Pizarra guardada con ÃƒÂ©xito!');
+      alert('¡Pizarra guardada con éxito!');
     } catch (err) {
-      alert('Error al guardar tÃƒÂ¡ctica');
+      alert('Error al guardar táctica');
     } finally {
       setIsSaving(false);
     }
@@ -217,7 +217,7 @@ export default function TeamTactics({ teamId, isCaptain, members }: TeamTacticsP
 
   return (
     <div className="space-y-12 pb-12">
-      {/* Ã¢â€â‚¬Ã¢â€â‚¬ HEADER & TOOLS Ã¢â€â‚¬Ã¢â€â‚¬ */}
+      {/* ── HEADER & TOOLS ── */}
       <div className="flex flex-col xl:flex-row xl:items-end justify-between gap-8 px-2">
         <div className="space-y-2">
           <div className="flex items-center gap-4">
@@ -226,17 +226,17 @@ export default function TeamTactics({ teamId, isCaptain, members }: TeamTacticsP
             </div>
             <div>
               <h3 className="text-3xl font-black text-foreground italic uppercase tracking-tighter leading-none">
-                Pizarra del CapitÃƒÂ¡n
+                Pizarra del Capitán
               </h3>
               <p className="text-[10px] font-black uppercase tracking-[0.3em] text-foreground/40 mt-1">
-                DefinÃƒÂ­ el ADN tÃƒÂ¡ctico del equipo
+                Definí el ADN táctico del equipo
               </p>
             </div>
           </div>
         </div>
 
         {isCaptain && (
-          <div className="flex flex-wrap items-center gap-4 bg-foreground/[0.03] p-2 rounded-[2rem] border border-foreground/5 backdrop-blur-3xl shadow-2xl">
+          <div className="flex flex-wrap items-center gap-4 bg-foreground/[0.03] p-2 rounded-[2.5rem] border border-foreground/5 backdrop-blur-3xl shadow-2xl">
             {/* Match Type Select */}
             <div className="flex p-1 bg-background/50 rounded-2xl border border-foreground/5 gap-1 shadow-inner">
               {(['F5', 'F7', 'F11'] as MatchType[]).map((type) => (
@@ -290,11 +290,11 @@ export default function TeamTactics({ teamId, isCaptain, members }: TeamTacticsP
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
-        {/* Ã¢â€â‚¬Ã¢â€â‚¬ CENTRAL COLUMN: THE PITCH Ã¢â€â‚¬Ã¢â€â‚¬ */}
+        {/* ── CENTRAL COLUMN: THE PITCH ── */}
         <div className="lg:col-span-8 order-2 lg:order-1 relative">
           <div
             ref={pitchRef}
-            className="relative aspect-[3/4] md:aspect-[4/5] bg-emerald-950/80 rounded-[2rem] border-[16px] border-foreground/10 overflow-hidden shadow-[0_40px_100px_rgba(0,0,0,0.5)] group/pitch"
+            className="relative aspect-[3/4] md:aspect-[4/5] bg-emerald-950/80 rounded-[4rem] border-[16px] border-foreground/10 overflow-hidden shadow-[0_40px_100px_rgba(0,0,0,0.5)] group/pitch"
           >
             {/* Real Grass Texture Layer */}
             <div className="absolute inset-0 opacity-10 bg-[url('https://www.transparenttextures.com/patterns/natural-paper.png')] pointer-events-none" />
@@ -356,7 +356,7 @@ export default function TeamTactics({ teamId, isCaptain, members }: TeamTacticsP
                           )}
 
                           <div className="absolute -top-1 -right-1 w-8 h-8 rounded-full bg-background border-2 border-primary flex items-center justify-center shadow-lg">
-                            <span className="text-[10px] font-black text-primary">{node.role}</span>
+                            <span className="text-[9px] font-black text-primary">{node.role}</span>
                           </div>
 
                           {isCaptain && node.playerId && (
@@ -386,7 +386,7 @@ export default function TeamTactics({ teamId, isCaptain, members }: TeamTacticsP
                               player ? 'text-foreground' : 'text-white/30'
                             )}
                           >
-                            {player?.name || 'VACIÃƒâ€œ'}
+                            {player?.name || 'VACIÓ'}
                           </span>
                         </div>
                       </div>
@@ -400,14 +400,14 @@ export default function TeamTactics({ teamId, isCaptain, members }: TeamTacticsP
             <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent pointer-events-none" />
           </div>
 
-          {/* Ã¢â€â‚¬Ã¢â€â‚¬ SELECTION POPUP Ã¢â€â‚¬Ã¢â€â‚¬ */}
+          {/* ── SELECTION POPUP ── */}
           <AnimatePresence>
             {selectingNodeId && (
               <motion.div
                 initial={{ opacity: 0, y: 20, scale: 0.95 }}
                 animate={{ opacity: 1, y: 0, scale: 1 }}
                 exit={{ opacity: 0, y: 20, scale: 0.95 }}
-                className="absolute inset-x-12 bottom-12 z-[100] glass-premium p-8 rounded-[2rem] border border-primary/30 shadow-[0_50px_100px_rgba(0,0,0,0.8)] bg-surface"
+                className="absolute inset-x-12 bottom-12 z-[100] glass-premium p-8 rounded-[3rem] border border-primary/30 shadow-[0_50px_100px_rgba(0,0,0,0.8)] bg-surface"
               >
                 <div className="flex items-center justify-between mb-8">
                   <div className="flex items-center gap-4">
@@ -429,7 +429,7 @@ export default function TeamTactics({ teamId, isCaptain, members }: TeamTacticsP
                 <div className="flex flex-wrap gap-4 max-h-[250px] overflow-y-auto pr-4 custom-scrollbar">
                   {bench.length === 0 ? (
                     <div className="w-full py-12 text-center text-foreground/20 font-black uppercase tracking-widest text-[10px] italic bg-foreground/[0.02] border border-dashed border-foreground/10 rounded-3xl">
-                      Todos los pibes estÃƒÂ¡n ocupados
+                      Todos los pibes están ocupados
                     </div>
                   ) : (
                     bench.map((member) => (
@@ -455,7 +455,7 @@ export default function TeamTactics({ teamId, isCaptain, members }: TeamTacticsP
                           <p className="text-sm font-black italic uppercase tracking-tighter text-foreground group-hover:text-primary transition-colors">
                             {member.profiles?.name}
                           </p>
-                          <p className="text-[10px] font-black text-foreground/40 uppercase tracking-widest">
+                          <p className="text-[9px] font-black text-foreground/40 uppercase tracking-widest">
                             {member.profiles?.position || 'SIN POSICION'}
                           </p>
                         </div>
@@ -468,10 +468,10 @@ export default function TeamTactics({ teamId, isCaptain, members }: TeamTacticsP
           </AnimatePresence>
         </div>
 
-        {/* Ã¢â€â‚¬Ã¢â€â‚¬ RIGHT COLUMN: INFO & BENCH Ã¢â€â‚¬Ã¢â€â‚¬ */}
+        {/* ── RIGHT COLUMN: INFO & BENCH ── */}
         <div className="lg:col-span-4 space-y-8 order-1 lg:order-2">
           {/* Quick Stats / Info */}
-          <div className="glass-premium p-8 rounded-[2rem] border border-foreground/5 bg-surface-elevated space-y-6">
+          <div className="glass-premium p-8 rounded-[3rem] border border-foreground/5 bg-surface-elevated space-y-6">
             <div className="flex items-center gap-4">
               <ShieldCheck className="w-8 h-8 text-primary" />
               <div>
@@ -479,7 +479,7 @@ export default function TeamTactics({ teamId, isCaptain, members }: TeamTacticsP
                   Estado del Plantel
                 </h5>
                 <p className="text-[10px] font-black text-foreground/40 uppercase tracking-widest">
-                  Resumen tÃƒÂ¡ctico actual
+                  Resumen táctico actual
                 </p>
               </div>
             </div>
@@ -489,7 +489,7 @@ export default function TeamTactics({ teamId, isCaptain, members }: TeamTacticsP
                 <span className="block text-2xl font-black text-primary italic leading-none">
                   {nodes.filter((n) => n.playerId).length}/{nodes.length}
                 </span>
-                <span className="text-[10px] font-black text-foreground/40 uppercase tracking-widest mt-1">
+                <span className="text-[8px] font-black text-foreground/40 uppercase tracking-widest mt-1">
                   TITULARES
                 </span>
               </div>
@@ -497,22 +497,22 @@ export default function TeamTactics({ teamId, isCaptain, members }: TeamTacticsP
                 <span className="block text-2xl font-black text-foreground italic leading-none">
                   {bench.length}
                 </span>
-                <span className="text-[10px] font-black text-foreground/40 uppercase tracking-widest mt-1">
+                <span className="text-[8px] font-black text-foreground/40 uppercase tracking-widest mt-1">
                   EN EL BANCO
                 </span>
               </div>
             </div>
 
             <div className="p-5 bg-primary/5 border border-primary/20 rounded-2xl">
-              <p className="text-[10px] text-primary font-black uppercase tracking-widest leading-relaxed text-center italic">
-                "ElegÃƒÂ­ un rol en el campo (cÃƒÂ­rculo parpadeante) y asignale un pibe del club para que
+              <p className="text-[9px] text-primary font-black uppercase tracking-widest leading-relaxed text-center italic">
+                "Elegí un rol en el campo (círculo parpadeante) y asignale un pibe del club para que
                 aparezca su nombre."
               </p>
             </div>
           </div>
 
           {/* Bench Visual List (Read Only / Drag Source potential) */}
-          <div className="glass-premium p-8 rounded-[2rem] border border-foreground/5 bg-surface space-y-6">
+          <div className="glass-premium p-8 rounded-[3rem] border border-foreground/5 bg-surface space-y-6">
             <div className="flex items-center justify-between">
               <h5 className="text-xl font-black text-foreground italic uppercase tracking-tighter">
                 Entrenando Afuera
@@ -522,7 +522,7 @@ export default function TeamTactics({ teamId, isCaptain, members }: TeamTacticsP
 
             <div className="space-y-3">
               {bench.length === 0 ? (
-                <div className="py-12 text-center text-foreground/20 uppercase font-black text-[10px] tracking-widest">
+                <div className="py-12 text-center text-foreground/20 uppercase font-black text-[9px] tracking-widest">
                   No quedan suplentes
                 </div>
               ) : (
@@ -554,8 +554,8 @@ export default function TeamTactics({ teamId, isCaptain, members }: TeamTacticsP
                 ))
               )}
               {bench.length > 5 && (
-                <p className="text-[10px] text-center text-foreground/30 font-black uppercase tracking-widest">
-                  + {bench.length - 5} MÃƒÂS EN EL BANCO
+                <p className="text-[9px] text-center text-foreground/30 font-black uppercase tracking-widest">
+                  + {bench.length - 5} MÁS EN EL BANCO
                 </p>
               )}
             </div>

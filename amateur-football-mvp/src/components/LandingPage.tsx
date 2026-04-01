@@ -48,7 +48,7 @@ const FeatureCard = ({ title, desc, icon: Icon, delay }: any) => (
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-100px" }}
       transition={{ delay, duration: 0.8, type: "spring", stiffness: 50 }}
-      className="group relative p-8 md:p-12 rounded-[2rem] bg-[#0A0A0A] border border-white/5 hover:border-primary/50 overflow-hidden transition-all duration-700 shadow-[0_20px_50px_rgba(0,0,0,0.5)] hover:shadow-[0_20px_50px_rgba(44,252,125,0.15)] z-10"
+      className="group relative p-8 md:p-12 rounded-[3.5rem] bg-[#0A0A0A] border border-white/5 hover:border-primary/50 overflow-hidden transition-all duration-700 shadow-[0_20px_50px_rgba(0,0,0,0.5)] hover:shadow-[0_20px_50px_rgba(44,252,125,0.15)] z-10"
    >
       <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700 z-0" />
       <div className="absolute -top-32 -right-32 w-64 h-64 bg-primary/20 blur-[80px] rounded-full group-hover:bg-primary/40 transition-colors z-0" />
@@ -68,7 +68,7 @@ export default function LandingPage() {
    return (
       <div className="min-h-screen bg-[#050505] text-white selection:bg-primary selection:text-black font-sans scroll-smooth overflow-x-hidden">
 
-         {/* Ã°Å¸Å¸Â¢ TOP NAVIGATION */}
+         {/* 🟢 TOP NAVIGATION */}
          <nav className="fixed top-0 inset-x-0 h-20 sm:h-28 z-[100] px-4 sm:px-6 lg:px-12 flex items-center justify-between border-b border-primary/10 bg-[#050505]/80 backdrop-blur-3xl transition-all shadow-2xl">
             <motion.div
                initial={{ opacity: 0, x: -20 }}
@@ -84,7 +84,7 @@ export default function LandingPage() {
                   <span className="text-2xl sm:text-4xl font-black italic uppercase tracking-tighter font-kanit leading-none drop-shadow-lg text-white">
                      PELOTI<span className="text-primary drop-shadow-[0_0_15px_rgba(44,252,125,0.5)]">FY</span>
                   </span>
-                  <span className="text-[10px] sm:text-xs font-black uppercase tracking-widest text-primary text-center mt-1">
+                  <span className="text-[8px] sm:text-xs font-black uppercase tracking-widest text-primary text-center mt-1">
                      DOMINA EL POTRERO
                   </span>
                </div>
@@ -108,7 +108,7 @@ export default function LandingPage() {
             </motion.div>
          </nav>
 
-         {/* Ã°Å¸â€Â´ OVERHAULED HERO SECTION: MASSIVE & GLOWING */}
+         {/* 🔴 OVERHAULED HERO SECTION: MASSIVE & GLOWING */}
          <section className="relative min-h-[100vh] flex flex-col items-center justify-center px-4 text-center overflow-hidden bg-[#050505]">
             {/* Premium background */}
             <div className="absolute inset-0 -z-10 bg-[#050505]">
@@ -120,7 +120,7 @@ export default function LandingPage() {
             {/* Massive back text watermark */}
             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full text-center pointer-events-none z-0 opacity-[0.03]">
                <h1 className="text-[8rem] sm:text-[20rem] md:text-[35rem] font-black italic font-kanit uppercase leading-none whitespace-nowrap text-primary">
-                  FÃƒÅ¡TBOL
+                  FÚTBOL
                </h1>
             </div>
 
@@ -132,7 +132,7 @@ export default function LandingPage() {
                className="relative group perspective-1000 z-[110] mt-24 flex flex-col items-center"
             >
                <div className="absolute -inset-10 bg-primary/30 blur-[60px] rounded-full group-hover:bg-primary/50 transition-all duration-700 animate-pulse" />
-               <div className="w-36 h-36 md:w-56 md:h-56 relative rounded-[2rem] bg-gradient-to-br from-[#0A0A0A] to-black flex items-center justify-center border-2 border-primary/30 shadow-[0_40px_80px_rgba(0,0,0,0.8),inset_0_0_40px_rgba(44,252,125,0.2)] backdrop-blur-3xl group-hover:scale-110 group-hover:border-primary/60 transition-all duration-700 z-10 preserve-3d">
+               <div className="w-36 h-36 md:w-56 md:h-56 relative rounded-[3rem] bg-gradient-to-br from-[#0A0A0A] to-black flex items-center justify-center border-2 border-primary/30 shadow-[0_40px_80px_rgba(0,0,0,0.8),inset_0_0_40px_rgba(44,252,125,0.2)] backdrop-blur-3xl group-hover:scale-110 group-hover:border-primary/60 transition-all duration-700 z-10 preserve-3d">
                   <img src="/logo_pelotify.png" className="w-24 h-24 md:w-40 md:h-40 object-contain drop-shadow-[0_0_25px_rgba(44,252,125,1)] animate-float" alt="Pelotify Main Logo" />
                </div>
             </motion.div>
@@ -147,11 +147,11 @@ export default function LandingPage() {
 
                   <div className="space-y-4">
                      <h1 className="text-5xl sm:text-7xl md:text-[10rem] lg:text-[11rem] font-black font-kanit italic uppercase tracking-tighter leading-[0.8] text-white drop-shadow-2xl">
-                        EL FÃƒÅ¡TBOL ES <br />
+                        EL FÚTBOL ES <br />
                         <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-white drop-shadow-[0_0_30px_rgba(44,252,125,0.3)]">NUESTRO.</span>
                      </h1>
 
-                     {/* Ã¢Â¬â€¡Ã¯Â¸Â SCROLL INDICATOR */}
+                     {/* ⬇️ SCROLL INDICATOR */}
                      <div className="flex justify-center w-full py-4 relative z-20">
                         <motion.div
                            initial={{ opacity: 0, y: -10 }}
@@ -160,7 +160,7 @@ export default function LandingPage() {
                            onClick={() => window.scrollBy({ top: window.innerHeight * 0.8, behavior: 'smooth' })}
                            className="flex flex-col items-center gap-3 cursor-pointer group"
                         >
-                           <span className="text-[10px] font-black uppercase tracking-[0.3em] text-zinc-500 group-hover:text-primary transition-colors duration-300">SCROLL</span>
+                           <span className="text-[9px] font-black uppercase tracking-[0.3em] text-zinc-500 group-hover:text-primary transition-colors duration-300">SCROLL</span>
                            <motion.div
                               animate={{ y: [0, 8, 0] }}
                               transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' }}
@@ -186,7 +186,7 @@ export default function LandingPage() {
                   </div>
                </div>
 
-               {/* Ã°Å¸â€Â¥Ã°Å¸â€Â¥ AESTHETIC TOGGLE FOR AUDIENCE Ã°Å¸â€Â¥Ã°Å¸â€Â¥ */}
+               {/* 🔥🔥 AESTHETIC TOGGLE FOR AUDIENCE 🔥🔥 */}
                <motion.div
                   initial={{ opacity: 0, y: 30 }}
                   animate={{ opacity: 1, y: 0 }}
@@ -214,7 +214,7 @@ export default function LandingPage() {
                         {viewMode === 'dueno' && (
                            <motion.div layoutId="viewModeIndicator" className="absolute inset-0 bg-primary rounded-3xl sm:rounded-full shadow-[0_0_40px_rgba(44,252,125,0.6)] -z-10" transition={{ type: 'spring', stiffness: 50, damping: 10 }} />
                         )}
-                        SOY DUEÃƒâ€˜O
+                        SOY DUEÑO
                      </motion.button>
                   </div>
                </motion.div>
@@ -232,7 +232,7 @@ export default function LandingPage() {
             >
                {viewMode === 'jugador' ? (
                   <>
-                     {/* Ã°Å¸â€Âµ SECCIÃƒâ€œN EXPLÃƒÂCATIVA PARA JUGADOR */}
+                     {/* 🔵 SECCIÓN EXPLÍCATIVA PARA JUGADOR */}
                      <section className="py-20 md:py-40 px-6 lg:px-12 bg-[#020202] border-t border-white/5 relative overflow-hidden">
                         <div className="absolute top-0 right-1/4 w-[600px] h-[600px] bg-primary/10 blur-[150px] pointer-events-none" />
                         <div className="absolute bottom-0 left-1/4 w-[800px] h-[800px] bg-primary/5 blur-[200px] pointer-events-none" />
@@ -249,31 +249,31 @@ export default function LandingPage() {
                                  EL ECOSISTEMA <span className="text-primary drop-shadow-[0_0_20px_rgba(44,252,125,0.3)]">PERFECTO.</span>
                               </h2>
                               <p className="text-base md:text-xl text-zinc-400 font-bold max-w-3xl mx-auto uppercase tracking-widest leading-relaxed">
-                                 DiseÃƒÂ±ado para la gloria. Todo el flujo de tu equipo en un solo lugar.
+                                 Diseñado para la gloria. Todo el flujo de tu equipo en un solo lugar.
                               </p>
                            </motion.div>
 
                            <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
                               <FeatureCard
                                  title="Reservas al Instante"
-                                 desc="Buscador inteligente con disponibilidad 100% real. Elige tu sede, cruza horarios con tu equipo y asegÃƒÂºrate tu lugar."
+                                 desc="Buscador inteligente con disponibilidad 100% real. Elige tu sede, cruza horarios con tu equipo y asegúrate tu lugar."
                                  icon={Search}
                                  delay={0.1}
                               />
                               <FeatureCard
-                                 title="IntegraciÃƒÂ³n Segura"
-                                 desc="Mercado Pago nativo. Todos apaÃƒÂ±an su seÃƒÂ±a directamente por la plataforma, cero transferencias al aire."
+                                 title="Integración Segura"
+                                 desc="Mercado Pago nativo. Todos apañan su seña directamente por la plataforma, cero transferencias al aire."
                                  icon={Zap}
                                  delay={0.2}
                               />
                               <FeatureCard
                                  title="Armado de Planteles"
-                                 desc="Convoca jugadores segÃƒÂºn la posiciÃƒÂ³n que te falte. Filtra por ELO y contrata a los mejores."
+                                 desc="Convoca jugadores según la posición que te falte. Filtra por ELO y contrata a los mejores."
                                  icon={Users}
                                  delay={0.3}
                               />
                               <FeatureCard
-                                 title="EstadÃƒÂ­sticas y Rankings"
+                                 title="Estadísticas y Rankings"
                                  desc="Tu historia documentada. Goles, asistencias, MVPs y rating global actualizado partido a partido."
                                  icon={BarChart3}
                                  delay={0.4}
@@ -282,7 +282,7 @@ export default function LandingPage() {
                         </div>
                      </section>
 
-                     {/* Ã°Å¸â€Âµ THE PLAYER IDENTITY (MARKETING FOCUSED ON FIFA CARD - FULL GREEN AESTHETIC) */}
+                     {/* 🔵 THE PLAYER IDENTITY (MARKETING FOCUSED ON FIFA CARD - FULL GREEN AESTHETIC) */}
                      <section className="py-20 md:py-40 px-6 lg:px-12 bg-[#050505] relative border-y border-primary/20 overflow-hidden">
                         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full text-center pointer-events-none z-0 opacity-[0.03]">
                            <h1 className="text-[6rem] sm:text-[15rem] md:text-[25rem] font-black italic font-kanit uppercase leading-none whitespace-nowrap text-primary">
@@ -312,7 +312,7 @@ export default function LandingPage() {
                                     <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-white drop-shadow-[0_0_30px_rgba(44,252,125,0.4)]">EN LA CANCHA.</span>
                                  </h2>
                                  <p className="text-lg md:text-xl font-medium text-zinc-300 leading-relaxed max-w-lg pt-4">
-                                    No juegas por nada. Por cada partido ganado, tus atributos mejoran. Nuestro algoritmo refleja tu talento real en la carta mÃƒÂ¡s deseada de la ciudad.
+                                    No juegas por nada. Por cada partido ganado, tus atributos mejoran. Nuestro algoritmo refleja tu talento real en la carta más deseada de la ciudad.
                                  </p>
                               </div>
 
@@ -325,9 +325,9 @@ export default function LandingPage() {
                                  >
                                     <div className="flex items-center gap-4">
                                        <Activity className="w-8 h-8 text-primary drop-shadow-[0_0_10px_rgba(44,252,125,0.5)]" />
-                                       <h4 className="text-xl font-black uppercase tracking-widest text-white">RATING DINÃƒÂMICO (ELO)</h4>
+                                       <h4 className="text-xl font-black uppercase tracking-widest text-white">RATING DINÁMICO (ELO)</h4>
                                     </div>
-                                    <p className="text-sm font-bold text-zinc-400 uppercase tracking-widest pl-12">Gana partidos oficiales para que todo el mundo vea tus nÃƒÂºmeros subir.</p>
+                                    <p className="text-sm font-bold text-zinc-400 uppercase tracking-widest pl-12">Gana partidos oficiales para que todo el mundo vea tus números subir.</p>
                                  </motion.div>
                                  <motion.div
                                     initial={{ opacity: 0, x: -20 }}
@@ -339,7 +339,7 @@ export default function LandingPage() {
                                        <Medal className="w-8 h-8 text-primary drop-shadow-[0_0_10px_rgba(44,252,125,0.5)]" />
                                        <h4 className="text-xl font-black uppercase tracking-widest text-white">CONDECORACIONES MVP</h4>
                                     </div>
-                                    <p className="text-sm font-bold text-zinc-400 uppercase tracking-widest pl-12">SÃƒÂ© la figura del partido y recolecta medallas en tu perfil pÃƒÂºblico.</p>
+                                    <p className="text-sm font-bold text-zinc-400 uppercase tracking-widest pl-12">Sé la figura del partido y recolecta medallas en tu perfil público.</p>
                                  </motion.div>
                               </div>
                            </motion.div>
@@ -361,7 +361,7 @@ export default function LandingPage() {
                         </div>
                      </section>
 
-                     {/* Ã°Å¸â€Â´ FINAL CTA BLOCK JUGADOR */}
+                     {/* 🔴 FINAL CTA BLOCK JUGADOR */}
                      <section className="py-20 md:py-40 px-6 text-center border-b border-primary/20 relative bg-[#050505] overflow-hidden">
                         <div className="absolute top-0 right-0 w-[1000px] h-[1000px] bg-primary/5 blur-[200px] pointer-events-none" />
                         <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[1200px] h-[600px] bg-primary/15 blur-[250px] pointer-events-none" />
@@ -378,7 +378,7 @@ export default function LandingPage() {
                               <span className="text-primary drop-shadow-[0_0_30px_rgba(44,252,125,0.3)]">LA CANCHA.</span>
                            </h2>
                            <p className="text-lg md:text-2xl font-bold text-zinc-400 uppercase tracking-widest max-w-3xl mx-auto leading-relaxed">
-                              ÃƒÅ¡nete a miles de jugadores que ya transformaron su manera de probar nivel. Demuestra tu jerarquÃƒÂ­a y conviÃƒÂ©rtete en una leyenda local.
+                              Únete a miles de jugadores que ya transformaron su manera de probar nivel. Demuestra tu jerarquía y conviértete en una leyenda local.
                            </p>
                            <div className="pt-10 flex flex-col items-center justify-center">
                               <Link href="/register" className="inline-block relative group">
@@ -398,15 +398,15 @@ export default function LandingPage() {
                   </>
                ) : (
                   <>
-                     {/* Ã°Å¸â€Â´ MARKETING PARA DUEÃƒâ€˜OS (SELLING TO VENUE OWNERS) - TITANIC SCALE */}
+                     {/* 🔴 MARKETING PARA DUEÑOS (SELLING TO VENUE OWNERS) - TITANIC SCALE */}
                      <section className="py-20 md:py-40 px-6 lg:px-12 relative overflow-hidden bg-[#020202] border-y border-primary/10">
                         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full text-center pointer-events-none z-0 opacity-[0.02]">
                            <h1 className="text-[5rem] sm:text-[12rem] md:text-[22rem] font-black italic font-kanit uppercase leading-none whitespace-nowrap text-white pr-10">
-                              CERO FRICCIÃƒâ€œN
+                              CERO FRICCIÓN
                            </h1>
                         </div>
 
-                        <div className="max-w-[1500px] mx-auto rounded-[2rem] bg-[#0A0A0A] border border-white/5 p-10 md:p-16 lg:p-24 relative overflow-hidden shadow-[0_40px_100px_rgba(0,0,0,1)] hover:border-primary/30 hover:shadow-[0_40px_100px_rgba(44,252,125,0.1)] transition-all duration-1000 group">
+                        <div className="max-w-[1500px] mx-auto rounded-[4rem] bg-[#0A0A0A] border border-white/5 p-10 md:p-16 lg:p-24 relative overflow-hidden shadow-[0_40px_100px_rgba(0,0,0,1)] hover:border-primary/30 hover:shadow-[0_40px_100px_rgba(44,252,125,0.1)] transition-all duration-1000 group">
                            <div className="absolute inset-0 bg-gradient-to-tr from-black/90 to-transparent pointer-events-none z-0" />
                            <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-[0.08] pointer-events-none" />
                            <div className="absolute -left-40 -top-40 w-[1200px] h-[1200px] bg-primary/15 blur-[250px] rounded-full pointer-events-none transition-opacity duration-1000 group-hover:opacity-100 opacity-70" />
@@ -425,11 +425,11 @@ export default function LandingPage() {
                                        <span className="text-sm font-black uppercase tracking-[0.3em] text-white">POTENCIA TU PREDIO DEPORTIVO</span>
                                     </div>
                                     <h2 className="text-4xl sm:text-6xl md:text-8xl lg:text-[7.5rem] font-black font-kanit italic uppercase tracking-tighter leading-[0.85] drop-shadow-2xl text-white">
-                                       MÃƒÂXIMA <span className="text-zinc-500 pr-4 block lg:inline-block">OCUPACIÃƒâ€œN.</span><br />
-                                       <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-white whitespace-normal text-[13vw] sm:text-6xl md:text-7xl lg:text-[5.5rem] xl:text-[6rem] mt-4 block drop-shadow-[0_0_20px_rgba(44,252,125,0.3)] pr-6 pb-2 leading-none max-w-full break-words">CERO FRICCIÃƒâ€œN.</span>
+                                       MÁXIMA <span className="text-zinc-500 pr-4 block lg:inline-block">OCUPACIÓN.</span><br />
+                                       <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-white whitespace-normal text-[13vw] sm:text-6xl md:text-7xl lg:text-[5.5rem] xl:text-[6rem] mt-4 block drop-shadow-[0_0_20px_rgba(44,252,125,0.3)] pr-6 pb-2 leading-none max-w-full break-words">CERO FRICCIÓN.</span>
                                     </h2>
                                     <p className="text-lg md:text-2xl font-bold text-zinc-400 max-w-xl leading-relaxed pt-6">
-                                       DespÃƒÂ­dete de los huecos vacÃƒÂ­os y tu plata al aire. Pelotify automatiza las reservas, los pagos y la carga administrativa de tus canchas.
+                                       Despídete de los huecos vacíos y tu plata al aire. Pelotify automatiza las reservas, los pagos y la carga administrativa de tus canchas.
                                     </p>
                                  </div>
 
@@ -437,17 +437,17 @@ export default function LandingPage() {
                                     <div className="space-y-4 pl-6 border-l-4 border-primary hover:-translate-y-1 transition-transform duration-300">
                                        <DollarSign className="w-8 h-8 text-primary drop-shadow-[0_0_15px_rgba(44,252,125,0.6)]" />
                                        <h5 className="text-base font-black uppercase tracking-widest text-white">Protege tu Caja Fuerte</h5>
-                                       <p className="text-xs font-bold text-zinc-500 leading-relaxed uppercase tracking-widest">SeÃƒÂ±as automatizadas 100% integradas a MercadoPago. Directo a tu banco.</p>
+                                       <p className="text-xs font-bold text-zinc-500 leading-relaxed uppercase tracking-widest">Señas automatizadas 100% integradas a MercadoPago. Directo a tu banco.</p>
                                     </div>
                                     <div className="space-y-4 pl-6 border-l-4 border-primary hover:-translate-y-1 transition-transform duration-300">
                                        <BarChart3 className="w-8 h-8 text-primary drop-shadow-[0_0_15px_rgba(44,252,125,0.6)]" />
-                                       <h5 className="text-base font-black uppercase tracking-widest text-white">MÃƒÂ©tricas de Emperador</h5>
-                                       <p className="text-xs font-bold text-zinc-500 leading-relaxed uppercase tracking-widest">AnalÃƒÂ­ticas de ingresos, picos calientes de alquiler e historial de clientes.</p>
+                                       <h5 className="text-base font-black uppercase tracking-widest text-white">Métricas de Emperador</h5>
+                                       <p className="text-xs font-bold text-zinc-500 leading-relaxed uppercase tracking-widest">Analíticas de ingresos, picos calientes de alquiler e historial de clientes.</p>
                                     </div>
                                     <div className="space-y-4 pl-6 border-l-4 border-primary hover:-translate-y-1 transition-transform duration-300">
                                        <Zap className="w-8 h-8 text-primary drop-shadow-[0_0_15px_rgba(44,252,125,0.6)]" />
-                                       <h5 className="text-base font-black uppercase tracking-widest text-white">AutogestiÃƒÂ³n Completa</h5>
-                                       <p className="text-xs font-bold text-zinc-500 leading-relaxed uppercase tracking-widest">El jugador arma su equipo y paga. TÃƒÂº solo recibes la reserva lista y el dinero.</p>
+                                       <h5 className="text-base font-black uppercase tracking-widest text-white">Autogestión Completa</h5>
+                                       <p className="text-xs font-bold text-zinc-500 leading-relaxed uppercase tracking-widest">El jugador arma su equipo y paga. Tú solo recibes la reserva lista y el dinero.</p>
                                     </div>
                                     <div className="space-y-4 pl-6 border-l-4 border-primary hover:-translate-y-1 transition-transform duration-300">
                                        <Globe className="w-8 h-8 text-primary drop-shadow-[0_0_15px_rgba(44,252,125,0.6)]" />
@@ -457,12 +457,12 @@ export default function LandingPage() {
                                     <div className="space-y-4 pl-6 border-l-4 border-primary hover:-translate-y-1 transition-transform duration-300">
                                        <Users className="w-8 h-8 text-primary drop-shadow-[0_0_15px_rgba(44,252,125,0.6)]" />
                                        <h5 className="text-base font-black uppercase tracking-widest text-white">Filtro de Fiabilidad</h5>
-                                       <p className="text-xs font-bold text-zinc-500 leading-relaxed uppercase tracking-widest">Historial integrado. Bloquea de tus reservas a jugadores que cancelan a ÃƒÂºltima hora sin pagar.</p>
+                                       <p className="text-xs font-bold text-zinc-500 leading-relaxed uppercase tracking-widest">Historial integrado. Bloquea de tus reservas a jugadores que cancelan a última hora sin pagar.</p>
                                     </div>
                                     <div className="space-y-4 pl-6 border-l-4 border-primary hover:-translate-y-1 transition-transform duration-300">
                                        <Trophy className="w-8 h-8 text-primary drop-shadow-[0_0_15px_rgba(44,252,125,0.6)]" />
                                        <h5 className="text-base font-black uppercase tracking-widest text-white">Predio Oficial</h5>
-                                       <p className="text-xs font-bold text-zinc-500 leading-relaxed uppercase tracking-widest">ValÃƒÂ­date como sede ÃƒÂ©lite y aloja competiciones oficiales de ranking para toda la comunidad.</p>
+                                       <p className="text-xs font-bold text-zinc-500 leading-relaxed uppercase tracking-widest">Valídate como sede élite y aloja competiciones oficiales de ranking para toda la comunidad.</p>
                                     </div>
                                  </div>
                               </motion.div>
@@ -474,7 +474,7 @@ export default function LandingPage() {
                                  transition={{ duration: 1, type: "spring", stiffness: 30 }}
                                  className="hidden lg:flex justify-end p-8 perspective-1000"
                               >
-                                 <div className="w-full max-w-lg aspect-[4/5] rounded-[2rem] bg-[#050505] border-2 border-primary/20 flex flex-col p-10 relative overflow-hidden shadow-[0_60px_100px_rgba(0,0,0,0.9)] transform rotate-y-[-15deg] group-hover:rotate-y-[-5deg] transition-transform duration-1000">
+                                 <div className="w-full max-w-lg aspect-[4/5] rounded-[3.5rem] bg-[#050505] border-2 border-primary/20 flex flex-col p-10 relative overflow-hidden shadow-[0_60px_100px_rgba(0,0,0,0.9)] transform rotate-y-[-15deg] group-hover:rotate-y-[-5deg] transition-transform duration-1000">
                                     <div className="absolute inset-0 bg-gradient-to-b from-primary/10 to-transparent pointer-events-none" />
                                     <div className="absolute -top-32 -right-32 w-64 h-64 bg-primary/20 blur-[60px] rounded-full pointer-events-none" />
 
@@ -485,7 +485,7 @@ export default function LandingPage() {
 
                                     <div className="space-y-8 flex-1 relative z-10">
                                        <div className="p-8 rounded-[2rem] bg-black/50 border border-primary/10 space-y-4 backdrop-blur-md">
-                                          <p className="text-xs uppercase font-black tracking-widest text-zinc-500">RecaudaciÃƒÂ³n (Hoy)</p>
+                                          <p className="text-xs uppercase font-black tracking-widest text-zinc-500">Recaudación (Hoy)</p>
                                           <p className="text-5xl font-black italic font-kanit text-white">$450.000</p>
                                           <div className="flex items-center gap-3">
                                              <span className="text-xs font-black text-black bg-primary px-3 py-1.5 rounded-lg shadow-[0_0_15px_rgba(44,252,125,0.5)]">+14.2%</span>
@@ -522,7 +522,7 @@ export default function LandingPage() {
                         </div>
                      </section>
 
-                     {/* Ã°Å¸â€Â´ NUEVA SECCIÃƒâ€œN: PERFIL DE ESTABLECIMIENTO (ESCAPARATE) */}
+                     {/* 🔴 NUEVA SECCIÓN: PERFIL DE ESTABLECIMIENTO (ESCAPARATE) */}
                      <section className="py-20 md:py-40 px-6 lg:px-12 bg-[#050505] relative border-y border-primary/20 overflow-hidden">
                         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full text-center pointer-events-none z-0 opacity-[0.03]">
                            <h1 className="text-[5rem] sm:text-[12rem] md:text-[20rem] font-black italic font-kanit uppercase leading-none whitespace-nowrap text-primary">
@@ -549,10 +549,10 @@ export default function LandingPage() {
                                  </div>
                                  <h2 className="text-4xl sm:text-6xl md:text-8xl lg:text-[7rem] font-black font-kanit italic uppercase tracking-tighter leading-[0.85] text-white">
                                     ATRAE A <br />
-                                    <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-white drop-shadow-[0_0_30px_rgba(44,252,125,0.4)]">MÃƒÂS EQUIPOS.</span>
+                                    <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-white drop-shadow-[0_0_30px_rgba(44,252,125,0.4)]">MÁS EQUIPOS.</span>
                                  </h2>
                                  <p className="text-lg md:text-xl font-medium text-zinc-300 leading-relaxed max-w-lg pt-4">
-                                    No eres unas canchas mÃƒÂ¡s. TendrÃƒÂ¡s tu propio perfil pÃƒÂºblico digital con informaciÃƒÂ³n de interÃƒÂ©s que impulsarÃƒÂ¡ las reservas de tu complejo.
+                                    No eres unas canchas más. Tendrás tu propio perfil público digital con información de interés que impulsará las reservas de tu complejo.
                                  </p>
                               </div>
 
@@ -567,7 +567,7 @@ export default function LandingPage() {
                                        <Activity className="w-8 h-8 text-primary drop-shadow-[0_0_10px_rgba(44,252,125,0.5)]" />
                                        <h4 className="text-xl font-black uppercase tracking-widest text-white">FOTOS Y CALIFICACIONES</h4>
                                     </div>
-                                    <p className="text-sm font-bold text-zinc-400 uppercase tracking-widest pl-12">Destaca tus instalaciones. El boca a boca en forma de estrellitas y reseÃƒÂ±as de jugadores reales.</p>
+                                    <p className="text-sm font-bold text-zinc-400 uppercase tracking-widest pl-12">Destaca tus instalaciones. El boca a boca en forma de estrellitas y reseñas de jugadores reales.</p>
                                  </motion.div>
                                  <motion.div
                                     initial={{ opacity: 0, x: -20 }}
@@ -577,9 +577,9 @@ export default function LandingPage() {
                                  >
                                     <div className="flex items-center gap-4">
                                        <MapPin className="w-8 h-8 text-primary drop-shadow-[0_0_10px_rgba(44,252,125,0.5)]" />
-                                       <h4 className="text-xl font-black uppercase tracking-widest text-white">AMENIDADES Y UBICACIÃƒâ€œN</h4>
+                                       <h4 className="text-xl font-black uppercase tracking-widest text-white">AMENIDADES Y UBICACIÓN</h4>
                                     </div>
-                                    <p className="text-sm font-bold text-zinc-400 uppercase tracking-widest pl-12">Desde duchas, bar para el 3er tiempo, parking exclusivo... muestra por quÃƒÂ© deben alquilarte.</p>
+                                    <p className="text-sm font-bold text-zinc-400 uppercase tracking-widest pl-12">Desde duchas, bar para el 3er tiempo, parking exclusivo... muestra por qué deben alquilarte.</p>
                                  </motion.div>
                               </div>
                            </motion.div>
@@ -593,7 +593,7 @@ export default function LandingPage() {
                            >
                               <div className="absolute inset-0 bg-primary/30 blur-[150px] rounded-full scale-110 -z-10 animate-pulse" />
 
-                              <div className="w-full max-w-sm rounded-[2rem] bg-[#0A0A0A] border-2 border-primary/40 shadow-[0_40px_80px_rgba(0,0,0,0.8),0_0_40px_rgba(44,252,125,0.2)] overflow-hidden transform-gpu z-10 animate-[float_6s_ease-in-out_infinite] hover:scale-105 hover:-rotate-y-12 transition-transform duration-700">
+                              <div className="w-full max-w-sm rounded-[3rem] bg-[#0A0A0A] border-2 border-primary/40 shadow-[0_40px_80px_rgba(0,0,0,0.8),0_0_40px_rgba(44,252,125,0.2)] overflow-hidden transform-gpu z-10 animate-[float_6s_ease-in-out_infinite] hover:scale-105 hover:-rotate-y-12 transition-transform duration-700">
                                  {/* Cover photo */}
                                  <div className="h-48 bg-zinc-800 relative">
                                     <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1579952363873-27f3bade9f55?q=80&w=1000&auto=format&fit=crop')] bg-cover bg-center opacity-80" />
@@ -621,7 +621,7 @@ export default function LandingPage() {
                                     <div className="flex gap-4 border-y border-white/10 py-5">
                                        <div className="flex-1 text-center border-r border-white/10">
                                           <p className="text-2xl font-black text-white">4.9</p>
-                                          <p className="text-[10px] uppercase tracking-widest font-bold text-zinc-500">ValoraciÃƒÂ³n</p>
+                                          <p className="text-[10px] uppercase tracking-widest font-bold text-zinc-500">Valoración</p>
                                        </div>
                                        <div className="flex-1 text-center border-r border-white/10">
                                           <p className="text-2xl font-black text-white">+500</p>
@@ -636,9 +636,9 @@ export default function LandingPage() {
                                     <div className="space-y-3">
                                        <p className="text-[10px] uppercase tracking-widest font-black text-zinc-500">Servicios Destacados</p>
                                        <div className="flex flex-wrap gap-2">
-                                          <span className="text-[10px] font-black uppercase tracking-widest text-primary bg-primary/10 px-3 py-1.5 rounded-lg border border-primary/20">Ã¢Å¡Â½ CÃƒÂ©sped SintÃƒÂ©tico</span>
-                                          <span className="text-[10px] font-black uppercase tracking-widest text-white bg-white/5 px-3 py-1.5 rounded-lg border border-white/10">Ã°Å¸Å¡Â¿ Vestuarios</span>
-                                          <span className="text-[10px] font-black uppercase tracking-widest text-white bg-white/5 px-3 py-1.5 rounded-lg border border-white/10">Ã°Å¸Ââ€ Bar</span>
+                                          <span className="text-[10px] font-black uppercase tracking-widest text-primary bg-primary/10 px-3 py-1.5 rounded-lg border border-primary/20">⚽ Césped Sintético</span>
+                                          <span className="text-[10px] font-black uppercase tracking-widest text-white bg-white/5 px-3 py-1.5 rounded-lg border border-white/10">🚿 Vestuarios</span>
+                                          <span className="text-[10px] font-black uppercase tracking-widest text-white bg-white/5 px-3 py-1.5 rounded-lg border border-white/10">🍔 Bar</span>
                                        </div>
                                     </div>
 
@@ -655,7 +655,7 @@ export default function LandingPage() {
                            </motion.div>
                         </div>
                      </section>
-                     {/* Ã°Å¸â€Â´ FINAL CTA BLOCK DUEÃƒâ€˜O */}
+                     {/* 🔴 FINAL CTA BLOCK DUEÑO */}
                      <section className="py-20 md:py-40 px-6 text-center border-b border-primary/20 relative bg-[#050505] overflow-hidden">
                         <div className="absolute top-0 right-0 w-[1000px] h-[1000px] bg-primary/5 blur-[200px] pointer-events-none" />
                         <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[1200px] h-[600px] bg-primary/15 blur-[250px] pointer-events-none" />
@@ -672,7 +672,7 @@ export default function LandingPage() {
                               <span className="text-primary drop-shadow-[0_0_30px_rgba(44,252,125,0.3)]">TU PREDIO.</span>
                            </h2>
                            <p className="text-lg md:text-2xl font-bold text-zinc-400 uppercase tracking-widest max-w-3xl mx-auto leading-relaxed">
-                              Accede al panel de control que empodera a las mejores ligas y sedes deportivas. Multiplica tu ocupaciÃƒÂ³n y protege tus cobros en automÃƒÂ¡tico.
+                              Accede al panel de control que empodera a las mejores ligas y sedes deportivas. Multiplica tu ocupación y protege tus cobros en automático.
                            </p>
                            <div className="pt-10 flex flex-col items-center justify-center">
                               <Link href="/canchas/register" className="inline-block relative group">
@@ -694,7 +694,7 @@ export default function LandingPage() {
             </motion.div>
          </AnimatePresence>
 
-         {/* Ã°Å¸Å¸Â¢ FOOTER */}
+         {/* 🟢 FOOTER */}
          <footer className="py-16 px-6 lg:px-12 bg-black border-t-4 border-primary/50 relative overflow-hidden">
             <div className="absolute inset-0 bg-gradient-to-t from-primary/10 to-transparent pointer-events-none opacity-50" />
             <div className="max-w-[1500px] mx-auto flex flex-col md:flex-row items-center justify-between gap-12 relative z-10">
@@ -704,20 +704,20 @@ export default function LandingPage() {
                      <span className="text-3xl font-black italic uppercase tracking-tighter font-kanit text-white">PELOTI<span className="text-primary">FY</span></span>
                   </div>
                   <p className="text-xs font-bold text-zinc-500 tracking-widest uppercase">
-                     La evoluciÃƒÂ³n definitiva del fÃƒÂºtbol amateur.
+                     La evolución definitiva del fútbol amateur.
                   </p>
                </div>
 
                <div className="flex flex-wrap justify-center gap-10 text-xs font-black uppercase tracking-[0.2em] text-zinc-400">
                   <Link href="/help" className="hover:text-primary transition-colors hover:drop-shadow-[0_0_8px_rgba(44,252,125,0.5)]">Soporte</Link>
-                  <Link href="/terms" className="hover:text-primary transition-colors hover:drop-shadow-[0_0_8px_rgba(44,252,125,0.5)]">TÃƒÂ©rminos legales</Link>
+                  <Link href="/terms" className="hover:text-primary transition-colors hover:drop-shadow-[0_0_8px_rgba(44,252,125,0.5)]">Términos legales</Link>
                   <Link href="/canchas/login" className="text-primary hover:text-white transition-colors flex items-center gap-2 hover:drop-shadow-[0_0_8px_rgba(255,255,255,0.5)]">
-                     Acceso DueÃƒÂ±os <TargetIcon className="w-4 h-4" />
+                     Acceso Dueños <TargetIcon className="w-4 h-4" />
                   </Link>
                </div>
 
                <div className="text-center md:text-right space-y-3">
-                  <p className="text-[10px] font-black uppercase tracking-[0.3em] text-zinc-600">Ã‚Â© 2026 PELOTIFY TODOS LOS DERECHOS RESERVADOS.</p>
+                  <p className="text-[10px] font-black uppercase tracking-[0.3em] text-zinc-600">© 2026 PELOTIFY TODOS LOS DERECHOS RESERVADOS.</p>
                </div>
             </div>
          </footer>

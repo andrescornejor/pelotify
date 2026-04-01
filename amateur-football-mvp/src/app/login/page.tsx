@@ -55,7 +55,7 @@ export default function LoginPage() {
 
   return (
     <div className="flex min-h-[100dvh] bg-background selection:bg-primary selection:text-background overflow-hidden relative">
-      {/* Ã¢â€â‚¬Ã¢â€â‚¬ LEFT PANEL: AUTH FORM Ã¢â€â‚¬Ã¢â€â‚¬ */}
+      {/* ── LEFT PANEL: AUTH FORM ── */}
       <div className="flex-1 flex flex-col items-center justify-center p-4 lg:p-8 relative z-10 overflow-hidden">
         <motion.div
           initial={{ opacity: 0, x: -20 }}
@@ -70,7 +70,7 @@ export default function LoginPage() {
             <h1 className="text-3xl lg:text-5xl font-black italic text-foreground tracking-tighter uppercase leading-[0.85] text-center lg:text-left font-kanit">
               Entrar a la <br /> <span className="text-primary">Cancha</span>
             </h1>
-            <p className="text-[10px] font-black text-foreground/40 uppercase tracking-[0.3em] italic lg:ml-1 text-center lg:text-left w-full">
+            <p className="text-[9px] font-black text-foreground/40 uppercase tracking-[0.3em] italic lg:ml-1 text-center lg:text-left w-full">
               Tu ficha personal de jugador
             </p>
           </div>
@@ -92,7 +92,7 @@ export default function LoginPage() {
 
             <div className="flex items-center gap-4 px-4 font-kanit">
               <div className="h-px flex-1 bg-white/10" />
-              <span className="text-[10px] font-black text-white/20 uppercase tracking-[0.4em]">O</span>
+              <span className="text-[9px] font-black text-white/20 uppercase tracking-[0.4em]">O</span>
               <div className="h-px flex-1 bg-white/10" />
             </div>
 
@@ -118,7 +118,7 @@ export default function LoginPage() {
                 </div>
                 <input
                   type="password"
-                  placeholder="Ã¢â‚¬Â¢Ã¢â‚¬Â¢Ã¢â‚¬Â¢Ã¢â‚¬Â¢Ã¢â‚¬Â¢Ã¢â‚¬Â¢Ã¢â‚¬Â¢Ã¢â‚¬Â¢"
+                  placeholder="••••••••"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   className="w-full h-14 pl-12 pr-6 rounded-2xl bg-white/[0.02] border border-white/5 focus:bg-white/[0.04] focus:border-primary/50 outline-none transition-all text-sm font-bold text-foreground placeholder:text-zinc-700"
@@ -127,9 +127,9 @@ export default function LoginPage() {
                 <button
                   type="button"
                   onClick={() => setShowForgotModal(true)}
-                  className="absolute right-5 top-1/2 -translate-y-1/2 text-[10px] font-black text-primary/40 hover:text-primary uppercase tracking-widest transition-colors"
+                  className="absolute right-5 top-1/2 -translate-y-1/2 text-[9px] font-black text-primary/40 hover:text-primary uppercase tracking-widest transition-colors"
                 >
-                  Ã‚Â¿Olvido?
+                  ¿Olvido?
                 </button>
               </div>
 
@@ -145,17 +145,17 @@ export default function LoginPage() {
 
             <div className="text-center mt-4 space-y-4">
               <p className="text-[10px] font-black text-foreground/40 uppercase tracking-[0.15em]">
-                Ã‚Â¿No tenÃƒÂ©s cuenta?{' '}
+                ¿No tenés cuenta?{' '}
                 <Link href="/register" className="text-primary hover:text-white transition-colors underline decoration-primary/30 underline-offset-4">
-                  FICHATE ACÃƒÂ
+                  FICHATE ACÁ
                 </Link>
               </p>
 
               <div className="pt-4 border-t border-white/5 opacity-30 hover:opacity-100 transition-opacity">
-                <p className="text-[10px] font-black text-foreground/30 uppercase tracking-[0.2em]">
-                  Ã‚Â¿TenÃƒÂ©s un complejo?{' '}
+                <p className="text-[9px] font-black text-foreground/30 uppercase tracking-[0.2em]">
+                  ¿Tenés un complejo?{' '}
                   <Link href="/canchas/login" className="text-primary hover:text-white transition-colors underline decoration-primary/30 underline-offset-4">
-                    ADMINISTRÃƒÂ TU SEDE
+                    ADMINISTRÁ TU SEDE
                   </Link>
                 </p>
               </div>
@@ -164,7 +164,7 @@ export default function LoginPage() {
         </motion.div>
       </div>
 
-      {/* Ã¢â€â‚¬Ã¢â€â‚¬ RIGHT PANEL: CINEMATIC HERO Ã¢â€â‚¬Ã¢â€â‚¬ */}
+      {/* ── RIGHT PANEL: CINEMATIC HERO ── */}
       <div className="hidden lg:flex flex-[1.2] relative overflow-hidden bg-zinc-950">
         <motion.div
           initial={{ scale: 1.1, opacity: 0 }}
@@ -196,7 +196,7 @@ export default function LoginPage() {
               LA GLORIA <br /> SE ESCRIBE <br /> <span className="text-primary">EN LA CANCHA.</span>
             </h2>
             <p className="text-lg text-white/50 font-bold uppercase tracking-widest max-w-md leading-relaxed">
-              Unite a la red de fÃƒÂºtbol amateur mÃƒÂ¡s grande del paÃƒÂ­s. ArmÃƒÂ¡ tu equipo, desafiÃƒÂ¡ rivales y dominÃƒÂ¡ el ranking.
+              Unite a la red de fútbol amateur más grande del país. Armá tu equipo, desafiá rivales y dominá el ranking.
             </p>
           </motion.div>
         </div>
@@ -211,7 +211,7 @@ export default function LoginPage() {
               initial={{ opacity: 0, scale: 0.95, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 20 }}
-              className="w-full max-w-md glass-premium rounded-[2rem] p-8 lg:p-10 border border-white/10 shadow-[0_50px_100px_rgba(0,0,0,0.5)] relative overflow-hidden"
+              className="w-full max-w-md glass-premium rounded-[2.5rem] p-8 lg:p-10 border border-white/10 shadow-[0_50px_100px_rgba(0,0,0,0.5)] relative overflow-hidden"
             >
               <div className="absolute top-0 right-0 w-32 h-32 bg-primary/10 blur-[50px] -mr-16 -mt-16 rounded-full" />
 
@@ -242,7 +242,7 @@ export default function LoginPage() {
                       required
                     />
                   </div>
-                  <p className="text-[10px] font-black text-foreground/20 uppercase tracking-widest ml-1 leading-relaxed text-center mt-4">
+                  <p className="text-[9px] font-black text-foreground/20 uppercase tracking-widest ml-1 leading-relaxed text-center mt-4">
                     Te mandaremos un link para volver a activar tu ingreso.
                   </p>
                 </div>

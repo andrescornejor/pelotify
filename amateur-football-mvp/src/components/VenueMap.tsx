@@ -34,7 +34,7 @@ export default function VenueMap({ location }: VenueMapProps) {
         href={mapsUrl}
         target="_blank"
         rel="noopener noreferrer"
-        className="mt-2 h-10 px-5 bg-foreground/5 border border-foreground/10 rounded-2xl text-[10px] font-black text-foreground/50 uppercase tracking-widest hover:bg-primary hover:text-black hover:border-primary transition-all flex items-center gap-2 active:scale-95"
+        className="mt-2 h-10 px-5 bg-foreground/5 border border-foreground/10 rounded-2xl text-[9px] font-black text-foreground/50 uppercase tracking-widest hover:bg-primary hover:text-black hover:border-primary transition-all flex items-center gap-2 active:scale-95"
       >
         <ExternalLink className="w-3.5 h-3.5" />
         Ver en Google Maps

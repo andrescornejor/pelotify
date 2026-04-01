@@ -77,7 +77,7 @@ export const SidebarContent = memo(function SidebarContent({
       badge: pendingCount > 0 && pathname !== '/friends' ? pendingCount : null,
     },
     { icon: Shield, label: 'Equipos', href: '/teams' },
-    { icon: Settings, label: 'ConfiguraciÃ³n', href: '/settings' },
+    { icon: Settings, label: 'Configuración', href: '/settings' },
   ];
 
   const metadata = user?.user_metadata || {};
@@ -97,7 +97,7 @@ export const SidebarContent = memo(function SidebarContent({
 
   return (
     <div className="flex flex-col h-full overflow-hidden relative">
-      {/* â”€â”€ Ambient background - Optimized â”€â”€ */}
+      {/* ── Ambient background - Optimized ── */}
       {!performanceMode && (
         <div className="absolute inset-0 pointer-events-none overflow-hidden opacity-[0.05]">
           <div
@@ -111,7 +111,7 @@ export const SidebarContent = memo(function SidebarContent({
         </div>
       )}
 
-      {/* â”€â”€ Top border â”€â”€ */}
+      {/* ── Top border ── */}
       {!isMobile && (
         <div
           className="absolute top-0 left-0 right-0 h-px"
@@ -121,7 +121,7 @@ export const SidebarContent = memo(function SidebarContent({
         />
       )}
 
-      {/* â”€â”€ Logo Header â”€â”€ */}
+      {/* ── Logo Header ── */}
       <div className="relative z-10 px-6 pt-7 pb-5 flex items-center justify-between shrink-0">
         <div className="flex flex-col">
           <Link
@@ -153,8 +153,8 @@ export const SidebarContent = memo(function SidebarContent({
                   FY
                 </span>
               </span>
-              <span className="text-[10px] font-black uppercase tracking-[0.25em] leading-none mt-0.5 text-foreground/55">
-                DominÃ¡ el Potrero
+              <span className="text-[8px] font-black uppercase tracking-[0.25em] leading-none mt-0.5 text-foreground/55">
+                Dominá el Potrero
               </span>
             </div>
           </Link>
@@ -202,7 +202,7 @@ export const SidebarContent = memo(function SidebarContent({
                       initial={{ scale: 0 }}
                       animate={{ scale: 1 }}
                       exit={{ scale: 0 }}
-                      className="absolute -top-0.5 -right-0.5 w-4 h-4 bg-primary text-background text-[10px] font-black rounded-full flex items-center justify-center border border-background"
+                      className="absolute -top-0.5 -right-0.5 w-4 h-4 bg-primary text-background text-[8px] font-black rounded-full flex items-center justify-center border border-background"
                       style={{ boxShadow: '0 0 8px rgba(44,252,125,0.5)' }}
                     >
                       {pendingCount > 9 ? '9+' : pendingCount}
@@ -223,7 +223,7 @@ export const SidebarContent = memo(function SidebarContent({
         </div>
       </div>
 
-      {/* â”€â”€ User Card â”€â”€ */}
+      {/* ── User Card ── */}
       {user && (
         <div className="relative z-10 mx-4 mb-5 shrink-0">
           <Link href="/profile/me" onClick={() => isMobile && onClose && onClose()}>
@@ -275,7 +275,7 @@ export const SidebarContent = memo(function SidebarContent({
                   <p className="text-sm font-black text-foreground italic uppercase tracking-tighter truncate">
                     {user.name || 'Usuario'}
                   </p>
-                  <p className="text-[10px] font-black text-foreground/50 uppercase tracking-[0.2em] mt-0.5">
+                  <p className="text-[9px] font-black text-foreground/50 uppercase tracking-[0.2em] mt-0.5">
                     #{user?.id?.slice(0, 5) || '00000'}
                   </p>
                 </div>
@@ -283,13 +283,13 @@ export const SidebarContent = memo(function SidebarContent({
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-1.5 mt-0.5">
                     <span
-                      className="text-[10px] font-black uppercase tracking-widest"
+                      className="text-[9px] font-black uppercase tracking-widest"
                       style={{ color: rank.color }}
                     >
                       {rank.name}
                     </span>
-                    <span className="text-[10px] text-foreground/25 font-black">Â·</span>
-                    <span className="text-[10px] font-black text-foreground/35 uppercase tracking-widest">
+                    <span className="text-[9px] text-foreground/25 font-black">·</span>
+                    <span className="text-[9px] font-black text-foreground/35 uppercase tracking-widest">
                       {elo} ELO
                     </span>
                   </div>
@@ -319,10 +319,10 @@ export const SidebarContent = memo(function SidebarContent({
         </div>
       )}
 
-      {/* â”€â”€ Navigation â”€â”€ */}
+      {/* ── Navigation ── */}
       <div className="relative z-10 flex-1 overflow-y-auto px-3 pb-3 flex flex-col gap-0.5 no-scrollbar min-h-0">
-        <span className="text-[10px] font-black uppercase tracking-[0.3em] px-3 mb-1.5 mt-1 text-foreground/55">
-          NavegaciÃ³n
+        <span className="text-[9px] font-black uppercase tracking-[0.3em] px-3 mb-1.5 mt-1 text-foreground/55">
+          Navegación
         </span>
 
         {navItems.map((item, index) => {
@@ -393,7 +393,7 @@ export const SidebarContent = memo(function SidebarContent({
 
                 {item.badge && (
                   <span
-                    className="relative z-10 min-w-[20px] h-5 px-1.5 rounded-full flex items-center justify-center text-[10px] font-black bg-primary/90 text-background"
+                    className="relative z-10 min-w-[20px] h-5 px-1.5 rounded-full flex items-center justify-center text-[9px] font-black bg-primary/90 text-background"
                     style={{ boxShadow: '0 0 10px rgba(44,252,125,0.35)' }}
                   >
                     {item.badge}
@@ -404,7 +404,7 @@ export const SidebarContent = memo(function SidebarContent({
           );
         })}
 
-        {/* â”€â”€ Quick Create CTA â”€â”€ */}
+        {/* ── Quick Create CTA ── */}
         <div className="mt-4 px-1">
           <div
             className="h-px mb-4"
@@ -443,7 +443,7 @@ export const SidebarContent = memo(function SidebarContent({
         </div>
       </div>
 
-      {/* â”€â”€ Footer â”€â”€ */}
+      {/* ── Footer ── */}
       <div className={`relative z-10 p-4 shrink-0 ${isMobile ? 'pb-8' : ''}`}>
         <div
           className="h-px mb-4"
@@ -461,7 +461,7 @@ export const SidebarContent = memo(function SidebarContent({
           }}
         >
           <LogOut className="w-3.5 h-3.5" strokeWidth={2.5} />
-          Cerrar SesiÃ³n
+          Cerrar Sesión
         </button>
       </div>
     </div>

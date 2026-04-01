@@ -18,7 +18,7 @@ export const TeamCard = ({ team, performanceMode }: TeamCardProps) => {
     <Link href={`/team?id=${team.id}`} className="block">
       <motion.div
         whileHover={performanceMode ? {} : { scale: 1.01, y: -6 }}
-        className="group flex flex-col sm:flex-row items-center justify-between gap-6 p-7 rounded-[2rem] glass-premium border-white/5 hover:border-primary/20 transition-all cursor-pointer relative overflow-hidden shadow-2xl"
+        className="group flex flex-col sm:flex-row items-center justify-between gap-6 p-7 rounded-[3rem] glass-premium border-white/5 hover:border-primary/20 transition-all cursor-pointer relative overflow-hidden shadow-2xl"
       >
         {/* Dynamic Ray Background */}
         {!performanceMode && (
@@ -42,7 +42,7 @@ export const TeamCard = ({ team, performanceMode }: TeamCardProps) => {
               )}
               
               <div 
-                className="w-24 h-24 rounded-[2rem] bg-gradient-to-br from-surface to-background flex items-center justify-center overflow-hidden border-2 border-white/5 group-hover:border-primary/50 transition-all duration-700 shadow-2xl relative z-10 p-1"
+                className="w-24 h-24 rounded-[3rem] bg-gradient-to-br from-surface to-background flex items-center justify-center overflow-hidden border-2 border-white/5 group-hover:border-primary/50 transition-all duration-700 shadow-2xl relative z-10 p-1"
               >
                 <div className="w-full h-full rounded-[2.8rem] overflow-hidden">
                   {team.logo_url ? (
@@ -104,7 +104,7 @@ export const TeamCard = ({ team, performanceMode }: TeamCardProps) => {
         <div className="flex items-center gap-6 relative z-10 w-full sm:w-auto mt-6 sm:mt-0">
           <div className="hidden xl:flex flex-col items-end opacity-0 group-hover:opacity-100 translate-x-8 group-hover:translate-x-0 transition-all duration-700">
             <span className="text-[11px] font-bold text-primary tracking-wide font-outfit">Sede Central</span>
-            <span className="text-[10px] font-medium text-foreground/30 mt-1">Entrar al vestuario</span>
+            <span className="text-[9px] font-medium text-foreground/30 mt-1">Entrar al vestuario</span>
           </div>
           <div 
             className="w-16 h-16 rounded-[2rem] bg-foreground/[0.04] border border-white/5 flex items-center justify-center group-hover:bg-primary group-hover:text-background transition-all duration-700 shadow-xl group-hover:shadow-[0_15px_30px_rgba(44,252,125,0.2)] group-hover:scale-110"
