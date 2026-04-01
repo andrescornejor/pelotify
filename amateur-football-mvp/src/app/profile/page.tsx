@@ -538,13 +538,16 @@ function ProfileContent() {
         />
 
         {isMe && (
-          <div className="absolute top-28 sm:top-32 right-6 sm:right-12 z-20 flex gap-3">
-             <button 
+          <div className="absolute top-24 sm:top-32 right-4 sm:right-12 z-30 flex gap-2 sm:gap-3">
+             <button
               onClick={() => setIsEditing(!isEditing)}
-              className="px-6 h-12 rounded-2xl glass-premium border-white/10 hover:border-primary/40 text-[10px] font-black uppercase tracking-[0.2em] transition-all flex items-center gap-2 group/btn backdrop-blur-md"
+              className="px-4 sm:px-6 h-10 sm:h-12 rounded-xl sm:rounded-2xl glass-premium border-white/10 hover:border-primary/40 text-[8px] sm:text-[10px] font-black uppercase tracking-[0.2em] transition-all flex items-center gap-2 group/btn backdrop-blur-md"
              >
-                <Edit2 className="w-4 h-4 text-primary group-hover/btn:rotate-12 transition-transform" />
-                <span>{isEditing ? 'Cerrar Editor' : 'Personalizar'}</span>
+                <Edit2 className="w-3 h-3 sm:w-4 sm:h-4 text-primary group-hover/btn:rotate-12 transition-transform" />
+                <span>
+                  <span className="hidden sm:inline">{isEditing ? 'Cerrar' : 'Personalizar'}</span>
+                  <span className="sm:hidden">{isEditing ? 'Cerrar' : 'Editar'}</span>
+                </span>
              </button>
              {!isEditing && (
               <ShareStory
@@ -570,7 +573,7 @@ function ProfileContent() {
       </div>
 
       {/* Main Content Container */}
-      <div className="max-w-screen-2xl mx-auto w-full px-4 sm:px-6 lg:px-10 xl:px-14 2xl:px-16 -mt-32 sm:-mt-48 lg:-mt-64 relative z-20 pb-20">
+      <div className="max-w-screen-2xl mx-auto w-full px-4 sm:px-6 lg:px-10 xl:px-14 2xl:px-16 -mt-24 sm:-mt-48 lg:-mt-64 relative z-20 pb-20">
         
         {/* Profile Header Block */}
         <div className="flex flex-col lg:flex-row items-center gap-8 mb-12">

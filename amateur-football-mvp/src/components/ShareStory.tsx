@@ -107,19 +107,22 @@ export function ShareStory({ type, data, trigger, className }: ShareStoryProps) 
         onClick={handleShare}
         disabled={isGenerating}
         className={cn(
-          "flex items-center justify-center gap-2 px-6 h-14 rounded-2xl transition-all active:scale-95",
-          "bg-primary text-black font-black uppercase tracking-widest text-[10px]",
+          "flex items-center justify-center gap-2 px-4 sm:px-6 h-10 sm:h-14 rounded-xl sm:rounded-2xl transition-all active:scale-95",
+          "bg-primary text-black font-black uppercase tracking-widest text-[8px] sm:text-[10px]",
           "shadow-xl shadow-primary/20 disabled:opacity-50",
           className
         )}
       >
         {isGenerating ? (
-          <Loader2 className="w-4 h-4 animate-spin" />
+          <Loader2 className="w-3 h-3 sm:w-4 sm:h-4 animate-spin" />
         ) : (
           trigger || (
             <>
-              <Share2 className="w-4 h-4" />
-              <span>Compartir Story</span>
+              <Share2 className="w-3 h-3 sm:w-4 sm:h-4" />
+              <span>
+                <span className="hidden sm:inline">Compartir Story</span>
+                <span className="sm:hidden">Compartir</span>
+              </span>
             </>
           )
         )}
