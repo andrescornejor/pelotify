@@ -476,7 +476,7 @@ function MatchLobbyContent() {
           <ArrowLeft className="w-6 h-6" />
         </Link>
 
-        <div className="relative z-10 max-w-[1700px] mx-auto px-4 h-full flex flex-col justify-end pb-12 pt-48 md:pt-64">
+        <div className="relative z-10 max-w-[1700px] mx-auto px-4 h-full flex flex-col justify-end pb-12 pt-24 md:pt-32">
 
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-8">
             <div className="space-y-4">
