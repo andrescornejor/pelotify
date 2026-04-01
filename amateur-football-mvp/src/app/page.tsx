@@ -56,7 +56,7 @@ export default function HomePage() {
 
   const [greeting, setGreeting] = useState('');
   const [countdownText, setCountdownText] = useState<string | null>(null);
-  const [isRatingOpen, setIsRatingOpen] = useState(false);
+  const [activeTab, setActiveTab] = useState<'activity' | 'teams' | 'venues' | 'futtok'>('activity');
   const { performanceMode, setPerformanceMode } = useSettings();
   const [scrollProgress, setScrollProgress] = useState(0);
 
@@ -174,6 +174,38 @@ export default function HomePage() {
       y: 0,
       transition: { type: 'spring' as const, stiffness: 280, damping: 24, delay: i * 0.07 },
     }),
+  };
+
+  const tabContentVariants = {
+    hidden: { opacity: 0, y: 10, scale: 0.98 },
+    visible: { 
+      opacity: 1, 
+      y: 0, 
+      scale: 1,
+      transition: { type: 'spring', stiffness: 300, damping: 30, duration: 0.4 } 
+    },
+    exit: { 
+      opacity: 0, 
+      y: -10, 
+      scale: 0.98,
+      transition: { duration: 0.2, ease: "easeIn" } 
+    }
+  };
+
+  const tabContentVariants = {
+    hidden: { opacity: 0, y: 10, scale: 0.98 },
+    visible: { 
+      opacity: 1, 
+      y: 0, 
+      scale: 1,
+      transition: { type: 'spring', stiffness: 300, damping: 30, duration: 0.4 } 
+    },
+    exit: { 
+      opacity: 0, 
+      y: -10, 
+      scale: 0.98,
+      transition: { duration: 0.2, ease: "easeIn" } 
+    }
   };
 
   const statCardsData = useMemo(
@@ -602,409 +634,356 @@ export default function HomePage() {
 
             <SectionDivider />
 
-            <motion.div
-              variants={fadeUp}
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true }}
-              custom={1}
-              whileHover={performanceMode ? {} : { scale: 1.01 }}
-              className={cn(
-                'relative overflow-hidden rounded-[2.5rem] p-6 flex flex-col sm:flex-row items-center justify-between gap-6 snap-start scroll-mt-26 glass-premium border-primary/10',
-                performanceMode && 'bg-surface'
-              )}
-            >
-              {!performanceMode && (
-                <div
-                  className="absolute right-0 top-0 w-full h-full opacity-10 pointer-events-none"
-                  style={{
-                    background:
-                      'radial-gradient(ellipse at 100% 0%, rgba(44,252,125,0.6) 0%, transparent 60%)',
-                  }}
-                />
-              )}
-              <div className="flex items-center gap-5 relative z-10">
-                <div className="w-14 h-14 rounded-2xl flex items-center justify-center shrink-0 glass shadow-inner border-white/5">
-                  <Users className="w-7 h-7 text-primary" />
-                </div>
-                <div>
-                  <h4 className="text-xl font-black text-foreground italic uppercase tracking-tighter leading-none font-kanit">
-                    Comunidad Activa
-                  </h4>
-                  <p className="text-[10px] font-black text-foreground/40 uppercase tracking-[0.25em] mt-1 font-outfit">
-                    <span className="text-primary text-base font-black mr-1">{totalPlayers}</span>{' '}
-                    JUGADORES REGISTRADOS
-                  </p>
-                </div>
-              </div>
-              <div className="flex gap-3 relative z-10 shrink-0 w-full sm:w-auto">
-                <Link href="/teams" className="flex-1 sm:flex-none">
-                  <button className="w-full h-11 px-6 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all hover:bg-foreground/5 glass border-white/10 text-foreground/60 font-outfit">
-                    CLUBES TOP
-                  </button>
-                </Link>
-                <Link href="/search" className="flex-1 sm:flex-none">
-                  <button className="w-full h-11 px-6 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all hover:scale-[1.03] text-background bg-gradient-to-br from-primary to-primary-dark shadow-xl shadow-primary/20 font-outfit">
-                    MAPA VIVO
-                  </button>
-                </Link>
-              </div>
-            </motion.div>
-
-            <SectionDivider />
-
-            <SectionDivider />
-
-            <motion.section
-              variants={fadeUp}
-              initial="hidden"
-              animate="visible"
-              custom={2}
-              className="space-y-6 snap-start scroll-mt-26"
-            >
-              <div className="flex items-end justify-between px-1">
-                <div className="flex flex-col gap-1">
-                  <h2 className="text-xl lg:text-2xl font-black italic text-foreground uppercase tracking-tighter leading-none font-kanit">
-                    Road to Glory
-                  </h2>
-                  <span className="text-[9px] font-semibold text-primary/80 tracking-wide font-outfit">
-                    Tu camino hacia la leyenda
-                  </span>
-                </div>
-                <div className="flex items-center gap-2 text-foreground/30">
-                  <span className="text-[9px] font-medium tracking-wide hidden sm:inline">
-                    Nivel de sistema
-                  </span>
-                  <Sparkles className="w-5 h-5 text-primary/30 shrink-0 mb-1 animate-pulse" />
-                </div>
-              </div>
-
-              <div className="glass-premium p-8 rounded-[2.5rem] border-white/5 relative overflow-hidden">
-                <div className="absolute inset-0 opacity-[0.03] pointer-events-none">
-                  <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_center,_var(--primary)_0%,_transparent_70%)]" />
-                </div>
-
-                <div className="relative z-10 space-y-10">
-                  <div className="relative flex items-center justify-between px-4 sm:px-10">
-                    <div className="absolute left-0 right-0 h-1 bg-foreground/5 top-1/2 -translate-y-1/2" />
-                    <motion.div
-                      initial={{ width: 0 }}
-                      whileInView={{ width: '100%' }}
-                      transition={{ duration: 2, ease: 'circOut' }}
-                      className="absolute left-0 h-1 bg-gradient-to-r from-primary/20 via-primary to-primary-light top-1/2 -translate-y-1/2"
-                      style={{
-                        width: `${(RANKS.findIndex((rank) => rank.name === rankCalculation.info.name) / (RANKS.length - 1)) * 100}%`,
-                      }}
-                    />
-
-                    {RANKS.map((rankItem, i) => {
-                      const isReached = statsSummary.elo >= rankItem.minElo;
-                      const isCurrent = rankCalculation.info.name === rankItem.name;
-
-                      return (
-                        <div
-                          key={rankItem.name}
-                          className="relative flex flex-col items-center group"
+            {/* --- DASHBOARD TAB CONTROLLER --- */}
+            <section className="sticky top-20 lg:top-4 z-40 bg-background/80 backdrop-blur-xl py-2 -mx-2 px-2 lg:bg-transparent lg:static lg:pb-6">
+               <div className="max-w-fit mx-auto lg:mx-0 p-1.5 rounded-[2rem] glass-premium border-white/10 flex items-center gap-1 shadow-2xl relative overflow-hidden">
+                  {!performanceMode && (
+                     <div className="absolute inset-0 bg-gradient-to-r from-primary/5 via-transparent to-primary/5 pointer-events-none" />
+                  )}
+                  {[
+                     { id: 'activity', label: 'Feed', icon: Activity },
+                     { id: 'teams', label: 'Equipos', icon: Users },
+                     { id: 'venues', label: 'Sedes', icon: MapPin },
+                     { id: 'futtok', label: 'FutTok', icon: Flame },
+                  ].map((tab) => {
+                     const isSelected = activeTab === tab.id;
+                     return (
+                        <button
+                           key={tab.id}
+                           onClick={() => setActiveTab(tab.id as any)}
+                           className={cn(
+                              "relative px-5 py-2.5 rounded-full flex items-center gap-2.5 transition-all duration-500 group",
+                              isSelected ? "text-background" : "text-foreground/40 hover:text-foreground/70"
+                           )}
                         >
-                          <motion.div
-                            whileHover={{ scale: 1.2 }}
-                            className={cn(
-                              'w-10 h-10 rounded-xl flex items-center justify-center border-2 transition-all duration-500',
-                              isReached
-                                ? 'bg-background border-primary shadow-[0_0_15px_rgba(44,252,125,0.3)]'
-                                : 'bg-surface/50 border-white/5 opacity-40 group-hover:opacity-100'
-                            )}
-                          >
-                            <RankBadgeInline rankName={rankItem.name} size="sm" className="scale-75" />
-                          </motion.div>
-
-                          <div
-                            className={cn(
-                              'absolute -bottom-8 whitespace-nowrap text-[8px] font-black uppercase tracking-tighter transition-all duration-300',
-                              isCurrent
-                                ? 'text-primary opacity-100 scale-110'
-                                : 'text-foreground/20 opacity-0 group-hover:opacity-100 group-hover:-bottom-6'
-                            )}
-                          >
-                            {rankItem.name}
-                          </div>
-
-                          {isCurrent && (
-                            <motion.div
-                              layoutId="current-rank-indicator"
-                              className="absolute -top-12"
-                            >
-                              <div className="px-2 py-1 rounded bg-primary text-background text-[7px] font-black uppercase tracking-widest whitespace-nowrap relative">
-                                TU RANGO
-                                <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-2 h-2 bg-primary rotate-45" />
-                              </div>
-                            </motion.div>
-                          )}
-                        </div>
-                      );
-                    })}
-                  </div>
-
-                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-4">
-                    {[
-                      {
-                        icon: Activity,
-                        color: '#2cfc7d',
-                        label: 'Partidos',
-                        value: statsSummary.totalMatches,
-                        desc: 'Experiencia acumulada.',
-                      },
-                      {
-                        icon: Target,
-                        color: '#f59e0b',
-                        label: 'Goles',
-                        value: metadata?.goals || 0,
-                        desc: 'Bono por efectividad.',
-                      },
-                      {
-                        icon: Award,
-                        color: '#6366f1',
-                        label: 'Honores',
-                        value: metadata?.mvp_count || 0,
-                        desc: 'Reconocimiento MVP.',
-                      },
-                    ].map((item, i) => (
-                      <div
-                        key={i}
-                        className="flex items-center gap-4 p-4 rounded-2xl bg-foreground/[0.02] border border-white/5 group hover:bg-foreground/[0.04] transition-colors"
-                      >
-                        <div
-                          className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0"
-                          style={{ backgroundColor: `${item.color}15` }}
-                        >
-                          <item.icon className="w-5 h-5" style={{ color: item.color }} />
-                        </div>
-                        <div>
-                          <p className="text-[10px] font-black text-foreground/40 uppercase tracking-widest">
-                            {item.label}
-                          </p>
-                          <p className="text-xl font-black italic font-kanit text-foreground">
-                            {item.value}
-                          </p>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            </motion.section>
-
-            <motion.div
-              whileHover={{ scale: 1.005 }}
-              className="relative overflow-hidden rounded-[2.5rem] p-8 flex flex-col sm:flex-row items-center justify-between gap-8 glass-premium border-primary/10 group"
-            >
-              <div className="absolute inset-0 bg-gradient-to-r from-primary/5 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-
-              <div className="flex items-center gap-6 relative z-10">
-                <div className="relative">
-                  <div className="absolute inset-0 bg-primary/10 blur-xl rounded-full animate-pulse" />
-                  <RankBadgeInline rankName={rankCalculation.info.name} size="md" />
-                </div>
-                <div className="space-y-1">
-                  <h4 className="text-2xl font-black text-foreground italic uppercase tracking-tighter leading-none font-kanit">
-                    Dominio de la Liga {rankCalculation.info.name}
-                  </h4>
-                  <p className="text-[11px] text-foreground/40 font-medium tracking-wide max-w-sm leading-relaxed">
-                    Estás en el top{' '}
-                    <span className="text-primary">{Math.max(1, 100 - statsSummary.winRate)}%</span> de
-                    jugadores en tu categoría. Seguí ganando para desbloquear{' '}
-                    <span style={{ color: rankCalculation.nextRank.color }}>
-                      {rankCalculation.nextRank.name}
-                    </span>
-                    .
-                  </p>
-                </div>
-              </div>
-
-              <Link href="/ranks">
-                <motion.button
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  className="h-14 px-10 rounded-2xl flex items-center justify-center gap-4 transition-all text-white shadow-2xl shadow-primary/20 bg-gradient-to-br from-primary to-primary-dark group overflow-hidden relative"
-                >
-                  <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-500" />
-                  <span className="text-[11px] font-black uppercase tracking-[0.2em] italic relative z-10">
-                    VER RANKING GLOBAL
-                  </span>
-                  <Trophy className="w-5 h-5 text-white/90 relative z-10 group-hover:rotate-12 transition-transform" />
-                </motion.button>
-              </Link>
-            </motion.div>
-
-            <SectionDivider />
-
-            {/* NEW: FEATURED HIGHLIGHTS SECTION */}
-            <div className="flex items-center justify-between px-1">
-              <div className="flex flex-col gap-1">
-                <h2 className="text-xl lg:text-2xl font-black text-foreground italic uppercase tracking-tighter font-kanit">
-                  Tendencias en FutTok
-                </h2>
-                <span className="text-[9px] font-semibold text-primary/80 tracking-wide font-outfit">
-                  Lo mejor de la comunidad
-                </span>
-              </div>
-              <Link
-                href="/highlights"
-                className="group flex items-center gap-2 px-5 py-2.5 rounded-full text-[9px] font-black text-white hover:text-emerald-400 transition-all tracking-[0.2em] uppercase glass-premium border-emerald-500/20 hover:border-emerald-500/50 shadow-lg shadow-emerald-500/5"
-              >
-                EXPLORAR FutTok <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
-              </Link>
-            </div>
-
-            <div className="flex gap-4 overflow-x-auto pb-4 scrollbar-none snap-x h-[280px] sm:h-[380px]">
-              {highlights.length > 0 ? (
-                highlights.map((h) => (
-                  <Link key={h.id} href={`/highlights?v=${h.id}`} className="shrink-0 aspect-[9/16] h-full rounded-[2rem] overflow-hidden relative group snap-start border border-white/5 shadow-xl">
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent z-10" />
-                    <LazyVideo
-                      src={h.video_url}
-                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 opacity-60 group-hover:opacity-100"
-                    />
-                    <div className="absolute top-2 right-2 px-1.5 py-0.5 bg-red-500 text-[6px] rounded-full font-black text-white italic z-20">LIVE</div>
-                    <div className="absolute bottom-4 left-4 right-4 z-20">
-                      <div className="flex items-center gap-2 mb-1">
-                        <div className="w-5 h-5 rounded-full bg-surface border border-white/20 flex items-center justify-center overflow-hidden">
-                          {h.profiles?.avatar_url ? (
-                            <img src={h.profiles.avatar_url} className="w-full h-full object-cover" alt="" />
-                          ) : (
-                            <User2 className="w-3 h-3 text-white/40" />
-                          )}
-                        </div>
-                        <span className="text-[7px] font-black text-white truncate">@{h.profiles?.name || 'user'}</span>
-                      </div>
-                      <div className="flex items-center gap-1">
-                        <Flame className="w-2.5 h-2.5 text-orange-400" />
-                        <span className="text-[8px] font-black text-white">{h.likes_count}</span>
-                      </div>
-                    </div>
-                  </Link>
-                ))
-              ) : (
-                // Placeholder skeletons while loading or if empty
-                [1, 2, 3].map((i) => (
-                  <div key={i} className="shrink-0 w-32 sm:w-44 h-full rounded-[2rem] bg-surface border border-white/5 animate-pulse" />
-                ))
-              )}
-
-              <Link href="/highlights" className="shrink-0 aspect-[9/16] h-full rounded-[2rem] glass-premium border-dashed border-white/20 flex flex-col items-center justify-center gap-3 group hover:border-primary/40 transition-all text-foreground/30 snap-start">
-                <div className="w-10 h-10 rounded-full bg-surface flex items-center justify-center group-hover:scale-110 transition-transform">
-                  <PlusCircle className="w-5 h-5 text-emerald-500" />
-                </div>
-                <span className="text-[8px] font-semibold tracking-wide text-center px-4">Subir mi jugada</span>
-              </Link>
-            </div>
-
-            <SectionDivider />
-
-            <div className="flex items-center justify-between px-1">
-              <div className="flex flex-col gap-1">
-                <h2 className="text-xl lg:text-2xl font-black text-foreground italic uppercase tracking-tighter font-kanit">
-                  Tus Equipos
-                </h2>
-                <span className="text-[9px] font-semibold text-primary/80 tracking-wide font-outfit">
-                  Plantel profesional
-                </span>
-              </div>
-              <Link
-                href="/teams"
-                className="group flex items-center gap-1.5 px-4 py-2 rounded-2xl text-[9px] font-black text-foreground/55 hover:text-foreground transition-all tracking-[0.2em] uppercase glass border-white/10"
-              >
-                VER TODOS{' '}
-                <ChevronRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
-              </Link>
-            </div>
-
-            <div className="flex flex-col gap-5 pb-6 lg:pb-0">
-              {isLoading ? (
-                Array(3).fill(0).map((_, i) => (
-                  <div key={i} className="h-24 rounded-[2rem] skeleton-shimmer" />
-                ))
-              ) : userTeams.length > 0 ? (
-                userTeams.map((team) => <TeamCard key={team.id} team={team} performanceMode={performanceMode} />)
-              ) : null}
-            </div>
-
-            <SectionDivider />
-
-            {/* NEW: FEATURED VENUES SECTION */}
-            <div className="flex items-center justify-between px-1">
-              <div className="flex flex-col gap-1">
-                <h2 className="text-xl lg:text-2xl font-black text-foreground italic uppercase tracking-tighter font-kanit">
-                  Sedes Destacadas
-                </h2>
-                <span className="text-[9px] font-semibold text-primary/80 tracking-wide font-outfit">
-                  Complejos verificados en Rosario
-                </span>
-              </div>
-              <Link
-                href="/establecimientos"
-                className="group flex items-center gap-2 px-5 py-2.5 rounded-full text-[9px] font-black text-white hover:text-primary transition-all tracking-[0.2em] uppercase glass-premium border-primary/20 hover:border-primary/50 shadow-lg shadow-primary/5"
-              >
-                VER TODAS <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
-              </Link>
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 pb-6 lg:pb-0">
-               {featuredVenues.length > 0 ? (
-                  featuredVenues.map((venue) => (
-                     <VenueCard key={venue.id} venue={venue} performanceMode={performanceMode} />
-                  ))
-               ) : (
-                  [1, 2].map(i => (
-                     <div key={i} className="h-80 rounded-[3rem] bg-surface animate-pulse" />
-                  ))
-               )}
-            </div>
-
-            <SectionDivider />
-            <section id="activity-feed" className="space-y-6">
-              <div className="flex items-center justify-between px-1">
-                <div className="flex flex-col gap-1">
-                  <h2 className="text-xl lg:text-2xl font-black text-foreground italic uppercase tracking-tighter font-kanit">
-                    Feed de Actividad
-                  </h2>
-                  <span className="text-[9px] font-semibold text-primary/80 tracking-wide font-outfit">
-                    Comunidad en tiempo real
-                  </span>
-                </div>
-                <Activity className="w-5 h-5 text-primary/30" />
-              </div>
-
-              <div className="space-y-4">
-                {activities.length > 0 ? (
-                  activities.map((activity, idx) => (
-                    <motion.div
-                      key={idx}
-                      initial={{ opacity: 0, x: -10 }}
-                      whileInView={{ opacity: 1, x: 0 }}
-                      transition={{ delay: idx * 0.1 }}
-                      className="p-4 rounded-2xl glass-premium border-white/5 flex items-center gap-4 group"
-                    >
-                      <div className="w-10 h-10 rounded-full bg-surface border border-white/5 flex items-center justify-center shrink-0">
-                        {activity.type === 'RANK_UP' ? <TrendingUp className="w-4 h-4 text-primary" /> : <Star className="w-4 h-4 text-accent" />}
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <p className="text-[10px] font-bold text-foreground">
-                          {activity.user} <span className="text-foreground/40 font-medium tracking-tight"> {activity.detail}</span>
-                        </p>
-                        <p className="text-[8px] font-black text-primary/60 uppercase mt-0.5 tracking-tighter">hace {activity.time}</p>
-                      </div>
-                    </motion.div>
-                  ))
-                ) : (
-                  <EmptyState
-                    icon={Activity}
-                    title="Silencio en la Cancha"
-                    description="No hay actividad reciente en tu zona. ¡Sé el primero en hacer historia hoy!"
-                  />
-                )}
-              </div>
+                           {isSelected && (
+                              <motion.div
+                                 layoutId="active-dashboard-pill"
+                                 className="absolute inset-0 bg-gradient-to-br from-primary to-primary-dark rounded-full shadow-[0_4px_20px_rgba(44,252,125,0.4)]"
+                                 transition={{ type: "spring", stiffness: 400, damping: 35 }}
+                              />
+                           )}
+                           <tab.icon className={cn(
+                              "w-4 h-4 relative z-10 transition-transform duration-500",
+                              isSelected ? "scale-110 text-background" : "group-hover:scale-110"
+                           )} />
+                           <span className="text-[11px] font-black uppercase tracking-widest italic relative z-10 leading-none">
+                              {tab.label}
+                           </span>
+                        </button>
+                     );
+                  })}
+               </div>
             </section>
+
+            <AnimatePresence mode="wait">
+               {activeTab === 'activity' && (
+                  <motion.div
+                     key="activity-tab"
+                     initial="hidden"
+                     animate="visible"
+                     exit="exit"
+                     variants={tabContentVariants}
+                     className="space-y-6"
+                  >
+                     <motion.div
+                        variants={fadeUp}
+                        whileHover={performanceMode ? {} : { scale: 1.01 }}
+                        className={cn(
+                           'relative overflow-hidden rounded-[2.5rem] p-6 flex flex-col sm:flex-row items-center justify-between gap-6 glass-premium border-primary/10',
+                           performanceMode && 'bg-surface'
+                        )}
+                     >
+                        {!performanceMode && (
+                           <div
+                              className="absolute right-0 top-0 w-full h-full opacity-10 pointer-events-none"
+                              style={{
+                                 background:
+                                    'radial-gradient(ellipse at 100% 0%, rgba(44,252,125,0.6) 0%, transparent 60%)',
+                              }}
+                           />
+                        )}
+                        <div className="flex items-center gap-5 relative z-10">
+                           <div className="w-14 h-14 rounded-2xl flex items-center justify-center shrink-0 glass shadow-inner border-white/5">
+                              <Users className="w-7 h-7 text-primary" />
+                           </div>
+                           <div>
+                              <h4 className="text-xl font-black text-foreground italic uppercase tracking-tighter leading-none font-kanit">
+                                 Comunidad Activa
+                              </h4>
+                              <p className="text-[10px] font-black text-foreground/40 uppercase tracking-[0.25em] mt-1 font-outfit">
+                                 <span className="text-primary text-base font-black mr-1">{totalPlayers}</span>{' '}
+                                 JUGADORES REGISTRADOS
+                              </p>
+                           </div>
+                        </div>
+                        <div className="flex gap-3 relative z-10 shrink-0 w-full sm:w-auto">
+                           <Link href="/teams" className="flex-1 sm:flex-none">
+                              <button className="w-full h-11 px-6 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all hover:bg-foreground/5 glass border-white/10 text-foreground/60 font-outfit">
+                                 CLUBES TOP
+                              </button>
+                           </Link>
+                           <Link href="/search" className="flex-1 sm:flex-none">
+                              <button className="w-full h-11 px-6 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all hover:scale-[1.03] text-background bg-gradient-to-br from-primary to-primary-dark shadow-xl shadow-primary/20 font-outfit">
+                                 MAPA VIVO
+                              </button>
+                           </Link>
+                        </div>
+                     </motion.div>
+
+                     <SectionDivider />
+
+                     <motion.section
+                        variants={fadeUp}
+                        className="space-y-6"
+                     >
+                        <div className="flex items-end justify-between px-1">
+                           <div className="flex flex-col gap-1">
+                              <h2 className="text-xl lg:text-2xl font-black italic text-foreground uppercase tracking-tighter leading-none font-kanit">
+                                 Road to Glory
+                              </h2>
+                              <span className="text-[9px] font-semibold text-primary/80 tracking-wide font-outfit">
+                                 Tu camino hacia la leyenda
+                              </span>
+                           </div>
+                           <Sparkles className="w-5 h-5 text-primary/30 shrink-0 mb-1 animate-pulse" />
+                        </div>
+
+                        <div className="glass-premium p-8 rounded-[2.5rem] border-white/5 relative overflow-hidden">
+                           <div className="absolute inset-0 opacity-[0.03] pointer-events-none">
+                              <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_center,_var(--primary)_0%,_transparent_70%)]" />
+                           </div>
+
+                           <div className="relative z-10 space-y-10">
+                              <div className="relative flex items-center justify-between px-4 sm:px-10">
+                                 <div className="absolute left-0 right-0 h-1 bg-foreground/5 top-1/2 -translate-y-1/2" />
+                                 <motion.div
+                                    initial={{ width: 0 }}
+                                    whileInView={{ width: '100%' }}
+                                    transition={{ duration: 2, ease: 'circOut' }}
+                                    className="absolute left-0 h-1 bg-gradient-to-r from-primary/20 via-primary to-primary-light top-1/2 -translate-y-1/2"
+                                    style={{
+                                       width: `${(RANKS.findIndex((rank) => rank.name === rankCalculation.info.name) / (RANKS.length - 1)) * 100}%`,
+                                    }}
+                                 />
+
+                                 {RANKS.map((rankItem, i) => {
+                                    const isReached = statsSummary.elo >= rankItem.minElo;
+                                    const isCurrent = rankCalculation.info.name === rankItem.name;
+
+                                    return (
+                                       <div
+                                          key={rankItem.name}
+                                          className="relative flex flex-col items-center group"
+                                       >
+                                          <motion.div
+                                             whileHover={{ scale: 1.2 }}
+                                             className={cn(
+                                                'w-10 h-10 rounded-xl flex items-center justify-center border-2 transition-all duration-500',
+                                                isReached
+                                                   ? 'bg-background border-primary shadow-[0_0_15px_rgba(44,252,125,0.3)]'
+                                                   : 'bg-surface/50 border-white/5 opacity-40 group-hover:opacity-100'
+                                             )}
+                                          >
+                                             <RankBadgeInline rankName={rankItem.name} size="sm" className="scale-75" />
+                                          </motion.div>
+                                          {isCurrent && (
+                                             <motion.div
+                                                layoutId="current-rank-indicator"
+                                                className="absolute -top-12"
+                                             >
+                                                <div className="px-2 py-1 rounded bg-primary text-background text-[7px] font-black uppercase tracking-widest whitespace-nowrap relative">
+                                                   TU RANGO
+                                                   <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-2 h-2 bg-primary rotate-45" />
+                                                </div>
+                                             </motion.div>
+                                          )}
+                                       </div>
+                                    );
+                                 })}
+                              </div>
+
+                              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-4">
+                                 {[
+                                    { icon: Activity, color: '#2cfc7d', label: 'Partidos', value: statsSummary.totalMatches },
+                                    { icon: Target, color: '#f59e0b', label: 'Goles', value: metadata?.goals || 0 },
+                                    { icon: Award, color: '#6366f1', label: 'Honores', value: metadata?.mvp_count || 0 },
+                                 ].map((item, i) => (
+                                    <div key={i} className="flex items-center gap-4 p-4 rounded-2xl bg-foreground/[0.02] border border-white/5 group hover:bg-foreground/[0.04] transition-colors">
+                                       <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0" style={{ backgroundColor: `${item.color}15` }}>
+                                          <item.icon className="w-5 h-5" style={{ color: item.color }} />
+                                       </div>
+                                       <div>
+                                          <p className="text-[10px] font-black text-foreground/40 uppercase tracking-widest">{item.label}</p>
+                                          <p className="text-xl font-black italic font-kanit text-foreground">{item.value}</p>
+                                       </div>
+                                    </div>
+                                 ))}
+                              </div>
+                           </div>
+                        </div>
+                     </motion.section>
+
+                     <SectionDivider />
+
+                     <section className="space-y-6">
+                        <div className="flex items-center justify-between px-1">
+                           <div className="flex flex-col gap-1">
+                              <h2 className="text-xl lg:text-2xl font-black text-foreground italic uppercase tracking-tighter font-kanit">
+                                 Feed de Actividad
+                              </h2>
+                              <span className="text-[9px] font-semibold text-primary/80 tracking-wide font-outfit">
+                                 Comunidad en tiempo real
+                              </span>
+                           </div>
+                           <Activity className="w-5 h-5 text-primary/30" />
+                        </div>
+
+                        <div className="space-y-4">
+                           {activities.length > 0 ? (
+                              activities.map((activity, idx) => (
+                                 <motion.div
+                                    key={idx}
+                                    initial={{ opacity: 0, x: -10 }}
+                                    animate={{ opacity: 1, x: 0 }}
+                                    transition={{ delay: idx * 0.1 }}
+                                    className="p-4 rounded-2xl glass-premium border-white/5 flex items-center gap-4 group"
+                                 >
+                                    <div className="w-10 h-10 rounded-full bg-surface border border-white/5 flex items-center justify-center shrink-0">
+                                       {activity.type === 'RANK_UP' ? <TrendingUp className="w-4 h-4 text-primary" /> : <Star className="w-4 h-4 text-accent" />}
+                                    </div>
+                                    <div className="flex-1 min-w-0">
+                                       <p className="text-[10px] font-bold text-foreground">
+                                          {activity.user} <span className="text-foreground/40 font-medium tracking-tight"> {activity.detail}</span>
+                                       </p>
+                                       <p className="text-[8px] font-black text-primary/60 uppercase mt-0.5 tracking-tighter">hace {activity.time}</p>
+                                    </div>
+                                 </motion.div>
+                              ))
+                           ) : (
+                              <EmptyState icon={Activity} title="Silencio en la Cancha" description="No hay actividad reciente en tu zona." />
+                           )}
+                        </div>
+                     </section>
+                  </motion.div>
+               )}
+
+               {activeTab === 'teams' && (
+                  <motion.div
+                     key="teams-tab"
+                     initial="hidden"
+                     animate="visible"
+                     exit="exit"
+                     variants={tabContentVariants}
+                     className="space-y-6"
+                  >
+                     <div className="flex items-center justify-between px-1">
+                        <div className="flex flex-col gap-1">
+                           <h2 className="text-xl lg:text-2xl font-black text-foreground italic uppercase tracking-tighter font-kanit">
+                              Tus Equipos
+                           </h2>
+                           <span className="text-[9px] font-semibold text-primary/80 tracking-wide font-outfit">
+                              Plantel profesional
+                           </span>
+                        </div>
+                        <Link href="/teams" className="group flex items-center gap-1.5 px-4 py-2 rounded-2xl text-[9px] font-black text-foreground/55 hover:text-foreground transition-all tracking-[0.2em] uppercase glass border-white/10">
+                           VER TODOS <ChevronRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
+                        </Link>
+                     </div>
+
+                     <div className="flex flex-col gap-5">
+                        {userTeams.length > 0 ? (
+                           userTeams.map((team) => <TeamCard key={team.id} team={team} performanceMode={performanceMode} />)
+                        ) : (
+                           <EmptyState icon={Shield} title="Sin Plantel" description="Aún no eres parte de ningún equipo." />
+                        )}
+                     </div>
+                  </motion.div>
+               )}
+
+               {activeTab === 'venues' && (
+                  <motion.div
+                     key="venues-tab"
+                     initial="hidden"
+                     animate="visible"
+                     exit="exit"
+                     variants={tabContentVariants}
+                     className="space-y-6"
+                  >
+                     <div className="flex items-center justify-between px-1">
+                        <div className="flex flex-col gap-1">
+                           <h2 className="text-xl lg:text-2xl font-black text-foreground italic uppercase tracking-tighter font-kanit">
+                              Sedes Destacadas
+                           </h2>
+                           <span className="text-[9px] font-semibold text-primary/80 tracking-wide font-outfit">
+                              Complejos verificados en Rosario
+                           </span>
+                        </div>
+                        <Link href="/establecimientos" className="group flex items-center gap-2 px-5 py-2.5 rounded-full text-[9px] font-black text-white hover:text-primary transition-all tracking-[0.2em] uppercase glass-premium border-primary/20 hover:border-primary/50 shadow-lg shadow-primary/5">
+                           EXPLORAR <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
+                        </Link>
+                     </div>
+
+                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                        {featuredVenues.length > 0 ? (
+                           featuredVenues.map((venue) => <VenueCard key={venue.id} venue={venue} performanceMode={performanceMode} />)
+                        ) : (
+                           Array(2).fill(0).map((_, i) => <div key={i} className="h-80 rounded-[3rem] bg-surface animate-pulse" />)
+                        )}
+                     </div>
+                  </motion.div>
+               )}
+
+               {activeTab === 'futtok' && (
+                  <motion.div
+                     key="futtok-tab"
+                     initial="hidden"
+                     animate="visible"
+                     exit="exit"
+                     variants={tabContentVariants}
+                     className="space-y-6"
+                  >
+                     <div className="flex items-center justify-between px-1">
+                        <div className="flex flex-col gap-1">
+                           <h2 className="text-xl lg:text-2xl font-black text-foreground italic uppercase tracking-tighter font-kanit">
+                              Tendencias en FutTok
+                           </h2>
+                           <span className="text-[9px] font-semibold text-primary/80 tracking-wide font-outfit">
+                              Lo mejor de la comunidad
+                           </span>
+                        </div>
+                        <Link href="/highlights" className="group flex items-center gap-2 px-5 py-2.5 rounded-full text-[9px] font-black text-white hover:text-emerald-400 transition-all tracking-[0.2em] uppercase glass-premium border-emerald-500/20 hover:border-emerald-500/50 shadow-lg shadow-emerald-500/5">
+                           VER TODO <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
+                        </Link>
+                     </div>
+
+                     <div className="flex gap-4 overflow-x-auto pb-4 scrollbar-none snap-x h-[320px] sm:h-[420px]">
+                        {highlights.length > 0 ? (
+                           highlights.map((h) => (
+                              <Link key={h.id} href={`/highlights?v=${h.id}`} className="shrink-0 aspect-[9/16] h-full rounded-[2rem] overflow-hidden relative group snap-start border border-white/5 shadow-xl">
+                                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent z-10" />
+                                 <LazyVideo src={h.video_url} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 opacity-60 group-hover:opacity-100" />
+                                 <div className="absolute bottom-4 left-4 right-4 z-20 flex items-center gap-2">
+                                    <div className="w-6 h-6 rounded-full bg-surface border border-white/20 flex items-center justify-center overflow-hidden">
+                                       {h.profiles?.avatar_url ? <img src={h.profiles.avatar_url} className="w-full h-full object-cover" /> : <User2 className="w-3 h-3 text-white/40" />}
+                                    </div>
+                                    <span className="text-[8px] font-black text-white">@{h.profiles?.name || 'user'}</span>
+                                 </div>
+                              </Link>
+                           ))
+                        ) : (
+                           <EmptyState icon={Flame} title="Sin Brillo" description="Aún no hay clips tendencia." />
+                        )}
+                        <Link href="/highlights" className="shrink-0 aspect-[9/16] h-full rounded-[2rem] glass-premium border-dashed border-white/20 flex flex-col items-center justify-center gap-3 group hover:border-primary/40 transition-all text-foreground/30 snap-start">
+                           <div className="w-10 h-10 rounded-full bg-surface flex items-center justify-center group-hover:scale-110 transition-transform">
+                              <PlusCircle className="w-5 h-5 text-emerald-500" />
+                           </div>
+                           <span className="text-[8px] font-semibold tracking-wide text-center px-4">Subir jugada</span>
+                        </Link>
+                     </div>
+                  </motion.div>
+               )}
+            </AnimatePresence>
           </div>
 
           <div className="lg:col-span-4 xl:col-span-4 space-y-6">
