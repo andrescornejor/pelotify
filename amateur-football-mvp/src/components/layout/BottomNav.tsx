@@ -104,7 +104,7 @@ export function BottomNav() {
           'relative px-2 py-2 rounded-[2.5rem] border transition-all duration-700 h-[88px] flex items-center',
           performanceMode 
             ? 'bg-surface border-border shadow-xl' 
-            : 'glass-premium shadow-[0_35px_80px_rgba(0,0,0,0.7),inset_0_1px_2px_rgba(255,255,255,0.05)] border-white/10 backdrop-blur-[45px]'
+            : 'glass-premium shadow-2xl border-foreground/10 backdrop-blur-[45px]'
         )}
       >
         {/* Cinematic glow effects */}

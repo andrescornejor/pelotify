@@ -259,13 +259,13 @@ export const SidebarContent = memo(function SidebarContent({
           <motion.button
             whileTap={{ scale: 0.9 }}
             onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
-            className="w-9 h-9 flex items-center justify-center rounded-xl bg-foreground/[0.04] border border-white/5 hover:bg-foreground/[0.08] transition-colors"
+            className="w-9 h-9 flex items-center justify-center rounded-xl bg-foreground/[0.04] border border-foreground/5 hover:bg-foreground/[0.08] transition-colors"
           >
             {theme === 'dark' ? <Sun className="w-4 h-4 text-foreground/50" /> : <Moon className="w-4 h-4 text-foreground/50" />}
           </motion.button>
 
           {isMobile && onClose && (
-            <button onClick={onClose} className="w-9 h-9 flex items-center justify-center rounded-xl bg-foreground/[0.04] border border-white/5 ml-1">
+            <button onClick={onClose} className="w-9 h-9 flex items-center justify-center rounded-xl bg-foreground/[0.04] border border-foreground/5 ml-1">
               <X className="w-4 h-4 text-foreground/40" />
             </button>
           )}
@@ -276,9 +276,9 @@ export const SidebarContent = memo(function SidebarContent({
       {user && (
         <div className="relative z-10 px-4 mb-6 shrink-0 group">
           <Link href="/profile/me" onClick={() => isMobile && onClose && onClose()}>
-            <div className="relative overflow-hidden rounded-3xl p-4 border border-white/[0.06] shadow-2xl transition-all duration-500 hover:scale-[1.02] active:scale-[0.98]">
+            <div className="relative overflow-hidden rounded-3xl p-4 border border-foreground/10 shadow-xl transition-all duration-500 hover:scale-[1.02] active:scale-[0.98]">
               {/* Card Surface */}
-              <div className="absolute inset-0 bg-gradient-to-br from-foreground/[0.08] to-foreground/[0.03] backdrop-blur-xl" />
+              <div className="absolute inset-0 bg-gradient-to-br from-foreground/[0.05] to-transparent backdrop-blur-xl" />
 
               {/* Dynamic Glow */}
               <div className="absolute -top-12 -right-12 w-32 h-32 bg-primary/10 blur-[40px] rounded-full group-hover:bg-primary/20 transition-all duration-700" />
@@ -287,7 +287,7 @@ export const SidebarContent = memo(function SidebarContent({
               <div className="relative flex items-center gap-4">
                 {/* Avatar with Ring */}
                 <div className="relative shrink-0">
-                  <div className="w-14 h-14 rounded-2xl p-0.5 bg-gradient-to-br from-primary/40 via-primary/10 to-transparent border border-white/10 shadow-xl overflow-hidden">
+                  <div className="w-14 h-14 rounded-2xl p-0.5 bg-gradient-to-br from-primary/40 via-primary/10 to-transparent border border-foreground/10 shadow-lg overflow-hidden">
                     <div className="w-full h-full rounded-[0.85rem] bg-background/40 flex items-center justify-center overflow-hidden">
                       {user.avatar_url ? (
                         <img src={user.avatar_url} alt="" className="w-full h-full object-cover" />
@@ -322,13 +322,13 @@ export const SidebarContent = memo(function SidebarContent({
                   </div>
                 </div>
 
-                <div className="w-8 h-8 rounded-xl bg-white/5 flex items-center justify-center transition-transform duration-300 group-hover:translate-x-1 border border-white/5">
+                <div className="w-8 h-8 rounded-xl bg-foreground/5 flex items-center justify-center transition-transform duration-300 group-hover:translate-x-1 border border-foreground/5">
                   <ChevronRight className="w-4 h-4 text-foreground/30" />
                 </div>
               </div>
 
               {/* Status bar */}
-              <div className="mt-4 pt-3 border-t border-white/[0.04] flex items-center justify-between gap-2">
+              <div className="mt-4 pt-3 border-t border-foreground/5 flex items-center justify-between gap-2">
                 <div className="flex-1 h-1.5 bg-foreground/5 rounded-full overflow-hidden">
                   <motion.div
                     initial={{ width: 0 }}
@@ -365,7 +365,7 @@ export const SidebarContent = memo(function SidebarContent({
         "relative z-10 p-4 shrink-0 transition-all",
         isMobile ? "pb-8" : "pb-4"
       )}>
-        <div className="bg-foreground/[0.03] border border-white/5 rounded-2xl overflow-hidden">
+        <div className="bg-foreground/[0.03] border border-foreground/5 rounded-2xl overflow-hidden">
           <Link href="/settings" onClick={() => isMobile && onClose && onClose()} className="block">
             <div className="px-4 py-3.5 flex items-center gap-3 hover:bg-foreground/[0.04] transition-colors group">
               <Settings className="w-4 h-4 text-foreground/40 group-hover:text-foreground/70 transition-colors" />
@@ -374,7 +374,7 @@ export const SidebarContent = memo(function SidebarContent({
               </span>
             </div>
           </Link>
-          <div className="h-px bg-white/5 mx-4" />
+          <div className="h-px bg-foreground/5 mx-4" />
           <button
             onClick={logout}
             className="w-full px-4 py-3.5 flex items-center gap-3 hover:bg-red-500/[0.05] transition-colors group"
@@ -444,8 +444,8 @@ export function Sidebar() {
             style={{
               backgroundColor: 'var(--surface-elevated)',
               backdropFilter: performanceMode ? 'none' : 'blur(20px) saturate(160%)',
-              borderRight: '1px solid rgba(255,255,255,0.08)',
-              boxShadow: performanceMode ? 'none' : '40px 0 80px rgba(0,0,0,0.5)',
+              borderRight: '1px solid var(--border)',
+              boxShadow: performanceMode ? 'none' : 'var(--shadow-xl)',
             }}
           >
             {/* Header ambient glow */}
