@@ -27,6 +27,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useQueryClient } from '@tanstack/react-query';
 import { queryKeys } from '@/lib/queryKeys';
 import confetti from 'canvas-confetti';
+import { cn } from '@/lib/utils';
 
 export default function EstablecimientoProfile() {
   const params = useParams();
@@ -47,6 +48,12 @@ export default function EstablecimientoProfile() {
   const [newReview, setNewReview] = useState({ rating: 5, comment: '' });
   const searchParams = useSearchParams();
   const [showSuccessModal, setShowSuccessModal] = useState(false);
+
+  const averageRating = React.useMemo(() => {
+    if (reviews.length === 0) return null;
+    const sum = reviews.reduce((acc, rev) => acc + rev.rating, 0);
+    return (sum / reviews.length).toFixed(1);
+  }, [reviews]);
 
   useEffect(() => {
     const paymentStatus = searchParams.get('payment');
@@ -264,10 +271,20 @@ const handleBooking = async () => {
                   <div className="px-5 py-2 glass-premium rounded-2xl border border-primary/30 shadow-[0_10px_30px_rgba(44,252,125,0.2)]">
                      <span className="text-[10px] font-black text-primary uppercase tracking-[0.4em] italic">VETERANO PRO</span>
                   </div>
-                  <div className="flex items-center gap-1.5 px-4 py-2 glass rounded-2xl border border-white/5">
-                     {[1,2,3,4,5].map(i => <Star key={i} className="w-3.5 h-3.5 fill-accent text-accent" />)}
-                     <span className="text-[11px] font-black text-white ml-2">4.9</span>
-                  </div>
+                   {averageRating && (
+                     <div className="flex items-center gap-1.5 px-4 py-2 glass rounded-2xl border border-white/5">
+                        {[1, 2, 3, 4, 5].map((i) => (
+                           <Star 
+                              key={i} 
+                              className={cn(
+                                 "w-3.5 h-3.5",
+                                 Number(averageRating) >= i ? "fill-accent text-accent" : "text-white/20"
+                              )} 
+                           />
+                        ))}
+                        <span className="text-[11px] font-black text-white ml-2">{averageRating}</span>
+                     </div>
+                  )}
                </div>
                
                <h1 className="text-6xl sm:text-8xl lg:text-[10rem] font-black italic uppercase leading-[0.8] tracking-[-0.08em] text-white drop-shadow-[0_30px_60px_rgba(0,0,0,0.6)] font-kanit">
