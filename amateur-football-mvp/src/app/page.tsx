@@ -192,22 +192,6 @@ export default function HomePage() {
     }
   };
 
-  const tabContentVariants = {
-    hidden: { opacity: 0, y: 10, scale: 0.98 },
-    visible: { 
-      opacity: 1, 
-      y: 0, 
-      scale: 1,
-      transition: { type: 'spring', stiffness: 300, damping: 30, duration: 0.4 } 
-    },
-    exit: { 
-      opacity: 0, 
-      y: -10, 
-      scale: 0.98,
-      transition: { duration: 0.2, ease: "easeIn" } 
-    }
-  };
-
   const statCardsData = useMemo(
     () => [
       {
