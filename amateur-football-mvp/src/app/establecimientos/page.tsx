@@ -17,12 +17,14 @@ import {
 } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 import Link from 'next/link';
+import { VenueCard } from '@/components/home';
+import { useSettings } from '@/contexts/SettingsContext';
 
 export default function EstablecimientosList() {
   const [venues, setVenues] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
-  const [filterType, setFilterType] = useState('all');
+  const { performanceMode } = useSettings();
 
   useEffect(() => {
     fetchVenues();
@@ -56,8 +58,12 @@ export default function EstablecimientosList() {
       
       {/* HEADER SECTION */}
       <div className="relative pt-32 pb-20 px-6 lg:px-20 overflow-hidden">
-         <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-primary/5 rounded-full blur-[120px] -z-10 animate-pulse" />
-         <div className="absolute -bottom-20 -left-20 w-[400px] h-[400px] bg-accent/5 rounded-full blur-[100px] -z-10" />
+         {!performanceMode && (
+           <>
+             <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-primary/5 rounded-full blur-[120px] -z-10 animate-pulse" />
+             <div className="absolute -bottom-20 -left-20 w-[400px] h-[400px] bg-accent/5 rounded-full blur-[100px] -z-10" />
+           </>
+         )}
          
          <div className="max-w-7xl mx-auto space-y-12">
             <motion.div
@@ -67,18 +73,18 @@ export default function EstablecimientosList() {
             >
                <div className="flex items-center gap-3">
                   <div className="w-1.5 h-6 bg-primary rounded-full shadow-[0_0_15px_rgba(44,252,125,0.8)]" />
-                  <span className="text-[10px] font-black text-primary uppercase tracking-[0.5em] italic">Explorar Sedes</span>
+                  <span className="text-[10px] font-black text-primary uppercase tracking-[0.5em] italic">Red de Complejos</span>
                </div>
                <h1 className="text-6xl sm:text-8xl lg:text-[10rem] font-black italic uppercase leading-[0.85] tracking-tight font-kanit">
-                 Donde se Juega el <span className="text-primary">Fútbol</span>
+                 Sedes <span className="text-primary">Oficiales</span>
                </h1>
                <p className="text-muted-foreground text-sm font-bold uppercase tracking-widest max-w-lg mt-6">
-                 Los mejores complejos de Rosario integrados en Pelotify. Reserva instantánea, pagos seguros y la mejor experiencia.
+                 Los mejores complejos de Rosario integrados en Pelotify. Reserva instantánea, pagos seguros y la mejor experiencia de juego.
                </p>
             </motion.div>
 
             {/* SEARCH TRAY */}
-            <div className="flex flex-col md:flex-row gap-4">
+            <div className="flex flex-col md:flex-row gap-4 max-w-3xl">
                <div className="flex-1 relative group">
                   <Search className="absolute left-6 top-1/2 -translate-y-1/2 w-6 h-6 text-muted-foreground group-focus-within:text-primary transition-colors" />
                   <input 
@@ -103,7 +109,7 @@ export default function EstablecimientosList() {
             <AnimatePresence mode="popLayout">
                {loading ? (
                  [...Array(6)].map((_, i) => (
-                    <div key={i} className="h-[450px] rounded-[3rem] bg-surface-elevated/30 border border-white/5 animate-pulse" />
+                    <div key={i} className="h-80 rounded-[3rem] bg-surface-elevated/30 border border-white/5 animate-pulse" />
                  ))
                ) : filteredVenues.length === 0 ? (
                  <div className="col-span-full py-20 text-center space-y-4">
@@ -114,50 +120,11 @@ export default function EstablecimientosList() {
                  filteredVenues.map((venue, i) => (
                     <motion.div
                       key={venue.id}
-                      initial={{ opacity: 0, scale: 0.95 }}
-                      animate={{ opacity: 1, scale: 1 }}
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: i * 0.05 }}
                     >
-                       <Link href={`/establecimientos/${venue.id}`}>
-                          <div className="glass-premium rounded-[3rem] p-4 border-white/5 relative overflow-hidden group hover:border-primary/40 hover:shadow-[0_40px_80px_rgba(0,0,0,0.4)] transition-all duration-500 h-full flex flex-col">
-                             <div className="h-64 rounded-[2.5rem] overflow-hidden relative mb-6">
-                                <img 
-                                  src="https://images.unsplash.com/photo-1574629810360-7efbbe195018?q=80&w=1200&auto=format&fit=crop" 
-                                  className="w-full h-full object-cover grayscale group-hover:grayscale-0 group-hover:scale-110 transition-all duration-700" 
-                                  alt={venue.name}
-                                />
-                                <div className="absolute top-4 left-4 px-4 py-2 glass rounded-2xl border border-white/10 shadow-2xl">
-                                   <div className="flex items-center gap-1">
-                                      <Star className="w-3 h-3 fill-accent text-accent" />
-                                      <span className="text-[10px] font-black text-white">4.9</span>
-                                   </div>
-                                </div>
-                                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end justify-center p-8">
-                                   <span className="text-[10px] font-black uppercase text-primary tracking-widest flex items-center gap-2">Ver Perfil Completo <ArrowRight className="w-4 h-4" /></span>
-                                </div>
-                             </div>
-
-                             <div className="px-4 pb-4 space-y-4 flex-1 flex flex-col justify-between">
-                                <div className="space-y-2">
-                                   <h3 className="text-2xl font-black font-kanit italic uppercase tracking-tighter group-hover:text-primary transition-colors leading-none">{venue.name}</h3>
-                                   <p className="text-[10px] font-bold text-muted-foreground uppercase flex items-center gap-2">
-                                      <MapPin className="w-3 h-3 text-primary/60" />
-                                      {venue.address || "Rosario, Argentina"}
-                                   </p>
-                                </div>
-
-                                <div className="pt-6 border-t border-white/5 flex items-center justify-between">
-                                   <div className="flex items-center gap-2">
-                                      <Zap className="w-4 h-4 text-primary" />
-                                      <span className="text-[10px] font-black uppercase tracking-widest text-foreground/80">Premium Pitch</span>
-                                   </div>
-                                   <div className="px-3 py-1 rounded-lg bg-primary/10 border border-primary/20">
-                                      <span className="text-[9px] font-black text-primary uppercase tracking-widest leading-none">Disponible</span>
-                                   </div>
-                                </div>
-                             </div>
-                          </div>
-                       </Link>
+                       <VenueCard venue={venue} performanceMode={performanceMode} />
                     </motion.div>
                  ))
                )}

@@ -2,13 +2,13 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Home, Search, PlusCircle, User, MessageSquare, Flame, Target, Zap } from 'lucide-react';
+import { Home, Search, PlusCircle, User, MessageSquare, Flame, Target, Zap, MapPin } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const NAV_ITEMS = [
   { href: '/', icon: Home, label: 'Inicio' },
-  { href: '/recruitment', icon: Zap, label: 'Fichajes' },
+  { href: '/establecimientos', icon: MapPin, label: 'Sedes' },
   { href: '/create', icon: PlusCircle, label: 'Crear', isPrimary: true },
   { href: '/highlights', icon: Flame, label: 'FutTok' },
   { href: '/profile/me', icon: User, label: 'Perfil' },

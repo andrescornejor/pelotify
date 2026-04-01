@@ -34,7 +34,7 @@ import { OnboardingTour } from '@/components/OnboardingTour';
 import { JerseyVisualizer } from '@/components/JerseyVisualizer';
 import { getHighlights, Highlight } from '@/lib/highlights';
 import LandingPage from '@/components/LandingPage';
-import { StatCard, TeamCard, RankBadgeInline, EmptyState, SectionDivider, LazyVideo, HomePageSkeleton, RANKS, getRankByElo } from '@/components/home';
+import { StatCard, TeamCard, RankBadgeInline, EmptyState, SectionDivider, LazyVideo, HomePageSkeleton, VenueCard, RANKS, getRankByElo } from '@/components/home';
 import { useHomeData } from '@/hooks/useHomeData';
 import { useEffect, useMemo, useState } from 'react';
 
@@ -52,6 +52,7 @@ export default function HomePage() {
   const activities = homeData?.activities || [];
   const totalPlayers = homeData?.totalPlayers || 0;
   const highlights = homeData?.highlights || [];
+  const featuredVenues = homeData?.featuredVenues || [];
 
   const [greeting, setGreeting] = useState('');
   const [countdownText, setCountdownText] = useState<string | null>(null);
@@ -652,6 +653,38 @@ export default function HomePage() {
 
             <SectionDivider />
 
+            {/* NEW: FEATURED VENUES SECTION */}
+            <div className="flex items-center justify-between px-1">
+              <div className="flex flex-col gap-1">
+                <h2 className="text-xl lg:text-2xl font-black text-foreground italic uppercase tracking-tighter font-kanit">
+                  Sedes Destacadas
+                </h2>
+                <span className="text-[9px] font-semibold text-primary/80 tracking-wide font-outfit">
+                  Complejos verificados en Rosario
+                </span>
+              </div>
+              <Link
+                href="/establecimientos"
+                className="group flex items-center gap-2 px-5 py-2.5 rounded-full text-[9px] font-black text-white hover:text-primary transition-all tracking-[0.2em] uppercase glass-premium border-primary/20 hover:border-primary/50 shadow-lg shadow-primary/5"
+              >
+                VER TODAS <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
+              </Link>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 pb-6 lg:pb-0">
+               {featuredVenues.length > 0 ? (
+                  featuredVenues.map((venue) => (
+                     <VenueCard key={venue.id} venue={venue} performanceMode={performanceMode} />
+                  ))
+               ) : (
+                  [1, 2].map(i => (
+                     <div key={i} className="h-80 rounded-[3rem] bg-surface animate-pulse" />
+                  ))
+               )}
+            </div>
+
+            <SectionDivider />
+
             <motion.section
               variants={fadeUp}
               initial="hidden"
@@ -1148,6 +1181,7 @@ export default function HomePage() {
               <h3 className="text-[10px] font-semibold text-foreground/40 tracking-wide font-outfit">Accesos rápidos</h3>
               <div className="grid grid-cols-1 gap-2">
                 {[
+                  { label: 'Sedes', icon: MapPin, href: '/establecimientos' },
                   { label: 'Mercado', icon: Target, href: '/scouting' },
                   { label: 'Mis Amigos', icon: Users, href: '/friends' },
                   { label: 'Chat Global', icon: MessageSquare, href: '/messages' },

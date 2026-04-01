@@ -5,3 +5,4 @@ export { EmptyState } from './EmptyState';
 export { SectionDivider } from './SectionDivider';
 export { LazyVideo } from './LazyVideo';
 export { HomePageSkeleton } from './HomePageSkeleton';
+export { VenueCard } from './VenueCard';

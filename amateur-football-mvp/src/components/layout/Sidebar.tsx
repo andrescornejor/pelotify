@@ -16,6 +16,7 @@ import {
   Target,
   MessageSquare,
   Zap,
+  MapPin,
 } from 'lucide-react';
 import Link from 'next/link';
 import { useAuth } from '@/contexts/AuthContext';
@@ -68,6 +69,7 @@ export const SidebarContent = memo(function SidebarContent({
     { icon: Target, label: 'Torneos/Copas', href: '/tournaments', badge: 'VIVO' },
     { icon: Zap, label: 'Fichajes', href: '/recruitment', badge: 'PRO' },
     { icon: Search, label: 'Buscar Partidos', href: '/search' },
+    { icon: MapPin, label: 'Sedes', href: '/establecimientos', badge: 'PRO' },
     { icon: User2, label: 'Mi Perfil', href: '/profile/me' },
     { icon: MessageSquare, label: 'Chats', href: '/messages' },
     { icon: Flame, label: 'FutTok', href: '/highlights', badge: 'NUEVO' },

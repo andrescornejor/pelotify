@@ -11,10 +11,11 @@ interface HomeData {
   totalPlayers: number;
   activities: any[];
   highlights: any[];
+  featuredVenues: any[];
 }
 
 async function fetchHomeData(userId: string): Promise<HomeData> {
-  const [teamsRes, matchesRes, playersCountRes, recentProfilesRes] =
+  const [teamsRes, matchesRes, playersCountRes, recentProfilesRes, venuesRes] =
     await Promise.all([
       supabase
         .from('team_members')
@@ -36,6 +37,12 @@ async function fetchHomeData(userId: string): Promise<HomeData> {
         .select('full_name, created_at, elo')
         .order('created_at', { ascending: false })
         .limit(5),
+      supabase
+        .from('canchas_businesses')
+        .select('*')
+        .eq('is_active', true)
+        .order('name', { ascending: true })
+        .limit(6),
     ]);
 
   const userTeams = teamsRes.data
@@ -60,8 +67,9 @@ async function fetchHomeData(userId: string): Promise<HomeData> {
     : [];
 
   const highlights = await getHighlights(6);
+  const featuredVenues = venuesRes.data || [];
 
-  return { userTeams, nextMatch, totalPlayers, activities, highlights };
+  return { userTeams, nextMatch, totalPlayers, activities, highlights, featuredVenues };
 }
 
 /**
