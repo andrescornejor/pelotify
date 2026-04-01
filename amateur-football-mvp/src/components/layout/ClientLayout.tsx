@@ -8,7 +8,6 @@ import { BottomNav } from '@/components/layout/BottomNav';
 import { useAuth } from '@/contexts/AuthContext';
 import { cn } from '@/lib/utils';
 import { useSidebar } from '@/contexts/SidebarContext';
-import { motion, AnimatePresence } from 'framer-motion';
 import { NotificationCenter } from '@/components/notifications/NotificationCenter';
 import { FloatingChat } from '@/components/FloatingChat';
 
@@ -63,23 +62,7 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
               : ''
           )}
         >
-          <AnimatePresence mode="wait" initial={false}>
-            <motion.div
-              key={pathname}
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: -20 }}
-              transition={{ 
-                type: "spring", 
-                stiffness: 300, 
-                damping: 30,
-                opacity: { duration: 0.2 }
-              }}
-              className="w-full flex-1 flex flex-col"
-            >
-              {children}
-            </motion.div>
-          </AnimatePresence>
+          {children}
         </main>
 
         {/* Mobile Navigation */}

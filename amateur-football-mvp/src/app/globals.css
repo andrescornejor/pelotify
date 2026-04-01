@@ -23,27 +23,27 @@
   --warning: #f59e0b;
   --danger: #f43f5e;
 
-  /* LIGHT THEME: Ultra-Premium & Cinematic */
-  --background: #ffffff;
-  --foreground: #020617;
+  /* LIGHT THEME: Soft refinement */
+  --background: #f8fafc;
+  --foreground: #020617; /* Deep slate for high contrast */
   --foreground-rgb: 2, 6, 23;
 
-  --surface: #f9fafb;
-  --surface-elevated: #f3f4f6;
+  --surface: #ffffff;
+  --surface-elevated: #f1f5f9;
   --surface-bright: #ffffff;
 
-  --muted: #64748b;
-  --muted-foreground: #94a3b8;
+  --muted: #475569; /* Darker slate for readability */
+  --muted-foreground: #64748b;
 
-  --border: rgba(2, 6, 23, 0.05);
-  --input: #f9fafb;
+  --border: rgba(2, 6, 23, 0.12); /* More defined borders */
+  --input: #f8fafc;
   --ring: var(--primary);
 
   --radius-xl: 1.5rem;
   --radius-2xl: 2.5rem;
   
-  --glass-bg: rgba(255, 255, 255, 0.8);
-  --glass-border: rgba(2, 6, 23, 0.04);
+  --glass-bg: rgba(255, 255, 255, 0.85);
+  --glass-border: rgba(2, 6, 23, 0.08);
 }
 
 :root.dark {

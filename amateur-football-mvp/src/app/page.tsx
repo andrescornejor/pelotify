@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import {
   Trophy,
   Target,
@@ -35,7 +35,6 @@ import { JerseyVisualizer } from '@/components/JerseyVisualizer';
 import { getHighlights, Highlight } from '@/lib/highlights';
 import LandingPage from '@/components/LandingPage';
 import { StatCard, TeamCard, RankBadgeInline, EmptyState, SectionDivider, LazyVideo, HomePageSkeleton, RANKS, getRankByElo } from '@/components/home';
-import { EmptyPitchIllustration } from '@/components/home/EmptyStateIllustrations';
 import { useHomeData } from '@/hooks/useHomeData';
 import { useEffect, useMemo, useState } from 'react';
 
@@ -943,30 +942,28 @@ export default function HomePage() {
 
               <div className="space-y-4">
                 {activities.length > 0 ? (
-                  <AnimatePresence mode="popLayout">
-                    {activities.map((activity, idx) => (
-                      <motion.div
-                        key={idx}
-                        initial={{ opacity: 0, x: -10 }}
-                        whileInView={{ opacity: 1, x: 0 }}
-                        transition={{ delay: idx * 0.1 }}
-                        className="p-4 rounded-2xl glass-premium border-white/5 flex items-center gap-4 group"
-                      >
-                        <div className="w-10 h-10 rounded-full bg-surface border border-white/5 flex items-center justify-center shrink-0">
-                          {activity.type === 'RANK_UP' ? <TrendingUp className="w-4 h-4 text-primary" /> : <Star className="w-4 h-4 text-accent" />}
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <p className="text-[10px] font-bold text-foreground">
-                            {activity.user} <span className="text-foreground/40 font-medium tracking-tight"> {activity.detail}</span>
-                          </p>
-                          <p className="text-[8px] font-black text-primary/60 uppercase mt-0.5 tracking-tighter">hace {activity.time}</p>
-                        </div>
-                      </motion.div>
-                    ))}
-                  </AnimatePresence>
+                  activities.map((activity, idx) => (
+                    <motion.div
+                      key={idx}
+                      initial={{ opacity: 0, x: -10 }}
+                      whileInView={{ opacity: 1, x: 0 }}
+                      transition={{ delay: idx * 0.1 }}
+                      className="p-4 rounded-2xl glass-premium border-white/5 flex items-center gap-4 group"
+                    >
+                      <div className="w-10 h-10 rounded-full bg-surface border border-white/5 flex items-center justify-center shrink-0">
+                        {activity.type === 'RANK_UP' ? <TrendingUp className="w-4 h-4 text-primary" /> : <Star className="w-4 h-4 text-accent" />}
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-[10px] font-bold text-foreground">
+                          {activity.user} <span className="text-foreground/40 font-medium tracking-tight"> {activity.detail}</span>
+                        </p>
+                        <p className="text-[8px] font-black text-primary/60 uppercase mt-0.5 tracking-tighter">hace {activity.time}</p>
+                      </div>
+                    </motion.div>
+                  ))
                 ) : (
                   <EmptyState
-                    illustration={<EmptyPitchIllustration />}
+                    icon={Activity}
                     title="Silencio en la Cancha"
                     description="No hay actividad reciente en tu zona. ¡Sé el primero en hacer historia hoy!"
                   />
@@ -1109,13 +1106,40 @@ export default function HomePage() {
                     </div>
                   </div>
                 ) : (
-                  <EmptyState
-                    illustration={<EmptyPitchIllustration />}
-                    title="Agenda Libre"
-                    description="No tenés próximos partidos en el calendario. ¡Es hora de armar uno o salir a reclutar leyendas!"
-                    actionText="RECLUTAR"
-                    actionHref="/search"
-                  />
+                  <div className="relative group/agenda overflow-hidden rounded-[2.5rem] p-10 flex flex-col items-center text-center gap-8 border border-white/5 bg-gradient-to-b from-surface/50 to-transparent">
+                    {/* Cinematic Spotlight */}
+                    <div className="absolute top-0 left-1/2 -translate-x-1/2 w-48 h-48 bg-primary/5 blur-[60px] rounded-full pointer-events-none opacity-0 group-hover/agenda:opacity-100 transition-opacity duration-700" />
+
+                    <div className="relative">
+                      <div className="absolute inset-0 bg-primary/20 blur-xl rounded-full scale-0 group-hover/agenda:scale-150 transition-transform duration-1000 opacity-20" />
+                      <Calendar className="w-16 h-16 text-foreground/10 group-hover/agenda:text-primary/30 transition-colors duration-500" />
+                    </div>
+
+                    <div className="space-y-2 relative z-10">
+                      <h4 className="text-2xl font-black italic uppercase tracking-tighter text-foreground font-kanit">Agenda Libre</h4>
+                      <p className="text-[11px] font-medium text-foreground/40 tracking-wide leading-relaxed max-w-[220px]">
+                        No tenés próximos partidos.<br />¡Salí a reclutar leyendas!
+                      </p>
+                    </div>
+
+                    <Link href="/search" className="w-full relative z-10">
+                      <motion.button
+                        whileHover={{ scale: 1.02 }}
+                        whileTap={{ scale: 0.98 }}
+                        className="w-full h-14 rounded-2xl bg-primary text-black font-black uppercase text-[11px] tracking-[0.3em] flex items-center justify-center gap-3 shadow-[0_15px_30px_rgba(44,252,125,0.2)] hover:shadow-[0_20px_40px_rgba(44,252,125,0.4)] transition-all"
+                      >
+                        <Search className="w-4 h-4" />
+                        <span>RECLUTAR</span>
+                      </motion.button>
+                    </Link>
+
+                    <div className="flex flex-col gap-2 pt-4 border-t border-white/5 w-full opacity-60">
+                      <span className="text-[8px] font-semibold text-primary/80 tracking-wide font-outfit">Sugerencia de hoy</span>
+                      <p className="text-[9px] font-medium text-foreground/40 italic leading-relaxed">
+                        "Un equipo unido vale más que 11 estrellas individuales."
+                      </p>
+                    </div>
+                  </div>
                 )}
               </div>
             </div>

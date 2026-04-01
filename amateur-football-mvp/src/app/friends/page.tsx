@@ -31,15 +31,13 @@ import {
   Zap,
   Trophy,
   Star,
-  Shield,
-  MessageSquare,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { motion, AnimatePresence } from 'framer-motion';
+import { Shield } from 'lucide-react';
 import Link from 'next/link';
 import ChatModal from '@/components/ChatModal';
-import { EmptyState } from '@/components/home/EmptyState';
-import { FriendsIllustration, EmptyPitchIllustration } from '@/components/home/EmptyStateIllustrations';
+import { MessageSquare } from 'lucide-react';
 
 const PlayerCard = ({
   p,
@@ -460,15 +458,29 @@ export default function FriendsPage() {
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 px-4 max-w-full mx-auto">
                 <AnimatePresence mode="popLayout">
                   {friends.length === 0 ? (
-                      <div className="col-span-full">
-                        <EmptyState
-                          illustration={<FriendsIllustration />}
-                          title="Sin Amigos Aún"
-                          description="Parece que la cancha está tranquila. ¡Buscá otros jugadores y empezá a armar tu red de contactos!"
-                          actionText="Descubrir Jugadores"
-                          actionHref="#"
-                        />
+                    <motion.div
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      className="col-span-full flex flex-col items-center justify-center py-32 text-center gap-10 glass-premium rounded-[4rem] border-dashed border-2 border-foreground/5 bg-foreground/[0.01] shadow-none"
+                    >
+                      <div className="w-32 h-32 bg-foreground/[0.02] rounded-[3rem] border border-foreground/5 flex items-center justify-center animate-float shadow-2xl">
+                        <Users className="w-12 h-12 text-foreground/70" />
                       </div>
+                      <div className="max-w-sm space-y-4">
+                        <h3 className="text-3xl font-black text-foreground italic uppercase tracking-tighter">
+                          Sin Amigos Aún
+                        </h3>
+                        <p className="text-[10px] text-foreground/60 font-black uppercase tracking-[0.3em] leading-relaxed">
+                          Todavía no tenés amigos agregados. ¡Buscá gente y sumá pibes!
+                        </p>
+                      </div>
+                      <button
+                        onClick={() => setActiveTab('search')}
+                        className="h-14 px-12 bg-primary text-background font-black uppercase text-[10px] tracking-[0.4em] rounded-2xl transition-all shadow-xl shadow-primary/20 hover:scale-105 active:scale-95 hover:bg-foreground hover:text-background"
+                      >
+                        Descubrir Jugadores
+                      </button>
+                    </motion.div>
                   ) : (
                     friends.map((f, i) => (
                       <motion.div
@@ -566,11 +578,6 @@ export default function FriendsPage() {
                       </motion.div>
                     ))
                   )}
-                  <EmptyState
-                    illustration={<EmptyPitchIllustration />}
-                    title="Silencio en la Cancha"
-                    description="No hay actividad reciente en tu zona. ¡Sé el primero en hacer historia hoy!"
-                  />
                 </AnimatePresence>
               </div>
             )}
