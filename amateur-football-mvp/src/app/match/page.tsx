@@ -475,42 +475,47 @@ function MatchLobbyContent() {
           <ArrowLeft className="w-6 h-6" />
         </Link>
 
-        <div className="relative z-10 max-w-[1700px] mx-auto px-4 h-full flex flex-col justify-end pb-12">
-
-          <div className="flex flex-col md:flex-row md:items-end justify-between gap-8">
-            <div className="space-y-4">
+        <div className="relative z-10 max-w-[1700px] mx-auto px-6 h-full flex flex-col justify-end pb-32 md:pb-40 text-left">
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-12">
+            <div className="space-y-6">
               <div className="flex items-center gap-3">
-                <span className="px-3 py-1 rounded-full bg-primary/10 border border-primary/20 text-primary text-[10px] font-black uppercase tracking-widest">
-                  {match.type} • {match.is_private ? 'Privado' : 'Público'}
-                </span>
+                <div className="px-4 py-1.5 rounded-full bg-primary/10 border border-primary/20 text-primary text-[10px] font-black uppercase tracking-widest flex items-center gap-2">
+                  <Shield className="w-3 h-3" /> {match.type} • {match.is_private ? 'Privado' : 'Público'}
+                </div>
                 {isCompleted && (
-                  <span className="px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-500 text-[10px] font-black uppercase tracking-widest flex items-center gap-1.5">
+                  <span className="px-4 py-1.5 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-500 text-[10px] font-black uppercase tracking-widest flex items-center gap-1.5">
                     <Trophy className="w-3 h-3" /> Finalizado
                   </span>
                 )}
               </div>
-              <h1 className="text-4xl md:text-6xl font-black italic uppercase tracking-tighter text-foreground leading-[0.9]">
+
+              <h1 className="text-4xl md:text-8xl font-black italic uppercase tracking-tighter text-foreground leading-[0.8] drop-shadow-2xl">
                 {venueInfo?.name || match.location}
               </h1>
-              <div className="flex flex-wrap items-center gap-6 text-foreground/40 font-black italic uppercase text-xs">
-                <div className="flex items-center gap-2">
-                  <Calendar className="w-4 h-4 text-primary" />
-                  {formatDateLong(match.date)}
+
+              <div className="flex flex-wrap items-center gap-8 text-foreground/40 font-black italic uppercase text-xs md:text-sm tracking-widest">
+                <div className="flex items-center gap-3 group cursor-default">
+                  <div className="w-10 h-10 rounded-xl glass-premium flex items-center justify-center group-hover:scale-110 transition-all border-white/5">
+                    <Calendar className="w-5 h-5 text-primary" />
+                  </div>
+                  <span className="group-hover:text-primary transition-colors">{formatDateLong(match.date)}</span>
                 </div>
-                <div className="flex items-center gap-2">
-                  <Clock className="w-4 h-4 text-primary" />
-                  {formatTime(match.time)}
+                <div className="flex items-center gap-3 group cursor-default">
+                  <div className="w-10 h-10 rounded-xl glass-premium flex items-center justify-center group-hover:scale-110 transition-all border-white/5">
+                    <Clock className="w-5 h-5 text-primary" />
+                  </div>
+                  <span className="group-hover:text-primary transition-colors">{formatTime(match.time)}</span>
                 </div>
               </div>
             </div>
 
-            <div className="flex items-center gap-4">
+            <div className="flex items-center self-start md:self-end">
                {!isCompleted && (
                  <button
                    onClick={() => setIsQRModalOpen(true)}
-                   className="h-14 px-8 rounded-2xl glass-premium border-white/5 font-black italic uppercase text-xs flex items-center gap-3 hover:scale-105 active:scale-95 transition-all"
+                   className="h-16 px-10 rounded-[2rem] bg-indigo-600 text-white font-black italic uppercase text-sm flex items-center gap-4 hover:scale-105 active:scale-95 transition-all shadow-2xl shadow-indigo-600/30"
                  >
-                   <Users className="w-5 h-5 text-primary" /> Invitar
+                   <Users className="w-6 h-6" /> Invitar Jugadores
                  </button>
                )}
             </div>
@@ -518,28 +523,41 @@ function MatchLobbyContent() {
         </div>
       </div>
 
-      <div className="max-w-[1700px] mx-auto px-4 -mt-8 relative z-20">
+      <div className="max-w-[1700px] mx-auto px-6 -mt-16 md:-mt-20 relative z-20">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
           {/* ── LEFT: PITCH & TEAMS ── */}
           <div className="lg:col-span-8 space-y-8">
             {/* Stats Bar */}
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
               {[
-                { icon: Users, label: 'Cupos', value: `${participants.length}/${teamSize * 2}`, color: 'text-primary' },
-                { icon: Shield, label: 'Formato', value: match.type || 'F5', color: 'text-indigo-400' },
-                { icon: DollarSign, label: 'Costo', value: match.price > 0 ? `$${match.price}` : 'Gratis', color: 'text-emerald-400' },
-                { icon: Zap, label: 'Estado', value: isCompleted ? 'Finalizado' : 'En Lobby', color: 'text-amber-400' },
+                { icon: Users, label: 'Cupos Disponibles', value: `${participants.length}/${teamSize * 2}`, color: 'text-primary', desc: 'Participantes' },
+                { icon: Shield, label: 'Formato', value: match.type || 'F7', color: 'text-indigo-400', desc: 'Reglas de juego' },
+                { icon: DollarSign, label: 'Costo', value: match.price > 0 ? `$${match.price}` : 'Gratis', color: 'text-emerald-400', desc: 'Precio por persona' },
+                { icon: Zap, label: 'Estado', value: isCompleted ? 'Finalizado' : 'En Lobby', color: 'text-amber-400', desc: 'Situación actual' },
               ].map((stat, i) => (
                 <motion.div 
                   key={i} 
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.1 * i }}
                   whileHover={{ y: -5, backgroundColor: 'rgba(255,255,255,0.03)' }}
-                  className="p-6 rounded-[2rem] glass-premium border-white/5 space-y-1 transition-all group/stat"
+                  className="p-6 md:p-8 rounded-[2.5rem] md:rounded-[3rem] glass-premium border border-white/10 space-y-4 transition-all group/stat relative overflow-hidden"
                 >
-                  <div className="flex items-center gap-2">
-                    <stat.icon className={cn('w-4 h-4 transition-transform group-hover/stat:rotate-12', stat.color)} />
-                    <span className="text-[8px] font-black text-foreground/20 uppercase tracking-[0.2em]">{stat.label}</span>
+                  <div className="absolute top-0 right-0 p-8 opacity-[0.02] group-hover:opacity-5 transition-opacity pointer-events-none">
+                    <stat.icon className="w-20 h-20" />
                   </div>
-                  <div className="text-xl font-black italic font-kanit uppercase tracking-tighter text-foreground group-hover/stat:text-primary transition-colors">{stat.value}</div>
+                  <div className="flex items-center gap-3 relative z-10">
+                    <div className={cn('w-10 h-10 md:w-12 md:h-12 rounded-xl md:rounded-2xl flex items-center justify-center bg-foreground/5', stat.color)}>
+                      <stat.icon className={cn('w-5 h-5 md:w-6 md:h-6 transition-transform group-hover/stat:rotate-12')} />
+                    </div>
+                    <div className="flex flex-col">
+                      <span className="text-[9px] font-black text-foreground/20 uppercase tracking-[0.2em] leading-none mb-1">{stat.label}</span>
+                      <span className="text-[7px] md:text-[8px] font-bold text-foreground/10 uppercase tracking-widest">{stat.desc}</span>
+                    </div>
+                  </div>
+                  <div className="text-2xl md:text-3xl font-black italic font-kanit uppercase tracking-tighter text-foreground group-hover/stat:text-primary transition-colors relative z-10">
+                    {stat.value}
+                  </div>
                 </motion.div>
               ))}
             </div>
@@ -573,15 +591,26 @@ function MatchLobbyContent() {
 
                 {/* Bench Section (Waiting List) Above Teams */}
                 {unassigned.length > 0 && (
-                  <div className="p-8 rounded-[2.5rem] glass-premium border-white/5 space-y-6">
-                    <div className="flex items-center justify-between">
-                      <div className="flex flex-col">
-                        <h4 className="text-xs font-black italic uppercase text-foreground/40">Lista de Espera</h4>
-                        <span className="text-[10px] font-black text-primary uppercase tracking-widest mt-1">Esperando asignación de equipo</span>
-                      </div>
-                      <span className="text-[10px] font-bold text-foreground/20">{unassigned.length} JUGADORES</span>
+                  <div className="p-10 rounded-[3rem] glass-premium border-white/5 relative overflow-hidden group">
+                    <div className="absolute top-0 right-0 p-10 opacity-[0.03] group-hover:opacity-10 transition-opacity">
+                      <Users className="w-32 h-32" />
                     </div>
-                    <div className="flex flex-wrap gap-4">
+                    <div className="relative z-10 space-y-8">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-4">
+                          <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center text-primary">
+                            <Users className="w-6 h-6" />
+                          </div>
+                          <div className="flex flex-col">
+                            <h4 className="text-xl font-black italic uppercase tracking-tighter text-foreground">Lista de Espera</h4>
+                            <span className="text-[10px] font-black text-primary uppercase tracking-widest italic">Esperando asignación de equipo</span>
+                          </div>
+                        </div>
+                        <div className="px-5 py-2 rounded-xl bg-foreground/5 border border-white/5">
+                           <span className="text-[10px] font-black text-foreground/40 uppercase tracking-widest">{unassigned.length} JUGADORES</span>
+                        </div>
+                      </div>
+                      <div className="flex flex-wrap gap-6">
                       {unassigned.map((p) => (
                         <div
                           key={p.id}

@@ -86,9 +86,12 @@ export default function MercadoPagoButton({ matchId, title, price }: MercadoPago
         <div className="absolute inset-0 rounded-2xl bg-gradient-to-tr from-white/10 to-transparent opacity-50" />
       </button>
       
-      <p className="text-center text-[10px] font-bold text-foreground/40 uppercase tracking-widest leading-relaxed px-4">
-        Los cargos de servicio cubren el mantenimiento de la plataforma y comisiones bancarias, <span className="text-emerald-500">garantizando que el organizador no tenga pérdidas.</span>
-      </p>
+      <div className="px-6 py-4 rounded-2xl bg-foreground/[0.02] border border-foreground/5 mt-2">
+        <p className="text-center text-[9px] font-medium text-foreground/40 uppercase tracking-[0.1em] leading-relaxed">
+          Los cargos de servicio cubren el mantenimiento de la plataforma y comisiones bancarias, <br />
+          <span className="text-emerald-500/60 font-black italic">Garantizando que el organizador no tenga pérdidas.</span>
+        </p>
+      </div>
     </div>
   );
 }
