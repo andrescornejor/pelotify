@@ -17,6 +17,8 @@ import {
   Check,
   ChevronRight,
   ExternalLink,
+  UserMinus,
+  Trash2,
 } from 'lucide-react';
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
@@ -220,6 +222,19 @@ function MatchLobbyContent() {
     }
   };
 
+  const handleKickPlayer = async (userId: string) => {
+    if (!match || !isCreator) return;
+    if (userId === match.creator_id) return; // Can't kick yourself
+    
+    if (window.confirm('\u00bfEst\u00e1s seguro que quer\u00e9s echar a este jugador del partido?')) {
+      try {
+        await leaveMutation.mutateAsync({ matchId: match.id, userId });
+      } catch (e) {
+        console.error('Error kicking player:', e);
+      }
+    }
+  };
+
   const handleRandomizeTeams = async () => {
     if (!match || !isCreator) return;
     const playersToAssign = participants.filter(p => p.status === 'confirmed').map(p => p.user_id);
@@ -406,15 +421,26 @@ function MatchLobbyContent() {
                                     <button
                                       onClick={() => handleMovePlayer(p.user_id, team === 'A' ? 'B' : 'A')}
                                       className={cn("w-6 h-6 rounded-lg flex items-center justify-center text-white shadow-lg", team === 'A' ? "bg-rose-500" : "bg-blue-500")}
+                                      title={team === 'A' ? "Mover a Equipo B" : "Mover a Equipo A"}
                                     >
                                       <ChevronRight className={cn("w-3 h-3", team === 'A' ? "" : "rotate-180")} />
                                     </button>
                                     <button
                                       onClick={() => handleMovePlayer(p.user_id, null)}
                                       className="w-6 h-6 bg-zinc-700 rounded-lg flex items-center justify-center text-white shadow-lg"
+                                      title="Mover al Banquillo"
                                     >
                                       <X className="w-3 h-3" />
                                     </button>
+                                    {p.user_id !== match.creator_id && (
+                                      <button
+                                        onClick={() => handleKickPlayer(p.user_id)}
+                                        className="w-6 h-6 bg-red-600 rounded-lg flex items-center justify-center text-white shadow-lg"
+                                        title="Echar del Partido"
+                                      >
+                                        <UserMinus className="w-3 h-3" />
+                                      </button>
+                                    )}
                                   </div>
                                 )}
                               </div>
@@ -438,9 +464,32 @@ function MatchLobbyContent() {
                         <div key={p.id} className="relative group/slot">
                           <PlayerSlot participant={p} isSelf={p.user_id === user?.id} />
                           {isCreator && (
-                            <div className="absolute -top-1 -right-1 z-30 opacity-0 group-hover/slot:opacity-100 transition-opacity flex gap-1">
-                               <button onClick={() => handleMovePlayer(p.user_id, 'A')} className="w-6 h-6 bg-blue-500 rounded-lg flex items-center justify-center text-white"><ChevronRight className="w-3 h-3 rotate-180" /></button>
-                               <button onClick={() => handleMovePlayer(p.user_id, 'B')} className="w-6 h-6 bg-rose-500 rounded-lg flex items-center justify-center text-white"><ChevronRight className="w-3 h-3" /></button>
+                            <div className="absolute -top-1 -right-1 z-30 opacity-0 group-hover/slot:opacity-100 transition-opacity flex flex-col gap-1">
+                               <div className="flex gap-1">
+                                <button 
+                                  onClick={() => handleMovePlayer(p.user_id, 'A')} 
+                                  className="w-6 h-6 bg-blue-500 rounded-lg flex items-center justify-center text-white"
+                                  title="Mover a Equipo A"
+                                >
+                                  <ChevronRight className="w-3 h-3 rotate-180" />
+                                </button>
+                                <button 
+                                  onClick={() => handleMovePlayer(p.user_id, 'B')} 
+                                  className="w-6 h-6 bg-rose-500 rounded-lg flex items-center justify-center text-white"
+                                  title="Mover a Equipo B"
+                                >
+                                  <ChevronRight className="w-3 h-3" />
+                                </button>
+                               </div>
+                               {p.user_id !== match.creator_id && (
+                                 <button 
+                                   onClick={() => handleKickPlayer(p.user_id)} 
+                                   className="w-6 h-6 bg-red-600 rounded-lg flex items-center justify-center text-white self-end"
+                                   title="Echar del Partido"
+                                 >
+                                   <UserMinus className="w-3 h-3" />
+                                 </button>
+                               )}
                             </div>
                           )}
                         </div>
