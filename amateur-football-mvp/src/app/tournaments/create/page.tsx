@@ -27,6 +27,7 @@ import { getUserTeams } from '@/lib/teams';
 import { cn } from '@/lib/utils';
 import LocationSearch from '@/components/LocationSearch';
 import { AVAILABLE_TIMES } from '@/lib/constants';
+import Link from 'next/link';
 
 export default function CreateTournamentPage() {
   const router = useRouter();
