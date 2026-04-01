@@ -15,9 +15,9 @@ export interface Tournament {
   status: 'upcoming' | 'ongoing' | 'completed' | 'cancelled';
   creator_id?: string;
   prize_percentage?: number;
-  prize_description?: string;
-  field_id?: string;
-  business_id?: string;
+  prize_description?: string | null;
+  field_id?: string | null;
+  business_id?: string | null;
   is_private: boolean;
   is_official: boolean;
   created_at: string;
