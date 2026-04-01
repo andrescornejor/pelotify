@@ -204,12 +204,15 @@ export default function PostMatchView({ match, participants, stats }: PostMatchV
         <ShareStory
           type="match"
           data={{
+            match_id: match.id,
             location: (() => {
               const venue = findVenueByLocation(match.location);
               return venue?.displayName || venue?.name || match.location;
             })(),
             score_a: scoreA,
             score_b: scoreB,
+            mvp: stats.mvp,
+            scorers: stats.goalScorers
           }}
           className="h-20 px-12 rounded-[2.5rem] text-sm shadow-[0_20px_50px_rgba(16,185,129,0.3)] hover:scale-105"
         />
