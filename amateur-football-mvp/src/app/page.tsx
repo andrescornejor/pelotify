@@ -377,19 +377,11 @@ export default function HomePage() {
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: 0.3, duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
                   className="font-black italic uppercase font-kanit tracking-tighter text-foreground"
-                  style={{ fontSize: 'clamp(3rem, 10vw, 7rem)', lineHeight: '0.85' }}
+                  style={{ fontSize: 'clamp(3rem, 10vw, 7.5rem)', lineHeight: '0.85' }}
                 >
-                  PELOTI<span className="text-primary">FY</span>
+                  PELOTI<span className="text-primary italic">FY</span>
                   <span className="inline-block w-[0.15em] h-[0.15em] ml-4 rounded-full bg-primary align-baseline shadow-[0_0_20px_rgba(44,252,125,0.6)]" />
                 </motion.h1>
-                <motion.span
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.6, duration: 0.5 }}
-                  className="text-[14px] sm:text-[18px] font-black uppercase tracking-[0.5em] text-foreground/30 mt-4 ml-1 font-outfit"
-                >
-                  DOMINÁ EL POTRERO
-                </motion.span>
               </div>
 
                 <motion.div
