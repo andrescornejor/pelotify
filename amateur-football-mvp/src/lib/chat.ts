@@ -91,7 +91,7 @@ export async function sendDirectMessage(
 
 export function subscribeToMatchMessages(matchId: string, onMessage: (msg: ChatMessage) => void) {
   return supabase
-    .channel(`match-chat-${matchId}`)
+    .channel(`match-chat-${matchId}-${Math.random().toString(36).slice(2, 9)}`)
     .on(
       'postgres_changes',
       {
@@ -120,7 +120,7 @@ export function subscribeToMatchMessages(matchId: string, onMessage: (msg: ChatM
 
 export function subscribeToDirectMessages(userId: string, onMessage: (msg: ChatMessage) => void) {
   return supabase
-    .channel(`direct-chat-${userId}`)
+    .channel(`direct-chat-${userId}-${Math.random().toString(36).slice(2, 9)}`)
     .on(
       'postgres_changes',
       {

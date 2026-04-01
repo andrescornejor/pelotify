@@ -12,6 +12,7 @@ import {
   subscribeToDirectMessages,
   markDirectMessagesAsRead,
 } from '@/lib/chat';
+import { supabase } from '@/lib/supabase';
 import { Send, User as UserIcon, Loader2, ChevronRight, Clock } from 'lucide-react';
 import { cn, safeFormatTime } from '@/lib/utils';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -157,7 +158,7 @@ export default function ChatRoom({ matchId, recipientId, className, title }: Cha
     }
 
     return () => {
-      if (subscription) subscription.unsubscribe();
+      if (subscription) supabase.removeChannel(subscription);
     };
   }, [matchId, recipientId, user?.id]);
 

@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { getRecentChats, subscribeToDirectMessages } from '@/lib/chat';
+import { supabase } from '@/lib/supabase';
 import { motion, AnimatePresence } from 'framer-motion';
 import { MessageSquare, User, ChevronRight, X, Clock, Shield } from 'lucide-react';
 import { cn, safeFormatTime } from '@/lib/utils';
@@ -35,9 +36,7 @@ export function QuickChatsSidebar() {
     });
 
     return () => {
-      if (sub && typeof sub.unsubscribe === 'function') {
-        sub.unsubscribe();
-      }
+      if (sub) supabase.removeChannel(sub);
     };
   }, [user]);
 
