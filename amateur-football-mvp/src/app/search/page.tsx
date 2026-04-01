@@ -336,7 +336,11 @@ export default function SearchPage() {
                             match.type === 'F5' ? 10 : match.type === 'F7' ? 14 : 22;
                           const countObj = match.participants?.[0];
                           const currentPlayers =
-                            typeof countObj === 'number' ? countObj : countObj?.count || 0;
+                            typeof countObj === 'number'
+                              ? countObj
+                              : countObj?.count !== undefined
+                                ? countObj.count
+                                : match.participants?.length || 0;
                           const missing = Math.max(0, maxPlayers - currentPlayers);
                           return (
                             <>
@@ -373,7 +377,11 @@ export default function SearchPage() {
                             match.type === 'F5' ? 10 : match.type === 'F7' ? 14 : 22;
                           const countObj = match.participants?.[0];
                           const currentPlayers =
-                            typeof countObj === 'number' ? countObj : countObj?.count || 0;
+                            typeof countObj === 'number'
+                              ? countObj
+                              : countObj?.count !== undefined
+                                ? countObj.count
+                                : match.participants?.length || 0;
                           const missing = Math.max(0, maxPlayers - currentPlayers);
                           return (
                             <span
@@ -395,7 +403,11 @@ export default function SearchPage() {
                             match.type === 'F5' ? 10 : match.type === 'F7' ? 14 : 22;
                           const countObj = match.participants?.[0];
                           const currentPlayers =
-                            typeof countObj === 'number' ? countObj : countObj?.count || 0;
+                            typeof countObj === 'number'
+                              ? countObj
+                              : countObj?.count !== undefined
+                                ? countObj.count
+                                : match.participants?.length || 0;
                           const percent = (currentPlayers / maxPlayers) * 100;
                           return (
                             <motion.div
@@ -421,7 +433,11 @@ export default function SearchPage() {
                             match.type === 'F5' ? 10 : match.type === 'F7' ? 14 : 22;
                           const countObj = match.participants?.[0];
                           const currentPlayers =
-                            typeof countObj === 'number' ? countObj : countObj?.count || 0;
+                            typeof countObj === 'number'
+                              ? countObj
+                              : countObj?.count !== undefined
+                                ? countObj.count
+                                : match.participants?.length || 0;
                           const missing = Math.max(0, maxPlayers - currentPlayers);
                           return (
                             <>

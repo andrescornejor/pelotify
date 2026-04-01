@@ -40,7 +40,12 @@ export function useMatchSearch() {
       if (onlyAvailable) {
         const maxPlayers = match.type === 'F5' ? 10 : match.type === 'F7' ? 14 : 22;
         const countObj = match.participants?.[0];
-        const currentPlayers = typeof countObj === 'number' ? countObj : countObj?.count || 0;
+        const currentPlayers =
+          typeof countObj === 'number'
+            ? countObj
+            : countObj?.count !== undefined
+              ? countObj.count
+              : match.participants?.length || 0;
         if (currentPlayers >= maxPlayers) return false;
       }
 

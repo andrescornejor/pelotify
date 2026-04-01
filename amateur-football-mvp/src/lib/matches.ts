@@ -27,7 +27,7 @@ export interface Match {
   payment_method?: 'mercado_pago' | 'cash';
   field_id?: string;
   business_id?: string;
-  participants?: MatchParticipant[];
+  participants?: any[]; // Flexible for both full details and count-only queries
   user_team?: 'A' | 'B' | null;
 }
 
