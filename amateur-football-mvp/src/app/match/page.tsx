@@ -450,7 +450,11 @@ function MatchLobbyContent() {
                 )}
               </div>
             ) : (
-              <PostMatchView match={match} />
+              <PostMatchView 
+                match={match} 
+                participants={participants}
+                stats={matchStats || { goalScorers: [], mvp: null }}
+              />
             )}
           </div>
 
