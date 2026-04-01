@@ -38,6 +38,7 @@ export default function SearchPage() {
   const [activeTab, setActiveTab] = useState<'list' | 'map' | 'sedes'>('list');
   const {
     filteredMatches,
+    mapMatches,
     joinedIds,
     isLoading,
     searchQuery,
@@ -639,7 +640,7 @@ export default function SearchPage() {
           </div>
         ) : (
           <div className="w-full h-full min-h-[600px] relative overflow-hidden rounded-[4rem] border border-foreground/10 shadow-[0_50px_100px_rgba(0,0,0,0.5)] bg-surface">
-            <MapSearch matches={filteredMatches} userLocation={userLocation} radius={radiusFilter} />
+            <MapSearch matches={mapMatches} userLocation={userLocation} radius={radiusFilter} />
             <div className="absolute top-8 right-8 z-20 flex flex-col gap-3">
               <div className="px-5 py-2.5 bg-background/60 backdrop-blur-xl border border-foreground/10 rounded-2xl flex items-center gap-3">
                 <div className={cn(

@@ -60,8 +60,8 @@ export function useMatchSearch() {
     return merged;
   }, [allMatches, userMatches]);
 
-  const filteredMatches = useMemo(() => {
-    return matches.filter((match) => {
+  const { filteredMatches, mapMatches } = useMemo(() => {
+    const baseFiltered = matches.filter((match) => {
       if (match.is_completed) return false;
       if (match.is_private && !joinedIds.has(match.id)) return false;
 
@@ -89,25 +89,6 @@ export function useMatchSearch() {
       const matchEnd = new Date(matchStart.getTime() + 60 * 60 * 1000);
       if (new Date() > matchEnd) return false;
 
-      // Distance Filter
-      if (userLocation && radiusFilter && radiusFilter > 0) {
-        let matchLat = match.lat;
-        let matchLng = match.lng;
-
-        if (!matchLat || !matchLng) {
-          const venue = findVenueByLocation(match.location || '');
-          if (venue) {
-            matchLat = venue.lat;
-            matchLng = venue.lng;
-          }
-        }
-
-        if (matchLat && matchLng) {
-          const dist = getDistance(userLocation.lat, userLocation.lng, matchLat, matchLng);
-          if (dist > radiusFilter) return false;
-        }
-      }
-
       const search = normalizeVenueString(searchQuery);
       if (!search) return true;
 
@@ -125,11 +106,36 @@ export function useMatchSearch() {
 
       return false;
     });
-  }, [matches, searchQuery, typeFilter, maxPrice, onlyAvailable, userLocation, radiusFilter]);
+
+    const listMatches = baseFiltered.filter(match => {
+      // Distance Filter for List only
+      if (userLocation && radiusFilter && radiusFilter > 0) {
+        let matchLat = match.lat;
+        let matchLng = match.lng;
+
+        if (!matchLat || !matchLng) {
+          const venue = findVenueByLocation(match.location || '');
+          if (venue) {
+            matchLat = venue.lat;
+            matchLng = venue.lng;
+          }
+        }
+
+        if (matchLat && matchLng) {
+          const dist = getDistance(userLocation.lat, userLocation.lng, matchLat, matchLng);
+          if (dist > radiusFilter) return false;
+        }
+      }
+      return true;
+    });
+
+    return { filteredMatches: listMatches, mapMatches: baseFiltered };
+  }, [matches, searchQuery, typeFilter, maxPrice, onlyAvailable, userLocation, radiusFilter, joinedIds]);
 
   return {
     matches,
     filteredMatches,
+    mapMatches,
     joinedIds,
     isLoading,
     searchQuery,
