@@ -333,87 +333,59 @@ function MatchLobbyContent() {
           </div>
         </div>
 
-        <div className="max-w-7xl mx-auto px-6 -mt-12 relative z-20">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
-            <div className="lg:col-span-8 space-y-12">
-               {/* Call to Action Card */}
-               <div className="p-12 rounded-[3.5rem] glass-premium border-white/5 relative overflow-hidden group">
-                  <div className="absolute top-0 right-0 p-12 opacity-5 group-hover:scale-110 transition-transform duration-1000">
-                    <Zap className="w-64 h-64 text-primary" />
+        <div className="max-w-7xl mx-auto px-6 -mt-12 relative z-20 space-y-12">
+           {/* Call to Action Card - Full Width */}
+           <div className="p-12 rounded-[3.5rem] glass-premium border-white/5 relative overflow-hidden group shadow-2xl">
+              <div className="absolute top-0 right-0 p-12 opacity-5 group-hover:scale-110 transition-transform duration-1000">
+                <Zap className="w-64 h-64 text-primary" />
+              </div>
+              <div className="relative z-10 space-y-12">
+                <div className="flex flex-col md:flex-row md:items-center justify-between gap-8">
+                  <div className="space-y-2">
+                     <h2 className="text-3xl md:text-6xl font-black italic uppercase tracking-tighter text-foreground leading-[0.8]">
+                       \u00bfEst\u00e1s listo<br/>para jugar?
+                     </h2>
+                     <p className="text-foreground/40 font-bold max-w-sm">
+                       Unite al partido para reservar tu lugar. El organizador te asignar\u00e1 a un equipo.
+                     </p>
                   </div>
-                  <div className="relative z-10 space-y-8">
-                    <div className="space-y-2">
-                       <h2 className="text-3xl md:text-5xl font-black italic uppercase tracking-tighter text-foreground leading-none">
-                         \u00bfEst\u00e1s listo para jugar?
-                       </h2>
-                       <p className="text-foreground/40 font-bold max-w-lg">
-                         Unite al partido para reservar tu lugar. El organizador te asignar\u00e1 a un equipo una vez que est\u00e9s dentro.
-                       </p>
-                    </div>
-
-                    <div className="grid grid-cols-2 gap-4">
-                       <div className="p-6 rounded-3xl bg-foreground/5 space-y-1">
-                          <span className="text-[10px] font-black text-foreground/20 uppercase tracking-widest">Precio por persona</span>
-                          <div className="text-2xl font-black italic text-emerald-400">${match.price}</div>
-                       </div>
-                       <div className="p-6 rounded-3xl bg-foreground/5 space-y-1">
-                          <span className="text-[10px] font-black text-foreground/20 uppercase tracking-widest">Nivel de juego</span>
-                          <div className="text-2xl font-black italic text-blue-400">{match.min_rank || 'Abierto'}</div>
-                       </div>
-                    </div>
-
-                    <button
-                      onClick={() => handleJoinTeam(null)}
-                      disabled={joinMutation.isPending}
-                      className="w-full h-20 rounded-[2rem] bg-primary text-black font-black italic uppercase text-lg hover:scale-[1.02] active:scale-95 transition-all shadow-2xl shadow-primary/20 flex items-center justify-center gap-4"
-                    >
-                      {joinMutation.isPending ? <Loader2 className="w-8 h-8 animate-spin" /> : (
-                        <><Zap className="w-6 h-6 fill-current" /> Unirme al partido</>
-                      )}
-                    </button>
+                  
+                  <div className="flex-1 max-w-md grid grid-cols-2 gap-4">
+                     <div className="p-6 rounded-3xl bg-foreground/5 space-y-1">
+                        <span className="text-[10px] font-black text-foreground/20 uppercase tracking-widest">Precio por persona</span>
+                        <div className="text-2xl font-black italic text-emerald-400">${match.price}</div>
+                     </div>
+                     <div className="p-6 rounded-3xl bg-foreground/5 space-y-1">
+                        <span className="text-[10px] font-black text-foreground/20 uppercase tracking-widest">Nivel de juego</span>
+                        <div className="text-2xl font-black italic text-blue-400">{match.min_rank || 'Abierto'}</div>
+                     </div>
                   </div>
-               </div>
 
-               {/* Map/Location */}
-               <div className="rounded-[3.5rem] glass-premium border-white/5 overflow-hidden">
-                 <div className="h-[400px]">
-                    <VenueMap location={match.location} />
-                 </div>
-                 <div className="p-12 flex items-center justify-between">
-                    <div>
-                      <h3 className="text-2xl font-black italic uppercase tracking-tighter text-foreground">{match.location}</h3>
-                      <p className="text-foreground/40 font-bold uppercase tracking-widest text-[10px] mt-1">Direcci\u00f3n del encuentro</p>
-                    </div>
-                    {venueInfo?.google_maps_link && (
-                      <a href={venueInfo.google_maps_link} target="_blank" rel="noopener noreferrer" className="w-16 h-16 rounded-[1.5rem] glass-premium flex items-center justify-center hover:text-primary transition-all hover:scale-110">
-                        <ExternalLink className="w-8 h-8" />
-                      </a>
+                  <button
+                    onClick={() => handleJoinTeam(null)}
+                    disabled={joinMutation.isPending}
+                    className="h-20 px-12 rounded-[2rem] bg-primary text-black font-black italic uppercase text-lg hover:scale-[1.05] active:scale-95 transition-all shadow-2xl shadow-primary/40 flex items-center justify-center gap-4 group/btn"
+                  >
+                    {joinMutation.isPending ? <Loader2 className="w-8 h-8 animate-spin" /> : (
+                      <><Zap className="w-6 h-6 fill-current group-hover/btn:scale-125 transition-transform" /> Unirme ahora</>
                     )}
-                 </div>
-               </div>
-            </div>
+                  </button>
+                </div>
+              </div>
+           </div>
 
-            <div className="lg:col-span-4">
-               <div className="p-8 rounded-[2.5rem] glass-premium border-white/5 space-y-8 sticky top-8">
-                  <h4 className="text-xs font-black italic uppercase text-foreground/20 tracking-widest">Detalles Rápidos</h4>
-                  <div className="space-y-6">
-                    {[
-                      { icon: Users, label: 'Cupos Disponibles', value: `${(teamSize * 2) - participants.length} Lugares`, color: 'text-primary' },
-                      { icon: Shield, label: 'Tipo de Partido', value: match.type || 'F5', color: 'text-blue-400' },
-                      { icon: DollarSign, label: 'Pago', value: match.payment_method === 'mercado_pago' ? 'Digital' : 'En cancha', color: 'text-emerald-400' },
-                    ].map((item, i) => (
-                      <div key={i} className="flex items-center gap-4">
-                        <div className={cn("w-12 h-12 rounded-2xl bg-foreground/5 flex items-center justify-center", item.color)}>
-                          <item.icon className="w-6 h-6" />
-                        </div>
-                        <div>
-                          <div className="text-[10px] font-black text-foreground/20 uppercase tracking-widest">{item.label}</div>
-                          <div className="font-black italic uppercase text-foreground">{item.value}</div>
-                        </div>
+           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
+              <div className="lg:col-span-8">
+                 {/* Map/Location */}
+                 <div className="rounded-[3.5rem] glass-premium border-white/5 overflow-hidden h-full">
+                   <div className="h-[400px]">
+                      <VenueMap location={match.location} />
+                   </div>
+                   <div className="p-12 flex items-center justify-between">
+                      <div>
+                        <h3 className="text-2xl font-black italic uppercase tracking-tighter text-foreground">{match.location}</h3>
+                        <p className="text-foreground/40 font-bold uppercase tracking-widest text-[10px] mt-1">Direcci\u00f3n del encuentro</p>
                       </div>
-                    ))}
-                  </div>
-               </div>
             </div>
           </div>
         </div>
@@ -484,28 +456,28 @@ function MatchLobbyContent() {
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-6 -mt-8 relative z-20">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-          {/* ── LEFT: PITCH & TEAMS ── */}
-          <div className="lg:col-span-8 space-y-8">
-            {/* Stats Bar */}
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-              {[
-                { icon: Users, label: 'Cupos', value: `${participants.length}/${teamSize * 2}`, color: 'text-primary' },
-                { icon: Shield, label: 'Formato', value: match.type || 'F5', color: 'text-blue-400' },
-                { icon: DollarSign, label: 'Costo', value: match.price > 0 ? `$${match.price}` : 'Gratis', color: 'text-emerald-400' },
-                { icon: Zap, label: 'Estado', value: isCompleted ? 'Finalizado' : 'En Lobby', color: 'text-amber-400' },
-              ].map((stat, i) => (
-                <div key={i} className="p-6 rounded-[2rem] glass-premium border-white/5 space-y-1">
-                  <div className="flex items-center gap-2">
-                    <stat.icon className={cn('w-4 h-4', stat.color)} />
-                    <span className="text-[8px] font-black text-foreground/20 uppercase tracking-[0.2em]">{stat.label}</span>
-                  </div>
-                  <div className="text-xl font-black italic font-kanit uppercase tracking-tighter text-foreground">{stat.value}</div>
-                </div>
-              ))}
+      <div className="max-w-7xl mx-auto px-6 -mt-8 relative z-20 space-y-8">
+        {/* Stats Bar - Full Width */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          {[
+            { icon: Users, label: 'Cupos', value: `${participants.length}/${teamSize * 2}`, color: 'text-primary' },
+            { icon: Shield, label: 'Formato', value: match.type || 'F5', color: 'text-blue-400' },
+            { icon: DollarSign, label: 'Costo', value: match.price > 0 ? `$${match.price}` : 'Gratis', color: 'text-emerald-400' },
+            { icon: Zap, label: 'Estado', value: isCompleted ? 'Finalizado' : 'En Lobby', color: 'text-amber-400' },
+          ].map((stat, i) => (
+            <div key={i} className="p-6 rounded-[2rem] glass-premium border-white/5 space-y-1">
+              <div className="flex items-center gap-2">
+                <stat.icon className={cn('w-4 h-4', stat.color)} />
+                <span className="text-[8px] font-black text-foreground/20 uppercase tracking-[0.2em]">{stat.label}</span>
+              </div>
+              <div className="text-xl font-black italic font-kanit uppercase tracking-tighter text-foreground">{stat.value}</div>
             </div>
+          ))}
+        </div>
 
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+          {/* ── LEFT: TEAMS ── */}
+          <div className="lg:col-span-8 space-y-8">
             {!isCompleted ? (
               <div className="space-y-6">
                 <div className="flex items-center justify-between px-2">
