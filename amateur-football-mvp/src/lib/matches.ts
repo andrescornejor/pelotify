@@ -540,10 +540,10 @@ export async function getMatchStats(matchId: string) {
     goalScorers = reports
       .filter((r) => r.personal_goals > 0)
       .map((r) => ({
-        id: r.reporter_id,
-        name: (r.profiles as any)?.name || 'Jugador',
-        goals: r.personal_goals,
-        team: r.team,
+        id: r.reporter_id as string,
+        name: ((r.profiles as any)?.name || 'Jugador') as string,
+        goals: (r.personal_goals || 0) as number,
+        team: (r.team || 'A') as 'A' | 'B',
       }));
   }
 
@@ -589,11 +589,16 @@ export async function getMatchStats(matchId: string) {
       .select('name, avatar_url')
       .eq('id', mvpId)
       .single();
-    mvpProfile = profile;
+    if (profile) {
+      mvpProfile = {
+        name: profile.name as string,
+        avatar_url: profile.avatar_url as string | undefined,
+      };
+    }
   }
 
   return {
-    goalScorers,
-    mvp: mvpProfile ? { id: mvpId, ...mvpProfile, votes: maxVotes } : null,
+    goalScorers: goalScorers || [],
+    mvp: mvpProfile ? { id: mvpId as string, ...mvpProfile, votes: maxVotes } : null,
   };
 }
