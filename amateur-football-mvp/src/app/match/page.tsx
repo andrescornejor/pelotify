@@ -334,7 +334,7 @@ function MatchLobbyContent() {
             <ArrowLeft className="w-6 h-6" />
           </Link>
 
-          <div className="relative z-10 max-w-[1700px] mx-auto px-4 h-full flex flex-col justify-end pb-16">
+          <div className="relative z-10 max-w-[1700px] mx-auto px-4 h-full flex flex-col justify-end pb-24">
 
             <div className="space-y-6 max-w-2xl">
               <div className="flex items-center gap-3">
@@ -454,9 +454,16 @@ function MatchLobbyContent() {
     );
   }
 
-  // ── VIEW: LOBBY (JOINED) ────────────────────────────────────────────────────
   return (
-    <div className="min-h-screen bg-background pb-24">
+    <div className="min-h-screen bg-[#050A05] relative isolate pb-24">
+      {/* Premium Background Effects */}
+      <div className="fixed inset-0 -z-10 overflow-hidden pointer-events-none">
+        <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] rounded-full bg-primary/20 blur-[120px] animate-pulse" />
+        <div className="absolute bottom-[10%] right-[-10%] w-[30%] h-[30%] rounded-full bg-indigo-600/10 blur-[100px]" />
+        <div className="absolute top-[20%] right-[10%] w-[20%] h-[20%] rounded-full bg-emerald-600/5 blur-[80px]" />
+        <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-[0.03] multiply" />
+      </div>
+
       {/* ── HEADER ── */}
       <div className="relative h-[40vh] min-h-[350px] overflow-hidden">
         <div className="absolute inset-0 z-0">
@@ -475,7 +482,7 @@ function MatchLobbyContent() {
           <ArrowLeft className="w-6 h-6" />
         </Link>
 
-        <div className="relative z-10 max-w-[1700px] mx-auto px-4 h-full flex flex-col justify-end pb-12">
+        <div className="relative z-10 max-w-[1700px] mx-auto px-4 h-full flex flex-col justify-end pb-24 md:pb-28">
 
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-8">
             <div className="space-y-4">
@@ -525,21 +532,50 @@ function MatchLobbyContent() {
             {/* Stats Bar */}
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
               {[
-                { icon: Users, label: 'Cupos', value: `${participants.length}/${teamSize * 2}`, color: 'text-primary' },
-                { icon: Shield, label: 'Formato', value: match.type || 'F5', color: 'text-indigo-400' },
-                { icon: DollarSign, label: 'Costo', value: match.price > 0 ? `$${match.price}` : 'Gratis', color: 'text-emerald-400' },
-                { icon: Zap, label: 'Estado', value: isCompleted ? 'Finalizado' : 'En Lobby', color: 'text-amber-400' },
+                { 
+                  icon: Users, 
+                  label: 'Cupos', 
+                  value: `${participants.length}/${teamSize * 2}`, 
+                  sub: `${(teamSize * 2) - participants.length} Libres`,
+                  color: 'text-primary' 
+                },
+                { 
+                  icon: Shield, 
+                  label: 'Formato', 
+                  value: match.type || 'F5', 
+                  sub: 'Modalidad',
+                  color: 'text-indigo-400' 
+                },
+                { 
+                  icon: DollarSign, 
+                  label: 'Costo', 
+                  value: match.price > 0 ? `$${match.price}` : 'Gratis', 
+                  sub: 'Por persona',
+                  color: 'text-emerald-400' 
+                },
+                { 
+                  icon: Zap, 
+                  label: 'Estado', 
+                  value: isCompleted ? 'Finalizado' : 'En Lobby', 
+                  sub: 'Fase actual',
+                  color: 'text-amber-400' 
+                },
               ].map((stat, i) => (
                 <motion.div 
                   key={i} 
-                  whileHover={{ y: -5, backgroundColor: 'rgba(255,255,255,0.03)' }}
-                  className="p-6 rounded-[2rem] glass-premium border-white/5 space-y-1 transition-all group/stat"
+                  whileHover={{ y: -5, backgroundColor: 'rgba(255,255,255,0.05)' }}
+                  className="p-5 rounded-[2.5rem] glass-premium border-white/5 space-y-3 transition-all group/stat relative overflow-hidden"
                 >
-                  <div className="flex items-center gap-2">
-                    <stat.icon className={cn('w-4 h-4 transition-transform group-hover/stat:rotate-12', stat.color)} />
-                    <span className="text-[8px] font-black text-foreground/20 uppercase tracking-[0.2em]">{stat.label}</span>
+                  <div className="flex items-start justify-between">
+                    <div className={cn('p-2.5 rounded-xl bg-foreground/[0.03] border border-white/5 transition-transform group-hover/stat:scale-110', stat.color)}>
+                      <stat.icon className="w-5 h-5 md:w-6 md:h-6" />
+                    </div>
+                    <span className="text-[10px] font-black text-foreground/20 uppercase tracking-widest">{stat.label}</span>
                   </div>
-                  <div className="text-xl font-black italic font-kanit uppercase tracking-tighter text-foreground group-hover/stat:text-primary transition-colors">{stat.value}</div>
+                  <div>
+                    <div className="text-xl md:text-2xl font-black italic font-kanit uppercase tracking-tighter text-foreground leading-none">{stat.value}</div>
+                    <div className="text-[9px] font-bold text-foreground/30 uppercase tracking-widest mt-1">{stat.sub}</div>
+                  </div>
                 </motion.div>
               ))}
             </div>
@@ -608,15 +644,16 @@ function MatchLobbyContent() {
                         animate={{ opacity: 1, scale: 1 }}
                         transition={{ delay: 0.1 * (team === 'A' ? 1 : 2) }}
                         className={cn(
-                          "relative rounded-[2.5rem] border-2 p-8 transition-all duration-500 overflow-hidden group/team-card",
-                          isMine ? `${cfg.borderActive} ${cfg.shadow} bg-surface/40` : `${cfg.border} bg-foreground/[0.01] hover:bg-foreground/[0.02]`
+                          "relative rounded-[3rem] border-2 p-10 transition-all duration-700 overflow-hidden group/team-card",
+                          isMine ? `${cfg.borderActive} ${cfg.shadow} bg-surface/50 backdrop-blur-xl` : `${cfg.border} bg-foreground/[0.01] hover:bg-foreground/[0.03] backdrop-blur-sm`
                         )}
                       >
-                         {/* Dynamic Background Glow */}
+                         {/* Dynamic Background Mesh */}
                          <div className={cn(
-                           "absolute -top-24 -right-24 w-64 h-64 blur-[80px] rounded-full opacity-20 pointer-events-none transition-opacity duration-700 group-hover/team-card:opacity-40",
+                           "absolute -top-32 -right-32 w-80 h-80 blur-[100px] rounded-full opacity-10 pointer-events-none transition-all duration-1000 group-hover/team-card:opacity-30 group-hover/team-card:rotate-12",
                            team === 'A' ? "bg-indigo-600" : "bg-rose-600"
                          )} />
+                         <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-[0.01] multiply pointer-events-none" />
                          <div className="flex items-center justify-between mb-8">
                            <div className="flex items-center gap-4">
                              <div className={cn("w-12 h-12 rounded-2xl flex items-center justify-center font-black text-xl italic text-white shadow-lg", cfg.bg)}>
@@ -658,7 +695,11 @@ function MatchLobbyContent() {
                                </span>
                              </div>
                            </div>
-                           {isMine && <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center shadow-lg shadow-primary/20"><Check className="w-4 h-4 text-black" /></div>}
+                           {isMine && (
+                             <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center shadow-[0_0_20px_rgba(16,185,129,0.4)]">
+                               <Check className="w-4 h-4 text-black" />
+                             </div>
+                           )}
                          </div>
 
 
@@ -695,44 +736,61 @@ function MatchLobbyContent() {
           <div className="lg:col-span-4 space-y-8">
              {/* Payment Card if needed */}
              {isConfirmed && match.price > 0 && !isCompleted && !myEntry?.paid && (
-               <div className="p-8 rounded-[2.5rem] bg-[#009EE3]/5 border border-[#009EE3]/20 space-y-6">
-                 <div className="flex items-center gap-4">
-                    <div className="w-12 h-12 rounded-2xl bg-[#009EE3] flex items-center justify-center shadow-lg shadow-[#009EE3]/20">
-                      <DollarSign className="w-6 h-6 text-white" />
+               <motion.div 
+                 initial={{ opacity: 0, x: 20 }}
+                 animate={{ opacity: 1, x: 0 }}
+                 className="p-8 rounded-[3rem] bg-[#009EE3]/5 border border-[#009EE3]/20 space-y-6 relative overflow-hidden group"
+               >
+                 <div className="absolute top-0 right-0 w-32 h-32 bg-[#009EE3]/5 blur-[60px] -mr-16 -mt-16 rounded-full group-hover:scale-150 transition-transform duration-1000" />
+                 <div className="flex items-center gap-4 relative z-10">
+                    <div className="w-14 h-14 rounded-2xl bg-[#009EE3] flex items-center justify-center shadow-[0_15px_35px_rgba(0,158,227,0.3)] group-hover:scale-110 transition-transform">
+                      <DollarSign className="w-7 h-7 text-white" />
                     </div>
                     <div>
-                      <h4 className="text-lg font-black italic uppercase tracking-tighter text-foreground leading-none">Pago del Partido</h4>
-                      <p className="text-[10px] font-black text-[#009EE3] uppercase tracking-widest mt-1">Mercado Pago</p>
+                      <h4 className="text-xl font-black italic uppercase tracking-tighter text-foreground leading-none">Pago del Partido</h4>
+                      <div className="flex items-center gap-2 mt-1.5">
+                        <span className="w-1.5 h-1.5 rounded-full bg-[#009EE3] animate-pulse" />
+                        <p className="text-[10px] font-black text-[#009EE3] uppercase tracking-widest">Mercado Pago</p>
+                      </div>
                     </div>
                  </div>
-                 <div className="p-6 rounded-2xl bg-foreground/5 space-y-1">
-                    <span className="text-[10px] font-black text-foreground/40 uppercase tracking-widest">Monto a pagar</span>
-                    <div className="text-3xl font-black italic font-kanit text-foreground">${match.price}</div>
+                 <div className="p-6 rounded-[2rem] bg-foreground/5 border border-white/5 space-y-2 relative z-10">
+                    <span className="text-[10px] font-black text-foreground/20 uppercase tracking-widest">Monto Final</span>
+                    <div className="flex items-end gap-2">
+                      <div className="text-4xl font-black italic font-kanit text-foreground">${match.price}</div>
+                      <span className="text-[10px] font-bold text-foreground/20 uppercase mb-2">ARS</span>
+                    </div>
                  </div>
-                 <MercadoPagoButton 
-                   matchId={match.id} 
-                   title={`Partido en ${match.location}`}
-                   price={match.price} 
-                 />
-               </div>
+                 <div className="relative z-10">
+                  <MercadoPagoButton 
+                     matchId={match.id} 
+                     title={`Partido en ${match.location}`}
+                     price={match.price} 
+                   />
+                 </div>
+                 <p className="text-[9px] font-medium text-foreground/20 text-center uppercase tracking-widest relative z-10">
+                   Tu pago está protegido por Pelotify SafePlay
+                 </p>
+               </motion.div>
              )}
 
              {/* Location / Venue */}
-             <div className="rounded-[2.5rem] glass-premium border-white/5 overflow-hidden">
+             <div className="rounded-[3rem] glass-premium border-white/5 overflow-hidden group/venue">
                <div className="h-64 relative">
                  <VenueMap
                    location={match.location}
                  />
+                 <div className="absolute inset-0 bg-gradient-to-t from-background/80 via-transparent to-transparent opacity-0 group-hover/venue:opacity-100 transition-opacity pointer-events-none" />
                </div>
                <div className="p-8 space-y-4">
                  <div className="flex items-center justify-between">
                     <div className="flex flex-col">
-                      <h4 className="text-lg font-black italic uppercase tracking-tighter text-foreground leading-none">{match.location}</h4>
-                      <span className="text-[9px] font-black text-foreground/30 uppercase tracking-widest mt-1">Sede del encuentro</span>
+                      <h4 className="text-xl font-black italic uppercase tracking-tighter text-foreground leading-none">{match.location}</h4>
+                      <span className="text-[10px] font-black text-primary uppercase tracking-widest mt-1.5">Sede Destacada</span>
                     </div>
                     {venueInfo?.google_maps_link && (
-                      <a href={venueInfo.google_maps_link} target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-2xl glass-premium flex items-center justify-center hover:text-primary transition-colors">
-                        <ExternalLink className="w-5 h-5" />
+                      <a href={venueInfo.google_maps_link} target="_blank" rel="noopener noreferrer" className="w-12 h-12 rounded-2xl bg-foreground/5 border border-white/5 flex items-center justify-center hover:bg-primary hover:text-black transition-all">
+                        <ExternalLink className="w-6 h-6" />
                       </a>
                     )}
                  </div>
@@ -741,7 +799,7 @@ function MatchLobbyContent() {
 
              {/* Chat */}
              {hasJoined && !isCompleted && (
-               <div className="h-[500px] rounded-[2.5rem] glass-premium border-white/5 overflow-hidden">
+               <div className="h-[550px] rounded-[3rem] glass-premium border-white/5 overflow-hidden shadow-2xl">
                  <ChatRoom matchId={match.id} title="Chat del Lobby" />
                </div>
              )}
