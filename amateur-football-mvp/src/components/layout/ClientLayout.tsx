@@ -10,7 +10,6 @@ import { cn } from '@/lib/utils';
 import { useSidebar } from '@/contexts/SidebarContext';
 import { NotificationCenter } from '@/components/notifications/NotificationCenter';
 import { FloatingChat } from '@/components/FloatingChat';
-import { motion, AnimatePresence } from 'framer-motion';
 
 export default function ClientLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
@@ -37,20 +36,7 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
   const showNav = !isAuthPage && !!user && !isHighlightsPage;
 
   if (isAuthPage) {
-    return (
-      <AnimatePresence mode="wait" initial={false}>
-        <motion.div
-          key={pathname}
-          initial={{ opacity: 0, x: 20 }}
-          animate={{ opacity: 1, x: 0 }}
-          exit={{ opacity: 0, x: -20 }}
-          transition={{ duration: 0.3, ease: 'easeOut' }}
-          className="min-h-screen w-full flex flex-col"
-        >
-          {children}
-        </motion.div>
-      </AnimatePresence>
-    );
+    return <>{children}</>;
   }
 
   return (
@@ -76,18 +62,7 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
               : ''
           )}
         >
-          <AnimatePresence mode="wait" initial={false}>
-            <motion.div
-              key={pathname}
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: -20 }}
-              transition={{ duration: 0.3, ease: 'easeOut' }}
-              className="w-full h-full flex flex-col"
-            >
-              {children}
-            </motion.div>
-          </AnimatePresence>
+          {children}
         </main>
 
         {/* Mobile Navigation */}
