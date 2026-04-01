@@ -9,6 +9,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { Loader2, ArrowLeft, Plus, Play, Sparkles, Flame } from 'lucide-react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
+import { cn } from '@/lib/utils';
 import { EmptyState } from '@/components/home/EmptyState';
 import { CameraIllustration } from '@/components/home/EmptyStateIllustrations';
 
