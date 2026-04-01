@@ -3,11 +3,11 @@ import { supabase } from './supabase';
 export interface Tournament {
   id: string;
   name: string;
-  description: string;
-  image_url?: string;
-  banner_url?: string;
+  description?: string | null;
+  image_url?: string | null;
+  banner_url?: string | null;
   start_date: string;
-  end_date: string;
+  end_date?: string | null;
   location: string;
   type: 'F5' | 'F7' | 'F11';
   max_teams: number;
