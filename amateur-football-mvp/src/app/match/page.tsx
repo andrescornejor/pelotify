@@ -121,6 +121,7 @@ function MatchLobbyContent() {
   const leaveMutation = useLeaveMatch();
   const deleteMutation = useDeleteMatch();
   const bulkUpdateMutation = useBulkUpdateParticipants();
+  const updateMutation = useUpdateMatch();
 
   const [isPostMatchModalOpen, setIsPostMatchModalOpen] = useState(false);
   const [venueInfo, setVenueInfo] = useState<any>(null);
