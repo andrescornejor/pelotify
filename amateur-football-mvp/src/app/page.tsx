@@ -34,7 +34,7 @@ import { OnboardingTour } from '@/components/OnboardingTour';
 import { JerseyVisualizer } from '@/components/JerseyVisualizer';
 import { getHighlights, Highlight } from '@/lib/highlights';
 import LandingPage from '@/components/LandingPage';
-import { StatCard, TeamCard, RankBadgeInline, EmptyState, SectionDivider, LazyVideo, HomePageSkeleton, VenueCard, RANKS, getRankByElo } from '@/components/home';
+import { StatCard, TeamCard, RankBadgeInline, EmptyState, SectionDivider, LazyVideo, HomePageSkeleton, VenueCard, RANKS, getRankByElo, WeatherWidget, CalendarButton } from '@/components/home';
 import { useHomeData } from '@/hooks/useHomeData';
 import { useEffect, useMemo, useState } from 'react';
 
@@ -973,8 +973,16 @@ export default function HomePage() {
                     <h3 className="text-[11px] font-medium text-foreground/20 tracking-wide font-kanit">Agenda prioritaria</h3>
                   </div>
                   {nextMatch && (
-                    <div className="px-4 py-2 rounded-2xl bg-foreground/[0.05] border border-foreground/20 backdrop-blur-md">
-                      <span className="text-[10px] font-black text-foreground/60 uppercase tracking-widest">{nextMatch.type || 'F5'}</span>
+                    <div className="flex items-center gap-2">
+                       <WeatherWidget 
+                          lat={nextMatch.lat} 
+                          lng={nextMatch.lng} 
+                          date={nextMatch.date} 
+                          time={nextMatch.time} 
+                       />
+                       <div className="px-4 py-2 rounded-2xl bg-foreground/[0.05] border border-foreground/20 backdrop-blur-md">
+                         <span className="text-[10px] font-black text-foreground/60 uppercase tracking-widest">{nextMatch.type || 'F5'}</span>
+                       </div>
                     </div>
                   )}
                 </div>
@@ -1069,19 +1077,22 @@ export default function HomePage() {
                       </div>
                     </div>
 
-                    <div className="flex gap-3 pt-2">
-                      <Link href={`/match?id=${nextMatch.id}`} className="flex-1">
-                        <motion.button
-                          whileHover={{ scale: 1.02 }}
-                          whileTap={{ scale: 0.98 }}
-                          className="w-full h-14 rounded-2xl bg-foreground text-background font-black uppercase text-[10px] tracking-[0.3em] flex items-center justify-center gap-3 shadow-xl hover:bg-primary hover:text-background transition-all"
-                        >
-                          ENTRAR AL MATCH <ArrowRight className="w-4 h-4" />
-                        </motion.button>
-                      </Link>
-                      <button className="w-14 h-14 rounded-2xl glass-premium border-foreground/20 flex items-center justify-center text-foreground/40 hover:text-primary hover:border-primary/40 transition-all">
-                        <PlusCircle className="w-6 h-6" />
-                      </button>
+                    <div className="flex flex-col gap-3 pt-2">
+                       <div className="flex gap-3">
+                          <Link href={`/match?id=${nextMatch.id}`} className="flex-1">
+                            <motion.button
+                              whileHover={{ scale: 1.02 }}
+                              whileTap={{ scale: 0.98 }}
+                              className="w-full h-14 rounded-2xl bg-foreground text-background font-black uppercase text-[10px] tracking-[0.3em] flex items-center justify-center gap-3 shadow-xl hover:bg-primary hover:text-background transition-all"
+                            >
+                              ENTRAR AL MATCH <ArrowRight className="w-4 h-4" />
+                            </motion.button>
+                          </Link>
+                          <button className="w-14 h-14 rounded-2xl glass-premium border-foreground/20 flex items-center justify-center text-foreground/40 hover:text-primary hover:border-primary/40 transition-all">
+                            <PlusCircle className="w-6 h-6" />
+                          </button>
+                       </div>
+                       <CalendarButton match={nextMatch} className="w-full h-12" />
                     </div>
                   </div>
                 ) : (
