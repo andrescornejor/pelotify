@@ -27,7 +27,7 @@ export interface Match {
   payment_method?: 'mercado_pago' | 'cash';
   field_id?: string;
   business_id?: string;
-  participants?: { count: number }[];
+  participants?: MatchParticipant[];
   user_team?: 'A' | 'B' | null;
 }
 
