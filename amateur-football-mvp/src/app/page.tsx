@@ -589,27 +589,27 @@ export default function HomePage() {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
           <div className="lg:col-span-8 xl:col-span-8 space-y-6">
             {/* --- DASHBOARD TAB CONTROLLER --- */}
-            <section className="sticky top-20 lg:top-4 z-40 bg-background/80 backdrop-blur-xl py-2 -mx-2 px-2 lg:bg-transparent lg:static lg:pb-6">
-               <div className="max-w-fit mx-auto lg:mx-0 p-1.5 rounded-[2rem] glass-premium border-foreground/20 flex items-center gap-1 shadow-2xl relative overflow-hidden">
-                  {!performanceMode && (
-                     <div className="absolute inset-0 bg-gradient-to-r from-primary/5 via-transparent to-primary/5 pointer-events-none" />
-                  )}
-                  {[
-                     { id: 'activity', label: 'Feed', icon: Activity },
-                     { id: 'teams', label: 'Equipos', icon: Users },
-                     { id: 'venues', label: 'Sedes', icon: MapPin },
-                     { id: 'futtok', label: 'FutTok', icon: Flame },
-                  ].map((tab) => {
-                     const isSelected = activeTab === tab.id;
-                     return (
-                        <button
-                           key={tab.id}
-                           onClick={() => setActiveTab(tab.id as any)}
-                           className={cn(
-                              "relative px-5 py-2.5 rounded-full flex items-center gap-2.5 transition-all duration-500 group",
-                              isSelected ? "text-background" : "text-foreground/40 hover:text-foreground/70"
-                           )}
-                        >
+             <section className="sticky top-20 lg:top-4 z-40 bg-background/80 backdrop-blur-xl py-2 -mx-2 px-2 lg:bg-transparent lg:static lg:pb-6">
+                <div className="w-full p-1.5 rounded-[2rem] glass-premium border-foreground/20 flex items-center gap-1 shadow-2xl relative overflow-hidden">
+                   {!performanceMode && (
+                      <div className="absolute inset-0 bg-gradient-to-r from-primary/5 via-transparent to-primary/5 pointer-events-none" />
+                   )}
+                   {[
+                      { id: 'activity', label: 'Feed', icon: Activity },
+                      { id: 'teams', label: 'Equipos', icon: Users },
+                      { id: 'venues', label: 'Sedes', icon: MapPin },
+                      { id: 'futtok', label: 'FutTok', icon: Flame },
+                   ].map((tab) => {
+                      const isSelected = activeTab === tab.id;
+                      return (
+                         <button
+                            key={tab.id}
+                            onClick={() => setActiveTab(tab.id as any)}
+                            className={cn(
+                               "relative flex-1 px-5 py-2.5 rounded-full flex items-center justify-center gap-2.5 transition-all duration-500 group",
+                               isSelected ? "text-background" : "text-foreground/40 hover:text-foreground/70"
+                            )}
+                         >
                            {isSelected && (
                               <motion.div
                                  layoutId="active-dashboard-pill"
