@@ -122,6 +122,7 @@ function MatchLobbyContent() {
   const leaveMutation = useLeaveMatch();
   const deleteMutation = useDeleteMatch();
   const bulkUpdateMutation = useBulkUpdateParticipants();
+  const updateMatchMutation = useUpdateMatch();
 
   const [isPostMatchModalOpen, setIsPostMatchModalOpen] = useState(false);
   const [venueInfo, setVenueInfo] = useState<any>(null);
@@ -184,19 +185,6 @@ function MatchLobbyContent() {
   }, [match]);
 
   // Handlers
-  const handleRenameTeam = async (team: 'A' | 'B', name: string) => {
-    if (!match) return;
-    try {
-      await updateMatchMutation.mutateAsync({
-        id: match.id,
-        data: team === 'A' ? { team_a_name: name } : { team_b_name: name }
-      });
-      team === 'A' ? setIsEditingTeamA(false) : setIsEditingTeamB(false);
-    } catch (e) {
-      console.error('Error renaming team:', e);
-    }
-  };
-
   const handleRenameTeam = async (team: 'A' | 'B', name: string) => {
     if (!match) return;
     try {
