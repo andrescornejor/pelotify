@@ -476,7 +476,11 @@ function MatchLobbyContent() {
                     <span className="text-[10px] font-black text-foreground/40 uppercase tracking-widest">Monto a pagar</span>
                     <div className="text-3xl font-black italic font-kanit text-foreground">${match.price}</div>
                  </div>
-                 <MercadoPagoButton matchId={match.id} amount={match.price} />
+                 <MercadoPagoButton 
+                   matchId={match.id} 
+                   title={`Partido en ${match.location}`}
+                   price={match.price} 
+                 />
                </div>
              )}
 
