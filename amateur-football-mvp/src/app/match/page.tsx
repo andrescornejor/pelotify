@@ -225,7 +225,7 @@ function MatchLobbyContent() {
 
   const handleLeave = async () => {
     if (!match || !user) return;
-    if (window.confirm('\u00bfEst\u00e1s seguro que quer\u00e9s bajarte del partido?')) {
+    if (window.confirm('¿Estás seguro que querés bajarte del partido?')) {
       try {
         await leaveMutation.mutateAsync({ matchId: match.id, userId: user.id });
       } catch (e) {
@@ -236,7 +236,7 @@ function MatchLobbyContent() {
 
   const handleDelete = async () => {
     if (!match) return;
-    if (window.confirm('\u00bfEst\u00e1s seguro que quer\u00e9s suspender el partido? No se puede deshacer.')) {
+    if (window.confirm('¿Estás seguro que querés suspender el partido? No se puede deshacer.')) {
       try {
         await deleteMutation.mutateAsync(match.id);
         router.push('/');
@@ -262,7 +262,7 @@ function MatchLobbyContent() {
     if (!match || !isCreator) return;
     if (userId === match.creator_id) return; // Can't kick yourself
     
-    if (window.confirm('\u00bfEst\u00e1s seguro que quer\u00e9s echar a este jugador del partido?')) {
+    if (window.confirm('¿Estás seguro que querés echar a este jugador del partido?')) {
       try {
         await leaveMutation.mutateAsync({ matchId: match.id, userId });
       } catch (e) {
@@ -338,7 +338,7 @@ function MatchLobbyContent() {
             <div className="space-y-6 max-w-2xl">
               <div className="flex items-center gap-3">
                 <span className="px-3 py-1 rounded-full bg-primary/10 border border-primary/20 text-primary text-[10px] font-black uppercase tracking-widest">
-                  {match.type} \u2022 {match.is_private ? 'Privado' : 'P\u00fablico'}
+                  {match.type} • {match.is_private ? 'Privado' : 'Público'}
                 </span>
                 <span className="px-3 py-1 rounded-full bg-white/5 border border-white/10 text-foreground/40 text-[10px] font-black uppercase tracking-widest">
                   {participants.length} / {teamSize * 2} Jugadores
@@ -376,10 +376,10 @@ function MatchLobbyContent() {
                   <div className="relative z-10 space-y-8">
                     <div className="space-y-2">
                        <h2 className="text-3xl md:text-5xl font-black italic uppercase tracking-tighter text-foreground leading-none">
-                         \u00bfEst\u00e1s listo para jugar?
+                         ¿Estás listo para jugar?
                        </h2>
                        <p className="text-foreground/40 font-bold max-w-lg">
-                         Unite al partido para reservar tu lugar. El organizador te asignar\u00e1 a un equipo una vez que est\u00e9s dentro.
+                         Unite al partido para reservar tu lugar. El organizador te asignará a un equipo una vez que estés dentro.
                        </p>
                     </div>
 
@@ -414,7 +414,7 @@ function MatchLobbyContent() {
                  <div className="p-12 flex items-center justify-between">
                     <div>
                       <h3 className="text-2xl font-black italic uppercase tracking-tighter text-foreground">{match.location}</h3>
-                      <p className="text-foreground/40 font-bold uppercase tracking-widest text-[10px] mt-1">Direcci\u00f3n del encuentro</p>
+                      <p className="text-foreground/40 font-bold uppercase tracking-widest text-[10px] mt-1">Dirección del encuentro</p>
                     </div>
                     {venueInfo?.google_maps_link && (
                       <a href={venueInfo.google_maps_link} target="_blank" rel="noopener noreferrer" className="w-16 h-16 rounded-[1.5rem] glass-premium flex items-center justify-center hover:text-primary transition-all hover:scale-110">
@@ -479,7 +479,7 @@ function MatchLobbyContent() {
             <div className="space-y-4">
               <div className="flex items-center gap-3">
                 <span className="px-3 py-1 rounded-full bg-primary/10 border border-primary/20 text-primary text-[10px] font-black uppercase tracking-widest">
-                  {match.type} \u2022 {match.is_private ? 'Privado' : 'P\u00fablico'}
+                  {match.type} • {match.is_private ? 'Privado' : 'Público'}
                 </span>
                 {isCompleted && (
                   <span className="px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-500 text-[10px] font-black uppercase tracking-widest flex items-center gap-1.5">
@@ -565,14 +565,35 @@ function MatchLobbyContent() {
                    )}
                 </div>
 
+                {/* Bench Section (Waiting List) Above Teams */}
+                {unassigned.length > 0 && (
+                  <div className="p-8 rounded-[2.5rem] glass-premium border-white/5 space-y-6">
+                    <div className="flex items-center justify-between">
+                      <div className="flex flex-col">
+                        <h4 className="text-xs font-black italic uppercase text-foreground/40">Lista de Espera</h4>
+                        <span className="text-[10px] font-black text-primary uppercase tracking-widest mt-1">Esperando asignación de equipo</span>
+                      </div>
+                      <span className="text-[10px] font-bold text-foreground/20">{unassigned.length} JUGADORES</span>
+                    </div>
+                    <div className="flex flex-wrap gap-4">
+                      {unassigned.map((p) => (
+                        <div
+                          key={p.id}
+                          className="relative group/slot cursor-pointer"
+                          onClick={() => isCreator && setManagedParticipant(p)}
+                        >
+                          <PlayerSlot participant={p} isSelf={p.user_id === user?.id} />
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                   {(['A', 'B'] as const).map((team) => {
                     const members = team === 'A' ? teamA : teamB;
                     const cfg = TEAM_CONFIG[team];
                     const isMine = myTeam === team;
-                    const teamFull = members.length >= teamSize;
-                    const canJoin = !hasJoined && !teamFull;
-                    const canSwitch = hasJoined && isConfirmed && myTeam !== team && !teamFull;
 
                     return (
                       <div key={team} className={cn(
@@ -624,23 +645,6 @@ function MatchLobbyContent() {
                          </div>
 
 
-                         {!isCreator && (
-                           <button
-                             onClick={() => (canJoin || canSwitch) && handleJoinTeam(team)}
-                             disabled={joinMutation.isPending || switchMutation.isPending || (teamFull && !isMine)}
-                             className={cn(
-                               "w-full h-14 rounded-2xl font-black italic uppercase text-xs flex items-center justify-center gap-3 transition-all mb-8 shadow-xl",
-                               isMine ? "bg-foreground/5 text-foreground/40 cursor-default" : 
-                               teamFull ? "bg-foreground/[0.02] text-foreground/10 cursor-not-allowed" : 
-                               `${cfg.btn} text-white shadow-lg`
-                             )}
-                           >
-                             {joinMutation.isPending || switchMutation.isPending ? <Loader2 className="w-5 h-5 animate-spin" /> : 
-                               isMine ? "Est\u00e1s en el equipo" : 
-                               teamFull ? "Equipo Lleno" : 
-                               <><Zap className="w-4 h-4 fill-current" /> Entrar a jugar</>}
-                           </button>
-                         )}
 
                         <div className="grid grid-cols-4 sm:grid-cols-5 gap-4">
                           {Array.from({ length: teamSize }).map((_, idx) => {
@@ -660,27 +664,6 @@ function MatchLobbyContent() {
                     );
                   })}
                 </div>
-
-                {/* Bench Section */}
-                {unassigned.length > 0 && (
-                  <div className="p-8 rounded-[2.5rem] glass-premium border-white/5 space-y-6">
-                    <div className="flex items-center justify-between">
-                      <h4 className="text-xs font-black italic uppercase text-foreground/40">Banquillo de Espera</h4>
-                      <span className="text-[10px] font-bold text-foreground/20">{unassigned.length} JUGADORES</span>
-                    </div>
-                    <div className="flex flex-wrap gap-4">
-                      {unassigned.map((p) => (
-                        <div
-                          key={p.id}
-                          className="relative group/slot cursor-pointer"
-                          onClick={() => isCreator && setManagedParticipant(p)}
-                        >
-                          <PlayerSlot participant={p} isSelf={p.user_id === user?.id} />
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
               </div>
             ) : (
               <PostMatchView 
@@ -890,7 +873,7 @@ function MatchLobbyContent() {
                   </button>
                   <div className="space-y-0.5 md:space-y-1">
                     <h2 className="text-2xl md:text-3xl font-black italic uppercase tracking-tighter text-foreground leading-none">Armar Equipos</h2>
-                    <p className="text-[8px] md:text-[10px] font-black text-primary uppercase tracking-widest italic">Toca un jugador y luego una posici\u00f3n</p>
+                    <p className="text-[8px] md:text-[10px] font-black text-primary uppercase tracking-widest italic">Toca un jugador y luego una posición</p>
                   </div>
                 </div>
                 
@@ -1103,7 +1086,7 @@ function MatchLobbyContent() {
                       }) : (
                         <div className="w-full py-8 flex flex-col items-center justify-center text-foreground/5 space-y-4 relative z-10 pointer-events-none">
                            <Users className="w-12 h-12 opacity-10" />
-                           <p className="text-[10px] font-black uppercase tracking-[0.3em] italic opacity-40">Todos los jugadores est\u00e1n en cancha</p>
+                           <p className="text-[10px] font-black uppercase tracking-[0.3em] italic opacity-40">Todos los jugadores están en cancha</p>
                         </div>
                       )}
                    </div>
