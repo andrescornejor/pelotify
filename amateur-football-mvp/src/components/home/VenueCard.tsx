@@ -88,11 +88,6 @@ export const VenueCard = ({ venue, performanceMode }: VenueCardProps) => {
                    <span className="text-[8px] font-bold text-foreground/30 uppercase tracking-[0.1em]">Césped PRO</span>
                 </div>
              </div>
-             
-             <div className="flex flex-col items-end">
-                <span className="text-[13px] font-black text-foreground italic font-kanit">$15.000<span className="text-[9px] text-foreground/40 not-italic ml-1">/HR</span></span>
-                <span className="text-[8px] font-bold text-primary uppercase tracking-widest leading-none mt-1">Socio Pelotify</span>
-             </div>
           </div>
         </div>
       </motion.div>
