@@ -570,7 +570,7 @@ function ProfileContent() {
       </div>
 
       {/* Main Content Container */}
-      <div className="max-w-screen-2xl mx-auto w-full px-4 sm:px-6 lg:px-10 xl:px-14 2xl:px-16 -mt-24 sm:-mt-32 lg:-mt-40 relative z-20 pb-20">
+      <div className="max-w-screen-2xl mx-auto w-full px-4 sm:px-6 lg:px-10 xl:px-14 2xl:px-16 -mt-32 sm:-mt-48 lg:-mt-64 relative z-20 pb-20">
         
         {/* Profile Header Block */}
         <div className="flex flex-col lg:flex-row items-center gap-8 mb-12">
