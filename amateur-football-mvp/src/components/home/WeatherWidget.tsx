@@ -16,16 +16,17 @@ interface WeatherWidgetProps {
 
 // Maps WMO Weather interpretation codes to icons
 // https://open-meteo.com/en/docs
-const getWeatherIcon = (code: number) => {
-  if (code === 0) return <Sun className="w-5 h-5 text-yellow-400" />;
-  if (code >= 1 && code <= 3) return <Cloud className="w-5 h-5 text-slate-400" />;
-  if (code >= 45 && code <= 48) return <CloudFog className="w-5 h-5 text-slate-300" />;
-  if (code >= 51 && code <= 55) return <CloudDrizzle className="w-5 h-5 text-blue-300" />;
-  if (code >= 61 && code <= 67) return <CloudRain className="w-5 h-5 text-blue-500" />;
-  if (code >= 71 && code <= 77) return <CloudSnow className="w-5 h-5 text-indigo-200" />;
-  if (code >= 80 && code <= 82) return <CloudRain className="w-5 h-5 text-blue-600" />;
-  if (code >= 95 && code <= 99) return <CloudLightning className="w-5 h-5 text-purple-500" />;
-  return <Cloud className="w-5 h-5 text-slate-400" />;
+const getWeatherIcon = (code: number, className?: string) => {
+  const iconClass = className || "w-10 h-10";
+  if (code === 0) return <Sun className={cn(iconClass, "text-yellow-400")} />;
+  if (code >= 1 && code <= 3) return <Cloud className={cn(iconClass, "text-slate-400")} />;
+  if (code >= 45 && code <= 48) return <CloudFog className={cn(iconClass, "text-slate-300")} />;
+  if (code >= 51 && code <= 55) return <CloudDrizzle className={cn(iconClass, "text-blue-300")} />;
+  if (code >= 61 && code <= 67) return <CloudRain className={cn(iconClass, "text-blue-500")} />;
+  if (code >= 71 && code <= 77) return <CloudSnow className={cn(iconClass, "text-indigo-200")} />;
+  if (code >= 80 && code <= 82) return <CloudRain className={cn(iconClass, "text-blue-600")} />;
+  if (code >= 95 && code <= 99) return <CloudLightning className={cn(iconClass, "text-purple-500")} />;
+  return <Cloud className={cn(iconClass, "text-slate-400")} />;
 };
 
 export function WeatherWidget({ lat, lng, location, date, time, className }: WeatherWidgetProps) {
@@ -106,11 +107,11 @@ export function WeatherWidget({ lat, lng, location, date, time, className }: Wea
   if (!weather) return null;
 
   return (
-    <div className={cn("flex items-center gap-2 px-3 py-1.5 rounded-xl bg-foreground/[0.03] border border-foreground/10 backdrop-blur-sm", className)}>
-      {getWeatherIcon(weather.code)}
+    <div className={cn("flex items-center gap-4 px-4 py-2 rounded-2xl bg-foreground/[0.03] border border-foreground/10 backdrop-blur-sm", className)}>
+      {getWeatherIcon(weather.code, "w-12 h-12")}
       <div className="flex items-center">
-        <span className="text-[10px] font-black text-foreground">{weather.temp}°</span>
-        <Thermometer className="w-2 h-2 text-foreground/30 ml-0.5" />
+        <span className="text-4xl font-black italic tracking-tighter text-foreground leading-none">{weather.temp}°</span>
+        <Thermometer className="w-4 h-4 text-foreground/30 ml-1 mt-auto mb-1" />
       </div>
     </div>
   );
