@@ -70,7 +70,7 @@ export default function PostMatchView({ match, participants, stats }: PostMatchV
         {/* Background Effects */}
         <div className="absolute inset-x-0 -top-20 h-64 bg-primary/10 blur-[120px] rounded-full pointer-events-none opacity-50 group-hover:opacity-100 transition-opacity duration-1000" />
 
-        <div className="glass-premium rounded-[4rem] p-12 border border-white/10 relative overflow-hidden shadow-[0_40px_100px_rgba(0,0,0,0.5)]">
+        <div className="glass-premium rounded-[4rem] p-16 border border-white/10 relative overflow-hidden shadow-[0_40px_100px_rgba(0,0,0,0.5)] transition-all hover:border-primary/20">
           <div className="absolute top-0 right-0 w-full h-full bg-gradient-to-br from-primary/5 via-transparent to-blue-500/5 pointer-events-none" />
 
           <div className="flex flex-col md:flex-row items-center justify-between gap-16 relative z-10">
@@ -80,7 +80,7 @@ export default function PostMatchView({ match, participants, stats }: PostMatchV
                 className={cn(
                   'w-28 h-28 rounded-[2.5rem] flex items-center justify-center text-4xl font-black italic shadow-2xl transition-all duration-500 group-hover/team:scale-110 relative',
                   winner === 'A'
-                    ? 'bg-blue-600 scale-105'
+                    ? 'bg-indigo-600 scale-105'
                     : 'bg-zinc-800 scale-100 grayscale opacity-60'
                 )}
               >
@@ -97,16 +97,16 @@ export default function PostMatchView({ match, participants, stats }: PostMatchV
                   Local
                 </h3>
                 <div className="flex items-center gap-2">
-                  <div
-                    className={cn(
-                      'w-2 h-2 rounded-full',
-                      winner === 'A' ? 'bg-blue-500 animate-pulse' : 'bg-foreground/20'
-                    )}
-                  />
+                    <div
+                      className={cn(
+                        'w-2 h-2 rounded-full',
+                        winner === 'A' ? 'bg-indigo-500 animate-pulse' : 'bg-foreground/20'
+                      )}
+                    />
                   <p
                     className={cn(
                       'text-[10px] font-black uppercase tracking-[0.3em]',
-                      winner === 'A' ? 'text-blue-500' : 'text-foreground/40'
+                      winner === 'A' ? 'text-indigo-500' : 'text-foreground/40'
                     )}
                   >
                     {winner === 'A' ? 'EQUIPO GANADOR' : 'SQUAD LOCAL'}
@@ -117,25 +117,25 @@ export default function PostMatchView({ match, participants, stats }: PostMatchV
 
             {/* Score Center */}
             <div className="flex flex-col items-center gap-8">
-              <div className="flex items-center gap-10">
+              <div className="flex items-center gap-12">
                 <motion.span
                   initial={{ scale: 0.5, opacity: 0 }}
                   animate={{ scale: 1, opacity: 1 }}
-                  transition={{ delay: 0.3, type: 'spring' }}
-                  className="text-9xl font-black text-foreground italic tracking-tighter leading-none drop-shadow-[0_10px_30px_rgba(255,255,255,0.1)]"
+                  transition={{ delay: 0.3, type: 'spring', damping: 15 }}
+                  className="text-9xl md:text-[12rem] font-black text-foreground italic tracking-tighter leading-none drop-shadow-[0_20px_50px_rgba(255,255,255,0.15)]"
                 >
                   {scoreA}
                 </motion.span>
-                <div className="flex flex-col items-center gap-2">
-                  <div className="w-1.5 h-12 bg-foreground/10 rounded-full" />
-                  <div className="w-1.5 h-1.5 bg-primary rounded-full animate-ping" />
-                  <div className="w-1.5 h-12 bg-foreground/10 rounded-full" />
+                <div className="flex flex-col items-center gap-3">
+                  <div className="w-2 h-16 bg-gradient-to-b from-transparent via-foreground/20 to-transparent rounded-full" />
+                  <div className="w-2.5 h-2.5 bg-primary rounded-full animate-ping shadow-[0_0_20px_rgba(16,185,129,0.5)]" />
+                  <div className="w-2 h-16 bg-gradient-to-t from-transparent via-foreground/20 to-transparent rounded-full" />
                 </div>
                 <motion.span
                   initial={{ scale: 0.5, opacity: 0 }}
                   animate={{ scale: 1, opacity: 1 }}
-                  transition={{ delay: 0.4, type: 'spring' }}
-                  className="text-9xl font-black text-foreground italic tracking-tighter leading-none drop-shadow-[0_10px_30px_rgba(255,255,255,0.1)]"
+                  transition={{ delay: 0.4, type: 'spring', damping: 15 }}
+                  className="text-9xl md:text-[12rem] font-black text-foreground italic tracking-tighter leading-none drop-shadow-[0_20px_50px_rgba(255,255,255,0.15)]"
                 >
                   {scoreB}
                 </motion.span>
@@ -156,7 +156,7 @@ export default function PostMatchView({ match, participants, stats }: PostMatchV
                 className={cn(
                   'w-28 h-28 rounded-[2.5rem] flex items-center justify-center text-4xl font-black italic shadow-2xl transition-all duration-500 group-hover/team:scale-110 relative',
                   winner === 'B'
-                    ? 'bg-red-600 scale-105'
+                    ? 'bg-rose-600 scale-105'
                     : 'bg-zinc-800 scale-100 grayscale opacity-60'
                 )}
               >
@@ -176,7 +176,7 @@ export default function PostMatchView({ match, participants, stats }: PostMatchV
                   <p
                     className={cn(
                       'text-[10px] font-black uppercase tracking-[0.3em]',
-                      winner === 'B' ? 'text-red-500' : 'text-foreground/40'
+                      winner === 'B' ? 'text-rose-500' : 'text-foreground/40'
                     )}
                   >
                     {winner === 'B' ? 'EQUIPO GANADOR' : 'SQUAD VISITANTE'}
@@ -184,7 +184,7 @@ export default function PostMatchView({ match, participants, stats }: PostMatchV
                   <div
                     className={cn(
                       'w-2 h-2 rounded-full',
-                      winner === 'B' ? 'bg-red-500 animate-pulse' : 'bg-foreground/20'
+                      winner === 'B' ? 'bg-rose-500 animate-pulse' : 'bg-foreground/20'
                     )}
                   />
                 </div>
@@ -258,7 +258,7 @@ export default function PostMatchView({ match, participants, stats }: PostMatchV
                       <div
                         className={cn(
                           'w-12 h-12 rounded-2xl flex items-center justify-center font-black text-white italic text-lg shadow-xl relative overflow-hidden',
-                          scorer.team === 'A' ? 'bg-blue-600' : 'bg-red-600'
+                          scorer.team === 'A' ? 'bg-indigo-600' : 'bg-rose-600'
                         )}
                       >
                         <div className="absolute inset-0 bg-gradient-to-br from-white/20 to-transparent" />
@@ -301,7 +301,7 @@ export default function PostMatchView({ match, participants, stats }: PostMatchV
                 key={team}
                 className={cn(
                   'glass-premium rounded-[3rem] p-10 border border-foreground/10 relative overflow-hidden transition-all duration-500 group/squad',
-                  team === 'A' ? 'hover:border-blue-500/30' : 'hover:border-red-500/30'
+                  team === 'A' ? 'hover:border-indigo-500/30 shadow-[0_20px_50px_rgba(79,70,229,0.05)]' : 'hover:border-rose-500/30 shadow-[0_20px_50px_rgba(225,29,72,0.05)]'
                 )}
               >
                 <div className="absolute top-0 right-0 p-8 opacity-5 group-hover/squad:opacity-10 transition-opacity">
@@ -320,10 +320,10 @@ export default function PostMatchView({ match, participants, stats }: PostMatchV
                   <div
                     className={cn(
                       'w-12 h-12 rounded-2xl flex items-center justify-center font-black text-white italic',
-                      team === 'A'
-                        ? 'bg-blue-600/20 text-blue-500 border border-blue-500/30 shadow-[0_0_20px_rgba(37,99,235,0.2)]'
-                        : 'bg-red-600/20 text-red-500 border border-red-500/30 shadow-[0_0_20px_rgba(220,38,38,0.2)]'
-                    )}
+                    team === 'A'
+                      ? 'bg-indigo-600/20 text-indigo-500 border border-indigo-500/30 shadow-[0_0_20px_rgba(79,70,229,0.2)]'
+                      : 'bg-rose-600/20 text-rose-500 border border-rose-500/30 shadow-[0_0_20px_rgba(225,29,72,0.2)]'
+                  )}
                   >
                     {team}
                   </div>

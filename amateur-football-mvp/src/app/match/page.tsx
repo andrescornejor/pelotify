@@ -82,15 +82,15 @@ function formatTime(timeStr: string) {
 // ── TEAM COLORS ───────────────────────────────────────────────────────────────
 const TEAM_CONFIG = {
   A: {
-    bg: 'bg-blue-600',
-    border: 'border-blue-500/20',
-    borderActive: 'border-blue-400',
-    shadow: 'shadow-[0_20px_60px_rgba(37,99,235,0.15)]',
-    glow: 'rgba(37,99,235,0.2)',
-    text: 'text-blue-400',
-    btn: 'bg-blue-600 hover:bg-blue-500 shadow-blue-600/30',
-    gradient: 'from-blue-600/20 via-blue-600/5 to-transparent',
-    accent: '#2563eb'
+    bg: 'bg-indigo-600',
+    border: 'border-indigo-500/20',
+    borderActive: 'border-indigo-400',
+    shadow: 'shadow-[0_20px_60px_rgba(79,70,229,0.15)]',
+    glow: 'rgba(79,70,229,0.2)',
+    text: 'text-indigo-400',
+    btn: 'bg-indigo-600 hover:bg-indigo-500 shadow-indigo-600/30',
+    gradient: 'from-indigo-600/20 via-indigo-600/5 to-transparent',
+    accent: '#4f46e5'
   },
   B: {
     bg: 'bg-rose-600',
@@ -327,10 +327,10 @@ function MatchLobbyContent() {
             <div className="absolute inset-0 bg-gradient-to-t from-background via-background/60 to-transparent" />
           </div>
 
-          <div className="relative z-10 max-w-[1440px] mx-auto px-6 h-full flex flex-col justify-end pb-16">
+          <div className="relative z-10 max-w-[1700px] mx-auto px-4 h-full flex flex-col justify-end pb-16">
             <Link
               href="/"
-              className="absolute top-8 left-6 w-12 h-12 rounded-2xl glass-premium flex items-center justify-center hover:scale-110 active:scale-95 transition-all text-foreground/50 hover:text-primary"
+              className="absolute top-8 left-4 w-12 h-12 rounded-2xl glass-premium flex items-center justify-center hover:scale-110 active:scale-95 transition-all text-foreground/50 hover:text-primary"
             >
               <ArrowLeft className="w-6 h-6" />
             </Link>
@@ -365,7 +365,7 @@ function MatchLobbyContent() {
           </div>
         </div>
 
-        <div className="max-w-[1440px] mx-auto px-6 -mt-12 relative z-20">
+        <div className="max-w-[1700px] mx-auto px-4 -mt-12 relative z-20">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
             <div className="lg:col-span-8 space-y-12">
                {/* Call to Action Card */}
@@ -467,10 +467,10 @@ function MatchLobbyContent() {
           <div className="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent" />
         </div>
 
-        <div className="relative z-10 max-w-[1440px] mx-auto px-6 h-full flex flex-col justify-end pb-12">
+        <div className="relative z-10 max-w-[1700px] mx-auto px-4 h-full flex flex-col justify-end pb-12">
           <Link
             href="/"
-            className="absolute top-8 left-6 w-12 h-12 rounded-2xl glass-premium flex items-center justify-center hover:scale-110 active:scale-95 transition-all text-foreground/50 hover:text-primary"
+            className="absolute top-8 left-4 w-12 h-12 rounded-2xl glass-premium flex items-center justify-center hover:scale-110 active:scale-95 transition-all text-foreground/50 hover:text-primary"
           >
             <ArrowLeft className="w-6 h-6" />
           </Link>
@@ -516,7 +516,7 @@ function MatchLobbyContent() {
         </div>
       </div>
 
-      <div className="max-w-[1440px] mx-auto px-6 -mt-8 relative z-20">
+      <div className="max-w-[1700px] mx-auto px-4 -mt-8 relative z-20">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
           {/* ── LEFT: PITCH & TEAMS ── */}
           <div className="lg:col-span-8 space-y-8">
@@ -524,17 +524,21 @@ function MatchLobbyContent() {
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
               {[
                 { icon: Users, label: 'Cupos', value: `${participants.length}/${teamSize * 2}`, color: 'text-primary' },
-                { icon: Shield, label: 'Formato', value: match.type || 'F5', color: 'text-blue-400' },
+                { icon: Shield, label: 'Formato', value: match.type || 'F5', color: 'text-indigo-400' },
                 { icon: DollarSign, label: 'Costo', value: match.price > 0 ? `$${match.price}` : 'Gratis', color: 'text-emerald-400' },
                 { icon: Zap, label: 'Estado', value: isCompleted ? 'Finalizado' : 'En Lobby', color: 'text-amber-400' },
               ].map((stat, i) => (
-                <div key={i} className="p-6 rounded-[2rem] glass-premium border-white/5 space-y-1">
+                <motion.div 
+                  key={i} 
+                  whileHover={{ y: -5, backgroundColor: 'rgba(255,255,255,0.03)' }}
+                  className="p-6 rounded-[2rem] glass-premium border-white/5 space-y-1 transition-all group/stat"
+                >
                   <div className="flex items-center gap-2">
-                    <stat.icon className={cn('w-4 h-4', stat.color)} />
+                    <stat.icon className={cn('w-4 h-4 transition-transform group-hover/stat:rotate-12', stat.color)} />
                     <span className="text-[8px] font-black text-foreground/20 uppercase tracking-[0.2em]">{stat.label}</span>
                   </div>
-                  <div className="text-xl font-black italic font-kanit uppercase tracking-tighter text-foreground">{stat.value}</div>
-                </div>
+                  <div className="text-xl font-black italic font-kanit uppercase tracking-tighter text-foreground group-hover/stat:text-primary transition-colors">{stat.value}</div>
+                </motion.div>
               ))}
             </div>
 
@@ -596,10 +600,21 @@ function MatchLobbyContent() {
                     const isMine = myTeam === team;
 
                     return (
-                      <div key={team} className={cn(
-                        "relative rounded-[2.5rem] border-2 p-8 transition-all duration-500 overflow-hidden",
-                        isMine ? `${cfg.borderActive} ${cfg.shadow} bg-surface/30` : `${cfg.border} bg-foreground/[0.01]`
-                      )}>
+                      <motion.div 
+                        key={team} 
+                        initial={{ opacity: 0, scale: 0.95 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        transition={{ delay: 0.1 * (team === 'A' ? 1 : 2) }}
+                        className={cn(
+                          "relative rounded-[2.5rem] border-2 p-8 transition-all duration-500 overflow-hidden group/team-card",
+                          isMine ? `${cfg.borderActive} ${cfg.shadow} bg-surface/40` : `${cfg.border} bg-foreground/[0.01] hover:bg-foreground/[0.02]`
+                        )}
+                      >
+                         {/* Dynamic Background Glow */}
+                         <div className={cn(
+                           "absolute -top-24 -right-24 w-64 h-64 blur-[80px] rounded-full opacity-20 pointer-events-none transition-opacity duration-700 group-hover/team-card:opacity-40",
+                           team === 'A' ? "bg-indigo-600" : "bg-rose-600"
+                         )} />
                          <div className="flex items-center justify-between mb-8">
                            <div className="flex items-center gap-4">
                              <div className={cn("w-12 h-12 rounded-2xl flex items-center justify-center font-black text-xl italic text-white shadow-lg", cfg.bg)}>
