@@ -925,37 +925,37 @@ function MatchLobbyContent() {
 
               <div className="flex-1 flex flex-col md:flex-row min-h-0 overflow-hidden">
                 {/* ── Pitch Area ── */}
-                <div className="flex-[3] flex flex-col p-4 md:p-8 min-h-0 overflow-hidden">
-                  <div className="flex-1 flex items-center justify-center min-h-0 relative">
-                    <div className="w-full max-w-7xl h-full max-h-full aspect-[3/4] md:aspect-[16/10] bg-[#1a2e1a] rounded-[2.5rem] md:rounded-[4rem] border-4 border-white/10 relative overflow-hidden shadow-2xl flex flex-col md:flex-row transition-all">
-                      {/* Pitch Patterns & Lines */}
-                      <div className="absolute inset-0 opacity-20 pointer-events-none">
-                        <div className="absolute inset-0 bg-[repeating-linear-gradient(90deg,transparent,transparent_10%,rgba(255,255,255,0.05)_10%,rgba(255,255,255,0.05)_20%)]" />
-                        <div className="absolute top-1/2 left-0 right-0 h-0.5 bg-white/20 -translate-y-1/2 md:hidden" />
-                        <div className="absolute top-0 bottom-0 left-1/2 w-0.5 bg-white/20 -translate-x-1/2 hidden md:block" />
-                        <div className="absolute top-1/2 left-1/2 w-24 h-24 md:w-48 md:h-48 border-2 border-white/20 rounded-full -translate-x-1/2 -translate-y-1/2" />
-                      </div>
+                <div className="flex-[3] flex flex-col p-2 md:p-8 min-h-0 overflow-hidden">
+                  <div className="flex-1 flex items-center justify-center min-h-0 relative bg-[#1a2e1a] rounded-[2.5rem] md:rounded-[4rem] border-4 border-white/10 shadow-2xl overflow-hidden">
+                    {/* Pitch Patterns & Lines */}
+                    <div className="absolute inset-0 opacity-20 pointer-events-none">
+                      <div className="absolute inset-0 bg-[repeating-linear-gradient(90deg,transparent,transparent_10%,rgba(255,255,255,0.05)_10%,rgba(255,255,255,0.05)_20%)]" />
+                      <div className="absolute top-1/2 left-0 right-0 h-0.5 bg-white/20 -translate-y-1/2 md:hidden" />
+                      <div className="absolute top-0 bottom-0 left-1/2 w-0.5 bg-white/20 -translate-x-1/2 hidden md:block" />
+                      <div className="absolute top-1/2 left-1/2 w-24 h-24 md:w-32 md:h-32 border-2 border-white/20 rounded-full -translate-x-1/2 -translate-y-1/2" />
+                    </div>
 
+                    <div className="w-full h-full flex flex-col md:flex-row transition-all overflow-hidden">
                       {/* TEAM A HALF */}
-                      <div className="flex-1 relative flex flex-col items-center justify-center p-4 md:p-12">
-                        <div className="absolute top-4 left-6 flex items-center gap-3">
-                          <div className={cn("w-8 h-8 md:w-12 md:h-12 rounded-xl flex items-center justify-center font-black italic text-lg md:text-2xl text-white shadow-xl", TEAM_CONFIG.A.bg)}>A</div>
+                      <div className="flex-1 relative flex flex-col items-center justify-center p-2 md:p-12 min-h-0">
+                        <div className="absolute top-4 left-6 flex items-center gap-3 z-10">
+                          <div className={cn("w-7 h-7 md:w-12 md:h-12 rounded-xl flex items-center justify-center font-black italic text-sm md:text-2xl text-white shadow-xl", TEAM_CONFIG.A.bg)}>A</div>
                           <input
                             type="text"
                             value={teamAName}
                             onChange={(e) => setTeamAName(e.target.value)}
                             onBlur={handleUpdateTeamNames}
-                            className="bg-transparent border-none p-0 text-lg md:text-2xl font-black italic uppercase tracking-tighter text-foreground/50 focus:text-foreground focus:outline-none focus:ring-0 w-32 md:w-48 transition-colors"
+                            className="bg-transparent border-none p-0 text-base md:text-2xl font-black italic uppercase tracking-tighter text-foreground/50 focus:text-foreground focus:outline-none focus:ring-0 w-24 md:w-48 transition-colors"
                           />
                         </div>
-                        <div className="grid grid-cols-2 lg:grid-cols-3 gap-2 md:gap-8 w-full mt-8 md:mt-0">
+                        <div className="grid grid-cols-3 gap-2 md:gap-8 w-full mt-10 md:mt-0 px-2">
                           {Array.from({ length: teamSize }).map((_, idx) => {
                             const p = teamA[idx];
                             const isSelected = selectedPlayerId === p?.user_id;
                             return (
                               <div 
                                 key={idx} 
-                                className="flex flex-col items-center justify-center h-20 md:h-32"
+                                className="flex flex-col items-center justify-center h-16 md:h-32"
                                 onClick={(e) => {
                                   e.stopPropagation();
                                   if (p) {
@@ -973,23 +973,23 @@ function MatchLobbyContent() {
                                       isSelected ? "scale-110" : "hover:scale-105"
                                     )}
                                   >
-                                    <PlayerSlot participant={p} size={isSelected ? "lg" : (teamSize > 7 ? 'sm' : 'md')} />
+                                    <PlayerSlot participant={p} size={isSelected ? "lg" : (teamSize > 5 ? 'sm' : 'md')} />
                                     {isSelected && (
                                       <div className="absolute -inset-4 bg-primary/20 blur-xl rounded-full -z-10 animate-pulse" />
                                     )}
                                     <div className={cn(
-                                      "absolute -top-1 -right-1 w-5 h-5 rounded-full flex items-center justify-center border border-white/10 transition-all",
+                                      "absolute -top-1 -right-1 w-4 h-4 rounded-full flex items-center justify-center border border-white/10 transition-all",
                                       isSelected ? "bg-primary text-black opacity-100 scale-100" : "bg-background/80 text-primary opacity-0 scale-75 group-hover:opacity-100 group-hover:scale-100"
                                     )}>
-                                      <Check className="w-2.5 h-2.5" />
+                                      <Check className="w-2 h-2" />
                                     </div>
                                   </motion.div>
                                 ) : (
                                   <div className={cn(
-                                    "w-12 h-12 md:w-20 md:h-20 rounded-[1.5rem] md:rounded-[2rem] border-2 border-dashed flex items-center justify-center transition-all",
+                                    "w-10 h-10 md:w-20 md:h-20 rounded-[1.2rem] md:rounded-[2rem] border-2 border-dashed flex items-center justify-center transition-all",
                                     selectedPlayerId ? "border-primary/40 bg-primary/5 scale-105" : "border-white/5 bg-white/[0.02]"
                                   )}>
-                                    <div className={cn("w-1.5 h-1.5 rounded-full", selectedPlayerId ? "bg-primary animate-ping" : "bg-white/5")} />
+                                    <div className={cn("w-1 h-1 rounded-full", selectedPlayerId ? "bg-primary animate-ping" : "bg-white/5")} />
                                   </div>
                                 )}
                               </div>
@@ -999,25 +999,25 @@ function MatchLobbyContent() {
                       </div>
 
                       {/* TEAM B HALF */}
-                      <div className="flex-1 relative border-t md:border-t-0 md:border-l border-white/10 flex flex-col items-center justify-center p-4 md:p-12">
-                        <div className="absolute top-4 left-6 md:top-auto md:bottom-4 md:left-auto md:right-6 flex items-center md:flex-row-reverse gap-3">
-                          <div className={cn("w-8 h-8 md:w-12 md:h-12 rounded-xl flex items-center justify-center font-black italic text-lg md:text-2xl text-white shadow-xl", TEAM_CONFIG.B.bg)}>B</div>
+                      <div className="flex-1 relative border-t md:border-t-0 md:border-l border-white/10 flex flex-col items-center justify-center p-2 md:p-12 min-h-0">
+                        <div className="absolute top-4 left-6 md:top-auto md:bottom-4 md:left-auto md:right-6 flex items-center md:flex-row-reverse gap-3 z-10">
+                          <div className={cn("w-7 h-7 md:w-12 md:h-12 rounded-xl flex items-center justify-center font-black italic text-sm md:text-2xl text-white shadow-xl", TEAM_CONFIG.B.bg)}>B</div>
                           <input
                             type="text"
                             value={teamBName}
                             onChange={(e) => setTeamBName(e.target.value)}
                             onBlur={handleUpdateTeamNames}
-                            className="bg-transparent border-none p-0 text-lg md:text-2xl font-black italic uppercase tracking-tighter text-foreground/50 focus:text-foreground focus:outline-none focus:ring-0 w-32 md:w-48 text-left md:text-right transition-colors"
+                            className="bg-transparent border-none p-0 text-base md:text-2xl font-black italic uppercase tracking-tighter text-foreground/50 focus:text-foreground focus:outline-none focus:ring-0 w-24 md:w-48 text-left md:text-right transition-colors"
                           />
                         </div>
-                        <div className="grid grid-cols-2 lg:grid-cols-3 gap-2 md:gap-8 w-full mt-8 md:mt-0">
+                        <div className="grid grid-cols-3 gap-2 md:gap-8 w-full mt-10 md:mt-0 px-2">
                           {Array.from({ length: teamSize }).map((_, idx) => {
                             const p = teamB[idx];
                             const isSelected = selectedPlayerId === p?.user_id;
                             return (
                               <div 
                                 key={idx} 
-                                className="flex flex-col items-center justify-center h-20 md:h-32"
+                                className="flex flex-col items-center justify-center h-16 md:h-32"
                                 onClick={(e) => {
                                   e.stopPropagation();
                                   if (p) {
@@ -1035,23 +1035,23 @@ function MatchLobbyContent() {
                                       isSelected ? "scale-110" : "hover:scale-105"
                                     )}
                                   >
-                                    <PlayerSlot participant={p} size={isSelected ? "lg" : (teamSize > 7 ? 'sm' : 'md')} />
+                                    <PlayerSlot participant={p} size={isSelected ? "lg" : (teamSize > 5 ? 'sm' : 'md')} />
                                     {isSelected && (
                                       <div className="absolute -inset-4 bg-primary/20 blur-xl rounded-full -z-10 animate-pulse" />
                                     )}
                                     <div className={cn(
-                                      "absolute -top-1 -right-1 w-5 h-5 rounded-full flex items-center justify-center border border-white/10 transition-all",
+                                      "absolute -top-1 -right-1 w-4 h-4 rounded-full flex items-center justify-center border border-white/10 transition-all",
                                       isSelected ? "bg-primary text-black opacity-100 scale-100" : "bg-background/80 text-primary opacity-0 scale-75 group-hover:opacity-100 group-hover:scale-100"
                                     )}>
-                                      <Check className="w-2.5 h-2.5" />
+                                      <Check className="w-2 h-2" />
                                     </div>
                                   </motion.div>
                                 ) : (
                                   <div className={cn(
-                                    "w-12 h-12 md:w-20 md:h-20 rounded-[1.5rem] md:rounded-[2rem] border-2 border-dashed flex items-center justify-center transition-all",
+                                    "w-10 h-10 md:w-20 md:h-20 rounded-[1.2rem] md:rounded-[2rem] border-2 border-dashed flex items-center justify-center transition-all",
                                     selectedPlayerId ? "border-primary/40 bg-primary/5 scale-105" : "border-white/5 bg-white/[0.02]"
                                   )}>
-                                    <div className={cn("w-1.5 h-1.5 rounded-full", selectedPlayerId ? "bg-primary animate-ping" : "bg-white/5")} />
+                                    <div className={cn("w-1 h-1 rounded-full", selectedPlayerId ? "bg-primary animate-ping" : "bg-white/5")} />
                                   </div>
                                 )}
                               </div>
@@ -1063,26 +1063,26 @@ function MatchLobbyContent() {
                   </div>
                 </div>
 
-                {/* ── Bench Area (Sidebar on Desktop) ── */}
+                {/* ── Bench Area ── */}
                 <div className="w-full md:w-[400px] border-t md:border-t-0 md:border-l border-white/5 bg-white/[0.02] flex flex-col min-h-0 overflow-hidden">
-                  <div className="p-6 border-b border-white/5 flex items-center justify-between bg-white/[0.01]">
+                  <div className="p-4 md:p-6 border-b border-white/5 flex items-center justify-between bg-white/[0.01]">
                     <div className="flex items-center gap-3">
-                      <Users className="w-5 h-5 text-foreground/20" />
+                      <Users className="w-4 h-4 md:w-5 md:h-5 text-foreground/20" />
                       <div>
-                        <h4 className="text-sm font-black italic uppercase text-foreground leading-none">Lista de Espera</h4>
-                        <span className="text-[10px] font-bold text-primary uppercase tracking-widest mt-1">{unassigned.length} JUGADORES</span>
+                        <h4 className="text-[10px] md:text-sm font-black italic uppercase text-foreground leading-none">Esperando</h4>
+                        <span className="text-[8px] md:text-[10px] font-bold text-primary uppercase tracking-widest mt-0.5 md:mt-1">{unassigned.length} JUGADORES</span>
                       </div>
                     </div>
                     <button 
                       onClick={handleBenchAll} 
-                      className="px-3 py-1.5 rounded-lg bg-rose-600/10 border border-rose-600/20 text-rose-500 text-[9px] font-black uppercase tracking-widest hover:bg-rose-600 hover:text-white transition-all"
+                      className="px-2 py-1 md:px-3 md:py-1.5 rounded-lg bg-rose-600/10 border border-rose-600/20 text-rose-500 text-[8px] md:text-[9px] font-black uppercase tracking-widest hover:bg-rose-600 hover:text-white transition-all"
                     >
                       Vaciar
                     </button>
                   </div>
                   
                   <div 
-                    className="flex-1 overflow-y-auto p-6 md:p-8 flex flex-wrap content-start justify-center gap-4 md:gap-6 min-h-0 scrollbar-hide"
+                    className="flex-1 overflow-x-auto md:overflow-y-auto p-4 md:p-8 flex md:flex-wrap flex-row md:flex-col content-start justify-start md:justify-center gap-4 md:gap-6 min-h-0 overflow-y-hidden md:overflow-y-auto scrollbar-hide"
                     onClick={() => selectedPlayerId && handleTacticalMove(selectedPlayerId, null)}
                   >
                     {unassigned.length > 0 ? unassigned.map(p => {
@@ -1092,7 +1092,7 @@ function MatchLobbyContent() {
                           key={p.user_id} 
                           layoutId={p.user_id} 
                           className={cn(
-                            "cursor-pointer transition-transform relative group",
+                            "cursor-pointer transition-transform relative group flex-shrink-0",
                             isSelected ? "scale-110" : "hover:scale-105"
                           )}
                           onClick={(e) => {
@@ -1105,7 +1105,7 @@ function MatchLobbyContent() {
                             <div className="absolute -inset-4 bg-primary/20 blur-xl rounded-full -z-10 animate-pulse" />
                           )}
                           <div className={cn(
-                             "absolute -top-1 -right-1 w-5 h-5 rounded-full flex items-center justify-center border border-white/10 transition-all shadow-xl",
+                             "absolute -top-1 -right-1 w-4 h-4 rounded-full flex items-center justify-center border border-white/10 transition-all shadow-xl shadow-black/50",
                              isSelected ? "bg-primary text-black opacity-100 scale-100" : "bg-background/80 text-primary opacity-0 scale-75 group-hover:opacity-100 group-hover:scale-100"
                           )}>
                              <Check className="w-2.5 h-2.5" />
@@ -1113,9 +1113,9 @@ function MatchLobbyContent() {
                         </motion.div>
                       );
                     }) : (
-                      <div className="w-full h-full flex flex-col items-center justify-center text-foreground/5 space-y-4 opacity-40">
-                         <Users className="w-12 h-12" />
-                         <p className="text-[10px] font-black uppercase tracking-[0.2em] italic text-center">Todos están en cancha</p>
+                      <div className="w-full h-full flex flex-col items-center justify-center text-foreground/5 space-y-2 md:space-y-4 opacity-40">
+                         <Users className="w-8 h-8 md:w-12 md:h-12" />
+                         <p className="text-[10px] font-black uppercase tracking-[0.1em] md:tracking-[0.2em] italic text-center leading-none">Sin jugadores</p>
                       </div>
                     )}
                   </div>
