@@ -50,7 +50,7 @@ export async function getTournaments() {
 export async function getTournamentById(id: string) {
   const { data, error } = await supabase
     .from('tournaments')
-    .select('*, tournament_teams(team_id, status)')
+    .select('*, tournament_teams(status, teams(id, name, logo_url, captain_id))')
     .eq('id', id)
     .single();
 

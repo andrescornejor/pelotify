@@ -20,25 +20,24 @@ import {
   Shuffle,
   Loader2,
   CheckCircle2,
+  X,
+  PlusCircle,
 } from 'lucide-react';
 import { useState, useEffect, useMemo } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
-import { getTournamentById, deleteTournament, type Tournament } from '@/lib/tournaments';
+import { getTournamentById, deleteTournament, registerTeamForTournament, type Tournament } from '@/lib/tournaments';
+import { getUserTeams } from '@/lib/teams';
 import { cn } from '@/lib/utils';
 import Link from 'next/link';
 
-// Mock teams for demonstration if none exist
-const MOCK_TEAMS = [
-    { id: '1', name: 'Rosario Central' },
-    { id: '2', name: 'Newells Old Boys' },
-    { id: '3', name: 'El Potrero FC' },
-    { id: '4', name: 'Los Galácticos' },
-    { id: '5', name: 'Amateur United' },
-    { id: '6', name: 'La Scaloneta' },
-    { id: '7', name: 'Kilometro 11' },
-    { id: '8', name: 'Cero a la Izquierda' },
-];
+interface TeamInTournament {
+  id: string;
+  name: string;
+  logo_url?: string;
+  captain_id?: string;
+  status?: string;
+}
 
 export default function TournamentDetailPage() {
   const router = useRouter();
@@ -49,44 +48,81 @@ export default function TournamentDetailPage() {
   const [tournament, setTournament] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState<'info' | 'bracket' | 'teams'>('info');
+  const [userTeams, setUserTeams] = useState<any[]>([]);
+  const [showJoinModal, setShowJoinModal] = useState(false);
+  const [registering, setRegistering] = useState(false);
   
   // Draw Animation State
   const [isDrawing, setIsDrawing] = useState(false);
   const [drawStep, setDrawStep] = useState(0);
   const [drawnMatches, setDrawnMatches] = useState<any[]>([]);
-  const [visibleTeams, setVisibleTeams] = useState<any[]>([]);
+
+  const load = async () => {
+    try {
+      setLoading(true);
+      const data = await getTournamentById(id);
+      setTournament(data);
+      
+      if (user) {
+        const teamsRaw = await getUserTeams(user.id);
+        // Only teams where current user is captain
+        setUserTeams(teamsRaw.filter((t: any) => t.role === 'captain'));
+      }
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    async function load() {
-      try {
-        setLoading(true);
-        const data = await getTournamentById(id);
-        setTournament(data);
-      } catch (err) {
-        console.error(err);
-      } finally {
-        setLoading(false);
-      }
-    }
     load();
-  }, [id]);
+  }, [id, user]);
 
   const isCreator = user?.id === tournament?.creator_id;
+  
+  const teams = useMemo<TeamInTournament[]>(() => {
+    if (!tournament?.tournament_teams) return [];
+    return tournament.tournament_teams.map((tt: any) => ({
+      ...tt.teams,
+      status: tt.status
+    }));
+  }, [tournament]);
+
+  const isTeamAlreadyRegistered = (teamId: string) => {
+    return teams.some((t) => t.id === teamId);
+  };
+
+  const handleRegisterTeam = async (teamId: string) => {
+    try {
+      setRegistering(true);
+      await registerTeamForTournament(id, teamId);
+      setShowJoinModal(false);
+      load();
+    } catch (err: any) {
+      alert(err.message || 'Error al registrar el equipo');
+    } finally {
+      setRegistering(false);
+    }
+  };
 
   const startDraw = async () => {
+    if (teams.length < 2) {
+       alert('Se necesitan al menos 2 equipos para iniciar el sorteo.');
+       return;
+    }
     setIsDrawing(true);
     setDrawnMatches([]);
-    setVisibleTeams([]);
     
-    // Simulate real draw animation
-    const shuffled = [...MOCK_TEAMS].sort(() => Math.random() - 0.5);
+    const shuffled = [...teams].sort(() => Math.random() - 0.5);
     
     for (let i = 0; i < shuffled.length; i += 2) {
+       if (!shuffled[i+1]) break; 
        setDrawStep(i / 2 + 1);
        const teamA = shuffled[i];
        const teamB = shuffled[i+1];
        
-       await new Promise(r => setTimeout(r, 1200)); // Suspense
+       await new Promise(r => setTimeout(r, 1200));
        
        setDrawnMatches(prev => [...prev, { teamA, teamB, id: `match-${i}` }]);
     }
@@ -154,8 +190,8 @@ export default function TournamentDetailPage() {
                  <span className="font-bold text-foreground text-sm uppercase">{tournament.start_date}</span>
               </div>
               <div className="flex flex-col">
-                 <span className="text-[10px] font-black text-foreground/40 uppercase tracking-widest">Estado</span>
-                 <span className="text-primary font-black uppercase text-sm italic">{tournament.status}</span>
+                 <span className="text-[10px] font-black text-foreground/40 uppercase tracking-widest">Equipos</span>
+                 <span className="font-bold text-foreground text-sm uppercase">{teams.length} / {tournament.max_teams}</span>
               </div>
            </div>
         </div>
@@ -237,7 +273,10 @@ export default function TournamentDetailPage() {
                                 </button>
                              </div>
                           ) : (
-                             <button className="w-full h-20 bg-primary text-black rounded-[1.8rem] font-black text-sm uppercase tracking-widest shadow-2xl shadow-primary/20 hover:scale-[1.02] active:scale-[0.98] transition-all">
+                             <button 
+                                onClick={() => setShowJoinModal(true)}
+                                className="w-full h-20 bg-primary text-black rounded-[1.8rem] font-black text-sm uppercase tracking-widest shadow-2xl shadow-primary/20 hover:scale-[1.02] active:scale-[0.98] transition-all"
+                             >
                                 REGISTRAR MI EQUIPO
                              </button>
                           )}
@@ -259,30 +298,36 @@ export default function TournamentDetailPage() {
                  animate={{ opacity: 1, scale: 1 }}
                  className="space-y-12"
               >
-                  {isCreator && drawnMatches.length === 0 && !isDrawing && (
+                  {drawnMatches.length === 0 && !isDrawing && (
                     <div className="py-32 flex flex-col items-center justify-center text-center gap-8 bg-foreground/[0.03] rounded-[4rem] border-2 border-dashed border-foreground/10">
                        <div className="relative">
                           <Shuffle className="w-16 h-16 text-foreground/10" />
                           <div className="absolute inset-0 bg-primary/20 blur-3xl rounded-full" />
                        </div>
                        <div className="space-y-3">
-                          <h3 className="text-3xl font-black italic uppercase text-foreground">Sorteo Desocupado</h3>
-                          <p className="text-[10px] font-black text-foreground/40 uppercase tracking-[0.3em] max-w-sm">Aún no se han armado las llaves. Los equipos están listos para el sorteo.</p>
+                          <h3 className="text-3xl font-black italic uppercase text-foreground">Sorteo Pendiente</h3>
+                          <p className="text-[10px] font-black text-foreground/40 uppercase tracking-[0.3em] max-w-sm">
+                            {teams.length < tournament.max_teams 
+                                ? `Faltan equipos por inscribirse (${teams.length}/${tournament.max_teams}).`
+                                : "El torneo está lleno. El sorteo está listo para comenzar."}
+                          </p>
                        </div>
-                       <button 
-                          onClick={startDraw}
-                          className="h-16 px-12 bg-primary text-black rounded-[1.5rem] font-black text-[11px] uppercase tracking-widest shadow-xl shadow-primary/20 flex items-center justify-center gap-4 hover:scale-105 transition-all"
-                       >
-                          <Play className="w-4 h-4 fill-current" />
-                          INICIAR SORTEO EN VIVO
-                       </button>
+                       {isCreator && (
+                        <button 
+                            disabled={teams.length < 2}
+                            onClick={startDraw}
+                            className="h-16 px-12 bg-primary text-black rounded-[1.5rem] font-black text-[11px] uppercase tracking-widest shadow-xl shadow-primary/20 flex items-center justify-center gap-4 hover:scale-105 transition-all disabled:opacity-20"
+                        >
+                            <Play className="w-4 h-4 fill-current" />
+                            INICIAR SORTEO EN VIVO
+                        </button>
+                       )}
                     </div>
                   )}
 
-                  {/* ── DRAW ANIMATION ── */}
                   <AnimatePresence>
                      {isDrawing && (
-                        <div className="fixed inset-0 z-50 bg-black/90 backdrop-blur-3xl flex flex-col items-center justify-center p-10 overflow-hidden">
+                        <div className="fixed inset-0 z-50 bg-black/90 backdrop-blur-3xl flex flex-col items-center justify-center p-10 overflow-hidden text-white">
                            <motion.div 
                               initial={{ scale: 0.8, opacity: 0 }}
                               animate={{ scale: 1, opacity: 1 }}
@@ -310,10 +355,10 @@ export default function TournamentDetailPage() {
                                     className="flex-shrink-0 w-80 p-8 glass-premium rounded-[2.5rem] border border-white/20 bg-white/5 space-y-6"
                                  >
                                     <div className="flex flex-col items-center gap-4">
-                                       <div className="w-16 h-16 rounded-full bg-white/10 flex items-center justify-center">
-                                          <Shield className="w-8 h-8 text-white" />
+                                       <div className="w-16 h-16 rounded-full bg-white/10 flex items-center justify-center overflow-hidden">
+                                          {match.teamA.logo_url ? <img src={match.teamA.logo_url} className="w-full h-full object-cover" /> : <Shield className="w-8 h-8 text-white" />}
                                        </div>
-                                       <span className="text-xl font-black uppercase text-white italic tracking-tighter">{match.teamA.name}</span>
+                                       <span className="text-xl font-black uppercase text-white italic tracking-tighter text-center">{match.teamA.name}</span>
                                     </div>
                                     <div className="flex items-center gap-4">
                                        <div className="h-px flex-1 bg-white/10" />
@@ -321,10 +366,10 @@ export default function TournamentDetailPage() {
                                        <div className="h-px flex-1 bg-white/10" />
                                     </div>
                                     <div className="flex flex-col items-center gap-4">
-                                       <div className="w-16 h-16 rounded-full bg-white/10 flex items-center justify-center">
-                                          <Shield className="w-8 h-8 text-white" />
+                                       <div className="w-16 h-16 rounded-full bg-white/10 flex items-center justify-center overflow-hidden">
+                                          {match.teamB.logo_url ? <img src={match.teamB.logo_url} className="w-full h-full object-cover" /> : <Shield className="w-8 h-8 text-white" />}
                                        </div>
-                                       <span className="text-xl font-black uppercase text-white italic tracking-tighter">{match.teamB.name}</span>
+                                       <span className="text-xl font-black uppercase text-white italic tracking-tighter text-center">{match.teamB.name}</span>
                                     </div>
                                  </motion.div>
                               ))}
@@ -333,11 +378,9 @@ export default function TournamentDetailPage() {
                      )}
                   </AnimatePresence>
 
-                  {/* ── BRACKET VIEW ── */}
                   {drawnMatches.length > 0 && !isDrawing && (
                      <div className="space-y-16 py-12 px-6 overflow-x-auto min-w-full no-scrollbar">
                         <div className="flex items-start gap-32">
-                           {/* ROUND 1: QUARTER FINALS */}
                            <div className="space-y-8 min-w-[320px]">
                               <div className="flex items-center gap-4 mb-12">
                                  <div className="w-2 h-2 rounded-full bg-primary" />
@@ -348,7 +391,6 @@ export default function TournamentDetailPage() {
                                     key={m.id}
                                     initial={{ opacity: 0, x: -20 }}
                                     animate={{ opacity: 1, x: 0 }}
-                                    transition={{ delay: idx * 0.1 }}
                                     className="p-6 bg-foreground/[0.03] border border-foreground/10 rounded-[2rem] relative"
                                  >
                                     <div className="space-y-4">
@@ -362,49 +404,8 @@ export default function TournamentDetailPage() {
                                           <div className="w-6 h-6 rounded-md bg-foreground/5 flex items-center justify-center font-black text-[10px]">0</div>
                                        </div>
                                     </div>
-                                    {/* Connector line */}
-                                    <div className="absolute top-1/2 -right-32 w-32 h-[1.5px] bg-foreground/10" />
                                  </motion.div>
                               ))}
-                           </div>
-
-                           {/* SEMI FINALS */}
-                           <div className="space-y-40 pt-20 min-w-[320px]">
-                              <div className="flex items-center gap-4 mb-4">
-                                 <div className="w-2 h-2 rounded-full bg-primary/40" />
-                                 <span className="text-[10px] font-black uppercase tracking-widest text-foreground/40 italic">Semi-Finales (R2)</span>
-                              </div>
-                              {[1, 2].map((m, idx) => (
-                                 <div key={idx} className="p-6 bg-foreground/[0.03] border border-foreground/10 rounded-[2rem] relative opacity-40 grayscale">
-                                    <div className="space-y-4">
-                                       <div className="flex items-center justify-between">
-                                          <span className="text-xs font-black uppercase italic text-foreground/20">Por Definir</span>
-                                          <div className="w-6 h-6" />
-                                       </div>
-                                       <div className="h-px bg-foreground/5" />
-                                       <div className="flex items-center justify-between">
-                                          <span className="text-xs font-black uppercase italic text-foreground/20">Por Definir</span>
-                                          <div className="w-6 h-6" />
-                                       </div>
-                                    </div>
-                                    <div className="absolute top-1/2 -right-32 w-32 h-[1.5px] bg-foreground/10" />
-                                 </div>
-                              ))}
-                           </div>
-
-                           {/* FINAL */}
-                           <div className="pt-56 min-w-[320px]">
-                              <div className="flex flex-col items-center text-center gap-8">
-                                 <div className="space-y-4">
-                                    <Trophy className="w-16 h-16 text-primary mx-auto animate-bounce" />
-                                    <span className="text-[10px] font-black uppercase tracking-[0.5em] text-primary italic">LA GRAN FINAL</span>
-                                 </div>
-                                 <div className="w-full p-8 p-6 bg-primary/[0.05] border-2 border-primary/20 rounded-[3rem] relative opacity-50">
-                                    <div className="space-y-6">
-                                       <span className="text-2xl font-black italic uppercase text-foreground/20 italic">CHAMPION'S SLOT</span>
-                                    </div>
-                                 </div>
-                              </div>
                            </div>
                         </div>
                      </div>
@@ -417,23 +418,104 @@ export default function TournamentDetailPage() {
                   key="teamsTab"
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
-                  className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"
                >
-                  {MOCK_TEAMS.map((team, idx) => (
-                     <div key={team.id} className="p-6 glass-premium rounded-[2rem] border border-foreground/5 flex flex-col items-center gap-4 text-center group hover:bg-primary transition-all">
-                        <div className="w-20 h-20 rounded-full bg-foreground/10 group-hover:bg-black/10 flex items-center justify-center">
-                           <Shield className="w-10 h-10 group-hover:text-black transition-colors" />
-                        </div>
-                        <div className="space-y-1">
-                           <h4 className="font-black italic uppercase text-foreground group-hover:text-black transition-colors">{team.name}</h4>
-                           <span className="text-[9px] font-black text-foreground/30 uppercase tracking-widest group-hover:text-black/40">Equipo registrado</span>
-                        </div>
-                     </div>
-                  ))}
+                  {teams.length > 0 ? (
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                        {teams.map((team) => (
+                            <div key={team.id} className="p-6 glass-premium rounded-[2rem] border border-foreground/5 flex flex-col items-center gap-4 text-center group hover:bg-primary transition-all">
+                                <div className="w-20 h-20 rounded-full bg-foreground/10 group-hover:bg-black/10 flex items-center justify-center overflow-hidden">
+                                {team.logo_url ? (
+                                    <img src={team.logo_url} className="w-full h-full object-cover" />
+                                ) : (
+                                    <Shield className="w-10 h-10 group-hover:text-black transition-colors" />
+                                )}
+                                </div>
+                                <div className="space-y-1">
+                                <h4 className="font-black italic uppercase text-foreground group-hover:text-black transition-colors">{team.name}</h4>
+                                <span className="text-[9px] font-black text-foreground/30 uppercase tracking-widest group-hover:text-black/40">
+                                    {team.status === 'approved' ? 'Inscripción Confirmada' : 'Inscripción Pendiente'}
+                                </span>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                  ) : (
+                    <div className="py-20 flex flex-col items-center justify-center text-center gap-4 bg-foreground/[0.02] rounded-[3rem] border border-dashed border-foreground/10">
+                        <Users className="w-12 h-12 text-foreground/10" />
+                        <p className="text-[10px] font-black text-foreground/30 uppercase tracking-[0.2em]">El torneo aún no se ha llenado (0/{tournament.max_teams} equipos).</p>
+                    </div>
+                  )}
                </motion.div>
            )}
         </AnimatePresence>
       </div>
+
+      <AnimatePresence>
+        {showJoinModal && (
+          <div className="fixed inset-0 z-[100] flex items-center justify-center p-6 bg-black/80 backdrop-blur-sm">
+            <motion.div 
+                initial={{ scale: 0.9, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                exit={{ scale: 0.9, opacity: 0 }}
+                className="w-full max-w-md glass-premium rounded-[2.5rem] border border-white/10 p-8 space-y-8 shadow-2xl"
+            >
+                <div className="flex items-center justify-between">
+                    <h3 className="text-2xl font-black italic uppercase text-white tracking-tighter">REGISTRAR EQUIPO</h3>
+                    <button onClick={() => setShowJoinModal(false)} className="w-10 h-10 rounded-xl bg-white/5 hover:bg-white/10 flex items-center justify-center transition-all">
+                        <X className="w-5 h-5 text-white/40" />
+                    </button>
+                </div>
+
+                <div className="space-y-4">
+                    <p className="text-[10px] font-black text-white/40 uppercase tracking-widest px-1">Tus equipos (Capitán)</p>
+                    {userTeams.length > 0 ? (
+                        <div className="space-y-3">
+                            {userTeams.map(team => {
+                                const isRegistered = isTeamAlreadyRegistered(team.id);
+                                return (
+                                    <button 
+                                        key={team.id}
+                                        disabled={isRegistered || registering}
+                                        onClick={() => handleRegisterTeam(team.id)}
+                                        className={cn(
+                                            "w-full p-6 rounded-2xl border flex items-center justify-between transition-all group",
+                                            isRegistered 
+                                                ? "bg-white/5 border-white/5 opacity-40 cursor-not-allowed"
+                                                : "bg-white/[0.03] border-white/10 hover:border-primary hover:bg-primary hover:text-black"
+                                        )}
+                                    >
+                                        <div className="flex items-center gap-4">
+                                            <div className="w-10 h-10 rounded-full bg-white/10 group-hover:bg-black/10 flex items-center justify-center overflow-hidden">
+                                                {team.logo_url ? <img src={team.logo_url} className="w-full h-full object-cover" /> : <Shield className="w-5 h-5 text-white" />}
+                                            </div>
+                                            <span className="font-black italic uppercase tracking-tighter text-white group-hover:text-black">{team.name}</span>
+                                        </div>
+                                        {isRegistered ? (
+                                            <CheckCircle2 className="w-5 h-5 text-primary" />
+                                        ) : (
+                                            <PlusCircle className="w-5 h-5 text-white/20 group-hover:text-black" />
+                                        )}
+                                    </button>
+                                );
+                            })}
+                        </div>
+                    ) : (
+                        <div className="p-10 rounded-[2rem] bg-white/[0.02] border border-dashed border-white/5 text-center space-y-4">
+                            <span className="text-[10px] font-black text-white/20 uppercase tracking-widest block">No eres capitán de ningún equipo</span>
+                            <Link href="/teams/create">
+                                <button className="h-12 px-6 bg-white/5 hover:bg-white/10 text-white rounded-xl text-[9px] font-black uppercase tracking-widest transition-all">CREAR MI EQUIPO</button>
+                            </Link>
+                        </div>
+                    )}
+                </div>
+
+                <p className="text-[9px] text-white/20 font-medium uppercase tracking-[0.05em] leading-relaxed">
+                    * Al registrar el equipo, todos los miembros actuales quedarán inscritos automáticamente en el torneo.
+                </p>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
 
       <style jsx global>{`
          @keyframes shake {
