@@ -456,16 +456,17 @@ function MatchLobbyContent() {
 
   // ── VIEW: LOBBY (JOINED) ────────────────────────────────────────────────────
   return (
-    <div className="min-h-screen bg-background pb-24">
-      {/* ── HEADER ── */}
-      <div className="relative h-[40vh] min-h-[350px] overflow-hidden">
+    <div className="min-h-screen bg-background pb-24 selection:bg-primary selection:text-black">
+      {/* ── HEADER HERO ── */}
+      <div className="relative h-[70vh] min-h-[600px] overflow-hidden">
         <div className="absolute inset-0 z-0">
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(16,185,129,0.08)_0%,transparent_100%)] z-10" />
           <img
             src="https://images.unsplash.com/photo-1574629810360-7efbbe195018?auto=format&fit=crop&q=80&w=2000"
             alt=""
             className="w-full h-full object-cover grayscale opacity-20"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-b from-background/40 via-transparent to-background z-[5]" />
         </div>
 
         <Link
@@ -475,7 +476,7 @@ function MatchLobbyContent() {
           <ArrowLeft className="w-6 h-6" />
         </Link>
 
-        <div className="relative z-10 max-w-[1700px] mx-auto px-4 h-full flex flex-col justify-end pb-12">
+        <div className="relative z-10 max-w-[1700px] mx-auto px-4 h-full flex flex-col justify-end pb-12 pt-48 md:pt-64">
 
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-8">
             <div className="space-y-4">
@@ -504,13 +505,13 @@ function MatchLobbyContent() {
               </div>
             </div>
 
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-4 self-center md:self-end">
                {!isCompleted && (
                  <button
                    onClick={() => setIsQRModalOpen(true)}
-                   className="h-14 px-8 rounded-2xl glass-premium border-white/5 font-black italic uppercase text-xs flex items-center gap-3 hover:scale-105 active:scale-95 transition-all"
+                   className="h-12 md:h-14 px-6 md:px-8 rounded-2xl bg-primary text-black font-black italic uppercase text-xs flex items-center gap-3 hover:scale-110 active:scale-95 transition-all shadow-xl shadow-primary/20"
                  >
-                   <Users className="w-5 h-5 text-primary" /> Invitar
+                   <Users className="w-5 h-5" /> Invitar
                  </button>
                )}
             </div>
@@ -526,20 +527,22 @@ function MatchLobbyContent() {
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
               {[
                 { icon: Users, label: 'Cupos', value: `${participants.length}/${teamSize * 2}`, color: 'text-primary' },
-                { icon: Shield, label: 'Formato', value: match.type || 'F5', color: 'text-indigo-400' },
+                { icon: Shield, label: 'Formato', value: match.type || 'F7', color: 'text-indigo-400' },
                 { icon: DollarSign, label: 'Costo', value: match.price > 0 ? `$${match.price}` : 'Gratis', color: 'text-emerald-400' },
                 { icon: Zap, label: 'Estado', value: isCompleted ? 'Finalizado' : 'En Lobby', color: 'text-amber-400' },
               ].map((stat, i) => (
                 <motion.div 
                   key={i} 
                   whileHover={{ y: -5, backgroundColor: 'rgba(255,255,255,0.03)' }}
-                  className="p-6 rounded-[2rem] glass-premium border-white/5 space-y-1 transition-all group/stat"
+                  className="p-8 rounded-[2.5rem] glass-premium border-white/5 space-y-4 transition-all group/stat flex flex-col justify-between"
                 >
-                  <div className="flex items-center gap-2">
-                    <stat.icon className={cn('w-4 h-4 transition-transform group-hover/stat:rotate-12', stat.color)} />
-                    <span className="text-[8px] font-black text-foreground/20 uppercase tracking-[0.2em]">{stat.label}</span>
+                  <div className="flex items-center justify-between">
+                    <div className={cn('w-10 h-10 rounded-xl bg-foreground/5 flex items-center justify-center transition-transform group-hover/stat:rotate-12', stat.color)}>
+                      <stat.icon className="w-5 h-5" />
+                    </div>
+                    <span className="text-[10px] font-black text-foreground/20 uppercase tracking-[0.2em]">{stat.label}</span>
                   </div>
-                  <div className="text-xl font-black italic font-kanit uppercase tracking-tighter text-foreground group-hover/stat:text-primary transition-colors">{stat.value}</div>
+                  <div className="text-2xl font-black italic font-kanit uppercase tracking-tighter text-foreground group-hover/stat:text-primary transition-colors leading-none">{stat.value}</div>
                 </motion.div>
               ))}
             </div>
@@ -638,16 +641,16 @@ function MatchLobbyContent() {
                                       </button>
                                     </div>
                                   ) : (
-                                    <div className="flex items-center gap-2 group/title">
-                                      <h3 className="text-lg font-black italic uppercase tracking-tighter text-foreground leading-none">
+                                   <div className="flex items-center gap-2 group/title">
+                                      <h3 className="text-xl font-black italic uppercase tracking-tighter text-foreground leading-tight">
                                         {team === 'A' ? match.team_a_name || 'Local' : match.team_b_name || 'Visitante'}
                                       </h3>
                                       {isCreator && (
                                         <button 
                                           onClick={() => setIsEditingNames(true)} 
-                                          className="opacity-0 group-hover/title:opacity-100 transition-opacity text-foreground/20 hover:text-primary"
+                                          className="flex items-center justify-center p-1.5 rounded-lg bg-foreground/5 text-foreground/20 hover:text-primary hover:bg-primary/10 transition-all"
                                         >
-                                          <Zap className="w-3 h-3" />
+                                          <Zap className="w-3.5 h-3.5" />
                                         </button>
                                       )}
                                     </div>
@@ -695,25 +698,35 @@ function MatchLobbyContent() {
           <div className="lg:col-span-4 space-y-8">
              {/* Payment Card if needed */}
              {isConfirmed && match.price > 0 && !isCompleted && !myEntry?.paid && (
-               <div className="p-8 rounded-[2.5rem] bg-[#009EE3]/5 border border-[#009EE3]/20 space-y-6">
-                 <div className="flex items-center gap-4">
-                    <div className="w-12 h-12 rounded-2xl bg-[#009EE3] flex items-center justify-center shadow-lg shadow-[#009EE3]/20">
-                      <DollarSign className="w-6 h-6 text-white" />
+               <div className="p-10 rounded-[3rem] glass-premium border-[#009EE3]/30 bg-[#009EE3]/5 space-y-8 relative overflow-hidden group/pay">
+                 <div className="absolute top-0 right-0 w-32 h-32 bg-[#009EE3]/10 blur-[50px] -mr-16 -mt-16 rounded-full group-hover/pay:scale-150 transition-transform duration-1000" />
+                 
+                 <div className="flex items-center gap-4 relative z-10">
+                    <div className="w-14 h-14 rounded-2xl bg-[#009EE3] flex items-center justify-center shadow-xl shadow-[#009EE3]/40">
+                      <DollarSign className="w-7 h-7 text-white" />
                     </div>
                     <div>
-                      <h4 className="text-lg font-black italic uppercase tracking-tighter text-foreground leading-none">Pago del Partido</h4>
-                      <p className="text-[10px] font-black text-[#009EE3] uppercase tracking-widest mt-1">Mercado Pago</p>
+                      <h4 className="text-xl font-black italic uppercase tracking-tighter text-foreground leading-none">Pago del Partido</h4>
+                      <p className="text-[10px] font-black text-[#009EE3] uppercase tracking-widest mt-1">Mercado Pago Oficial</p>
                     </div>
                  </div>
-                 <div className="p-6 rounded-2xl bg-foreground/5 space-y-1">
-                    <span className="text-[10px] font-black text-foreground/40 uppercase tracking-widest">Monto a pagar</span>
-                    <div className="text-3xl font-black italic font-kanit text-foreground">${match.price}</div>
+
+                 <div className="p-8 rounded-3xl bg-black/40 border border-white/5 space-y-2 relative z-10 overflow-hidden">
+                    <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent pointer-events-none" />
+                    <span className="text-[10px] font-black text-foreground/30 uppercase tracking-[0.2em]">TOTAL A ABONAR</span>
+                    <div className="text-4xl font-black italic font-kanit text-foreground drop-shadow-lg">${match.price}</div>
                  </div>
-                 <MercadoPagoButton 
-                   matchId={match.id} 
-                   title={`Partido en ${match.location}`}
-                   price={match.price} 
-                 />
+
+                 <div className="space-y-4 relative z-10">
+                   <MercadoPagoButton 
+                     matchId={match.id} 
+                     title={`Partido en ${match.location}`}
+                     price={match.price} 
+                   />
+                   <p className="text-[9px] font-bold text-foreground/20 leading-relaxed text-center px-2 uppercase tracking-wider">
+                     Los cargos incluyen mantenimiento y comisiones bancarias para <span className="text-primary/40">garantizar que el organizador no tenga pérdidas</span>.
+                   </p>
+                 </div>
                </div>
              )}
 
