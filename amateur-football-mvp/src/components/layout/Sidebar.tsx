@@ -249,7 +249,7 @@ export const SidebarContent = memo(function SidebarContent({
             <span className="text-xl font-black italic tracking-tighter uppercase leading-none font-kanit text-foreground">
               PELOTI<span className="text-primary">FY</span>
             </span>
-            <span className="text-[6.5px] font-black uppercase italic tracking-[0.25em] text-foreground/30 mt-1 leading-none font-outfit">
+            <span className="text-[6.5px] font-black uppercase italic tracking-[0.25em] text-foreground/30 mt-1 leading-none font-kanit">
               DOMINÁ <span className="text-primary">EL POTRERO</span>
             </span>
           </div>

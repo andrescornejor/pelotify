@@ -426,7 +426,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
               <h1 className="text-3xl font-black italic text-foreground tracking-tighter uppercase font-kanit">
                 PELOTI<span className="text-primary">FY</span>
               </h1>
-              <p className="text-[10px] text-foreground/40 font-black uppercase tracking-[0.4em] font-outfit">
+              <p className="text-[10px] text-foreground/40 font-black uppercase tracking-[0.4em] font-kanit">
                 CARGANDO TU ESTADIO...
               </p>
             </div>

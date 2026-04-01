@@ -44,7 +44,7 @@ export const StatCard = ({ stat, i, performanceMode, fadeUp }: StatCardProps) =>
         <stat.icon className="w-6 h-6" style={{ color: stat.color }} />
       </div>
       <div>
-        <p className="text-[10px] font-semibold text-foreground/40 uppercase tracking-[0.2em] font-outfit">
+        <p className="text-[10px] font-semibold text-foreground/40 uppercase tracking-[0.2em] font-kanit">
           {stat.label}
         </p>
         <div className="flex items-end gap-1.5 mt-1">

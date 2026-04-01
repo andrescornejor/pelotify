@@ -92,7 +92,7 @@ export const TeamCard = ({ team, performanceMode }: TeamCardProps) => {
 
               <div className="hidden sm:flex items-center gap-2.5 px-3 py-1 rounded-full bg-foreground/[0.03] border border-white/5">
                 <Shield className="w-3.5 h-3.5 text-primary" />
-                <span className="text-[10px] font-semibold text-foreground/40 tracking-wide font-outfit">
+                <span className="text-[10px] font-semibold text-foreground/40 tracking-wide font-kanit">
                   {team.elo > 1000 ? 'Elite Club' : 'Verificado'}
                 </span>
               </div>
@@ -103,7 +103,7 @@ export const TeamCard = ({ team, performanceMode }: TeamCardProps) => {
         {/* Action Button */}
         <div className="flex items-center gap-6 relative z-10 w-full sm:w-auto mt-6 sm:mt-0">
           <div className="hidden xl:flex flex-col items-end opacity-0 group-hover:opacity-100 translate-x-8 group-hover:translate-x-0 transition-all duration-700">
-            <span className="text-[11px] font-bold text-primary tracking-wide font-outfit">Sede Central</span>
+            <span className="text-[11px] font-bold text-primary tracking-wide font-kanit">Sede Central</span>
             <span className="text-[9px] font-medium text-foreground/30 mt-1">Entrar al vestuario</span>
           </div>
           <div 

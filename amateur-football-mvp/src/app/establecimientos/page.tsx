@@ -54,7 +54,7 @@ export default function EstablecimientosList() {
   );
 
   return (
-    <div className="min-h-screen bg-background text-foreground font-outfit pb-20">
+    <div className="min-h-screen bg-background text-foreground font-kanit pb-20">
       
       {/* HEADER SECTION */}
       <div className="relative pt-32 pb-20 px-6 lg:px-20 overflow-hidden">

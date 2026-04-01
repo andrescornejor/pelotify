@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { Inter, Outfit, Kanit } from 'next/font/google';
+import { Kanit } from 'next/font/google';
 import './globals.css';
 import { AuthProvider } from '@/contexts/AuthContext';
 import { SidebarProvider } from '@/contexts/SidebarContext';
@@ -9,8 +9,6 @@ import ClientLayout from '@/components/layout/ClientLayout';
 import PostMatchManager from '@/components/PostMatchManager';
 import PWARegistration from '@/components/PWARegistration';
 
-const inter = Inter({ subsets: ['latin'], variable: '--font-inter' });
-const outfit = Outfit({ subsets: ['latin'], variable: '--font-outfit' });
 const kanit = Kanit({
   subsets: ['latin'],
   weight: ['400', '700', '900'],
@@ -51,7 +49,7 @@ export default function RootLayout({
   return (
     <html lang="es" className="light">
       <body
-        className={`${inter.variable} ${outfit.variable} ${kanit.variable} font-sans antialiased bg-background text-foreground min-h-[100dvh] flex flex-col selection:bg-primary/30`}
+        className={`${kanit.variable} font-sans antialiased bg-background text-foreground min-h-[100dvh] flex flex-col selection:bg-primary/30`}
       >
         <QueryProvider>
           <SettingsProvider>

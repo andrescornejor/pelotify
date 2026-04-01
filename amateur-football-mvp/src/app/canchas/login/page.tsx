@@ -31,7 +31,7 @@ export default function CanchasLoginPage() {
   };
 
   return (
-    <div className="flex min-h-[100dvh] bg-background selection:bg-primary selection:text-background overflow-hidden relative font-outfit">
+    <div className="flex min-h-[100dvh] bg-background selection:bg-primary selection:text-background overflow-hidden relative font-kanit">
       {/* ── LEFT PANEL: AUTH FORM ── */}
       <div className="flex-1 flex flex-col items-center justify-center p-6 lg:p-12 relative z-10">
         <motion.div

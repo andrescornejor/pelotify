@@ -160,7 +160,7 @@ export default function CanchasDashboard() {
   // If no business found, show a placeholder asking to create one
   if (!business) {
     return (
-      <div className="min-h-screen bg-background text-foreground flex items-center justify-center font-outfit p-4">
+      <div className="min-h-screen bg-background text-foreground flex items-center justify-center font-kanit p-4">
         <div className="max-w-md w-full glass-card p-8 text-center space-y-6">
           <div className="w-16 h-16 bg-primary/10 text-primary rounded-2xl flex items-center justify-center mx-auto mb-4">
             <MapPin className="w-8 h-8" />
@@ -176,7 +176,7 @@ export default function CanchasDashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-background text-foreground pb-20 md:pb-0 font-outfit">
+    <div className="min-h-screen bg-background text-foreground pb-20 md:pb-0 font-kanit">
       
       {/* HEADER TRAY */}
       <header className="fixed top-0 w-full z-40 glass border-b border-border/40 backdrop-blur-xl">

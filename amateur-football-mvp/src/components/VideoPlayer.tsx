@@ -290,7 +290,7 @@ export default function VideoPlayer({
             >
               <Heart className={`w-6 h-6 transition-colors ${isLiked ? 'text-white fill-white' : 'text-white group-hover/action:text-rose-500'}`} />
             </motion.div>
-            <span className="text-white text-[10px] mt-1.5 font-black tracking-widest font-outfit shadow-sm">{localLikes}</span>
+            <span className="text-white text-[10px] mt-1.5 font-black tracking-widest font-kanit shadow-sm">{localLikes}</span>
           </div>
 
           <div className="flex flex-col items-center group/action">
@@ -302,7 +302,7 @@ export default function VideoPlayer({
             >
               <MessageCircle className="w-6 h-6 text-white group-hover/action:text-primary transition-colors" />
             </motion.div>
-            <span className="text-white text-[10px] mt-1.5 font-black tracking-widest font-outfit shadow-sm">{localComments}</span>
+            <span className="text-white text-[10px] mt-1.5 font-black tracking-widest font-kanit shadow-sm">{localComments}</span>
           </div>
 
           <motion.div 
@@ -376,7 +376,7 @@ export default function VideoPlayer({
             </motion.div>
           </Link>
           
-          <p className="text-white/90 text-sm font-medium leading-relaxed max-w-[280px] drop-shadow-lg font-outfit line-clamp-2">
+          <p className="text-white/90 text-sm font-medium leading-relaxed max-w-[280px] drop-shadow-lg font-kanit line-clamp-2">
             {description || '🔥 Mirá esta tremenda jugada en Pelotify! #FutbolAmateur'}
           </p>
         </div>

@@ -179,7 +179,7 @@ export default function VideoFeed() {
                 <h2 className="text-white text-4xl font-black italic uppercase tracking-tighter font-kanit drop-shadow-md">
                   El escenario está <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-emerald-600">vacío</span>
                 </h2>
-                <p className="text-white/50 font-medium max-w-[280px] mx-auto text-[15px] font-outfit leading-relaxed">
+                <p className="text-white/50 font-medium max-w-[280px] mx-auto text-[15px] font-kanit leading-relaxed">
                   {activeTab === 'friends' 
                     ? "Tus amigos aún no han subido highlights. ¡Motívalos!"
                     : "Sé el primero en subir esa jugada maradoniana. 15 segundos bastan para ser leyenda."}

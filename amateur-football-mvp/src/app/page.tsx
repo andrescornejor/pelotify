@@ -365,7 +365,7 @@ export default function HomePage() {
                   />
                   <span className="relative inline-flex rounded-full h-2 w-2 bg-foreground/30" />
                 </div>
-                <span className="text-[10px] font-black uppercase tracking-[0.4em] text-foreground/40 font-outfit">
+                <span className="text-[10px] font-black uppercase tracking-[0.4em] text-foreground/40 font-kanit">
                   {greeting}
                 </span>
               </motion.div>
@@ -415,7 +415,7 @@ export default function HomePage() {
                       </div>
                     </div>
                   </div>
-                  <p className="text-foreground/60 text-lg font-medium font-outfit">
+                  <p className="text-foreground/60 text-lg font-medium font-kanit">
                     Bienvenido,{' '}
                     <span className="text-foreground font-black uppercase">{userName}</span>
                   </p>
@@ -477,7 +477,7 @@ export default function HomePage() {
                 <div className="flex items-center gap-6 relative z-10">
                   <RankBadgeInline rankName={rankCalculation.info.name} size="lg" />
                   <div className="flex-1 space-y-2">
-                    <p className="text-[10px] font-semibold text-foreground/40 tracking-wide leading-none font-outfit">
+                    <p className="text-[10px] font-semibold text-foreground/40 tracking-wide leading-none font-kanit">
                       Progreso de liga
                     </p>
                     <div className="flex items-center gap-2">
@@ -486,7 +486,7 @@ export default function HomePage() {
                       </h3>
                       <rankCalculation.rank.icon className="w-5 h-5" style={{ color: rankCalculation.rank.hex }} />
                     </div>
-                    <span className="text-[9px] font-semibold text-foreground/40 tracking-wide font-outfit">
+                    <span className="text-[9px] font-semibold text-foreground/40 tracking-wide font-kanit">
                       Estado de temporada
                     </span>
                   </div>
@@ -686,7 +686,7 @@ export default function HomePage() {
                               <h4 className="text-xl font-black text-foreground italic uppercase tracking-tighter leading-none font-kanit">
                                  Comunidad Activa
                               </h4>
-                              <p className="text-[10px] font-black text-foreground/40 uppercase tracking-[0.25em] mt-1 font-outfit">
+                              <p className="text-[10px] font-black text-foreground/40 uppercase tracking-[0.25em] mt-1 font-kanit">
                                  <span className="text-primary text-base font-black mr-1">{totalPlayers}</span>{' '}
                                  JUGADORES REGISTRADOS
                               </p>
@@ -694,12 +694,12 @@ export default function HomePage() {
                         </div>
                         <div className="flex gap-3 relative z-10 shrink-0 w-full sm:w-auto">
                            <Link href="/teams" className="flex-1 sm:flex-none">
-                              <button className="w-full h-11 px-6 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all hover:bg-foreground/5 glass border-foreground/20 text-foreground/60 font-outfit">
+                              <button className="w-full h-11 px-6 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all hover:bg-foreground/5 glass border-foreground/20 text-foreground/60 font-kanit">
                                  CLUBES TOP
                               </button>
                            </Link>
                            <Link href="/search" className="flex-1 sm:flex-none">
-                              <button className="w-full h-11 px-6 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all hover:scale-[1.03] text-background bg-gradient-to-br from-primary to-primary-dark shadow-xl shadow-primary/20 font-outfit">
+                              <button className="w-full h-11 px-6 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all hover:scale-[1.03] text-background bg-gradient-to-br from-primary to-primary-dark shadow-xl shadow-primary/20 font-kanit">
                                  MAPA VIVO
                               </button>
                            </Link>
@@ -717,7 +717,7 @@ export default function HomePage() {
                               <h2 className="text-xl lg:text-2xl font-black italic text-foreground uppercase tracking-tighter leading-none font-kanit">
                                  Road to Glory
                               </h2>
-                              <span className="text-[9px] font-semibold text-foreground/40 tracking-wide font-outfit">
+                              <span className="text-[9px] font-semibold text-foreground/40 tracking-wide font-kanit">
                                  Tu camino hacia la leyenda
                               </span>
                            </div>
@@ -807,7 +807,7 @@ export default function HomePage() {
                               <h2 className="text-xl lg:text-2xl font-black text-foreground italic uppercase tracking-tighter font-kanit">
                                  Feed de Actividad
                               </h2>
-                              <span className="text-[9px] font-semibold text-foreground/40 tracking-wide font-outfit">
+                              <span className="text-[9px] font-semibold text-foreground/40 tracking-wide font-kanit">
                                  Comunidad en tiempo real
                               </span>
                            </div>
@@ -857,7 +857,7 @@ export default function HomePage() {
                            <h2 className="text-xl lg:text-2xl font-black text-foreground italic uppercase tracking-tighter font-kanit">
                               Tus Equipos
                            </h2>
-                           <span className="text-[9px] font-semibold text-foreground/40 tracking-wide font-outfit">
+                           <span className="text-[9px] font-semibold text-foreground/40 tracking-wide font-kanit">
                               Plantel profesional
                            </span>
                         </div>
@@ -890,7 +890,7 @@ export default function HomePage() {
                            <h2 className="text-xl lg:text-2xl font-black text-foreground italic uppercase tracking-tighter font-kanit">
                               Sedes Destacadas
                            </h2>
-                           <span className="text-[9px] font-semibold text-foreground/40 tracking-wide font-outfit">
+                           <span className="text-[9px] font-semibold text-foreground/40 tracking-wide font-kanit">
                               Complejos verificados en Rosario
                            </span>
                         </div>
@@ -923,7 +923,7 @@ export default function HomePage() {
                            <h2 className="text-xl lg:text-2xl font-black text-foreground italic uppercase tracking-tighter font-kanit">
                               Tendencias en FutTok
                            </h2>
-                           <span className="text-[9px] font-semibold text-foreground/40 tracking-wide font-outfit">
+                           <span className="text-[9px] font-semibold text-foreground/40 tracking-wide font-kanit">
                               Lo mejor de la comunidad
                            </span>
                         </div>
@@ -978,9 +978,9 @@ export default function HomePage() {
                   <div className="flex flex-col gap-1">
                     <div className="flex items-center gap-2">
                       <div className="w-2 h-2 rounded-full bg-foreground/30 shadow-[0_0_6px_rgba(var(--foreground-rgb),0.3)]" />
-                      <span className="text-[10px] font-black text-foreground/40 uppercase tracking-[0.4em] font-outfit">PRÓXIMO PARTIDO</span>
+                      <span className="text-[10px] font-black text-foreground/40 uppercase tracking-[0.4em] font-kanit">PRÓXIMO PARTIDO</span>
                     </div>
-                    <h3 className="text-[11px] font-medium text-foreground/20 tracking-wide font-outfit">Agenda prioritaria</h3>
+                    <h3 className="text-[11px] font-medium text-foreground/20 tracking-wide font-kanit">Agenda prioritaria</h3>
                   </div>
                   {nextMatch && (
                     <div className="px-4 py-2 rounded-2xl bg-foreground/[0.05] border border-foreground/20 backdrop-blur-md">
@@ -1123,7 +1123,7 @@ export default function HomePage() {
                     </Link>
 
                     <div className="flex flex-col gap-2 pt-4 border-t border-foreground/15 w-full opacity-60">
-                      <span className="text-[8px] font-semibold text-foreground/40 tracking-wide font-outfit">Sugerencia de hoy</span>
+                      <span className="text-[8px] font-semibold text-foreground/40 tracking-wide font-kanit">Sugerencia de hoy</span>
                       <p className="text-[9px] font-medium text-foreground/40 italic leading-relaxed">
                         "Un equipo unido vale más que 11 estrellas individuales."
                       </p>
@@ -1134,7 +1134,7 @@ export default function HomePage() {
             </div>
 
             <div className="glass-premium p-6 rounded-[2.5rem] border-foreground/15 space-y-4">
-              <h3 className="text-[10px] font-semibold text-foreground/40 tracking-wide font-outfit">Accesos rápidos</h3>
+              <h3 className="text-[10px] font-semibold text-foreground/40 tracking-wide font-kanit">Accesos rápidos</h3>
               <div className="grid grid-cols-1 gap-2">
                 {[
                   { label: 'Sedes', icon: MapPin, href: '/establecimientos' },

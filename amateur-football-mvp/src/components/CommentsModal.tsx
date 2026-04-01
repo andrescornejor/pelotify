@@ -71,7 +71,7 @@ export default function CommentsModal({ highlightId, onClose, onCommentAdded }: 
         <div className="p-6 border-b border-white/5 flex items-center justify-between bg-white/5">
           <div className="flex items-center gap-2">
             <MessageSquare className="w-5 h-5 text-primary" />
-            <h3 className="text-white font-black uppercase tracking-widest text-sm font-outfit">Comentarios</h3>
+            <h3 className="text-white font-black uppercase tracking-widest text-sm font-kanit">Comentarios</h3>
           </div>
           <button 
             onClick={onClose}
@@ -112,7 +112,7 @@ export default function CommentsModal({ highlightId, onClose, onCommentAdded }: 
                       {new Date(comment.created_at).toLocaleDateString()}
                     </span>
                   </div>
-                  <p className="text-white/80 text-sm leading-relaxed font-outfit">
+                  <p className="text-white/80 text-sm leading-relaxed font-kanit">
                     {comment.content}
                   </p>
                 </div>
@@ -130,7 +130,7 @@ export default function CommentsModal({ highlightId, onClose, onCommentAdded }: 
                 value={newComment}
                 onChange={(e) => setNewComment(e.target.value)}
                 placeholder="Añade un comentario..."
-                className="flex-1 bg-white/10 border border-white/10 rounded-full px-5 py-3 text-white text-sm focus:outline-none focus:border-primary/50 transition-colors font-outfit"
+                className="flex-1 bg-white/10 border border-white/10 rounded-full px-5 py-3 text-white text-sm focus:outline-none focus:border-primary/50 transition-colors font-kanit"
               />
               <motion.button
                 whileHover={{ scale: 1.05 }}
