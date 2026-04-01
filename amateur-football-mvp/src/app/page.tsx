@@ -948,8 +948,8 @@ export default function HomePage() {
             </AnimatePresence>
           </div>
 
-          <div className={cn(
-             "lg:col-span-4 xl:col-span-4 lg:col-start-9",
+          <aside className={cn(
+             "lg:col-span-4 xl:col-span-4 lg:col-start-9 space-y-8",
              nextMatch ? "order-1 lg:order-2" : "order-3 lg:order-2"
           )}>
             <div id="featured-match" className="relative group/match overflow-hidden rounded-[3rem] glass-premium border-primary/20 shadow-[0_20px_50px_rgba(0,0,0,0.3)]">
@@ -1134,9 +1134,8 @@ export default function HomePage() {
                 )}
               </div>
             </div>
-          </div>
+            </div>
 
-          <div className="lg:col-span-4 xl:col-span-4 lg:col-start-9 order-4 lg:order-2">
             <div className="glass-premium p-6 rounded-[2.5rem] border-foreground/15 space-y-4">
               <h3 className="text-[10px] font-semibold text-foreground/40 tracking-wide font-kanit">Accesos rápidos</h3>
               <div className="grid grid-cols-1 gap-2">
@@ -1159,7 +1158,7 @@ export default function HomePage() {
                 ))}
               </div>
             </div>
-          </div>
+          </aside>
         </div>
 
 
