@@ -16,10 +16,14 @@ import {
   Loader2,
   CheckCircle2,
   Clock,
+  Shield,
+  Circle,
+  CheckCircle,
 } from 'lucide-react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
-import { createTournament } from '@/lib/tournaments';
+import { createTournament, registerTeamForTournament } from '@/lib/tournaments';
+import { getUserTeams } from '@/lib/teams';
 import { cn } from '@/lib/utils';
 import LocationSearch from '@/components/LocationSearch';
 import { AVAILABLE_TIMES } from '@/lib/constants';
@@ -29,6 +33,7 @@ export default function CreateTournamentPage() {
   const { user } = useAuth();
   const [loading, setLoading] = useState(false);
   const [step, setStep] = useState(0);
+  const [userTeams, setUserTeams] = useState<any[]>([]);
 
   const [formData, setFormData] = useState({
     name: '',
@@ -40,7 +45,23 @@ export default function CreateTournamentPage() {
     max_teams: 8,
     entry_fee: 0,
     banner_url: 'https://images.unsplash.com/photo-1574629810360-7efbbe195018?q=80&w=1200&auto=format&fit=crop',
+    host_team_id: '',
   });
+
+  useEffect(() => {
+    async function loadTeams() {
+      if (user) {
+        const teams = await getUserTeams(user.id);
+        const captainTeams = teams.filter((t: any) => t.role === 'captain');
+        setUserTeams(captainTeams);
+        // Auto-select if only one
+        if (captainTeams.length === 1) {
+            setFormData(prev => ({ ...prev, host_team_id: captainTeams[0].id }));
+        }
+      }
+    }
+    loadTeams();
+  }, [user]);
 
   const handleCreate = async () => {
     if (!user) {
@@ -49,7 +70,6 @@ export default function CreateTournamentPage() {
     }
     setLoading(true);
     try {
-      // Use null instead of empty strings for the database
       const dataToSave = {
         name: formData.name,
         description: formData.description || null,
@@ -64,18 +84,27 @@ export default function CreateTournamentPage() {
         status: 'upcoming' as const
       };
 
-      await createTournament(dataToSave);
+      const tournament = await createTournament(dataToSave);
+      
+      // If a host team is selected, register it
+      if (formData.host_team_id) {
+          try {
+              await registerTeamForTournament(tournament.id, formData.host_team_id);
+          } catch (regErr) {
+              console.error('Tournament created but host team registration failed:', regErr);
+          }
+      }
+
       router.push('/tournaments');
     } catch (err: any) {
       console.error('Error creating tournament:', err);
-      // More descriptive error
       alert(`Error al crear el torneo: ${err.message || 'Error desconocido'}`);
     } finally {
       setLoading(false);
     }
   };
 
-  const steps = ['Básico', 'Cuándo', 'Sede y Costo', 'Review'];
+  const steps = ['Básico', 'Cuándo', 'Sede y Costo', 'Equipo', 'Review'];
 
   return (
     <div className="min-h-screen bg-background relative overflow-hidden p-4 lg:p-10 pt-24 pb-32">
@@ -85,7 +114,6 @@ export default function CreateTournamentPage() {
       </div>
 
       <div className="max-w-3xl mx-auto space-y-12 relative z-10">
-        {/* ── HEADER ── */}
         <div className="flex flex-col gap-6">
           <button 
             onClick={() => router.back()}
@@ -104,7 +132,6 @@ export default function CreateTournamentPage() {
           </div>
         </div>
 
-        {/* ── STEPS INDICATOR ── */}
         <div className="flex items-center gap-4">
            {steps.map((s, i) => (
               <div key={i} className="flex-1 h-1.5 rounded-full relative overflow-hidden bg-foreground/5">
@@ -206,22 +233,6 @@ export default function CreateTournamentPage() {
                                         </motion.button>
                                     );
                                 })}
-                                <div className="relative flex-shrink-0">
-                                    <input
-                                        type="date"
-                                        value={formData.start_date}
-                                        onChange={(e) => setFormData({ ...formData, start_date: e.target.value })}
-                                        className="absolute inset-0 opacity-0 cursor-pointer z-10 w-full"
-                                    />
-                                    <div className={`w-[72px] h-24 rounded-2xl border transition-all duration-300 flex flex-col items-center justify-center gap-1 ${formData.start_date && !Array.from({ length: 14 }).some((_, i) => {
-                                        const d = new Date();
-                                        d.setDate(d.getDate() + i);
-                                        return d.toISOString().split('T')[0] === formData.start_date;
-                                    }) ? 'border-primary bg-primary text-black scale-105' : 'border-foreground/[0.06] bg-foreground/[0.02] text-foreground/20'}`}>
-                                        <Calendar className="w-5 h-5" />
-                                        <span className="text-[8px] font-black tracking-widest uppercase">OTRO</span>
-                                    </div>
-                                </div>
                             </div>
                         </div>
 
@@ -324,7 +335,7 @@ export default function CreateTournamentPage() {
                           onClick={() => setStep(3)}
                           className="flex-1 h-20 bg-foreground text-background rounded-[2rem] font-black text-sm uppercase tracking-widest hover:bg-primary hover:text-black transition-all disabled:opacity-20"
                        >
-                          REVISAR
+                          CONTINUAR
                        </button>
                     </div>
                  </motion.div>
@@ -333,6 +344,61 @@ export default function CreateTournamentPage() {
               {step === 3 && (
                  <motion.div 
                     key="step3"
+                    initial={{ opacity: 0, x: 20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: -20 }}
+                    className="space-y-10"
+                 >
+                    <div className="space-y-6">
+                        <div className="space-y-2">
+                            <h3 className="text-2xl font-black italic text-foreground uppercase tracking-tighter">¿TU EQUIPO PARTICIPA?</h3>
+                            <p className="text-[10px] text-foreground/40 font-bold uppercase tracking-widest">Como creador y capitán, tu equipo se inscribirá automáticamente.</p>
+                        </div>
+                        
+                        <div className="grid grid-cols-1 gap-3">
+                            {userTeams.length > 0 ? (
+                                userTeams.map(team => (
+                                    <button
+                                        key={team.id}
+                                        onClick={() => setFormData({...formData, host_team_id: team.id})}
+                                        className={cn(
+                                            "p-6 rounded-[2rem] border flex items-center justify-between transition-all group",
+                                            formData.host_team_id === team.id ? "bg-primary border-primary text-black" : "bg-foreground/[0.03] border-foreground/10 text-foreground/40 hover:border-foreground/20"
+                                        )}
+                                    >
+                                        <div className="flex items-center gap-4">
+                                            <div className="w-12 h-12 rounded-full bg-foreground/10 group-hover:bg-black/10 flex items-center justify-center overflow-hidden">
+                                                {team.logo_url ? <img src={team.logo_url} className="w-full h-full object-cover" /> : <Shield className="w-6 h-6" />}
+                                            </div>
+                                            <span className="font-black italic uppercase tracking-tighter text-sm">{team.name}</span>
+                                        </div>
+                                        {formData.host_team_id === team.id ? <CheckCircle className="w-6 h-6" /> : <Circle className="w-6 h-6 opacity-20" />}
+                                    </button>
+                                ))
+                            ) : (
+                                <div className="p-10 rounded-[2.5rem] bg-foreground/[0.02] border border-dashed border-foreground/10 text-center space-y-4">
+                                    <span className="text-[10px] font-black text-foreground/20 uppercase tracking-widest block">No eres capitán de ningún equipo</span>
+                                    <p className="text-[9px] text-foreground/40 font-medium uppercase leading-relaxed max-w-xs mx-auto">Tu torneo será neutral. Los equipos deberán inscribirse por su cuenta.</p>
+                                </div>
+                            )}
+                        </div>
+                    </div>
+
+                    <div className="flex gap-4">
+                       <button onClick={() => setStep(2)} className="h-20 px-8 border border-foreground/10 rounded-[2rem] font-black text-xs text-foreground/40 hover:text-foreground">ATRÁS</button>
+                       <button 
+                          onClick={() => setStep(4)}
+                          className="flex-1 h-20 bg-foreground text-background rounded-[2rem] font-black text-sm uppercase tracking-widest hover:bg-primary hover:text-black transition-all"
+                       >
+                          REVISAR
+                       </button>
+                    </div>
+                 </motion.div>
+              )}
+
+              {step === 4 && (
+                 <motion.div 
+                    key="step4"
                     initial={{ opacity: 0, x: 20 }}
                     animate={{ opacity: 1, x: 0 }}
                     exit={{ opacity: 0, x: -20 }}
@@ -362,8 +428,10 @@ export default function CreateTournamentPage() {
                                    <span className="text-sm font-black text-foreground">{formData.start_date} {formData.start_time}</span>
                                 </div>
                                 <div className="p-4 rounded-2xl bg-background/40">
-                                   <span className="text-[8px] font-black text-foreground/20 uppercase block mb-1">EQUIPOS</span>
-                                   <span className="text-sm font-black text-foreground">{formData.max_teams} MÁXIMO</span>
+                                   <span className="text-[8px] font-black text-foreground/20 uppercase block mb-1">EQUIPO ANFITRIÓN</span>
+                                   <span className="text-sm font-black text-foreground">
+                                       {formData.host_team_id ? userTeams.find(t => t.id === formData.host_team_id)?.name : 'Ninguno (Neutral)'}
+                                   </span>
                                 </div>
                              </div>
 
@@ -376,7 +444,7 @@ export default function CreateTournamentPage() {
                     </div>
 
                     <div className="flex gap-4">
-                       <button onClick={() => setStep(2)} className="h-20 px-8 border border-foreground/10 rounded-[2rem] font-black text-xs text-foreground/40 hover:text-foreground">ATRÁS</button>
+                       <button onClick={() => setStep(3)} className="h-20 px-8 border border-foreground/10 rounded-[2rem] font-black text-xs text-foreground/40 hover:text-foreground">ATRÁS</button>
                        <button 
                           disabled={loading}
                           onClick={handleCreate}
