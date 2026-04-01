@@ -380,7 +380,6 @@ export default function HomePage() {
                   style={{ fontSize: 'clamp(3rem, 10vw, 7.5rem)', lineHeight: '0.85' }}
                 >
                   PELOTI<span className="text-primary italic">FY</span>
-                  <span className="inline-block w-[0.15em] h-[0.15em] ml-4 rounded-full bg-primary align-baseline shadow-[0_0_20px_rgba(44,252,125,0.6)]" />
                 </motion.h1>
               </div>
 
