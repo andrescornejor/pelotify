@@ -109,7 +109,8 @@ export default function CreateTournamentPage() {
             const format = venue.formats.find((f: any) => f.type === type) || venue.formats[0];
             if (format) {
                 type = format.type;
-                newPitchPrice = format.pricePerPlayer * (type === 'F5' ? 10 : type === 'F7' ? 14 : 22);
+                // As per user feedback, pricePerPlayer in our venues library already represents the total match cost
+                newPitchPrice = format.pricePerPlayer;
             }
         }
     }
