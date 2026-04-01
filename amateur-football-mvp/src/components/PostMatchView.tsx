@@ -116,26 +116,26 @@ export default function PostMatchView({ match, participants, stats }: PostMatchV
             </div>
 
             {/* Score Center */}
-            <div className="flex flex-col items-center gap-8">
-              <div className="flex items-center gap-12">
+            <div className="flex flex-col items-center gap-6">
+              <div className="flex items-center gap-10">
                 <motion.span
                   initial={{ scale: 0.5, opacity: 0 }}
                   animate={{ scale: 1, opacity: 1 }}
                   transition={{ delay: 0.3, type: 'spring', damping: 15 }}
-                  className="text-9xl md:text-[12rem] font-black text-foreground italic tracking-tighter leading-none drop-shadow-[0_20px_50px_rgba(255,255,255,0.15)]"
+                  className="text-8xl md:text-[8rem] lg:text-[10rem] font-black text-foreground italic tracking-tighter leading-none drop-shadow-[0_20px_50px_rgba(255,255,255,0.15)]"
                 >
                   {scoreA}
                 </motion.span>
-                <div className="flex flex-col items-center gap-3">
-                  <div className="w-2 h-16 bg-gradient-to-b from-transparent via-foreground/20 to-transparent rounded-full" />
-                  <div className="w-2.5 h-2.5 bg-primary rounded-full animate-ping shadow-[0_0_20px_rgba(16,185,129,0.5)]" />
-                  <div className="w-2 h-16 bg-gradient-to-t from-transparent via-foreground/20 to-transparent rounded-full" />
+                <div className="flex flex-col items-center gap-2">
+                  <div className="w-1.5 h-12 bg-gradient-to-b from-transparent via-foreground/20 to-transparent rounded-full" />
+                  <div className="w-2 h-2 bg-primary rounded-full animate-ping shadow-[0_0_20px_rgba(16,185,129,0.5)]" />
+                  <div className="w-1.5 h-12 bg-gradient-to-t from-transparent via-foreground/20 to-transparent rounded-full" />
                 </div>
                 <motion.span
                   initial={{ scale: 0.5, opacity: 0 }}
                   animate={{ scale: 1, opacity: 1 }}
                   transition={{ delay: 0.4, type: 'spring', damping: 15 }}
-                  className="text-9xl md:text-[12rem] font-black text-foreground italic tracking-tighter leading-none drop-shadow-[0_20px_50px_rgba(255,255,255,0.15)]"
+                  className="text-8xl md:text-[8rem] lg:text-[10rem] font-black text-foreground italic tracking-tighter leading-none drop-shadow-[0_20px_50px_rgba(255,255,255,0.15)]"
                 >
                   {scoreB}
                 </motion.span>

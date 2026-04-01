@@ -322,18 +322,19 @@ function MatchLobbyContent() {
             <img
               src="https://images.unsplash.com/photo-1574629810360-7efbbe195018?auto=format&fit=crop&q=80&w=2000"
               alt=""
-              className="w-full h-full object-cover grayscale opacity-20 scale-105"
+              className="w-full h-full object-cover grayscale opacity-20"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-background via-background/60 to-transparent" />
           </div>
 
+          <Link
+            href="/"
+            className="absolute top-8 left-4 md:left-8 w-12 h-12 rounded-2xl glass-premium flex items-center justify-center hover:scale-110 active:scale-95 transition-all text-foreground/50 hover:text-primary z-30"
+          >
+            <ArrowLeft className="w-6 h-6" />
+          </Link>
+
           <div className="relative z-10 max-w-[1700px] mx-auto px-4 h-full flex flex-col justify-end pb-16">
-            <Link
-              href="/"
-              className="absolute top-8 left-4 w-12 h-12 rounded-2xl glass-premium flex items-center justify-center hover:scale-110 active:scale-95 transition-all text-foreground/50 hover:text-primary"
-            >
-              <ArrowLeft className="w-6 h-6" />
-            </Link>
 
             <div className="space-y-6 max-w-2xl">
               <div className="flex items-center gap-3">
@@ -462,18 +463,19 @@ function MatchLobbyContent() {
           <img
             src="https://images.unsplash.com/photo-1574629810360-7efbbe195018?auto=format&fit=crop&q=80&w=2000"
             alt=""
-            className="w-full h-full object-cover grayscale opacity-20 scale-105"
+            className="w-full h-full object-cover grayscale opacity-20"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent" />
         </div>
 
+        <Link
+          href="/"
+          className="absolute top-8 left-4 md:left-8 w-12 h-12 rounded-2xl glass-premium flex items-center justify-center hover:scale-110 active:scale-95 transition-all text-foreground/50 hover:text-primary z-30"
+        >
+          <ArrowLeft className="w-6 h-6" />
+        </Link>
+
         <div className="relative z-10 max-w-[1700px] mx-auto px-4 h-full flex flex-col justify-end pb-12">
-          <Link
-            href="/"
-            className="absolute top-8 left-4 w-12 h-12 rounded-2xl glass-premium flex items-center justify-center hover:scale-110 active:scale-95 transition-all text-foreground/50 hover:text-primary"
-          >
-            <ArrowLeft className="w-6 h-6" />
-          </Link>
 
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-8">
             <div className="space-y-4">
