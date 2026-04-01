@@ -24,7 +24,7 @@ export const StatCard = ({ stat, i, performanceMode, fadeUp }: StatCardProps) =>
     custom={i}
     whileHover={performanceMode ? {} : { y: -8, scale: 1.02, rotate: 1 }}
     className={cn(
-      'group relative overflow-hidden p-6 rounded-[2.5rem] glass-premium transition-all duration-500 border-foreground/5 shadow-xl',
+      'group relative overflow-hidden p-6 rounded-[2.5rem] glass-premium transition-all duration-500 border-foreground/15 shadow-xl',
       performanceMode && 'bg-surface shadow-none'
     )}
   >
@@ -38,7 +38,7 @@ export const StatCard = ({ stat, i, performanceMode, fadeUp }: StatCardProps) =>
 
     <div className="relative z-10 space-y-4">
       <div
-        className="w-12 h-12 rounded-2xl flex items-center justify-center glass border-foreground/10 shadow-inner group-hover:rotate-12 transition-transform duration-500"
+        className="w-12 h-12 rounded-2xl flex items-center justify-center glass border-foreground/20 shadow-inner group-hover:rotate-12 transition-transform duration-500"
         style={{ backgroundColor: `${stat.color}15` }}
       >
         <stat.icon className="w-6 h-6" style={{ color: stat.color }} />

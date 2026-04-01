@@ -15,7 +15,7 @@ export const VenueCard = ({ venue, performanceMode }: VenueCardProps) => {
     <Link href={`/establecimientos/${venue.id}`} className="block h-full">
       <motion.div
         whileHover={performanceMode ? {} : { scale: 1.02, y: -8 }}
-        className="group relative h-full glass-premium rounded-[3rem] p-4 border-foreground/5 hover:border-primary/40 transition-all duration-500 overflow-hidden flex flex-col shadow-xl"
+        className="group relative h-full glass-premium rounded-[3rem] p-4 border-foreground/20 hover:border-primary/40 transition-all duration-500 overflow-hidden flex flex-col shadow-xl"
       >
         {/* Background Ambient Glow */}
         {!performanceMode && (
@@ -23,7 +23,7 @@ export const VenueCard = ({ venue, performanceMode }: VenueCardProps) => {
         )}
 
         {/* Image Container */}
-        <div className="relative h-64 sm:h-72 rounded-[2.5rem] overflow-hidden mb-6 shadow-inner border border-foreground/5">
+        <div className="relative h-64 sm:h-72 rounded-[2.5rem] overflow-hidden mb-6 shadow-inner border border-foreground/20">
           <img 
             src={venue.image_url || "https://images.unsplash.com/photo-1574629810360-7efbbe195018?q=80&w=1200&auto=format&fit=crop"} 
             className={cn(
@@ -35,7 +35,7 @@ export const VenueCard = ({ venue, performanceMode }: VenueCardProps) => {
           
           {/* Status Badge */}
           <div className="absolute top-4 left-4 flex gap-2">
-            <div className="px-4 py-2 glass rounded-2xl border border-foreground/10 shadow-2xl backdrop-blur-md">
+            <div className="px-4 py-2 glass rounded-2xl border border-foreground/25 shadow-2xl backdrop-blur-md">
               <div className="flex items-center gap-1.5">
                 <Star className="w-3.5 h-3.5 fill-accent text-accent" />
                 <span className="text-[12px] font-black text-white italic">4.9</span>

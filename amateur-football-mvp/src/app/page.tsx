@@ -273,7 +273,7 @@ export default function HomePage() {
           'fixed bottom-24 right-6 z-[100] w-12 h-12 rounded-2xl md:hidden flex flex-col items-center justify-center transition-all active:scale-90 border',
           performanceMode
             ? 'bg-primary text-black border-primary shadow-[0_0_20px_rgba(44,252,125,0.4)]'
-            : 'glass border-foreground/10 text-primary shadow-lg shadow-primary/10'
+            : 'glass border-foreground/20 text-primary shadow-lg shadow-primary/10'
         )}
       >
         <Zap className={cn('w-5 h-5', performanceMode && 'fill-current')} />
@@ -352,7 +352,7 @@ export default function HomePage() {
                 animate={{ x: 0, opacity: 1 }}
                 transition={{ delay: 0.2, type: 'spring', stiffness: 200 }}
                 className={cn(
-                  'inline-flex items-center gap-3 px-4 py-1.5 rounded-full bg-foreground/[0.04] border border-foreground/5',
+                  'inline-flex items-center gap-3 px-4 py-1.5 rounded-full bg-foreground/[0.04] border border-foreground/15',
                   performanceMode && 'bg-surface'
                 )}
               >
@@ -409,7 +409,7 @@ export default function HomePage() {
 
                       {/* Floating Rank Icon */}
                       <div
-                        className="absolute -top-1 -right-1 w-5 h-5 rounded-full bg-background border border-foreground/10 flex items-center justify-center shadow-lg"
+                        className="absolute -top-1 -right-1 w-5 h-5 rounded-full bg-background border border-foreground/20 flex items-center justify-center shadow-lg"
                       >
                         <rankCalculation.rank.icon className="w-3 h-3" style={{ color: rankCalculation.rank.hex }} />
                       </div>
@@ -467,7 +467,7 @@ export default function HomePage() {
               className="lg:shrink-0 w-full lg:w-[400px] space-y-4"
             >
               {/* Rank Progress Card */}
-              <div className="glass-premium p-6 rounded-[2.5rem] border-foreground/5 space-y-6 relative overflow-hidden group">
+              <div className="glass-premium p-6 rounded-[2.5rem] border-foreground/15 space-y-6 relative overflow-hidden group">
                 {/* Background Rank Glow */}
                 <div
                   className="absolute -top-20 -right-20 w-40 h-40 blur-[80px] opacity-20 transition-opacity group-hover:opacity-40"
@@ -504,7 +504,7 @@ export default function HomePage() {
                 </div>
 
                 <div className="space-y-3 relative z-10">
-                  <div className="relative h-3 bg-foreground/5 rounded-full p-0.5 overflow-hidden border border-foreground/5">
+                  <div className="relative h-3 bg-foreground/5 rounded-full p-0.5 overflow-hidden border border-foreground/15">
                     <motion.div
                       initial={{ width: 0 }}
                       animate={{ width: `${rankCalculation.progress}%` }}
@@ -544,7 +544,7 @@ export default function HomePage() {
                   <motion.button
                     whileHover={{ scale: 1.015, y: -4 }}
                     whileTap={{ scale: 0.98 }}
-                    className="w-full h-16 rounded-[2rem] bg-zinc-900 border border-foreground/10 text-white font-black uppercase text-[11px] tracking-[0.3em] flex items-center justify-center gap-3 relative overflow-hidden group shadow-2xl transition-all duration-500"
+                    className="w-full h-16 rounded-[2rem] bg-zinc-900 border border-foreground/20 text-white font-black uppercase text-[11px] tracking-[0.3em] flex items-center justify-center gap-3 relative overflow-hidden group shadow-2xl transition-all duration-500"
                   >
                     {/* Background Layer: Video or Gradient */}
                     {highlights.length > 0 ? (
@@ -577,7 +577,7 @@ export default function HomePage() {
                   <motion.button
                     whileHover={{ scale: 1.02, y: -4 }}
                     whileTap={{ scale: 0.98 }}
-                    className="w-full h-16 rounded-[2rem] glass-premium border-foreground/10 text-foreground/40 hover:text-primary font-black uppercase text-[10px] tracking-[0.2em] flex items-center justify-center transition-all duration-500 shadow-xl"
+                    className="w-full h-16 rounded-[2rem] glass-premium border-foreground/20 text-foreground/40 hover:text-primary font-black uppercase text-[10px] tracking-[0.2em] flex items-center justify-center transition-all duration-500 shadow-xl"
                   >
                     <Search className="w-5 h-5 group-hover:scale-125 transition-transform" />
                   </motion.button>
@@ -611,7 +611,7 @@ export default function HomePage() {
 
             {/* --- DASHBOARD TAB CONTROLLER --- */}
             <section className="sticky top-20 lg:top-4 z-40 bg-background/80 backdrop-blur-xl py-2 -mx-2 px-2 lg:bg-transparent lg:static lg:pb-6">
-               <div className="max-w-fit mx-auto lg:mx-0 p-1.5 rounded-[2rem] glass-premium border-foreground/10 flex items-center gap-1 shadow-2xl relative overflow-hidden">
+               <div className="max-w-fit mx-auto lg:mx-0 p-1.5 rounded-[2rem] glass-premium border-foreground/20 flex items-center gap-1 shadow-2xl relative overflow-hidden">
                   {!performanceMode && (
                      <div className="absolute inset-0 bg-gradient-to-r from-primary/5 via-transparent to-primary/5 pointer-events-none" />
                   )}
@@ -679,7 +679,7 @@ export default function HomePage() {
                            />
                         )}
                         <div className="flex items-center gap-5 relative z-10">
-                           <div className="w-14 h-14 rounded-2xl flex items-center justify-center shrink-0 glass shadow-inner border-foreground/5">
+                           <div className="w-14 h-14 rounded-2xl flex items-center justify-center shrink-0 glass shadow-inner border-foreground/15">
                               <Users className="w-7 h-7 text-primary" />
                            </div>
                            <div>
@@ -694,7 +694,7 @@ export default function HomePage() {
                         </div>
                         <div className="flex gap-3 relative z-10 shrink-0 w-full sm:w-auto">
                            <Link href="/teams" className="flex-1 sm:flex-none">
-                              <button className="w-full h-11 px-6 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all hover:bg-foreground/5 glass border-foreground/10 text-foreground/60 font-outfit">
+                              <button className="w-full h-11 px-6 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all hover:bg-foreground/5 glass border-foreground/20 text-foreground/60 font-outfit">
                                  CLUBES TOP
                               </button>
                            </Link>
@@ -724,7 +724,7 @@ export default function HomePage() {
                            <Sparkles className="w-5 h-5 text-primary/30 shrink-0 mb-1 animate-pulse" />
                         </div>
 
-                        <div className="glass-premium p-8 rounded-[2.5rem] border-foreground/5 relative overflow-hidden">
+                        <div className="glass-premium p-8 rounded-[2.5rem] border-foreground/15 relative overflow-hidden">
                            <div className="absolute inset-0 opacity-[0.03] pointer-events-none">
                               <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_center,_var(--primary)_0%,_transparent_70%)]" />
                            </div>
@@ -757,7 +757,7 @@ export default function HomePage() {
                                                 'w-10 h-10 rounded-xl flex items-center justify-center border-2 transition-all duration-500',
                                                 isReached
                                                    ? 'bg-background border-primary shadow-[0_0_15px_rgba(44,252,125,0.3)]'
-                                                   : 'bg-surface/50 border-foreground/5 opacity-40 group-hover:opacity-100'
+                                                   : 'bg-surface/50 border-foreground/15 opacity-40 group-hover:opacity-100'
                                              )}
                                           >
                                              <RankBadgeInline rankName={rankItem.name} size="sm" className="scale-75" />
@@ -784,7 +784,7 @@ export default function HomePage() {
                                     { icon: Target, color: '#f59e0b', label: 'Goles', value: metadata?.goals || 0 },
                                     { icon: Award, color: '#6366f1', label: 'Honores', value: metadata?.mvp_count || 0 },
                                  ].map((item, i) => (
-                                    <div key={i} className="flex items-center gap-4 p-4 rounded-2xl bg-foreground/[0.02] border border-foreground/5 group hover:bg-foreground/[0.04] transition-colors">
+                                    <div key={i} className="flex items-center gap-4 p-4 rounded-2xl bg-foreground/[0.02] border border-foreground/15 group hover:bg-foreground/[0.04] transition-colors">
                                        <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0" style={{ backgroundColor: `${item.color}15` }}>
                                           <item.icon className="w-5 h-5" style={{ color: item.color }} />
                                        </div>
@@ -822,9 +822,9 @@ export default function HomePage() {
                                     initial={{ opacity: 0, x: -10 }}
                                     animate={{ opacity: 1, x: 0 }}
                                     transition={{ delay: idx * 0.1 }}
-                                    className="p-4 rounded-2xl glass-premium border-foreground/5 flex items-center gap-4 group"
+                                    className="p-4 rounded-2xl glass-premium border-foreground/15 flex items-center gap-4 group"
                                  >
-                                    <div className="w-10 h-10 rounded-full bg-surface border border-foreground/5 flex items-center justify-center shrink-0">
+                                    <div className="w-10 h-10 rounded-full bg-surface border border-foreground/15 flex items-center justify-center shrink-0">
                                        {activity.type === 'RANK_UP' ? <TrendingUp className="w-4 h-4 text-primary" /> : <Star className="w-4 h-4 text-accent" />}
                                     </div>
                                     <div className="flex-1 min-w-0">
@@ -861,7 +861,7 @@ export default function HomePage() {
                               Plantel profesional
                            </span>
                         </div>
-                        <Link href="/teams" className="group flex items-center gap-1.5 px-4 py-2 rounded-2xl text-[9px] font-black text-foreground/55 hover:text-foreground transition-all tracking-[0.2em] uppercase glass border-foreground/10">
+                        <Link href="/teams" className="group flex items-center gap-1.5 px-4 py-2 rounded-2xl text-[9px] font-black text-foreground/55 hover:text-foreground transition-all tracking-[0.2em] uppercase glass border-foreground/20">
                            VER TODOS <ChevronRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
                         </Link>
                      </div>
@@ -935,7 +935,7 @@ export default function HomePage() {
                      <div className="flex gap-4 overflow-x-auto pb-4 scrollbar-none snap-x h-[320px] sm:h-[420px]">
                         {highlights.length > 0 ? (
                            highlights.map((h) => (
-                              <Link key={h.id} href={`/highlights?v=${h.id}`} className="shrink-0 aspect-[9/16] h-full rounded-[2rem] overflow-hidden relative group snap-start border border-foreground/5 shadow-xl">
+                              <Link key={h.id} href={`/highlights?v=${h.id}`} className="shrink-0 aspect-[9/16] h-full rounded-[2rem] overflow-hidden relative group snap-start border border-foreground/15 shadow-xl">
                                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent z-10" />
                                  <LazyVideo src={h.video_url} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 opacity-60 group-hover:opacity-100" />
                                  <div className="absolute bottom-4 left-4 right-4 z-20 flex items-center gap-2">
@@ -983,7 +983,7 @@ export default function HomePage() {
                     <h3 className="text-[11px] font-medium text-foreground/20 tracking-wide font-outfit">Agenda prioritaria</h3>
                   </div>
                   {nextMatch && (
-                    <div className="px-4 py-2 rounded-2xl bg-foreground/[0.05] border border-foreground/10 backdrop-blur-md">
+                    <div className="px-4 py-2 rounded-2xl bg-foreground/[0.05] border border-foreground/20 backdrop-blur-md">
                       <span className="text-[10px] font-black text-foreground/60 uppercase tracking-widest">{nextMatch.type || 'F5'}</span>
                     </div>
                   )}
@@ -1000,7 +1000,7 @@ export default function HomePage() {
                       <div className="flex flex-col items-center gap-4 relative z-10 flex-1">
                         <motion.div
                           whileHover={{ scale: 1.1, rotate: -5 }}
-                          className="w-20 h-20 rounded-[2.5rem] bg-gradient-to-br from-surface to-background border-2 border-foreground/5 flex items-center justify-center shadow-2xl group-hover/match:border-primary/30 transition-all duration-500 overflow-hidden p-3"
+                          className="w-20 h-20 rounded-[2.5rem] bg-gradient-to-br from-surface to-background border-2 border-foreground/15 flex items-center justify-center shadow-2xl group-hover/match:border-primary/30 transition-all duration-500 overflow-hidden p-3"
                         >
                           <JerseyVisualizer
                             primaryColor="#18181b"
@@ -1017,7 +1017,7 @@ export default function HomePage() {
 
                       {/* VS Center */}
                       <div className="flex flex-col items-center gap-3 relative z-10 shrink-0">
-                        <div className="w-14 h-14 rounded-full bg-background border border-foreground/10 flex flex-col items-center justify-center shadow-inner group-hover/match:scale-110 transition-transform duration-500">
+                        <div className="w-14 h-14 rounded-full bg-background border border-foreground/20 flex flex-col items-center justify-center shadow-inner group-hover/match:scale-110 transition-transform duration-500">
                           <span className="text-2xl font-black italic text-primary font-kanit leading-none">VS</span>
                         </div>
                         {countdownText && (
@@ -1031,7 +1031,7 @@ export default function HomePage() {
                       <div className="flex flex-col items-center gap-4 relative z-10 flex-1">
                         <motion.div
                           whileHover={{ scale: 1.1, rotate: 5 }}
-                          className="w-20 h-20 rounded-[2.5rem] bg-gradient-to-br from-surface to-background border-2 border-foreground/5 flex items-center justify-center shadow-2xl group-hover/match:border-emerald-500/30 transition-all duration-500 overflow-hidden p-3"
+                          className="w-20 h-20 rounded-[2.5rem] bg-gradient-to-br from-surface to-background border-2 border-foreground/15 flex items-center justify-center shadow-2xl group-hover/match:border-emerald-500/30 transition-all duration-500 overflow-hidden p-3"
                         >
                           <JerseyVisualizer
                             primaryColor="#10b981"
@@ -1049,8 +1049,8 @@ export default function HomePage() {
 
                     {/* Info Grid */}
                     <div className="grid grid-cols-2 gap-3 pt-4">
-                      <div className="flex items-center gap-3 p-4 rounded-3xl bg-foreground/[0.03] border border-foreground/5 group/info hover:bg-foreground/[0.05] transition-all">
-                        <div className="w-10 h-10 rounded-2xl bg-surface flex items-center justify-center border border-foreground/5 shadow-inner">
+                      <div className="flex items-center gap-3 p-4 rounded-3xl bg-foreground/[0.03] border border-foreground/15 group/info hover:bg-foreground/[0.05] transition-all">
+                        <div className="w-10 h-10 rounded-2xl bg-surface flex items-center justify-center border border-foreground/15 shadow-inner">
                           <Calendar className="w-5 h-5 text-primary/40 group-hover/info:text-primary transition-colors" />
                         </div>
                         <div className="flex flex-col">
@@ -1058,8 +1058,8 @@ export default function HomePage() {
                           <span className="text-[10px] font-black text-foreground">{new Date(nextMatch.date).toLocaleDateString('es-ES', { weekday: 'short', day: 'numeric', month: 'short' }).toUpperCase()}</span>
                         </div>
                       </div>
-                      <div className="flex items-center gap-3 p-4 rounded-3xl bg-foreground/[0.03] border border-foreground/5 group/info hover:bg-foreground/[0.05] transition-all">
-                        <div className="w-10 h-10 rounded-2xl bg-surface flex items-center justify-center border border-foreground/5 shadow-inner">
+                      <div className="flex items-center gap-3 p-4 rounded-3xl bg-foreground/[0.03] border border-foreground/15 group/info hover:bg-foreground/[0.05] transition-all">
+                        <div className="w-10 h-10 rounded-2xl bg-surface flex items-center justify-center border border-foreground/15 shadow-inner">
                           <Clock className="w-5 h-5 text-primary/40 group-hover/info:text-primary transition-colors" />
                         </div>
                         <div className="flex flex-col">
@@ -1069,8 +1069,8 @@ export default function HomePage() {
                       </div>
                     </div>
 
-                    <div className="flex items-center gap-3 p-4 rounded-3xl bg-foreground/[0.03] border border-foreground/5 group/info hover:bg-primary/10 transition-all cursor-pointer">
-                      <div className="w-10 h-10 rounded-2xl bg-surface flex items-center justify-center border border-foreground/5 shadow-inner group-hover/info:bg-primary/20">
+                    <div className="flex items-center gap-3 p-4 rounded-3xl bg-foreground/[0.03] border border-foreground/15 group/info hover:bg-primary/10 transition-all cursor-pointer">
+                      <div className="w-10 h-10 rounded-2xl bg-surface flex items-center justify-center border border-foreground/15 shadow-inner group-hover/info:bg-primary/20">
                         <MapPin className="w-5 h-5 text-foreground/20 group-hover/info:text-primary transition-colors" />
                       </div>
                       <div className="flex flex-col min-w-0">
@@ -1089,13 +1089,13 @@ export default function HomePage() {
                           ENTRAR AL MATCH <ArrowRight className="w-4 h-4" />
                         </motion.button>
                       </Link>
-                      <button className="w-14 h-14 rounded-2xl glass-premium border-foreground/10 flex items-center justify-center text-foreground/40 hover:text-primary hover:border-primary/40 transition-all">
+                      <button className="w-14 h-14 rounded-2xl glass-premium border-foreground/20 flex items-center justify-center text-foreground/40 hover:text-primary hover:border-primary/40 transition-all">
                         <PlusCircle className="w-6 h-6" />
                       </button>
                     </div>
                   </div>
                 ) : (
-                  <div className="relative group/agenda overflow-hidden rounded-[2.5rem] p-10 flex flex-col items-center text-center gap-8 border border-foreground/5 bg-gradient-to-b from-surface/50 to-transparent">
+                  <div className="relative group/agenda overflow-hidden rounded-[2.5rem] p-10 flex flex-col items-center text-center gap-8 border border-foreground/15 bg-gradient-to-b from-surface/50 to-transparent">
                     {/* Cinematic Spotlight */}
                     <div className="absolute top-0 left-1/2 -translate-x-1/2 w-48 h-48 bg-primary/5 blur-[60px] rounded-full pointer-events-none opacity-0 group-hover/agenda:opacity-100 transition-opacity duration-700" />
 
@@ -1122,7 +1122,7 @@ export default function HomePage() {
                       </motion.button>
                     </Link>
 
-                    <div className="flex flex-col gap-2 pt-4 border-t border-foreground/5 w-full opacity-60">
+                    <div className="flex flex-col gap-2 pt-4 border-t border-foreground/15 w-full opacity-60">
                       <span className="text-[8px] font-semibold text-foreground/40 tracking-wide font-outfit">Sugerencia de hoy</span>
                       <p className="text-[9px] font-medium text-foreground/40 italic leading-relaxed">
                         "Un equipo unido vale más que 11 estrellas individuales."
@@ -1133,7 +1133,7 @@ export default function HomePage() {
               </div>
             </div>
 
-            <div className="glass-premium p-6 rounded-[2.5rem] border-foreground/5 space-y-4">
+            <div className="glass-premium p-6 rounded-[2.5rem] border-foreground/15 space-y-4">
               <h3 className="text-[10px] font-semibold text-foreground/40 tracking-wide font-outfit">Accesos rápidos</h3>
               <div className="grid grid-cols-1 gap-2">
                 {[
@@ -1144,7 +1144,7 @@ export default function HomePage() {
                   { label: 'Configuración', icon: Target, href: '/settings' }
                 ].map((link, idx) => (
                   <Link key={idx} href={link.href}>
-                    <button className="w-full h-12 px-4 rounded-xl flex items-center justify-between group hover:bg-foreground/[0.03] transition-all border border-transparent hover:border-foreground/5">
+                    <button className="w-full h-12 px-4 rounded-xl flex items-center justify-between group hover:bg-foreground/[0.03] transition-all border border-transparent hover:border-foreground/15">
                       <div className="flex items-center gap-3">
                         <link.icon className="w-4 h-4 text-foreground/40 group-hover:text-primary transition-colors" />
                         <span className="text-[10px] font-black uppercase tracking-widest text-foreground/60 group-hover:text-foreground">{link.label}</span>
