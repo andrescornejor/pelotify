@@ -147,22 +147,49 @@ export async function joinTeam(
 }
 
 export async function getUserTeams(userId: string) {
-  const { data, error } = await supabase
+  // 1. Get teams where user is a member
+  const { data: memberData, error: memberError } = await supabase
     .from('team_members')
-    .select(
-      `
+    .select(`
             team_id,
+            role,
             teams (*)
-        `
-    )
+        `)
     .eq('user_id', userId)
     .eq('status', 'confirmed');
 
-  if (error) throw error;
-  return data.map((m: any) => ({
+  if (memberError) throw memberError;
+
+  // 2. Get teams where user is the captain directly (as a fallback)
+  const { data: captainData, error: captainError } = await supabase
+    .from('teams')
+    .select('*')
+    .eq('captain_id', userId);
+
+  if (captainError) throw captainError;
+
+  const memberTeams = (memberData || []).map((m: any) => ({
     ...(Array.isArray(m.teams) ? m.teams[0] : m.teams),
-    role: m.role,
-  })) as any[];
+    role: m.role || (m.teams?.captain_id === userId ? 'captain' : 'member'),
+  }));
+
+  const captainTeams = (captainData || []).map((t: any) => ({
+    ...t,
+    role: 'captain' as const,
+  }));
+
+  // Merge and deduplicate by team ID
+  const allTeamsMap = new Map();
+  [...memberTeams, ...captainTeams].forEach(t => {
+    if (t && t.id) {
+       // If we already have it and it's a 'member' role, but this new one is 'captain', override
+       if (!allTeamsMap.has(t.id) || t.role === 'captain') {
+         allTeamsMap.set(t.id, t);
+       }
+    }
+  });
+
+  return Array.from(allTeamsMap.values());
 }
 
 export async function leaveTeam(teamId: string, userId: string) {
