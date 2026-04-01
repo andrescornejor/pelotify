@@ -15,12 +15,14 @@ import {
   DollarSign,
   Loader2,
   CheckCircle2,
+  Clock,
 } from 'lucide-react';
 import { useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { createTournament } from '@/lib/tournaments';
 import { cn } from '@/lib/utils';
 import LocationSearch from '@/components/LocationSearch';
+import { AVAILABLE_TIMES } from '@/lib/constants';
 
 export default function CreateTournamentPage() {
   const router = useRouter();
@@ -33,7 +35,7 @@ export default function CreateTournamentPage() {
     description: '',
     type: 'F5' as 'F5' | 'F7' | 'F11',
     start_date: '',
-    end_date: '',
+    start_time: '',
     location: '',
     max_teams: 8,
     entry_fee: 0,
@@ -41,24 +43,39 @@ export default function CreateTournamentPage() {
   });
 
   const handleCreate = async () => {
-    if (!user) return;
+    if (!user) {
+        alert('Debes estar logueado para crear un torneo.');
+        return;
+    }
     setLoading(true);
     try {
-      await createTournament({
-        ...formData,
+      // Use null instead of empty strings for the database
+      const dataToSave = {
+        name: formData.name,
+        description: formData.description || null,
+        type: formData.type,
+        start_date: formData.start_date,
+        location: formData.location,
+        max_teams: formData.max_teams,
+        entry_fee: formData.entry_fee,
+        banner_url: formData.banner_url,
         creator_id: user.id,
         is_official: false,
-      });
+        status: 'upcoming' as const
+      };
+
+      await createTournament(dataToSave);
       router.push('/tournaments');
-    } catch (err) {
-      console.error(err);
-      alert('Error al crear el torneo.');
+    } catch (err: any) {
+      console.error('Error creating tournament:', err);
+      // More descriptive error
+      alert(`Error al crear el torneo: ${err.message || 'Error desconocido'}`);
     } finally {
       setLoading(false);
     }
   };
 
-  const steps = ['Básico', 'Detalles', 'Review'];
+  const steps = ['Básico', 'Cuándo', 'Sede y Costo', 'Review'];
 
   return (
     <div className="min-h-screen bg-background relative overflow-hidden p-4 lg:p-10 pt-24 pb-32">
@@ -159,61 +176,81 @@ export default function CreateTournamentPage() {
                     exit={{ opacity: 0, x: -20 }}
                     className="space-y-10"
                  >
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                       <div className="space-y-4">
-                          <label className="text-[10px] font-black uppercase tracking-widest text-foreground/40 px-2">Fecha Inicio</label>
-                          <div className="relative h-16">
-                             <Calendar className="absolute left-6 top-1/2 -translate-y-1/2 w-4 h-4 text-foreground/20" />
-                             <input 
-                                type="date"
-                                className="w-full h-full bg-foreground/[0.03] border border-foreground/10 rounded-2xl px-14 font-bold text-foreground text-sm outline-none focus:border-primary"
-                                value={formData.start_date}
-                                onChange={e => setFormData({...formData, start_date: e.target.value})}
-                             />
-                          </div>
-                       </div>
-                       <div className="space-y-4">
-                          <label className="text-[10px] font-black uppercase tracking-widest text-foreground/40 px-2">Cupo de Equipos</label>
-                          <div className="relative h-16">
-                             <Users className="absolute left-6 top-1/2 -translate-y-1/2 w-4 h-4 text-foreground/20" />
-                             <select 
-                                className="w-full h-full bg-foreground/[0.03] border border-foreground/10 rounded-2xl px-14 font-black text-foreground text-sm outline-none focus:border-primary appearance-none cursor-pointer"
-                                value={formData.max_teams}
-                                onChange={e => setFormData({...formData, max_teams: parseInt(e.target.value)})}
-                             >
-                                {[4, 8, 12, 16, 24, 32].map(n => (
-                                   <option key={n} value={n}>{n} EQUIPOS</option>
+                    <div className="space-y-8">
+                        <div className="space-y-4">
+                            <span className="text-[10px] font-black text-foreground/30 uppercase tracking-[0.4em] px-1">
+                                Fecha de Inicio
+                            </span>
+                            <div className="flex gap-3 overflow-x-auto no-scrollbar pb-2 -mx-4 px-4 font-mono">
+                                {Array.from({ length: 14 }).map((_, i) => {
+                                    const d = new Date();
+                                    d.setDate(d.getDate() + i);
+                                    const dateStr = d.toISOString().split('T')[0];
+                                    const dayName = d.toLocaleDateString('es-ES', { weekday: 'short' }).replace('.', '').toUpperCase();
+                                    const dayNumber = d.getDate();
+                                    const monthName = d.toLocaleDateString('es-ES', { month: 'short' }).replace('.', '').toUpperCase();
+                                    const isSelected = formData.start_date === dateStr;
+
+                                    return (
+                                        <motion.button
+                                            key={dateStr}
+                                            type="button"
+                                            onClick={() => setFormData({ ...formData, start_date: dateStr })}
+                                            className={`flex-shrink-0 w-[72px] h-24 rounded-2xl border transition-all duration-300 flex flex-col items-center justify-center gap-0.5 relative overflow-hidden ${
+                                                isSelected ? 'border-primary bg-primary shadow-lg shadow-primary/20 scale-105 text-black' : 'border-foreground/[0.06] bg-foreground/[0.02] hover:border-foreground/20 text-foreground'
+                                            }`}
+                                        >
+                                            <span className={`text-[8px] font-black tracking-widest ${isSelected ? 'opacity-70' : 'opacity-25'}`}>{monthName}</span>
+                                            <span className="text-3xl font-black italic tracking-tighter leading-none">{dayNumber}</span>
+                                            <span className={`text-[8px] font-black tracking-widest ${isSelected ? 'opacity-70' : 'opacity-25'}`}>{dayName}</span>
+                                        </motion.button>
+                                    );
+                                })}
+                                <div className="relative flex-shrink-0">
+                                    <input
+                                        type="date"
+                                        value={formData.start_date}
+                                        onChange={(e) => setFormData({ ...formData, start_date: e.target.value })}
+                                        className="absolute inset-0 opacity-0 cursor-pointer z-10 w-full"
+                                    />
+                                    <div className={`w-[72px] h-24 rounded-2xl border transition-all duration-300 flex flex-col items-center justify-center gap-1 ${formData.start_date && !Array.from({ length: 14 }).some((_, i) => {
+                                        const d = new Date();
+                                        d.setDate(d.getDate() + i);
+                                        return d.toISOString().split('T')[0] === formData.start_date;
+                                    }) ? 'border-primary bg-primary text-black scale-105' : 'border-foreground/[0.06] bg-foreground/[0.02] text-foreground/20'}`}>
+                                        <Calendar className="w-5 h-5" />
+                                        <span className="text-[8px] font-black tracking-widest uppercase">OTRO</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="space-y-4">
+                            <span className="text-[10px] font-black text-foreground/30 uppercase tracking-[0.4em] px-1">
+                                Horario sugerido para partidos
+                            </span>
+                            <div className="grid grid-cols-4 sm:grid-cols-6 gap-2">
+                                {AVAILABLE_TIMES.slice(16, 40).map((t) => (
+                                    <button
+                                        key={t}
+                                        type="button"
+                                        onClick={() => setFormData({ ...formData, start_time: t })}
+                                        className={cn(
+                                            "h-12 rounded-xl border text-[10px] font-black tracking-tighter transition-all",
+                                            formData.start_time === t ? "bg-primary text-black border-primary" : "bg-foreground/[0.02] text-foreground/40 border-foreground/5 hover:border-foreground/20"
+                                        )}
+                                    >
+                                        {t}
+                                    </button>
                                 ))}
-                             </select>
-                          </div>
-                       </div>
-                       <div className="space-y-4 col-span-full">
-                          <label className="text-[10px] font-black uppercase tracking-widest text-foreground/40 px-2">Sede / Ubicación</label>
-                          <LocationSearch 
-                             value={formData.location}
-                             onChange={(loc) => setFormData({...formData, location: loc})}
-                             placeholder="Ubicación o predio..."
-                          />
-                       </div>
-                       <div className="space-y-4 col-span-full">
-                          <label className="text-[10px] font-black uppercase tracking-widest text-foreground/40 px-2">Costo Inscripción ($)</label>
-                          <div className="relative h-16">
-                             <DollarSign className="absolute left-6 top-1/2 -translate-y-1/2 w-4 h-4 text-primary" />
-                             <input 
-                                type="number"
-                                placeholder="Costo por equipo (0 = Gratis)"
-                                className="w-full h-full bg-foreground/[0.03] border border-foreground/10 rounded-2xl px-14 font-black text-foreground text-sm outline-none focus:border-primary"
-                                value={formData.entry_fee}
-                                onChange={e => setFormData({...formData, entry_fee: parseInt(e.target.value)})}
-                             />
-                          </div>
-                       </div>
+                            </div>
+                        </div>
                     </div>
 
                     <div className="flex gap-4">
-                       <button onClick={() => setStep(0)} className="h-20 px-8 border border-foreground/10 rounded-[2rem] font-black text-xs text-foreground/40 hover:text-foreground">ATRÁS</button>
+                       <button onClick={() => setStep(0)} className="h-20 px-8 border border-foreground/10 rounded-[2rem] font-black text-xs text-foreground/40 hover:text-foreground uppercase tracking-widest">ATRÁS</button>
                        <button 
-                          disabled={!formData.start_date || !formData.location}
+                          disabled={!formData.start_date}
                           onClick={() => setStep(2)}
                           className="flex-1 h-20 bg-foreground text-background rounded-[2rem] font-black text-sm uppercase tracking-widest hover:bg-primary hover:text-black transition-all disabled:opacity-20"
                        >
@@ -231,30 +268,115 @@ export default function CreateTournamentPage() {
                     exit={{ opacity: 0, x: -20 }}
                     className="space-y-10"
                  >
-                    <div className="space-y-6">
-                       <h3 className="text-2xl font-black italic text-foreground uppercase tracking-tighter">REPASO FINAL</h3>
-                       <div className="p-6 rounded-3xl bg-foreground/5 border border-foreground/5 space-y-4">
-                          <div className="flex justify-between items-center text-sm">
-                             <span className="text-foreground/40 font-black uppercase tracking-widest text-[9px]">Evento</span>
-                             <span className="text-foreground font-black italic uppercase">{formData.name}</span>
+                    <div className="space-y-8">
+                       <div className="space-y-4">
+                          <label className="text-[10px] font-black uppercase tracking-widest text-foreground/40 px-2 flex items-center gap-2">
+                             <Users className="w-3 h-3" /> CUPO DE EQUIPOS
+                          </label>
+                          <div className="grid grid-cols-4 gap-3">
+                             {[4, 8, 12, 16].map(n => (
+                                <button
+                                   key={n}
+                                   onClick={() => setFormData({...formData, max_teams: n})}
+                                   className={cn(
+                                      "h-16 rounded-2xl border font-black text-sm transition-all",
+                                      formData.max_teams === n ? "bg-primary text-black border-primary" : "bg-foreground/[0.03] text-foreground/40 border-foreground/10"
+                                   )}
+                                >
+                                   {n}
+                                </button>
+                             ))}
                           </div>
-                          <div className="flex justify-between items-center text-sm">
-                             <span className="text-foreground/40 font-black uppercase tracking-widest text-[9px]">Formato</span>
-                             <span className="text-primary font-black uppercase">{formData.type}</span>
-                          </div>
-                          <div className="flex justify-between items-center text-sm">
-                             <span className="text-foreground/40 font-black uppercase tracking-widest text-[9px]">Sede</span>
-                             <span className="text-foreground font-bold">{formData.location}</span>
-                          </div>
-                          <div className="flex justify-between items-center text-sm">
-                             <span className="text-foreground/40 font-black uppercase tracking-widest text-[9px]">Inscripción</span>
-                             <span className="text-2xl font-black italic text-primary">${formData.entry_fee.toLocaleString()}</span>
+                       </div>
+
+                       <div className="space-y-4">
+                          <label className="text-[10px] font-black uppercase tracking-widest text-foreground/40 px-2 flex items-center gap-2">
+                             <MapPin className="w-3 h-3" /> UBICACIÓN / SEDE PRINCIPAL
+                          </label>
+                          <LocationSearch 
+                             value={formData.location}
+                             onChange={(loc) => setFormData({...formData, location: loc})}
+                             placeholder="¿Dónde será la sede principal?"
+                          />
+                       </div>
+
+                       <div className="space-y-4">
+                          <label className="text-[10px] font-black uppercase tracking-widest text-foreground/40 px-2 flex items-center gap-2">
+                             <DollarSign className="w-3 h-3" /> COSTO INSCRIPCIÓN POR EQUIPO
+                          </label>
+                          <div className="relative">
+                             <DollarSign className="absolute left-6 top-1/2 -translate-y-1/2 w-5 h-5 text-primary" />
+                             <input 
+                                type="number"
+                                placeholder="Costo total (0 si es gratis)"
+                                className="w-full h-20 bg-foreground/[0.03] border border-foreground/10 rounded-[2rem] px-16 text-xl font-black text-foreground outline-none focus:border-primary"
+                                value={formData.entry_fee || ''}
+                                onChange={e => setFormData({...formData, entry_fee: parseInt(e.target.value) || 0})}
+                             />
                           </div>
                        </div>
                     </div>
 
                     <div className="flex gap-4">
-                       <button onClick={() => setStep(1)} className="h-20 px-8 border border-foreground/10 rounded-[2rem] font-black text-xs text-foreground/40 hover:text-foreground">ATRÁS</button>
+                       <button onClick={() => setStep(1)} className="h-20 px-8 border border-foreground/10 rounded-[2rem] font-black text-xs text-foreground/40 hover:text-foreground uppercase tracking-widest">ATRÁS</button>
+                       <button 
+                          disabled={!formData.location}
+                          onClick={() => setStep(3)}
+                          className="flex-1 h-20 bg-foreground text-background rounded-[2rem] font-black text-sm uppercase tracking-widest hover:bg-primary hover:text-black transition-all disabled:opacity-20"
+                       >
+                          REVISAR
+                       </button>
+                    </div>
+                 </motion.div>
+              )}
+
+              {step === 3 && (
+                 <motion.div 
+                    key="step3"
+                    initial={{ opacity: 0, x: 20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: -20 }}
+                    className="space-y-10"
+                 >
+                    <div className="space-y-6">
+                       <h3 className="text-2xl font-black italic text-foreground uppercase tracking-tighter">CONFIRMACIÓN DETALLADA</h3>
+                       <div className="p-8 rounded-[2.5rem] bg-foreground/5 border border-foreground/5 space-y-6 relative overflow-hidden">
+                          <div className="absolute top-0 right-0 p-8 opacity-10">
+                             <Trophy className="w-32 h-32" />
+                          </div>
+                          
+                          <div className="relative z-10 space-y-4">
+                             <div className="flex items-center gap-4">
+                                <div className="w-12 h-12 rounded-2xl bg-primary/20 flex items-center justify-center text-primary font-black italic">
+                                   {formData.type}
+                                </div>
+                                <div className="flex flex-col">
+                                   <span className="text-3xl font-black italic uppercase text-foreground leading-none">{formData.name}</span>
+                                   <span className="text-[10px] font-black text-foreground/40 uppercase tracking-widest mt-1">{formData.location}</span>
+                                </div>
+                             </div>
+
+                             <div className="grid grid-cols-2 gap-4">
+                                <div className="p-4 rounded-2xl bg-background/40">
+                                   <span className="text-[8px] font-black text-foreground/20 uppercase block mb-1">INICIA</span>
+                                   <span className="text-sm font-black text-foreground">{formData.start_date} {formData.start_time}</span>
+                                </div>
+                                <div className="p-4 rounded-2xl bg-background/40">
+                                   <span className="text-[8px] font-black text-foreground/20 uppercase block mb-1">EQUIPOS</span>
+                                   <span className="text-sm font-black text-foreground">{formData.max_teams} MÁXIMO</span>
+                                </div>
+                             </div>
+
+                             <div className="p-6 rounded-2xl bg-primary/10 border border-primary/20 flex items-center justify-between">
+                                <span className="text-xs font-black text-primary uppercase">TOTAL INSCRIPCIÓN</span>
+                                <span className="text-3xl font-black italic text-primary">${formData.entry_fee.toLocaleString()}</span>
+                             </div>
+                          </div>
+                       </div>
+                    </div>
+
+                    <div className="flex gap-4">
+                       <button onClick={() => setStep(2)} className="h-20 px-8 border border-foreground/10 rounded-[2rem] font-black text-xs text-foreground/40 hover:text-foreground">ATRÁS</button>
                        <button 
                           disabled={loading}
                           onClick={handleCreate}
@@ -265,7 +387,7 @@ export default function CreateTournamentPage() {
                           ) : (
                              <>
                                 <CheckCircle2 className="w-5 h-5" />
-                                CONFIRMAR Y CREAR
+                                CONFIRMAR Y CREAR TORNEO
                              </>
                           )}
                        </button>
