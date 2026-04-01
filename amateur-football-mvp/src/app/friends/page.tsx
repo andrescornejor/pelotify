@@ -31,12 +31,13 @@ import {
   Zap,
   Trophy,
   Star,
+  Shield,
+  MessageSquare,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Shield } from 'lucide-react';
 import Link from 'next/link';
-import { MessageSquare } from 'lucide-react';
+import ChatModal from '@/components/ChatModal';
 import { EmptyState } from '@/components/home/EmptyState';
 import { FriendsIllustration, EmptyPitchIllustration } from '@/components/home/EmptyStateIllustrations';
 
