@@ -81,6 +81,11 @@ export function BottomNav() {
     if (!user) return;
     updateUnreadCount();
 
+    // Clear unread if on messages
+    if (pathname === '/messages') {
+      setUnreadCount(0);
+    }
+
     const channel = supabase
       .channel('unread-nav-messages')
       .on('postgres_changes', { event: '*', schema: 'public', table: 'direct_messages' }, () =>

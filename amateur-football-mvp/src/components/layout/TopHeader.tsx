@@ -46,6 +46,7 @@ export const TopHeader = memo(function TopHeader() {
   const [unreadChatCount, setUnreadChatCount] = useState(0);
   const [friendsCount, setFriendsCount] = useState(0);
   const lastPathname = useRef(pathname);
+  const baseCurrent = pathname.split('?')[0];
 
   const updateCount = async () => {
     if (!user) return;
@@ -59,7 +60,10 @@ export const TopHeader = memo(function TopHeader() {
         getPendingChallengesCountForCaptain(user.id),
       ]);
       setFriendsCount(f || 0);
-      setUnreadChatCount(c || 0);
+      
+      const chatTotal = baseCurrent === '/messages' ? 0 : (c || 0);
+      setUnreadChatCount(chatTotal);
+      
       setNotifCount((f || 0) + (m || 0) + (t || 0) + (ti || 0) + (tc || 0));
     } catch (err) {
       console.error(err);
@@ -70,7 +74,6 @@ export const TopHeader = memo(function TopHeader() {
     if (!user) return;
     
     // Only fetch if initial or significant path change (not just query params)
-    const baseCurrent = pathname.split('?')[0];
     const baseLast = lastPathname.current.split('?')[0];
     
     if (baseCurrent !== baseLast || notifCount === 0) {
@@ -91,6 +94,7 @@ export const TopHeader = memo(function TopHeader() {
           event: '*',
           schema: 'public',
           table: 'direct_messages',
+          filter: `recipient_id=eq.${user.id}`,
         },
         () => {
           updateCount();

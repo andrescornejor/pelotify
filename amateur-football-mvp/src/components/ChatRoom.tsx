@@ -153,6 +153,11 @@ export default function ChatRoom({ matchId, recipientId, className, title }: Cha
       subscription = subscribeToDirectMessages(user.id, (msg) => {
         if (msg.sender_id === recipientId || msg.recipient_id === user.id) {
           setMessages((prev) => [...prev.filter((m) => m.id !== msg.id), msg]);
+          
+          // If we are recipient, mark as read immediately
+          if (msg.sender_id === recipientId) {
+            markDirectMessagesAsRead(recipientId, user.id);
+          }
         }
       });
     }
