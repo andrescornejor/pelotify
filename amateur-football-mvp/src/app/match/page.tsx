@@ -145,6 +145,9 @@ function MatchLobbyContent() {
   const [isAdminMode, setIsAdminMode] = useState(false);
   const [isTacticalMode, setIsTacticalMode] = useState(false);
   
+  // Tactical Selection State
+  const [selectedPlayerId, setSelectedPlayerId] = useState<string | null>(null);
+
   // Team Name Editing State
   const updateMatchMutation = useUpdateMatch();
   const [teamAName, setTeamAName] = useState(match?.team_a_name || 'Local');
@@ -290,6 +293,19 @@ function MatchLobbyContent() {
       await bulkUpdateMutation.mutateAsync({ matchId: match.id, updates });
     } catch (e) {
       console.error('Error benching all:', e);
+    }
+  };
+
+  const handleTacticalMove = async (userId: string, team: 'A' | 'B' | null) => {
+    if (!match || !isCreator) return;
+    try {
+      await bulkUpdateMutation.mutateAsync({
+        matchId: match.id,
+        updates: [{ user_id: userId, team }]
+      });
+      setSelectedPlayerId(null);
+    } catch (e) {
+      console.error('Error moving player in tactical mode:', e);
     }
   };
 
@@ -867,7 +883,8 @@ function MatchLobbyContent() {
           </div>
         )}
       </AnimatePresence>
-      {/* Tactical Mode Modal (The Redesign) */}
+
+      {/* Tactical Mode Modal (The Unified Pitch) */}
       <AnimatePresence>
         {isTacticalMode && (
           <div className="fixed inset-0 z-[110] flex flex-col bg-background/95 backdrop-blur-xl">
@@ -878,153 +895,227 @@ function MatchLobbyContent() {
               className="flex-1 flex flex-col h-full overflow-hidden"
             >
               {/* Tactical Header */}
-              <div className="p-8 flex items-center justify-between border-b border-white/5 bg-background/50">
+              <div className="p-6 md:p-8 flex items-center justify-between border-b border-white/5 bg-background/50 relative z-20">
                 <div className="flex items-center gap-6">
-                  <button onClick={() => setIsTacticalMode(false)} className="w-14 h-14 rounded-2xl glass-premium flex items-center justify-center hover:scale-110 active:scale-95 transition-all">
-                    <ArrowLeft className="w-7 h-7" />
+                  <button onClick={() => { setIsTacticalMode(false); setSelectedPlayerId(null); }} className="w-12 h-12 md:w-14 md:h-14 rounded-2xl glass-premium flex items-center justify-center hover:scale-110 active:scale-95 transition-all">
+                    <ArrowLeft className="w-6 h-6 md:w-7 md:h-7" />
                   </button>
-                  <div className="space-y-1">
-                    <h2 className="text-3xl font-black italic uppercase tracking-tighter text-foreground leading-none">Armar Equipos</h2>
-                    <p className="text-[10px] font-black text-primary uppercase tracking-widest">Acomod\u00e1 a los jugadores en la cancha</p>
+                  <div className="space-y-0.5 md:space-y-1">
+                    <h2 className="text-2xl md:text-3xl font-black italic uppercase tracking-tighter text-foreground leading-none">Armar Equipos</h2>
+                    <p className="text-[8px] md:text-[10px] font-black text-primary uppercase tracking-widest italic">Toca un jugador y luego una posici\u00f3n</p>
                   </div>
                 </div>
                 
                 <div className="flex items-center gap-4">
-                  <div className="hidden md:flex items-center gap-2 mr-6 border-r border-white/10 pr-6">
-                    <button 
-                      onClick={handleRandomizeTeams} 
-                      className="flex items-center gap-2 px-6 h-12 rounded-2xl bg-white/5 border border-white/10 text-foreground/60 text-[10px] font-black uppercase tracking-widest hover:bg-white/10 hover:text-foreground transition-all"
-                    >
-                      <Zap className="w-4 h-4" /> Mezclar Aleatorio
-                    </button>
-                    <button 
-                      onClick={handleBenchAll} 
-                      className="flex items-center gap-2 px-6 h-12 rounded-2xl bg-rose-600/10 border border-rose-600/20 text-rose-500 text-[10px] font-black uppercase tracking-widest hover:bg-rose-600 hover:text-white transition-all"
-                    >
-                      <LogOut className="w-4 h-4 rotate-180" /> Vaciar Cancha
-                    </button>
-                  </div>
                   <button 
-                    onClick={() => setIsTacticalMode(false)}
-                    className="px-8 h-14 rounded-2xl bg-primary text-black font-black italic uppercase text-sm shadow-2xl shadow-primary/30 hover:scale-105 active:scale-95 transition-all"
+                    onClick={handleRandomizeTeams} 
+                    className="hidden sm:flex items-center gap-2 px-6 h-12 rounded-2xl bg-white/5 border border-white/10 text-foreground/60 text-[10px] font-black uppercase tracking-widest hover:bg-white/10 hover:text-foreground transition-all"
                   >
-                    Confirmar Armado
+                    <Zap className="w-4 h-4" /> Mezclar
+                  </button>
+                  <button 
+                    onClick={() => { setIsTacticalMode(false); setSelectedPlayerId(null); }}
+                    className="px-6 md:px-8 h-12 md:h-14 rounded-2xl bg-primary text-black font-black italic uppercase text-xs md:text-sm shadow-2xl shadow-primary/30 hover:scale-105 active:scale-95 transition-all"
+                  >
+                    Listo
                   </button>
                 </div>
               </div>
 
-              <div className="flex-1 overflow-y-auto p-8 space-y-12">
-                {/* Mobile Actions */}
-                <div className="flex md:hidden items-center gap-2 overflow-x-auto pb-4 no-scrollbar">
-                  <button 
-                    onClick={handleRandomizeTeams} 
-                    className="flex-none flex items-center gap-2 px-6 h-12 rounded-2xl bg-white/5 border border-white/10 text-foreground/60 text-[10px] font-black uppercase tracking-widest"
-                  >
-                    <Zap className="w-3 h-3" /> Mezclar
-                  </button>
-                  <button 
-                    onClick={handleBenchAll} 
-                    className="flex-none flex items-center gap-2 px-6 h-12 rounded-2xl bg-rose-600/10 border border-rose-600/20 text-rose-500 text-[10px] font-black uppercase tracking-widest"
-                  >
-                    <LogOut className="w-3 h-3 rotate-180" /> Vaciar
-                  </button>
-                </div>
+              <div className="flex-1 overflow-y-auto p-4 md:p-8 space-y-8 relative">
+                {/* Unified Pitch Layout */}
+                <div className="max-w-5xl mx-auto w-full aspect-[3/4] md:aspect-[16/10] bg-[#1a2e1a] rounded-[3rem] md:rounded-[4rem] border-4 border-white/10 relative overflow-hidden shadow-2xl flex flex-col md:flex-row">
+                   {/* Pitch Patterns & Lines */}
+                   <div className="absolute inset-0 opacity-20 pointer-events-none">
+                      <div className="absolute inset-0 bg-[repeating-linear-gradient(90deg,transparent,transparent_10%,rgba(255,255,255,0.05)_10%,rgba(255,255,255,0.05)_20%)]" />
+                      <div className="absolute top-1/2 left-0 right-0 h-1 bg-white/20 -translate-y-1/2 md:hidden" />
+                      <div className="absolute top-0 bottom-0 left-1/2 w-1 bg-white/20 -translate-x-1/2 hidden md:block" />
+                      <div className="absolute top-1/2 left-1/2 w-32 h-32 md:w-48 md:h-48 border-4 border-white/20 rounded-full -translate-x-1/2 -translate-y-1/2" />
+                      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-48 h-24 md:w-64 md:h-32 border-4 border-white/20 border-t-0 rounded-b-3xl" />
+                      <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-48 h-24 md:w-64 md:h-32 border-4 border-white/20 border-b-0 rounded-t-3xl" />
+                   </div>
 
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 max-w-7xl mx-auto w-full">
-                  {(['A', 'B'] as const).map((team) => {
-                    const cfg = TEAM_CONFIG[team];
-                    const members = team === 'A' ? teamA : teamB;
-                    return (
-                      <div key={team} className="space-y-8">
-                        <div className="flex items-center justify-between px-4">
-                           <div className="flex items-center gap-4">
-                              <div className={cn("w-14 h-14 rounded-[1.5rem] flex items-center justify-center font-black italic text-2xl text-white shadow-xl", cfg.bg)}>{team}</div>
-                              <div>
-                                <input
-                                  type="text"
-                                  value={team === 'A' ? teamAName : teamBName}
-                                  onChange={(e) => team === 'A' ? setTeamAName(e.target.value) : setTeamBName(e.target.value)}
-                                  onBlur={handleUpdateTeamNames}
-                                  className="bg-transparent border-none p-0 text-2xl font-black italic uppercase tracking-tighter text-foreground focus:outline-none focus:ring-0 w-full"
-                                />
-                                <div className={cn("text-[9px] font-black uppercase tracking-widest", cfg.text)}>Equipo {team === 'A' ? 'Local' : 'Visitante'}</div>
-                              </div>
-                           </div>
-                           <div className="flex flex-col items-end">
-                              <span className="text-2xl font-black italic text-foreground/20 leading-none">{members.length}</span>
-                              <span className="text-[8px] font-bold text-foreground/10 uppercase tracking-widest">/ {teamSize}</span>
-                           </div>
-                        </div>
-
-                        {/* Pitch Representation */}
-                        <div className={cn(
-                          "relative aspect-[4/3] rounded-[3.5rem] bg-foreground/[0.02] border-2 border-dashed border-white/5 flex items-center justify-center p-12 overflow-hidden",
-                          "before:absolute before:inset-0 before:bg-gradient-to-br", cfg.gradient
-                        )}>
-                           <div className="grid grid-cols-3 sm:grid-cols-4 gap-6 relative z-10 w-full">
-                              {Array.from({ length: teamSize }).map((_, idx) => {
-                                const p = members[idx];
-                                return (
-                                  <div key={idx} className="flex flex-col items-center gap-2">
-                                    {p ? (
-                                      <motion.div 
-                                        layoutId={p.user_id} 
-                                        className="cursor-pointer group/player relative" 
-                                        onClick={() => setManagedParticipant(p)}
-                                      >
-                                        <PlayerSlot participant={p} size="lg" />
-                                        <div className="absolute -top-2 -right-2 w-6 h-6 rounded-full bg-background border border-white/10 flex items-center justify-center opacity-0 group-hover/player:opacity-100 transition-all scale-75 group-hover/player:scale-100">
-                                          <Zap className="w-3 h-3 text-primary" />
-                                        </div>
-                                      </motion.div>
-                                    ) : (
-                                      <div className="w-16 h-16 rounded-[2rem] border-2 border-dashed border-white/5 flex items-center justify-center bg-white/[0.02]">
-                                        <div className="w-2 h-2 rounded-full bg-white/5" />
-                                      </div>
-                                    )}
-                                  </div>
-                                );
-                              })}
-                           </div>
-                        </div>
+                   {/* TEAM A HALF */}
+                   <div className="flex-1 relative flex flex-col items-center justify-center p-6 md:p-12">
+                      <div className="absolute top-6 left-6 flex items-center gap-3">
+                         <div className={cn("w-10 h-10 md:w-12 md:h-12 rounded-xl flex items-center justify-center font-black italic text-xl md:text-2xl text-white shadow-xl", TEAM_CONFIG.A.bg)}>A</div>
+                         <input
+                           type="text"
+                           value={teamAName}
+                           onChange={(e) => setTeamAName(e.target.value)}
+                           onBlur={handleUpdateTeamNames}
+                           className="bg-transparent border-none p-0 text-xl md:text-2xl font-black italic uppercase tracking-tighter text-foreground/50 focus:text-foreground focus:outline-none focus:ring-0 w-32 md:w-48 transition-colors"
+                         />
                       </div>
-                    );
-                  })}
+                      <div className="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-8 w-full mt-12 md:mt-0">
+                         {Array.from({ length: teamSize }).map((_, idx) => {
+                           const p = teamA[idx];
+                           const isSelected = selectedPlayerId === p?.user_id;
+                           return (
+                             <div 
+                               key={idx} 
+                               className="flex flex-col items-center justify-center h-24 md:h-32"
+                               onClick={(e) => {
+                                 e.stopPropagation();
+                                 if (p) {
+                                   setSelectedPlayerId(isSelected ? null : p.user_id);
+                                 } else if (selectedPlayerId) {
+                                   handleTacticalMove(selectedPlayerId, 'A');
+                                 }
+                               }}
+                             >
+                               {p ? (
+                                 <motion.div 
+                                   layoutId={p.user_id} 
+                                   className={cn(
+                                     "cursor-pointer transition-transform relative group",
+                                     isSelected ? "scale-110" : "hover:scale-105"
+                                   )}
+                                 >
+                                   <PlayerSlot participant={p} size={isSelected ? "lg" : "md"} />
+                                   {isSelected && (
+                                     <div className="absolute -inset-4 bg-primary/20 blur-xl rounded-full -z-10 animate-pulse" />
+                                   )}
+                                   <div className={cn(
+                                      "absolute -top-2 -right-2 w-6 h-6 rounded-full flex items-center justify-center border border-white/10 transition-all",
+                                      isSelected ? "bg-primary text-black opacity-100 scale-100" : "bg-background/80 text-primary opacity-0 scale-75 group-hover:opacity-100 group-hover:scale-100"
+                                   )}>
+                                      <Check className="w-3 h-3" />
+                                   </div>
+                                 </motion.div>
+                               ) : (
+                                 <div className={cn(
+                                   "w-16 h-16 md:w-20 md:h-20 rounded-[2rem] border-2 border-dashed flex items-center justify-center transition-all",
+                                   selectedPlayerId ? "border-primary/40 bg-primary/5 scale-105" : "border-white/5 bg-white/[0.02]"
+                                 )}>
+                                   <div className={cn("w-2 h-2 rounded-full", selectedPlayerId ? "bg-primary animate-ping" : "bg-white/5")} />
+                                 </div>
+                               )}
+                             </div>
+                           );
+                         })}
+                      </div>
+                   </div>
+
+                   {/* TEAM B HALF */}
+                   <div className="flex-1 relative border-t md:border-t-0 md:border-l border-white/10 flex flex-col items-center justify-center p-6 md:p-12">
+                      <div className="absolute top-6 left-6 md:top-auto md:bottom-6 md:left-auto md:right-6 flex items-center md:flex-row-reverse gap-3">
+                         <div className={cn("w-10 h-10 md:w-12 md:h-12 rounded-xl flex items-center justify-center font-black italic text-xl md:text-2xl text-white shadow-xl", TEAM_CONFIG.B.bg)}>B</div>
+                         <input
+                           type="text"
+                           value={teamBName}
+                           onChange={(e) => setTeamBName(e.target.value)}
+                           onBlur={handleUpdateTeamNames}
+                           className="bg-transparent border-none p-0 text-xl md:text-2xl font-black italic uppercase tracking-tighter text-foreground/50 focus:text-foreground focus:outline-none focus:ring-0 w-32 md:w-48 text-left md:text-right transition-colors"
+                         />
+                      </div>
+                      <div className="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-8 w-full mt-12 md:mt-0">
+                         {Array.from({ length: teamSize }).map((_, idx) => {
+                           const p = teamB[idx];
+                           const isSelected = selectedPlayerId === p?.user_id;
+                           return (
+                             <div 
+                               key={idx} 
+                               className="flex flex-col items-center justify-center h-24 md:h-32"
+                               onClick={(e) => {
+                                 e.stopPropagation();
+                                 if (p) {
+                                   setSelectedPlayerId(isSelected ? null : p.user_id);
+                                 } else if (selectedPlayerId) {
+                                   handleTacticalMove(selectedPlayerId, 'B');
+                                 }
+                               }}
+                             >
+                               {p ? (
+                                 <motion.div 
+                                   layoutId={p.user_id} 
+                                   className={cn(
+                                     "cursor-pointer transition-transform relative group",
+                                     isSelected ? "scale-110" : "hover:scale-105"
+                                   )}
+                                 >
+                                   <PlayerSlot participant={p} size={isSelected ? "lg" : "md"} />
+                                   {isSelected && (
+                                     <div className="absolute -inset-4 bg-primary/20 blur-xl rounded-full -z-10 animate-pulse" />
+                                   )}
+                                   <div className={cn(
+                                      "absolute -top-2 -right-2 w-6 h-6 rounded-full flex items-center justify-center border border-white/10 transition-all",
+                                      isSelected ? "bg-primary text-black opacity-100 scale-100" : "bg-background/80 text-primary opacity-0 scale-75 group-hover:opacity-100 group-hover:scale-100"
+                                   )}>
+                                      <Check className="w-3 h-3" />
+                                   </div>
+                                 </motion.div>
+                               ) : (
+                                 <div className={cn(
+                                   "w-16 h-16 md:w-20 md:h-20 rounded-[2rem] border-2 border-dashed flex items-center justify-center transition-all",
+                                   selectedPlayerId ? "border-primary/40 bg-primary/5 scale-105" : "border-white/5 bg-white/[0.02]"
+                                 )}>
+                                   <div className={cn("w-2 h-2 rounded-full", selectedPlayerId ? "bg-primary animate-ping" : "bg-white/5")} />
+                                 </div>
+                               )}
+                             </div>
+                           );
+                         })}
+                      </div>
+                   </div>
                 </div>
 
-                {/* Bench Section */}
-                <div className="max-w-7xl mx-auto w-full space-y-8 pb-24">
+                {/* Bench Section at the Bottom */}
+                <div className="max-w-5xl mx-auto w-full space-y-6 pb-24">
                    <div className="flex items-center justify-between px-4">
                       <div className="flex items-center gap-4">
                         <div className="w-10 h-10 rounded-xl bg-foreground/5 flex items-center justify-center text-foreground/40">
                           <Users className="w-5 h-5" />
                         </div>
-                        <h4 className="text-xl font-black italic uppercase text-foreground/30 tracking-widest">Lista de Espera</h4>
+                        <h4 className="text-xl font-black italic uppercase text-foreground/30 tracking-widest leading-none">Lista de Espera</h4>
                       </div>
-                      <span className="text-xs font-bold text-foreground/10 uppercase tracking-widest">{unassigned.length} JUGADORES SIN EQUIPO</span>
+                      <div className="flex items-center gap-4">
+                        <span className="text-[10px] font-bold text-foreground/10 uppercase tracking-widest">{unassigned.length} JUGADORES</span>
+                        <button 
+                          onClick={handleBenchAll} 
+                          className="px-4 py-2 rounded-xl bg-rose-600/10 border border-rose-600/20 text-rose-500 text-[10px] font-black uppercase tracking-widest hover:bg-rose-600 hover:text-white transition-all"
+                        >
+                          Vaciar Todos
+                        </button>
+                      </div>
                    </div>
 
-                   <div className="p-12 rounded-[4rem] glass-premium border-white/5 flex flex-wrap justify-center gap-8 min-h-[200px] relative overflow-hidden">
-                      <div className="absolute inset-0 bg-gradient-to-b from-transparent to-primary/5 opacity-20" />
-                      {unassigned.length > 0 ? unassigned.map(p => (
-                        <motion.div 
-                          key={p.user_id} 
-                          layoutId={p.user_id} 
-                          className="cursor-pointer group/bench relative" 
-                          onClick={() => setManagedParticipant(p)}
-                        >
-                          <PlayerSlot participant={p} size="lg" />
-                          <div className="absolute -top-3 -right-3 px-2 py-1 rounded-lg bg-primary text-black text-[8px] font-black uppercase tracking-widest opacity-0 group-hover/bench:opacity-100 transition-all translate-y-2 group-hover/bench:translate-y-0">
-                            Asignar
-                          </div>
-                        </motion.div>
-                      )) : (
-                        <div className="w-full py-12 flex flex-col items-center justify-center text-foreground/5 space-y-4 relative z-10">
-                           <Users className="w-16 h-16 opacity-20" />
-                           <div className="text-center">
-                             <p className="text-sm font-black uppercase tracking-[0.3em] italic mb-1">Cancha Llena</p>
-                             <p className="text-[10px] font-bold text-foreground/20">Todos los jugadores confirmados tienen equipo</p>
-                           </div>
+                   <div 
+                      className="p-8 md:p-12 rounded-[3rem] md:rounded-[4rem] glass-premium border-white/5 flex flex-wrap justify-center gap-6 min-h-[160px] relative overflow-hidden"
+                      onClick={() => selectedPlayerId && handleTacticalMove(selectedPlayerId, null)}
+                   >
+                      <div className="absolute inset-0 bg-gradient-to-b from-transparent to-primary/5 opacity-20 pointer-events-none" />
+                      {unassigned.length > 0 ? unassigned.map(p => {
+                        const isSelected = selectedPlayerId === p.user_id;
+                        return (
+                          <motion.div 
+                            key={p.user_id} 
+                            layoutId={p.user_id} 
+                            className={cn(
+                              "cursor-pointer transition-transform relative group",
+                              isSelected ? "scale-110" : "hover:scale-105"
+                            )}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setSelectedPlayerId(isSelected ? null : p.user_id);
+                            }}
+                          >
+                            <PlayerSlot participant={p} size={isSelected ? "lg" : "md"} />
+                            {isSelected && (
+                              <div className="absolute -inset-4 bg-primary/20 blur-xl rounded-full -z-10 animate-pulse" />
+                            )}
+                            <div className={cn(
+                               "absolute -top-2 -right-2 w-6 h-6 rounded-full flex items-center justify-center border border-white/10 transition-all shadow-xl",
+                               isSelected ? "bg-primary text-black opacity-100 scale-100" : "bg-background/80 text-primary opacity-0 scale-75 group-hover:opacity-100 group-hover:scale-100"
+                            )}>
+                               <Check className="w-3 h-3" />
+                            </div>
+                          </motion.div>
+                        );
+                      }) : (
+                        <div className="w-full py-8 flex flex-col items-center justify-center text-foreground/5 space-y-4 relative z-10 pointer-events-none">
+                           <Users className="w-12 h-12 opacity-10" />
+                           <p className="text-[10px] font-black uppercase tracking-[0.3em] italic opacity-40">Todos los jugadores est\u00e1n en cancha</p>
                         </div>
                       )}
                    </div>
