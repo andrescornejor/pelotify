@@ -22,7 +22,7 @@ interface LocationSearchProps {
 }
 
 const GOOGLE_API_KEY = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || '';
-const libraries: ("places" | "drawing" | "geometry" | "localContext" | "visualization")[] = ["places"];
+const libraries: ("places" | "drawing" | "geometry" | "visualization")[] = ["places"];
 
 export default function LocationSearch({ value, onChange, placeholder }: LocationSearchProps) {
   const [query, setQuery] = useState(value);
