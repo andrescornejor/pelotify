@@ -138,8 +138,8 @@ export default function LocationSearch({ value, onChange, placeholder }: Locatio
       if (finalResults.length < 5) {
         const photonResults = await searchWithPhoton(searchQuery);
         // Merge without duplicates (very basic check)
-        const existingNames = new Set(finalResults.map(r => r.name.toLowerCase()));
-        const uniquePhoton = photonResults.filter(r => !existingNames.has(r.name.toLowerCase()));
+        const existingNames = new Set(finalResults.map((r: LocationResult) => r.name.toLowerCase()));
+        const uniquePhoton = photonResults.filter((r: LocationResult) => !existingNames.has(r.name.toLowerCase()));
         finalResults = [...finalResults, ...uniquePhoton].slice(0, 8);
       }
 
