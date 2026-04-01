@@ -163,21 +163,49 @@ export default function LocationSearch({ value, onChange, placeholder }: Locatio
   }, [query]);
 
   const handleSelect = (result: LocationResult) => {
-    let fullAddress = '';
-    if (result.isEstablishment && result.street && !result.name.includes(result.street)) {
-      fullAddress = `${result.name}, ${result.street}`;
+    let cleanAddress = '';
+    
+    if (result.isEstablishment) {
+      // For establishments, we usually just want the Name and maybe the street, 
+      // but definitely NOT the whole hierarchy (City, State, Country)
+      cleanAddress = result.name;
+      
+      // If we have a street and it's not already in the name, we can append it for clarity,
+      // but we strip the city parts from it
+      if (result.street) {
+        const streetOnly = result.street.split(',')[0].trim();
+        if (!cleanAddress.includes(streetOnly)) {
+          cleanAddress += `, ${streetOnly}`;
+        }
+      }
     } else {
+      // For general addresses, we keep a bit more but still strip the redundant suffixes
       const addressParts = [
         result.name,
         result.street ? `${result.street} ${result.housenumber || ''}` : '',
-        result.city,
-        result.state,
       ].filter(Boolean);
-      fullAddress = Array.from(new Set(addressParts)).join(', ');
+      
+      cleanAddress = Array.from(new Set(addressParts)).join(', ');
     }
 
-    setQuery(fullAddress);
-    onChange(fullAddress);
+    // Recursive cleaning of common suffixes
+    const suffixesToRemove = [
+      ', Rosario', ', Santa Fe', ', Argentina', 
+      'Rosario', 'Santa Fe', 'Argentina',
+      ', Sante Fe' // common typo
+    ];
+    
+    let finalAddress = cleanAddress;
+    suffixesToRemove.forEach(s => {
+      const regex = new RegExp(s + '$', 'gi');
+      finalAddress = finalAddress.replace(regex, '').trim();
+    });
+    
+    // Clean trailing commas
+    finalAddress = finalAddress.replace(/,$/, '').trim();
+
+    setQuery(finalAddress);
+    onChange(finalAddress);
     setIsOpen(false);
   };
 
