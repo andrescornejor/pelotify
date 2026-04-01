@@ -13,6 +13,7 @@ import {
   ChevronRight,
   Zap,
   Star,
+  Navigation,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import Link from 'next/link';
@@ -40,11 +41,11 @@ export default function SearchPage() {
     joinedIds,
     isLoading,
     searchQuery,
-    setSearchQuery,
-    typeFilter,
-    setTypeFilter,
-    onlyAvailable,
     setOnlyAvailable,
+    userLocation,
+    setUserLocation,
+    radiusFilter,
+    setRadiusFilter,
   } = useMatchSearch();
   const { performanceMode: isPerfMode } = useSettings();
   const [venues, setVenues] = useState<any[]>([]);
@@ -71,6 +72,27 @@ export default function SearchPage() {
     } finally {
       setLoadingVenues(false);
     }
+  };
+
+  const handleLocateMe = () => {
+    if (!navigator.geolocation) {
+      alert('La geolocalización no está soportada por tu navegador.');
+      return;
+    }
+
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        setUserLocation({
+          lat: position.coords.latitude,
+          lng: position.coords.longitude,
+        });
+        if (!radiusFilter) setRadiusFilter(10); // Default to 10km if not set
+      },
+      (error) => {
+        console.error('Error getting location:', error);
+        alert('No se pudo obtener tu ubicación. Asegurate de dar permisos de GPS.');
+      }
+    );
   };
 
   return (
@@ -176,12 +198,35 @@ export default function SearchPage() {
                       : 'bg-foreground/5 border-foreground/5 text-foreground/40 hover:border-foreground/10'
                   ) + ' active:scale-95'}
                 >
-                  <div className={cn(
-                    'w-1.5 h-1.5 rounded-full',
-                    onlyAvailable ? 'bg-emerald-400 animate-pulse' : 'bg-foreground/20'
-                  )} />
                   Solo con cupo
                 </button>
+
+                <div className="h-8 w-px bg-foreground/10 mx-1 hidden sm:block" />
+
+                <div className="flex items-center gap-4 bg-foreground/5 p-1 px-4 rounded-2xl border border-foreground/5">
+                  <div className="flex flex-col gap-0.5">
+                    <span className="text-[8px] font-black text-foreground/30 uppercase tracking-widest leading-none">Radio (km)</span>
+                    <input
+                      type="range"
+                      min="1"
+                      max="50"
+                      value={radiusFilter || 0}
+                      onChange={(e) => setRadiusFilter(parseInt(e.target.value))}
+                      className="w-24 h-1.5 bg-foreground/10 rounded-full appearance-none cursor-pointer accent-primary"
+                    />
+                  </div>
+                  <span className="text-[10px] font-black text-primary w-8 italic">{radiusFilter || '∞'}k</span>
+                  <button
+                    onClick={handleLocateMe}
+                    className={cn(
+                      "p-2 rounded-xl transition-all active:scale-95",
+                      userLocation ? "bg-primary text-black" : "bg-foreground/10 text-foreground/40 hover:bg-foreground/20"
+                    )}
+                    title="Usar mi ubicación GPS"
+                  >
+                    <Navigation className={cn("w-3.5 h-3.5", userLocation && "fill-current")} />
+                  </button>
+                </div>
               </div>
             </div>
 
@@ -590,14 +635,25 @@ export default function SearchPage() {
           </div>
         ) : (
           <div className="w-full h-full min-h-[600px] relative overflow-hidden rounded-[4rem] border border-foreground/10 shadow-[0_50px_100px_rgba(0,0,0,0.5)] bg-surface">
-            <MapSearch matches={filteredMatches} />
-            <div className="absolute top-8 right-8 z-20">
+            <MapSearch matches={filteredMatches} userLocation={userLocation} radius={radiusFilter} />
+            <div className="absolute top-8 right-8 z-20 flex flex-col gap-3">
               <div className="px-5 py-2.5 bg-background/60 backdrop-blur-xl border border-foreground/10 rounded-2xl flex items-center gap-3">
-                <div className="w-2 h-2 rounded-full bg-primary animate-pulse shadow-[0_0_10px_rgba(16,185,129,1)]" />
+                <div className={cn(
+                  "w-2 h-2 rounded-full",
+                  userLocation ? "bg-primary animate-pulse shadow-[0_0_10px_rgba(16,185,129,1)]" : "bg-foreground/20"
+                )} />
                 <span className="text-[9px] font-black text-foreground uppercase tracking-widest">
-                  GPS ACTIVO
+                  {userLocation ? 'GPS ACTIVO' : 'GPS INACTIVO'}
                 </span>
               </div>
+              {!userLocation && (
+                <button
+                  onClick={handleLocateMe}
+                  className="px-5 py-2.5 bg-primary text-black font-black text-[9px] uppercase tracking-widest rounded-2xl shadow-lg shadow-primary/20 hover:scale-105 transition-transform"
+                >
+                  ACTIVAR RADAR GPS
+                </button>
+              )}
             </div>
           </div>
         )}

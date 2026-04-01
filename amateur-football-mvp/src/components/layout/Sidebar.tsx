@@ -65,7 +65,8 @@ export const SidebarContent = memo(function SidebarContent({
   const navItems = [
     { icon: HomeIcon, label: 'Inicio', href: '/' },
     { icon: Trophy, label: 'Ranking Global', href: '/ranks' },
-    { icon: Zap, label: 'Fichajes', href: '/recruitment', badge: 'PRUEBA' },
+    { icon: Target, label: 'Torneos/Copas', href: '/tournaments', badge: 'VIVO' },
+    { icon: Zap, label: 'Fichajes', href: '/recruitment', badge: 'PRO' },
     { icon: Search, label: 'Buscar Partidos', href: '/search' },
     { icon: User2, label: 'Mi Perfil', href: '/profile/me' },
     { icon: MessageSquare, label: 'Chats', href: '/messages' },

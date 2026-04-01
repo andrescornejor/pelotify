@@ -1,12 +1,12 @@
 'use client';
 
-import { useEffect } from 'react';
-import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
+import { useEffect, useState } from 'react';
+import { MapContainer, TileLayer, Marker, Popup, useMap, Circle } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { Match } from '@/lib/matches';
 import { ROSARIO_VENUES } from '@/lib/venues';
-import { Calendar, Users, MapPin, Trophy } from 'lucide-react';
+import { Calendar, Users, MapPin, Trophy, Navigation, Target } from 'lucide-react';
 import Link from 'next/link';
 
 // Fix Leaflet marker icon issue
@@ -18,12 +18,27 @@ const GOOGLE_PIN_SVG = `
     </svg>
 `;
 
+// SVG for User Location (Blue)
+const USER_PIN_SVG = `
+    <svg width="30" height="30" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="15" cy="15" r="10" fill="#4285F4" stroke="white" stroke-width="3"/>
+        <circle cx="15" cy="15" r="15" fill="#4285F4" fill-opacity="0.2"/>
+    </svg>
+`;
+
 const RedPinIcon = L.divIcon({
   html: GOOGLE_PIN_SVG,
   className: 'custom-pin-icon',
   iconSize: [30, 42],
   iconAnchor: [15, 42],
   popupAnchor: [0, -40],
+});
+
+const UserPinIcon = L.divIcon({
+  html: USER_PIN_SVG,
+  className: 'user-pin-icon',
+  iconSize: [30, 30],
+  iconAnchor: [15, 15],
 });
 
 // Helper for accent-insensitive search
@@ -37,12 +52,18 @@ const normalize = (s: string) =>
 import { findVenueByLocation } from '@/lib/venues';
 
 // Custom hook to handle map resizing and positioning with debounce
-function MapCenter({ coords }: { coords: [number, number][] }) {
+function MapCenter({ coords, userCoords }: { coords: [number, number][]; userCoords: [number, number] | null }) {
   const map = useMap();
 
   useEffect(() => {
     // Debounce map updates to prevent jumping during typing
     const timer = setTimeout(() => {
+      // If we have user coordinates and no matches, center on user
+      if (coords.length === 0 && userCoords) {
+        map.setView(userCoords, 14);
+        return;
+      }
+
       if (coords.length === 0) {
         map.setView([-32.9442, -60.6505], 13);
         return;
@@ -52,12 +73,13 @@ function MapCenter({ coords }: { coords: [number, number][] }) {
         map.setView(coords[0], 15);
       } else {
         const bounds = L.latLngBounds(coords);
+        if (userCoords) bounds.extend(userCoords);
         map.fitBounds(bounds, { padding: [50, 50], maxZoom: 15 });
       }
     }, 500); // 500ms delay
 
     return () => clearTimeout(timer);
-  }, [coords, map]);
+  }, [coords, map, userCoords]);
 
   // Constant size invalidation
   useEffect(() => {
@@ -77,9 +99,11 @@ function MapCenter({ coords }: { coords: [number, number][] }) {
 
 interface MapSearchProps {
   matches: Match[];
+  userLocation?: { lat: number; lng: number } | null;
+  radius?: number | null;
 }
 
-export default function MapSearch({ matches }: MapSearchProps) {
+export default function MapSearch({ matches, userLocation, radius }: MapSearchProps) {
   const defaultCenter: [number, number] = [-32.9442, -60.6505]; // Rosario City Center
 
   // Helper to get coordinates for a match
@@ -97,7 +121,7 @@ export default function MapSearch({ matches }: MapSearchProps) {
     .filter((item) => item.coords !== null) as { match: Match; coords: [number, number] }[];
 
   return (
-    <div className="w-full h-full rounded-2xl overflow-hidden border border-foreground/10 z-0 bg-surface">
+    <div className="w-full h-full rounded-2xl overflow-hidden border border-foreground/10 z-0 bg-surface relative">
       <MapContainer
         center={defaultCenter}
         zoom={13}
@@ -108,6 +132,22 @@ export default function MapSearch({ matches }: MapSearchProps) {
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
           url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
         />
+
+        {/* User Location Marker */}
+        {userLocation && (
+          <>
+            <Marker position={[userLocation.lat, userLocation.lng]} icon={UserPinIcon}>
+              <Popup>Estás acá</Popup>
+            </Marker>
+            {radius && (
+              <Circle
+                center={[userLocation.lat, userLocation.lng]}
+                radius={radius * 1000}
+                pathOptions={{ color: '#4285F4', fillColor: '#4285F4', fillOpacity: 0.1, weight: 1 }}
+              />
+            )}
+          </>
+        )}
 
         {validMatches.map(({ match, coords }) => {
           const venue = findVenueByLocation(match.location || '');
@@ -189,7 +229,10 @@ export default function MapSearch({ matches }: MapSearchProps) {
           );
         })}
 
-        <MapCenter coords={validMatches.map((v) => v.coords)} />
+        <MapCenter
+          coords={validMatches.map((v) => v.coords)}
+          userCoords={userLocation ? [userLocation.lat, userLocation.lng] : null}
+        />
       </MapContainer>
 
       <style jsx global>{`
@@ -213,7 +256,11 @@ export default function MapSearch({ matches }: MapSearchProps) {
         .custom-pin-icon {
           filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.2));
         }
+        .user-pin-icon {
+          filter: drop-shadow(0 0 8px rgba(66, 133, 244, 0.4));
+        }
       `}</style>
     </div>
   );
 }
+

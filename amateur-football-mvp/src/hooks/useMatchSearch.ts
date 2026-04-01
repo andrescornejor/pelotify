@@ -1,8 +1,25 @@
 'use client';
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { findVenueByLocation, normalizeVenueString } from '@/lib/venues';
 import { useMatches, useUserMatches } from '@/hooks/useMatchQueries';
+
+// Helper for distance calculation (Haversine formula)
+function getDistance(lat1: number, lon1: number, lat2: number, lon2: number) {
+  const R = 6371; // Radius of the earth in km
+  const dLat = deg2rad(lat2 - lat1);
+  const dLon = deg2rad(lon2 - lon1);
+  const a =
+    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+    Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) * Math.sin(dLon / 2) * Math.sin(dLon / 2);
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  const d = R * c; // Distance in km
+  return d;
+}
+
+function deg2rad(deg: number) {
+  return deg * (Math.PI / 180);
+}
 
 export function useMatchSearch() {
   const { user } = useAuth();
@@ -15,6 +32,10 @@ export function useMatchSearch() {
   const [typeFilter, setTypeFilter] = useState<'All' | 'F5' | 'F7' | 'F11'>('All');
   const [maxPrice, setMaxPrice] = useState<number>(Infinity);
   const [onlyAvailable, setOnlyAvailable] = useState(false);
+  
+  // New Distance Filters
+  const [userLocation, setUserLocation] = useState<{ lat: number; lng: number } | null>(null);
+  const [radiusFilter, setRadiusFilter] = useState<number | null>(null); // in km
 
   const isLoading = isLoadingAll || (!!user && isLoadingUser);
 
@@ -54,6 +75,25 @@ export function useMatchSearch() {
       const matchEnd = new Date(matchStart.getTime() + 60 * 60 * 1000);
       if (new Date() > matchEnd) return false;
 
+      // Distance Filter
+      if (userLocation && radiusFilter && radiusFilter > 0) {
+        let matchLat = match.lat;
+        let matchLng = match.lng;
+
+        if (!matchLat || !matchLng) {
+          const venue = findVenueByLocation(match.location || '');
+          if (venue) {
+            matchLat = venue.lat;
+            matchLng = venue.lng;
+          }
+        }
+
+        if (matchLat && matchLng) {
+          const dist = getDistance(userLocation.lat, userLocation.lng, matchLat, matchLng);
+          if (dist > radiusFilter) return false;
+        }
+      }
+
       const search = normalizeVenueString(searchQuery);
       if (!search) return true;
 
@@ -71,7 +111,7 @@ export function useMatchSearch() {
 
       return false;
     });
-  }, [matches, searchQuery, typeFilter, maxPrice, onlyAvailable]);
+  }, [matches, searchQuery, typeFilter, maxPrice, onlyAvailable, userLocation, radiusFilter]);
 
   return {
     matches,
@@ -86,5 +126,10 @@ export function useMatchSearch() {
     setMaxPrice,
     onlyAvailable,
     setOnlyAvailable,
+    userLocation,
+    setUserLocation,
+    radiusFilter,
+    setRadiusFilter,
   };
 }
+
