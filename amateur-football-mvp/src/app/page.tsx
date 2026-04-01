@@ -575,7 +575,7 @@ export default function HomePage() {
         </motion.section>
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-          <div className="lg:col-span-8 xl:col-span-8 space-y-6">
+          <div className="lg:col-span-8 xl:col-span-8 space-y-6 order-2 lg:order-1">
             {/* --- DASHBOARD TAB CONTROLLER --- */}
              <section className="sticky top-20 lg:top-4 z-40 bg-background/80 backdrop-blur-xl py-2 -mx-2 px-2 lg:bg-transparent lg:static lg:pb-6">
                 <div className="w-full p-1.5 rounded-[2rem] glass-premium border-foreground/20 flex items-center gap-1 shadow-2xl relative overflow-hidden">
@@ -948,7 +948,10 @@ export default function HomePage() {
             </AnimatePresence>
           </div>
 
-          <div className="lg:col-span-4 xl:col-span-4 space-y-6">
+          <div className={cn(
+             "lg:col-span-4 xl:col-span-4 lg:col-start-9",
+             nextMatch ? "order-1 lg:order-2" : "order-3 lg:order-2"
+          )}>
             <div id="featured-match" className="relative group/match overflow-hidden rounded-[3rem] glass-premium border-primary/20 shadow-[0_20px_50px_rgba(0,0,0,0.3)]">
               {/* Background Effects */}
               {!performanceMode && (
@@ -1119,7 +1122,9 @@ export default function HomePage() {
                 )}
               </div>
             </div>
+          </div>
 
+          <div className="lg:col-span-4 xl:col-span-4 lg:col-start-9 order-4 lg:order-2">
             <div className="glass-premium p-6 rounded-[2.5rem] border-foreground/15 space-y-4">
               <h3 className="text-[10px] font-semibold text-foreground/40 tracking-wide font-kanit">Accesos rápidos</h3>
               <div className="grid grid-cols-1 gap-2">
