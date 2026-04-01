@@ -23,6 +23,7 @@ import { useState, useEffect } from 'react';
 import { createMatch } from '@/lib/matches';
 import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/contexts/AuthContext';
+import { WeatherWidget } from '@/components/home';
 import { useQueryClient } from '@tanstack/react-query';
 import { queryKeys } from '@/lib/queryKeys';
 import { ROSARIO_VENUES, findVenueByLocation } from '@/lib/venues';
@@ -219,6 +220,8 @@ export default function CreateMatchPage() {
     field_id: '', // To link with canchas schema
     business_id: '',
     payment_method: 'mercado_pago' as 'mercado_pago' | 'cash',
+    lat: undefined as number | undefined,
+    lng: undefined as number | undefined,
   });
 
   useEffect(() => {
@@ -307,7 +310,9 @@ export default function CreateMatchPage() {
       type: newType,
       price: newPrice,
       business_id: businessId || '',
-      field_id: fieldId
+      field_id: fieldId,
+      lat: isRealDb && businessId ? dbVenues.find(v => v.id === businessId)?.lat : undefined,
+      lng: isRealDb && businessId ? dbVenues.find(v => v.id === businessId)?.lng : undefined,
     });
   };
 
@@ -840,6 +845,29 @@ export default function CreateMatchPage() {
                     </div>
                   </div>
                 </div>
+
+                {/* Weather Preview */}
+                <AnimatePresence>
+                  {formData.date && formData.time && (
+                    <motion.div
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: 10 }}
+                      className="p-6 rounded-[2rem] glass-premium border-primary/20 flex items-center justify-between gap-4"
+                    >
+                      <div className="space-y-1">
+                        <span className="text-[10px] font-black text-foreground/40 uppercase tracking-widest">Pronóstico previsto</span>
+                        <h4 className="text-sm font-black italic uppercase text-foreground">Estado del clima para tu partido</h4>
+                      </div>
+                      <WeatherWidget 
+                        date={formData.date} 
+                        time={formData.time} 
+                        lat={formData.lat} 
+                        lng={formData.lng} 
+                      />
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </motion.div>
             )}
 

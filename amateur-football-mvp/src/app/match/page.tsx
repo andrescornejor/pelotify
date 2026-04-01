@@ -51,6 +51,7 @@ import dynamic from 'next/dynamic';
 import ChatRoom from '@/components/ChatRoom';
 import MercadoPagoButton from '@/components/payments/MercadoPagoButton';
 import JoinQRModal from '@/components/JoinQRModal';
+import { WeatherWidget, CalendarButton } from '@/components/home';
 
 const VenueMap = dynamic(() => import('@/components/VenueMap'), {
   ssr: false,
@@ -444,16 +445,26 @@ function MatchLobbyContent() {
                   </div>
                   {formatDateLong(match.date)}
                 </div>
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-xl glass-premium flex items-center justify-center">
-                    <Clock className="w-5 h-5 text-primary" />
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-xl glass-premium flex items-center justify-center">
+                      <Clock className="w-5 h-5 text-primary" />
+                    </div>
+                    {formatTime(match.time)}
                   </div>
-                  {formatTime(match.time)}
+                </div>
+                {/* Weather Info */}
+                <div className="pt-4">
+                  <WeatherWidget 
+                    lat={match.lat} 
+                    lng={match.lng} 
+                    date={match.date} 
+                    time={match.time} 
+                    className="w-fit"
+                  />
                 </div>
               </div>
             </div>
           </div>
-        </div>
 
         <div className="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-10 xl:px-14 2xl:px-16 -mt-12 relative z-20">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
@@ -612,12 +623,15 @@ function MatchLobbyContent() {
 
             <div className="flex items-center gap-4">
                {!isCompleted && (
-                 <button
-                   onClick={() => setIsQRModalOpen(true)}
-                   className="h-14 px-8 rounded-2xl glass-premium border-white/5 font-black italic uppercase text-xs flex items-center gap-3 hover:scale-105 active:scale-95 transition-all"
-                 >
-                   <Users className="w-5 h-5 text-primary" /> Invitar
-                 </button>
+                 <div className="flex items-center gap-3">
+                    <CalendarButton match={match} className="h-14 !px-6 rounded-2xl glass-premium" />
+                    <button
+                      onClick={() => setIsQRModalOpen(true)}
+                      className="h-14 px-8 rounded-2xl glass-premium border-white/5 font-black italic uppercase text-xs flex items-center gap-3 hover:scale-105 active:scale-95 transition-all text-foreground"
+                    >
+                      <Users className="w-5 h-5 text-primary" /> Invitar
+                    </button>
+                 </div>
                )}
             </div>
           </div>
