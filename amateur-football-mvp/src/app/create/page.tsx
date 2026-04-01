@@ -891,20 +891,16 @@ export default function CreateMatchPage() {
                       {/* Decorative background glow */}
                       <div className="absolute -inset-0.5 bg-gradient-to-r from-primary/20 via-emerald-400/20 to-teal-300/20 rounded-[2.5rem] blur opacity-50 transition duration-1000 group-hover:opacity-100" />
                       
-                      <div className="relative p-6 sm:p-8 rounded-[2.5rem] bg-background/80 backdrop-blur-xl border border-primary/20 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 overflow-hidden">
-                        <div className="space-y-2 relative z-10">
-                          <div className="flex items-center gap-2">
-                            <Zap className="w-4 h-4 text-primary animate-pulse" />
-                            <span className="text-[10px] font-black text-primary uppercase tracking-[0.2em]">Condiciones Óptimas</span>
-                          </div>
-                          <div>
-                            <h4 className="text-xl font-black italic uppercase text-foreground leading-tight">Clima para tu partido</h4>
-                            <p className="text-sm font-bold text-foreground/40 mt-1 uppercase tracking-wider">Pronóstico en tiempo real para {formData.location || "la cancha"}</p>
-                          </div>
+                      <div className="relative p-7 sm:p-10 rounded-[2.5rem] bg-background/80 backdrop-blur-xl border border-primary/20 flex flex-col sm:flex-row items-center justify-between gap-8 overflow-hidden">
+                        <div className="space-y-3 relative z-10 text-center sm:text-left">
+                          <span className="text-[10px] font-black text-primary uppercase tracking-[0.4em]">Pronóstico en Tiempo Real</span>
+                          <h4 className="text-2xl sm:text-3xl font-black italic uppercase text-foreground leading-tight">Clima para tu partido</h4>
+                          <p className="text-sm font-bold text-foreground/40 uppercase tracking-wider">Previsto para {formData.location || "la cancha"}</p>
                         </div>
                         
-                        <div className="w-full sm:w-auto min-w-[140px] bg-foreground/[0.03] p-4 rounded-3xl border border-foreground/[0.05] relative z-10">
+                        <div className="relative z-10 w-full sm:w-auto">
                           <WeatherWidget 
+                            variant="large"
                             date={formData.date} 
                             time={formData.time} 
                             lat={formData.lat} 
