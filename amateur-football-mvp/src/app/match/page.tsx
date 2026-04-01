@@ -327,7 +327,7 @@ function MatchLobbyContent() {
             <div className="absolute inset-0 bg-gradient-to-t from-background via-background/60 to-transparent" />
           </div>
 
-          <div className="relative z-10 max-w-7xl mx-auto px-6 h-full flex flex-col justify-end pb-16">
+          <div className="relative z-10 max-w-[1440px] mx-auto px-6 h-full flex flex-col justify-end pb-16">
             <Link
               href="/"
               className="absolute top-8 left-6 w-12 h-12 rounded-2xl glass-premium flex items-center justify-center hover:scale-110 active:scale-95 transition-all text-foreground/50 hover:text-primary"
@@ -365,7 +365,7 @@ function MatchLobbyContent() {
           </div>
         </div>
 
-        <div className="max-w-7xl mx-auto px-6 -mt-12 relative z-20">
+        <div className="max-w-[1440px] mx-auto px-6 -mt-12 relative z-20">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
             <div className="lg:col-span-8 space-y-12">
                {/* Call to Action Card */}
@@ -467,7 +467,7 @@ function MatchLobbyContent() {
           <div className="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent" />
         </div>
 
-        <div className="relative z-10 max-w-7xl mx-auto px-6 h-full flex flex-col justify-end pb-12">
+        <div className="relative z-10 max-w-[1440px] mx-auto px-6 h-full flex flex-col justify-end pb-12">
           <Link
             href="/"
             className="absolute top-8 left-6 w-12 h-12 rounded-2xl glass-premium flex items-center justify-center hover:scale-110 active:scale-95 transition-all text-foreground/50 hover:text-primary"
@@ -516,7 +516,7 @@ function MatchLobbyContent() {
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-6 -mt-8 relative z-20">
+      <div className="max-w-[1440px] mx-auto px-6 -mt-8 relative z-20">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
           {/* ── LEFT: PITCH & TEAMS ── */}
           <div className="lg:col-span-8 space-y-8">
@@ -623,18 +623,6 @@ function MatchLobbyContent() {
                            {isMine && <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center shadow-lg shadow-primary/20"><Check className="w-4 h-4 text-black" /></div>}
                          </div>
 
-                         {/* Quick Swap Area for Creator */}
-                         {isCreator && (
-                           <div className="mb-6 p-4 rounded-3xl bg-foreground/5 border border-white/5 flex items-center justify-between">
-                              <span className="text-[10px] font-black uppercase text-foreground/20 italic">Arrastrar aqu\u00ed</span>
-                              <div className="flex items-center gap-2">
-                                 <span className="text-[9px] font-black uppercase text-foreground/40">Goles</span>
-                                 <span className="px-2 py-1 rounded-lg bg-foreground/10 text-foreground font-black italic text-xs">
-                                   {team === 'A' ? match.team_a_score || 0 : match.team_b_score || 0}
-                                 </span>
-                              </div>
-                           </div>
-                         )}
 
                          {!isCreator && (
                            <button
@@ -924,7 +912,7 @@ function MatchLobbyContent() {
 
               <div className="flex-1 overflow-y-auto p-4 md:p-8 space-y-8 relative">
                 {/* Unified Pitch Layout */}
-                <div className="max-w-5xl mx-auto w-full aspect-[3/4] md:aspect-[16/10] bg-[#1a2e1a] rounded-[3rem] md:rounded-[4rem] border-4 border-white/10 relative overflow-hidden shadow-2xl flex flex-col md:flex-row">
+                <div className="max-w-7xl mx-auto w-full aspect-[3/4] md:aspect-[16/10] bg-[#1a2e1a] rounded-[3rem] md:rounded-[4rem] border-4 border-white/10 relative overflow-hidden shadow-2xl flex flex-col md:flex-row">
                    {/* Pitch Patterns & Lines */}
                    <div className="absolute inset-0 opacity-20 pointer-events-none">
                       <div className="absolute inset-0 bg-[repeating-linear-gradient(90deg,transparent,transparent_10%,rgba(255,255,255,0.05)_10%,rgba(255,255,255,0.05)_20%)]" />
@@ -1061,7 +1049,7 @@ function MatchLobbyContent() {
                 </div>
 
                 {/* Bench Section at the Bottom */}
-                <div className="max-w-5xl mx-auto w-full space-y-6 pb-24">
+                <div className="max-w-7xl mx-auto w-full space-y-6 pb-24">
                    <div className="flex items-center justify-between px-4">
                       <div className="flex items-center gap-4">
                         <div className="w-10 h-10 rounded-xl bg-foreground/5 flex items-center justify-center text-foreground/40">
