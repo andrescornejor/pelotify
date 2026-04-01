@@ -227,16 +227,16 @@ export default function CreateTournamentPage() {
 
                         <div className="space-y-4">
                             <span className="text-[10px] font-black text-foreground/30 uppercase tracking-[0.4em] px-1">
-                                Horario sugerido para partidos
+                                Horario de Inicio
                             </span>
-                            <div className="grid grid-cols-4 sm:grid-cols-6 gap-2">
-                                {AVAILABLE_TIMES.slice(16, 40).map((t) => (
+                            <div className="grid grid-cols-4 sm:grid-cols-8 gap-2 max-h-[300px] overflow-y-auto no-scrollbar p-1">
+                                {AVAILABLE_TIMES.map((t) => (
                                     <button
                                         key={t}
                                         type="button"
                                         onClick={() => setFormData({ ...formData, start_time: t })}
                                         className={cn(
-                                            "h-12 rounded-xl border text-[10px] font-black tracking-tighter transition-all",
+                                            "h-10 rounded-lg border text-[9px] font-black tracking-tighter transition-all",
                                             formData.start_time === t ? "bg-primary text-black border-primary" : "bg-foreground/[0.02] text-foreground/40 border-foreground/5 hover:border-foreground/20"
                                         )}
                                     >
