@@ -539,84 +539,34 @@ export default function HomePage() {
                   </motion.button>
                 </Link>
 
-                <Link href="/highlights" className="col-span-2">
+                <Link href="/search" className="col-span-2">
                   <motion.button
-                    whileHover={{ 
-                      scale: 1.02, 
-                      y: -4,
-                      boxShadow: "0 25px 50px -12px rgba(44, 252, 125, 0.25)"
-                    }}
+                    whileHover={{ scale: 1.015, y: -4 }}
                     whileTap={{ scale: 0.98 }}
-                    className="w-full h-16 rounded-[2rem] bg-zinc-950 border border-white/10 text-white font-black uppercase flex items-center justify-center gap-4 relative overflow-hidden group transition-all duration-500"
+                    className="w-full h-16 rounded-[2rem] glass-premium border-foreground/15 text-foreground font-black uppercase text-[11px] tracking-[0.3em] flex items-center justify-center gap-3 relative overflow-hidden group shadow-xl transition-all duration-500"
                   >
-                    {/* Dynamic Background with Cinematic Depth */}
-                    {highlights.length > 0 ? (
-                      <div className="absolute inset-0 overflow-hidden opacity-40 group-hover:opacity-60 transition-opacity duration-700">
-                        <LazyVideo
-                          src={highlights[0].video_url}
-                          className="w-full h-full object-cover blur-[0.5px] scale-110 group-hover:scale-125 transition-transform duration-[5s]"
-                          autoPlay
-                          loop
-                          muted
-                        />
-                        <div className="absolute inset-0 bg-gradient-to-t from-zinc-950 via-zinc-950/40 to-transparent" />
-                        <div className="absolute inset-0 bg-primary/10 mix-blend-overlay" />
-                      </div>
-                    ) : (
-                      <div className="absolute inset-0 bg-gradient-to-br from-zinc-900 via-zinc-950 to-black">
-                         <div className="absolute inset-0 opacity-20 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')]" />
-                      </div>
+                    {!performanceMode && (
+                      <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                     )}
-
-                    {/* Animated Edge Glow */}
-                    <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none">
-                      <div className="absolute inset-0 bg-gradient-to-r from-primary/20 via-transparent to-primary/20 blur-xl" />
+                    <Search className="w-5 h-5 relative z-10 text-primary group-hover:scale-110 transition-transform duration-500" />
+                    <span className="relative z-10 italic font-bold tracking-[0.2em] group-hover:text-primary transition-colors">BUSCAR PARTIDO</span>
+                    
+                    <div className="absolute top-2.5 right-4 flex items-center gap-1.5 z-20">
+                      <div className="w-1.5 h-1.5 bg-primary/40 rounded-full animate-pulse" />
                     </div>
-
-                    {/* Content Layer */}
-                    <div className="relative z-10 flex items-center gap-3">
-                      <div className="relative flex items-center justify-center">
-                        <div className="absolute inset-0 bg-primary/20 rounded-full blur-lg animate-pulse" />
-                        <Play className="w-5 h-5 text-primary fill-primary relative z-10 group-hover:scale-110 transition-transform duration-500 drop-shadow-[0_0_8px_rgba(44,252,125,0.6)]" />
-                      </div>
-                      
-                      <div className="flex flex-col items-start leading-none">
-                        <span className="text-[10px] font-black tracking-[0.3em] text-primary/80 mb-0.5 group-hover:text-primary transition-colors">EXPLORA EL</span>
-                        <span className="font-kanit font-black italic text-xl tracking-tight">
-                          FUT<span className="text-primary not-italic">TOK</span>
-                        </span>
-                      </div>
-                    </div>
-
-                    {/* Premium LIVE Badge */}
-                    <div className="absolute top-3 right-4 z-20">
-                      <div className="flex items-center gap-1.5 px-3 py-1 bg-red-600/90 backdrop-blur-md rounded-full border border-white/20 shadow-[0_0_15px_rgba(239,68,68,0.3)] group-hover:scale-105 transition-transform">
-                        <motion.div 
-                          animate={{ opacity: [1, 0.4, 1] }}
-                          transition={{ duration: 1.5, repeat: Infinity }}
-                          className="w-1.5 h-1.5 bg-white rounded-full shadow-[0_0_5px_white]" 
-                        />
-                        <span className="text-[8px] font-black tracking-[0.2em] text-white italic">LIVE</span>
-                      </div>
-                    </div>
-
-                    {/* Shimmer Effect */}
-                    <motion.div 
-                      className="absolute inset-0 w-1/2 h-full bg-gradient-to-r from-transparent via-white/10 to-transparent -skew-x-[25deg]"
-                      initial={{ left: '-100%' }}
-                      whileHover={{ left: '150%' }}
-                      transition={{ duration: 1.2, ease: "easeInOut" }}
-                    />
                   </motion.button>
                 </Link>
 
-                <Link href="/search" className="col-span-1">
+                <Link href="/highlights" className="col-span-1">
                   <motion.button
                     whileHover={{ scale: 1.02, y: -4 }}
                     whileTap={{ scale: 0.98 }}
-                    className="w-full h-16 rounded-[2rem] glass-premium border-foreground/20 text-foreground/40 hover:text-primary font-black uppercase text-[10px] tracking-[0.2em] flex items-center justify-center transition-all duration-500 shadow-xl"
+                    className="w-full h-16 rounded-[2rem] glass-premium border-foreground/15 text-orange-500/50 hover:text-orange-500 font-black uppercase text-[10px] tracking-[0.2em] flex items-center justify-center transition-all duration-500 shadow-xl relative overflow-hidden group"
                   >
-                    <Search className="w-5 h-5 group-hover:scale-125 transition-transform" />
+                    {!performanceMode && (
+                      <div className="absolute inset-0 bg-gradient-to-br from-orange-500/5 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                    )}
+                    <Flame className="w-6 h-6 relative z-10 transition-transform group-hover:scale-125 group-hover:rotate-12 duration-500" />
                   </motion.button>
                 </Link>
               </div>
