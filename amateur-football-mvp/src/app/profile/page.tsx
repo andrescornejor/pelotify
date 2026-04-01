@@ -538,7 +538,7 @@ function ProfileContent() {
         />
 
         {isMe && (
-          <div className="absolute top-36 sm:top-32 left-1/2 -translate-x-1/2 sm:left-auto sm:translate-x-0 sm:right-12 z-30 flex gap-3 w-fit">
+          <div className="absolute top-34 sm:top-32 left-1/2 -translate-x-1/2 sm:left-auto sm:translate-x-0 sm:right-12 z-30 flex gap-3 w-fit">
              <button 
               onClick={() => setIsEditing(!isEditing)}
               className="px-6 h-12 rounded-2xl glass-premium border-white/10 hover:border-primary/40 text-[10px] font-black uppercase tracking-[0.2em] transition-all flex items-center gap-2 group/btn backdrop-blur-md"
@@ -570,7 +570,7 @@ function ProfileContent() {
       </div>
 
       {/* Main Content Container */}
-      <div className="max-w-screen-2xl mx-auto w-full px-4 sm:px-6 lg:px-10 xl:px-14 2xl:px-16 -mt-20 sm:-mt-48 lg:-mt-64 relative z-20 pb-20">
+      <div className="max-w-screen-2xl mx-auto w-full px-4 sm:px-6 lg:px-10 xl:px-14 2xl:px-16 -mt-14 sm:-mt-48 lg:-mt-64 relative z-20 pb-20">
         
         {/* Profile Header Block */}
         <div className="flex flex-col lg:flex-row items-center gap-8 mb-12">
