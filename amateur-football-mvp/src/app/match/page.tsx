@@ -528,7 +528,7 @@ function MatchLobbyContent() {
                      <div key={team} className="p-8 rounded-[2.5rem] bg-foreground/[0.02] border border-foreground/10">
                         <h3 className="text-xl font-black italic uppercase text-foreground mb-4">Equipo {team}</h3>
                         <div className="grid grid-cols-4 gap-4">
-                           {confirmedParticipants.filter(p => p.team === team).map(p => (
+                           {confirmedParticipants.filter((p: any) => p.team === team).map((p: any) => (
                              <PlayerSlot key={p.id} participant={p} isSelf={p.user_id === user?.id} />
                            ))}
                         </div>
@@ -593,7 +593,7 @@ function MatchLobbyContent() {
                    <div key={t || 'bench'} className="bg-white/5 p-4 rounded-2xl min-h-[300px]">
                      <h4 className="text-[10px] font-black uppercase text-white/40 mb-4">{t ? `Equipo ${t}` : 'Banquillo'}</h4>
                      <div className="space-y-2">
-                       {confirmedParticipants.filter(p => p.team === t).map(p => (
+                       {confirmedParticipants.filter((p: any) => p.team === t).map((p: any) => (
                          <div key={p.id} className="flex items-center justify-between p-2 bg-white/5 rounded-lg">
                            <span className="text-[10px] font-bold text-white">{p.profiles?.name}</span>
                            <div className="flex gap-1">
