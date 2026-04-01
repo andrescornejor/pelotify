@@ -675,7 +675,7 @@ function MatchLobbyContent() {
                             );
                           })}
                         </div>
-                      </div>
+                      </motion.div>
                     );
                   })}
                 </div>

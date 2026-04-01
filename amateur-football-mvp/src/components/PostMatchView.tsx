@@ -225,7 +225,7 @@ export default function PostMatchView({ match, participants, stats }: PostMatchV
           <motion.div
             initial={{ opacity: 0, x: -30 }}
             animate={{ opacity: 1, x: 0 }}
-            className="glass-premium rounded-[3.5rem] p-10 border border-foreground/10 relative overflow-hidden"
+            className="glass-premium rounded-[3.5rem] p-8 md:p-10 border border-foreground/10 relative overflow-hidden"
           >
             <div className="flex items-center justify-between mb-10 px-2">
               <div className="flex items-center gap-5">
@@ -300,7 +300,7 @@ export default function PostMatchView({ match, participants, stats }: PostMatchV
               <div
                 key={team}
                 className={cn(
-                  'glass-premium rounded-[3rem] p-10 border border-foreground/10 relative overflow-hidden transition-all duration-500 group/squad',
+                  'glass-premium rounded-[3rem] p-8 md:p-10 border border-foreground/10 relative overflow-hidden transition-all duration-500 group/squad',
                   team === 'A' ? 'hover:border-indigo-500/30 shadow-[0_20px_50px_rgba(79,70,229,0.05)]' : 'hover:border-rose-500/30 shadow-[0_20px_50px_rgba(225,29,72,0.05)]'
                 )}
               >
@@ -370,7 +370,7 @@ export default function PostMatchView({ match, participants, stats }: PostMatchV
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="glass-premium rounded-[3.5rem] p-10 border border-primary/30 bg-primary/5 relative overflow-hidden group shadow-[0_40px_80px_rgba(16,185,129,0.15)]"
+            className="glass-premium rounded-[3.5rem] p-8 md:p-10 border border-primary/30 bg-primary/5 relative overflow-hidden group shadow-[0_40px_80px_rgba(16,185,129,0.15)]"
           >
             {/* Animated Aura */}
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(16,185,129,0.15),transparent_70%)] animate-pulse" />
@@ -456,7 +456,7 @@ export default function PostMatchView({ match, participants, stats }: PostMatchV
           </motion.div>
 
           {/* MATCH INFO SUMMARY */}
-          <div className="glass-premium rounded-[3.5rem] p-10 border border-foreground/10 space-y-8 relative overflow-hidden group/info">
+          <div className="glass-premium rounded-[3.5rem] p-8 md:p-10 border border-foreground/10 space-y-8 relative overflow-hidden group/info">
             <div className="absolute top-0 right-0 w-32 h-32 bg-foreground/5 blur-[50px] -mr-16 -mt-16 rounded-full group-hover/info:scale-150 transition-transform duration-1000" />
 
             <div className="flex items-center gap-4 relative z-10 px-2">
