@@ -678,10 +678,34 @@ export default function CreateMatchPage() {
                   </p>
                 </div>
 
+                {/* Selection Header - Prominent Summary */}
+                <AnimatePresence>
+                  {(formData.date || formData.time) && (
+                    <motion.div
+                      initial={{ opacity: 0, height: 0 }}
+                      animate={{ opacity: 1, height: 'auto' }}
+                      className="overflow-hidden"
+                    >
+                      <div className="mb-6 p-4 rounded-[2rem] bg-gradient-to-r from-primary/10 via-primary/5 to-transparent border border-primary/10 flex items-center gap-4">
+                        <div className="w-12 h-12 rounded-2xl bg-primary flex items-center justify-center shadow-lg shadow-primary/20">
+                          <Calendar className="w-6 h-6 text-black" />
+                        </div>
+                        <div className="flex flex-col">
+                          <span className="text-[10px] font-black text-primary uppercase tracking-[0.3em]">Tu Próximo Turno</span>
+                          <h3 className="text-xl font-black italic uppercase tracking-tighter text-foreground leading-none mt-1">
+                            {getSelectedDateLabel() || 'Seleccioná una fecha'} 
+                            {formData.time && <span className="text-primary ml-2">@ {formData.time}</span>}
+                          </h3>
+                        </div>
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+
                 {/* Date picker */}
                 <div className="space-y-4">
                   <span className="text-[10px] font-black text-foreground/30 uppercase tracking-[0.4em] px-1">
-                    Fecha
+                    Seleccioná el día
                   </span>
                   <div className="flex gap-3 overflow-x-auto no-scrollbar pb-2 -mx-4 px-4">
                     {Array.from({ length: 14 }).map((_, i) => {
@@ -704,20 +728,21 @@ export default function CreateMatchPage() {
                         <motion.button
                           key={dateStr}
                           initial={false}
-                          animate={{ opacity: 1, scale: 1 }}
+                          whileHover={{ y: -4 }}
+                          whileTap={{ scale: 0.95 }}
                           type="button"
                           onClick={() => setFormData({ ...formData, date: dateStr })}
                           className={`flex-shrink-0 w-[72px] h-24 rounded-2xl border transition-all duration-300 flex flex-col items-center justify-center gap-0.5 relative overflow-hidden ${
                             isSelected
-                              ? 'border-primary bg-primary shadow-lg shadow-primary/20 scale-105'
+                              ? 'border-primary bg-gradient-to-b from-primary to-emerald-400 shadow-xl shadow-primary/30 scale-105 z-10'
                               : 'border-foreground/[0.06] bg-foreground/[0.02] hover:border-foreground/20 hover:bg-foreground/[0.04]'
                           }`}
                         >
                           {isToday && !isSelected && (
-                            <div className="absolute top-2 right-2 w-1.5 h-1.5 rounded-full bg-primary/60" />
+                            <div className="absolute top-2 right-2 w-1.5 h-1.5 rounded-full bg-primary/60 shadow-[0_0_8px_rgba(16,185,129,0.5)]" />
                           )}
                           <span
-                            className={`text-[8px] font-black tracking-widest ${isSelected ? 'text-black/70' : 'text-foreground/25'}`}
+                            className={`text-[8px] font-black tracking-widest ${isSelected ? 'text-black/60' : 'text-foreground/25'}`}
                           >
                             {monthName}
                           </span>
@@ -727,7 +752,7 @@ export default function CreateMatchPage() {
                             {dayNumber}
                           </span>
                           <span
-                            className={`text-[8px] font-black tracking-widest ${isSelected ? 'text-black/70' : 'text-foreground/25'}`}
+                            className={`text-[8px] font-black tracking-widest ${isSelected ? 'text-black/60' : 'text-foreground/25'}`}
                           >
                             {dayName}
                           </span>
@@ -749,7 +774,7 @@ export default function CreateMatchPage() {
                             d.setDate(d.getDate() + i);
                             return d.toISOString().split('T')[0] === formData.date;
                           })
-                            ? 'border-primary bg-primary text-black scale-105'
+                            ? 'border-primary bg-gradient-to-b from-primary to-emerald-400 text-black scale-105'
                             : 'border-foreground/[0.06] bg-foreground/[0.02] text-foreground/20 hover:border-foreground/20'
                         }`}
                       >
@@ -762,83 +787,91 @@ export default function CreateMatchPage() {
                   </div>
                 </div>
 
-                {/* Time picker Agenda Style */}
-                <div className="space-y-3">
+                {/* Time picker Grid View */}
+                <div className="space-y-6">
                   <div className="flex items-center justify-between px-1">
-                    <span className="text-[10px] font-black text-foreground/30 uppercase tracking-[0.4em]">
-                      Agenda de Horarios
-                    </span>
-                    <span className="text-[9px] font-bold text-foreground/20 italic">
-                      Deslizá para ver más
-                    </span>
+                    <div className="flex items-center gap-2">
+                      <div className="w-8 h-8 rounded-xl bg-primary/10 flex items-center justify-center">
+                        <Clock className="w-4 h-4 text-primary" />
+                      </div>
+                      <span className="text-[10px] font-black text-foreground/30 uppercase tracking-[0.4em]">
+                        Horarios Disponibles
+                      </span>
+                    </div>
+                    {formData.time && (
+                      <motion.div 
+                        initial={{ opacity: 0, x: 10 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        className="flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 border border-primary/20"
+                      >
+                        <span className="text-[10px] font-black text-primary uppercase tracking-wider">
+                          Seleccionado: {formData.time}
+                        </span>
+                      </motion.div>
+                    )}
                   </div>
                   
-                  <div className="relative rounded-3xl border border-foreground/10 bg-foreground/[0.02] p-1.5 overflow-hidden">
-                    {/* Top gradient mask for smooth scroll effect */}
-                    <div className="absolute top-0 left-0 right-0 h-4 bg-gradient-to-b from-background to-transparent z-10 pointer-events-none rounded-t-3xl" />
+                  <div className="relative group">
+                    {/* Background Glow for the grid area */}
+                    <div className="absolute -inset-4 bg-primary/5 blur-3xl rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none" />
                     
-                    <div className="max-h-[320px] overflow-y-auto no-scrollbar space-y-1.5 p-0.5 relative z-0">
+                    <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-2 sm:gap-3 relative z-0">
                       {validTimes.length === 0 ? (
-                        <div className="p-8 text-center bg-background rounded-2xl border border-foreground/5">
+                        <div className="col-span-full p-8 text-center bg-foreground/[0.02] rounded-3xl border border-foreground/[0.05]">
                           <span className="text-[12px] font-bold uppercase tracking-widest text-foreground/40 block">Ya no quedan</span>
-                          <span className="text-xl font-black italic tracking-tighter text-foreground/60 block mt-1">horarios para hoy</span>
+                          <span className="text-xl font-black italic tracking-tighter text-foreground/60 block mt-1 uppercase">horarios para hoy</span>
                         </div>
                       ) : (
-                        validTimes.map((t) => {
+                        validTimes.map((t, idx) => {
                           const isBooked = bookedTimes.includes(t);
                           const isSelected = formData.time === t;
                           const [h, m] = t.split(':');
                           
                           return (
-                            <button
+                            <motion.button
                               key={t}
+                              initial={{ opacity: 0, y: 10 }}
+                              animate={{ opacity: 1, y: 0 }}
+                              transition={{ delay: idx * 0.02 }}
                               type="button"
                               disabled={isBooked}
                               onClick={() => setFormData({ ...formData, time: t })}
                               className={`
-                                w-full flex items-center justify-between p-4 rounded-[1.25rem] transition-all duration-300 group
+                                relative group/btn flex flex-col items-center justify-center p-3 sm:p-4 rounded-2xl sm:rounded-3xl transition-all duration-300
                                 ${isSelected 
-                                  ? 'bg-primary text-black shadow-md scale-[1.01] z-10 relative' 
+                                  ? 'bg-primary text-black shadow-xl shadow-primary/20 scale-[1.05] z-10 border-transparent' 
                                   : isBooked 
-                                    ? 'bg-transparent opacity-40 cursor-not-allowed'
-                                    : 'bg-background hover:bg-foreground/[0.03] border border-transparent hover:border-foreground/10 shadow-[0_2px_10px_-4px_rgba(0,0,0,0.05)]'
+                                    ? 'bg-foreground/[0.02] opacity-30 cursor-not-allowed border-transparent grayscale'
+                                    : 'bg-foreground/[0.03] border border-foreground/[0.06] hover:border-primary/40 hover:bg-foreground/[0.06] active:scale-95'
                                 }
                               `}
                             >
-                              <div className="flex items-center gap-4 sm:gap-6">
-                                <span className={`text-2xl sm:text-[28px] font-black italic tracking-tighter w-16 text-left ${isSelected ? 'text-black' : 'text-foreground'}`}>
-                                  {h}:{m}
-                                </span>
-                                
-                                <div className="flex items-center gap-2">
-                                  {isBooked ? (
-                                    <>
-                                      <div className="w-2 h-2 rounded-full bg-red-500/50" />
-                                      <span className="text-[10px] sm:text-[11px] font-bold uppercase tracking-widest text-foreground/50 mt-0.5">Ocupado</span>
-                                    </>
-                                  ) : isSelected ? (
-                                    <>
-                                      <div className="w-2 h-2 rounded-full bg-black animate-pulse" />
-                                      <span className="text-[10px] sm:text-[11px] font-black uppercase tracking-widest text-black mt-0.5">Tu Horario</span>
-                                    </>
-                                  ) : (
-                                    <>
-                                      <div className="w-2 h-2 rounded-full bg-emerald-500/40 group-hover:bg-emerald-500 transition-colors" />
-                                      <span className="text-[10px] sm:text-[11px] font-bold uppercase tracking-widest text-foreground/40 group-hover:text-foreground/70 transition-colors mt-0.5">Libre</span>
-                                    </>
-                                  )}
-                                </div>
-                              </div>
+                              <span className={`text-lg sm:text-xl font-black italic tracking-tighter leading-none ${isSelected ? 'text-black' : 'text-foreground/80'}`}>
+                                {h}:{m}
+                              </span>
                               
-                              {!isBooked && (
-                                <div className={`
-                                  w-7 h-7 rounded-full flex flex-shrink-0 items-center justify-center transition-all
-                                  ${isSelected ? 'bg-black text-primary' : 'bg-foreground/[0.04] text-foreground/20 group-hover:bg-foreground/10 group-hover:text-foreground/40'}
-                                `}>
-                                  <CheckCircle2 className="w-4 h-4" />
-                                </div>
+                              <div className="mt-1 flex items-center justify-center">
+                                {isBooked ? (
+                                  <span className="text-[7px] font-black uppercase tracking-widest text-foreground/40">Ocupado</span>
+                                ) : isSelected ? (
+                                  <div className="flex items-center gap-1">
+                                    <div className="w-1 h-1 rounded-full bg-black animate-pulse" />
+                                    <span className="text-[7px] font-black uppercase tracking-widest text-black">Elegido</span>
+                                  </div>
+                                ) : (
+                                  <span className="text-[7px] font-bold uppercase tracking-widest text-foreground/30 group-hover/btn:text-primary transition-colors">Libre</span>
+                                )}
+                              </div>
+
+                              {isSelected && (
+                                <motion.div
+                                  layoutId="active-time-glow"
+                                  className="absolute inset-0 rounded-2xl sm:rounded-3xl bg-white/20 pointer-events-none"
+                                  animate={{ opacity: [0.1, 0.3, 0.1] }}
+                                  transition={{ duration: 2, repeat: Infinity }}
+                                />
                               )}
-                            </button>
+                            </motion.button>
                           );
                         })
                       )}
@@ -850,22 +883,39 @@ export default function CreateMatchPage() {
                 <AnimatePresence>
                   {formData.date && formData.time && (
                     <motion.div
-                      initial={{ opacity: 0, y: 10 }}
+                      initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: 10 }}
-                      className="p-6 rounded-[2rem] glass-premium border-primary/20 flex items-center justify-between gap-4"
+                      exit={{ opacity: 0, y: 20 }}
+                      className="group relative"
                     >
-                      <div className="space-y-1">
-                        <span className="text-[10px] font-black text-foreground/40 uppercase tracking-widest">Pronóstico previsto</span>
-                        <h4 className="text-sm font-black italic uppercase text-foreground">Estado del clima para tu partido</h4>
+                      {/* Decorative background glow */}
+                      <div className="absolute -inset-0.5 bg-gradient-to-r from-primary/20 via-emerald-400/20 to-teal-300/20 rounded-[2.5rem] blur opacity-50 transition duration-1000 group-hover:opacity-100" />
+                      
+                      <div className="relative p-6 sm:p-8 rounded-[2.5rem] bg-background/80 backdrop-blur-xl border border-primary/20 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 overflow-hidden">
+                        <div className="space-y-2 relative z-10">
+                          <div className="flex items-center gap-2">
+                            <Zap className="w-4 h-4 text-primary animate-pulse" />
+                            <span className="text-[10px] font-black text-primary uppercase tracking-[0.2em]">Condiciones Óptimas</span>
+                          </div>
+                          <div>
+                            <h4 className="text-xl font-black italic uppercase text-foreground leading-tight">Clima para tu partido</h4>
+                            <p className="text-sm font-bold text-foreground/40 mt-1 uppercase tracking-wider">Pronóstico en tiempo real para {formData.location || "la cancha"}</p>
+                          </div>
+                        </div>
+                        
+                        <div className="w-full sm:w-auto min-w-[140px] bg-foreground/[0.03] p-4 rounded-3xl border border-foreground/[0.05] relative z-10">
+                          <WeatherWidget 
+                            date={formData.date} 
+                            time={formData.time} 
+                            lat={formData.lat} 
+                            lng={formData.lng} 
+                            location={formData.location}
+                          />
+                        </div>
+
+                        {/* Ambient decorative elements */}
+                        <div className="absolute -bottom-10 -right-10 w-40 h-40 bg-primary/5 rounded-full blur-3xl" />
                       </div>
-                      <WeatherWidget 
-                        date={formData.date} 
-                        time={formData.time} 
-                        lat={formData.lat} 
-                        lng={formData.lng} 
-                        location={formData.location}
-                      />
                     </motion.div>
                   )}
                 </AnimatePresence>
