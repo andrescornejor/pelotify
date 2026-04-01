@@ -98,21 +98,21 @@ export function BottomNav() {
   }
 
   return (
-    <div className="fixed bottom-8 left-1/2 -translate-x-1/2 z-50 w-[94%] max-w-[440px] lg:hidden">
+    <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 w-[92%] max-w-[420px] lg:hidden">
       <nav
         className={cn(
-          'relative px-2 py-2 rounded-[2.5rem] border transition-all duration-700 h-[88px] flex items-center',
+          'relative px-1 rounded-[2.5rem] border transition-all duration-700 h-[80px] flex items-center shadow-[0_20px_50px_rgba(0,0,0,0.3)]',
           performanceMode 
-            ? 'bg-surface border-border shadow-xl' 
-            : 'glass-premium shadow-2xl border-foreground/10 backdrop-blur-[45px]'
+            ? 'bg-surface border-border' 
+            : 'glass-premium border-white/10 backdrop-blur-[30px]'
         )}
       >
         {/* Cinematic glow effects */}
         {!performanceMode && (
-          <div className="absolute inset-x-12 -top-4 h-8 bg-primary/20 blur-[40px] rounded-full animate-pulse-slow opacity-40 pointer-events-none" />
+          <div className="absolute inset-x-12 -top-2 h-4 bg-primary/20 blur-[30px] rounded-full animate-pulse-slow opacity-60 pointer-events-none" />
         )}
 
-        <div className="relative z-10 flex items-center justify-between w-full h-full px-1">
+        <div className="relative z-10 grid grid-cols-5 w-full h-full items-center">
           {navItems.map((item) => {
             const isActive = item.href === '/' 
               ? pathname === '/' 
@@ -125,28 +125,30 @@ export function BottomNav() {
                 <Link
                   key={item.href}
                   href={item.href}
-                  className="relative flex items-center justify-center px-1"
+                  className="flex items-center justify-center h-full relative"
                 >
                   <motion.div
-                    whileHover={{ scale: 1.05, rotate: 90 }}
-                    whileTap={{ scale: 0.9, y: 3 }}
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.85, rotate: -5 }}
+                    transition={{ type: "spring", stiffness: 400, damping: 15 }}
                     className={cn(
-                      "w-16 h-16 rounded-[2rem] flex items-center justify-center transition-all duration-500 shadow-2xl relative z-20 group",
-                      "bg-gradient-to-br from-primary to-primary-dark"
+                      "w-14 h-14 rounded-2xl flex items-center justify-center transition-all duration-500 shadow-xl relative z-20 group overflow-hidden",
+                      "bg-gradient-to-br from-primary via-[#3dfc8d] to-primary-dark"
                     )}
-                    style={{
-                      boxShadow: !performanceMode 
-                        ? `0 15px 35px rgba(44, 252, 125, 0.4), inset 0 2px 4px rgba(255,255,255,0.5)`
-                        : 'none'
-                    }}
                   >
-                    <Icon className="w-8 h-8 text-black stroke-[3.5]" />
+                    {/* Inner highlight */}
+                    <div className="absolute inset-0 bg-gradient-to-b from-white/30 to-transparent opacity-50" />
+                    
+                    <Icon className="w-8 h-8 text-black stroke-[3] relative z-10" />
                     
                     {/* Ring animation */}
                     {!performanceMode && (
-                      <div className="absolute inset-[-4px] rounded-[2.2rem] border-2 border-primary/30 animate-ping opacity-20 pointer-events-none" />
+                      <div className="absolute inset-0 rounded-2xl border border-white/40 opacity-50" />
                     )}
                   </motion.div>
+                  
+                  {/* Outer glow for primary */}
+                  <div className="absolute inset-0 bg-primary/10 blur-xl rounded-full opacity-0 group-hover:opacity-100 transition-opacity" />
                 </Link>
               );
             }
@@ -155,52 +157,69 @@ export function BottomNav() {
               <Link
                 key={item.href}
                 href={item.href}
-                className="relative flex-1 flex flex-col items-center justify-center h-full group py-1"
+                className="relative flex flex-col items-center justify-center h-full group"
               >
-                {/* Active Indicator Bar (Top) */}
+                <motion.div
+                  className="flex flex-col items-center justify-center pt-1"
+                  whileTap={{ scale: 0.8 }}
+                  transition={{ type: "spring", stiffness: 500, damping: 25 }}
+                >
+                  <div className="relative flex items-center justify-center mb-1">
+                    <motion.div
+                      animate={isActive ? { y: -2, scale: 1.1 } : { y: 0, scale: 1 }}
+                      transition={{ type: "spring", stiffness: 500, damping: 20 }}
+                    >
+                      <Icon 
+                        className={cn(
+                          "w-5 h-5 transition-all duration-500",
+                          isActive 
+                            ? "text-primary drop-shadow-[0_0_8px_rgba(44,252,125,0.4)]" 
+                            : "text-foreground/40 group-hover:text-foreground/70"
+                        )}
+                        strokeWidth={isActive ? 2.5 : 2}
+                      />
+                    </motion.div>
+
+                    {/* Active Background Pill (Subtle) */}
+                    {isActive && (
+                      <motion.div
+                        layoutId="active-pill"
+                        className="absolute inset-0 -m-2 bg-primary/5 rounded-full blur-md"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ duration: 0.3 }}
+                      />
+                    )}
+
+                    {/* Messages Badge */}
+                    {item.label === 'PERFIL' && unreadCount > 0 && (
+                      <span className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-background shadow-sm" />
+                    )}
+                  </div>
+
+                  <span
+                    className={cn(
+                      "text-[9px] font-bold tracking-[0.05em] transition-all duration-500 font-outfit uppercase",
+                      isActive ? "text-primary/90 opacity-100" : "text-foreground/30 opacity-60 group-hover:opacity-100"
+                    )}
+                  >
+                    {item.label}
+                  </span>
+                </motion.div>
+
+                {/* Active Indicator (Bottom Dot) */}
                 <AnimatePresence>
                   {isActive && (
                     <motion.div
-                      layoutId="active-nav-line"
-                      className="absolute -top-1 w-6 h-1 rounded-full bg-primary"
-                      initial={{ scale: 0.5, opacity: 0 }}
+                      layoutId="active-nav-dot"
+                      className="absolute bottom-2 w-1 h-1 rounded-full bg-primary"
+                      initial={{ scale: 0, opacity: 0 }}
                       animate={{ scale: 1, opacity: 1 }}
-                      exit={{ scale: 0.5, opacity: 0 }}
-                      style={{ boxShadow: `0 0 15px ${item.activeColor}` }}
+                      exit={{ scale: 0, opacity: 0 }}
+                      style={{ boxShadow: `0 0 10px ${item.activeColor}` }}
                     />
                   )}
                 </AnimatePresence>
-
-                <div className="relative">
-                  <motion.div
-                    animate={isActive ? { y: -3, scale: 1.15 } : { y: 0, scale: 1 }}
-                    transition={{ type: "spring", stiffness: 500, damping: 20 }}
-                  >
-                    <Icon 
-                      className={cn(
-                        "w-5 h-5 transition-all duration-500",
-                        isActive 
-                          ? "text-primary drop-shadow-[0_0_12px_rgba(44,252,125,0.6)]" 
-                          : "text-foreground/30 group-hover:text-foreground/70"
-                      )}
-                      strokeWidth={isActive ? 2.8 : 2}
-                    />
-                  </motion.div>
-
-                  {/* Messages Badge */}
-                  {item.label === 'PERFIL' && unreadCount > 0 && !isActive && (
-                    <span className="absolute -top-1 -right-1 w-2 h-2 bg-red-500 rounded-full border border-background shadow-lg animate-bounce" />
-                  )}
-                </div>
-
-                <span
-                  className={cn(
-                    "text-[10px] font-black uppercase tracking-[0.1em] mt-2 transition-all duration-500 font-kanit italic leading-none",
-                    isActive ? "text-primary opacity-100" : "text-foreground/20 opacity-0 group-hover:opacity-100 group-hover:text-foreground/40"
-                  )}
-                >
-                  {item.label}
-                </span>
               </Link>
             );
           })}
