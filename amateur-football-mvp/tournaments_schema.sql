@@ -109,7 +109,15 @@ BEGIN
     END IF;
     
     INSERT INTO public.tournament_teams (tournament_id, team_id, status)
-    VALUES (p_tournament_id, p_team_id, 'pending');
+    VALUES (
+        p_tournament_id, 
+        p_team_id, 
+        CASE 
+            WHEN EXISTS (SELECT 1 FROM public.tournaments WHERE id = p_tournament_id AND creator_id = auth.uid()) 
+            THEN 'approved' 
+            ELSE 'pending' 
+        END
+    );
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
 
