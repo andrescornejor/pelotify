@@ -19,7 +19,6 @@ import {
   ExternalLink,
   UserMinus,
   Trash2,
-  Edit2,
 } from 'lucide-react';
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
@@ -122,7 +121,6 @@ function MatchLobbyContent() {
   const leaveMutation = useLeaveMatch();
   const deleteMutation = useDeleteMatch();
   const bulkUpdateMutation = useBulkUpdateParticipants();
-  const updateMatchMutation = useUpdateMatch();
 
   const [isPostMatchModalOpen, setIsPostMatchModalOpen] = useState(false);
   const [venueInfo, setVenueInfo] = useState<any>(null);
@@ -146,16 +144,40 @@ function MatchLobbyContent() {
   const myTeam = myEntry?.team;
   const [isAdminMode, setIsAdminMode] = useState(false);
   const [isTacticalMode, setIsTacticalMode] = useState(false);
-  const [isEditingTeamA, setIsEditingTeamA] = useState(false);
-  const [isEditingTeamB, setIsEditingTeamB] = useState(false);
-  const [teamAName, setTeamAName] = useState(match?.team_a_name || '');
-  const [teamBName, setTeamBName] = useState(match?.team_b_name || '');
+  
+  // Team Name Editing State
+  const updateMatchMutation = useUpdateMatch();
+  const [teamAName, setTeamAName] = useState(match?.team_a_name || 'Local');
+  const [teamBName, setTeamBName] = useState(match?.team_b_name || 'Visitante');
+  const [isEditingNames, setIsEditingNames] = useState(false);
+
+  // Update local state when match data changes
+  useEffect(() => {
+    if (match) {
+      setTeamAName(match.team_a_name || 'Local');
+      setTeamBName(match.team_b_name || 'Visitante');
+    }
+  }, [match?.team_a_name, match?.team_b_name]);
+
+  const handleUpdateTeamNames = async () => {
+    if (!match) return;
+    try {
+      await updateMatchMutation.mutateAsync({
+        matchId: match.id,
+        updates: {
+          team_a_name: teamAName,
+          team_b_name: teamBName
+        }
+      });
+      setIsEditingNames(false);
+    } catch (e) {
+      console.error('Error updating team names:', e);
+    }
+  };
 
   // Sync venue info when match loads
   useEffect(() => {
     if (match) {
-      setTeamAName(match.team_a_name || '');
-      setTeamBName(match.team_b_name || '');
       const checkVenue = async () => {
         try {
           const { data: allBusinesses } = await supabase
@@ -185,19 +207,6 @@ function MatchLobbyContent() {
   }, [match]);
 
   // Handlers
-  const handleRenameTeam = async (team: 'A' | 'B', name: string) => {
-    if (!match) return;
-    try {
-      await updateMatchMutation.mutateAsync({
-        matchId: match.id,
-        updates: team === 'A' ? { team_a_name: name } : { team_b_name: name }
-      });
-      team === 'A' ? setIsEditingTeamA(false) : setIsEditingTeamB(false);
-    } catch (e) {
-      console.error('Error renaming team:', e);
-    }
-  };
-
   const handleJoinTeam = async (team: 'A' | 'B' | null) => {
     if (!match || !user) return;
     try {
@@ -302,7 +311,7 @@ function MatchLobbyContent() {
             <div className="absolute inset-0 bg-gradient-to-t from-background via-background/60 to-transparent" />
           </div>
 
-          <div className="relative z-10 w-full px-6 lg:px-12 h-full flex flex-col justify-end pb-16">
+          <div className="relative z-10 max-w-7xl mx-auto px-6 h-full flex flex-col justify-end pb-16">
             <Link
               href="/"
               className="absolute top-8 left-6 w-12 h-12 rounded-2xl glass-premium flex items-center justify-center hover:scale-110 active:scale-95 transition-all text-foreground/50 hover:text-primary"
@@ -340,7 +349,7 @@ function MatchLobbyContent() {
           </div>
         </div>
 
-        <div className="w-full px-6 lg:px-12 -mt-12 relative z-20">
+        <div className="max-w-7xl mx-auto px-6 -mt-12 relative z-20">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
             <div className="lg:col-span-8 space-y-12">
                {/* Call to Action Card */}
@@ -442,7 +451,7 @@ function MatchLobbyContent() {
           <div className="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent" />
         </div>
 
-        <div className="relative z-10 w-full px-6 lg:px-12 h-full flex flex-col justify-end pb-12">
+        <div className="relative z-10 max-w-7xl mx-auto px-6 h-full flex flex-col justify-end pb-12">
           <Link
             href="/"
             className="absolute top-8 left-6 w-12 h-12 rounded-2xl glass-premium flex items-center justify-center hover:scale-110 active:scale-95 transition-all text-foreground/50 hover:text-primary"
@@ -491,7 +500,7 @@ function MatchLobbyContent() {
         </div>
       </div>
 
-      <div className="w-full px-6 lg:px-12 -mt-8 relative z-20">
+      <div className="max-w-7xl mx-auto px-6 -mt-8 relative z-20">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
           {/* ── LEFT: PITCH & TEAMS ── */}
           <div className="lg:col-span-8 space-y-8">
@@ -525,6 +534,12 @@ function MatchLobbyContent() {
                    {isCreator && (
                      <div className="flex items-center gap-3">
                         <button 
+                          onClick={() => setIsTacticalMode(true)} 
+                          className="flex items-center gap-2 px-5 h-10 rounded-xl bg-primary text-black text-[10px] font-black uppercase tracking-widest hover:scale-105 active:scale-95 transition-all shadow-lg shadow-primary/20"
+                        >
+                          <Users className="w-3 h-3" /> Ordenar Equipos
+                        </button>
+                        <button 
                           onClick={handleRandomizeTeams} 
                           className="flex items-center gap-2 px-4 h-10 rounded-xl bg-white/5 border border-white/10 text-foreground/40 text-[10px] font-black uppercase tracking-widest hover:bg-white/10 hover:text-foreground transition-all"
                         >
@@ -534,7 +549,7 @@ function MatchLobbyContent() {
                    )}
                 </div>
 
-                <div className="grid grid-cols-1 gap-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                   {(['A', 'B'] as const).map((team) => {
                     const members = team === 'A' ? teamA : teamB;
                     const cfg = TEAM_CONFIG[team];
@@ -554,40 +569,36 @@ function MatchLobbyContent() {
                                {team}
                              </div>
                              <div>
-                               <div className="group/team-name flex items-center gap-3">
-                               {isCreator ? (
-                                 <div className="flex items-center gap-2">
-                                   {(team === 'A' ? isEditingTeamA : isEditingTeamB) ? (
-                                      <div className="flex items-center gap-2" onClick={(e) => e.stopPropagation()}>
-                                        <input
-                                          autoFocus
-                                          value={team === 'A' ? teamAName : teamBName}
-                                          onChange={(e) => team === 'A' ? setTeamAName(e.target.value) : setTeamBName(e.target.value)}
-                                          onBlur={() => handleRenameTeam(team, team === 'A' ? teamAName : teamBName)}
-                                          onKeyDown={(e) => e.key === 'Enter' && handleRenameTeam(team, team === 'A' ? teamAName : teamBName)}
-                                          className="bg-foreground/10 border-none rounded-lg px-3 py-1 text-sm font-black italic uppercase text-foreground w-32 outline-none focus:ring-1 ring-primary"
-                                        />
-                                      </div>
-                                   ) : (
-                                     <>
-                                       <h3 className="text-lg font-black italic uppercase tracking-tighter text-foreground leading-none">
-                                         {team === 'A' ? match.team_a_name || 'Local' : match.team_b_name || 'Visitante'}
-                                       </h3>
-                                       <button 
-                                          onClick={() => team === 'A' ? setIsEditingTeamA(true) : setIsEditingTeamB(true)}
-                                          className="opacity-0 group-hover/team-name:opacity-50 hover:!opacity-100 transition-opacity"
-                                       >
-                                          <Edit2 className="w-3 h-3 text-primary" />
-                                       </button>
-                                     </>
-                                   )}
-                                 </div>
-                               ) : (
-                                 <h3 className="text-lg font-black italic uppercase tracking-tighter text-foreground leading-none">
-                                   {team === 'A' ? match.team_a_name || 'Local' : match.team_b_name || 'Visitante'}
-                                 </h3>
-                               )}
-                             </div>
+                               <div className="flex items-center gap-2">
+                                  {isCreator && isEditingNames ? (
+                                    <div className="flex items-center gap-2">
+                                      <input
+                                        type="text"
+                                        value={team === 'A' ? teamAName : teamBName}
+                                        onChange={(e) => team === 'A' ? setTeamAName(e.target.value) : setTeamBName(e.target.value)}
+                                        className="bg-foreground/5 border border-white/10 rounded-lg px-2 py-1 text-sm font-black italic uppercase text-foreground focus:outline-none focus:border-primary w-32"
+                                        autoFocus
+                                      />
+                                      <button onClick={handleUpdateTeamNames} className="text-primary hover:scale-110 transition-transform">
+                                        <Check className="w-4 h-4" />
+                                      </button>
+                                    </div>
+                                  ) : (
+                                    <div className="flex items-center gap-2 group/title">
+                                      <h3 className="text-lg font-black italic uppercase tracking-tighter text-foreground leading-none">
+                                        {team === 'A' ? match.team_a_name || 'Local' : match.team_b_name || 'Visitante'}
+                                      </h3>
+                                      {isCreator && (
+                                        <button 
+                                          onClick={() => setIsEditingNames(true)} 
+                                          className="opacity-0 group-hover/title:opacity-100 transition-opacity text-foreground/20 hover:text-primary"
+                                        >
+                                          <Zap className="w-3 h-3" />
+                                        </button>
+                                      )}
+                                    </div>
+                                  )}
+                               </div>
                                <span className={cn("text-[9px] font-black uppercase tracking-widest mt-1 block", cfg.text)}>
                                  {members.length}/{teamSize} JUGADORES
                                </span>
@@ -631,48 +642,13 @@ function MatchLobbyContent() {
                           {Array.from({ length: teamSize }).map((_, idx) => {
                             const p = members[idx];
                             return (
-                               <div
-                                 key={idx}
-                                 className="relative group/slot"
-                               >
-                                 <div className={cn(
-                                   "transition-all duration-300",
-                                   isCreator && p && "group-hover/slot:scale-95 group-hover/slot:opacity-50"
-                                 )}>
-                                   <PlayerSlot participant={p} isSelf={p?.user_id === user?.id} />
-                                 </div>
-
-                                 {/* Redesigned Quick Management Overlay */}
-                                 {isCreator && p && (
-                                   <div className="absolute inset-0 z-30 opacity-0 group-hover/slot:opacity-100 transition-all flex flex-col items-center justify-center gap-2 bg-background/40 backdrop-blur-[2px] rounded-[2rem]">
-                                      <div className="flex gap-1.5">
-                                        <button 
-                                          onClick={(e) => { e.stopPropagation(); handleMovePlayer(p.user_id, team === 'A' ? 'B' : 'A'); }}
-                                          className={cn("w-10 h-10 rounded-xl flex items-center justify-center text-white shadow-xl hover:scale-110 active:scale-90 transition-all", team === 'A' ? "bg-rose-500" : "bg-blue-500")}
-                                          title={team === 'A' ? "Mover a Equipo B" : "Mover a Equipo A"}
-                                        >
-                                          {team === 'A' ? 'B' : 'A'}
-                                        </button>
-                                        <button 
-                                          onClick={(e) => { e.stopPropagation(); handleMovePlayer(p.user_id, null); }}
-                                          className="w-10 h-10 bg-zinc-800 rounded-xl flex items-center justify-center text-white shadow-xl hover:scale-110 active:scale-90 transition-all"
-                                          title="Mover al Banquillo"
-                                        >
-                                          <LogOut className="w-4 h-4 rotate-180" />
-                                        </button>
-                                      </div>
-                                      {p.user_id !== match.creator_id && (
-                                        <button 
-                                          onClick={(e) => { e.stopPropagation(); handleKickPlayer(p.user_id); }}
-                                          className="w-10 h-10 bg-red-600 rounded-xl flex items-center justify-center text-white shadow-xl hover:scale-110 active:scale-90 transition-all"
-                                          title="Echar del Partido"
-                                        >
-                                          <UserMinus className="w-4 h-4" />
-                                        </button>
-                                      )}
-                                   </div>
-                                 )}
-                               </div>
+                              <div
+                                key={idx}
+                                className="relative group/slot cursor-pointer"
+                                onClick={() => isCreator && p && setManagedParticipant(p)}
+                              >
+                                <PlayerSlot participant={p} isSelf={p?.user_id === user?.id} />
+                              </div>
                             );
                           })}
                         </div>
@@ -688,52 +664,17 @@ function MatchLobbyContent() {
                       <h4 className="text-xs font-black italic uppercase text-foreground/40">Banquillo de Espera</h4>
                       <span className="text-[10px] font-bold text-foreground/20">{unassigned.length} JUGADORES</span>
                     </div>
-                        <div className="flex flex-wrap gap-4">
-                          {unassigned.map((p) => (
-                            <div
-                              key={p.id}
-                              className="relative group/slot"
-                            >
-                              <div className={cn(
-                                "transition-all duration-300",
-                                isCreator && "group-hover/slot:scale-95 group-hover/slot:opacity-50"
-                              )}>
-                                <PlayerSlot participant={p} isSelf={p.user_id === user?.id} />
-                              </div>
-
-                              {/* Redesigned Quick Management Overlay for Bench */}
-                              {isCreator && (
-                                <div className="absolute inset-0 z-30 opacity-0 group-hover/slot:opacity-100 transition-all flex flex-col items-center justify-center gap-2 bg-background/40 backdrop-blur-[2px] rounded-[2rem]">
-                                   <div className="flex gap-1.5">
-                                     <button 
-                                       onClick={(e) => { e.stopPropagation(); handleMovePlayer(p.user_id, 'A'); }}
-                                       className="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center text-white shadow-xl hover:scale-110 active:scale-90 transition-all font-black"
-                                       title="Mover a Equipo A"
-                                     >
-                                       A
-                                     </button>
-                                     <button 
-                                       onClick={(e) => { e.stopPropagation(); handleMovePlayer(p.user_id, 'B'); }}
-                                       className="w-10 h-10 bg-rose-600 rounded-xl flex items-center justify-center text-white shadow-xl hover:scale-110 active:scale-90 transition-all font-black"
-                                       title="Mover a Equipo B"
-                                     >
-                                       B
-                                     </button>
-                                   </div>
-                                   {p.user_id !== match.creator_id && (
-                                     <button 
-                                       onClick={(e) => { e.stopPropagation(); handleKickPlayer(p.user_id); }}
-                                       className="w-10 h-10 bg-red-600 rounded-xl flex items-center justify-center text-white shadow-xl hover:scale-110 active:scale-90 transition-all"
-                                       title="Echar del Partido"
-                                     >
-                                       <UserMinus className="w-4 h-4" />
-                                     </button>
-                                   )}
-                                </div>
-                              )}
-                            </div>
-                          ))}
+                    <div className="flex flex-wrap gap-4">
+                      {unassigned.map((p) => (
+                        <div
+                          key={p.id}
+                          className="relative group/slot cursor-pointer"
+                          onClick={() => isCreator && setManagedParticipant(p)}
+                        >
+                          <PlayerSlot participant={p} isSelf={p.user_id === user?.id} />
                         </div>
+                      ))}
+                    </div>
                   </div>
                 )}
               </div>
@@ -929,79 +870,161 @@ function MatchLobbyContent() {
       {/* Tactical Mode Modal (The Redesign) */}
       <AnimatePresence>
         {isTacticalMode && (
-          <div className="fixed inset-0 z-[110] flex flex-col bg-background">
+          <div className="fixed inset-0 z-[110] flex flex-col bg-background/95 backdrop-blur-xl">
             <motion.div 
-              initial={{ y: '100%' }}
-              animate={{ y: 0 }}
-              exit={{ y: '100%' }}
-              className="flex-1 flex flex-col h-full"
+              initial={{ opacity: 0, scale: 1.1 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 1.1 }}
+              className="flex-1 flex flex-col h-full overflow-hidden"
             >
-              <div className="p-6 flex items-center justify-between border-b border-white/5">
-                <div className="flex items-center gap-4">
-                  <button onClick={() => setIsTacticalMode(false)} className="w-12 h-12 rounded-2xl glass-premium flex items-center justify-center">
-                    <ArrowLeft className="w-6 h-6" />
+              {/* Tactical Header */}
+              <div className="p-8 flex items-center justify-between border-b border-white/5 bg-background/50">
+                <div className="flex items-center gap-6">
+                  <button onClick={() => setIsTacticalMode(false)} className="w-14 h-14 rounded-2xl glass-premium flex items-center justify-center hover:scale-110 active:scale-95 transition-all">
+                    <ArrowLeft className="w-7 h-7" />
                   </button>
-                  <div>
-                    <h2 className="text-xl font-black italic uppercase tracking-tighter text-foreground leading-none">Pizarra T\u00e1ctica</h2>
-                    <p className="text-[10px] font-black text-primary uppercase tracking-widest mt-1">Organizador: {user?.name || 'T\u00fa'}</p>
+                  <div className="space-y-1">
+                    <h2 className="text-3xl font-black italic uppercase tracking-tighter text-foreground leading-none">Armar Equipos</h2>
+                    <p className="text-[10px] font-black text-primary uppercase tracking-widest">Acomod\u00e1 a los jugadores en la cancha</p>
                   </div>
                 </div>
-                <button 
-                  onClick={() => setIsTacticalMode(false)}
-                  className="px-6 h-12 rounded-2xl bg-primary text-black font-black italic uppercase text-xs shadow-lg shadow-primary/20"
-                >
-                  Confirmar
-                </button>
+                
+                <div className="flex items-center gap-4">
+                  <div className="hidden md:flex items-center gap-2 mr-6 border-r border-white/10 pr-6">
+                    <button 
+                      onClick={handleRandomizeTeams} 
+                      className="flex items-center gap-2 px-6 h-12 rounded-2xl bg-white/5 border border-white/10 text-foreground/60 text-[10px] font-black uppercase tracking-widest hover:bg-white/10 hover:text-foreground transition-all"
+                    >
+                      <Zap className="w-4 h-4" /> Mezclar Aleatorio
+                    </button>
+                    <button 
+                      onClick={handleBenchAll} 
+                      className="flex items-center gap-2 px-6 h-12 rounded-2xl bg-rose-600/10 border border-rose-600/20 text-rose-500 text-[10px] font-black uppercase tracking-widest hover:bg-rose-600 hover:text-white transition-all"
+                    >
+                      <LogOut className="w-4 h-4 rotate-180" /> Vaciar Cancha
+                    </button>
+                  </div>
+                  <button 
+                    onClick={() => setIsTacticalMode(false)}
+                    className="px-8 h-14 rounded-2xl bg-primary text-black font-black italic uppercase text-sm shadow-2xl shadow-primary/30 hover:scale-105 active:scale-95 transition-all"
+                  >
+                    Confirmar Armado
+                  </button>
+                </div>
               </div>
 
-              <div className="flex-1 overflow-y-auto p-6 space-y-12">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              <div className="flex-1 overflow-y-auto p-8 space-y-12">
+                {/* Mobile Actions */}
+                <div className="flex md:hidden items-center gap-2 overflow-x-auto pb-4 no-scrollbar">
+                  <button 
+                    onClick={handleRandomizeTeams} 
+                    className="flex-none flex items-center gap-2 px-6 h-12 rounded-2xl bg-white/5 border border-white/10 text-foreground/60 text-[10px] font-black uppercase tracking-widest"
+                  >
+                    <Zap className="w-3 h-3" /> Mezclar
+                  </button>
+                  <button 
+                    onClick={handleBenchAll} 
+                    className="flex-none flex items-center gap-2 px-6 h-12 rounded-2xl bg-rose-600/10 border border-rose-600/20 text-rose-500 text-[10px] font-black uppercase tracking-widest"
+                  >
+                    <LogOut className="w-3 h-3 rotate-180" /> Vaciar
+                  </button>
+                </div>
+
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 max-w-7xl mx-auto w-full">
                   {(['A', 'B'] as const).map((team) => {
                     const cfg = TEAM_CONFIG[team];
                     const members = team === 'A' ? teamA : teamB;
                     return (
-                      <div key={team} className="space-y-6">
-                        <div className="flex items-center justify-between">
-                           <div className="flex items-center gap-3">
-                              <div className={cn("w-10 h-10 rounded-xl flex items-center justify-center font-black italic text-white", cfg.bg)}>{team}</div>
-                              <h3 className="text-lg font-black italic uppercase text-foreground">{team === 'A' ? match.team_a_name || 'Local' : match.team_b_name || 'Visitante'}</h3>
+                      <div key={team} className="space-y-8">
+                        <div className="flex items-center justify-between px-4">
+                           <div className="flex items-center gap-4">
+                              <div className={cn("w-14 h-14 rounded-[1.5rem] flex items-center justify-center font-black italic text-2xl text-white shadow-xl", cfg.bg)}>{team}</div>
+                              <div>
+                                <input
+                                  type="text"
+                                  value={team === 'A' ? teamAName : teamBName}
+                                  onChange={(e) => team === 'A' ? setTeamAName(e.target.value) : setTeamBName(e.target.value)}
+                                  onBlur={handleUpdateTeamNames}
+                                  className="bg-transparent border-none p-0 text-2xl font-black italic uppercase tracking-tighter text-foreground focus:outline-none focus:ring-0 w-full"
+                                />
+                                <div className={cn("text-[9px] font-black uppercase tracking-widest", cfg.text)}>Equipo {team === 'A' ? 'Local' : 'Visitante'}</div>
+                              </div>
                            </div>
-                           <span className="text-[10px] font-black text-foreground/20">{members.length} / {teamSize}</span>
+                           <div className="flex flex-col items-end">
+                              <span className="text-2xl font-black italic text-foreground/20 leading-none">{members.length}</span>
+                              <span className="text-[8px] font-bold text-foreground/10 uppercase tracking-widest">/ {teamSize}</span>
+                           </div>
                         </div>
-                        <div className="grid grid-cols-4 sm:grid-cols-5 gap-4 p-6 rounded-[2.5rem] bg-foreground/[0.02] border-2 border-dashed border-white/5">
-                           {Array.from({ length: teamSize }).map((_, idx) => {
-                             const p = members[idx];
-                             return (
-                               <div key={idx} className="relative group/tactical h-24 flex flex-col items-center justify-center">
-                                 {p ? (
-                                   <motion.div layoutId={p.user_id} className="cursor-pointer" onClick={() => setManagedParticipant(p)}>
-                                     <PlayerSlot participant={p} />
-                                   </motion.div>
-                                 ) : (
-                                   <div className="w-16 h-16 rounded-[1.8rem] border-2 border-dashed border-white/5 flex items-center justify-center">
-                                     <Users className="w-5 h-5 text-white/5" />
-                                   </div>
-                                 )}
-                               </div>
-                             );
-                           })}
+
+                        {/* Pitch Representation */}
+                        <div className={cn(
+                          "relative aspect-[4/3] rounded-[3.5rem] bg-foreground/[0.02] border-2 border-dashed border-white/5 flex items-center justify-center p-12 overflow-hidden",
+                          "before:absolute before:inset-0 before:bg-gradient-to-br", cfg.gradient
+                        )}>
+                           <div className="grid grid-cols-3 sm:grid-cols-4 gap-6 relative z-10 w-full">
+                              {Array.from({ length: teamSize }).map((_, idx) => {
+                                const p = members[idx];
+                                return (
+                                  <div key={idx} className="flex flex-col items-center gap-2">
+                                    {p ? (
+                                      <motion.div 
+                                        layoutId={p.user_id} 
+                                        className="cursor-pointer group/player relative" 
+                                        onClick={() => setManagedParticipant(p)}
+                                      >
+                                        <PlayerSlot participant={p} size="lg" />
+                                        <div className="absolute -top-2 -right-2 w-6 h-6 rounded-full bg-background border border-white/10 flex items-center justify-center opacity-0 group-hover/player:opacity-100 transition-all scale-75 group-hover/player:scale-100">
+                                          <Zap className="w-3 h-3 text-primary" />
+                                        </div>
+                                      </motion.div>
+                                    ) : (
+                                      <div className="w-16 h-16 rounded-[2rem] border-2 border-dashed border-white/5 flex items-center justify-center bg-white/[0.02]">
+                                        <div className="w-2 h-2 rounded-full bg-white/5" />
+                                      </div>
+                                    )}
+                                  </div>
+                                );
+                              })}
+                           </div>
                         </div>
                       </div>
                     );
                   })}
                 </div>
 
-                <div className="space-y-6">
-                   <h4 className="text-xs font-black italic uppercase text-foreground/20 tracking-widest px-2">Banquillo (Jugadores sin equipo)</h4>
-                   <div className="p-8 rounded-[3rem] glass-premium border-white/5 flex flex-wrap gap-6">
+                {/* Bench Section */}
+                <div className="max-w-7xl mx-auto w-full space-y-8 pb-24">
+                   <div className="flex items-center justify-between px-4">
+                      <div className="flex items-center gap-4">
+                        <div className="w-10 h-10 rounded-xl bg-foreground/5 flex items-center justify-center text-foreground/40">
+                          <Users className="w-5 h-5" />
+                        </div>
+                        <h4 className="text-xl font-black italic uppercase text-foreground/30 tracking-widest">Lista de Espera</h4>
+                      </div>
+                      <span className="text-xs font-bold text-foreground/10 uppercase tracking-widest">{unassigned.length} JUGADORES SIN EQUIPO</span>
+                   </div>
+
+                   <div className="p-12 rounded-[4rem] glass-premium border-white/5 flex flex-wrap justify-center gap-8 min-h-[200px] relative overflow-hidden">
+                      <div className="absolute inset-0 bg-gradient-to-b from-transparent to-primary/5 opacity-20" />
                       {unassigned.length > 0 ? unassigned.map(p => (
-                        <motion.div key={p.user_id} layoutId={p.user_id} className="cursor-pointer" onClick={() => setManagedParticipant(p)}>
-                          <PlayerSlot participant={p} />
+                        <motion.div 
+                          key={p.user_id} 
+                          layoutId={p.user_id} 
+                          className="cursor-pointer group/bench relative" 
+                          onClick={() => setManagedParticipant(p)}
+                        >
+                          <PlayerSlot participant={p} size="lg" />
+                          <div className="absolute -top-3 -right-3 px-2 py-1 rounded-lg bg-primary text-black text-[8px] font-black uppercase tracking-widest opacity-0 group-hover/bench:opacity-100 transition-all translate-y-2 group-hover/bench:translate-y-0">
+                            Asignar
+                          </div>
                         </motion.div>
                       )) : (
-                        <div className="w-full py-12 flex flex-col items-center justify-center text-foreground/10 space-y-2">
-                           <Users className="w-12 h-12" />
-                           <p className="text-xs font-black uppercase tracking-widest italic">No hay jugadores en espera</p>
+                        <div className="w-full py-12 flex flex-col items-center justify-center text-foreground/5 space-y-4 relative z-10">
+                           <Users className="w-16 h-16 opacity-20" />
+                           <div className="text-center">
+                             <p className="text-sm font-black uppercase tracking-[0.3em] italic mb-1">Cancha Llena</p>
+                             <p className="text-[10px] font-bold text-foreground/20">Todos los jugadores confirmados tienen equipo</p>
+                           </div>
                         </div>
                       )}
                    </div>

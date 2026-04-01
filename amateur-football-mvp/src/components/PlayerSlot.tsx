@@ -8,19 +8,38 @@ import { cn } from '@/lib/utils';
 interface PlayerSlotProps {
   participant?: MatchParticipant;
   isSelf?: boolean;
+  size?: 'sm' | 'md' | 'lg';
 }
 
-export default function PlayerSlot({ participant, isSelf }: PlayerSlotProps) {
+export default function PlayerSlot({ participant, isSelf, size = 'md' }: PlayerSlotProps) {
   const profile = participant?.profiles as any;
   const name = profile?.name?.split(' ')[0] || 'Jugador';
   const avatar = profile?.avatar_url;
   const seed = participant?.user_id || 'empty';
 
+  const sizeClasses = {
+    sm: 'w-12 h-12 rounded-[1.2rem] lg:w-14 lg:h-14 lg:rounded-[1.4rem]',
+    md: 'w-16 h-16 rounded-[1.8rem] lg:w-20 lg:h-20 lg:rounded-[2.2rem]',
+    lg: 'w-20 h-20 rounded-[2.2rem] lg:w-24 lg:h-24 lg:rounded-[2.8rem]',
+  };
+
+  const innerSizeClasses = {
+    sm: 'rounded-[1.1rem] lg:rounded-[1.3rem]',
+    md: 'rounded-[1.6rem] lg:rounded-[2rem]',
+    lg: 'rounded-[2rem] lg:rounded-[2.6rem]',
+  };
+
   if (!participant) {
     return (
       <div className="flex flex-col items-center gap-3 group cursor-not-allowed">
-        <div className="w-16 h-16 lg:w-20 lg:h-20 rounded-[1.8rem] lg:rounded-[2.2rem] border-2 border-dashed border-foreground/5 bg-foreground/[0.01] flex items-center justify-center transition-all group-hover:border-foreground/10 relative overflow-hidden group/empty shadow-inner">
-          <Users className="w-6 h-6 lg:w-8 lg:h-8 text-foreground/10 group-hover/empty:scale-110 transition-transform" />
+        <div className={cn(
+          sizeClasses[size],
+          "border-2 border-dashed border-foreground/5 bg-foreground/[0.01] flex items-center justify-center transition-all group-hover:border-foreground/10 relative overflow-hidden group/empty shadow-inner"
+        )}>
+          <Users className={cn(
+            size === 'sm' ? "w-4 h-4" : size === 'md' ? "w-6 h-6 lg:w-8 lg:h-8" : "w-10 h-10",
+            "text-foreground/10 group-hover/empty:scale-110 transition-transform"
+          )} />
           <div className="absolute inset-0 bg-gradient-to-br from-transparent via-foreground/5 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />
         </div>
         <span className="text-[9px] font-black text-foreground/20 uppercase tracking-widest italic">
@@ -38,13 +57,14 @@ export default function PlayerSlot({ participant, isSelf }: PlayerSlotProps) {
     >
       <div
         className={cn(
-          'w-16 h-16 lg:w-20 lg:h-20 rounded-[1.8rem] lg:rounded-[2.2rem] p-1 transition-all duration-500 relative z-10',
+          sizeClasses[size],
+          'p-1 transition-all duration-500 relative z-10',
           isSelf
             ? 'bg-primary shadow-[0_0_30px_rgba(16,185,129,0.3)]'
             : 'bg-gradient-to-b from-foreground/10 to-transparent shadow-2xl'
         )}
       >
-        <div className="w-full h-full rounded-[1.6rem] lg:rounded-[2rem] overflow-hidden bg-surface relative">
+        <div className={cn("w-full h-full overflow-hidden bg-surface relative", innerSizeClasses[size])}>
           <img
             src={avatar || `https://api.dicebear.com/7.x/notionists/svg?seed=${seed}`}
             alt={name}
