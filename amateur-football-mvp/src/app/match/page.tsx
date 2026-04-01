@@ -526,7 +526,7 @@ function MatchLobbyContent() {
       <div className="max-w-[1700px] mx-auto px-6 -mt-16 md:-mt-20 relative z-20">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
           {/* ── LEFT: PITCH & TEAMS ── */}
-          <div className="lg:col-span-8 space-y-8">
+          <div className="lg:col-span-8 space-y-12">
             {/* Stats Bar */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
               {[
@@ -622,7 +622,8 @@ function MatchLobbyContent() {
                       ))}
                     </div>
                   </div>
-                )}
+                </div>
+              )}
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                   {(['A', 'B'] as const).map((team) => {
