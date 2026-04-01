@@ -78,7 +78,7 @@ export const VenueCard = ({ venue, performanceMode }: VenueCardProps) => {
           <div className="flex-1" />
 
           {/* Features / Footer */}
-          <div className="pt-6 border-t border-foreground/5 flex items-center justify-between mt-auto">
+          <div className="pt-6 flex items-center justify-between mt-auto">
              <div className="flex items-center gap-3">
                 <div className="w-9 h-9 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center">
                    <Zap className="w-4 h-4 text-primary" />

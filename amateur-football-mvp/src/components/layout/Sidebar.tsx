@@ -328,7 +328,7 @@ export const SidebarContent = memo(function SidebarContent({
               </div>
 
               {/* Status bar */}
-              <div className="mt-4 pt-3 border-t border-foreground/5 flex items-center justify-between gap-2">
+              <div className="mt-4 pt-3 flex items-center justify-between gap-2">
                 <div className="flex-1 h-1.5 bg-foreground/5 rounded-full overflow-hidden">
                   <motion.div
                     initial={{ width: 0 }}
@@ -374,7 +374,7 @@ export const SidebarContent = memo(function SidebarContent({
               </span>
             </div>
           </Link>
-          <div className="h-px bg-foreground/5 mx-4" />
+
           <button
             onClick={logout}
             className="w-full px-4 py-3.5 flex items-center gap-3 hover:bg-red-500/[0.05] transition-colors group"

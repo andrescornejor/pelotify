@@ -89,7 +89,7 @@ export const TeamCard = ({ team, performanceMode }: TeamCardProps) => {
                   +{team.members_count || 0}
                 </div>
               </div>
-              <div className="h-5 w-[1px] bg-white/10 hidden sm:block" />
+
               <div className="hidden sm:flex items-center gap-2.5 px-3 py-1 rounded-full bg-foreground/[0.03] border border-white/5">
                 <Shield className="w-3.5 h-3.5 text-primary" />
                 <span className="text-[10px] font-semibold text-foreground/40 tracking-wide font-outfit">
