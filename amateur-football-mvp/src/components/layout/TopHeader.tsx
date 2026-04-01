@@ -112,7 +112,7 @@ export const TopHeader = memo(function TopHeader() {
   return (
     <>
       <header className="fixed top-0 left-0 right-0 z-[60] pt-[calc(0.75rem+env(safe-area-inset-top,0px))] sm:pt-6 lg:pt-4 px-3 sm:px-5 lg:px-10 xl:px-16 pointer-events-none">
-        <div className="max-w-screen-2xl mx-auto w-full pointer-events-auto">
+        <div className="max-w-full mx-auto w-full pointer-events-auto">
           <motion.div
             initial={{ y: -24, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
