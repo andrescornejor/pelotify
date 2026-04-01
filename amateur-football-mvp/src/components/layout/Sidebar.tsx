@@ -246,11 +246,11 @@ export const SidebarContent = memo(function SidebarContent({
             <img src="/logo_pelotify.png" alt="Logo" className="w-full h-full object-contain relative z-10 drop-shadow-lg" />
           </div>
           <div className="flex flex-col">
-            <span className="text-xl font-black italic tracking-tighter uppercase leading-none font-kanit">
-              PELOTI<span className="text-primary pr-4">FY</span>
+            <span className="text-xl font-black italic tracking-tighter uppercase leading-none font-kanit text-foreground">
+              PELOTI<span className="text-primary">FY</span>
             </span>
-            <span className="text-[7px] font-black uppercase tracking-[0.4em] text-foreground/30 mt-0.5">
-              EST. 2026
+            <span className="text-[6.5px] font-black uppercase tracking-[0.25em] text-foreground/30 mt-1 leading-none font-outfit">
+              DOMINÁ EL POTRERO
             </span>
           </div>
         </Link>

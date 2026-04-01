@@ -352,45 +352,45 @@ export default function HomePage() {
                 animate={{ x: 0, opacity: 1 }}
                 transition={{ delay: 0.2, type: 'spring', stiffness: 200 }}
                 className={cn(
-                  'inline-flex items-center gap-3 px-4 py-1.5 rounded-full glass-premium border-primary/20',
+                  'inline-flex items-center gap-3 px-4 py-1.5 rounded-full bg-foreground/[0.04] border border-foreground/5',
                   performanceMode && 'bg-surface'
                 )}
               >
                 <div className="relative flex h-2 w-2">
                   <span
                     className={cn(
-                      'absolute inline-flex h-full w-full rounded-full bg-primary opacity-75',
+                      'absolute inline-flex h-full w-full rounded-full bg-foreground/20 opacity-75',
                       !performanceMode && 'animate-ping'
                     )}
                   />
-                  <span className="relative inline-flex rounded-full h-2 w-2 bg-primary" />
+                  <span className="relative inline-flex rounded-full h-2 w-2 bg-foreground/30" />
                 </div>
-                <span className="text-[10px] font-black uppercase tracking-[0.4em] text-primary/90 font-outfit">
+                <span className="text-[10px] font-black uppercase tracking-[0.4em] text-foreground/40 font-outfit">
                   {greeting}
                 </span>
               </motion.div>
 
-              {/* Title Section */}
-              <div className="space-y-4">
+              {/* Title Section based on Branding */}
+              <div className="flex flex-col">
                 <motion.h1
-                  initial={{ opacity: 0, y: 40 }}
-                  animate={{ opacity: 1, y: 0 }}
+                  initial={{ opacity: 0, x: -40 }}
+                  animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: 0.3, duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-                  className="font-black italic tracking-tight leading-[0.85] uppercase font-kanit"
-                  style={{ fontSize: 'clamp(2.5rem, 6vw, 6rem)' }}
+                  className="font-black italic uppercase font-kanit tracking-tighter text-foreground"
+                  style={{ fontSize: 'clamp(3rem, 10vw, 7rem)', lineHeight: '0.85' }}
                 >
-                  <span className="text-foreground/90 mix-blend-difference">DOMINA</span>
-                  <br />
-                  <span
-                    className={
-                      performanceMode
-                        ? 'text-primary'
-                        : 'bg-clip-text text-transparent bg-gradient-to-r from-primary-light via-primary to-primary-dark animate-gradient [text-shadow:0_0_40px_rgba(44,252,125,0.3)]'
-                    }
-                  >
-                    LA CANCHA.
-                  </span>
+                  PELOTI<span className="text-primary">FY</span>
+                  <span className="inline-block w-[0.15em] h-[0.15em] ml-4 rounded-full bg-primary align-baseline shadow-[0_0_20px_rgba(44,252,125,0.6)]" />
                 </motion.h1>
+                <motion.span
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.6, duration: 0.5 }}
+                  className="text-[14px] sm:text-[18px] font-black uppercase tracking-[0.5em] text-foreground/30 mt-4 ml-1 font-outfit"
+                >
+                  DOMINÁ EL POTRERO
+                </motion.span>
+              </div>
 
                 <motion.div
                   initial={{ opacity: 0 }}
@@ -495,7 +495,7 @@ export default function HomePage() {
                       </h3>
                       <rankCalculation.rank.icon className="w-5 h-5" style={{ color: rankCalculation.rank.hex }} />
                     </div>
-                    <span className="text-[9px] font-semibold text-primary/80 tracking-wide font-outfit">
+                    <span className="text-[9px] font-semibold text-foreground/40 tracking-wide font-outfit">
                       Estado de temporada
                     </span>
                   </div>
@@ -726,7 +726,7 @@ export default function HomePage() {
                               <h2 className="text-xl lg:text-2xl font-black italic text-foreground uppercase tracking-tighter leading-none font-kanit">
                                  Road to Glory
                               </h2>
-                              <span className="text-[9px] font-semibold text-primary/80 tracking-wide font-outfit">
+                              <span className="text-[9px] font-semibold text-foreground/40 tracking-wide font-outfit">
                                  Tu camino hacia la leyenda
                               </span>
                            </div>
@@ -816,7 +816,7 @@ export default function HomePage() {
                               <h2 className="text-xl lg:text-2xl font-black text-foreground italic uppercase tracking-tighter font-kanit">
                                  Feed de Actividad
                               </h2>
-                              <span className="text-[9px] font-semibold text-primary/80 tracking-wide font-outfit">
+                              <span className="text-[9px] font-semibold text-foreground/40 tracking-wide font-outfit">
                                  Comunidad en tiempo real
                               </span>
                            </div>
@@ -866,7 +866,7 @@ export default function HomePage() {
                            <h2 className="text-xl lg:text-2xl font-black text-foreground italic uppercase tracking-tighter font-kanit">
                               Tus Equipos
                            </h2>
-                           <span className="text-[9px] font-semibold text-primary/80 tracking-wide font-outfit">
+                           <span className="text-[9px] font-semibold text-foreground/40 tracking-wide font-outfit">
                               Plantel profesional
                            </span>
                         </div>
@@ -899,7 +899,7 @@ export default function HomePage() {
                            <h2 className="text-xl lg:text-2xl font-black text-foreground italic uppercase tracking-tighter font-kanit">
                               Sedes Destacadas
                            </h2>
-                           <span className="text-[9px] font-semibold text-primary/80 tracking-wide font-outfit">
+                           <span className="text-[9px] font-semibold text-foreground/40 tracking-wide font-outfit">
                               Complejos verificados en Rosario
                            </span>
                         </div>
@@ -932,7 +932,7 @@ export default function HomePage() {
                            <h2 className="text-xl lg:text-2xl font-black text-foreground italic uppercase tracking-tighter font-kanit">
                               Tendencias en FutTok
                            </h2>
-                           <span className="text-[9px] font-semibold text-primary/80 tracking-wide font-outfit">
+                           <span className="text-[9px] font-semibold text-foreground/40 tracking-wide font-outfit">
                               Lo mejor de la comunidad
                            </span>
                         </div>
@@ -986,14 +986,14 @@ export default function HomePage() {
                 <div className="flex items-center justify-between">
                   <div className="flex flex-col gap-1">
                     <div className="flex items-center gap-2">
-                      <div className="w-2 h-2 rounded-full bg-primary animate-pulse shadow-[0_0_6px_#2cfc7d]" />
-                      <span className="text-[10px] font-black text-primary uppercase tracking-[0.4em] font-outfit">PRÓXIMO PARTIDO</span>
+                      <div className="w-2 h-2 rounded-full bg-foreground/30 shadow-[0_0_6px_rgba(var(--foreground-rgb),0.3)]" />
+                      <span className="text-[10px] font-black text-foreground/40 uppercase tracking-[0.4em] font-outfit">PRÓXIMO PARTIDO</span>
                     </div>
-                    <h3 className="text-[11px] font-medium text-foreground/30 tracking-wide font-outfit">Agenda prioritaria</h3>
+                    <h3 className="text-[11px] font-medium text-foreground/20 tracking-wide font-outfit">Agenda prioritaria</h3>
                   </div>
                   {nextMatch && (
-                    <div className="px-4 py-2 rounded-2xl bg-primary/10 border border-primary/20 backdrop-blur-md">
-                      <span className="text-[10px] font-black text-primary uppercase tracking-widest">{nextMatch.type || 'F5'}</span>
+                    <div className="px-4 py-2 rounded-2xl bg-foreground/[0.05] border border-foreground/10 backdrop-blur-md">
+                      <span className="text-[10px] font-black text-foreground/60 uppercase tracking-widest">{nextMatch.type || 'F5'}</span>
                     </div>
                   )}
                 </div>
@@ -1132,7 +1132,7 @@ export default function HomePage() {
                     </Link>
 
                     <div className="flex flex-col gap-2 pt-4 border-t border-foreground/5 w-full opacity-60">
-                      <span className="text-[8px] font-semibold text-primary/80 tracking-wide font-outfit">Sugerencia de hoy</span>
+                      <span className="text-[8px] font-semibold text-foreground/40 tracking-wide font-outfit">Sugerencia de hoy</span>
                       <p className="text-[9px] font-medium text-foreground/40 italic leading-relaxed">
                         "Un equipo unido vale más que 11 estrellas individuales."
                       </p>
@@ -1174,10 +1174,10 @@ export default function HomePage() {
             <div className="md:col-span-4 space-y-6">
               <div className="flex items-center gap-3">
                 <img src="/logo_pelotify.png" alt="Pelotify Logo" className="w-12 h-12 object-contain" />
-                <span className="text-xl font-black italic uppercase tracking-tighter text-foreground font-kanit">PELOTIFY</span>
+                <span className="text-xl font-black italic uppercase tracking-tighter text-foreground font-kanit">PELOTI<span className="text-primary">FY</span></span>
               </div>
               <p className="text-[11px] text-foreground/40 font-medium tracking-wide leading-relaxed max-w-sm">
-                La plataforma definitiva para el fútbol amateur competitivo. Domina la cancha.
+                La plataforma definitiva para el fútbol amateur competitivo. Dominá el potrero.
               </p>
             </div>
           </div>
