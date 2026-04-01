@@ -250,16 +250,54 @@ export default function SearchPage() {
 
       <div className="flex-1 overflow-y-auto no-scrollbar pb-24 relative z-10">
         {isLoading ? (
-          <div className="flex flex-col items-center justify-center py-48 text-zinc-500 gap-8">
-            <div className="relative">
-              <div className="w-24 h-24 border-2 border-primary/10 rounded-full animate-ping" />
-              <div className="absolute inset-0 flex items-center justify-center">
-                <Search className="w-8 h-8 text-primary/40 animate-pulse" />
+          <div className="flex flex-col gap-6">
+            <div className="flex flex-col items-center justify-center py-12 text-zinc-500 gap-4 mb-4">
+              <div className="relative">
+                <div className="w-16 h-16 border-2 border-primary/20 rounded-full animate-ping" />
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <Search className="w-6 h-6 text-primary animate-pulse" />
+                </div>
               </div>
+              <p className="text-[10px] font-black uppercase tracking-[0.5em] animate-pulse text-primary/60 italic">
+                Sintonizando Señales...
+              </p>
             </div>
-            <p className="text-[10px] font-black uppercase tracking-[0.5em] animate-pulse text-zinc-700 italic">
-              Sincronizando Satélites...
-            </p>
+            {[1, 2, 3].map((i) => (
+              <div
+                key={`skeleton-${i}`}
+                className="glass-premium rounded-[1.8rem] lg:rounded-[3rem] p-4 lg:p-8 flex flex-col lg:flex-row items-stretch lg:items-center gap-3 lg:gap-14 relative overflow-hidden border border-foreground/[0.05] bg-foreground/[0.01]"
+              >
+                <div className="flex lg:flex-col items-center lg:items-start justify-between lg:justify-center gap-2 lg:min-w-[150px] lg:border-r border-foreground/5 lg:pr-14">
+                  <div className="flex flex-row lg:flex-col gap-2">
+                    <div className="w-16 h-6 bg-foreground/10 rounded-lg animate-pulse" />
+                    <div className="w-12 h-6 bg-foreground/5 rounded-lg animate-pulse" />
+                  </div>
+                  <div className="hidden lg:flex flex-col gap-2 mt-5">
+                    <div className="w-20 h-2 bg-foreground/10 rounded-full animate-pulse" />
+                    <div className="w-24 h-4 bg-foreground/5 rounded-full animate-pulse" />
+                  </div>
+                </div>
+                <div className="flex-1 space-y-3">
+                  <div className="w-2/3 h-10 lg:h-14 bg-foreground/10 rounded-2xl animate-pulse" />
+                  <div className="w-1/3 h-4 bg-foreground/5 rounded-full animate-pulse" />
+                </div>
+                <div className="hidden lg:flex items-center gap-14 lg:min-w-[320px] lg:border-l border-foreground/5 lg:pl-10">
+                  <div className="flex-1 space-y-4">
+                    <div className="flex justify-between">
+                      <div className="w-20 h-2 bg-foreground/10 rounded-full animate-pulse" />
+                      <div className="w-12 h-2 bg-foreground/10 rounded-full animate-pulse" />
+                    </div>
+                    <div className="w-full h-2 bg-foreground/5 rounded-full animate-pulse" />
+                    <div className="flex gap-2">
+                      <div className="w-4 h-4 bg-foreground/10 rounded-full animate-pulse" />
+                      <div className="w-32 h-4 bg-foreground/5 rounded-full animate-pulse" />
+                    </div>
+                  </div>
+                  <div className="w-32 h-16 bg-foreground/10 rounded-2xl animate-pulse" />
+                </div>
+                <div className="w-full lg:w-[250px] h-12 lg:h-24 bg-foreground/10 rounded-[1.2rem] lg:rounded-[2.2rem] animate-pulse" />
+              </div>
+            ))}
           </div>
         ) : activeTab === 'list' ? (
           <div className="flex flex-col gap-6">

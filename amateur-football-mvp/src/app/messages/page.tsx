@@ -417,13 +417,22 @@ export default function MessagesPage() {
             className="flex-1 overflow-y-auto space-y-3 pr-2 no-scrollbar pb-6"
           >
             {isLoading ? (
-              Array(5)
+              Array(6)
                 .fill(0)
                 .map((_, i) => (
                   <div
-                    key={i}
-                    className="w-full h-24 rounded-[1.5rem] bg-foreground/[0.03] border border-foreground/5 animate-pulse"
-                  />
+                    key={`msg-skeleton-${i}`}
+                    className="w-full p-4 sm:p-5 rounded-[2rem] border border-foreground/5 bg-foreground/[0.02] flex items-center gap-4 animate-pulse"
+                  >
+                    <div className="w-14 h-14 rounded-[1.2rem] bg-foreground/10 shrink-0" />
+                    <div className="flex-1 min-w-0 space-y-3">
+                      <div className="flex items-center justify-between">
+                        <div className="w-24 h-3 bg-foreground/10 rounded-full" />
+                        <div className="w-10 h-2 bg-foreground/5 rounded-full" />
+                      </div>
+                      <div className="w-3/4 h-2 bg-foreground/5 rounded-full" />
+                    </div>
+                  </div>
                 ))
             ) : (
               <>

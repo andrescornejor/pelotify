@@ -251,14 +251,34 @@ export default function ChatRoom({ matchId, recipientId, className, title }: Cha
         className="flex-1 overflow-y-auto p-6 sm:px-10 py-10 space-y-10 no-scrollbar relative z-10"
       >
         {isLoading ? (
-          <div className="flex flex-col items-center justify-center h-full gap-6 text-foreground/20">
-            <div className="relative">
-              <Loader2 className="w-12 h-12 animate-spin text-primary" />
-              <div className="absolute inset-0 bg-primary/20 blur-2xl rounded-full" />
-            </div>
-            <span className="text-[11px] font-black uppercase tracking-[0.5em] animate-pulse text-primary/60">
-              Sincronizando...
-            </span>
+          <div className="flex flex-col gap-8 pb-4">
+            {[1, 2, 3, 4].map((i) => (
+              <div
+                key={`msg-skeleton-${i}`}
+                className={cn(
+                  'flex gap-3 animate-pulse',
+                  i % 2 === 0 ? 'flex-row-reverse' : 'flex-row'
+                )}
+              >
+                <div className="w-10 h-10 rounded-2xl bg-foreground/10 shrink-0 self-end" />
+                <div
+                  className={cn(
+                    'flex flex-col gap-2 max-w-[70%]',
+                    i % 2 === 0 ? 'items-end' : 'items-start'
+                  )}
+                >
+                  <div className="w-16 h-2 bg-foreground/5 rounded-full" />
+                  <div
+                    className={cn(
+                      'px-10 py-6 rounded-[2rem] bg-foreground/5',
+                      i % 2 === 0 ? 'rounded-tr-[0.5rem]' : 'rounded-tl-[0.5rem]'
+                    )}
+                  >
+                    <div className={cn('h-3 bg-foreground/10 rounded-full', i % 2 === 0 ? 'w-32' : 'w-48')} />
+                  </div>
+                </div>
+              </div>
+            ))}
           </div>
         ) : messages.length === 0 ? (
           <div className="flex flex-col items-center justify-center h-full text-center space-y-10 opacity-30">
