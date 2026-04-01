@@ -367,6 +367,8 @@ export default function CreateMatchPage() {
       // Invalidate cache immediately so the match shows on Home
       queryClient.invalidateQueries({ queryKey: queryKeys.home.all });
       queryClient.invalidateQueries({ queryKey: queryKeys.userMatches.all });
+      queryClient.invalidateQueries({ queryKey: queryKeys.matches.all });
+      queryClient.invalidateQueries({ queryKey: queryKeys.matches.lists() });
 
       // Si es un establecimiento registrado y elige Mercado Pago, redirigir a pagar la seña
       if (formData.business_id && formData.field_id && formData.payment_method === 'mercado_pago') {

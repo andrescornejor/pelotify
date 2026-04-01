@@ -44,12 +44,26 @@ export function useMatchSearch() {
     [userMatches]
   );
   
-  const matches = allMatches;
+  const matches = useMemo(() => {
+    // Merge all official matches with current user's joined/created matches
+    // to ensure they see their "waiting_deposit" or private matches they belong to.
+    const merged = [...allMatches];
+    const matchIds = new Set(allMatches.map(m => m.id));
+    
+    userMatches.forEach(um => {
+      if (!matchIds.has(um.id)) {
+        merged.push(um);
+        matchIds.add(um.id);
+      }
+    });
+
+    return merged;
+  }, [allMatches, userMatches]);
 
   const filteredMatches = useMemo(() => {
     return matches.filter((match) => {
       if (match.is_completed) return false;
-      if (match.is_private) return false;
+      if (match.is_private && !joinedIds.has(match.id)) return false;
 
       // Type Filter
       if (typeFilter !== 'All' && match.type !== typeFilter) return false;
