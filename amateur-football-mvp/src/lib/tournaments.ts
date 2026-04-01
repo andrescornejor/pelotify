@@ -15,13 +15,29 @@ export interface Tournament {
   status: 'upcoming' | 'ongoing' | 'completed' | 'cancelled';
   creator_id?: string;
   is_private: boolean;
+  is_official: boolean;
   created_at: string;
+}
+
+export async function createTournament(tournament: Partial<Tournament>) {
+  const { data, error } = await supabase
+    .from('tournaments')
+    .insert([tournament])
+    .select()
+    .single();
+
+  if (error) {
+    console.error('Error creating tournament:', error);
+    throw error;
+  }
+  return data;
 }
 
 export async function getTournaments() {
   const { data, error } = await supabase
     .from('tournaments')
     .select('*')
+    .order('is_official', { ascending: false })
     .order('created_at', { ascending: false });
 
   if (error) {

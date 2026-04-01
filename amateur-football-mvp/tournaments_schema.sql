@@ -20,6 +20,7 @@ CREATE TABLE IF NOT EXISTS public.tournaments (
     status TEXT DEFAULT 'upcoming' CHECK (status IN ('upcoming', 'ongoing', 'completed', 'cancelled')),
     creator_id UUID REFERENCES public.profiles(id),
     is_private BOOLEAN DEFAULT false,
+    is_official BOOLEAN DEFAULT false,
     created_at TIMESTAMPTZ DEFAULT now(),
     updated_at TIMESTAMPTZ DEFAULT now()
 );
@@ -91,8 +92,8 @@ END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
 
 -- 6. SAMPLE SEED DATA
-INSERT INTO public.tournaments (name, description, image_url, banner_url, start_date, end_date, location, type, max_teams, entry_fee, status)
+INSERT INTO public.tournaments (name, description, image_url, banner_url, start_date, end_date, location, type, max_teams, entry_fee, status, is_official)
 VALUES 
-('Copa América Amateur 2024', 'El torneo más grande del verano. Representá a tu equipo en un formato mundialista.', NULL, 'https://images.unsplash.com/photo-1574629810360-7efbbe195018?q=80&w=1200&auto=format&fit=crop', '2024-06-15', '2024-07-20', 'Rosario Central Park', 'F5', 16, 5000, 'upcoming'),
-('Torneo Clausura Pelotify', 'Cerrá el año como un campeón. Premios en efectivo y trofeo oficial.', NULL, 'https://images.unsplash.com/photo-1551958219-acbc608c6377?q=80&w=1200&auto=format&fit=crop', '2024-08-01', '2024-09-15', 'Complejo El Potrero', 'F7', 12, 7500, 'upcoming'),
-('Night League Rosario', 'Fútbol nocturno bajo las luces. Solo para los más habilidosos.', NULL, 'https://images.unsplash.com/photo-1518604666860-9ed391f76460?q=80&w=1200&auto=format&fit=crop', '2024-05-10', '2024-06-10', 'Predio La Redonda', 'F5', 8, 3000, 'ongoing');
+('Copa América Amateur 2024', 'El torneo más grande del verano. Representá a tu equipo en un formato mundialista.', NULL, 'https://images.unsplash.com/photo-1574629810360-7efbbe195018?q=80&w=1200&auto=format&fit=crop', '2024-06-15', '2024-07-20', 'Rosario Central Park', 'F5', 16, 5000, 'upcoming', true),
+('Torneo Clausura Pelotify', 'Cerrá el año como un campeón. Premios en efectivo y trofeo oficial.', NULL, 'https://images.unsplash.com/photo-1551958219-acbc608c6377?q=80&w=1200&auto=format&fit=crop', '2024-08-01', '2024-09-15', 'Complejo El Potrero', 'F7', 12, 7500, 'upcoming', true),
+('Night League Rosario', 'Fútbol nocturno bajo las luces. Solo para los más habilidosos.', NULL, 'https://images.unsplash.com/photo-1518604666860-9ed391f76460?q=80&w=1200&auto=format&fit=crop', '2024-05-10', '2024-06-10', 'Predio La Redonda', 'F5', 8, 3000, 'ongoing', false);
