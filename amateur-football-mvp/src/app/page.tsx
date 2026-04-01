@@ -428,7 +428,6 @@ export default function HomePage() {
                     <span className="text-foreground font-black uppercase">{userName}</span>
                   </p>
                 </motion.div>
-              </div>
 
               {/* Stats / Rank Summary */}
               <motion.div
