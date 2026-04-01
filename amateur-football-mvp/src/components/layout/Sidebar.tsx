@@ -209,7 +209,6 @@ export const SidebarContent = memo(function SidebarContent({
       title: "Competición",
       items: [
         { icon: Trophy, label: 'Ranking Global', href: '/ranks' },
-        { icon: Award, label: 'Logros y Medallas', href: '/achievements' },
       ]
     }
   ], [pendingCount, pathname]);
@@ -340,7 +339,7 @@ export const SidebarContent = memo(function SidebarContent({
                   </motion.div>
                 </div>
                 <span className="text-[8px] font-black text-foreground/20 italic uppercase tracking-tighter">
-                  {1000 - (elo % 1000)} PARA EL SIGUIENTE LVL
+                   PARA EL SIGUIENTE LVL: {1000 - (elo % 1000)}
                 </span>
               </div>
             </div>
@@ -359,33 +358,6 @@ export const SidebarContent = memo(function SidebarContent({
             isMobile={isMobile} 
           />
         ))}
-
-        {/* ── Create CTA ── */}
-        <div className="px-3 mt-4 mb-8">
-          <Link href="/create" onClick={() => isMobile && onClose && onClose()}>
-            <motion.div
-              whileHover={{ scale: 1.02, y: -2 }}
-              whileTap={{ scale: 0.98 }}
-              className="relative rounded-2xl h-14 flex items-center justify-center gap-3 overflow-hidden group/cta shadow-[0_15px_30px_rgba(44,252,125,0.15)]"
-            >
-              <div className="absolute inset-0 bg-gradient-to-br from-[#2cfc7d] to-[#1db95a]" />
-              <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_30%,rgba(255,255,255,0.3)_0%,transparent_70%)] opacity-0 group-hover/cta:opacity-100 transition-opacity duration-500" />
-              
-              <div className="relative z-10 flex items-center gap-3">
-                <div className="w-7 h-7 rounded-lg bg-black/10 flex items-center justify-center border border-white/10">
-                  <PlusCircle className="w-4 h-4 text-white" strokeWidth={3} />
-                </div>
-                <span className="text-[11px] font-black uppercase italic tracking-[0.1em] text-black">
-                  Armar nuevo Partido
-                </span>
-              </div>
-
-              {/* Shimmer effect */}
-              <div className="absolute inset-0 translate-x-[-100%] group-hover/cta:translate-x-[100%] transition-transform duration-1000 pointer-events-none"
-                   style={{ background: "linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent)" }} />
-            </motion.div>
-          </Link>
-        </div>
       </div>
 
       {/* ── Footer ── */}
