@@ -14,6 +14,10 @@ export interface Tournament {
   entry_fee: number;
   status: 'upcoming' | 'ongoing' | 'completed' | 'cancelled';
   creator_id?: string;
+  prize_percentage?: number;
+  prize_description?: string;
+  field_id?: string;
+  business_id?: string;
   is_private: boolean;
   is_official: boolean;
   created_at: string;

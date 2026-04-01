@@ -17,8 +17,11 @@ CREATE TABLE IF NOT EXISTS public.tournaments (
     max_teams INTEGER DEFAULT 8,
     entry_fee DECIMAL(10,2) DEFAULT 0,
     prize_description TEXT,
+    prize_percentage INTEGER DEFAULT 0,
     status TEXT DEFAULT 'upcoming' CHECK (status IN ('upcoming', 'ongoing', 'completed', 'cancelled')),
     creator_id UUID REFERENCES public.profiles(id),
+    field_id UUID REFERENCES public.canchas_fields(id) ON DELETE SET NULL,
+    business_id UUID REFERENCES public.canchas_businesses(id) ON DELETE SET NULL,
     is_private BOOLEAN DEFAULT false,
     is_official BOOLEAN DEFAULT false,
     created_at TIMESTAMPTZ DEFAULT now(),
@@ -30,6 +33,15 @@ DO $$
 BEGIN
     IF NOT EXISTS (SELECT 1 FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = 'tournaments' AND COLUMN_NAME = 'is_official') THEN
         ALTER TABLE public.tournaments ADD COLUMN is_official BOOLEAN DEFAULT false;
+    END IF;
+    IF NOT EXISTS (SELECT 1 FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = 'tournaments' AND COLUMN_NAME = 'prize_percentage') THEN
+        ALTER TABLE public.tournaments ADD COLUMN prize_percentage INTEGER DEFAULT 0;
+    END IF;
+    IF NOT EXISTS (SELECT 1 FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = 'tournaments' AND COLUMN_NAME = 'field_id') THEN
+        ALTER TABLE public.tournaments ADD COLUMN field_id UUID REFERENCES public.canchas_fields(id) ON DELETE SET NULL;
+    END IF;
+    IF NOT EXISTS (SELECT 1 FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = 'tournaments' AND COLUMN_NAME = 'business_id') THEN
+        ALTER TABLE public.tournaments ADD COLUMN business_id UUID REFERENCES public.canchas_businesses(id) ON DELETE SET NULL;
     END IF;
 END $$;
 
