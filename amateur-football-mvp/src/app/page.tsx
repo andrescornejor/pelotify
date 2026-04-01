@@ -977,6 +977,7 @@ export default function HomePage() {
                        <WeatherWidget 
                           lat={nextMatch.lat} 
                           lng={nextMatch.lng} 
+                          location={nextMatch.location}
                           date={nextMatch.date} 
                           time={nextMatch.time} 
                        />

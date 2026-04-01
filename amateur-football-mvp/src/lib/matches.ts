@@ -32,9 +32,10 @@ export interface Match {
 }
 
 export async function updateMatch(matchId: string, updates: Partial<Match>) {
+  const { lat, lng, ...actualUpdates } = updates as any;
   const { data, error } = await supabase
     .from('matches')
-    .update(updates)
+    .update(actualUpdates)
     .eq('id', matchId)
     .select()
     .single();
@@ -134,7 +135,7 @@ export async function getMatchById(id: string) {
 
 export async function createMatch(matchData: Partial<Match> & { field_id?: string, business_id?: string }) {
   // First, create the match
-  const { field_id, business_id, ...insertData } = matchData;
+  const { field_id, business_id, lat, lng, ...insertData } = matchData as any;
   
   // Limpiamos los IDs si vienen como strings vacíos para evitar error de sintaxis UUID en Postgres
   const finalFieldId = field_id === "" ? undefined : field_id;

@@ -457,6 +457,7 @@ function MatchLobbyContent() {
                   <WeatherWidget 
                     lat={match.lat} 
                     lng={match.lng} 
+                    location={match.location}
                     date={match.date} 
                     time={match.time} 
                     className="w-fit"

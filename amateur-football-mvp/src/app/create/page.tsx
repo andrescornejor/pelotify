@@ -864,6 +864,7 @@ export default function CreateMatchPage() {
                         time={formData.time} 
                         lat={formData.lat} 
                         lng={formData.lng} 
+                        location={formData.location}
                       />
                     </motion.div>
                   )}

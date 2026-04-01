@@ -3,10 +3,12 @@
 import { useEffect, useState } from 'react';
 import { Cloud, CloudFog, CloudLightning, CloudRain, CloudSnow, Sun, CloudDrizzle, Thermometer } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { findVenueByLocation } from '@/lib/venues';
 
 interface WeatherWidgetProps {
   lat?: number;
   lng?: number;
+  location?: string;
   date: string; // YYYY-MM-DD
   time: string; // HH:MM
   className?: string;
@@ -26,7 +28,7 @@ const getWeatherIcon = (code: number) => {
   return <Cloud className="w-5 h-5 text-slate-400" />;
 };
 
-export function WeatherWidget({ lat = -32.9468, lng = -60.6393, date, time, className }: WeatherWidgetProps) {
+export function WeatherWidget({ lat, lng, location, date, time, className }: WeatherWidgetProps) {
   const [weather, setWeather] = useState<{ temp: number; code: number } | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -34,9 +36,26 @@ export function WeatherWidget({ lat = -32.9468, lng = -60.6393, date, time, clas
     async function fetchWeather() {
       try {
         setLoading(true);
+
+        // Resolve coordinates from location if not provided
+        let targetLat = lat;
+        let targetLng = lng;
+
+        if (!targetLat || !targetLng) {
+            const venue = findVenueByLocation(location || '');
+            if (venue) {
+                targetLat = venue.lat;
+                targetLng = venue.lng;
+            } else {
+                // Default to Rosario coordinates if everything else fails
+                targetLat = -32.9468;
+                targetLng = -60.6393;
+            }
+        }
+
         // Open-Meteo is free and doesn't require an API key
         const response = await fetch(
-          `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lng}&hourly=temperature_2m,weathercode&forecast_days=14`
+          `https://api.open-meteo.com/v1/forecast?latitude=${targetLat}&longitude=${targetLng}&hourly=temperature_2m,weathercode&forecast_days=14`
         );
         const data = await response.json();
 
