@@ -14,10 +14,10 @@ interface PlayerToRate {
 const PLAYERS_TO_RATE: PlayerToRate[] = [
   {
     id: 1,
-    name: 'Martín Pérez',
+    name: 'MartÃ­n PÃ©rez',
     avatar: 'https://api.dicebear.com/7.x/notionists/svg?seed=Martin',
   },
-  { id: 2, name: 'Lucas Gómez', avatar: 'https://api.dicebear.com/7.x/notionists/svg?seed=Lucas' },
+  { id: 2, name: 'Lucas GÃ³mez', avatar: 'https://api.dicebear.com/7.x/notionists/svg?seed=Lucas' },
 ];
 
 export function RatingModal({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) {
@@ -133,7 +133,7 @@ export function RatingModal({ isOpen, onClose }: { isOpen: boolean; onClose: () 
 
                   <div className="space-y-1">
                     <h3 className="text-xl font-black italic uppercase tracking-tighter text-foreground">
-                      ¡Valoraciones Enviadas!
+                      Â¡Valoraciones Enviadas!
                     </h3>
                     <p className="text-[10px] text-foreground/70 font-black uppercase tracking-widest italic">
                       Puntajes Enviados
@@ -160,7 +160,7 @@ export function RatingModal({ isOpen, onClose }: { isOpen: boolean; onClose: () 
                             {eloResult.newElo}
                           </span>
                         </div>
-                        <p className="text-[9px] font-black uppercase tracking-widest text-foreground/35">
+                        <p className="text-[10px] font-black uppercase tracking-widest text-foreground/35">
                           Nuevo ELO
                         </p>
                       </div>
@@ -173,7 +173,7 @@ export function RatingModal({ isOpen, onClose }: { isOpen: boolean; onClose: () 
                           {eloResult.change > 0 ? '+' : ''}
                           {eloResult.change} puntos
                         </span>
-                        <span className="text-[9px] font-black uppercase tracking-wider text-foreground/40">
+                        <span className="text-[10px] font-black uppercase tracking-wider text-foreground/40">
                           Resultado + Rendimiento
                         </span>
                       </div>
@@ -202,15 +202,15 @@ export function RatingModal({ isOpen, onClose }: { isOpen: boolean; onClose: () 
                       </div>
                       <div>
                         <h2 className="text-lg font-black italic uppercase tracking-tighter text-foreground leading-none">
-                          Fin del Partido ⚽
+                          Fin del Partido âš½
                         </h2>
-                        <p className="text-[9px] font-black uppercase tracking-widest text-foreground/35 mt-0.5">
-                          Valorá a tus compañeros
+                        <p className="text-[10px] font-black uppercase tracking-widest text-foreground/35 mt-0.5">
+                          ValorÃ¡ a tus compaÃ±eros
                         </p>
                       </div>
                     </div>
                     <p className="text-[10px] text-foreground/60 leading-relaxed">
-                      Las valoraciones ajustan el ELO de tus compañeros. ¡Sé honesto!
+                      Las valoraciones ajustan el ELO de tus compaÃ±eros. Â¡SÃ© honesto!
                     </p>
                   </div>
 
@@ -247,12 +247,12 @@ export function RatingModal({ isOpen, onClose }: { isOpen: boolean; onClose: () 
                               />
                             </div>
                             <div className="flex-1 min-w-0">
-                              <p className="text-[9px] font-black text-foreground/45 uppercase tracking-[0.5em] italic">
-                                Rating de Camaradería
+                              <p className="text-[10px] font-black text-foreground/45 uppercase tracking-[0.5em] italic">
+                                Rating de CamaraderÃ­a
                               </p>
                               {currentRating > 0 && (
-                                <p className="text-[9px] font-black text-foreground/70 uppercase tracking-[0.2em] mb-1">
-                                  Tu desempeño
+                                <p className="text-[10px] font-black text-foreground/70 uppercase tracking-[0.2em] mb-1">
+                                  Tu desempeÃ±o
                                 </p>
                               )}
                             </div>
@@ -333,7 +333,7 @@ export function RatingModal({ isOpen, onClose }: { isOpen: boolean; onClose: () 
                       }
                     >
                       {allRated
-                        ? '✓ Enviar Valoraciones'
+                        ? 'âœ“ Enviar Valoraciones'
                         : `Faltan valoraciones (${PLAYERS_TO_RATE.length - Object.keys(ratings).length})`}
                     </motion.button>
                   </div>

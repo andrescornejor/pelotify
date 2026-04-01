@@ -146,7 +146,7 @@ export default function PostMatchModal({
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.95, y: 40 }}
           transition={{ type: 'spring', bounce: 0.3, duration: 0.8 }}
-          className="w-full max-w-lg h-[95vh] sm:h-[85vh] lg:h-auto lg:max-h-[90vh] glass-premium rounded-[3rem] border border-foreground/10 shadow-[0_50px_100px_rgba(0,0,0,0.5)] relative overflow-hidden flex flex-col"
+          className="w-full max-w-lg h-[95vh] sm:h-[85vh] lg:h-auto lg:max-h-[90vh] glass-premium rounded-[2rem] border border-foreground/10 shadow-[0_50px_100px_rgba(0,0,0,0.5)] relative overflow-hidden flex flex-col"
         >
           {/* Progress Bar Header */}
           <div className="absolute top-0 inset-x-0 h-1.5 bg-foreground/5 z-50">
@@ -184,7 +184,7 @@ export default function PostMatchModal({
                   : step === 'ratings'
                     ? 'Tu Rendimiento'
                     : step === 'mvp'
-                      ? 'Elegí MVP'
+                      ? 'ElegÃƒÂ­ MVP'
                       : 'Completado'}
               </h3>
             </div>
@@ -210,8 +210,8 @@ export default function PostMatchModal({
                     MARCADOR OFICIAL
                   </p>
                   <p className="text-sm font-medium text-foreground/60 leading-relaxed">
-                    ¿Cómo salió tu equipo hoy? Sé honesto, el otro equipo también enviará su
-                    versión.
+                    Ã‚Â¿CÃƒÂ³mo saliÃƒÂ³ tu equipo hoy? SÃƒÂ© honesto, el otro equipo tambiÃƒÂ©n enviarÃƒÂ¡ su
+                    versiÃƒÂ³n.
                   </p>
                 </div>
 
@@ -230,7 +230,7 @@ export default function PostMatchModal({
                     </span>
                     <div className="relative">
                       <div className="absolute inset-0 bg-primary/20 blur-3xl rounded-full opacity-0 group-hover:opacity-100 transition-opacity" />
-                      <div className="w-24 h-32 sm:w-32 sm:h-40 rounded-[2.5rem] bg-foreground/[0.03] border-4 border-foreground/10 flex flex-col items-center justify-center gap-4 relative z-10 shadow-inner group-hover:border-primary/50 transition-colors">
+                      <div className="w-24 h-32 sm:w-32 sm:h-40 rounded-[2rem] bg-foreground/[0.03] border-4 border-foreground/10 flex flex-col items-center justify-center gap-4 relative z-10 shadow-inner group-hover:border-primary/50 transition-colors">
                         <button
                           onClick={() => setScoreA((prev) => prev + 1)}
                           className="w-10 h-10 sm:w-12 sm:h-12 bg-white/5 rounded-full flex items-center justify-center hover:bg-white/20 active:scale-90 transition-all text-white"
@@ -268,7 +268,7 @@ export default function PostMatchModal({
                     </span>
                     <div className="relative">
                       <div className="absolute inset-0 bg-red-500/20 blur-3xl rounded-full opacity-0 group-hover:opacity-100 transition-opacity" />
-                      <div className="w-24 h-32 sm:w-32 sm:h-40 rounded-[2.5rem] bg-foreground/[0.03] border-4 border-foreground/10 flex flex-col items-center justify-center gap-4 relative z-10 shadow-inner group-hover:border-red-500/50 transition-colors">
+                      <div className="w-24 h-32 sm:w-32 sm:h-40 rounded-[2rem] bg-foreground/[0.03] border-4 border-foreground/10 flex flex-col items-center justify-center gap-4 relative z-10 shadow-inner group-hover:border-red-500/50 transition-colors">
                         <button
                           onClick={() => setScoreB((prev) => prev + 1)}
                           className="w-10 h-10 sm:w-12 sm:h-12 bg-white/5 rounded-full flex items-center justify-center hover:bg-white/20 active:scale-90 transition-all text-white"
@@ -310,7 +310,7 @@ export default function PostMatchModal({
                   <div className="flex items-center gap-3">
                     <div className="w-2 h-8 bg-primary rounded-full" />
                     <h4 className="text-lg font-black uppercase italic tracking-tighter">
-                      ¿Cuántos goles hiciste?
+                      Ã‚Â¿CuÃƒÂ¡ntos goles hiciste?
                     </h4>
                   </div>
                   <div className="p-6 bg-foreground/[0.02] border border-foreground/10 rounded-[2rem] flex items-center justify-between">
@@ -339,13 +339,13 @@ export default function PostMatchModal({
                   <div className="flex items-center gap-3">
                     <div className="w-2 h-8 bg-accent rounded-full" />
                     <h4 className="text-lg font-black uppercase italic tracking-tighter">
-                      Calificá a tus pibes
+                      CalificÃƒÂ¡ a tus pibes
                     </h4>
                   </div>
                   <div className="flex flex-col gap-3">
                     {teammates.length === 0 ? (
                       <div className="p-8 text-center text-foreground/40 font-bold uppercase text-[10px] tracking-widest bg-foreground/[0.02] rounded-3xl border border-dashed border-foreground/10">
-                        Jugaste sin compañeros registrados.
+                        Jugaste sin compaÃƒÂ±eros registrados.
                       </div>
                     ) : (
                       teammates.map((player) => (
@@ -371,7 +371,7 @@ export default function PostMatchModal({
                               <span className="text-sm font-black uppercase tracking-tight text-foreground truncate max-w-[100px] sm:max-w-xs">
                                 {player.profiles?.name || 'Jugador'}
                               </span>
-                              <span className="text-[9px] text-foreground/40 uppercase font-black tracking-widest">
+                              <span className="text-[10px] text-foreground/40 uppercase font-black tracking-widest">
                                 {player.profiles?.position || 'DC'}
                               </span>
                             </div>
@@ -419,10 +419,10 @@ export default function PostMatchModal({
               >
                 <div className="w-full text-center space-y-2 mb-8">
                   <h3 className="text-[10px] font-black uppercase tracking-[0.4em] text-accent flex items-center justify-center gap-2">
-                    <Sparkles className="w-4 h-4" /> BALÓN DE ORO LOCAL
+                    <Sparkles className="w-4 h-4" /> BALÃƒâ€œN DE ORO LOCAL
                   </h3>
                   <p className="text-sm font-medium text-foreground/60">
-                    Desliza para elegir a la figura. Su ELO sufrirá un boost fenomenal.
+                    Desliza para elegir a la figura. Su ELO sufrirÃƒÂ¡ un boost fenomenal.
                   </p>
                 </div>
 
@@ -435,7 +435,7 @@ export default function PostMatchModal({
                       return (
                         <motion.div
                           key={player.user_id}
-                          className="absolute inset-0 bg-background/80 backdrop-blur-3xl rounded-[3rem] border-2 border-accent/20 shadow-[0_30px_60px_rgba(245,158,11,0.15)] flex flex-col items-center justify-center p-6 overflow-hidden"
+                          className="absolute inset-0 bg-background/80 backdrop-blur-3xl rounded-[2rem] border-2 border-accent/20 shadow-[0_30px_60px_rgba(245,158,11,0.15)] flex flex-col items-center justify-center p-6 overflow-hidden"
                           style={{ zIndex: participants.length - idx }}
                           drag={isFront && !selectedMvp ? 'x' : false}
                           dragConstraints={{ left: 0, right: 0 }}
@@ -501,15 +501,15 @@ export default function PostMatchModal({
                           <div className="absolute bottom-6 flex justify-between w-full px-8 pointer-events-none">
                             <div className="flex flex-col items-center opacity-30">
                               <span className="text-[10px] font-black italic tracking-widest text-foreground">
-                                OTRO O DÉSPUES
+                                OTRO O DÃƒâ€°SPUES
                               </span>
-                              <span className="text-xl">👈</span>
+                              <span className="text-xl">Ã°Å¸â€˜Ë†</span>
                             </div>
                             <div className="flex flex-col items-center opacity-100">
                               <span className="text-[10px] font-black italic tracking-widest text-accent">
                                 ELEGIR MVP
                               </span>
-                              <span className="text-xl">👉</span>
+                              <span className="text-xl">Ã°Å¸â€˜â€°</span>
                             </div>
                           </div>
                         </motion.div>
@@ -521,13 +521,13 @@ export default function PostMatchModal({
                     <motion.div
                       initial={{ opacity: 0, scale: 0.9 }}
                       animate={{ opacity: 1, scale: 1 }}
-                      className="text-center absolute inset-0 flex flex-col items-center justify-center p-8 bg-foreground/[0.02] rounded-[3rem] border border-dashed border-foreground/10"
+                      className="text-center absolute inset-0 flex flex-col items-center justify-center p-8 bg-foreground/[0.02] rounded-[2rem] border border-dashed border-foreground/10"
                     >
                       <div className="w-20 h-20 bg-foreground/5 rounded-[2rem] flex items-center justify-center mb-6">
                         <Users className="w-10 h-10 text-foreground/20" />
                       </div>
                       <p className="text-2xl text-foreground font-black uppercase tracking-tighter italic mb-4">
-                        ¡Nadie fue MVP!
+                        Ã‚Â¡Nadie fue MVP!
                       </p>
                       <p className="text-[10px] text-foreground/40 uppercase font-black mb-10 px-4 leading-relaxed">
                         Ignoraste a todos los jugadores. Puedes volver o confirmar sin votar.
@@ -561,7 +561,7 @@ export default function PostMatchModal({
                     <div className="glass-premium p-4 rounded-[2rem] border-2 border-accent bg-accent/10 backdrop-blur-2xl shadow-[0_0_50px_rgba(245,158,11,0.2)] mb-6">
                       <p className="text-center text-accent font-black uppercase text-sm tracking-widest italic flex items-center justify-center gap-3">
                         <Medal className="w-6 h-6 fill-accent" />
-                        ¡VOTASTE A{' '}
+                        Ã‚Â¡VOTASTE A{' '}
                         {participants.find((p) => p.user_id === selectedMvp)?.profiles?.name}!
                       </p>
                     </div>
@@ -614,11 +614,11 @@ export default function PostMatchModal({
 
                 <div className="space-y-4 max-w-sm">
                   <h3 className="text-4xl font-black text-foreground uppercase italic tracking-tighter leading-none">
-                    {isConsensus ? '¡Consenso de Resultado!' : '¡Reporte Archivo!'}
+                    {isConsensus ? 'Ã‚Â¡Consenso de Resultado!' : 'Ã‚Â¡Reporte Archivo!'}
                   </h3>
                   <p className="text-foreground/60 text-sm font-medium leading-relaxed">
                     {isConsensus
-                      ? 'Ambos equipos coinciden. Tu ELO y estadísticas ya fueron actualizados masivamente en el sistema.'
+                      ? 'Ambos equipos coinciden. Tu ELO y estadÃƒÂ­sticas ya fueron actualizados masivamente en el sistema.'
                       : 'Estamos esperando que un jugador del equipo rival reporte el mismo resultado para aplicar el cambio de ELO.'}
                   </p>
                 </div>

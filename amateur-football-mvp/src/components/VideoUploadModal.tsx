@@ -27,13 +27,13 @@ export default function VideoUploadModal({ onClose, onSuccess }: VideoUploadModa
 
     // Check if it's a video
     if (!selectedFile.type.startsWith('video/')) {
-      setError('Por favor, selecciona un archivo de video válido.');
+      setError('Por favor, selecciona un archivo de video vÃ¡lido.');
       return;
     }
 
     // Check size (e.g., 50MB limit for MVP)
     if (selectedFile.size > 50 * 1024 * 1024) {
-      setError('El video es demasiado grande (máximo 50MB).');
+      setError('El video es demasiado grande (mÃ¡ximo 50MB).');
       return;
     }
 
@@ -45,7 +45,7 @@ export default function VideoUploadModal({ onClose, onSuccess }: VideoUploadModa
 
   const validateDuration = () => {
     if (videoRef.current && videoRef.current.duration > 16) { // Allowing +1s buffer
-      setError('El video debe durar máximo 15 segundos.');
+      setError('El video debe durar mÃ¡ximo 15 segundos.');
       setFile(null);
       setPreviewUrl(null);
       return false;
@@ -96,7 +96,7 @@ export default function VideoUploadModal({ onClose, onSuccess }: VideoUploadModa
       onClose();
     } catch (err: any) {
       console.error('Upload error:', err);
-      setError(err.message || 'Error al subir el video. Inténtalo de nuevo.');
+      setError(err.message || 'Error al subir el video. IntÃ©ntalo de nuevo.');
     } finally {
       setIsUploading(false);
     }
@@ -116,7 +116,7 @@ export default function VideoUploadModal({ onClose, onSuccess }: VideoUploadModa
         initial={{ scale: 0.9, opacity: 0, y: 20 }}
         animate={{ scale: 1, opacity: 1, y: 0 }}
         exit={{ scale: 0.9, opacity: 0, y: 20 }}
-        className="relative w-full max-w-md bg-zinc-900 border border-white/10 rounded-[2.5rem] overflow-hidden shadow-2xl"
+        className="relative w-full max-w-md bg-zinc-900 border border-white/10 rounded-[2rem] overflow-hidden shadow-2xl"
       >
         <div className="p-6 border-b border-white/5 flex items-center justify-between bg-zinc-900/50">
           <h3 className="text-xl font-black italic uppercase tracking-tighter text-white font-kanit">Subir Jugada</h3>
@@ -133,7 +133,7 @@ export default function VideoUploadModal({ onClose, onSuccess }: VideoUploadModa
                   <Upload className="w-8 h-8 text-emerald-500" />
                 </div>
                 <p className="text-sm font-bold text-white mb-1">Selecciona un clip</p>
-                <p className="text-[10px] text-white/40 uppercase tracking-widest font-black italic">Máximo 15 segundos</p>
+                <p className="text-[10px] text-white/40 uppercase tracking-widest font-black italic">MÃ¡ximo 15 segundos</p>
               </div>
               <input type="file" className="hidden" accept="video/*" onChange={handleFileChange} />
             </label>
@@ -156,11 +156,11 @@ export default function VideoUploadModal({ onClose, onSuccess }: VideoUploadModa
               </div>
 
               <div className="space-y-2">
-                <label className="text-[10px] font-black text-white/40 uppercase tracking-widest ml-1 text-white">Descripción</label>
+                <label className="text-[10px] font-black text-white/40 uppercase tracking-widest ml-1 text-white">DescripciÃ³n</label>
                 <textarea 
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
-                  placeholder="¿Qué pasó en esta jugada? #GOLAZO"
+                  placeholder="Â¿QuÃ© pasÃ³ en esta jugada? #GOLAZO"
                   className="w-full bg-white/[0.03] border border-white/10 rounded-2xl p-4 text-white text-sm focus:outline-none focus:border-emerald-500/50 placeholder:text-white/20 h-24 resize-none"
                 />
               </div>

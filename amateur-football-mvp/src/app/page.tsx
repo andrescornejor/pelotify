@@ -188,7 +188,7 @@ export default function HomePage() {
         )}
       >
         <Zap className={cn('w-5 h-5', performanceMode && 'fill-current')} />
-        <span className="text-[7px] font-black uppercase mt-0.5 tracking-tighter">
+        <span className="text-[10px] font-black uppercase mt-0.5 tracking-tighter">
           {performanceMode ? 'LITE ON' : 'FX ON'}
         </span>
       </button>
@@ -267,7 +267,7 @@ export default function HomePage() {
                 <div className="flex justify-between items-start mb-6">
                    <div className="px-3 py-1 rounded-full bg-white/5 border border-white/10 backdrop-blur-md flex items-center gap-2">
                        <Clock className="w-3.5 h-3.5 text-primary" />
-                       <span className="text-[10px] font-black text-foreground uppercase tracking-widest">{nextMatch.type || 'F5'} • {new Date(nextMatch.date).toLocaleDateString('es-ES', { weekday: 'short', day: 'numeric', month: 'short' }).toUpperCase()}</span>
+                       <span className="text-[10px] font-black text-foreground uppercase tracking-widest">{nextMatch.type || 'F5'} â€¢ {new Date(nextMatch.date).toLocaleDateString('es-ES', { weekday: 'short', day: 'numeric', month: 'short' }).toUpperCase()}</span>
                    </div>
                    {countdownText && (
                       <div className="px-3 py-1 rounded-full bg-primary/20 border border-primary/50 text-primary text-[10px] font-black uppercase tracking-widest animate-pulse">
@@ -313,7 +313,7 @@ export default function HomePage() {
                  </div>
                  <div className="space-y-2">
                     <h3 className="text-xl sm:text-2xl font-black italic uppercase tracking-tighter text-foreground font-kanit">Agenda Libre</h3>
-                    <p className="text-xs font-medium text-foreground/50 max-w-sm">No tienes partidos programados. ¡Es hora de saltar a la cancha y jugar!</p>
+                    <p className="text-xs font-medium text-foreground/50 max-w-sm">No tienes partidos programados. Â¡Es hora de saltar a la cancha y jugar!</p>
                  </div>
                </div>
                <div className="flex flex-col gap-3 w-full sm:w-auto relative z-10 shrink-0">
@@ -351,7 +351,7 @@ export default function HomePage() {
                   </div>
                   <div className="text-center sm:text-left">
                      <span className="text-[10px] font-black uppercase tracking-widest text-foreground block">{action.label}</span>
-                     <span className="text-[9px] font-medium text-foreground/40 hidden sm:block mt-1">{action.desc}</span>
+                     <span className="text-[10px] font-medium text-foreground/40 hidden sm:block mt-1">{action.desc}</span>
                   </div>
                 </motion.div>
              </Link>
@@ -384,7 +384,7 @@ export default function HomePage() {
                        </h3>
                        <div className="text-center sm:text-right flex flex-col items-center sm:items-end">
                          <span className="text-xs font-black text-primary italic font-kanit">TOP {Math.max(1, 100 - statsSummary.winRate)}%</span>
-                         <span className="text-[8px] font-medium text-foreground/40 uppercase tracking-widest">Global</span>
+                         <span className="text-[10px] font-medium text-foreground/40 uppercase tracking-widest">Global</span>
                        </div>
                     </div>
                  </div>
@@ -392,9 +392,9 @@ export default function HomePage() {
 
               <div className="relative z-10 w-full">
                  <div className="flex justify-between items-end mb-2">
-                    <span className="text-[9px] font-black text-foreground/50 uppercase tracking-widest">{statsSummary.elo} ELO</span>
+                    <span className="text-[10px] font-black text-foreground/50 uppercase tracking-widest">{statsSummary.elo} ELO</span>
                     <div className="flex items-center gap-1.5 opacity-40">
-                       <span className="text-[9px] font-black text-foreground uppercase tracking-widest">{rankCalculation.nextRank.name}</span>
+                       <span className="text-[10px] font-black text-foreground uppercase tracking-widest">{rankCalculation.nextRank.name}</span>
                        <rankCalculation.nextRank.icon className="w-3 h-3" style={{ color: rankCalculation.nextRank.color }} />
                     </div>
                  </div>
@@ -427,7 +427,7 @@ export default function HomePage() {
                     </div>
                     <div>
                        <span className="text-2xl font-black italic tracking-tighter text-foreground font-kanit leading-none block">{stat.value}</span>
-                       <span className="text-[9px] font-black text-foreground/40 uppercase tracking-widest mt-1 block">{stat.label}</span>
+                       <span className="text-[10px] font-black text-foreground/40 uppercase tracking-widest mt-1 block">{stat.label}</span>
                     </div>
                  </div>
                ))}
@@ -458,7 +458,7 @@ export default function HomePage() {
                       src={h.video_url} 
                       className="w-full h-full object-cover opacity-70 group-hover:opacity-100 group-hover:scale-110 transition-all duration-700"
                     />
-                    <div className="absolute top-3 right-3 px-2 py-1 bg-red-500 text-[8px] rounded-full font-black text-white italic z-20 flex items-center gap-1 drop-shadow-md">
+                    <div className="absolute top-3 right-3 px-2 py-1 bg-red-500 text-[10px] rounded-full font-black text-white italic z-20 flex items-center gap-1 drop-shadow-md">
                        <span className="w-1.5 h-1.5 bg-white rounded-full animate-pulse" /> LIVE
                     </div>
                     <div className="absolute bottom-4 left-4 right-4 z-20">
@@ -474,7 +474,7 @@ export default function HomePage() {
                       </div>
                       <div className="flex items-center gap-1.5 bg-white/10 w-fit px-2 py-1 rounded-full backdrop-blur-md border border-white/10">
                         <Flame className="w-3 h-3 text-orange-400" />
-                        <span className="text-[9px] font-black text-white">{h.likes_count}</span>
+                        <span className="text-[10px] font-black text-white">{h.likes_count}</span>
                       </div>
                     </div>
                   </Link>
@@ -525,7 +525,7 @@ export default function HomePage() {
                       </p>
                     </div>
                     <div className="shrink-0 text-right">
-                       <span className="text-[8px] sm:text-[9px] font-black text-foreground/30 uppercase tracking-widest">{activity.time}</span>
+                       <span className="text-[10px] sm:text-[10px] font-black text-foreground/30 uppercase tracking-widest">{activity.time}</span>
                     </div>
                   </motion.div>
                 ))
@@ -533,7 +533,7 @@ export default function HomePage() {
                 <EmptyState 
                   icon={Activity}
                   title="Sin Actividad"
-                  description="Aún no hay movimientos recientes. ¡Sé el primero en jugar un partido!"
+                  description="AÃºn no hay movimientos recientes. Â¡SÃ© el primero en jugar un partido!"
                 />
               )}
             </div>

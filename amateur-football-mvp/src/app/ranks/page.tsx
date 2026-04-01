@@ -19,7 +19,7 @@ const RankCard = memo(
       animate="visible"
       variants={fadeUp}
       whileHover={{ y: -10 }}
-      className="group relative overflow-hidden rounded-[3rem] p-10 glass-premium border border-foreground/5 flex flex-col items-center text-center gap-8 transition-all duration-500 hover:shadow-2xl hover:shadow-primary/5"
+      className="group relative overflow-hidden rounded-[2rem] p-10 glass-premium border border-foreground/5 flex flex-col items-center text-center gap-8 transition-all duration-500 hover:shadow-2xl hover:shadow-primary/5"
     >
       {/* Background Glow */}
       <div
@@ -43,8 +43,8 @@ const RankCard = memo(
           {rank.name}
         </h3>
         <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-foreground/[0.03] border border-foreground/5 shadow-inner">
-          <span className="text-[9px] font-black uppercase tracking-widest text-foreground/30">
-            MÍNIMO
+          <span className="text-[10px] font-black uppercase tracking-widest text-foreground/30">
+            MÃƒÂNIMO
           </span>
           <span className="text-sm font-black text-foreground">
             {rank.minElo.toLocaleString()} XP
@@ -72,7 +72,7 @@ const RankCard = memo(
             }}
           />
         </div>
-        <p className="text-[8px] font-black uppercase tracking-[0.4em] text-foreground/20">
+        <p className="text-[10px] font-black uppercase tracking-[0.4em] text-foreground/20">
           ESTATUS REGISTRADO
         </p>
       </div>
@@ -136,7 +136,7 @@ const LeaderboardRow = memo(
               <span className="font-black italic uppercase tracking-tighter text-foreground group-hover:text-primary transition-colors text-base sm:text-lg truncate">
                 {player.name}
               </span>
-              <span className="text-[8px] sm:text-[9px] font-black uppercase tracking-widest text-foreground/40 truncate">
+              <span className="text-[10px] sm:text-[10px] font-black uppercase tracking-widest text-foreground/40 truncate">
                 {player.position}
               </span>
             </div>
@@ -225,7 +225,7 @@ export default function RanksPage() {
       case 'BRONCE':
         return 'Ya no sos horrible. Has demostrado consistencia en la cancha.';
       case 'PLATA':
-        return 'Un jugador respetado que entiende la dinámica del juego.';
+        return 'Un jugador respetado que entiende la dinÃƒÂ¡mica del juego.';
       case 'ORO':
         return 'Talento puro. Eres la referencia de tu equipo.';
       case 'PLATINO':
@@ -272,11 +272,11 @@ export default function RanksPage() {
             </span>
           </div>
           <h2 className="text-4xl sm:text-6xl font-black italic uppercase tracking-tighter leading-none">
-            Escalá hasta lo <span className="text-primary italic">Más Alto</span>
+            EscalÃƒÂ¡ hasta lo <span className="text-primary italic">MÃƒÂ¡s Alto</span>
           </h2>
           <p className="text-foreground/50 text-sm font-medium leading-relaxed">
-            En Pelotify, tu ELO no es solo un número, es tu estatus. Cada victoria, cada gol y cada
-            voto de tus compañeros te acerca a convertirte en una Leyenda.
+            En Pelotify, tu ELO no es solo un nÃƒÂºmero, es tu estatus. Cada victoria, cada gol y cada
+            voto de tus compaÃƒÂ±eros te acerca a convertirte en una Leyenda.
           </p>
 
           {/* Scroll Indicator / Call to Action moved here */}
@@ -329,7 +329,7 @@ export default function RanksPage() {
             </span>
           </div>
 
-          <div className="glass-premium rounded-[2.5rem] border border-foreground/5 overflow-hidden relative">
+          <div className="glass-premium rounded-[2rem] border border-foreground/5 overflow-hidden relative">
             {isLoading ? (
               <div className="p-20 flex flex-col items-center justify-center gap-4">
                 <div className="w-12 h-12 border-4 border-primary/20 border-t-primary rounded-full animate-spin" />
@@ -378,7 +378,7 @@ export default function RanksPage() {
         {/* Footer Tip */}
         <div className="text-center pt-8">
           <p className="text-[10px] font-black uppercase tracking-[0.4em] text-foreground/25">
-            Jugá partidos • Subí tu ELO • Construí tu Legado
+            JugÃƒÂ¡ partidos Ã¢â‚¬Â¢ SubÃƒÂ­ tu ELO Ã¢â‚¬Â¢ ConstruÃƒÂ­ tu Legado
           </p>
         </div>
       </main>

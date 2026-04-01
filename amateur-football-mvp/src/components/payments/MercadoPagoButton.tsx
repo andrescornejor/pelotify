@@ -22,7 +22,7 @@ export default function MercadoPagoButton({ matchId, title, price }: MercadoPago
 
   const handlePayment = async () => {
     if (!user) {
-      alert('Debes iniciar sesión para realizar el pago.');
+      alert('Debes iniciar sesiÃ³n para realizar el pago.');
       return;
     }
 
@@ -45,7 +45,7 @@ export default function MercadoPagoButton({ matchId, title, price }: MercadoPago
       }
     } catch (error) {
       console.error('Checkout error:', error);
-      alert('Error de red. Verifica que el servidor esté corriendo.');
+      alert('Error de red. Verifica que el servidor estÃ© corriendo.');
     } finally {
       setLoading(false);
     }
@@ -77,7 +77,7 @@ export default function MercadoPagoButton({ matchId, title, price }: MercadoPago
             <Wallet className="w-6 h-6" />
             <div className="flex flex-col items-start leading-none gap-1">
                <span>Pagar ${finalPrice} con M.Pago</span>
-               <span className="text-[9px] font-black uppercase tracking-widest text-white/70">Cupo: ${basePrice} + Cargo de Servicio: ${serviceFee}</span>
+               <span className="text-[10px] font-black uppercase tracking-widest text-white/70">Cupo: ${basePrice} + Cargo de Servicio: ${serviceFee}</span>
             </div>
           </>
         )}
@@ -87,7 +87,7 @@ export default function MercadoPagoButton({ matchId, title, price }: MercadoPago
       </button>
       
       <p className="text-center text-[10px] font-bold text-foreground/40 uppercase tracking-widest leading-relaxed px-4">
-        Los cargos de servicio cubren el mantenimiento de la plataforma y comisiones bancarias, <span className="text-emerald-500">garantizando que el organizador no tenga pérdidas.</span>
+        Los cargos de servicio cubren el mantenimiento de la plataforma y comisiones bancarias, <span className="text-emerald-500">garantizando que el organizador no tenga pÃ©rdidas.</span>
       </p>
     </div>
   );

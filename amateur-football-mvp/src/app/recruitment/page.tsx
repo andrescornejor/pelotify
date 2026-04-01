@@ -70,7 +70,7 @@ export default function RecruitmentPage() {
       }, 300);
     } catch (err) {
       console.error(err);
-      alert('Error uniéndose al partido.');
+      alert('Error uniÃƒÂ©ndose al partido.');
     }
   };
 
@@ -108,12 +108,12 @@ export default function RecruitmentPage() {
       <div className="absolute top-10 left-0 right-0 px-6 max-w-lg mx-auto flex flex-col items-center gap-2 text-center pointer-events-none">
         <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/20">
           <Zap className="w-3.5 h-3.5 text-amber-500" />
-          <span className="text-[9px] font-black uppercase tracking-[0.3em] text-amber-500">Modo Emergencia</span>
+          <span className="text-[10px] font-black uppercase tracking-[0.3em] text-amber-500">Modo Emergencia</span>
         </div>
         <h1 className="text-3xl font-black italic uppercase tracking-tighter text-foreground font-kanit">
           Explorador de <span className="text-primary italic">Fichajes</span>
         </h1>
-        <p className="text-[9px] font-bold text-foreground/30 uppercase tracking-[0.2em]">
+        <p className="text-[10px] font-bold text-foreground/30 uppercase tracking-[0.2em]">
           Equipos que buscan refuerzos inmediatos cerca de vos
         </p>
       </div>
@@ -130,7 +130,7 @@ export default function RecruitmentPage() {
                 if (info.offset.x > 100) handleJoin(currentMatch.id);
                 else if (info.offset.x < -100) handlePass();
               }}
-              className="absolute w-full h-full glass-premium rounded-[3rem] border border-white/10 shadow-2xl p-8 flex flex-col cursor-grab active:cursor-grabbing overflow-hidden group"
+              className="absolute w-full h-full glass-premium rounded-[2rem] border border-white/10 shadow-2xl p-8 flex flex-col cursor-grab active:cursor-grabbing overflow-hidden group"
             >
               {/* Swipe Overlays */}
               <motion.div style={{ backgroundColor: colorJoin }} className="absolute inset-0 pointer-events-none flex items-center justify-center z-20">
@@ -149,7 +149,7 @@ export default function RecruitmentPage() {
                       <div className="px-3 py-1 rounded-lg bg-foreground/5 border border-white/5 w-fit">
                         <span className="text-[10px] font-black text-primary italic uppercase tracking-widest">{currentMatch.type}</span>
                       </div>
-                      <span className="text-[8px] font-black text-foreground/20 uppercase tracking-[0.3em]">Formato de Match</span>
+                      <span className="text-[10px] font-black text-foreground/20 uppercase tracking-[0.3em]">Formato de Match</span>
                    </div>
                    <div className="flex items-center gap-2 group/alert">
                       <div className="w-2 h-2 rounded-full bg-amber-500 animate-pulse" />
@@ -165,7 +165,7 @@ export default function RecruitmentPage() {
                         </h2>
                         <div className="flex items-center justify-center gap-2 opacity-40">
                           <MapPin className="w-3 h-3" />
-                          <span className="text-[9px] font-black uppercase tracking-widest">Cancha Localizada</span>
+                          <span className="text-[10px] font-black uppercase tracking-widest">Cancha Localizada</span>
                         </div>
                       </div>
                       
@@ -181,32 +181,32 @@ export default function RecruitmentPage() {
                       </div>
                    </div>
 
-                   <div className="p-6 rounded-[2.5rem] bg-gradient-to-br from-amber-500/10 to-transparent border border-amber-500/20 text-center space-y-3 relative overflow-hidden group/slots">
+                   <div className="p-6 rounded-[2rem] bg-gradient-to-br from-amber-500/10 to-transparent border border-amber-500/20 text-center space-y-3 relative overflow-hidden group/slots">
                       <div className="absolute inset-0 bg-amber-500/5 opacity-0 group-hover/slots:opacity-100 transition-opacity" />
                       <Users className="w-8 h-8 text-amber-500/40 mx-auto mb-1" />
                       <h4 className="text-3xl font-black italic font-kanit text-amber-500 leading-none">FALTAN {currentMatch.missing_players}</h4>
-                      <p className="text-[9px] font-black text-foreground/40 uppercase tracking-[0.2em]">PUESTOS VACANTES</p>
+                      <p className="text-[10px] font-black text-foreground/40 uppercase tracking-[0.2em]">PUESTOS VACANTES</p>
                    </div>
                    
                    <div className="flex items-center justify-center gap-4">
                       <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-foreground/[0.02] border border-white/5">
                         <Award className="w-4 h-4 text-primary/40" />
-                        <span className="text-[9px] font-black text-foreground/60 uppercase tracking-widest">{currentMatch.level || 'Amateur'}</span>
+                        <span className="text-[10px] font-black text-foreground/60 uppercase tracking-widest">{currentMatch.level || 'Amateur'}</span>
                       </div>
                       <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-foreground/[0.02] border border-white/5">
                         <Shield className="w-4 h-4 text-primary/40" />
-                        <span className="text-[9px] font-black text-foreground/60 uppercase tracking-widest">Fair Play</span>
+                        <span className="text-[10px] font-black text-foreground/60 uppercase tracking-widest">Fair Play</span>
                       </div>
                    </div>
                 </div>
 
                 <div className="mt-auto pt-8 flex items-center justify-center gap-6">
                    <div className="flex flex-col items-center gap-2">
-                       <span className="text-[7px] font-black text-foreground/20 uppercase tracking-widest">Descartar</span>
+                       <span className="text-[10px] font-black text-foreground/20 uppercase tracking-widest">Descartar</span>
                        <div className="w-10 h-px bg-foreground/5" />
                    </div>
                    <div className="flex flex-col items-center gap-2">
-                       <span className="text-[7px] font-black text-primary/40 uppercase tracking-widest">Postularse</span>
+                       <span className="text-[10px] font-black text-primary/40 uppercase tracking-widest">Postularse</span>
                        <div className="w-10 h-px bg-primary/20" />
                    </div>
                 </div>
@@ -225,7 +225,7 @@ export default function RecruitmentPage() {
               <div className="space-y-2">
                 <h3 className="text-2xl font-black italic uppercase tracking-tighter text-foreground font-kanit leading-none">Todo en Calma</h3>
                 <p className="text-[11px] font-black text-foreground/30 uppercase tracking-[0.2em] max-w-[200px] mx-auto leading-relaxed">
-                  No hay búsquedas de emergencia activas en este momento.
+                  No hay bÃƒÂºsquedas de emergencia activas en este momento.
                 </p>
               </div>
               <button 

@@ -219,9 +219,9 @@ function TeamProfileContent() {
     try {
       await inviteToTeam(team.id, friendId);
       await fetchData();
-      alert('¡Invitación enviada!');
+      alert('Ã‚Â¡InvitaciÃƒÂ³n enviada!');
     } catch (err: any) {
-      alert(err.message || 'Error al enviar invitación');
+      alert(err.message || 'Error al enviar invitaciÃƒÂ³n');
     } finally {
       setInvitingId(null);
     }
@@ -235,9 +235,9 @@ function TeamProfileContent() {
       await respondToTeamInvitation(team.id, actingUserId, action);
       await fetchData();
       if (action === 'accept') {
-        alert(targetUserId ? 'Jugador aceptado.' : '¡Ya sos parte del equipo!');
+        alert(targetUserId ? 'Jugador aceptado.' : 'Ã‚Â¡Ya sos parte del equipo!');
       } else {
-        alert(targetUserId ? 'Solicitud rechazada.' : 'Has rechazado la invitación.');
+        alert(targetUserId ? 'Solicitud rechazada.' : 'Has rechazado la invitaciÃƒÂ³n.');
         if (!targetUserId) router.push('/teams');
       }
     } catch (err: any) {
@@ -251,7 +251,7 @@ function TeamProfileContent() {
     setRespondingChallengeId(challengeId);
     try {
       await respondToChallenge(challengeId, status);
-      alert(`Desafío ${status === 'accepted' ? 'ACEPTADO. Tienen partido nuevo.' : 'RECHAZADO'}`);
+      alert(`DesafÃƒÂ­o ${status === 'accepted' ? 'ACEPTADO. Tienen partido nuevo.' : 'RECHAZADO'}`);
       fetchData();
     } catch (err: any) {
       alert(`Error: ${err.message}`);
@@ -283,7 +283,7 @@ function TeamProfileContent() {
       setLogoFile(null);
       setLogoPreview(null);
       setIsEditing(false);
-      alert('¡Equipo actualizado!');
+      alert('Ã‚Â¡Equipo actualizado!');
     } catch (err: any) {
       alert(`Error al guardar: ${err.message}`);
     } finally {
@@ -295,7 +295,7 @@ function TeamProfileContent() {
     if (
       !team ||
       !confirm(
-        '¿Estás SEGURO de que quieres eliminar este equipo? Esta acción no se puede deshacer.'
+        'Ã‚Â¿EstÃƒÂ¡s SEGURO de que quieres eliminar este equipo? Esta acciÃƒÂ³n no se puede deshacer.'
       )
     )
       return;
@@ -309,7 +309,7 @@ function TeamProfileContent() {
   };
 
   const handleLevelTeamAction = async () => {
-    if (!team || !user || !confirm('¿Quieres salir de este equipo?')) return;
+    if (!team || !user || !confirm('Ã‚Â¿Quieres salir de este equipo?')) return;
     try {
       await leaveTeam(team.id, user.id);
       alert('Has salido del equipo.');
@@ -379,7 +379,7 @@ function TeamProfileContent() {
         <div className="max-w-xs">
           <h2 className="text-xl font-bold text-white mb-2">Equipo no encontrado</h2>
           <p className="text-sm text-zinc-500 mb-4">
-            {error ? `Detalles: ${error}` : 'Este equipo no existe o aún no ha sido configurado.'}
+            {error ? `Detalles: ${error}` : 'Este equipo no existe o aÃƒÂºn no ha sido configurado.'}
           </p>
         </div>
         <Link
@@ -399,7 +399,7 @@ function TeamProfileContent() {
         isPerfMode && 'perf-mode'
       )}
     >
-      {/* ── CINEMATIC HERO SECTION ── */}
+      {/* Ã¢â€â‚¬Ã¢â€â‚¬ CINEMATIC HERO SECTION Ã¢â€â‚¬Ã¢â€â‚¬ */}
       <div className="relative h-[45dvh] min-h-[400px] overflow-hidden group">
         <div className="absolute inset-0 bg-surface">
           <div className="absolute inset-0 bg-gradient-to-b from-primary/20 via-transparent to-background z-10" />
@@ -487,7 +487,7 @@ function TeamProfileContent() {
             <motion.div
               initial={{ scale: 0.9, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
-              className="relative w-32 h-32 md:w-40 md:h-40 bg-surface-elevated rounded-[2.5rem] border-4 border-background shadow-2xl flex items-center justify-center overflow-hidden group shadow-primary/10"
+              className="relative w-32 h-32 md:w-40 md:h-40 bg-surface-elevated rounded-[2rem] border-4 border-background shadow-2xl flex items-center justify-center overflow-hidden group shadow-primary/10"
             >
               <div className="absolute inset-0 bg-gradient-to-br from-foreground/5 to-transparent z-10" />
 
@@ -529,7 +529,7 @@ function TeamProfileContent() {
                 </label>
               )}
             </motion.div>
-            <div className="absolute -inset-4 border border-primary/20 rounded-[3.5rem] animate-[spin_20s_linear_infinite] pointer-events-none opacity-30" />
+            <div className="absolute -inset-4 border border-primary/20 rounded-[2rem] animate-[spin_20s_linear_infinite] pointer-events-none opacity-30" />
           </div>
 
           <div className="text-center space-y-4 max-w-2xl px-6">
@@ -555,7 +555,7 @@ function TeamProfileContent() {
                 <div className="flex flex-wrap items-center justify-center gap-2">
                   <span className="inline-block w-2 h-2 rounded-full bg-primary animate-pulse" />
                   <span className="text-center">
-                    {team.description || 'Institución Deportiva Federada'}
+                    {team.description || 'InstituciÃƒÂ³n Deportiva Federada'}
                   </span>
                 </div>
               </motion.p>
@@ -565,12 +565,12 @@ function TeamProfileContent() {
       </div>
 
       <div className="px-6 -mt-12 relative z-30">
-        <div className="max-w-4xl mx-auto glass-premium rounded-[3rem] p-1 flex flex-wrap items-center justify-between border border-foreground/10 shadow-2xl bg-surface">
+        <div className="max-w-4xl mx-auto glass-premium rounded-[2rem] p-1 flex flex-wrap items-center justify-between border border-foreground/10 shadow-2xl bg-surface">
           <div className="flex-1 min-w-[100px] flex flex-col items-center py-6 px-4 border-r border-foreground/5">
             <span className="text-3xl font-black text-primary italic tracking-tighter">
               {team.elo}
             </span>
-            <span className="text-[9px] font-black uppercase text-foreground/60 tracking-widest mt-1">
+            <span className="text-[10px] font-black uppercase text-foreground/60 tracking-widest mt-1">
               XP DEL CLUB
             </span>
           </div>
@@ -578,7 +578,7 @@ function TeamProfileContent() {
             <span className="text-3xl font-black text-foreground italic tracking-tighter">
               {team.wins || 0}
             </span>
-            <span className="text-[9px] font-black uppercase text-foreground/60 tracking-widest mt-1">
+            <span className="text-[10px] font-black uppercase text-foreground/60 tracking-widest mt-1">
               VICTORIAS
             </span>
           </div>
@@ -586,7 +586,7 @@ function TeamProfileContent() {
             <span className="text-3xl font-black text-foreground italic tracking-tighter">
               {team.draws || 0}
             </span>
-            <span className="text-[9px] font-black uppercase text-foreground/60 tracking-widest mt-1">
+            <span className="text-[10px] font-black uppercase text-foreground/60 tracking-widest mt-1">
               EMPATES
             </span>
           </div>
@@ -594,7 +594,7 @@ function TeamProfileContent() {
             <span className="text-3xl font-black text-foreground italic tracking-tighter">
               {team.losses || 0}
             </span>
-            <span className="text-[9px] font-black uppercase text-foreground/60 tracking-widest mt-1">
+            <span className="text-[10px] font-black uppercase text-foreground/60 tracking-widest mt-1">
               DERROTAS
             </span>
           </div>
@@ -605,7 +605,7 @@ function TeamProfileContent() {
         <div className="flex items-center justify-center gap-8 md:gap-12">
           {[
             { id: 'squad', label: 'Plantel', icon: Users },
-            { id: 'tactics', label: 'Alineación', icon: Layout },
+            { id: 'tactics', label: 'AlineaciÃƒÂ³n', icon: Layout },
             { id: 'history', label: 'Historial', icon: History },
             ...(isCaptain ? [{ id: 'settings', label: 'Ajustes', icon: Settings }] : []),
           ].map((tab) => (
@@ -646,7 +646,7 @@ function TeamProfileContent() {
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="glass-premium p-8 rounded-[3rem] border border-primary/20 bg-primary/[0.02]"
+            className="glass-premium p-8 rounded-[2rem] border border-primary/20 bg-primary/[0.02]"
           >
             {members.some((m) => m.user_id === user?.id && m.status === 'pending') ? (
               <div className="flex flex-col items-center gap-6 text-center max-w-sm mx-auto">
@@ -688,7 +688,7 @@ function TeamProfileContent() {
                     try {
                       await joinTeam(id, user.id);
                       await fetchData();
-                      alert('Solicitud enviada al capitán.');
+                      alert('Solicitud enviada al capitÃƒÂ¡n.');
                     } catch (err: any) {
                       alert(`Error: ${err.message}`);
                     } finally {
@@ -717,9 +717,9 @@ function TeamProfileContent() {
                     </>
                   )}
                 </button>
-                <p className="text-center mt-6 text-foreground/20 text-[9px] font-black uppercase tracking-[0.3em]">
+                <p className="text-center mt-6 text-foreground/20 text-[10px] font-black uppercase tracking-[0.3em]">
                   {members.some((m) => m.user_id === user?.id && m.status === 'requested')
-                    ? 'Esperando aprobación del capitán'
+                    ? 'Esperando aprobaciÃƒÂ³n del capitÃƒÂ¡n'
                     : 'Toca para unirte a este equipo'}
                 </p>
               </div>
@@ -734,7 +734,7 @@ function TeamProfileContent() {
             className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12"
           >
             {/* Main Elo Card */}
-            <div className="md:col-span-2 glass-premium p-8 rounded-[3rem] border border-foreground/5 bg-surface relative overflow-hidden group">
+            <div className="md:col-span-2 glass-premium p-8 rounded-[2rem] border border-foreground/5 bg-surface relative overflow-hidden group">
                <div className="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-full blur-[80px] -mr-16 -mt-16" />
                <div className="relative z-10 flex flex-col h-full justify-between">
                   <div className="flex items-center gap-4">
@@ -743,7 +743,7 @@ function TeamProfileContent() {
                     </div>
                     <div>
                       <h3 className="text-xl font-black italic text-foreground uppercase tracking-tighter leading-none">Status del Club</h3>
-                      <p className="text-[9px] font-black uppercase tracking-widest text-foreground/40 mt-1">REPUTACIÓN Y PODERÍO EN CANCHA</p>
+                      <p className="text-[10px] font-black uppercase tracking-widest text-foreground/40 mt-1">REPUTACIÃƒâ€œN Y PODERÃƒÂO EN CANCHA</p>
                     </div>
                   </div>
                   <div className="mt-8 flex items-baseline gap-2">
@@ -754,9 +754,9 @@ function TeamProfileContent() {
             </div>
 
             {/* Official Kit Card */}
-            <div className="glass-premium p-6 rounded-[3rem] border border-primary/20 bg-primary/[0.02] relative overflow-hidden group flex flex-col items-center justify-center text-center">
+            <div className="glass-premium p-6 rounded-[2rem] border border-primary/20 bg-primary/[0.02] relative overflow-hidden group flex flex-col items-center justify-center text-center">
                <div className="absolute inset-x-0 top-0 py-3 bg-primary/10 border-b border-primary/10">
-                  <span className="text-[9px] font-black uppercase tracking-[0.4em] text-primary italic">Kit Oficial</span>
+                  <span className="text-[10px] font-black uppercase tracking-[0.4em] text-primary italic">Kit Oficial</span>
                </div>
                <div className="w-32 h-32 mt-6 mb-2 group-hover:scale-110 transition-transform duration-500">
                   <JerseyVisualizer 
@@ -768,7 +768,7 @@ function TeamProfileContent() {
                </div>
                <div className="space-y-1">
                   <h4 className="text-xs font-black text-foreground uppercase tracking-widest italic">{team.name}</h4>
-                  <p className="text-[8px] font-black text-foreground/40 uppercase tracking-widest">TEMPORADA 2026</p>
+                  <p className="text-[10px] font-black text-foreground/40 uppercase tracking-widest">TEMPORADA 2026</p>
                </div>
             </div>
           </motion.div>
@@ -782,9 +782,9 @@ function TeamProfileContent() {
               </div>
               <div className="flex flex-col">
                 <h2 className="text-2xl font-black text-foreground italic uppercase tracking-tighter leading-none">
-                  Próximo Desafío
+                  PrÃƒÂ³ximo DesafÃƒÂ­o
                 </h2>
-                <span className="text-[9px] font-black text-foreground/40 uppercase tracking-widest mt-1">
+                <span className="text-[10px] font-black text-foreground/40 uppercase tracking-widest mt-1">
                   Siguiente partido programado
                 </span>
               </div>
@@ -801,7 +801,7 @@ function TeamProfileContent() {
                 <Link key={m.id} href={`/match?id=${m.id}`}>
                   <motion.div
                     whileHover={{ scale: 1.02 }}
-                    className="relative group p-8 rounded-[3rem] glass-premium border border-primary/30 overflow-hidden shadow-[0_30px_60px_rgba(var(--primary-rgb),0.2)]"
+                    className="relative group p-8 rounded-[2rem] glass-premium border border-primary/30 overflow-hidden shadow-[0_30px_60px_rgba(var(--primary-rgb),0.2)]"
                   >
                     <div className="absolute inset-0 bg-primary/5 opacity-0 group-hover:opacity-100 transition-opacity" />
                     <div className="flex flex-col md:flex-row items-center justify-between gap-8 relative z-10">
@@ -863,7 +863,7 @@ function TeamProfileContent() {
                   <h2 className="text-2xl font-black text-foreground italic uppercase tracking-tighter">
                     Plantel Oficial
                   </h2>
-                  <span className="text-[9px] font-black text-foreground/60 uppercase tracking-widest">
+                  <span className="text-[10px] font-black text-foreground/60 uppercase tracking-widest">
                     EL EQUIPO TIENE {team.members_count} PIBES
                   </span>
                 </div>
@@ -887,7 +887,7 @@ function TeamProfileContent() {
                   <Link key={member.user_id} href={`/profile?id=${member.user_id}`}>
                     <motion.div
                       whileHover={{ scale: 1.02 }}
-                      className="glass-premium bg-surface border-foreground/5 p-6 rounded-[2.5rem] flex items-center justify-between hover:border-primary/20 hover:bg-foreground/[0.03] transition-all group"
+                      className="glass-premium bg-surface border-foreground/5 p-6 rounded-[2rem] flex items-center justify-between hover:border-primary/20 hover:bg-foreground/[0.03] transition-all group"
                     >
                       <div className="flex items-center gap-5">
                         <div className="relative">
@@ -933,7 +933,7 @@ function TeamProfileContent() {
                             onClick={(e) => {
                               e.preventDefault();
                               e.stopPropagation();
-                              if (confirm(`¿Estás seguro de que quieres expulsar a ${member.profiles?.name}?`)) {
+                              if (confirm(`Ã‚Â¿EstÃƒÂ¡s seguro de que quieres expulsar a ${member.profiles?.name}?`)) {
                                 leaveTeam(team.id, member.user_id).then(() => fetchData());
                               }
                             }}
@@ -966,17 +966,17 @@ function TeamProfileContent() {
               </div>
               <div className="flex flex-col">
                 <h2 className="text-2xl font-black text-foreground italic uppercase tracking-tighter leading-none">
-                  Gestión del Club
+                  GestiÃƒÂ³n del Club
                 </h2>
-                <span className="text-[9px] font-black text-foreground/40 uppercase tracking-widest mt-1">
-                  CONFIGURACIÓN DE IDENTIDAD Y PERMISOS
+                <span className="text-[10px] font-black text-foreground/40 uppercase tracking-widest mt-1">
+                  CONFIGURACIÃƒâ€œN DE IDENTIDAD Y PERMISOS
                 </span>
               </div>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               {/* Branding Card */}
-              <div className="glass-premium p-8 rounded-[3rem] border border-foreground/5 space-y-8 h-fit">
+              <div className="glass-premium p-8 rounded-[2rem] border border-foreground/5 space-y-8 h-fit">
                 <div className="flex items-center gap-4">
                   <div className="w-10 h-10 rounded-xl bg-primary/5 flex items-center justify-center text-primary">
                     <Camera className="w-5 h-5" />
@@ -1021,7 +1021,7 @@ function TeamProfileContent() {
                       <p className="text-[10px] font-black uppercase tracking-widest text-foreground">
                         Escudo Oficial
                       </p>
-                      <p className="text-[9px] text-foreground/40 font-bold uppercase leading-relaxed max-w-[150px]">
+                      <p className="text-[10px] text-foreground/40 font-bold uppercase leading-relaxed max-w-[150px]">
                         Recomendado: 512x512px. JPG o PNG.
                       </p>
                     </div>
@@ -1029,7 +1029,7 @@ function TeamProfileContent() {
 
                   <div className="space-y-4">
                     <div className="space-y-2">
-                      <label className="text-[9px] font-black uppercase tracking-[0.3em] text-foreground/40 ml-2">
+                      <label className="text-[10px] font-black uppercase tracking-[0.3em] text-foreground/40 ml-2">
                         Nombre del Equipo
                       </label>
                       <input
@@ -1041,7 +1041,7 @@ function TeamProfileContent() {
                       />
                     </div>
                     <div className="space-y-2">
-                      <label className="text-[9px] font-black uppercase tracking-[0.3em] text-foreground/40 ml-2">
+                      <label className="text-[10px] font-black uppercase tracking-[0.3em] text-foreground/40 ml-2">
                         Lema del Club
                       </label>
                       <input
@@ -1049,7 +1049,7 @@ function TeamProfileContent() {
                         value={editMotto}
                         onChange={(e) => setEditMotto(e.target.value)}
                         className="w-full h-14 bg-foreground/[0.03] border border-foreground/5 rounded-2xl px-6 text-xs font-black uppercase tracking-widest text-primary focus:border-primary/30 outline-none transition-all"
-                        placeholder="ej: MÁS QUE UN EQUIPO..."
+                        placeholder="ej: MÃƒÂS QUE UN EQUIPO..."
                       />
                     </div>
                   </div>
@@ -1058,13 +1058,13 @@ function TeamProfileContent() {
 
               {/* Bio & Actions */}
               <div className="space-y-8">
-                <div className="glass-premium p-8 rounded-[3rem] border border-foreground/5 space-y-6">
+                <div className="glass-premium p-8 rounded-[2rem] border border-foreground/5 space-y-6">
                   <div className="flex items-center gap-4">
                     <div className="w-10 h-10 rounded-xl bg-primary/5 flex items-center justify-center text-primary">
                       <Layout className="w-5 h-5" />
                     </div>
                     <h3 className="text-lg font-black text-foreground italic uppercase tracking-tighter">
-                      Biografía
+                      BiografÃƒÂ­a
                     </h3>
                   </div>
                   <textarea
@@ -1076,20 +1076,20 @@ function TeamProfileContent() {
                 </div>
 
                 {/* Jersey Customization in Settings */}
-                <div className="glass-premium p-8 rounded-[3rem] border border-foreground/5 space-y-8">
+                <div className="glass-premium p-8 rounded-[2rem] border border-foreground/5 space-y-8">
                   <div className="flex items-center gap-4">
                     <div className="w-10 h-10 rounded-xl bg-primary/5 flex items-center justify-center text-primary">
                       <Zap className="w-5 h-5" />
                     </div>
                     <h3 className="text-lg font-black text-foreground italic uppercase tracking-tighter">
-                      Personalización de Camiseta
+                      PersonalizaciÃƒÂ³n de Camiseta
                     </h3>
                   </div>
 
                   <div className="space-y-6">
                     <div className="grid grid-cols-2 gap-6">
                       <div className="space-y-2">
-                        <label className="text-[9px] font-black uppercase tracking-[0.3em] text-foreground/40 ml-2">
+                        <label className="text-[10px] font-black uppercase tracking-[0.3em] text-foreground/40 ml-2">
                           Color Primario
                         </label>
                         <div className="flex flex-wrap gap-2">
@@ -1107,7 +1107,7 @@ function TeamProfileContent() {
                         </div>
                       </div>
                       <div className="space-y-2">
-                        <label className="text-[9px] font-black uppercase tracking-[0.3em] text-foreground/40 ml-2">
+                        <label className="text-[10px] font-black uppercase tracking-[0.3em] text-foreground/40 ml-2">
                           Color Detalles
                         </label>
                         <div className="flex flex-wrap gap-2">
@@ -1127,8 +1127,8 @@ function TeamProfileContent() {
                     </div>
 
                     <div className="space-y-4">
-                      <label className="text-[9px] font-black uppercase tracking-[0.3em] text-foreground/40 ml-2">
-                        Patrón de Camiseta
+                      <label className="text-[10px] font-black uppercase tracking-[0.3em] text-foreground/40 ml-2">
+                        PatrÃƒÂ³n de Camiseta
                       </label>
                       <div className="grid grid-cols-4 gap-3">
                         {JERSEY_PATTERNS.map((p) => (
@@ -1192,7 +1192,7 @@ function TeamProfileContent() {
                   </button>
                 </div>
 
-                <div className="p-8 rounded-[3rem] border border-red-500/10 bg-red-500/[0.02] space-y-6">
+                <div className="p-8 rounded-[2rem] border border-red-500/10 bg-red-500/[0.02] space-y-6">
                   <div className="flex items-center gap-4">
                     <div className="w-10 h-10 rounded-xl bg-red-500/10 flex items-center justify-center text-red-500">
                       <Trash2 className="w-5 h-5" />
@@ -1202,7 +1202,7 @@ function TeamProfileContent() {
                     </h3>
                   </div>
                   <p className="text-[10px] text-red-500/40 font-bold uppercase leading-relaxed">
-                    Si eliminas el equipo, se perderá todo el historial, ELO y miembros vinculados. Esta acción es irreversible.
+                    Si eliminas el equipo, se perderÃƒÂ¡ todo el historial, ELO y miembros vinculados. Esta acciÃƒÂ³n es irreversible.
                   </p>
                   <button
                     onClick={handleDeleteTeam}
@@ -1226,20 +1226,20 @@ function TeamProfileContent() {
                 </div>
                 <div className="flex flex-col">
                   <h2 className="text-2xl font-black text-foreground italic uppercase tracking-tighter leading-none">
-                    Próximos Partidos
+                    PrÃƒÂ³ximos Partidos
                   </h2>
-                  <span className="text-[9px] font-black text-foreground/60 uppercase tracking-widest mt-1">
+                  <span className="text-[10px] font-black text-foreground/60 uppercase tracking-widest mt-1">
                     PARTIDOS PROGRAMADOS
                   </span>
                 </div>
               </div>
 
               {teamMatches.filter((m) => !m.is_completed).length === 0 ? (
-                <div className="glass-premium p-10 rounded-[3rem] border border-dashed border-foreground/10 text-center bg-foreground/[0.01]">
+                <div className="glass-premium p-10 rounded-[2rem] border border-dashed border-foreground/10 text-center bg-foreground/[0.01]">
                   <p className="text-[10px] font-black text-foreground/30 uppercase tracking-[0.4em] italic leading-relaxed">
                     No hay partidos programados para este equipo.
                     <br />
-                    ¡El Capitán debe crear un desafío!
+                    Ã‚Â¡El CapitÃƒÂ¡n debe crear un desafÃƒÂ­o!
                   </p>
                 </div>
               ) : (
@@ -1255,14 +1255,14 @@ function TeamProfileContent() {
                       <Link key={match.id} href={`/match?id=${match.id}`}>
                         <motion.div
                           whileHover={{ x: 10 }}
-                          className="glass-premium p-6 rounded-[2.5rem] flex items-center justify-between border border-foreground/10 hover:border-primary/40 transition-all group"
+                          className="glass-premium p-6 rounded-[2rem] flex items-center justify-between border border-foreground/10 hover:border-primary/40 transition-all group"
                         >
                           <div className="flex items-center gap-6">
                             <div className="w-16 h-16 rounded-2xl bg-foreground/5 border border-foreground/10 flex flex-col items-center justify-center">
                               <span className="text-xl font-black italic text-foreground leading-none">
                                 {match.date.split('-')[2]}
                               </span>
-                              <span className="text-[8px] font-black text-foreground/40 uppercase tracking-widest">
+                              <span className="text-[10px] font-black text-foreground/40 uppercase tracking-widest">
                                 {
                                   [
                                     'ENE',
@@ -1297,7 +1297,7 @@ function TeamProfileContent() {
                             </div>
                           </div>
                           <div className="h-10 px-6 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center">
-                            <span className="text-[9px] font-black text-primary uppercase tracking-widest">
+                            <span className="text-[10px] font-black text-primary uppercase tracking-widest">
                               PENDIENTE
                             </span>
                           </div>
@@ -1318,16 +1318,16 @@ function TeamProfileContent() {
                   <h2 className="text-2xl font-black text-foreground italic uppercase tracking-tighter leading-none">
                     Historial de Resultados
                   </h2>
-                  <span className="text-[9px] font-black text-foreground/60 uppercase tracking-widest mt-1">
+                  <span className="text-[10px] font-black text-foreground/60 uppercase tracking-widest mt-1">
                     {teamMatches.filter((m) => m.is_completed).length} ENCUENTROS FINALIZADOS
                   </span>
                 </div>
               </div>
 
               {teamMatches.filter((m) => m.is_completed).length === 0 ? (
-                <div className="glass-premium p-10 rounded-[3rem] border border-dashed border-foreground/10 text-center bg-foreground/[0.01]">
+                <div className="glass-premium p-10 rounded-[2rem] border border-dashed border-foreground/10 text-center bg-foreground/[0.01]">
                   <p className="text-[10px] font-black text-foreground/30 uppercase tracking-[0.4em] italic leading-relaxed">
-                    Este equipo aún no ha completado ningún partido oficial.
+                    Este equipo aÃƒÂºn no ha completado ningÃƒÂºn partido oficial.
                   </p>
                 </div>
               ) : (
@@ -1354,7 +1354,7 @@ function TeamProfileContent() {
                           <motion.div
                             whileHover={{ scale: 1.02 }}
                             className={cn(
-                              'glass-premium p-6 rounded-[2.5rem] flex items-center justify-between border transition-all h-full',
+                              'glass-premium p-6 rounded-[2rem] flex items-center justify-between border transition-all h-full',
                               result === 'victory'
                                 ? 'border-primary/20 bg-primary/5 shadow-lg shadow-primary/5'
                                 : result === 'defeat'
@@ -1376,7 +1376,7 @@ function TeamProfileContent() {
                                 {result === 'victory' ? 'W' : result === 'defeat' ? 'L' : 'D'}
                               </div>
                               <div className="flex flex-col">
-                                <span className="text-[9px] font-black text-foreground/30 uppercase tracking-widest">
+                                <span className="text-[10px] font-black text-foreground/30 uppercase tracking-widest">
                                   {match.date}
                                 </span>
                                 <div className="flex items-center gap-3">
@@ -1407,8 +1407,8 @@ function TeamProfileContent() {
                 <h2 className="text-2xl font-black text-foreground italic uppercase tracking-tighter">
                   Retos Recibidos
                 </h2>
-                <span className="text-[9px] font-black text-accent uppercase tracking-widest">
-                  {challenges.length} DESAFÍOS PENDIENTES
+                <span className="text-[10px] font-black text-accent uppercase tracking-widest">
+                  {challenges.length} DESAFÃƒÂOS PENDIENTES
                 </span>
               </div>
             </div>
@@ -1419,7 +1419,7 @@ function TeamProfileContent() {
                   key={challenge.id}
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
-                  className="glass-premium p-6 rounded-[2.5rem] border border-accent/20 bg-accent/[0.02]"
+                  className="glass-premium p-6 rounded-[2rem] border border-accent/20 bg-accent/[0.02]"
                 >
                   <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
                     <div className="flex items-center gap-5">
@@ -1438,7 +1438,7 @@ function TeamProfileContent() {
                         <span className="text-xl font-black text-foreground italic uppercase tracking-tighter leading-none">
                           {challenge.challenger_team?.name || 'EQUIPO DESCONOCIDO'}
                         </span>
-                        <div className="flex items-center gap-3 text-[9px] font-black text-foreground/50 uppercase tracking-widest">
+                        <div className="flex items-center gap-3 text-[10px] font-black text-foreground/50 uppercase tracking-widest">
                           <span className="flex items-center gap-1.5">
                             <Calendar className="w-3 h-3 text-accent" /> {challenge.match_date}
                           </span>
@@ -1476,7 +1476,7 @@ function TeamProfileContent() {
           </section>
         )}
 
-        {/* ── JOIN REQUESTS (CAPTAIN ONLY) ── */}
+        {/* Ã¢â€â‚¬Ã¢â€â‚¬ JOIN REQUESTS (CAPTAIN ONLY) Ã¢â€â‚¬Ã¢â€â‚¬ */}
         {isCaptain && joinRequests.length > 0 && !isEditing && (
           <section className="space-y-6">
             <div className="flex items-center gap-4 px-2">
@@ -1487,7 +1487,7 @@ function TeamProfileContent() {
                 <h2 className="text-2xl font-black text-foreground italic uppercase tracking-tighter">
                   Solicitudes de Ingreso
                 </h2>
-                <span className="text-[9px] font-black text-primary uppercase tracking-widest">
+                <span className="text-[10px] font-black text-primary uppercase tracking-widest">
                   {joinRequests.length} JUGADORES QUIEREN UNIRSE
                 </span>
               </div>
@@ -1497,7 +1497,7 @@ function TeamProfileContent() {
               {joinRequests.map((req: any) => (
                 <div
                   key={req.user_id}
-                  className="glass-premium p-6 rounded-[2.5rem] border border-primary/10 bg-primary/[0.01] flex flex-col md:flex-row md:items-center justify-between gap-6"
+                  className="glass-premium p-6 rounded-[2rem] border border-primary/10 bg-primary/[0.01] flex flex-col md:flex-row md:items-center justify-between gap-6"
                 >
                   <Link
                     href={`/profile?id=${req.user_id}`}
@@ -1556,7 +1556,7 @@ function TeamProfileContent() {
         )}
       </div>
 
-      {/* ── INVITE MODAL ── */}
+      {/* Ã¢â€â‚¬Ã¢â€â‚¬ INVITE MODAL Ã¢â€â‚¬Ã¢â€â‚¬ */}
       <AnimatePresence>
         {inviteModalOpen && (
           <div className="fixed inset-0 z-[200] flex items-center justify-center p-6">
@@ -1571,7 +1571,7 @@ function TeamProfileContent() {
               initial={{ opacity: 0, scale: 0.95, y: 30 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 30 }}
-              className="w-full max-w-lg glass-premium border border-foreground/10 rounded-[3rem] p-8 shadow-2xl relative z-10 overflow-hidden bg-surface"
+              className="w-full max-w-lg glass-premium border border-foreground/10 rounded-[2rem] p-8 shadow-2xl relative z-10 overflow-hidden bg-surface"
             >
               <div className="flex items-center justify-between mb-10">
                 <div className="space-y-3">
@@ -1605,7 +1605,7 @@ function TeamProfileContent() {
                   </div>
                 ) : friends.length === 0 ? (
                   <div className="text-center py-20 px-8 flex flex-col items-center gap-6">
-                    <div className="w-24 h-24 bg-foreground/[0.02] rounded-[3rem] flex items-center justify-center border border-dashed border-foreground/10">
+                    <div className="w-24 h-24 bg-foreground/[0.02] rounded-[2rem] flex items-center justify-center border border-dashed border-foreground/10">
                       <Search className="w-8 h-8 text-foreground/50" />
                     </div>
                     <p className="text-2xl font-black text-foreground italic uppercase tracking-tighter">
@@ -1628,7 +1628,7 @@ function TeamProfileContent() {
                       return (
                         <div
                           key={f.id}
-                          className="flex items-center justify-between p-5 rounded-[2.5rem] bg-foreground/[0.01] border border-foreground/5 hover:bg-foreground/[0.03] hover:border-primary/20 transition-all group"
+                          className="flex items-center justify-between p-5 rounded-[2rem] bg-foreground/[0.01] border border-foreground/5 hover:bg-foreground/[0.03] hover:border-primary/20 transition-all group"
                         >
                           <div className="flex items-center gap-5">
                             <div className="w-16 h-16 rounded-[1.8rem] bg-surface-elevated border border-foreground/5 group-hover:border-primary/40 relative overflow-hidden transition-all duration-700 shadow-2xl">
@@ -1659,7 +1659,7 @@ function TeamProfileContent() {
                             <button
                               onClick={() => handleInviteFriend(otherUserId)}
                               disabled={invitingId === otherUserId}
-                              className="h-12 px-6 bg-primary text-background font-black text-[9px] uppercase tracking-widest rounded-2xl hover:bg-foreground hover:text-background transition-all active:scale-95 disabled:opacity-50 shadow-lg shadow-primary/10"
+                              className="h-12 px-6 bg-primary text-background font-black text-[10px] uppercase tracking-widest rounded-2xl hover:bg-foreground hover:text-background transition-all active:scale-95 disabled:opacity-50 shadow-lg shadow-primary/10"
                             >
                               {invitingId === otherUserId ? (
                                 <Loader2 className="w-4 h-4 animate-spin" />
@@ -1688,7 +1688,7 @@ export default function TeamProfilePage() {
       fallback={
         <div className="flex flex-col items-center justify-center min-h-[60vh] text-zinc-400">
           <div className="w-12 h-12 border-4 border-primary/20 border-t-primary rounded-full animate-spin mb-4" />
-          <p>Cargando información del equipo...</p>
+          <p>Cargando informaciÃƒÂ³n del equipo...</p>
         </div>
       }
     >

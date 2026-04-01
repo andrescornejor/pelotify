@@ -70,10 +70,10 @@ export default function EstablecimientosList() {
                   <span className="text-[10px] font-black text-primary uppercase tracking-[0.5em] italic">Explorar Sedes</span>
                </div>
                <h1 className="text-6xl sm:text-8xl lg:text-[10rem] font-black italic uppercase leading-[0.85] tracking-tight font-kanit">
-                 Donde se Juega el <span className="text-primary">Fútbol</span>
+                 Donde se Juega el <span className="text-primary">FÃƒÂºtbol</span>
                </h1>
                <p className="text-muted-foreground text-sm font-bold uppercase tracking-widest max-w-lg mt-6">
-                 Los mejores complejos de Rosario integrados en Pelotify. Reserva instantánea, pagos seguros y la mejor experiencia.
+                 Los mejores complejos de Rosario integrados en Pelotify. Reserva instantÃƒÂ¡nea, pagos seguros y la mejor experiencia.
                </p>
             </motion.div>
 
@@ -83,7 +83,7 @@ export default function EstablecimientosList() {
                   <Search className="absolute left-6 top-1/2 -translate-y-1/2 w-6 h-6 text-muted-foreground group-focus-within:text-primary transition-colors" />
                   <input 
                     type="text" 
-                    placeholder="Busca por nombre o dirección..." 
+                    placeholder="Busca por nombre o direcciÃƒÂ³n..." 
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                     className="w-full h-16 bg-surface-elevated/50 border border-white/5 rounded-[2rem] pl-16 pr-8 text-sm font-bold text-foreground outline-none focus:border-primary/40 focus:bg-surface-elevated transition-all shadow-inner"
@@ -103,7 +103,7 @@ export default function EstablecimientosList() {
             <AnimatePresence mode="popLayout">
                {loading ? (
                  [...Array(6)].map((_, i) => (
-                    <div key={i} className="h-[450px] rounded-[3rem] bg-surface-elevated/30 border border-white/5 animate-pulse" />
+                    <div key={i} className="h-[450px] rounded-[2rem] bg-surface-elevated/30 border border-white/5 animate-pulse" />
                  ))
                ) : filteredVenues.length === 0 ? (
                  <div className="col-span-full py-20 text-center space-y-4">
@@ -119,8 +119,8 @@ export default function EstablecimientosList() {
                       transition={{ delay: i * 0.05 }}
                     >
                        <Link href={`/establecimientos/${venue.id}`}>
-                          <div className="glass-premium rounded-[3rem] p-4 border-white/5 relative overflow-hidden group hover:border-primary/40 hover:shadow-[0_40px_80px_rgba(0,0,0,0.4)] transition-all duration-500 h-full flex flex-col">
-                             <div className="h-64 rounded-[2.5rem] overflow-hidden relative mb-6">
+                          <div className="glass-premium rounded-[2rem] p-4 border-white/5 relative overflow-hidden group hover:border-primary/40 hover:shadow-[0_40px_80px_rgba(0,0,0,0.4)] transition-all duration-500 h-full flex flex-col">
+                             <div className="h-64 rounded-[2rem] overflow-hidden relative mb-6">
                                 <img 
                                   src="https://images.unsplash.com/photo-1574629810360-7efbbe195018?q=80&w=1200&auto=format&fit=crop" 
                                   className="w-full h-full object-cover grayscale group-hover:grayscale-0 group-hover:scale-110 transition-all duration-700" 
@@ -152,7 +152,7 @@ export default function EstablecimientosList() {
                                       <span className="text-[10px] font-black uppercase tracking-widest text-foreground/80">Premium Pitch</span>
                                    </div>
                                    <div className="px-3 py-1 rounded-lg bg-primary/10 border border-primary/20">
-                                      <span className="text-[9px] font-black text-primary uppercase tracking-widest leading-none">Disponible</span>
+                                      <span className="text-[10px] font-black text-primary uppercase tracking-widest leading-none">Disponible</span>
                                    </div>
                                 </div>
                              </div>

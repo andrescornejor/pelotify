@@ -91,7 +91,7 @@ const MessageItem = memo(
             <div className="leading-relaxed tracking-tight">{msg.content}</div>
             <div
               className={cn(
-                'text-[8px] font-black opacity-40 mt-2 flex items-center gap-1.5 transition-opacity group-hover/bubble:opacity-100',
+                'text-[10px] font-black opacity-40 mt-2 flex items-center gap-1.5 transition-opacity group-hover/bubble:opacity-100',
                 isMine ? 'text-black justify-end' : 'text-foreground justify-start'
               )}
             >
@@ -218,7 +218,7 @@ export default function ChatRoom({ matchId, recipientId, className, title }: Cha
   return (
     <div
       className={cn(
-        'flex flex-col h-full bg-surface/20 backdrop-blur-3xl border border-foreground/5 rounded-[2.5rem] overflow-hidden shadow-2xl relative group',
+        'flex flex-col h-full bg-surface/20 backdrop-blur-3xl border border-foreground/5 rounded-[2rem] overflow-hidden shadow-2xl relative group',
         className
       )}
     >
@@ -265,7 +265,7 @@ export default function ChatRoom({ matchId, recipientId, className, title }: Cha
             <motion.div
               initial={{ scale: 0.9, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
-              className="w-28 h-28 bg-foreground/[0.03] rounded-[3rem] border border-foreground/5 flex items-center justify-center shadow-inner relative overflow-hidden group/empty"
+              className="w-28 h-28 bg-foreground/[0.03] rounded-[2rem] border border-foreground/5 flex items-center justify-center shadow-inner relative overflow-hidden group/empty"
             >
               <motion.div
                 animate={{ rotate: [0, -15, 15, 0], y: [0, -5, 5, 0] }}
@@ -279,7 +279,7 @@ export default function ChatRoom({ matchId, recipientId, className, title }: Cha
                 Canal Abierto
               </p>
               <p className="text-[11px] font-bold uppercase tracking-[0.4em] text-foreground/50 max-w-[260px] leading-relaxed mx-auto">
-                Conecta con los demás para definir los detalles del partido
+                Conecta con los demÃ¡s para definir los detalles del partido
               </p>
             </div>
           </div>
@@ -322,7 +322,7 @@ export default function ChatRoom({ matchId, recipientId, className, title }: Cha
       <div className="p-8 pt-0 relative z-20">
         <form
           onSubmit={handleSend}
-          className="p-1.5 pr-1.5 bg-foreground/[0.04] backdrop-blur-3xl border border-foreground/10 rounded-[2.5rem] flex gap-3 items-center focus-within:border-primary/40 focus-within:shadow-[0_0_30px_rgba(85,250,134,0.1)] transition-all shadow-inner relative group/form"
+          className="p-1.5 pr-1.5 bg-foreground/[0.04] backdrop-blur-3xl border border-foreground/10 rounded-[2rem] flex gap-3 items-center focus-within:border-primary/40 focus-within:shadow-[0_0_30px_rgba(85,250,134,0.1)] transition-all shadow-inner relative group/form"
         >
           <input
             type="text"

@@ -108,7 +108,7 @@ export default function VideoFeed() {
             <button 
               onClick={() => setActiveTab('for-you')}
               className={cn(
-                "font-black text-[9px] sm:text-[10px] tracking-[0.3em] uppercase relative shadow-sm transition-colors",
+                "font-black text-[10px] sm:text-[10px] tracking-[0.3em] uppercase relative shadow-sm transition-colors",
                 activeTab === 'for-you' ? "text-white" : "text-white/40 hover:text-white/80"
               )}
             >
@@ -120,7 +120,7 @@ export default function VideoFeed() {
             <button 
               onClick={() => setActiveTab('friends')}
               className={cn(
-                "font-black text-[9px] sm:text-[10px] tracking-[0.3em] uppercase relative shadow-sm transition-colors",
+                "font-black text-[10px] sm:text-[10px] tracking-[0.3em] uppercase relative shadow-sm transition-colors",
                 activeTab === 'friends' ? "text-white" : "text-white/40 hover:text-white/80"
               )}
             >
@@ -162,7 +162,7 @@ export default function VideoFeed() {
                 transition={{ type: "spring", duration: 0.8 }}
                 className="relative inline-block"
               >
-                <div className="w-36 h-36 bg-gradient-to-b from-zinc-800 to-zinc-950 rounded-[3rem] border border-white/10 flex items-center justify-center shadow-[0_20px_50px_rgba(0,0,0,0.5)] relative overflow-hidden group hover:border-emerald-500/50 transition-colors">
+                <div className="w-36 h-36 bg-gradient-to-b from-zinc-800 to-zinc-950 rounded-[2rem] border border-white/10 flex items-center justify-center shadow-[0_20px_50px_rgba(0,0,0,0.5)] relative overflow-hidden group hover:border-emerald-500/50 transition-colors">
                   <div className="absolute inset-0 bg-emerald-500/5 opacity-0 group-hover:opacity-100 transition-opacity" />
                   <Play className="w-14 h-14 text-emerald-500 fill-emerald-500/20 group-hover:fill-emerald-500/40 transition-colors" />
                 </div>
@@ -177,12 +177,12 @@ export default function VideoFeed() {
 
               <div className="space-y-4">
                 <h2 className="text-white text-4xl font-black italic uppercase tracking-tighter font-kanit drop-shadow-md">
-                  El escenario está <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-emerald-600">vacío</span>
+                  El escenario estÃƒÂ¡ <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-emerald-600">vacÃƒÂ­o</span>
                 </h2>
                 <p className="text-white/50 font-medium max-w-[280px] mx-auto text-[15px] font-outfit leading-relaxed">
                   {activeTab === 'friends' 
-                    ? "Tus amigos aún no han subido highlights. ¡Motívalos!"
-                    : "Sé el primero en subir esa jugada maradoniana. 15 segundos bastan para ser leyenda."}
+                    ? "Tus amigos aÃƒÂºn no han subido highlights. Ã‚Â¡MotÃƒÂ­valos!"
+                    : "SÃƒÂ© el primero en subir esa jugada maradoniana. 15 segundos bastan para ser leyenda."}
                 </p>
               </div>
 

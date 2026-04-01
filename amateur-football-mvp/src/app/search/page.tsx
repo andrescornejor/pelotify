@@ -80,7 +80,7 @@ export default function SearchPage() {
         isPerfMode && 'perf-mode'
       )}
     >
-      {/* ── RADAR AMBIENT ── */}
+      {/* Ã¢â€â‚¬Ã¢â€â‚¬ RADAR AMBIENT Ã¢â€â‚¬Ã¢â€â‚¬ */}
       {!isPerfMode && (
         <div className="absolute top-0 left-0 w-full h-[300px] pointer-events-none opacity-20">
           <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-primary/50 to-transparent" />
@@ -88,7 +88,7 @@ export default function SearchPage() {
         </div>
       )}
 
-      {/* ── HEADER & RADAR SCANNER ── */}
+      {/* Ã¢â€â‚¬Ã¢â€â‚¬ HEADER & RADAR SCANNER Ã¢â€â‚¬Ã¢â€â‚¬ */}
       <div
         className={cn(
           'sticky top-0 z-30 pt-4 pb-6 -mx-4 px-4 lg:-mx-12 lg:px-12 border-b border-foreground/5 shadow-2xl shadow-black/5',
@@ -136,10 +136,10 @@ export default function SearchPage() {
                 </div>
                 <input
                   type="text"
-                  placeholder="Buscá canchas, zonas o tipo de partido..."
+                  placeholder="BuscÃƒÂ¡ canchas, zonas o tipo de partido..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full h-16 lg:h-20 pl-16 lg:pl-20 pr-10 rounded-[1.8rem] lg:rounded-[2.5rem] bg-foreground/[0.03] border border-foreground/10 focus:bg-foreground/[0.05] focus:border-primary/30 outline-none transition-all text-lg lg:text-xl font-black text-foreground placeholder:text-foreground/20 placeholder:italic shadow-2xl focus:shadow-primary/5"
+                  className="w-full h-16 lg:h-20 pl-16 lg:pl-20 pr-10 rounded-[1.8rem] lg:rounded-[2rem] bg-foreground/[0.03] border border-foreground/10 focus:bg-foreground/[0.05] focus:border-primary/30 outline-none transition-all text-lg lg:text-xl font-black text-foreground placeholder:text-foreground/20 placeholder:italic shadow-2xl focus:shadow-primary/5"
                 />
                 <div className="absolute inset-y-0 right-10 flex items-center">
                   <Filter className="w-6 h-6 text-primary cursor-pointer hover:text-primary transition-colors" />
@@ -191,7 +191,7 @@ export default function SearchPage() {
                 <button
                   onClick={() => setActiveTab('list')}
                   className={cn(
-                    'flex-1 h-full text-[9px] font-black uppercase tracking-[0.1em] rounded-xl transition-all relative z-10 flex items-center justify-center gap-1.5 italic',
+                    'flex-1 h-full text-[10px] font-black uppercase tracking-[0.1em] rounded-xl transition-all relative z-10 flex items-center justify-center gap-1.5 italic',
                     activeTab === 'list' ? 'text-black' : 'text-foreground/40 hover:text-foreground/60'
                   )}
                 >
@@ -200,7 +200,7 @@ export default function SearchPage() {
                 <button
                   onClick={() => setActiveTab('map')}
                   className={cn(
-                    'flex-1 h-full text-[9px] font-black uppercase tracking-[0.1em] rounded-xl transition-all relative z-10 flex items-center justify-center gap-1.5 italic',
+                    'flex-1 h-full text-[10px] font-black uppercase tracking-[0.1em] rounded-xl transition-all relative z-10 flex items-center justify-center gap-1.5 italic',
                     activeTab === 'map' ? 'text-black' : 'text-foreground/40 hover:text-foreground/60'
                   )}
                 >
@@ -209,7 +209,7 @@ export default function SearchPage() {
                 <button
                   onClick={() => setActiveTab('sedes')}
                   className={cn(
-                    'flex-1 h-full text-[9px] font-black uppercase tracking-[0.1em] rounded-xl transition-all relative z-10 flex items-center justify-center gap-1.5 italic',
+                    'flex-1 h-full text-[10px] font-black uppercase tracking-[0.1em] rounded-xl transition-all relative z-10 flex items-center justify-center gap-1.5 italic',
                     activeTab === 'sedes' ? 'text-black' : 'text-foreground/40 hover:text-foreground/60'
                   )}
                 >
@@ -241,7 +241,7 @@ export default function SearchPage() {
               </div>
             </div>
             <p className="text-[10px] font-black uppercase tracking-[0.5em] animate-pulse text-zinc-700 italic">
-              Sincronizando Satélites...
+              Sincronizando SatÃƒÂ©lites...
             </p>
           </div>
         ) : activeTab === 'list' ? (
@@ -256,31 +256,31 @@ export default function SearchPage() {
                   transition={isPerfMode ? { duration: 0 } : { delay: i * 0.04, duration: 0.4 }}
                   whileHover={isPerfMode ? {} : { y: -4, scale: 1.01 }}
                   className={cn(
-                    'glass-premium rounded-[1.8rem] lg:rounded-[3rem] p-4 lg:p-8 flex flex-col lg:flex-row items-stretch lg:items-center gap-3 lg:gap-14 relative overflow-hidden group border border-foreground/[0.08] bg-foreground/[0.01] transition-all',
+                    'glass-premium rounded-[1.8rem] lg:rounded-[2rem] p-4 lg:p-8 flex flex-col lg:flex-row items-stretch lg:items-center gap-3 lg:gap-14 relative overflow-hidden group border border-foreground/[0.08] bg-foreground/[0.01] transition-all',
                     isPerfMode ? 'duration-0' : 'hover:bg-foreground/[0.03] duration-500'
                   )}
                 >
-                  {/* ── BACKGROUND DECORATION ── */}
+                  {/* Ã¢â€â‚¬Ã¢â€â‚¬ BACKGROUND DECORATION Ã¢â€â‚¬Ã¢â€â‚¬ */}
                   <div className="absolute top-0 right-0 w-80 h-80 bg-primary/5 blur-[100px] rounded-full group-hover:bg-primary/10 transition-colors pointer-events-none" />
 
                   {/* Radar Scan Line */}
                   <div className="absolute inset-y-0 left-0 w-1 bg-gradient-to-b from-transparent via-primary/40 to-transparent group-hover:h-full transition-all duration-700 pointer-events-none" />
 
-                  {/* ── LEFT SECTION: Context & Level ── */}
+                  {/* Ã¢â€â‚¬Ã¢â€â‚¬ LEFT SECTION: Context & Level Ã¢â€â‚¬Ã¢â€â‚¬ */}
                   <div className="flex lg:flex-col items-center lg:items-start justify-between lg:justify-center gap-2 lg:min-w-[150px] relative z-10 lg:border-r border-foreground/5 lg:pr-14">
                     <div className="flex flex-row lg:flex-col gap-2">
                       <div className="flex items-center gap-2 px-2.5 py-1 bg-primary/10 text-primary border border-primary/20 rounded-lg w-fit shadow-sm">
                         <div className="w-1 h-1 rounded-full bg-primary animate-pulse" />
-                        <span className="text-[9px] font-black uppercase tracking-widest">
+                        <span className="text-[10px] font-black uppercase tracking-widest">
                           {match.type}
                         </span>
                       </div>
-                      <div className="px-2.5 py-1 bg-blue-500/10 text-blue-400 border border-blue-500/20 rounded-lg text-[9px] font-black uppercase tracking-widest italic w-fit">
+                      <div className="px-2.5 py-1 bg-blue-500/10 text-blue-400 border border-blue-500/20 rounded-lg text-[10px] font-black uppercase tracking-widest italic w-fit">
                         {match.level}
                       </div>
                     </div>
                     <div className="hidden lg:flex flex-col gap-1.5 mt-5">
-                      <span className="text-[9px] font-black uppercase text-foreground/30 tracking-[0.2em]">
+                      <span className="text-[10px] font-black uppercase text-foreground/30 tracking-[0.2em]">
                         Despliegue
                       </span>
                       <div className="flex items-center gap-2.5 text-foreground">
@@ -300,7 +300,7 @@ export default function SearchPage() {
                     </div>
                   </div>
 
-                  {/* ── CENTER SECTION: Venue Info ── */}
+                  {/* Ã¢â€â‚¬Ã¢â€â‚¬ CENTER SECTION: Venue Info Ã¢â€â‚¬Ã¢â€â‚¬ */}
                   <div className="flex-1 relative z-10 space-y-1 lg:space-y-3 py-0 lg:py-0">
                     {(() => {
                       const venue = findVenueByLocation(match.location || '');
@@ -314,7 +314,7 @@ export default function SearchPage() {
                             <div className="w-6 h-6 lg:w-8 lg:h-8 rounded-full bg-foreground/5 flex items-center justify-center border border-foreground/10">
                               <MapPin className="w-3 h-3 lg:w-4 lg:h-4 text-foreground/40 group-hover:text-primary/60 transition-colors" />
                             </div>
-                            <p className="text-[9px] lg:text-xs text-foreground/50 font-bold uppercase tracking-widest max-w-[200px] lg:max-w-sm truncate">
+                            <p className="text-[10px] lg:text-xs text-foreground/50 font-bold uppercase tracking-widest max-w-[200px] lg:max-w-sm truncate">
                               {match.location}
                             </p>
                           </div>
@@ -361,7 +361,7 @@ export default function SearchPage() {
                     </div>
                   </div>
 
-                  {/* ── DESKTOP DETAILS: Availability ── */}
+                  {/* Ã¢â€â‚¬Ã¢â€â‚¬ DESKTOP DETAILS: Availability Ã¢â€â‚¬Ã¢â€â‚¬ */}
                   <div className="hidden lg:flex items-center gap-14 relative z-10 px-0 lg:px-4 border-l border-foreground/5 lg:min-w-[320px]">
                     <div className="flex flex-col gap-4 w-full">
                       <div className="flex justify-between items-end">
@@ -437,7 +437,7 @@ export default function SearchPage() {
                                   missing > 0 ? 'text-foreground/40' : 'text-foreground/10'
                                 )}
                               >
-                                {missing > 0 ? `Se buscan ${missing} pibes` : 'Pelotón completo'}
+                                {missing > 0 ? `Se buscan ${missing} pibes` : 'PelotÃƒÂ³n completo'}
                               </span>
                             </>
                           );
@@ -446,8 +446,8 @@ export default function SearchPage() {
                     </div>
 
                     <div className="flex flex-col items-end min-w-[140px] border-l border-foreground/5 pl-14">
-                      <span className="text-[9px] font-black uppercase text-foreground/20 tracking-[0.2em] mb-1.5">
-                        Matrícula
+                      <span className="text-[10px] font-black uppercase text-foreground/20 tracking-[0.2em] mb-1.5">
+                        MatrÃƒÂ­cula
                       </span>
                       <div className="flex items-baseline gap-0.5">
                         <span className="text-[14px] font-black text-foreground/40 italic">$</span>
@@ -458,7 +458,7 @@ export default function SearchPage() {
                     </div>
                   </div>
 
-                  {/* ── ACTION SECTION (Mobile Tighter) ── */}
+                  {/* Ã¢â€â‚¬Ã¢â€â‚¬ ACTION SECTION (Mobile Tighter) Ã¢â€â‚¬Ã¢â€â‚¬ */}
                   <div className="lg:w-[300px] relative z-20 flex flex-col gap-3 lg:gap-5 lg:pl-10 lg:border-l border-foreground/5">
                     <div className="lg:hidden flex items-center justify-between px-1">
                       <div className="flex items-baseline gap-1">
@@ -500,19 +500,19 @@ export default function SearchPage() {
                 </motion.div>
               ))
             ) : (
-              <div className="col-span-full flex flex-col items-center justify-center py-40 text-center gap-12 glass-premium rounded-[4rem] border-dashed border-2 border-foreground/5 bg-foreground/[0.01]">
+              <div className="col-span-full flex flex-col items-center justify-center py-40 text-center gap-12 glass-premium rounded-[2rem] border-dashed border-2 border-foreground/5 bg-foreground/[0.01]">
                 <div className="relative group">
-                  <div className="w-32 h-32 bg-foreground/5 rounded-[2.5rem] flex items-center justify-center animate-float shadow-inner border border-foreground/10">
+                  <div className="w-32 h-32 bg-foreground/5 rounded-[2rem] flex items-center justify-center animate-float shadow-inner border border-foreground/10">
                     <Search className="w-14 h-14 text-foreground/20 group-hover:scale-110 transition-transform duration-700" />
                   </div>
-                  <div className="absolute inset-0 border border-primary/20 rounded-[2.5rem] animate-pulse" />
+                  <div className="absolute inset-0 border border-primary/20 rounded-[2rem] animate-pulse" />
                 </div>
                 <div className="max-w-xl mx-auto space-y-4">
                   <h3 className="text-3xl font-black text-foreground italic uppercase tracking-tighter">
                     Zona Desierta
                   </h3>
                   <p className="text-[10px] text-foreground/30 font-black uppercase tracking-[0.3em] leading-relaxed">
-                    No hay partidos por acá. Probá buscando otra cosa o armá uno nuevo.
+                    No hay partidos por acÃƒÂ¡. ProbÃƒÂ¡ buscando otra cosa o armÃƒÂ¡ uno nuevo.
                   </p>
                 </div>
                 <Link href="/create">
@@ -527,7 +527,7 @@ export default function SearchPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
              {loadingVenues ? (
                 [...Array(6)].map((_, i) => (
-                  <div key={i} className="h-64 rounded-[3rem] bg-foreground/5 animate-pulse border border-foreground/5" />
+                  <div key={i} className="h-64 rounded-[2rem] bg-foreground/5 animate-pulse border border-foreground/5" />
                 ))
              ) : venues.length > 0 ? (
                 venues.map((venue, i) => (
@@ -538,7 +538,7 @@ export default function SearchPage() {
                     transition={{ delay: i * 0.05 }}
                   >
                     <Link href={`/establecimientos/${venue.id}`}>
-                       <div className="glass-premium rounded-[3rem] p-6 border-white/5 group hover:border-primary/40 transition-all duration-300 h-full flex flex-col gap-6">
+                       <div className="glass-premium rounded-[2rem] p-6 border-white/5 group hover:border-primary/40 transition-all duration-300 h-full flex flex-col gap-6">
                           <div className="aspect-[16/10] rounded-[2.2rem] overflow-hidden relative">
                              <img src="https://images.unsplash.com/photo-1574629810360-7efbbe195018?q=80&w=800&auto=format&fit=crop" className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500" />
                              <div className="absolute top-4 right-4 px-3 py-1 glass rounded-xl border border-white/10 flex items-center gap-1.5 focus:bg-primary">
@@ -555,7 +555,7 @@ export default function SearchPage() {
                                 </p>
                              </div>
                              <div className="flex items-center justify-between pt-4 border-t border-white/5">
-                                <span className="text-[9px] font-black uppercase tracking-widest text-primary">Disponible Hoy</span>
+                                <span className="text-[10px] font-black uppercase tracking-widest text-primary">Disponible Hoy</span>
                                 <div className="p-2 rounded-xl bg-primary text-black hover:scale-110 transition-transform">
                                    <ChevronRight className="w-4 h-4" />
                                 </div>
@@ -573,12 +573,12 @@ export default function SearchPage() {
              )}
           </div>
         ) : (
-          <div className="w-full h-full min-h-[600px] relative overflow-hidden rounded-[4rem] border border-foreground/10 shadow-[0_50px_100px_rgba(0,0,0,0.5)] bg-surface">
+          <div className="w-full h-full min-h-[600px] relative overflow-hidden rounded-[2rem] border border-foreground/10 shadow-[0_50px_100px_rgba(0,0,0,0.5)] bg-surface">
             <MapSearch matches={filteredMatches} />
             <div className="absolute top-8 right-8 z-20">
               <div className="px-5 py-2.5 bg-background/60 backdrop-blur-xl border border-foreground/10 rounded-2xl flex items-center gap-3">
                 <div className="w-2 h-2 rounded-full bg-primary animate-pulse shadow-[0_0_10px_rgba(16,185,129,1)]" />
-                <span className="text-[9px] font-black text-foreground uppercase tracking-widest">
+                <span className="text-[10px] font-black text-foreground uppercase tracking-widest">
                   GPS ACTIVO
                 </span>
               </div>

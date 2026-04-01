@@ -47,7 +47,7 @@ export function QuickChatsSidebar() {
     <>
       <div className="hidden xl:block fixed right-6 top-[120px] w-80 h-[calc(100vh-200px)] z-40">
         <div className="h-full flex flex-col">
-          <div className="glass-premium p-6 rounded-[2.5rem] border-white/10 shadow-2xl flex flex-col h-full relative overflow-hidden group/sidebar bg-background/40 backdrop-blur-3xl">
+          <div className="glass-premium p-6 rounded-[2rem] border-white/10 shadow-2xl flex flex-col h-full relative overflow-hidden group/sidebar bg-background/40 backdrop-blur-3xl">
             {/* Animated Glow Backdrop */}
             <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 blur-[50px] opacity-0 group-hover/sidebar:opacity-100 transition-opacity duration-1000" />
             
@@ -60,14 +60,14 @@ export function QuickChatsSidebar() {
                   <h3 className="text-[13px] font-black italic text-foreground uppercase tracking-tighter leading-none">
                     Chats Recientes
                   </h3>
-                  <span className="text-[8px] font-black text-foreground/40 uppercase tracking-[0.3em] mt-1">
-                    Respuesta Rápida
+                  <span className="text-[10px] font-black text-foreground/40 uppercase tracking-[0.3em] mt-1">
+                    Respuesta RÃƒÂ¡pida
                   </span>
                 </div>
               </div>
               {chats.some(c => c.isUnread) && (
                 <div className="px-2 py-0.5 rounded-full bg-primary/20 border border-primary/30">
-                  <span className="text-[8px] font-black text-primary animate-pulse">NUEVO</span>
+                  <span className="text-[10px] font-black text-primary animate-pulse">NUEVO</span>
                 </div>
               )}
             </div>
@@ -111,7 +111,7 @@ export function QuickChatsSidebar() {
                         <p className="text-[11px] font-black uppercase italic tracking-tighter text-foreground truncate">
                           {chat.name}
                         </p>
-                        <span className="text-[7px] font-black text-foreground/20 uppercase">
+                        <span className="text-[10px] font-black text-foreground/20 uppercase">
                           {new Date(chat.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                         </span>
                       </div>
@@ -124,8 +124,8 @@ export function QuickChatsSidebar() {
               ) : (
                 <div className="flex flex-col items-center justify-center py-12 text-center gap-4 opacity-40">
                   <MessageSquare className="w-10 h-10 text-foreground/10" />
-                  <p className="text-[9px] font-black uppercase tracking-widest max-w-[140px]">
-                    No hay chats todavía.
+                  <p className="text-[10px] font-black uppercase tracking-widest max-w-[140px]">
+                    No hay chats todavÃƒÂ­a.
                   </p>
                 </div>
               )}
@@ -134,7 +134,7 @@ export function QuickChatsSidebar() {
             <div className="mt-6 pt-6 border-t border-foreground/5 relative z-10">
                <div className="flex items-center gap-2 opacity-30 px-2">
                   <Shield className="w-3 h-3" />
-                  <span className="text-[8px] font-black uppercase tracking-[0.3em]">Ambiente Seguro</span>
+                  <span className="text-[10px] font-black uppercase tracking-[0.3em]">Ambiente Seguro</span>
                </div>
             </div>
           </div>

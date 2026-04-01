@@ -49,7 +49,7 @@ export default function ScoutingPage() {
     if (type === 'like') {
       try {
         await sendFriendRequest(user.id, currentProfile.id);
-        setShowFeedback('¡Interés de Fichaje Enviado!');
+        setShowFeedback('Â¡InterÃ©s de Fichaje Enviado!');
         setTimeout(() => setShowFeedback(null), 1500);
       } catch (err) {
         console.error('Error enviando solicitud:', err);
@@ -130,7 +130,7 @@ export default function ScoutingPage() {
           <div className="w-12 h-12 rounded-2xl glass-premium border border-white/10 flex items-center justify-center group-hover:border-primary/50 transition-all">
             <span className="text-xl font-black text-primary font-kanit italic">{Math.max(0, profiles.length - currentIndex)}</span>
           </div>
-          <span className="text-[8px] font-black text-white/20 uppercase tracking-[0.2em] group-hover:text-white/40">PROSPECTOS</span>
+          <span className="text-[10px] font-black text-white/20 uppercase tracking-[0.2em] group-hover:text-white/40">PROSPECTOS</span>
         </div>
       </div>
 
@@ -156,7 +156,7 @@ export default function ScoutingPage() {
               className="w-full relative cursor-grab active:cursor-grabbing touch-pan-y"
             >
               {/* Profile Card Container with Glow */}
-              <div className="relative w-full aspect-[4/5] rounded-[3.5rem] p-4 flex flex-col items-center justify-center glass-premium border border-white/5 shadow-2xl overflow-hidden group">
+              <div className="relative w-full aspect-[4/5] rounded-[2rem] p-4 flex flex-col items-center justify-center glass-premium border border-white/5 shadow-2xl overflow-hidden group">
                 
                 {/* Background Texture Overlay */}
                 <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-10 mix-blend-overlay pointer-events-none" />
@@ -212,16 +212,16 @@ export default function ScoutingPage() {
             <motion.div
               initial={{ scale: 0.9, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
-              className="w-full aspect-[4/5] rounded-[3.5rem] p-12 flex flex-col items-center justify-center text-center glass-premium border border-white/5 relative overflow-hidden"
+              className="w-full aspect-[4/5] rounded-[2rem] p-12 flex flex-col items-center justify-center text-center glass-premium border border-white/5 relative overflow-hidden"
             >
               <div className="absolute inset-0 bg-primary/5 blur-[100px] rounded-full" />
               <div className="relative z-10 space-y-8">
-                <div className="w-28 h-28 rounded-[2.5rem] bg-primary/10 flex items-center justify-center border border-primary/20 shadow-[0_0_50px_rgba(44,252,125,0.2)] mx-auto">
+                <div className="w-28 h-28 rounded-[2rem] bg-primary/10 flex items-center justify-center border border-primary/20 shadow-[0_0_50px_rgba(44,252,125,0.2)] mx-auto">
                    <Sparkles className="w-12 h-12 text-primary animate-pulse" />
                 </div>
                 <div>
-                    <h3 className="text-4xl font-black italic text-white uppercase tracking-[-0.05em] font-kanit">EL MERCADO ESTÁ CERRADO</h3>
-                    <p className="text-[11px] font-bold text-white/30 uppercase tracking-[0.3em] mt-3">Vuelve mañana para ver el nuevo draft de prospectos.</p>
+                    <h3 className="text-4xl font-black italic text-white uppercase tracking-[-0.05em] font-kanit">EL MERCADO ESTÃ CERRADO</h3>
+                    <p className="text-[11px] font-bold text-white/30 uppercase tracking-[0.3em] mt-3">Vuelve maÃ±ana para ver el nuevo draft de prospectos.</p>
                 </div>
                 <Link href="/">
                    <button className="h-16 px-12 bg-primary rounded-[2rem] text-background font-black text-[12px] uppercase tracking-[0.4em] hover:scale-110 active:scale-95 transition-all shadow-2xl shadow-primary/20 italic">

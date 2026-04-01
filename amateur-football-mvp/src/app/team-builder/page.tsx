@@ -170,7 +170,7 @@ export default function TeamBuilderPage() {
         </div>
 
         {/* Right Side: Form Controller */}
-        <div className="glass-premium rounded-[3rem] p-8 lg:p-12 border border-foreground/5 shadow-[0_50px_100px_rgba(0,0,0,0.5)] overflow-hidden relative">
+        <div className="glass-premium rounded-[2rem] p-8 lg:p-12 border border-foreground/5 shadow-[0_50px_100px_rgba(0,0,0,0.5)] overflow-hidden relative">
           <div
             className="absolute top-0 left-0 w-full h-2 transition-colors duration-700"
             style={{ backgroundColor: formData.secondaryColor }}
@@ -314,7 +314,7 @@ export default function TeamBuilderPage() {
                                     showShadow={false}
                                 />
                                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-end justify-center pb-1">
-                                    <span className="text-[7px] font-black uppercase text-white truncate px-1">{p.label}</span>
+                                    <span className="text-[10px] font-black uppercase text-white truncate px-1">{p.label}</span>
                                 </div>
                                 {formData.jerseyPattern === p.id && (
                                      <div className="absolute top-1 right-1 w-3 h-3 rounded-full bg-primary flex items-center justify-center">

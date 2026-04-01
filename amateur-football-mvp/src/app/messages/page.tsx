@@ -102,7 +102,7 @@ const ConversationItem = memo(
             )}
             <span
               className={cn(
-                'text-[8px] font-black uppercase tracking-widest opacity-40',
+                'text-[10px] font-black uppercase tracking-widest opacity-40',
                 isSelected ? 'text-black' : 'text-foreground'
               )}
             >
@@ -187,7 +187,7 @@ const FriendItem = memo(
         </h4>
         <div className="flex items-center gap-2 mt-1.5">
           <div className="w-1 h-1 rounded-full bg-primary group-hover:bg-black opacity-40" />
-          <p className="text-[8px] font-black uppercase tracking-widest text-foreground/30 group-hover:text-black/60">
+          <p className="text-[10px] font-black uppercase tracking-widest text-foreground/30 group-hover:text-black/60">
             {isDashed ? 'Enviar primer mensaje' : 'Conectar ahora'}
           </p>
         </div>
@@ -289,7 +289,7 @@ export default function MessagesPage() {
             userId: friend.userId,
             name: friend.name,
             avatar_url: friend.avatar_url,
-            lastMessage: 'Iniciar conversación...',
+            lastMessage: 'Iniciar conversaciÃƒÂ³n...',
             timestamp: new Date().toISOString(),
           });
         }
@@ -331,7 +331,7 @@ export default function MessagesPage() {
           userId: friend.userId,
           name: friend.name,
           avatar_url: friend.avatar_url,
-          lastMessage: 'Iniciar conversación...',
+          lastMessage: 'Iniciar conversaciÃƒÂ³n...',
           timestamp: new Date().toISOString(),
         }
       );
@@ -488,7 +488,7 @@ export default function MessagesPage() {
             <motion.div
               initial={{ opacity: 0, y: 10, scale: 0.99 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
-              className="flex flex-col h-full bg-surface/30 dark:bg-foreground/[0.02] backdrop-blur-3xl border border-foreground/10 rounded-[3.5rem] overflow-hidden relative shadow-[0_40px_100px_-20px_rgba(0,0,0,0.1)] dark:shadow-[0_50px_120px_rgba(0,0,0,0.6)]"
+              className="flex flex-col h-full bg-surface/30 dark:bg-foreground/[0.02] backdrop-blur-3xl border border-foreground/10 rounded-[2rem] overflow-hidden relative shadow-[0_40px_100px_-20px_rgba(0,0,0,0.1)] dark:shadow-[0_50px_120px_rgba(0,0,0,0.6)]"
             >
               {/* Chat Header */}
               <div className="px-6 sm:px-10 py-6 bg-foreground/[0.03] backdrop-blur-2xl border-b border-foreground/5 flex items-center justify-between relative z-20">
@@ -522,8 +522,8 @@ export default function MessagesPage() {
                       </h3>
                       <div className="flex items-center gap-2 mt-1">
                         <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
-                        <span className="text-[8px] font-black uppercase tracking-[0.3em] text-primary">
-                          Conexión Segura
+                        <span className="text-[10px] font-black uppercase tracking-[0.3em] text-primary">
+                          ConexiÃƒÂ³n Segura
                         </span>
                       </div>
                     </div>
@@ -531,11 +531,11 @@ export default function MessagesPage() {
                 </div>
                 <div className="flex items-center gap-3">
                   <div className="hidden sm:flex flex-col items-end">
-                    <span className="text-[9px] font-black text-foreground uppercase tracking-[0.2em]">
+                    <span className="text-[10px] font-black text-foreground uppercase tracking-[0.2em]">
                       Activo Ahora
                     </span>
-                    <span className="text-[7px] font-black text-primary/60 uppercase tracking-[0.1em]">
-                      Línea Encriptada
+                    <span className="text-[10px] font-black text-primary/60 uppercase tracking-[0.1em]">
+                      LÃƒÂ­nea Encriptada
                     </span>
                   </div>
                 </div>
@@ -547,7 +547,7 @@ export default function MessagesPage() {
               />
             </motion.div>
           ) : (
-            <div className="flex-1 flex flex-col items-center justify-center text-center space-y-12 glass-premium border border-foreground/5 rounded-[3rem] relative overflow-hidden group shadow-2xl">
+            <div className="flex-1 flex flex-col items-center justify-center text-center space-y-12 glass-premium border border-foreground/5 rounded-[2rem] relative overflow-hidden group shadow-2xl">
               <div
                 className="absolute inset-0 bg-primary/5 opacity-0 group-hover:opacity-100 transition-all duration-1000"
                 style={{
@@ -567,7 +567,7 @@ export default function MessagesPage() {
                     rotate: [0, 5, -5, 0],
                   }}
                   transition={{ duration: 10, repeat: Infinity, ease: 'easeInOut' }}
-                  className="w-48 h-48 rounded-[4rem] bg-foreground/[0.02] border border-foreground/5 flex items-center justify-center relative shadow-2xl backdrop-blur-sm"
+                  className="w-48 h-48 rounded-[2rem] bg-foreground/[0.02] border border-foreground/5 flex items-center justify-center relative shadow-2xl backdrop-blur-sm"
                 >
                   <MessageSquare className="w-20 h-20 text-primary drop-shadow-[0_0_20px_rgba(85,250,134,0.4)]" />
                   <motion.div
@@ -585,7 +585,7 @@ export default function MessagesPage() {
                   Inicia la <br /> Jugada
                 </h3>
                 <p className="text-[11px] font-bold uppercase tracking-[0.4em] text-foreground/40 max-w-sm mx-auto leading-relaxed">
-                  Conecta con otros jugadores de la <br /> comunidad para organizar tu próximo
+                  Conecta con otros jugadores de la <br /> comunidad para organizar tu prÃƒÂ³ximo
                   partido
                 </p>
               </div>
@@ -622,7 +622,7 @@ export default function MessagesPage() {
                 initial={{ opacity: 0, y: 100, scale: 0.95 }}
                 animate={{ opacity: 1, y: 0, scale: 1 }}
                 exit={{ opacity: 0, y: 100, scale: 0.95 }}
-                className="relative w-full max-w-lg bg-surface/40 backdrop-blur-2xl border border-foreground/10 rounded-t-[3rem] sm:rounded-[3rem] p-8 sm:p-12 shadow-[0_32px_64px_rgba(0,0,0,0.4)] overflow-hidden z-10"
+                className="relative w-full max-w-lg bg-surface/40 backdrop-blur-2xl border border-foreground/10 rounded-t-[3rem] sm:rounded-[2rem] p-8 sm:p-12 shadow-[0_32px_64px_rgba(0,0,0,0.4)] overflow-hidden z-10"
               >
                 <div className="absolute top-0 right-0 p-12 opacity-[0.03] pointer-events-none">
                   <MessageSquare className="w-48 h-48" />

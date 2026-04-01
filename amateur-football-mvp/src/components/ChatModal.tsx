@@ -28,7 +28,7 @@ export default function ChatModal({ isOpen, onClose, recipientId, recipientName 
             initial={{ opacity: 0, scale: 0.95, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 20 }}
-            className="w-full max-w-2xl h-[80vh] bg-surface border border-foreground/10 rounded-[3rem] shadow-2xl relative z-10 flex flex-col overflow-hidden"
+            className="w-full max-w-2xl h-[80vh] bg-surface border border-foreground/10 rounded-[2rem] shadow-2xl relative z-10 flex flex-col overflow-hidden"
           >
             {/* Header */}
             <div className="p-6 border-b border-foreground/5 flex items-center justify-between bg-foreground/[0.02]">
@@ -42,8 +42,8 @@ export default function ChatModal({ isOpen, onClose, recipientId, recipientName 
                   </h3>
                   <div className="flex items-center gap-2 mt-1">
                     <div className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
-                    <span className="text-[9px] font-black text-foreground/40 uppercase tracking-widest italic tracking-widest">
-                      Señal Encriptada
+                    <span className="text-[10px] font-black text-foreground/40 uppercase tracking-widest italic tracking-widest">
+                      SeÃƒÂ±al Encriptada
                     </span>
                   </div>
                 </div>
@@ -67,7 +67,7 @@ export default function ChatModal({ isOpen, onClose, recipientId, recipientName 
             {/* Footer / Tip */}
             <div className="p-4 bg-foreground/[0.01] border-t border-foreground/5 flex items-center justify-center gap-2">
               <Shield className="w-3 h-3 text-foreground/20" />
-              <span className="text-[8px] font-black text-foreground/20 uppercase tracking-[0.3em]">
+              <span className="text-[10px] font-black text-foreground/20 uppercase tracking-[0.3em]">
                 Ambiente Seguro & Fair Play
               </span>
             </div>

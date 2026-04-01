@@ -131,7 +131,7 @@ export default function CanchasDashboard() {
           });
         }
 
-        // 4. Determinar si se ha vinculado MP via negocio o dueño
+        // 4. Determinar si se ha vinculado MP via negocio o dueÃƒÂ±o
         if (bData?.mp_access_token) {
           setHasMP(true);
         } else {
@@ -165,8 +165,8 @@ export default function CanchasDashboard() {
           <div className="w-16 h-16 bg-primary/10 text-primary rounded-2xl flex items-center justify-center mx-auto mb-4">
             <MapPin className="w-8 h-8" />
           </div>
-          <h2 className="text-3xl font-Kanit font-bold">¡Bienvenido!</h2>
-          <p className="text-muted-foreground text-sm font-medium">No tienes ningún establecimiento asociado a tu cuenta. Contacta a soporte para dar de alta tu primera sucursal de canchas.</p>
+          <h2 className="text-3xl font-Kanit font-bold">Ã‚Â¡Bienvenido!</h2>
+          <p className="text-muted-foreground text-sm font-medium">No tienes ningÃƒÂºn establecimiento asociado a tu cuenta. Contacta a soporte para dar de alta tu primera sucursal de canchas.</p>
           <button onClick={() => router.push('/')} className="w-full bg-surface-elevated text-foreground hover:bg-surface-bright font-bold py-3 px-4 rounded-xl border border-border/50 transition-colors">
             Volver al inicio
           </button>
@@ -191,7 +191,7 @@ export default function CanchasDashboard() {
                   {business?.name || "Pelotify Business"}
                 </h1>
                 <div className="px-2 py-0.5 rounded-md bg-primary/20 border border-primary/30 hidden sm:block">
-                  <span className="text-[8px] font-black text-primary uppercase tracking-widest">PRO PLAN</span>
+                  <span className="text-[10px] font-black text-primary uppercase tracking-widest">PRO PLAN</span>
                 </div>
                 {business?.id && (
                   <button 
@@ -199,7 +199,7 @@ export default function CanchasDashboard() {
                     className="p-1.5 rounded-lg bg-foreground/5 hover:bg-primary/20 text-muted-foreground hover:text-primary transition-all flex items-center gap-1.5 px-2"
                   >
                      <ExternalLink className="w-3 h-3" />
-                     <span className="text-[8px] font-black uppercase tracking-widest">Perfil Público</span>
+                     <span className="text-[10px] font-black uppercase tracking-widest">Perfil PÃƒÂºblico</span>
                   </button>
                 )}
               </div>
@@ -216,7 +216,7 @@ export default function CanchasDashboard() {
                <div className="text-right relative z-10">
                   <div className="flex items-center gap-1 justify-end">
                      <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse shadow-[0_0_8px_rgba(44,252,125,0.8)]"></span>
-                     <p className="text-[9px] font-black text-muted-foreground uppercase tracking-widest leading-none">Tu Balance</p>
+                     <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest leading-none">Tu Balance</p>
                   </div>
                   <p className="text-sm font-black text-foreground italic font-kanit leading-none mt-1">${new Intl.NumberFormat('es-AR').format(stats.monthIncome)}</p>
                </div>
@@ -226,19 +226,19 @@ export default function CanchasDashboard() {
                </button>
             </div>
 
-            <button className="relative p-3 rounded-xl bg-surface-elevated border border-white/5 hover:bg-surface-bright transition-all group" onClick={() => alert("Soporte Técnico pronto estará disponible por WhatsApp.")}>
+            <button className="relative p-3 rounded-xl bg-surface-elevated border border-white/5 hover:bg-surface-bright transition-all group" onClick={() => alert("Soporte TÃƒÂ©cnico pronto estarÃƒÂ¡ disponible por WhatsApp.")}>
                <Bell className="w-5 h-5 text-muted-foreground group-hover:text-primary transition-colors" />
                <div className="absolute top-2.5 right-2.5 w-2 h-2 rounded-full bg-accent border-2 border-background animate-bounce shadow-[0_0_8px_rgba(255,107,107,0.5)]"></div>
             </button>
 
-            <button onClick={async () => { await logout(); router.push('/canchas/login'); }} className="relative p-3 rounded-xl bg-surface-elevated border border-white/5 hover:bg-danger/10 hover:border-danger/30 transition-all group" title="Cerrar Sesión">
+            <button onClick={async () => { await logout(); router.push('/canchas/login'); }} className="relative p-3 rounded-xl bg-surface-elevated border border-white/5 hover:bg-danger/10 hover:border-danger/30 transition-all group" title="Cerrar SesiÃƒÂ³n">
                <LogOut className="w-5 h-5 text-muted-foreground group-hover:text-danger transition-colors" />
             </button>
 
             <div className="flex items-center gap-3 pl-4 border-l border-border/50">
               <div className="hidden sm:block text-right">
                  <p className="text-[10px] font-black text-foreground uppercase tracking-tighter leading-none">{user?.user_metadata?.full_name || 'Administrador'}</p>
-                 <p className="text-[8px] font-bold text-muted-foreground uppercase mt-1">Owner</p>
+                 <p className="text-[10px] font-bold text-muted-foreground uppercase mt-1">Owner</p>
               </div>
               <div className="w-10 h-10 rounded-2xl bg-surface-elevated overflow-hidden border-2 border-primary/20 shadow-xl p-0.5">
                 <img src={user?.user_metadata?.avatar_url || `https://ui-avatars.com/api/?name=${user?.name || 'Admin'}&background=2cfc7d&color=000`} alt="Admin" className="w-full h-full object-cover rounded-xl" />
@@ -355,7 +355,7 @@ export default function CanchasDashboard() {
 }
 
 /* =========================================
-   OVERVIEW TAB — Simplified
+   OVERVIEW TAB Ã¢â‚¬â€ Simplified
 ========================================= */
 function OverviewTab({ business, bookings, fields, onNewBooking, onBookingClick, onTabChange }: any) {
   const today = new Date().toISOString().split('T')[0];
@@ -370,7 +370,7 @@ function OverviewTab({ business, bookings, fields, onNewBooking, onBookingClick,
   const getStatusLabel = (status: string) => {
     switch (status) {
       case 'pending': return 'Impago';
-      case 'partial_paid': return 'Señado';
+      case 'partial_paid': return 'SeÃƒÂ±ado';
       case 'full_paid': return 'Pagado';
       default: return status;
     }
@@ -419,7 +419,7 @@ function OverviewTab({ business, bookings, fields, onNewBooking, onBookingClick,
         <div className="glass-card p-4 flex items-center gap-3">
           <div className="p-2 rounded-xl bg-primary/10"><TrendingUp className="w-5 h-5 text-primary" /></div>
           <div>
-            <p className="text-[10px] text-muted-foreground font-semibold uppercase">Ocupación</p>
+            <p className="text-[10px] text-muted-foreground font-semibold uppercase">OcupaciÃƒÂ³n</p>
             <p className="text-lg font-black font-kanit tracking-tight">{occupancy}%</p>
           </div>
         </div>
@@ -428,9 +428,9 @@ function OverviewTab({ business, bookings, fields, onNewBooking, onBookingClick,
       {/* Today's Bookings List */}
       <div className="glass-premium rounded-2xl p-6 border-white/5">
         <div className="flex justify-between items-center mb-4">
-          <h3 className="text-base font-black font-kanit uppercase tracking-tight">Turnos del día</h3>
+          <h3 className="text-base font-black font-kanit uppercase tracking-tight">Turnos del dÃƒÂ­a</h3>
           <button onClick={() => onTabChange('calendar')} className="text-xs text-primary font-bold hover:underline">
-            Ver semana →
+            Ver semana Ã¢â€ â€™
           </button>
         </div>
 
@@ -495,7 +495,7 @@ function UpcomingMatch({ time, field, team, status, price, isPending = false, is
             {isApp && (
               <div className="flex items-center gap-1 px-1.5 py-0.5 rounded-md bg-primary/10 border border-primary/20">
                 <Zap className="w-2.5 h-2.5 text-primary" />
-                <span className="text-[7px] font-bold text-primary uppercase">APP</span>
+                <span className="text-[10px] font-bold text-primary uppercase">APP</span>
               </div>
             )}
           </div>
@@ -504,9 +504,9 @@ function UpcomingMatch({ time, field, team, status, price, isPending = false, is
       </div>
       <div className="text-right">
         <p className="font-bold text-sm font-kanit">{price}</p>
-        <p className={`text-[9px] font-bold uppercase px-2 py-0.5 rounded-md mt-1 inline-block ${
+        <p className={`text-[10px] font-bold uppercase px-2 py-0.5 rounded-md mt-1 inline-block ${
           isPending ? 'bg-danger/10 text-danger border border-danger/20' : 
-          status.includes('Seña') ? 'bg-accent/10 text-accent border border-accent/20' : 
+          status.includes('SeÃƒÂ±a') ? 'bg-accent/10 text-accent border border-accent/20' : 
           'bg-primary/10 text-primary border border-primary/20'
         }`}>
           {status}
@@ -526,7 +526,7 @@ function CalendarTab({ bookings, fields, selectedDate, setSelectedDate, onSlotCl
   const [weekOffset, setWeekOffset] = useState(0);
 
   const getDayNameShort = (dateStr: string) => {
-    const days = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'];
+    const days = ['Dom', 'Lun', 'Mar', 'MiÃƒÂ©', 'Jue', 'Vie', 'SÃƒÂ¡b'];
     const d = new Date(dateStr + 'T00:00:00');
     return days[d.getDay()];
   };
@@ -593,7 +593,7 @@ function CalendarTab({ bookings, fields, selectedDate, setSelectedDate, onSlotCl
   const getStatusLabel = (status: string) => {
     switch (status) {
       case 'pending': return 'Impago';
-      case 'partial_paid': return 'Seña';
+      case 'partial_paid': return 'SeÃƒÂ±a';
       case 'full_paid': return 'Pagado';
       default: return status;
     }
@@ -604,12 +604,12 @@ function CalendarTab({ bookings, fields, selectedDate, setSelectedDate, onSlotCl
       <div className="space-y-6">
         <div>
           <h2 className="text-2xl font-kanit font-bold text-gradient">Agenda</h2>
-          <p className="text-muted-foreground text-sm">Organización de turnos</p>
+          <p className="text-muted-foreground text-sm">OrganizaciÃƒÂ³n de turnos</p>
         </div>
         <div className="glass-card p-10 text-center flex flex-col items-center justify-center border-dashed border-2 border-border/50">
           <CalendarDays className="w-12 h-12 text-muted-foreground mb-4 opacity-50" />
           <h3 className="text-xl font-kanit font-bold mb-2">Sin canchas configuradas</h3>
-          <p className="text-muted-foreground text-sm max-w-sm mx-auto">No has dado de alta ninguna cancha en tu establecimiento. Ve a la sección de Configuración para crear tu primera cancha.</p>
+          <p className="text-muted-foreground text-sm max-w-sm mx-auto">No has dado de alta ninguna cancha en tu establecimiento. Ve a la secciÃƒÂ³n de ConfiguraciÃƒÂ³n para crear tu primera cancha.</p>
         </div>
       </div>
     );
@@ -617,11 +617,11 @@ function CalendarTab({ bookings, fields, selectedDate, setSelectedDate, onSlotCl
 
   return (
     <div className="space-y-5 animate-reveal-up">
-      {/* ── HEADER ── */}
+      {/* Ã¢â€â‚¬Ã¢â€â‚¬ HEADER Ã¢â€â‚¬Ã¢â€â‚¬ */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div className="flex flex-col gap-1">
           <h2 className="text-3xl font-black font-kanit italic uppercase tracking-tighter text-foreground">
-            Gestión <span className="text-primary">Turnos</span>
+            GestiÃƒÂ³n <span className="text-primary">Turnos</span>
           </h2>
           <p className="text-[10px] font-black uppercase tracking-[0.4em] text-muted-foreground">Vista Semanal</p>
         </div>
@@ -651,12 +651,12 @@ function CalendarTab({ bookings, fields, selectedDate, setSelectedDate, onSlotCl
             <ChevronRight className="w-4 h-4" />
           </button>
           <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest hidden sm:block">
-            {weekDays[0].split('-')[2]} {getMonthShort(weekDays[0])} — {weekDays[6].split('-')[2]} {getMonthShort(weekDays[6])}
+            {weekDays[0].split('-')[2]} {getMonthShort(weekDays[0])} Ã¢â‚¬â€ {weekDays[6].split('-')[2]} {getMonthShort(weekDays[6])}
           </span>
         </div>
       </div>
 
-      {/* ── FIELD TABS ── */}
+      {/* Ã¢â€â‚¬Ã¢â€â‚¬ FIELD TABS Ã¢â€â‚¬Ã¢â€â‚¬ */}
       <div className="flex gap-2 overflow-x-auto no-scrollbar">
         {fields.map((f: any) => (
           <button
@@ -674,7 +674,7 @@ function CalendarTab({ bookings, fields, selectedDate, setSelectedDate, onSlotCl
         ))}
       </div>
 
-      {/* ── WEEK STATS ── */}
+      {/* Ã¢â€â‚¬Ã¢â€â‚¬ WEEK STATS Ã¢â€â‚¬Ã¢â€â‚¬ */}
       <div className="flex gap-3 overflow-x-auto no-scrollbar">
         <div className="shrink-0 flex items-center gap-2.5 px-4 py-2.5 rounded-xl bg-surface-elevated border border-white/5">
           <CalendarDays className="w-4 h-4 text-primary" />
@@ -693,32 +693,32 @@ function CalendarTab({ bookings, fields, selectedDate, setSelectedDate, onSlotCl
         </div>
         <div className="shrink-0 flex items-center gap-2.5 px-4 py-2.5 rounded-xl bg-surface-elevated border border-white/5">
           <TrendingUp className="w-4 h-4 text-primary" />
-          <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Ocupación</span>
+          <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">OcupaciÃƒÂ³n</span>
           <span className="text-sm font-black font-kanit italic text-foreground">{weekOccupancy}%</span>
         </div>
       </div>
 
-      {/* ── LEGEND ── */}
+      {/* Ã¢â€â‚¬Ã¢â€â‚¬ LEGEND Ã¢â€â‚¬Ã¢â€â‚¬ */}
       <div className="flex items-center gap-4 px-1">
         <div className="flex items-center gap-1.5">
           <div className="w-2 h-2 rounded-full bg-primary shadow-[0_0_5px_rgba(44,252,125,0.5)]"></div>
-          <span className="text-[8px] font-bold uppercase tracking-widest text-muted-foreground">Pagado</span>
+          <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Pagado</span>
         </div>
         <div className="flex items-center gap-1.5">
           <div className="w-2 h-2 rounded-full bg-accent shadow-[0_0_5px_rgba(245,158,11,0.5)]"></div>
-          <span className="text-[8px] font-bold uppercase tracking-widest text-muted-foreground">Señado</span>
+          <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">SeÃƒÂ±ado</span>
         </div>
         <div className="flex items-center gap-1.5">
           <div className="w-2 h-2 rounded-full bg-danger shadow-[0_0_5px_rgba(244,63,94,0.5)]"></div>
-          <span className="text-[8px] font-bold uppercase tracking-widest text-muted-foreground">Impago</span>
+          <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Impago</span>
         </div>
         <div className="flex items-center gap-1.5">
           <div className="w-2 h-2 rounded-full bg-foreground/10 border border-white/20"></div>
-          <span className="text-[8px] font-bold uppercase tracking-widest text-muted-foreground">Libre</span>
+          <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Libre</span>
         </div>
       </div>
 
-      {/* ── WEEKLY GRID ── */}
+      {/* Ã¢â€â‚¬Ã¢â€â‚¬ WEEKLY GRID Ã¢â€â‚¬Ã¢â€â‚¬ */}
       <div className="rounded-[2rem] border border-white/10 overflow-hidden shadow-xl bg-surface-elevated/50">
         <div className="overflow-x-auto no-scrollbar">
           <div className="min-w-[700px]">
@@ -734,7 +734,7 @@ function CalendarTab({ bookings, fields, selectedDate, setSelectedDate, onSlotCl
                     key={date}
                     className={`p-3 text-center border-l border-white/10 transition-colors ${isToday ? 'bg-primary/[0.08]' : ''}`}
                   >
-                    <p className={`text-[9px] font-black uppercase tracking-widest ${isToday ? 'text-primary' : 'text-muted-foreground'}`}>
+                    <p className={`text-[10px] font-black uppercase tracking-widest ${isToday ? 'text-primary' : 'text-muted-foreground'}`}>
                       {getDayNameShort(date)}
                     </p>
                     <p className={`text-base font-black font-kanit italic leading-none mt-0.5 ${isToday ? 'text-primary' : 'text-foreground'}`}>
@@ -798,7 +798,7 @@ function CalendarTab({ bookings, fields, selectedDate, setSelectedDate, onSlotCl
                               className={`w-full h-full min-h-[42px] rounded-lg border ${getStatusBg(booking.status)} transition-all press-effect flex flex-col items-center justify-center gap-0.5 relative group`}
                             >
                               <div className={`w-2 h-2 rounded-full ${getStatusDot(booking.status)} shrink-0`}></div>
-                              <span className="text-[8px] font-black uppercase tracking-widest text-foreground/70 truncate max-w-full px-1 leading-tight">
+                              <span className="text-[10px] font-black uppercase tracking-widest text-foreground/70 truncate max-w-full px-1 leading-tight">
                                 {booking.title ? (booking.title.length > 8 ? booking.title.substring(0, 8) + '..' : booking.title) : 'Reserva'}
                               </span>
                               {booking.match_id && <Zap className="w-2.5 h-2.5 text-primary absolute top-1 right-1" />}
@@ -807,12 +807,12 @@ function CalendarTab({ bookings, fields, selectedDate, setSelectedDate, onSlotCl
                               <div className="absolute z-30 bottom-full left-1/2 -translate-x-1/2 mb-2 hidden group-hover:block pointer-events-none">
                                 <div className="bg-background border border-white/10 rounded-xl p-3 shadow-2xl min-w-[160px] text-left">
                                   <p className="text-[10px] font-black uppercase tracking-tighter text-foreground truncate">{booking.title || 'Reserva Directa'}</p>
-                                  <p className="text-[9px] text-muted-foreground mt-0.5">{booking.start_time.substring(0,5)} — {booking.end_time.substring(0,5)}</p>
+                                  <p className="text-[10px] text-muted-foreground mt-0.5">{booking.start_time.substring(0,5)} Ã¢â‚¬â€ {booking.end_time.substring(0,5)}</p>
                                   <div className="flex items-center justify-between mt-1.5">
-                                    <span className={`text-[8px] font-black uppercase tracking-widest ${
+                                    <span className={`text-[10px] font-black uppercase tracking-widest ${
                                       booking.status === 'pending' ? 'text-danger' : booking.status === 'partial_paid' ? 'text-accent' : 'text-primary'
                                     }`}>{getStatusLabel(booking.status)}</span>
-                                    <span className="text-[9px] font-black font-kanit italic text-foreground">{formatMoney(booking.total_price)}</span>
+                                    <span className="text-[10px] font-black font-kanit italic text-foreground">{formatMoney(booking.total_price)}</span>
                                   </div>
                                 </div>
                               </div>
@@ -854,14 +854,14 @@ function FinancesTab({ business, bookings, hasMP, user }: any) {
     <div className="space-y-8 animate-reveal-up">
        <div className="flex flex-col gap-1">
           <h2 className="text-3xl font-black font-kanit italic uppercase tracking-tighter text-foreground">
-            Bóveda <span className="text-primary">Financiera</span>
+            BÃƒÂ³veda <span className="text-primary">Financiera</span>
           </h2>
           <p className="text-[10px] font-black uppercase tracking-[0.4em] text-muted-foreground">Flujo de Caja & Liquidaciones</p>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Main Balance */}
-          <div className="lg:col-span-2 glass-premium rounded-[3rem] p-10 border-white/5 relative overflow-hidden group shadow-2xl">
+          <div className="lg:col-span-2 glass-premium rounded-[2rem] p-10 border-white/5 relative overflow-hidden group shadow-2xl">
             <div className="absolute top-0 right-0 w-80 h-80 bg-primary/10 rounded-full blur-[100px] -z-10 group-hover:bg-primary/20 transition-colors"></div>
             
             <div className="relative z-10 flex flex-col h-full justify-between">
@@ -886,9 +886,9 @@ function FinancesTab({ business, bookings, hasMP, user }: any) {
           </div>
 
           <div className="lg:col-span-1 flex flex-col gap-6">
-             <div className="glass-premium rounded-[2.5rem] p-8 border-white/5 flex items-center justify-between group hover:border-primary/30 transition-all">
+             <div className="glass-premium rounded-[2rem] p-8 border-white/5 flex items-center justify-between group hover:border-primary/30 transition-all">
                 <div>
-                   <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest mb-2">Comisión Plataforma</p>
+                   <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest mb-2">ComisiÃƒÂ³n Plataforma</p>
                    <h3 className="text-3xl font-black italic font-kanit">5.0<span className="text-primary">%</span></h3>
                 </div>
                 <div className="w-14 h-14 rounded-2xl bg-surface-elevated border border-white/10 flex items-center justify-center group-hover:rotate-12 transition-transform shadow-xl">
@@ -896,7 +896,7 @@ function FinancesTab({ business, bookings, hasMP, user }: any) {
                 </div>
              </div>
              
-             <div className="glass-premium rounded-[2.5rem] p-8 border-white/5 group hover:border-[#009EE3]/30 transition-all">
+             <div className="glass-premium rounded-[2rem] p-8 border-white/5 group hover:border-[#009EE3]/30 transition-all">
                 <div className="flex justify-between items-start mb-6">
                    <div>
                       <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest mb-1">Pasarela de Pago</p>
@@ -912,7 +912,7 @@ function FinancesTab({ business, bookings, hasMP, user }: any) {
                 {hasMP ? (
                   <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-[#009EE3]/10 border border-[#009EE3]/20 w-fit">
                      <Check className="w-3.5 h-3.5 text-[#009EE3]" />
-                     <span className="text-[9px] font-black text-[#009EE3] uppercase tracking-widest">Cuenta Vinculada</span>
+                     <span className="text-[10px] font-black text-[#009EE3] uppercase tracking-widest">Cuenta Vinculada</span>
                   </div>
                 ) : (
                   <button onClick={() => window.location.href = `/api/mercadopago/authorize?userId=${user?.id}`} className="w-full bg-[#009EE3] text-white font-black uppercase text-[10px] tracking-widest py-3.5 rounded-xl hover:bg-[#009EE3]/80 transition-all shadow-lg shadow-[#009EE3]/20">
@@ -924,10 +924,10 @@ function FinancesTab({ business, bookings, hasMP, user }: any) {
         </div>
 
         {/* RECENT TRANSACTIONS */}
-        <div className="glass-premium rounded-[2.5rem] p-10 border-white/5">
+        <div className="glass-premium rounded-[2rem] p-10 border-white/5">
           <div className="flex justify-between items-center mb-8">
             <h3 className="text-2xl font-black font-kanit italic uppercase tracking-tighter">Historial de Cobros</h3>
-            <div className="p-1 px-2 bg-foreground/5 rounded-xl border border-white/5 text-[9px] font-black uppercase tracking-widest">Últimos 30 días</div>
+            <div className="p-1 px-2 bg-foreground/5 rounded-xl border border-white/5 text-[10px] font-black uppercase tracking-widest">ÃƒÅ¡ltimos 30 dÃƒÂ­as</div>
           </div>
           <div className="space-y-2">
             {bookings.filter((b:any) => b.status === 'full_paid' || b.status === 'partial_paid').slice(0, 8).map((booking: any, i: number) => (
@@ -938,12 +938,12 @@ function FinancesTab({ business, bookings, hasMP, user }: any) {
                   </div>
                   <div>
                     <h4 className="font-black text-sm uppercase tracking-tighter group-hover:text-primary transition-colors">{booking.title || 'Reserva Acreditada'}</h4>
-                    <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest italic mt-1">{booking.date} • {booking.status === 'partial_paid' ? 'Seña acreditada' : 'Pago Total'}</p>
+                    <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest italic mt-1">{booking.date} Ã¢â‚¬Â¢ {booking.status === 'partial_paid' ? 'SeÃƒÂ±a acreditada' : 'Pago Total'}</p>
                   </div>
                 </div>
                 <div className="text-right">
                    <p className="text-2xl font-black italic font-kanit text-primary">+{new Intl.NumberFormat('es-AR', { maximumFractionDigits: 0 }).format(booking.down_payment_paid || booking.total_price)}</p>
-                   <p className="text-[8px] font-black text-muted-foreground uppercase tracking-widest mt-1">Neto Acreditado</p>
+                   <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest mt-1">Neto Acreditado</p>
                 </div>
               </div>
             ))}
@@ -1024,7 +1024,7 @@ function SettingsTab({ business, fields, setFields, hasMP, setBusiness }: any) {
     if (!business) return;
     setIsSavingPrices(true);
     try {
-      // 1. Actualizar porcentaje de seña y precio de cada cancha
+      // 1. Actualizar porcentaje de seÃƒÂ±a y precio de cada cancha
       for (const field of (fields || [])) {
         const price = fieldPrices[field.id] ?? field.price_per_match;
         const { error: fieldErr } = await supabase
@@ -1059,13 +1059,13 @@ function SettingsTab({ business, fields, setFields, hasMP, setBusiness }: any) {
         .select();
 
       if (aliasError) {
-        alert("Error al guardar configuración: " + aliasError.message);
+        alert("Error al guardar configuraciÃƒÂ³n: " + aliasError.message);
         setIsSavingPrices(false);
         return;
       }
 
       if (!updatedBiz || updatedBiz.length === 0) {
-        alert("⚠️ No se pudo guardar la configuración. Verificá que tu cuenta tenga permisos de administrador sobre este establecimiento.");
+        alert("Ã¢Å¡Â Ã¯Â¸Â No se pudo guardar la configuraciÃƒÂ³n. VerificÃƒÂ¡ que tu cuenta tenga permisos de administrador sobre este establecimiento.");
         setIsSavingPrices(false);
         return;
       }
@@ -1081,7 +1081,7 @@ function SettingsTab({ business, fields, setFields, hasMP, setBusiness }: any) {
         down_payment_percentage: deposit,
         price_per_match: fieldPrices[f.id] ?? f.price_per_match 
       })));
-      alert("✅ Configuración guardada correctamente.");
+      alert("Ã¢Å“â€¦ ConfiguraciÃƒÂ³n guardada correctamente.");
     } catch (err: any) {
       alert("Error inesperado: " + err.message);
     }
@@ -1118,16 +1118,16 @@ function SettingsTab({ business, fields, setFields, hasMP, setBusiness }: any) {
     <div className="space-y-8 animate-reveal-up pb-20">
        <div className="flex flex-col gap-1">
           <h2 className="text-3xl font-black font-kanit italic uppercase tracking-tighter text-foreground">
-            Configuración <span className="text-primary">Maestra</span>
+            ConfiguraciÃƒÂ³n <span className="text-primary">Maestra</span>
           </h2>
-          <p className="text-[10px] font-black uppercase tracking-[0.4em] text-muted-foreground">Personalización del Establecimiento</p>
+          <p className="text-[10px] font-black uppercase tracking-[0.4em] text-muted-foreground">PersonalizaciÃƒÂ³n del Establecimiento</p>
        </div>
 
        <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
           {/* General Info & Pricing */}
           <div className="xl:col-span-2 space-y-8">
              {/* General Info Card */}
-           <div className="glass-premium rounded-[2.5rem] p-10 border-white/5 space-y-8">
+           <div className="glass-premium rounded-[2rem] p-10 border-white/5 space-y-8">
               <div className="flex items-center gap-4 mb-2">
                  <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center border border-primary/20">
                     <Settings className="w-5 h-5 text-primary" />
@@ -1146,7 +1146,7 @@ function SettingsTab({ business, fields, setFields, hasMP, setBusiness }: any) {
                    />
                  </div>
                  <div>
-                   <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground mb-2 block">Descripción Pública</label>
+                   <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground mb-2 block">DescripciÃƒÂ³n PÃƒÂºblica</label>
                    <textarea 
                      value={description}
                      onChange={(e) => setDescription(e.target.value)}
@@ -1156,7 +1156,7 @@ function SettingsTab({ business, fields, setFields, hasMP, setBusiness }: any) {
                  </div>
                  <div className="grid grid-cols-2 gap-4">
                     <div>
-                     <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground mb-2 block">Dirección</label>
+                     <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground mb-2 block">DirecciÃƒÂ³n</label>
                      <input 
                        type="text" 
                        value={address}
@@ -1165,7 +1165,7 @@ function SettingsTab({ business, fields, setFields, hasMP, setBusiness }: any) {
                      />
                     </div>
                     <div>
-                     <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground mb-2 block">Teléfono de Contacto</label>
+                     <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground mb-2 block">TelÃƒÂ©fono de Contacto</label>
                      <input 
                        type="text" 
                        value={phone}
@@ -1240,28 +1240,28 @@ function SettingsTab({ business, fields, setFields, hasMP, setBusiness }: any) {
            </div>
 
           {/* Pricing & Payments */}
-          <div className="glass-premium rounded-[2.5rem] p-10 border-white/5 space-y-8">
+          <div className="glass-premium rounded-[2rem] p-10 border-white/5 space-y-8">
              <div className="flex items-center gap-4 mb-2">
                 <div className="w-10 h-10 rounded-xl bg-accent/10 flex items-center justify-center border border-accent/20">
                    <DollarSign className="w-5 h-5 text-accent" />
                 </div>
-                <h3 className="text-xl font-black font-kanit italic uppercase tracking-tighter">Pagos y Señas</h3>
+                <h3 className="text-xl font-black font-kanit italic uppercase tracking-tighter">Pagos y SeÃƒÂ±as</h3>
              </div>
 
              <div className="space-y-6">
-                 <div className="p-8 rounded-[2.5rem] bg-surface-elevated/50 border border-white/5 space-y-6">
+                 <div className="p-8 rounded-[2rem] bg-surface-elevated/50 border border-white/5 space-y-6">
                     <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                       <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Lógica de la Seña</label>
+                       <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">LÃƒÂ³gica de la SeÃƒÂ±a</label>
                        <div className="flex gap-2 bg-background/50 p-1 rounded-xl border border-white/5">
                           <button 
                             onClick={() => setDepositMode('share')}
-                            className={`px-4 py-2 rounded-lg text-[9px] font-black uppercase transition-all ${depositMode === 'share' ? 'bg-primary text-black' : 'text-muted-foreground hover:text-foreground'}`}
+                            className={`px-4 py-2 rounded-lg text-[10px] font-black uppercase transition-all ${depositMode === 'share' ? 'bg-primary text-black' : 'text-muted-foreground hover:text-foreground'}`}
                           >
                              Una Parte (1/N)
                           </button>
                           <button 
                             onClick={() => setDepositMode('percentage')}
-                            className={`px-4 py-2 rounded-lg text-[9px] font-black uppercase transition-all ${depositMode === 'percentage' ? 'bg-primary text-black' : 'text-muted-foreground hover:text-foreground'}`}
+                            className={`px-4 py-2 rounded-lg text-[10px] font-black uppercase transition-all ${depositMode === 'percentage' ? 'bg-primary text-black' : 'text-muted-foreground hover:text-foreground'}`}
                           >
                              Porcentaje Fijo
                           </button>
@@ -1271,9 +1271,9 @@ function SettingsTab({ business, fields, setFields, hasMP, setBusiness }: any) {
                     {depositMode === 'share' ? (
                        <div className="grid grid-cols-3 gap-3">
                           {[
-                             { label: 'Fútbol 5', value: 10, desc: '10% del total' },
-                             { label: 'Fútbol 7', value: 7, desc: '7% aprox.' },
-                             { label: 'Fútbol 11', value: 5, desc: '5% aprox.' }
+                             { label: 'FÃƒÂºtbol 5', value: 10, desc: '10% del total' },
+                             { label: 'FÃƒÂºtbol 7', value: 7, desc: '7% aprox.' },
+                             { label: 'FÃƒÂºtbol 11', value: 5, desc: '5% aprox.' }
                           ].map(opt => (
                              <button 
                                 key={opt.value}
@@ -1304,9 +1304,9 @@ function SettingsTab({ business, fields, setFields, hasMP, setBusiness }: any) {
                     )}
 
                     <div className="p-4 rounded-2xl bg-primary/5 border border-primary/10">
-                       <p className="text-[9px] font-bold text-primary/80 uppercase tracking-widest leading-relaxed italic">
-                          💡 REGLA DE NEGOCIO: El creador del partido pagará este monto para reservar. 
-                          {depositMode === 'share' ? ' Al elegir una parte, el creador paga exactamente lo mismo que el resto de los jugadores.' : ' Al elegir porcentaje, el creador puede pagar más o menos que su cuota individual.'}
+                       <p className="text-[10px] font-bold text-primary/80 uppercase tracking-widest leading-relaxed italic">
+                          Ã°Å¸â€™Â¡ REGLA DE NEGOCIO: El creador del partido pagarÃƒÂ¡ este monto para reservar. 
+                          {depositMode === 'share' ? ' Al elegir una parte, el creador paga exactamente lo mismo que el resto de los jugadores.' : ' Al elegir porcentaje, el creador puede pagar mÃƒÂ¡s o menos que su cuota individual.'}
                        </p>
                     </div>
                  </div>
@@ -1358,10 +1358,10 @@ function SettingsTab({ business, fields, setFields, hasMP, setBusiness }: any) {
              <div className="sticky top-10">
                 <div className="flex flex-col gap-1 mb-6">
                    <h3 className="text-xl font-black font-kanit italic uppercase tracking-tighter">Vista <span className="text-primary">Previa</span></h3>
-                   <p className="text-[10px] font-black uppercase tracking-[0.4em] text-muted-foreground">Así te ven los pibes</p>
+                   <p className="text-[10px] font-black uppercase tracking-[0.4em] text-muted-foreground">AsÃƒÂ­ te ven los pibes</p>
                 </div>
                 
-                <div className="glass-premium rounded-[3rem] overflow-hidden border-white/5 shadow-2xl group">
+                <div className="glass-premium rounded-[2rem] overflow-hidden border-white/5 shadow-2xl group">
                    <div className="h-48 relative">
                       <img src={profileImageUrl || "https://images.unsplash.com/photo-1574629810360-7efbbe195018?q=80&w=600&auto=format&fit=crop"} className="w-full h-full object-cover brightness-[0.4] contrast-125" />
                       <div className="absolute inset-0 bg-gradient-to-t from-background to-transparent" />
@@ -1369,15 +1369,15 @@ function SettingsTab({ business, fields, setFields, hasMP, setBusiness }: any) {
                          <h4 className="text-2xl font-black italic uppercase text-white tracking-tighter">{businessName || "Tu Complejo"}</h4>
                          <div className="flex items-center gap-2 mt-1">
                             <MapPin className="w-3 h-3 text-primary" />
-                            <span className="text-[8px] font-bold text-white/60 uppercase tracking-widest">{address || "Rosario, Argentina"}</span>
+                            <span className="text-[10px] font-bold text-white/60 uppercase tracking-widest">{address || "Rosario, Argentina"}</span>
                          </div>
                       </div>
                    </div>
                    <div className="p-8 space-y-6 bg-surface-elevated/30">
                       <div className="space-y-2">
-                         <p className="text-[9px] font-black uppercase tracking-widest text-primary">Sobre nosotros</p>
+                         <p className="text-[10px] font-black uppercase tracking-widest text-primary">Sobre nosotros</p>
                          <p className="text-[11px] text-muted-foreground leading-relaxed line-clamp-3 italic">
-                            {description || "Contanos un poco sobre tu sede para atraer a más jugadores..."}
+                            {description || "Contanos un poco sobre tu sede para atraer a mÃƒÂ¡s jugadores..."}
                          </p>
                       </div>
                       <div className="flex gap-2">
@@ -1397,7 +1397,7 @@ function SettingsTab({ business, fields, setFields, hasMP, setBusiness }: any) {
                 <div className="mt-8 p-6 rounded-[2rem] bg-amber-500/5 border border-amber-500/10 flex items-start gap-4">
                    <Info className="w-5 h-5 text-amber-500 shrink-0 mt-1" />
                    <p className="text-[10px] font-bold text-amber-500/80 uppercase tracking-widest leading-relaxed">
-                      Recordá usar imágenes de alta calidad para destacar entre los complejos.
+                      RecordÃƒÂ¡ usar imÃƒÂ¡genes de alta calidad para destacar entre los complejos.
                    </p>
                 </div>
              </div>
@@ -1405,7 +1405,7 @@ function SettingsTab({ business, fields, setFields, hasMP, setBusiness }: any) {
        </div>
 
        {/* Managed Fields List */}
-       <div className="glass-premium rounded-[2.5rem] p-10 border-white/5">
+       <div className="glass-premium rounded-[2rem] p-10 border-white/5">
           <div className="flex justify-between items-center mb-8">
             <h3 className="text-2xl font-black font-kanit italic uppercase tracking-tighter">Inventario de Canchas</h3>
             <button onClick={handleCreateField} className="p-3 rounded-2xl bg-primary text-black hover:bg-primary-light transition-all shadow-lg shadow-primary/20">
@@ -1419,13 +1419,13 @@ function SettingsTab({ business, fields, setFields, hasMP, setBusiness }: any) {
                      <div className="p-3 rounded-xl bg-background border border-white/10 group-hover:bg-primary/10 transition-colors">
                         <MapPin className="w-6 h-6 text-primary" />
                      </div>
-                     <span className="text-[9px] font-black uppercase tracking-widest text-muted-foreground px-2 py-1 rounded bg-foreground/5">{f.type}</span>
+                     <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground px-2 py-1 rounded bg-foreground/5">{f.type}</span>
                   </div>
                   <h4 className="text-lg font-black uppercase tracking-tighter mb-1">{f.name}</h4>
-                  <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Activa • {f.is_active ? 'Visible' : 'Oculta'}</p>
+                  <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Activa Ã¢â‚¬Â¢ {f.is_active ? 'Visible' : 'Oculta'}</p>
                   
                   <div className="mt-8 flex gap-3">
-                     <button className="flex-1 py-3 rounded-xl bg-foreground/5 hover:bg-foreground/10 text-[9px] font-black uppercase tracking-widest transition-all">Editar Horarios</button>
+                     <button className="flex-1 py-3 rounded-xl bg-foreground/5 hover:bg-foreground/10 text-[10px] font-black uppercase tracking-widest transition-all">Editar Horarios</button>
                      <button className="p-3 rounded-xl bg-danger/10 text-danger hover:bg-danger transition-all hover:text-white">
                         <Trash2 className="w-4 h-4" />
                      </button>
@@ -1562,7 +1562,7 @@ function EditBookingModal({ booking, onClose, onUpdate, onDelete }: any) {
     e.preventDefault();
     setLoading(true);
     
-    // Si viene desde la app (match_id) y se cancela, ideally cancelamos también en matches o se maneja asíncrono.
+    // Si viene desde la app (match_id) y se cancela, ideally cancelamos tambiÃƒÂ©n en matches o se maneja asÃƒÂ­ncrono.
     // Para el MVP de canchas actualizamos este booking local:
     
     const { data, error } = await supabase.from('canchas_bookings')
@@ -1581,7 +1581,7 @@ function EditBookingModal({ booking, onClose, onUpdate, onDelete }: any) {
   };
 
   const handleDelete = async () => {
-    if(!window.confirm("¿Estás seguro de que quieres eliminar esta reserva permanentemente? Esta acción liberará la cancha para este horario.")) return;
+    if(!window.confirm("Ã‚Â¿EstÃƒÂ¡s seguro de que quieres eliminar esta reserva permanentemente? Esta acciÃƒÂ³n liberarÃƒÂ¡ la cancha para este horario.")) return;
     setLoading(true);
     const { error } = await supabase.from('canchas_bookings').delete().eq('id', booking.id);
     if(error){
@@ -1625,7 +1625,7 @@ function EditBookingModal({ booking, onClose, onUpdate, onDelete }: any) {
              </div>
              <div>
                <p className="text-[10px] font-bold text-primary uppercase">Origen</p>
-               <p className="font-semibold text-sm">{booking.match_id ? "App Pelotify 📱" : "Manual 📅"}</p>
+               <p className="font-semibold text-sm">{booking.match_id ? "App Pelotify Ã°Å¸â€œÂ±" : "Manual Ã°Å¸â€œâ€¦"}</p>
              </div>
            </div>
 
@@ -1633,7 +1633,7 @@ function EditBookingModal({ booking, onClose, onUpdate, onDelete }: any) {
              <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-1 block">Estado de Cobro</label>
              <select value={status} onChange={e => setStatus(e.target.value)} className="w-full bg-surface-elevated border border-border/50 rounded-xl px-4 py-3 outline-none appearance-none">
                <option value="pending">Impago (Pendiente)</option>
-               <option value="partial_paid">Seña Abonada</option>
+               <option value="partial_paid">SeÃƒÂ±a Abonada</option>
                <option value="full_paid">Completamente Pagado</option>
              </select>
            </div>

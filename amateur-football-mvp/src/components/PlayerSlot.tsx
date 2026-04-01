@@ -23,7 +23,7 @@ export default function PlayerSlot({ participant, isSelf }: PlayerSlotProps) {
           <Users className="w-6 h-6 lg:w-8 lg:h-8 text-foreground/10 group-hover/empty:scale-110 transition-transform" />
           <div className="absolute inset-0 bg-gradient-to-br from-transparent via-foreground/5 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />
         </div>
-        <span className="text-[9px] font-black text-foreground/20 uppercase tracking-widest italic">
+        <span className="text-[10px] font-black text-foreground/20 uppercase tracking-widest italic">
           Vacio
         </span>
       </div>
@@ -69,7 +69,7 @@ export default function PlayerSlot({ participant, isSelf }: PlayerSlotProps) {
         >
           {name}
         </span>
-        <span className="text-[8px] font-black text-foreground/40 uppercase tracking-widest leading-none">
+        <span className="text-[10px] font-black text-foreground/40 uppercase tracking-widest leading-none">
           ELO {profile?.elo || 0}
         </span>
       </div>

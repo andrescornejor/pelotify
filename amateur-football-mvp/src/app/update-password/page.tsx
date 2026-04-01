@@ -27,7 +27,7 @@ export default function UpdatePasswordPage() {
 
   return (
     <div className="flex flex-col items-center justify-center min-h-[100dvh] p-4 lg:p-8 relative overflow-hidden bg-background">
-      {/* ── CINEMATIC BACKGROUND ── */}
+      {/* â”€â”€ CINEMATIC BACKGROUND â”€â”€ */}
       <div className="absolute inset-0 z-0">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(16,185,129,0.1),transparent_70%)] opacity-50" />
         <div className="absolute top-0 left-0 w-full h-full bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-10 mix-blend-overlay" />
@@ -38,7 +38,7 @@ export default function UpdatePasswordPage() {
         animate={{ opacity: 1, scale: 1 }}
         className="w-full max-w-[450px] relative z-10"
       >
-        <div className="glass-premium rounded-[3rem] p-8 lg:p-12 border border-white/10 shadow-[0_50px_100px_rgba(0,0,0,0.5)] overflow-hidden relative">
+        <div className="glass-premium rounded-[2rem] p-8 lg:p-12 border border-white/10 shadow-[0_50px_100px_rgba(0,0,0,0.5)] overflow-hidden relative">
           <form onSubmit={handleSubmit} className="space-y-8 relative z-10">
             <div className="space-y-2 text-center">
               <h1 className="text-4xl font-black italic text-foreground uppercase tracking-tighter">
@@ -51,7 +51,7 @@ export default function UpdatePasswordPage() {
 
             <div className="space-y-3">
               <label className="text-[10px] font-black uppercase text-foreground/40 tracking-[0.3em] ml-1">
-                Ingresá tu nueva contraseña
+                IngresÃ¡ tu nueva contraseÃ±a
               </label>
               <div className="relative group/input">
                 <div className="absolute inset-y-0 left-5 flex items-center pointer-events-none">
@@ -60,7 +60,7 @@ export default function UpdatePasswordPage() {
                 <input
                   type="password"
                   className="w-full h-14 pl-14 pr-6 bg-background/40 border border-foreground/5 rounded-2xl text-foreground text-sm font-black outline-none focus:border-primary/50 transition-all placeholder:foreground/10"
-                  placeholder="••••••••"
+                  placeholder="â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required

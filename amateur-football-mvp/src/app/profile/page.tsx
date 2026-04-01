@@ -288,7 +288,7 @@ function ProfileContent() {
   };
 
   const handleDeleteComment = async (commentId: string) => {
-    if (!confirm('¿Seguro que quieres borrar este comentario?')) return;
+    if (!confirm('Ã‚Â¿Seguro que quieres borrar este comentario?')) return;
 
     try {
       const { error } = await supabase.from('profile_comments').delete().eq('id', commentId);
@@ -374,7 +374,7 @@ function ProfileContent() {
 
   const handleSaveProfile = async () => {
     if (!user?.id) {
-      alert('Error: No se encontró ID de usuario.');
+      alert('Error: No se encontrÃƒÂ³ ID de usuario.');
       return;
     }
 
@@ -422,7 +422,7 @@ function ProfileContent() {
 
       if (profileError) {
         console.error('Error en tabla de perfiles:', profileError);
-        throw new Error(`Error en el perfil público: ${profileError.message}`);
+        throw new Error(`Error en el perfil pÃƒÂºblico: ${profileError.message}`);
       }
 
       // SUCCESS!
@@ -457,7 +457,7 @@ function ProfileContent() {
       // fetchProfileData is already in useEffect [user], and updateUser SHOULD trigger it.
 
     } catch (error: any) {
-      console.error('Error crítico en handleSaveProfile:', error);
+      console.error('Error crÃƒÂ­tico en handleSaveProfile:', error);
       alert(`Error guardando perfil: ${error.message || 'Error desconocido'}`);
       setIsSaving(false);
     } finally {
@@ -469,7 +469,7 @@ function ProfileContent() {
   const handleUpdatePassword = async (e: React.FormEvent) => {
     e.preventDefault();
     if (newPassword.length < 6) {
-      alert('La contraseña debe tener al menos 6 caracteres');
+      alert('La contraseÃƒÂ±a debe tener al menos 6 caracteres');
       return;
     }
     setIsUpdatingPassword(true);
@@ -662,7 +662,7 @@ function ProfileContent() {
                   {isEditing ? (
                     <div className="space-y-4">
                       <div className="space-y-2">
-                        <label className="text-[10px] font-black uppercase text-white/40 tracking-widest">Biografía</label>
+                        <label className="text-[10px] font-black uppercase text-white/40 tracking-widest">BiografÃƒÂ­a</label>
                         <textarea 
                           value={editedData.bio}
                           onChange={e => setEditedData({...editedData, bio: e.target.value})}
@@ -699,7 +699,7 @@ function ProfileContent() {
                   ].map((stat, i) => (
                     <div key={i} className="flex flex-col group/stat cursor-default">
                        <span className={cn("text-3xl font-black italic tracking-tighter leading-none group-hover/stat:scale-110 transition-transform origin-left", stat.color)}>{stat.value}</span>
-                       <span className="text-[9px] font-black text-foreground/40 uppercase tracking-[0.3em] mt-1.5">{stat.label}</span>
+                       <span className="text-[10px] font-black text-foreground/40 uppercase tracking-[0.3em] mt-1.5">{stat.label}</span>
                     </div>
                   ))}
                </div>
@@ -749,7 +749,7 @@ function ProfileContent() {
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                     <div
                       className={cn(
-                        'p-10 lg:p-12 rounded-[3.5rem] border border-foreground/10 space-y-10 relative overflow-hidden group transition-all duration-700',
+                        'p-10 lg:p-12 rounded-[2rem] border border-foreground/10 space-y-10 relative overflow-hidden group transition-all duration-700',
                         'bg-surface/50 dark:bg-foreground/5 backdrop-blur-xl',
                         'shadow-[0_20px_60px_-15px_rgba(0,0,0,0.05)] dark:shadow-[0_30px_70px_rgba(0,0,0,0.4)]',
                         isEditing
@@ -765,7 +765,7 @@ function ProfileContent() {
                           </div>
                           <div className="flex flex-col">
                             <h3 className="text-xl font-black uppercase tracking-tighter text-foreground italic leading-none">
-                              Biometría
+                              BiometrÃƒÂ­a
                             </h3>
                             <span className="text-[10px] font-black text-foreground/40 uppercase tracking-[0.3em] mt-1">
                               Identidad Core
@@ -773,7 +773,7 @@ function ProfileContent() {
                           </div>
                         </div>
                         <div className="hidden sm:flex px-4 py-2 rounded-full bg-primary/10 border border-primary/20">
-                          <span className="text-[9px] font-black text-primary uppercase tracking-widest">
+                          <span className="text-[10px] font-black text-primary uppercase tracking-widest">
                             VERIFICADO
                           </span>
                         </div>
@@ -786,7 +786,7 @@ function ProfileContent() {
                               <div className="flex items-center gap-2 ml-2">
                                 <div className="w-1.5 h-1.5 rounded-full bg-primary" />
                                 <label className="text-[10px] font-black uppercase text-foreground/70 tracking-[0.2em] leading-none">
-                                  Edad (Años)
+                                  Edad (AÃƒÂ±os)
                                 </label>
                               </div>
                               <input
@@ -843,7 +843,7 @@ function ProfileContent() {
                               {
                                 label: 'Ciclos',
                                 value: displayAge,
-                                unit: 'Años',
+                                unit: 'AÃƒÂ±os',
                                 dot: 'bg-primary',
                               },
                               {
@@ -853,13 +853,13 @@ function ProfileContent() {
                                 dot: 'bg-blue-400',
                               },
                               {
-                                label: 'Eje Hábil',
+                                label: 'Eje HÃƒÂ¡bil',
                                 value: displayFoot,
                                 unit: '',
                                 dot: 'bg-accent',
                               },
                               {
-                                label: 'Alineación',
+                                label: 'AlineaciÃƒÂ³n',
                                 value: teamName,
                                 unit: '',
                                 dot: 'bg-purple-400',
@@ -897,7 +897,7 @@ function ProfileContent() {
                     </div>
                     <div
                         className={cn(
-                          'p-10 lg:p-12 rounded-[3.5rem] border border-foreground/10 space-y-10 relative overflow-hidden group transition-all duration-700 h-full',
+                          'p-10 lg:p-12 rounded-[2rem] border border-foreground/10 space-y-10 relative overflow-hidden group transition-all duration-700 h-full',
                           'bg-surface/50 dark:bg-foreground/5 backdrop-blur-xl',
                           'shadow-[0_20px_60px_-15px_rgba(0,0,0,0.05)] dark:shadow-[0_30px_70px_rgba(0,0,0,0.4)]',
                           isEditing
@@ -975,7 +975,7 @@ function ProfileContent() {
                                     Rendimiento
                                   </h3>
                                   <span className="text-[10px] font-black text-foreground/40 uppercase tracking-[0.3em] mt-1">
-                                    Métricas de Juego
+                                    MÃƒÂ©tricas de Juego
                                   </span>
                                 </div>
                               </div>
@@ -1005,7 +1005,7 @@ function ProfileContent() {
                                   className="flex justify-between items-center group/item p-4 rounded-2xl hover:bg-foreground/[0.02] transition-colors border border-transparent hover:border-foreground/5"
                                 >
                                   <div className="flex items-center gap-4">
-                                    <div className="font-mono text-[9px] text-foreground/20 italic font-bold">
+                                    <div className="font-mono text-[10px] text-foreground/20 italic font-bold">
                                       0{idx + 1}
                                     </div>
                                     <span className="text-[11px] font-black uppercase text-foreground/50 tracking-[0.3em] group-hover/item:text-foreground transition-colors">
@@ -1037,7 +1037,7 @@ function ProfileContent() {
                       initial={{ opacity: 0, scale: 0.95 }}
                       animate={{ opacity: 1, scale: 1 }}
                       className={cn(
-                        'glass-premium p-10 lg:p-12 rounded-[3.5rem] border border-foreground/10 relative overflow-hidden group/team cursor-default transition-all duration-700 z-10',
+                        'glass-premium p-10 lg:p-12 rounded-[2rem] border border-foreground/10 relative overflow-hidden group/team cursor-default transition-all duration-700 z-10',
                         isEditing
                           ? 'opacity-30 blur-sm pointer-events-none grayscale'
                           : 'hover:border-primary/40 hover:shadow-[0_0_50px_rgba(16,185,129,0.1)] focus-within:border-primary/40'
@@ -1050,7 +1050,7 @@ function ProfileContent() {
                         {/* Team Crest/Logo */}
                         <div className="relative shrink-0 perspective-1000">
                           <div className="absolute inset-0 bg-primary/20 blur-[40px] rounded-full scale-110 group-hover/team:scale-150 transition-transform duration-1000" />
-                          <div className="w-36 h-36 md:w-48 md:h-48 rounded-[3rem] bg-background/80 border border-foreground/10 flex items-center justify-center overflow-hidden relative shadow-2xl group-hover/team:border-primary/50 transition-all duration-700 backdrop-blur-xl group-hover/team:-translate-y-2 group-hover/team:rotate-y-12">
+                          <div className="w-36 h-36 md:w-48 md:h-48 rounded-[2rem] bg-background/80 border border-foreground/10 flex items-center justify-center overflow-hidden relative shadow-2xl group-hover/team:border-primary/50 transition-all duration-700 backdrop-blur-xl group-hover/team:-translate-y-2 group-hover/team:rotate-y-12">
                             <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent opacity-0 group-hover/team:opacity-100 transition-opacity" />
                             {userTeam.logo_url ? (
                               <img
@@ -1070,7 +1070,7 @@ function ProfileContent() {
                               <div className="px-4 py-1.5 bg-primary/10 border border-primary/20 rounded-full flex items-center gap-2 group-hover/team:bg-primary/20 transition-colors">
                                 <div className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
                                 <span className="text-[10px] font-black text-primary uppercase tracking-[0.3em] italic">
-                                  AFILIACIÓN ACTIVA
+                                  AFILIACIÃƒâ€œN ACTIVA
                                 </span>
                               </div>
                               <span className="text-[10px] font-black text-foreground/30 italic tracking-widest uppercase">
@@ -1087,7 +1087,7 @@ function ProfileContent() {
                             )}
                           </div>
 
-                          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 bg-background/30 p-6 rounded-[2.5rem] border border-foreground/[0.03]">
+                          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 bg-background/30 p-6 rounded-[2rem] border border-foreground/[0.03]">
                             {[
                               {
                                 icon: Trophy,
@@ -1132,7 +1132,7 @@ function ProfileContent() {
                                       stat.color
                                     )}
                                   />
-                                  <span className="text-[9px] font-black text-foreground/40 uppercase tracking-[0.2em]">
+                                  <span className="text-[10px] font-black text-foreground/40 uppercase tracking-[0.2em]">
                                     {stat.label}
                                   </span>
                                 </div>
@@ -1155,7 +1155,7 @@ function ProfileContent() {
                               <div className="h-14 px-8 rounded-[1.5rem] border-2 border-primary bg-primary/10 flex items-center gap-3 shadow-[0_0_20px_rgba(16,185,129,0.2)]">
                                 <Star className="w-5 h-5 text-primary fill-primary animate-pulse" />
                                 <span className="text-[11px] font-black text-primary uppercase tracking-[0.3em]">
-                                  Capitán
+                                  CapitÃƒÂ¡n
                                 </span>
                               </div>
                             )}
@@ -1217,13 +1217,13 @@ function ProfileContent() {
                               href={`/match?id=${m.id}`}
                               className="block group relative"
                             >
-                              <div className="absolute inset-0 bg-primary/10 blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-[2.5rem]" />
-                              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-primary/40 to-transparent group-hover:animate-pulse opacity-0 group-hover:opacity-100 transition-opacity duration-1000 rounded-[2.5rem] p-[1px]" />
+                              <div className="absolute inset-0 bg-primary/10 blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-[2rem]" />
+                              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-primary/40 to-transparent group-hover:animate-pulse opacity-0 group-hover:opacity-100 transition-opacity duration-1000 rounded-[2rem] p-[1px]" />
                               <motion.div
                                 initial={{ opacity: 0, scale: 0.95 }}
                                 animate={{ opacity: 1, scale: 1 }}
                                 transition={{ delay: i * 0.1 }}
-                                className="glass-premium p-6 sm:p-8 md:p-10 rounded-[2.5rem] border border-white/5 flex flex-col md:flex-row items-start md:items-center justify-between bg-gradient-to-br from-surface/40 via-background/40 to-surface/40 group-hover:bg-foreground/[0.04] group-hover:border-primary/20 transition-all duration-700 shadow-2xl overflow-hidden relative z-10 gap-6 sm:gap-10 min-h-[160px] transform-gpu group-hover:-translate-y-1"
+                                className="glass-premium p-6 sm:p-8 md:p-10 rounded-[2rem] border border-white/5 flex flex-col md:flex-row items-start md:items-center justify-between bg-gradient-to-br from-surface/40 via-background/40 to-surface/40 group-hover:bg-foreground/[0.04] group-hover:border-primary/20 transition-all duration-700 shadow-2xl overflow-hidden relative z-10 gap-6 sm:gap-10 min-h-[160px] transform-gpu group-hover:-translate-y-1"
                               >
                                 {/* Subtle Noise Layer */}
                                 <div className="absolute inset-0 bg-[url('/noise.png')] opacity-[0.02] group-hover:opacity-[0.04] mix-blend-overlay pointer-events-none transition-opacity duration-700" />
@@ -1282,19 +1282,19 @@ function ProfileContent() {
                                       })()}
                                     </h4>
                                     <p className="text-[10px] font-black text-foreground/30 uppercase tracking-[0.2em] italic -mt-1 group-hover:text-foreground/50 transition-colors">
-                                      {m.time.slice(0, 5)} HS · {m.level || 'Nivel General'}
+                                      {m.time.slice(0, 5)} HS Ã‚Â· {m.level || 'Nivel General'}
                                     </p>
                                     <div className="flex flex-wrap items-center gap-3">
                                       <div className="flex items-center gap-2 px-2.5 py-1 rounded-full bg-primary/10 border border-primary/20 shadow-[0_0_15px_rgba(44,252,125,0.1)]">
                                         <div className="w-1.5 h-1.5 rounded-full bg-primary/70 group-hover:bg-primary transition-colors animate-pulse shadow-[0_0_8px_rgba(44,252,125,1)]" />
-                                        <span className="text-[9px] font-black uppercase tracking-[0.3em] text-primary">
+                                        <span className="text-[10px] font-black uppercase tracking-[0.3em] text-primary">
                                           REPORTE OFICIAL
                                         </span>
                                       </div>
                                       {result && (
                                         <div
                                           className={cn(
-                                            'px-3 py-1 rounded-full border text-[9px] font-black uppercase tracking-[0.3em] shadow-sm transition-all duration-500',
+                                            'px-3 py-1 rounded-full border text-[10px] font-black uppercase tracking-[0.3em] shadow-sm transition-all duration-500',
                                             result === 'win'
                                               ? 'bg-primary/10 border-primary/30 text-primary shadow-[0_0_15px_rgba(44,252,125,0.1)]'
                                               : result === 'loss'
@@ -1305,7 +1305,7 @@ function ProfileContent() {
                                           {resultConfig.label}
                                         </div>
                                       )}
-                                      <span className="px-3 py-1 rounded-full bg-background border border-white/5 text-[9px] font-black uppercase tracking-[0.3em] text-foreground/50 shadow-inner">
+                                      <span className="px-3 py-1 rounded-full bg-background border border-white/5 text-[10px] font-black uppercase tracking-[0.3em] text-foreground/50 shadow-inner">
                                         {m.type}
                                       </span>
                                     </div>
@@ -1372,8 +1372,8 @@ function ProfileContent() {
                         })}
                     </div>
                   ) : (
-                    <div className="glass-premium p-20 rounded-[4rem] flex flex-col items-center justify-center text-center gap-10 border-dashed border-2 border-foreground/10 bg-foreground/[0.01]">
-                      <div className="w-24 h-24 rounded-[2.5rem] bg-foreground/5 border border-foreground/10 flex items-center justify-center shadow-2xl">
+                    <div className="glass-premium p-20 rounded-[2rem] flex flex-col items-center justify-center text-center gap-10 border-dashed border-2 border-foreground/10 bg-foreground/[0.01]">
+                      <div className="w-24 h-24 rounded-[2rem] bg-foreground/5 border border-foreground/10 flex items-center justify-center shadow-2xl">
                         <History className="w-10 h-10 text-foreground/10" />
                       </div>
                       <div className="space-y-3">
@@ -1382,8 +1382,8 @@ function ProfileContent() {
                         </p>
                         <p className="text-[10px] font-black uppercase text-foreground/20 tracking-[0.3em]">
                           {isMe
-                            ? 'Tu historial de partidos está listo para ser escrito.'
-                            : 'Este jugador aún no tiene partidos registrados.'}
+                            ? 'Tu historial de partidos estÃƒÂ¡ listo para ser escrito.'
+                            : 'Este jugador aÃƒÂºn no tiene partidos registrados.'}
                         </p>
                       </div>
                       <Link href="/search">
@@ -1408,8 +1408,8 @@ function ProfileContent() {
                       <h3 className="text-xl lg:text-2xl font-black italic text-foreground uppercase tracking-tighter font-kanit">
                         Highlights
                       </h3>
-                      <span className="text-[9px] font-black text-primary uppercase tracking-[0.4em]">
-                        GALERÍA FutTok
+                      <span className="text-[10px] font-black text-primary uppercase tracking-[0.4em]">
+                        GALERÃƒÂA FutTok
                       </span>
                     </div>
                     <Flame className="w-6 h-6 text-emerald-500 animate-pulse" />
@@ -1443,7 +1443,7 @@ function ProfileContent() {
                           <div className="absolute top-3 left-3 z-20 flex gap-2">
                             <div className="px-2 py-0.5 rounded-full bg-black/50 backdrop-blur-md border border-white/10 flex items-center gap-1.5">
                               <Play className="w-2.5 h-2.5 text-white" />
-                              <span className="text-[8px] font-black italic text-white">{h.views_count || 0}</span>
+                              <span className="text-[10px] font-black italic text-white">{h.views_count || 0}</span>
                             </div>
                           </div>
 
@@ -1453,7 +1453,7 @@ function ProfileContent() {
                             </h4>
                             <div className="flex items-center gap-1 mt-1 opacity-70">
                               <Flame className="w-2.5 h-2.5 text-emerald-400" />
-                              <span className="text-[8px] font-black text-white">{h.likes_count || 0} likes</span>
+                              <span className="text-[10px] font-black text-white">{h.likes_count || 0} likes</span>
                             </div>
                           </div>
                         </Link>
@@ -1464,13 +1464,13 @@ function ProfileContent() {
                            <div className="w-12 h-12 rounded-full bg-surface border border-white/5 flex items-center justify-center group-hover:scale-110 transition-transform">
                              <Plus className="w-6 h-6 text-emerald-500" />
                            </div>
-                           <span className="text-[9px] font-black uppercase text-foreground/40 group-hover:text-emerald-500 tracking-widest px-4 text-center">SUBIR JUGADA</span>
+                           <span className="text-[10px] font-black uppercase text-foreground/40 group-hover:text-emerald-500 tracking-widest px-4 text-center">SUBIR JUGADA</span>
                         </Link>
                       )}
                     </div>
                   ) : (
-                    <div className="glass-premium p-16 sm:p-20 rounded-[4rem] flex flex-col items-center justify-center text-center gap-8 border-dashed border-2 border-foreground/10 bg-foreground/[0.01]">
-                      <div className="w-24 h-24 rounded-[2.5rem] bg-foreground/5 border border-foreground/10 flex items-center justify-center shadow-xl">
+                    <div className="glass-premium p-16 sm:p-20 rounded-[2rem] flex flex-col items-center justify-center text-center gap-8 border-dashed border-2 border-foreground/10 bg-foreground/[0.01]">
+                      <div className="w-24 h-24 rounded-[2rem] bg-foreground/5 border border-foreground/10 flex items-center justify-center shadow-xl">
                         <Flame className="w-10 h-10 text-foreground/10" />
                       </div>
                       <div className="space-y-3">
@@ -1479,8 +1479,8 @@ function ProfileContent() {
                         </p>
                         <p className="text-[10px] font-black uppercase text-foreground/20 tracking-[0.3em] max-w-sm">
                           {isMe
-                            ? 'Aún no subiste tus mejores jugadas. Mostrá lo que sabes hacer en la cancha.'
-                            : 'Este jugador no ha subido videos todavía.'}
+                            ? 'AÃƒÂºn no subiste tus mejores jugadas. MostrÃƒÂ¡ lo que sabes hacer en la cancha.'
+                            : 'Este jugador no ha subido videos todavÃƒÂ­a.'}
                         </p>
                       </div>
                       {isMe && (
@@ -1510,7 +1510,7 @@ function ProfileContent() {
                         <div className="flex items-center gap-4">
                           <div className="w-1.5 h-8 bg-primary rounded-full shadow-[0_0_15px_rgba(16,185,129,0.5)]" />
                           <h3 className="text-2xl font-black italic text-foreground uppercase tracking-tighter">
-                            Cronología de Mensajes
+                            CronologÃƒÂ­a de Mensajes
                           </h3>
                         </div>
                         <span className="text-[10px] font-black text-foreground/20 uppercase tracking-[0.3em] italic">
@@ -1533,7 +1533,7 @@ function ProfileContent() {
                               initial={{ opacity: 0, x: -20 }}
                               animate={{ opacity: 1, x: 0 }}
                               transition={{ delay: i * 0.05 }}
-                              className="glass-premium p-8 rounded-[2.5rem] border border-foreground/10 flex gap-6 group relative hover:bg-foreground/[0.02] transition-all duration-300"
+                              className="glass-premium p-8 rounded-[2rem] border border-foreground/10 flex gap-6 group relative hover:bg-foreground/[0.02] transition-all duration-300"
                             >
                               <div className="shrink-0 w-14 h-14 rounded-2xl bg-foreground/5 overflow-hidden border border-foreground/10 group-hover:border-primary/20 transition-colors">
                                 {comment.author?.avatar_url ? (
@@ -1553,8 +1553,8 @@ function ProfileContent() {
                                     <span className="text-sm font-black italic uppercase tracking-tight text-foreground">
                                       {comment.author?.name || 'Veterano'}
                                     </span>
-                                    <span className="text-[9px] font-black text-foreground/20 italic uppercase tracking-widest">
-                                      •{' '}
+                                    <span className="text-[10px] font-black text-foreground/20 italic uppercase tracking-widest">
+                                      Ã¢â‚¬Â¢{' '}
                                       {new Date(comment.created_at).toLocaleDateString('es-ES', {
                                         day: 'numeric',
                                         month: 'short',
@@ -1577,8 +1577,8 @@ function ProfileContent() {
                             </motion.div>
                           ))
                         ) : (
-                          <div className="glass-premium p-20 rounded-[4rem] flex flex-col items-center justify-center text-center gap-10 border-dashed border-2 border-foreground/10 bg-foreground/[0.01] opacity-50">
-                            <div className="w-20 h-20 rounded-[2.5rem] bg-foreground/5 border border-foreground/10 flex items-center justify-center">
+                          <div className="glass-premium p-20 rounded-[2rem] flex flex-col items-center justify-center text-center gap-10 border-dashed border-2 border-foreground/10 bg-foreground/[0.01] opacity-50">
+                            <div className="w-20 h-20 rounded-[2rem] bg-foreground/5 border border-foreground/10 flex items-center justify-center">
                               <MessageSquare className="w-10 h-10 text-foreground/5" />
                             </div>
                             <div className="space-y-3">
@@ -1586,7 +1586,7 @@ function ProfileContent() {
                                 Silencio en el Campo
                               </p>
                               <p className="text-[10px] font-black uppercase text-foreground/20 tracking-[0.3em]">
-                                Sé el primero en dejar tu marca en este muro.
+                                SÃƒÂ© el primero en dejar tu marca en este muro.
                               </p>
                             </div>
                           </div>
@@ -1598,7 +1598,7 @@ function ProfileContent() {
                     <div className="lg:col-span-5 xl:col-span-4 order-1 lg:order-2">
                       <div className="lg:sticky lg:top-24 space-y-8">
                         {/* Wall Header Card */}
-                        <div className="glass-premium p-8 rounded-[3rem] border border-foreground/10 space-y-6 relative overflow-hidden group/header text-center lg:text-left">
+                        <div className="glass-premium p-8 rounded-[2rem] border border-foreground/10 space-y-6 relative overflow-hidden group/header text-center lg:text-left">
                           <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 blur-[50px] opacity-0 group-hover/header:opacity-100 transition-opacity" />
                           <div className="w-16 h-16 rounded-2xl bg-primary/10 border border-primary/20 flex items-center justify-center mx-auto lg:mx-0 shadow-2xl">
                             <MessageSquare className="w-8 h-8 text-primary" />
@@ -1617,7 +1617,7 @@ function ProfileContent() {
                         {user && (
                           <form
                             onSubmit={handlePostComment}
-                            className="glass-premium p-8 rounded-[3rem] border border-primary/20 space-y-6 relative overflow-hidden group/form shadow-[0_20px_50px_rgba(16,185,129,0.1)]"
+                            className="glass-premium p-8 rounded-[2rem] border border-primary/20 space-y-6 relative overflow-hidden group/form shadow-[0_20px_50px_rgba(16,185,129,0.1)]"
                           >
                             <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 blur-[50px] opacity-100 transition-opacity" />
                             <div className="flex items-center gap-4 mb-2">
@@ -1646,7 +1646,7 @@ function ProfileContent() {
                               <textarea
                                 value={newComment}
                                 onChange={(e) => setNewComment(e.target.value)}
-                                placeholder="Escribe algo épico..."
+                                placeholder="Escribe algo ÃƒÂ©pico..."
                                 className="w-full min-h-[140px] bg-background/50 border border-foreground/10 rounded-2xl p-5 text-foreground text-sm font-medium outline-none focus:border-primary/40 transition-all resize-none placeholder:text-foreground/10"
                                 disabled={isPostingComment}
                               />
@@ -1678,7 +1678,7 @@ function ProfileContent() {
                   exit={{ opacity: 0, scale: 0.95 }}
                   className="max-w-4xl mx-auto pb-20 mt-10"
                 >
-                  <div className="glass-premium p-8 sm:p-12 rounded-[3.5rem] border border-[#009EE3]/30 bg-gradient-to-br from-[#009EE3]/5 to-transparent relative overflow-hidden shadow-[0_20px_60px_rgba(0,158,227,0.1)] group/wallet">
+                  <div className="glass-premium p-8 sm:p-12 rounded-[2rem] border border-[#009EE3]/30 bg-gradient-to-br from-[#009EE3]/5 to-transparent relative overflow-hidden shadow-[0_20px_60px_rgba(0,158,227,0.1)] group/wallet">
                     <div className="absolute top-0 right-0 w-64 h-64 bg-[#009EE3]/10 blur-[80px] pointer-events-none group-hover/wallet:opacity-100 opacity-50 transition-opacity duration-1000" />
                     
                     <div className="flex flex-col md:flex-row gap-10 items-center justify-between relative z-10">
@@ -1699,11 +1699,11 @@ function ProfileContent() {
                         <div className="grid grid-cols-2 gap-4 max-w-sm mx-auto md:mx-0">
                           <div className="p-4 rounded-2xl bg-background/50 border border-foreground/5 flex items-center gap-3 shadow-inner">
                             <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                            <span className="text-[9px] font-black uppercase text-foreground/50 tracking-widest">Sin Retenciones</span>
+                            <span className="text-[10px] font-black uppercase text-foreground/50 tracking-widest">Sin Retenciones</span>
                           </div>
                           <div className="p-4 rounded-2xl bg-background/50 border border-foreground/5 flex items-center gap-3 shadow-inner">
                             <div className="w-2 h-2 rounded-full bg-[#009EE3] animate-pulse" />
-                            <span className="text-[9px] font-black uppercase text-foreground/50 tracking-widest">Split Automático</span>
+                            <span className="text-[10px] font-black uppercase text-foreground/50 tracking-widest">Split AutomÃƒÂ¡tico</span>
                           </div>
                         </div>
                       </div>
@@ -1718,7 +1718,7 @@ function ProfileContent() {
                               <p className="text-lg font-black uppercase tracking-tighter text-emerald-500 italic">Cuenta Vinculada</p>
                               <p className="text-[10px] font-black text-foreground/40 tracking-widest uppercase mt-1">ID: {dbProfile.mp_user_id.slice(0, 8)}...</p>
                             </div>
-                            <div className="mt-2 text-[9px] text-emerald-500/80 font-bold uppercase tracking-widest">
+                            <div className="mt-2 text-[10px] text-emerald-500/80 font-bold uppercase tracking-widest">
                               Recibiendo pagos activos
                             </div>
                           </div>
@@ -1730,7 +1730,7 @@ function ProfileContent() {
                             className="w-full md:w-auto px-10 py-6 rounded-3xl bg-[#009EE3] text-white hover:bg-[#0086c3] shadow-[0_15px_40px_rgba(0,158,227,0.3)] hover:shadow-[0_20px_50px_rgba(0,158,227,0.5)] transition-all hover:scale-105 active:scale-95 flex flex-col items-center gap-3 group/connect border border-white/10"
                           >
                             <span className="text-xl font-black italic tracking-tighter uppercase leading-none text-white">Vincular Cuenta</span>
-                            <span className="text-[9px] font-black uppercase tracking-[0.3em] opacity-80 group-hover/connect:opacity-100 flex items-center gap-2 text-white/90">
+                            <span className="text-[10px] font-black uppercase tracking-[0.3em] opacity-80 group-hover/connect:opacity-100 flex items-center gap-2 text-white/90">
                               Conectar con Mercado Pago <ChevronRight className="w-3 h-3 group-hover/connect:translate-x-1 transition-transform" />
                             </span>
                           </button>
@@ -1755,7 +1755,7 @@ function ProfileContent() {
             className="flex items-center gap-3 text-foreground/30 hover:text-primary transition-colors text-[11px] font-black uppercase tracking-widest group"
           >
             <Lock className="w-4 h-4 group-hover:scale-110 transition-transform" />
-            Cambiar Contraseña
+            Cambiar ContraseÃƒÂ±a
           </button>
 
           {!showDeleteConfirm ? (
@@ -1774,11 +1774,11 @@ function ProfileContent() {
             >
               <div className="flex items-center gap-3 text-red-500">
                 <AlertTriangle className="w-5 h-5" />
-                <h3 className="text-sm font-black uppercase tracking-widest">¿Estás seguro?</h3>
+                <h3 className="text-sm font-black uppercase tracking-widest">Ã‚Â¿EstÃƒÂ¡s seguro?</h3>
               </div>
               <p className="text-xs text-foreground/40 leading-relaxed">
-                Esta acción es irreversible. Se van a borrar todos tus datos: partidos, equipos,
-                amigos y estadísticas.
+                Esta acciÃƒÂ³n es irreversible. Se van a borrar todos tus datos: partidos, equipos,
+                amigos y estadÃƒÂ­sticas.
               </p>
               <div className="flex gap-3">
                 <button
@@ -1804,7 +1804,7 @@ function ProfileContent() {
                   ) : (
                     <Trash2 className="w-4 h-4" />
                   )}
-                  Sí, eliminar todo
+                  SÃƒÂ­, eliminar todo
                 </button>
               </div>
             </motion.div>
@@ -1820,7 +1820,7 @@ function ProfileContent() {
               initial={{ opacity: 0, scale: 0.95, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 20 }}
-              className="w-full max-w-md glass-premium rounded-[2.5rem] p-8 lg:p-10 border border-foreground/10 shadow-[0_50px_100px_rgba(0,0,0,0.5)] relative overflow-hidden bg-surface"
+              className="w-full max-w-md glass-premium rounded-[2rem] p-8 lg:p-10 border border-foreground/10 shadow-[0_50px_100px_rgba(0,0,0,0.5)] relative overflow-hidden bg-surface"
             >
               <div className="absolute top-0 right-0 w-32 h-32 bg-primary/10 blur-[50px] -mr-16 -mt-16 rounded-full" />
 
@@ -1836,7 +1836,7 @@ function ProfileContent() {
 
                 <div className="space-y-3">
                   <label className="text-[10px] font-black uppercase text-foreground/40 tracking-[0.3em] ml-1">
-                    Escribí tu nueva contraseña
+                    EscribÃƒÂ­ tu nueva contraseÃƒÂ±a
                   </label>
                   <div className="relative group/input">
                     <div className="absolute inset-y-0 left-5 flex items-center pointer-events-none">
@@ -1845,15 +1845,15 @@ function ProfileContent() {
                     <input
                       type="password"
                       className="w-full h-14 pl-14 pr-6 bg-foreground/[0.02] border border-foreground/5 rounded-2xl text-foreground text-sm font-black outline-none focus:border-primary/50 transition-all placeholder:text-foreground/20"
-                      placeholder="••••••••"
+                      placeholder="Ã¢â‚¬Â¢Ã¢â‚¬Â¢Ã¢â‚¬Â¢Ã¢â‚¬Â¢Ã¢â‚¬Â¢Ã¢â‚¬Â¢Ã¢â‚¬Â¢Ã¢â‚¬Â¢"
                       value={newPassword}
                       onChange={(e) => setNewPassword(e.target.value)}
                       required
                       minLength={6}
                     />
                   </div>
-                  <p className="text-[9px] font-black text-foreground/20 uppercase tracking-widest ml-1">
-                    Mínimo 6 caracteres
+                  <p className="text-[10px] font-black text-foreground/20 uppercase tracking-widest ml-1">
+                    MÃƒÂ­nimo 6 caracteres
                   </p>
                 </div>
 

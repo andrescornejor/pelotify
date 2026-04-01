@@ -40,35 +40,35 @@ const TOUR_STEPS: TourStep[] = [
   {
     target: '#hero-avatar',
     title: 'Tu Legado Digital',
-    content: 'Este es tu perfil. El brillo de tu avatar evoluciona con tu rango. ¡Ganar partidos lo hace brillar con más fuerza!',
+    content: 'Este es tu perfil. El brillo de tu avatar evoluciona con tu rango. Â¡Ganar partidos lo hace brillar con mÃ¡s fuerza!',
     position: 'bottom',
     icon: User2
   },
   {
     target: '#stat-cards',
     title: 'Poder Competitivo',
-    content: 'Tu ELO, MVPs y Win Rate definen tu estatus en la liga. Analizá cada métrica para mejorar tu juego.',
+    content: 'Tu ELO, MVPs y Win Rate definen tu estatus en la liga. AnalizÃ¡ cada mÃ©trica para mejorar tu juego.',
     position: 'bottom',
     icon: Trophy
   },
   {
     target: '#activity-feed',
     title: 'Pulso de la Liga',
-    content: 'Mantenete al tanto de los ascensos y victorias de la comunidad en tiempo real. ¡La competencia no descansa!',
+    content: 'Mantenete al tanto de los ascensos y victorias de la comunidad en tiempo real. Â¡La competencia no descansa!',
     position: 'right',
     icon: Activity
   },
   {
     target: '#featured-match',
     title: 'Cita con la Gloria',
-    content: 'Tu próximo gran desafío. El cronómetro no miente: preparate para dar lo mejor en la cancha.',
+    content: 'Tu prÃ³ximo gran desafÃ­o. El cronÃ³metro no miente: preparate para dar lo mejor en la cancha.',
     position: 'left',
     icon: Calendar
   },
   {
     target: '#stat-cards', // Using same for final step as it's a good overview area
-    title: '¡Todo Listo!',
-    content: 'Ya conocés los fundamentos. Ahora es momento de entrar a la cancha y empezar a escribir tu historia.',
+    title: 'Â¡Todo Listo!',
+    content: 'Ya conocÃ©s los fundamentos. Ahora es momento de entrar a la cancha y empezar a escribir tu historia.',
     position: 'center',
     icon: Star
   }
@@ -294,7 +294,7 @@ export function OnboardingTour() {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, scale: 0.95 }}
             className={cn(
-              "absolute pointer-events-auto transition-all duration-500 rounded-[2.5rem]",
+              "absolute pointer-events-auto transition-all duration-500 rounded-[2rem]",
               "glass-premium-dark p-6 sm:p-8 border border-primary/30 shadow-[0_40px_80px_rgba(0,0,0,0.6)]",
               "flex flex-col gap-5 sm:gap-6 z-[102]"
             )}

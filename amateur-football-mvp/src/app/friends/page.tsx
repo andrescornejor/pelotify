@@ -66,7 +66,7 @@ const PlayerCard = ({
       damping: 20,
       delay: i * 0.05,
     }}
-    className="glass-premium-hover p-10 rounded-[4rem] flex flex-col items-center text-center gap-8 border border-foreground/5 bg-surface group relative overflow-hidden shadow-2xl transition-all duration-500 hover:border-primary/20 hover:bg-foreground/[0.02]"
+    className="glass-premium-hover p-10 rounded-[2rem] flex flex-col items-center text-center gap-8 border border-foreground/5 bg-surface group relative overflow-hidden shadow-2xl transition-all duration-500 hover:border-primary/20 hover:bg-foreground/[0.02]"
   >
     <div className="absolute top-0 right-0 w-48 h-48 bg-primary/5 blur-[80px] rounded-full group-hover:bg-primary/10 transition-all pointer-events-none" />
 
@@ -74,7 +74,7 @@ const PlayerCard = ({
       href={`/profile?id=${p.id}`}
       className="flex flex-col items-center gap-6 group/link w-full"
     >
-      <div className="w-32 h-32 rounded-[2.5rem] bg-surface-elevated border-2 border-foreground/10 shrink-0 overflow-hidden relative shadow-2xl group-hover/link:scale-110 transition-transform duration-700 group-hover/link:border-primary/40">
+      <div className="w-32 h-32 rounded-[2rem] bg-surface-elevated border-2 border-foreground/10 shrink-0 overflow-hidden relative shadow-2xl group-hover/link:scale-110 transition-transform duration-700 group-hover/link:border-primary/40">
         {p.avatar_url ? (
           <img
             src={p.avatar_url}
@@ -97,7 +97,7 @@ const PlayerCard = ({
         </p>
         <div className="flex flex-col items-center gap-2">
           <span className="text-[10px] font-black uppercase tracking-[0.3em] text-foreground/40 italic">
-            {p.position || 'LÍBERO'}
+            {p.position || 'LÃƒÂBERO'}
           </span>
           <div className="flex items-center gap-2 px-4 py-1.5 bg-accent/10 rounded-full border border-accent/20">
             <Trophy className="w-3.5 h-3.5 text-accent" />
@@ -116,7 +116,7 @@ const PlayerCard = ({
       ) : p.relationshipStatus === 'pending_sent' ? (
         <div className="w-full h-14 rounded-2xl bg-foreground/[0.03] text-foreground/30 flex items-center justify-center gap-3 border border-foreground/5 italic">
           <Clock className="w-5 h-5 animate-pulse" />
-          <span className="text-[10px] font-black uppercase tracking-widest">ESPERANDO SEÑAL</span>
+          <span className="text-[10px] font-black uppercase tracking-widest">ESPERANDO SEÃƒâ€˜AL</span>
         </div>
       ) : p.relationshipStatus === 'pending_received' ? (
         <button
@@ -265,7 +265,7 @@ export default function FriendsPage() {
   };
 
   const handleRejectRemove = async (friendshipId: string, isRemove = false) => {
-    if (isRemove && !confirm('¿Eliminar de tu lista de amigos?')) return;
+    if (isRemove && !confirm('Ã‚Â¿Eliminar de tu lista de amigos?')) return;
 
     setActionLoading(friendshipId);
     try {
@@ -301,7 +301,7 @@ export default function FriendsPage() {
       await respondToTeamInvitation(teamId, user.id, action);
       setTeamInvites((prev) => prev.filter((inv) => inv.team_id !== teamId));
       if (action === 'accept') {
-        alert('¡Ahora eres parte del equipo!');
+        alert('Ã‚Â¡Ahora eres parte del equipo!');
       }
     } catch (err: any) {
       alert('Error: ' + err.message);
@@ -316,11 +316,11 @@ export default function FriendsPage() {
 
   return (
     <div className="flex flex-col min-h-[90vh] bg-background p-4 sm:p-6 lg:px-10 lg:pt-4 xl:px-14 2xl:px-16 max-w-screen-2xl mx-auto space-y-8 relative overflow-hidden">
-      {/* ── AMBIENT GLOWS ── */}
+      {/* Ã¢â€â‚¬Ã¢â€â‚¬ AMBIENT GLOWS Ã¢â€â‚¬Ã¢â€â‚¬ */}
       <div className="absolute top-0 right-[-10%] w-[40%] h-[40%] bg-primary/5 blur-[120px] rounded-full pointer-events-none" />
       <div className="absolute bottom-[-10%] left-[-10%] w-[50%] h-[50%] bg-primary/3 blur-[120px] rounded-full pointer-events-none" />
 
-      {/* ── HEADER ── */}
+      {/* Ã¢â€â‚¬Ã¢â€â‚¬ HEADER Ã¢â€â‚¬Ã¢â€â‚¬ */}
       <div className="flex flex-col items-center text-center gap-4 relative z-10 px-4 mb-2">
         <div className="flex items-center gap-4 justify-center">
           <div className="h-[1px] w-12 bg-primary/40" />
@@ -337,14 +337,14 @@ export default function FriendsPage() {
         </p>
       </div>
 
-      {/* ── QUICK STATS ── */}
+      {/* Ã¢â€â‚¬Ã¢â€â‚¬ QUICK STATS Ã¢â€â‚¬Ã¢â€â‚¬ */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 px-4 w-full max-w-7xl mx-auto relative z-20">
         <div className="glass-premium p-4 md:p-6 rounded-[2rem] border border-foreground/5 flex flex-col items-center justify-center gap-2 group hover:border-primary/20 transition-all">
           <Users className="w-5 h-5 text-primary opacity-60 group-hover:opacity-100 transition-opacity" />
           <div className="text-2xl font-black text-foreground italic uppercase tracking-tighter leading-none">
             {friends.length}
           </div>
-          <div className="text-[8px] font-black text-foreground/40 uppercase tracking-[0.2em]">
+          <div className="text-[10px] font-black text-foreground/40 uppercase tracking-[0.2em]">
             AMIGOS
           </div>
         </div>
@@ -353,7 +353,7 @@ export default function FriendsPage() {
           <div className="text-2xl font-black text-foreground italic uppercase tracking-tighter leading-none">
             {requests.length}
           </div>
-          <div className="text-[8px] font-black text-foreground/40 uppercase tracking-[0.2em]">
+          <div className="text-[10px] font-black text-foreground/40 uppercase tracking-[0.2em]">
             SOLICITUDES
           </div>
         </div>
@@ -362,7 +362,7 @@ export default function FriendsPage() {
           <div className="text-2xl font-black text-foreground italic uppercase tracking-tighter leading-none">
             {matchInvites.length}
           </div>
-          <div className="text-[8px] font-black text-foreground/40 uppercase tracking-[0.2em]">
+          <div className="text-[10px] font-black text-foreground/40 uppercase tracking-[0.2em]">
             PARTIDOS
           </div>
         </div>
@@ -371,15 +371,15 @@ export default function FriendsPage() {
           <div className="text-2xl font-black text-foreground italic uppercase tracking-tighter leading-none">
             {teamInvites.length}
           </div>
-          <div className="text-[8px] font-black text-foreground/40 uppercase tracking-[0.2em]">
+          <div className="text-[10px] font-black text-foreground/40 uppercase tracking-[0.2em]">
             EQUIPOS
           </div>
         </div>
       </div>
 
-      {/* ── TABS ── */}
+      {/* Ã¢â€â‚¬Ã¢â€â‚¬ TABS Ã¢â€â‚¬Ã¢â€â‚¬ */}
       <div className="relative z-20 px-4 w-full max-w-7xl mx-auto">
-        <div className="flex p-2 bg-foreground/[0.02] backdrop-blur-3xl rounded-[2.5rem] border border-foreground/[0.05] relative shadow-2xl">
+        <div className="flex p-2 bg-foreground/[0.02] backdrop-blur-3xl rounded-[2rem] border border-foreground/[0.05] relative shadow-2xl">
           <button
             onClick={() => setActiveTab('friends')}
             className={cn(
@@ -443,7 +443,7 @@ export default function FriendsPage() {
         </div>
       </div>
 
-      {/* ── CONTENT AREA ── */}
+      {/* Ã¢â€â‚¬Ã¢â€â‚¬ CONTENT AREA Ã¢â€â‚¬Ã¢â€â‚¬ */}
       <div className="flex-1 overflow-y-auto no-scrollbar pb-32">
         <AnimatePresence mode="wait">
           <motion.div
@@ -453,7 +453,7 @@ export default function FriendsPage() {
             exit={{ opacity: 0, x: -10 }}
             transition={{ duration: 0.2 }}
           >
-            {/* ── FRIENDS TAB ── */}
+            {/* Ã¢â€â‚¬Ã¢â€â‚¬ FRIENDS TAB Ã¢â€â‚¬Ã¢â€â‚¬ */}
             {activeTab === 'friends' && (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 px-4 max-w-full mx-auto">
                 <AnimatePresence mode="popLayout">
@@ -461,17 +461,17 @@ export default function FriendsPage() {
                     <motion.div
                       initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
-                      className="col-span-full flex flex-col items-center justify-center py-32 text-center gap-10 glass-premium rounded-[4rem] border-dashed border-2 border-foreground/5 bg-foreground/[0.01] shadow-none"
+                      className="col-span-full flex flex-col items-center justify-center py-32 text-center gap-10 glass-premium rounded-[2rem] border-dashed border-2 border-foreground/5 bg-foreground/[0.01] shadow-none"
                     >
-                      <div className="w-32 h-32 bg-foreground/[0.02] rounded-[3rem] border border-foreground/5 flex items-center justify-center animate-float shadow-2xl">
+                      <div className="w-32 h-32 bg-foreground/[0.02] rounded-[2rem] border border-foreground/5 flex items-center justify-center animate-float shadow-2xl">
                         <Users className="w-12 h-12 text-foreground/70" />
                       </div>
                       <div className="max-w-sm space-y-4">
                         <h3 className="text-3xl font-black text-foreground italic uppercase tracking-tighter">
-                          Sin Amigos Aún
+                          Sin Amigos AÃƒÂºn
                         </h3>
                         <p className="text-[10px] text-foreground/60 font-black uppercase tracking-[0.3em] leading-relaxed">
-                          Todavía no tenés amigos agregados. ¡Buscá gente y sumá pibes!
+                          TodavÃƒÂ­a no tenÃƒÂ©s amigos agregados. Ã‚Â¡BuscÃƒÂ¡ gente y sumÃƒÂ¡ pibes!
                         </p>
                       </div>
                       <button
@@ -490,7 +490,7 @@ export default function FriendsPage() {
                         animate={{ opacity: 1, scale: 1, y: 0 }}
                         exit={{ opacity: 0, scale: 0.9 }}
                         transition={{ delay: i * 0.05 }}
-                        className="glass-premium p-8 rounded-[3rem] flex flex-col gap-6 border border-foreground/5 hover:border-primary/20 group transition-all relative overflow-hidden bg-surface"
+                        className="glass-premium p-8 rounded-[2rem] flex flex-col gap-6 border border-foreground/5 hover:border-primary/20 group transition-all relative overflow-hidden bg-surface"
                       >
                         <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 blur-[50px] -translate-y-1/2 translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity" />
 
@@ -520,7 +520,7 @@ export default function FriendsPage() {
                             </p>
                             <div className="flex items-center gap-2">
                               <div className="w-2 h-2 rounded-full bg-primary animate-pulse" />
-                              <span className="text-[9px] font-black uppercase tracking-widest text-foreground/60">
+                              <span className="text-[10px] font-black uppercase tracking-widest text-foreground/60">
                                 {f.profiles?.position || 'Jugador Polivalente'}
                               </span>
                             </div>
@@ -530,7 +530,7 @@ export default function FriendsPage() {
                         <div className="flex items-center justify-between pt-4 border-t border-foreground/5">
                           <div className="flex items-center gap-6">
                             <div className="flex flex-col">
-                              <span className="text-[8px] font-black uppercase tracking-widest text-foreground/70">
+                              <span className="text-[10px] font-black uppercase tracking-widest text-foreground/70">
                                 EXPERIENCIA
                               </span>
                               <div className="flex items-center gap-2">
@@ -541,7 +541,7 @@ export default function FriendsPage() {
                               </div>
                             </div>
                             <div className="flex flex-col">
-                              <span className="text-[8px] font-black uppercase tracking-widest text-foreground/70">
+                              <span className="text-[10px] font-black uppercase tracking-widest text-foreground/70">
                                 RANGO
                               </span>
                               <span className="text-[10px] font-black text-primary uppercase italic tracking-widest">
@@ -582,10 +582,10 @@ export default function FriendsPage() {
               </div>
             )}
 
-            {/* ── REQUESTS TAB ── */}
+            {/* Ã¢â€â‚¬Ã¢â€â‚¬ REQUESTS TAB Ã¢â€â‚¬Ã¢â€â‚¬ */}
             {activeTab === 'requests' && (
               <div className="space-y-16 px-4 max-w-4xl mx-auto">
-                {/* ── FRIEND REQUESTS ── */}
+                {/* Ã¢â€â‚¬Ã¢â€â‚¬ FRIEND REQUESTS Ã¢â€â‚¬Ã¢â€â‚¬ */}
                 <div className="space-y-6">
                   <div className="flex items-center justify-between px-2">
                     <div className="flex items-center gap-4">
@@ -610,7 +610,7 @@ export default function FriendsPage() {
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     {requests.length === 0 ? (
-                      <div className="col-span-full text-center py-20 glass-premium rounded-[3rem] border-dashed border-2 border-foreground/5 opacity-40 bg-foreground/[0.01]">
+                      <div className="col-span-full text-center py-20 glass-premium rounded-[2rem] border-dashed border-2 border-foreground/5 opacity-40 bg-foreground/[0.01]">
                         <p className="text-[10px] font-black uppercase tracking-[0.3em] text-foreground/70 italic">
                           No hay peticiones de alianza en espera
                         </p>
@@ -622,7 +622,7 @@ export default function FriendsPage() {
                           initial={{ opacity: 0, x: -20 }}
                           animate={{ opacity: 1, x: 0 }}
                           transition={{ delay: i * 0.05 }}
-                          className="glass-premium p-6 rounded-[2.5rem] flex items-center gap-6 border border-primary/20 bg-primary/[0.01] hover:bg-primary/[0.03] transition-all group shadow-none"
+                          className="glass-premium p-6 rounded-[2rem] flex items-center gap-6 border border-primary/20 bg-primary/[0.01] hover:bg-primary/[0.03] transition-all group shadow-none"
                         >
                           <Link
                             href={`/profile?id=${r.profiles?.id}`}
@@ -683,7 +683,7 @@ export default function FriendsPage() {
                   </div>
                 </div>
 
-                {/* ── MATCH INVITATIONS ── */}
+                {/* Ã¢â€â‚¬Ã¢â€â‚¬ MATCH INVITATIONS Ã¢â€â‚¬Ã¢â€â‚¬ */}
                 <div className="space-y-6">
                   <div className="flex items-center justify-between px-2">
                     <div className="flex items-center gap-4">
@@ -708,7 +708,7 @@ export default function FriendsPage() {
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     {matchInvites.length === 0 ? (
-                      <div className="col-span-full text-center py-20 glass-premium rounded-[3rem] border-dashed border-2 border-foreground/5 opacity-40 bg-foreground/[0.01]">
+                      <div className="col-span-full text-center py-20 glass-premium rounded-[2rem] border-dashed border-2 border-foreground/5 opacity-40 bg-foreground/[0.01]">
                         <p className="text-[10px] font-black uppercase tracking-[0.3em] text-foreground/70 italic">
                           No hay llamados activos en este ciclo
                         </p>
@@ -720,7 +720,7 @@ export default function FriendsPage() {
                           initial={{ opacity: 0, scale: 0.95 }}
                           animate={{ opacity: 1, scale: 1 }}
                           transition={{ delay: i * 0.05 }}
-                          className="glass-premium overflow-hidden rounded-[3rem] border border-accent/20 bg-accent/[0.01] hover:bg-accent/[0.03] transition-all group flex flex-col shadow-none"
+                          className="glass-premium overflow-hidden rounded-[2rem] border border-accent/20 bg-accent/[0.01] hover:bg-accent/[0.03] transition-all group flex flex-col shadow-none"
                         >
                           <div className="p-8 flex items-start gap-6 bg-gradient-to-br from-accent/[0.05] to-transparent">
                             <div className="w-16 h-16 rounded-[1.8rem] bg-accent/10 flex items-center justify-center shrink-0 border border-accent/20 shadow-2xl group-hover:rotate-6 transition-transform">
@@ -731,11 +731,11 @@ export default function FriendsPage() {
                                 {inv.matches?.location}
                               </p>
                               <div className="flex flex-wrap items-center gap-x-4 gap-y-1">
-                                <div className="flex items-center gap-1.5 text-[9px] font-black text-accent uppercase tracking-[0.2em]">
+                                <div className="flex items-center gap-1.5 text-[10px] font-black text-accent uppercase tracking-[0.2em]">
                                   <Calendar className="w-3.5 h-3.5" />
                                   {inv.matches?.date}
                                 </div>
-                                <div className="flex items-center gap-1.5 text-[9px] font-black text-foreground/50 uppercase tracking-[0.2em]">
+                                <div className="flex items-center gap-1.5 text-[10px] font-black text-foreground/50 uppercase tracking-[0.2em]">
                                   <Clock className="w-3.5 h-3.5 opacity-50" />
                                   {inv.matches?.time}
                                 </div>
@@ -773,7 +773,7 @@ export default function FriendsPage() {
                   </div>
                 </div>
 
-                {/* ── TEAM INVITATIONS ── */}
+                {/* Ã¢â€â‚¬Ã¢â€â‚¬ TEAM INVITATIONS Ã¢â€â‚¬Ã¢â€â‚¬ */}
                 <div className="space-y-6">
                   <div className="flex items-center justify-between px-2">
                     <div className="flex items-center gap-4">
@@ -798,7 +798,7 @@ export default function FriendsPage() {
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     {teamInvites.length === 0 ? (
-                      <div className="col-span-full text-center py-20 glass-premium rounded-[3rem] border-dashed border-2 border-foreground/5 opacity-40 bg-foreground/[0.01]">
+                      <div className="col-span-full text-center py-20 glass-premium rounded-[2rem] border-dashed border-2 border-foreground/5 opacity-40 bg-foreground/[0.01]">
                         <p className="text-[10px] font-black uppercase tracking-[0.3em] text-foreground/70 italic">
                           No hay convocatorias de equipos en este ciclo
                         </p>
@@ -810,7 +810,7 @@ export default function FriendsPage() {
                           initial={{ opacity: 0, scale: 0.95 }}
                           animate={{ opacity: 1, scale: 1 }}
                           transition={{ delay: i * 0.05 }}
-                          className="glass-premium overflow-hidden rounded-[3rem] border border-primary/20 bg-primary/[0.01] hover:bg-primary/[0.03] transition-all group flex flex-col shadow-none"
+                          className="glass-premium overflow-hidden rounded-[2rem] border border-primary/20 bg-primary/[0.01] hover:bg-primary/[0.03] transition-all group flex flex-col shadow-none"
                         >
                           <div className="p-8 flex items-start gap-6 bg-gradient-to-br from-primary/[0.05] to-transparent">
                             <div className="w-16 h-16 rounded-[1.8rem] bg-surface-elevated flex items-center justify-center shrink-0 border border-foreground/10 shadow-2xl group-hover:rotate-6 transition-transform relative overflow-hidden">
@@ -830,7 +830,7 @@ export default function FriendsPage() {
                               </p>
                               <div className="flex items-center gap-2">
                                 <div className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
-                                <span className="text-[9px] font-black text-foreground/50 uppercase tracking-widest italic">
+                                <span className="text-[10px] font-black text-foreground/50 uppercase tracking-widest italic">
                                   CONVOCATORIA ABIERTA
                                 </span>
                               </div>
@@ -869,12 +869,12 @@ export default function FriendsPage() {
               </div>
             )}
 
-            {/* ── SEARCH TAB ── */}
+            {/* Ã¢â€â‚¬Ã¢â€â‚¬ SEARCH TAB Ã¢â€â‚¬Ã¢â€â‚¬ */}
             {activeTab === 'search' && (
               <div className="space-y-12 px-4 w-full mx-auto">
                 <div className="relative group w-full max-w-7xl mx-auto">
                   <div className="absolute -inset-1 bg-gradient-to-r from-primary/20 via-primary/40 to-primary/20 rounded-[2.6rem] blur opacity-25 group-focus-within:opacity-100 transition duration-1000 group-focus-within:duration-200" />
-                  <div className="relative bg-background rounded-[2.5rem]">
+                  <div className="relative bg-background rounded-[2rem]">
                     <div className="absolute inset-y-0 left-6 flex items-center pointer-events-none">
                       <Search
                         className={cn(
@@ -885,10 +885,10 @@ export default function FriendsPage() {
                     </div>
                     <input
                       type="text"
-                      placeholder="Busca por nombre o posición..."
+                      placeholder="Busca por nombre o posiciÃƒÂ³n..."
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
-                      className="w-full h-20 pl-16 pr-32 rounded-[2.5rem] bg-foreground/[0.02] border border-foreground/5 focus:bg-foreground/[0.04] focus:border-primary/50 outline-none transition-all text-lg font-bold text-foreground placeholder:text-foreground/20 placeholder:italic shadow-2xl"
+                      className="w-full h-20 pl-16 pr-32 rounded-[2rem] bg-foreground/[0.02] border border-foreground/5 focus:bg-foreground/[0.04] focus:border-primary/50 outline-none transition-all text-lg font-bold text-foreground placeholder:text-foreground/20 placeholder:italic shadow-2xl"
                     />
                     <div className="absolute inset-y-0 right-6 flex items-center">
                       <div
@@ -914,7 +914,7 @@ export default function FriendsPage() {
                 </div>
 
                 {isSearching ? (
-                  <div className="relative py-32 flex flex-col items-center justify-center overflow-hidden rounded-[3rem] border border-primary/10 bg-primary/[0.01]">
+                  <div className="relative py-32 flex flex-col items-center justify-center overflow-hidden rounded-[2rem] border border-primary/10 bg-primary/[0.01]">
                     {/* Radar Pulse Background */}
                     <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
                       {[...Array(3)].map((_, i) => (
@@ -949,13 +949,13 @@ export default function FriendsPage() {
                     <motion.div
                       initial={{ opacity: 0 }}
                       animate={{ opacity: 1 }}
-                      className="text-center py-32 glass-premium rounded-[4rem] border-dashed border-2 border-foreground/5 opacity-40 bg-foreground/[0.01]"
+                      className="text-center py-32 glass-premium rounded-[2rem] border-dashed border-2 border-foreground/5 opacity-40 bg-foreground/[0.01]"
                     >
                       <p className="text-xl font-black uppercase tracking-[0.2em] text-foreground/60 italic">
-                        Sin señales detectadas
+                        Sin seÃƒÂ±ales detectadas
                       </p>
                       <p className="text-[10px] text-foreground/80 font-bold uppercase tracking-widest mt-2">
-                        Prueba con otro término de búsqueda
+                        Prueba con otro tÃƒÂ©rmino de bÃƒÂºsqueda
                       </p>
                     </motion.div>
                   ) : (
@@ -983,7 +983,7 @@ export default function FriendsPage() {
                     <div className="flex flex-col items-center gap-4 text-center">
                       <div className="flex items-center gap-4">
                         <div className="h-[1px] w-8 bg-primary/30" />
-                        <span className="text-[9px] font-black text-primary uppercase tracking-[0.4em] italic">
+                        <span className="text-[10px] font-black text-primary uppercase tracking-[0.4em] italic">
                           Jugadores Destacados
                         </span>
                         <div className="h-[1px] w-8 bg-primary/30" />
@@ -992,7 +992,7 @@ export default function FriendsPage() {
                         Radar <span className="text-primary">Global</span>
                       </h2>
                       <p className="text-[10px] text-foreground/40 font-bold uppercase tracking-widest max-w-sm">
-                        Explora la comunidad y encuentra nuevos aliados para tu próximo partido
+                        Explora la comunidad y encuentra nuevos aliados para tu prÃƒÂ³ximo partido
                       </p>
                     </div>
 

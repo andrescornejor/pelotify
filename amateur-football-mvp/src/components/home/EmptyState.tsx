@@ -15,7 +15,7 @@ export const EmptyState = ({ icon: Icon, title, description, actionText, actionH
   <motion.div
     initial={{ opacity: 0, scale: 0.95 }}
     whileInView={{ opacity: 1, scale: 1 }}
-    className="w-full py-12 px-6 rounded-[2.5rem] flex flex-col items-center justify-center text-center gap-6 glass-premium border-white/5 bg-foreground/[0.01] relative overflow-hidden group"
+    className="w-full py-12 px-6 rounded-[2rem] flex flex-col items-center justify-center text-center gap-6 glass-premium border-white/5 bg-foreground/[0.01] relative overflow-hidden group"
   >
     <div className="absolute inset-0 bg-gradient-to-b from-primary/5 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
     <div className="w-16 h-16 rounded-[2rem] bg-surface flex items-center justify-center border border-white/10 shadow-inner group-hover:scale-110 transition-transform">
@@ -29,7 +29,7 @@ export const EmptyState = ({ icon: Icon, title, description, actionText, actionH
     </div>
     {actionText && actionHref && (
       <Link href={actionHref}>
-        <button className="px-8 h-10 rounded-xl bg-foreground/[0.03] hover:bg-primary hover:text-background border border-white/10 text-[9px] font-bold uppercase tracking-widest transition-all">
+        <button className="px-8 h-10 rounded-xl bg-foreground/[0.03] hover:bg-primary hover:text-background border border-white/10 text-[10px] font-bold uppercase tracking-widest transition-all">
           {actionText}
         </button>
       </Link>

@@ -30,30 +30,30 @@ import LocationSearch from '@/components/LocationSearch';
 import { cn } from '@/lib/utils';
 import { AVAILABLE_TIMES } from '@/lib/constants';
 
-const STEPS = ['Cancha', 'Cuándo', 'Detalles', 'Cobro', 'Confirmar'];
+const STEPS = ['Cancha', 'CuÃ¡ndo', 'Detalles', 'Cobro', 'Confirmar'];
 
 const FORMAT_DATA = {
   F5: {
-    label: 'Fútbol 5',
+    label: 'FÃºtbol 5',
     players: '5 vs 5',
-    emoji: '⚽',
-    desc: 'Velocidad y precisión',
+    emoji: 'âš½',
+    desc: 'Velocidad y precisiÃ³n',
     color: 'from-emerald-500 to-teal-400',
     glow: 'shadow-emerald-500/30',
   },
   F7: {
-    label: 'Fútbol 7',
+    label: 'FÃºtbol 7',
     players: '7 vs 7',
-    emoji: '🏟️',
-    desc: 'Equilibrio y táctica',
+    emoji: 'ðŸŸï¸',
+    desc: 'Equilibrio y tÃ¡ctica',
     color: 'from-violet-500 to-purple-400',
     glow: 'shadow-violet-500/30',
   },
   F11: {
-    label: 'Fútbol 11',
+    label: 'FÃºtbol 11',
     players: '11 vs 11',
-    emoji: '🏆',
-    desc: 'El clásico completo',
+    emoji: 'ðŸ†',
+    desc: 'El clÃ¡sico completo',
     color: 'from-amber-500 to-orange-400',
     glow: 'shadow-amber-500/30',
   },
@@ -152,7 +152,7 @@ function StepIndicator({ current, total }: { current: number; total: number }) {
                 <CheckCircle2 className="w-3 h-3 sm:w-4 sm:h-4 text-black" />
               ) : (
                 <span
-                  className={`text-[9px] sm:text-[10px] font-black ${i === current ? 'text-black' : 'text-foreground/20'}`}
+                  className={`text-[10px] sm:text-[10px] font-black ${i === current ? 'text-black' : 'text-foreground/20'}`}
                 >
                   {i + 1}
                 </span>
@@ -160,12 +160,12 @@ function StepIndicator({ current, total }: { current: number; total: number }) {
             </motion.div>
             <div className="flex flex-col items-center lg:items-start">
               <span
-                className={`text-[7px] sm:text-[8px] lg:text-[11px] font-black uppercase tracking-[0.2em] lg:tracking-[0.3em] transition-colors ${i === current ? 'text-primary' : i < current ? 'text-primary/60' : 'text-foreground/20'}`}
+                className={`text-[10px] sm:text-[10px] lg:text-[11px] font-black uppercase tracking-[0.2em] lg:tracking-[0.3em] transition-colors ${i === current ? 'text-primary' : i < current ? 'text-primary/60' : 'text-foreground/20'}`}
               >
                 {label}
               </span>
-              <span className="hidden lg:block text-[9px] font-bold text-foreground/20 uppercase tracking-widest mt-0.5">
-                {i === 0 ? "Selección de sede" : i === 1 ? "Fecha y hora" : i === 2 ? "Formato y modo" : i === 3 ? "Precio y privacidad" : "Revisión final"}
+              <span className="hidden lg:block text-[10px] font-bold text-foreground/20 uppercase tracking-widest mt-0.5">
+                {i === 0 ? "SelecciÃ³n de sede" : i === 1 ? "Fecha y hora" : i === 2 ? "Formato y modo" : i === 3 ? "Precio y privacidad" : "RevisiÃ³n final"}
               </span>
             </div>
           </div>
@@ -255,7 +255,7 @@ export default function CreateMatchPage() {
         const booked = Array.from(bookedSet);
         setBookedTimes(booked);
         
-        // Si el horario actual está ocupado, deseleccionarlo
+        // Si el horario actual estÃ¡ ocupado, deseleccionarlo
         if (booked.includes(formData.time)) {
            setFormData(prev => ({ ...prev, time: '' }));
         }
@@ -368,7 +368,7 @@ export default function CreateMatchPage() {
       queryClient.invalidateQueries({ queryKey: queryKeys.home.all });
       queryClient.invalidateQueries({ queryKey: queryKeys.userMatches.all });
 
-      // Si es un establecimiento registrado y elige Mercado Pago, redirigir a pagar la seña
+      // Si es un establecimiento registrado y elige Mercado Pago, redirigir a pagar la seÃ±a
       if (formData.business_id && formData.field_id && formData.payment_method === 'mercado_pago') {
          const { data: booking } = await supabase
            .from('canchas_bookings')
@@ -452,7 +452,7 @@ export default function CreateMatchPage() {
 
   return (
     <div className="min-h-screen bg-background relative overflow-hidden">
-      {/* ── AMBIENT LAYERS (Optimized for Mobile) ── */}
+      {/* â”€â”€ AMBIENT LAYERS (Optimized for Mobile) â”€â”€ */}
       <div className="pointer-events-none fixed inset-0 overflow-hidden">
         <motion.div
           animate={{ 
@@ -493,7 +493,7 @@ export default function CreateMatchPage() {
 
       <div className="relative z-10 max-w-4xl lg:max-w-7xl mx-auto p-4 pt-6 pb-28 min-h-screen">
         <div className="flex flex-col lg:flex-row lg:items-start lg:gap-16">
-          {/* ── HEADER COLUMN ── */}
+          {/* â”€â”€ HEADER COLUMN â”€â”€ */}
           <motion.div
             initial={{ opacity: 0, y: -16 }}
             animate={{ opacity: 1, y: 0 }}
@@ -503,7 +503,7 @@ export default function CreateMatchPage() {
               <div className="flex items-center gap-2">
                 <div className="w-1.5 h-1.5 rounded-full bg-primary hidden sm:block animate-pulse" />
                 <div className="w-1.5 h-1.5 rounded-full bg-primary sm:hidden" />
-                <span className="text-[9px] font-black uppercase tracking-[0.6em] text-primary">
+                <span className="text-[10px] font-black uppercase tracking-[0.6em] text-primary">
                   Crear Partido
                 </span>
               </div>
@@ -511,7 +511,7 @@ export default function CreateMatchPage() {
 
             <div>
               <h1 className="text-[clamp(2.5rem,8vw,5rem)] lg:text-7xl font-black italic uppercase leading-none tracking-tighter text-foreground">
-                Armá el
+                ArmÃ¡ el
               </h1>
               <h1 className="text-[clamp(2.5rem,8vw,5rem)] lg:text-7xl font-black italic uppercase leading-none tracking-tighter">
                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary via-emerald-400 to-teal-300">
@@ -522,17 +522,17 @@ export default function CreateMatchPage() {
 
             <div className="hidden lg:block">
               <p className="text-sm font-bold text-foreground/40 uppercase tracking-widest leading-relaxed">
-                Seguí los pasos para configurar tu próximo encuentro y empezá a convocar.
+                SeguÃ­ los pasos para configurar tu prÃ³ximo encuentro y empezÃ¡ a convocar.
               </p>
             </div>
 
             <StepIndicator current={step} total={STEPS.length} />
           </motion.div>
 
-          {/* ── CONTENT COLUMN ── */}
+          {/* â”€â”€ CONTENT COLUMN â”€â”€ */}
           <div className="flex-1 w-full lg:max-w-3xl">
           <AnimatePresence mode="wait">
-            {/* ── STEP 0: CANCHA ── */}
+            {/* â”€â”€ STEP 0: CANCHA â”€â”€ */}
             {step === 0 && (
               <motion.div
                 key="step-0"
@@ -544,10 +544,10 @@ export default function CreateMatchPage() {
               >
                 <div className="space-y-2">
                   <h2 className="text-2xl font-black italic uppercase tracking-tighter text-foreground">
-                    ¿Dónde se juega?
+                    Â¿DÃ³nde se juega?
                   </h2>
                   <p className="text-[11px] text-foreground/40 font-bold uppercase tracking-widest">
-                    Elegí la cancha o escribí una dirección
+                    ElegÃ­ la cancha o escribÃ­ una direcciÃ³n
                   </p>
                 </div>
 
@@ -577,7 +577,7 @@ export default function CreateMatchPage() {
                             <div className={`w-10 h-10 rounded-2xl flex items-center justify-center transition-all duration-500 ${isSelected ? 'bg-primary text-black' : 'bg-foreground/[0.04] text-foreground/20'}`}>
                               <MapPin className="w-5 h-5" />
                             </div>
-                            <span className="bg-primary/20 text-primary text-[9px] font-bold px-2 py-0.5 rounded-full uppercase">Socio</span>
+                            <span className="bg-primary/20 text-primary text-[10px] font-bold px-2 py-0.5 rounded-full uppercase">Socio</span>
                           </div>
                           <div>
                             <span className={`text-base font-black italic uppercase tracking-tight block transition-colors ${isSelected ? 'text-foreground' : 'text-foreground/40'}`}>
@@ -638,21 +638,21 @@ export default function CreateMatchPage() {
                 >
                   <div className="flex items-center gap-3 mb-3 px-1">
                     <div className="h-px flex-1 bg-foreground/5" />
-                    <span className="text-[9px] font-black text-foreground/20 uppercase tracking-[0.5em]">
-                      O buscá otra
+                    <span className="text-[10px] font-black text-foreground/20 uppercase tracking-[0.5em]">
+                      O buscÃ¡ otra
                     </span>
                     <div className="h-px flex-1 bg-foreground/5" />
                   </div>
                   <LocationSearch
                     value={formData.location}
                     onChange={handleLocationSelect}
-                    placeholder="Buscá otra cancha o dirección..."
+                    placeholder="BuscÃ¡ otra cancha o direcciÃ³n..."
                   />
                 </motion.div>
               </motion.div>
             )}
 
-            {/* ── STEP 1: CUÁNDO ── */}
+            {/* â”€â”€ STEP 1: CUÃNDO â”€â”€ */}
             {step === 1 && (
               <motion.div
                 key="step-1"
@@ -664,10 +664,10 @@ export default function CreateMatchPage() {
               >
                 <div className="space-y-2">
                   <h2 className="text-2xl font-black italic uppercase tracking-tighter text-foreground">
-                    ¿Cuándo se juega?
+                    Â¿CuÃ¡ndo se juega?
                   </h2>
                   <p className="text-[11px] text-foreground/40 font-bold uppercase tracking-widest">
-                    Elegí fecha y horario
+                    ElegÃ­ fecha y horario
                   </p>
                 </div>
 
@@ -710,7 +710,7 @@ export default function CreateMatchPage() {
                             <div className="absolute top-2 right-2 w-1.5 h-1.5 rounded-full bg-primary/60" />
                           )}
                           <span
-                            className={`text-[8px] font-black tracking-widest ${isSelected ? 'text-black/70' : 'text-foreground/25'}`}
+                            className={`text-[10px] font-black tracking-widest ${isSelected ? 'text-black/70' : 'text-foreground/25'}`}
                           >
                             {monthName}
                           </span>
@@ -720,7 +720,7 @@ export default function CreateMatchPage() {
                             {dayNumber}
                           </span>
                           <span
-                            className={`text-[8px] font-black tracking-widest ${isSelected ? 'text-black/70' : 'text-foreground/25'}`}
+                            className={`text-[10px] font-black tracking-widest ${isSelected ? 'text-black/70' : 'text-foreground/25'}`}
                           >
                             {dayName}
                           </span>
@@ -747,7 +747,7 @@ export default function CreateMatchPage() {
                         }`}
                       >
                         <Calendar className="w-5 h-5" />
-                        <span className="text-[8px] font-black tracking-widest uppercase">
+                        <span className="text-[10px] font-black tracking-widest uppercase">
                           Otro
                         </span>
                       </div>
@@ -761,8 +761,8 @@ export default function CreateMatchPage() {
                     <span className="text-[10px] font-black text-foreground/30 uppercase tracking-[0.4em]">
                       Agenda de Horarios
                     </span>
-                    <span className="text-[9px] font-bold text-foreground/20 italic">
-                      Deslizá para ver más
+                    <span className="text-[10px] font-bold text-foreground/20 italic">
+                      DeslizÃ¡ para ver mÃ¡s
                     </span>
                   </div>
                   
@@ -841,7 +841,7 @@ export default function CreateMatchPage() {
               </motion.div>
             )}
 
-                {/* ── STEP 2: DETALLES ── */}
+                {/* â”€â”€ STEP 2: DETALLES â”€â”€ */}
                 {step === 2 && (
               <motion.div
                 key="step-2"
@@ -918,14 +918,14 @@ export default function CreateMatchPage() {
                               {data.label}
                             </span>
                             <span
-                              className={`block text-[9px] font-bold uppercase tracking-widest transition-colors ${
+                              className={`block text-[10px] font-bold uppercase tracking-widest transition-colors ${
                                 isSelected ? 'text-primary' : 'text-foreground/20'
                               }`}
                             >
                               {data.players}
                             </span>
                             <span
-                              className={`block text-[9px] tracking-wide transition-colors ${
+                              className={`block text-[10px] tracking-wide transition-colors ${
                                 isSelected ? 'text-foreground/50' : 'text-foreground/15'
                               }`}
                             >
@@ -992,7 +992,7 @@ export default function CreateMatchPage() {
                         <Zap className="w-5 h-5" />
                       </div>
                       <div>
-                        <span className={cn("block text-sm font-black italic uppercase tracking-tight", formData.is_recruitment ? "text-foreground" : "text-foreground/30")}>Búsqueda de Emergencia</span>
+                        <span className={cn("block text-sm font-black italic uppercase tracking-tight", formData.is_recruitment ? "text-foreground" : "text-foreground/30")}>BÃºsqueda de Emergencia</span>
                         <span className={cn("block text-[10px] font-bold tracking-wide mt-0.5", formData.is_recruitment ? "text-foreground/50" : "text-foreground/15")}>Solo busco algunos jugadores</span>
                       </div>
                     </button>
@@ -1010,7 +1010,7 @@ export default function CreateMatchPage() {
                     >
                       <div className="flex items-center justify-between px-1">
                         <span className="text-[10px] font-black text-amber-500 uppercase tracking-[0.4em]">
-                          ¿Cuántos te faltan?
+                          Â¿CuÃ¡ntos te faltan?
                         </span>
                         <span className="text-2xl font-black italic text-amber-500 font-kanit">
                           {formData.missing_players} {formData.missing_players === 1 ? 'JUGADOR' : 'JUGADORES'}
@@ -1024,7 +1024,7 @@ export default function CreateMatchPage() {
                         onChange={(e) => setFormData({ ...formData, missing_players: parseInt(e.target.value) })}
                         className="w-full h-2 bg-foreground/10 rounded-lg appearance-none cursor-pointer accent-amber-500"
                       />
-                      <p className="text-[9px] font-medium text-foreground/30 italic">
+                      <p className="text-[10px] font-medium text-foreground/30 italic">
                         * Los otros {formData.type === 'F5' ? 10 - formData.missing_players : formData.type === 'F7' ? 14 - formData.missing_players : 22 - formData.missing_players} jugadores se consideran ya confirmados fuera de la plataforma.
                       </p>
                     </motion.div>
@@ -1033,7 +1033,7 @@ export default function CreateMatchPage() {
               </motion.div>
             )}
 
-            {/* ── STEP 3: COBRO ── */}
+            {/* â”€â”€ STEP 3: COBRO â”€â”€ */}
             {step === 3 && (
               <motion.div
                 key="step-3"
@@ -1045,10 +1045,10 @@ export default function CreateMatchPage() {
               >
                 <div className="space-y-2">
                   <h2 className="text-2xl font-black italic uppercase tracking-tighter text-foreground">
-                    Configuración de Cobro
+                    ConfiguraciÃ³n de Cobro
                   </h2>
                   <p className="text-[11px] text-foreground/40 font-bold uppercase tracking-widest">
-                    Precio, privacidad y método de pago
+                    Precio, privacidad y mÃ©todo de pago
                   </p>
                 </div>
 
@@ -1062,7 +1062,7 @@ export default function CreateMatchPage() {
                     <input
                       type="number"
                       min="0"
-                      placeholder="0 · Partido libre"
+                      placeholder="0 Â· Partido libre"
                       value={formData.price || ''}
                       onChange={(e) => {
                         setPriceManuallyEdited(true);
@@ -1086,7 +1086,7 @@ export default function CreateMatchPage() {
                       >
                         <div className="flex items-center justify-between">
                           <span className="text-[10px] font-bold text-foreground/40 uppercase tracking-widest">
-                            Vos recibís
+                            Vos recibÃ­s
                           </span>
                           <span className="text-xs font-black text-emerald-500">
                             ${formData.price.toLocaleString('es-AR')}
@@ -1126,7 +1126,7 @@ export default function CreateMatchPage() {
                     {[
                       {
                         value: false,
-                        label: 'Público',
+                        label: 'PÃºblico',
                         desc: 'Cualquiera puede unirse',
                         icon: <Globe className="w-5 h-5" />,
                         color: 'primary',
@@ -1134,7 +1134,7 @@ export default function CreateMatchPage() {
                       {
                         value: true,
                         label: 'Privado',
-                        desc: 'Solo con invitación',
+                        desc: 'Solo con invitaciÃ³n',
                         icon: <Lock className="w-5 h-5" />,
                         color: 'accent',
                       },
@@ -1194,7 +1194,7 @@ export default function CreateMatchPage() {
                 {/* Payment Method Selection */}
                 <div className="space-y-4">
                   <span className="text-[10px] font-black text-foreground/30 uppercase tracking-[0.4em] px-1">
-                    Método de Pago para Reserva
+                    MÃ©todo de Pago para Reserva
                   </span>
                   <div className="grid grid-cols-2 gap-4">
                     <button
@@ -1237,21 +1237,21 @@ export default function CreateMatchPage() {
                       </div>
                       <div>
                         <span className={cn("block text-sm font-black italic uppercase tracking-tight", formData.payment_method === 'cash' ? "text-foreground" : "text-foreground/30")}>En Efectivo</span>
-                        <span className={cn("block text-[10px] font-bold tracking-wide mt-0.5", formData.payment_method === 'cash' ? "text-foreground/50" : "text-foreground/15")}>Pagás en el complejo</span>
+                        <span className={cn("block text-[10px] font-bold tracking-wide mt-0.5", formData.payment_method === 'cash' ? "text-foreground/50" : "text-foreground/15")}>PagÃ¡s en el complejo</span>
                       </div>
                     </button>
                   </div>
                 </div>
                 <p className="text-[10px] font-bold text-primary/80 uppercase tracking-widest px-1 bg-primary/5 py-2 rounded-lg border border-primary/10 mt-2">
-                  💡 En Pelotify, el organizador NO paga el total. Cada jugador abona SU PARTE individualmente al sumarse al partido.
+                  ðŸ’¡ En Pelotify, el organizador NO paga el total. Cada jugador abona SU PARTE individualmente al sumarse al partido.
                 </p>
-                <p className="text-[9px] font-medium text-foreground/30 px-1 mt-2">
-                  * Si seleccionas pago online, recuerda que Pelotify no se hace responsable por reembolsos fuera de los términos del complejo.
+                <p className="text-[10px] font-medium text-foreground/30 px-1 mt-2">
+                  * Si seleccionas pago online, recuerda que Pelotify no se hace responsable por reembolsos fuera de los tÃ©rminos del complejo.
                 </p>
               </motion.div>
             )}
 
-            {/* ── STEP 4: CONFIRMAR ── */}
+            {/* â”€â”€ STEP 4: CONFIRMAR â”€â”€ */}
             {step === 4 && (
               <motion.div
                 key="step-3"
@@ -1266,7 +1266,7 @@ export default function CreateMatchPage() {
                     Resumen del Partido
                   </h2>
                   <p className="text-[11px] text-foreground/40 font-bold uppercase tracking-widest">
-                    Revisá los detalles antes de confirmar
+                    RevisÃ¡ los detalles antes de confirmar
                   </p>
                 </div>
 
@@ -1297,17 +1297,17 @@ export default function CreateMatchPage() {
                       {
                         icon: <MapPin className="w-4 h-4" />,
                         label: 'Cancha',
-                        value: formData.location || '—',
+                        value: formData.location || 'â€”',
                       },
                       {
                         icon: <Calendar className="w-4 h-4" />,
                         label: 'Fecha',
-                        value: getSelectedDateLabel() || '—',
+                        value: getSelectedDateLabel() || 'â€”',
                       },
                       {
                         icon: <Clock className="w-4 h-4" />,
                         label: 'Horario',
-                        value: getTimeLabel() || '—',
+                        value: getTimeLabel() || 'â€”',
                       },
                       {
                         icon: <Users className="w-4 h-4" />,
@@ -1329,7 +1329,7 @@ export default function CreateMatchPage() {
                           <Globe className="w-4 h-4" />
                         ),
                         label: 'Privacidad',
-                        value: formData.is_private ? 'Solo invitados' : 'Público',
+                        value: formData.is_private ? 'Solo invitados' : 'PÃºblico',
                       },
                       {
                         icon: <DollarSign className="w-4 h-4" />,
@@ -1338,7 +1338,7 @@ export default function CreateMatchPage() {
                       },
                       ...(formData.business_id && formData.payment_method === 'mercado_pago' ? [{
                         icon: <Zap className="w-4 h-4 text-primary" />,
-                        label: 'Seña a pagar ahora',
+                        label: 'SeÃ±a a pagar ahora',
                         value: `$${Math.round((formData.price * (formData.type === 'F5' ? 10 : formData.type === 'F7' ? 14 : 22)) * (dbFields.find(f => f.id === formData.field_id)?.down_payment_percentage || 30) / 100).toLocaleString('es-AR')} ARS`
                       }] : []),
                     ].map(({ icon, label, value }) => (
@@ -1347,7 +1347,7 @@ export default function CreateMatchPage() {
                           {icon}
                         </div>
                         <div>
-                          <span className="text-[9px] font-black text-foreground/25 uppercase tracking-widest block">
+                          <span className="text-[10px] font-black text-foreground/25 uppercase tracking-widest block">
                             {label}
                           </span>
                           <span className="text-sm font-black italic text-foreground tracking-tight leading-tight line-clamp-2">
@@ -1364,7 +1364,7 @@ export default function CreateMatchPage() {
                       <Zap className="w-4 h-4 text-foreground/20" />
                     </div>
                     <p className="text-[10px] text-foreground/30 font-bold uppercase tracking-wider leading-relaxed flex-1">
-                      Serás el organizador con control total sobre los jugadores
+                      SerÃ¡s el organizador con control total sobre los jugadores
                     </p>
                   </div>
                 </motion.div>
@@ -1372,7 +1372,7 @@ export default function CreateMatchPage() {
             )}
           </AnimatePresence>
 
-        {/* ── NAVIGATION ── */}
+        {/* â”€â”€ NAVIGATION â”€â”€ */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -1427,7 +1427,7 @@ export default function CreateMatchPage() {
               ) : (
                 <>
                   <Zap className="w-5 h-5" />
-                  ¡Crear Partido!
+                  Â¡Crear Partido!
                 </>
               )}
             </motion.button>

@@ -131,7 +131,7 @@ export function NotificationCenter({ isOpen, onClose }: NotificationCenterProps)
       await respondToChallenge(challengeId, accept ? 'accepted' : 'declined');
       setTeamChallenges((prev) => prev.filter((c) => c.id !== challengeId));
       if (accept) {
-        alert('¡Desafío aceptado! El partido ha sido creado y los jugadores notificados.');
+        alert('Ã‚Â¡DesafÃƒÂ­o aceptado! El partido ha sido creado y los jugadores notificados.');
       }
     } catch (err: any) {
       console.error(err);
@@ -187,7 +187,7 @@ export function NotificationCenter({ isOpen, onClose }: NotificationCenterProps)
             initial={{ opacity: 0, y: -20, scale: 0.95 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: -20, scale: 0.95 }}
-            className="fixed top-28 right-4 left-4 lg:left-auto lg:right-6 lg:top-24 lg:w-[400px] z-[101] glass-premium rounded-[2.5rem] overflow-hidden shadow-[0_25px_80px_rgba(0,0,0,0.6)] border border-white/5 bg-[#08080c]/95 backdrop-blur-3xl"
+            className="fixed top-28 right-4 left-4 lg:left-auto lg:right-6 lg:top-24 lg:w-[400px] z-[101] glass-premium rounded-[2rem] overflow-hidden shadow-[0_25px_80px_rgba(0,0,0,0.6)] border border-white/5 bg-[#08080c]/95 backdrop-blur-3xl"
           >
             <div className="p-6 border-b border-white/[0.04] flex items-center justify-between bg-white/[0.01]">
               <div className="flex items-center gap-3">
@@ -198,7 +198,7 @@ export function NotificationCenter({ isOpen, onClose }: NotificationCenterProps)
                   <h3 className="font-black text-foreground uppercase tracking-widest text-xs">
                     Centro de Operaciones
                   </h3>
-                  <span className="text-[9px] font-black text-foreground/30 uppercase tracking-[0.2em]">
+                  <span className="text-[10px] font-black text-foreground/30 uppercase tracking-[0.2em]">
                     Novedades y Reclutamiento
                   </span>
                 </div>
@@ -227,7 +227,7 @@ export function NotificationCenter({ isOpen, onClose }: NotificationCenterProps)
                   <div className="w-16 h-16 rounded-full bg-foreground/[0.03] flex items-center justify-center mb-2">
                     <Bell className="w-8 h-8 text-foreground/10" />
                   </div>
-                  <span className="text-sm font-bold text-foreground/40">Todo al día</span>
+                  <span className="text-sm font-bold text-foreground/40">Todo al dÃƒÂ­a</span>
                   <p className="text-xs text-foreground/30">
                     No tienes notificaciones pendientes por ahora.
                   </p>
@@ -279,10 +279,10 @@ export function NotificationCenter({ isOpen, onClose }: NotificationCenterProps)
                                 {req.profiles?.name || 'Jugador'}
                               </p>
                               <div className="flex items-center gap-1.5">
-                                <span className="text-[9px] text-foreground/30 font-black uppercase tracking-widest">
+                                <span className="text-[10px] text-foreground/30 font-black uppercase tracking-widest">
                                   Quiere unirse a{' '}
                                 </span>
-                                <span className="text-[9px] text-primary font-black uppercase tracking-widest truncate max-w-[100px]">
+                                <span className="text-[10px] text-primary font-black uppercase tracking-widest truncate max-w-[100px]">
                                   {req.teams?.name}
                                 </span>
                               </div>
@@ -343,7 +343,7 @@ export function NotificationCenter({ isOpen, onClose }: NotificationCenterProps)
                             stiffness: 400,
                             damping: 30,
                           }}
-                          className="p-4 rounded-[2.5rem] bg-amber-500/[0.03] border border-amber-500/20 hover:bg-amber-500/[0.05] hover:border-amber-500/40 transition-all flex flex-col gap-4 group"
+                          className="p-4 rounded-[2rem] bg-amber-500/[0.03] border border-amber-500/20 hover:bg-amber-500/[0.05] hover:border-amber-500/40 transition-all flex flex-col gap-4 group"
                         >
                           <div className="flex items-center gap-4">
                             <div className="w-12 h-12 rounded-2xl bg-amber-500/10 flex items-center justify-center shrink-0 border border-amber-500/20 shadow-lg group-hover:rotate-6 transition-transform">
@@ -352,7 +352,7 @@ export function NotificationCenter({ isOpen, onClose }: NotificationCenterProps)
                             <div className="flex-1 min-w-0">
                               <div className="flex items-center gap-2 mb-1">
                                 <span className="text-[10px] text-amber-500 font-black uppercase tracking-widest italic animate-pulse">
-                                  ¡RETO EN CURSO!
+                                  Ã‚Â¡RETO EN CURSO!
                                 </span>
                               </div>
                               <p className="text-[14px] font-black text-foreground italic uppercase tracking-tight truncate leading-tight">
@@ -363,13 +363,13 @@ export function NotificationCenter({ isOpen, onClose }: NotificationCenterProps)
                                 {challenge.challenged_team?.name}
                               </p>
                               <div className="flex items-center gap-2 mt-1">
-                                <span className="text-[9px] text-foreground/40 font-black uppercase tracking-widest leading-none">
-                                  {challenge.match_date} · {challenge.match_time} HS
+                                <span className="text-[10px] text-foreground/40 font-black uppercase tracking-widest leading-none">
+                                  {challenge.match_date} Ã‚Â· {challenge.match_time} HS
                                 </span>
                                 {challenge.price > 0 && (
                                   <>
                                     <div className="w-1 h-1 rounded-full bg-foreground/10" />
-                                    <span className="text-[9px] text-primary/60 font-black uppercase tracking-widest leading-none">
+                                    <span className="text-[10px] text-primary/60 font-black uppercase tracking-widest leading-none">
                                       ${challenge.price} x Jug.
                                     </span>
                                   </>
@@ -382,11 +382,11 @@ export function NotificationCenter({ isOpen, onClose }: NotificationCenterProps)
                           {hasVenueOptions && (
                             <div className="space-y-3 bg-black/20 p-4 rounded-3xl border border-white/5 shadow-inner">
                               <div className="flex items-center justify-between px-1">
-                                <label className="text-[9px] font-black text-foreground/40 uppercase tracking-[0.2em] flex items-center gap-2">
+                                <label className="text-[10px] font-black text-foreground/40 uppercase tracking-[0.2em] flex items-center gap-2">
                                   <MapPin className="w-3 h-3 text-amber-500" /> Elegir Sede
-                                  (Votación)
+                                  (VotaciÃƒÂ³n)
                                 </label>
-                                <span className="text-[8px] font-black text-foreground/20 uppercase tracking-widest">
+                                <span className="text-[10px] font-black text-foreground/20 uppercase tracking-widest">
                                   {Object.keys(challenge.votes || {}).length} VOTOS
                                 </span>
                               </div>
@@ -412,7 +412,7 @@ export function NotificationCenter({ isOpen, onClose }: NotificationCenterProps)
                                       </span>
                                       <div className="flex items-center gap-2">
                                         {votes > 0 && (
-                                          <span className="text-[9px] font-black opacity-40">
+                                          <span className="text-[10px] font-black opacity-40">
                                             {votes}
                                           </span>
                                         )}
@@ -441,7 +441,7 @@ export function NotificationCenter({ isOpen, onClose }: NotificationCenterProps)
                                   <Loader2 className="w-4 h-4 animate-spin" />
                                 ) : (
                                   <>
-                                    <Check className="w-4 h-4" /> Aceptar Desafío
+                                    <Check className="w-4 h-4" /> Aceptar DesafÃƒÂ­o
                                   </>
                                 )}
                               </button>
@@ -495,8 +495,8 @@ export function NotificationCenter({ isOpen, onClose }: NotificationCenterProps)
                                 {inv.teams?.name || 'Equipo'}
                               </p>
                               <div className="flex items-center gap-1.5">
-                                <span className="text-[9px] text-accent font-black uppercase tracking-widest italic animate-pulse">
-                                  ¡Convocatoria Abierta!
+                                <span className="text-[10px] text-accent font-black uppercase tracking-widest italic animate-pulse">
+                                  Ã‚Â¡Convocatoria Abierta!
                                 </span>
                               </div>
                             </div>
@@ -562,7 +562,7 @@ export function NotificationCenter({ isOpen, onClose }: NotificationCenterProps)
                           </p>
                           <div className="flex items-center gap-1.5 mt-0.5">
                             <Users className="w-3 h-3 text-foreground/30" />
-                            <span className="text-[9px] text-foreground/30 font-black uppercase tracking-widest">
+                            <span className="text-[10px] text-foreground/30 font-black uppercase tracking-widest">
                               Solicitud de Alianza
                             </span>
                           </div>
