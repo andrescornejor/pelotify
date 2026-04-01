@@ -382,10 +382,40 @@ function MatchLobbyContent() {
                       <VenueMap location={match.location} />
                    </div>
                    <div className="p-12 flex items-center justify-between">
-                      <div>
-                        <h3 className="text-2xl font-black italic uppercase tracking-tighter text-foreground">{match.location}</h3>
-                        <p className="text-foreground/40 font-bold uppercase tracking-widest text-[10px] mt-1">Direcci\u00f3n del encuentro</p>
+                    <div>
+                      <h3 className="text-2xl font-black italic uppercase tracking-tighter text-foreground">{match.location}</h3>
+                      <p className="text-foreground/40 font-bold uppercase tracking-widest text-[10px] mt-1">Direcci\u00f3n del encuentro</p>
+                    </div>
+                    {venueInfo?.google_maps_link && (
+                      <a href={venueInfo.google_maps_link} target="_blank" rel="noopener noreferrer" className="w-16 h-16 rounded-[1.5rem] glass-premium flex items-center justify-center hover:text-primary transition-all hover:scale-110">
+                        <ExternalLink className="w-8 h-8" />
+                      </a>
+                    )}
+                 </div>
+               </div>
+            </div>
+
+            <div className="lg:col-span-4">
+               <div className="h-full p-12 rounded-[3.5rem] glass-premium border-white/5 space-y-12">
+                  <h4 className="text-xs font-black italic uppercase text-foreground/20 tracking-widest">Detalles R\u00e1pidos</h4>
+                  <div className="space-y-8">
+                    {[
+                      { icon: Users, label: 'Cupos Disponibles', value: `${(teamSize * 2) - participants.length} Lugares`, color: 'text-primary' },
+                      { icon: Shield, label: 'Tipo de Partido', value: match.type || 'F5', color: 'text-blue-400' },
+                      { icon: DollarSign, label: 'Pago', value: match.payment_method === 'mercado_pago' ? 'Digital' : 'En cancha', color: 'text-emerald-400' },
+                    ].map((item, i) => (
+                      <div key={i} className="flex items-center gap-6">
+                        <div className={cn("w-14 h-14 rounded-2xl bg-foreground/5 flex items-center justify-center", item.color)}>
+                          <item.icon className="w-7 h-7" />
+                        </div>
+                        <div>
+                          <div className="text-[10px] font-black text-foreground/20 uppercase tracking-widest">{item.label}</div>
+                          <div className="text-lg font-black italic uppercase text-foreground">{item.value}</div>
+                        </div>
                       </div>
+                    ))}
+                  </div>
+               </div>
             </div>
           </div>
         </div>
