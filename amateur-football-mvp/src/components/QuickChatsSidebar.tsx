@@ -5,7 +5,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { getRecentChats, subscribeToDirectMessages } from '@/lib/chat';
 import { motion, AnimatePresence } from 'framer-motion';
 import { MessageSquare, User, ChevronRight, X, Clock, Shield } from 'lucide-react';
-import { cn } from '@/lib/utils';
+import { cn, safeFormatTime } from '@/lib/utils';
 import ChatModal from './ChatModal';
 
 export function QuickChatsSidebar() {
@@ -112,7 +112,7 @@ export function QuickChatsSidebar() {
                           {chat.name}
                         </p>
                         <span className="text-[7px] font-black text-foreground/20 uppercase">
-                          {new Date(chat.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                          {safeFormatTime(chat.timestamp)}
                         </span>
                       </div>
                       <p className="text-[10px] text-foreground/40 font-medium truncate italic leading-none">

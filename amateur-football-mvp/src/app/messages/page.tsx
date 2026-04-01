@@ -20,7 +20,7 @@ import {
   Plus,
 } from 'lucide-react';
 import ChatRoom from '@/components/ChatRoom';
-import { cn } from '@/lib/utils';
+import { cn, safeFormatTime } from '@/lib/utils';
 import { useSearchParams } from 'next/navigation';
 
 // Memoized variant objects to prevent unnecessary re-renders
@@ -106,10 +106,7 @@ const ConversationItem = memo(
                 isSelected ? 'text-black' : 'text-foreground'
               )}
             >
-              {new Date(chat.timestamp).toLocaleTimeString([], {
-                hour: '2-digit',
-                minute: '2-digit',
-              })}
+              {safeFormatTime(chat.timestamp)}
             </span>
           </div>
         </div>

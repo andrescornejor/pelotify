@@ -13,7 +13,7 @@ import {
   markDirectMessagesAsRead,
 } from '@/lib/chat';
 import { Send, User as UserIcon, Loader2, ChevronRight, Clock } from 'lucide-react';
-import { cn } from '@/lib/utils';
+import { cn, safeFormatTime } from '@/lib/utils';
 import { motion, AnimatePresence } from 'framer-motion';
 
 interface ChatRoomProps {
@@ -96,10 +96,7 @@ const MessageItem = memo(
               )}
             >
               <Clock className="w-2.5 h-2.5" />
-              {new Date(msg.created_at).toLocaleTimeString([], {
-                hour: '2-digit',
-                minute: '2-digit',
-              })}
+              {safeFormatTime(msg.created_at)}
             </div>
           </motion.div>
         </div>

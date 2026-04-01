@@ -36,3 +36,20 @@ export function formatTime(timeStr: string) {
   if (parts.length < 2) return timeStr;
   return `${parts[0]}:${parts[1]}`;
 }
+
+/**
+ * Formatea una fecha de forma segura para evitar crashes en el cliente.
+ */
+export function safeFormatTime(dateInput: string | number | Date | null | undefined) {
+  if (!dateInput) return '--:--';
+  try {
+    const date = new Date(dateInput);
+    if (isNaN(date.getTime())) return '--:--';
+    return date.toLocaleTimeString([], {
+      hour: '2-digit',
+      minute: '2-digit',
+    });
+  } catch (e) {
+    return '--:--';
+  }
+}
