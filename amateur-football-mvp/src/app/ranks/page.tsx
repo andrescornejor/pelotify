@@ -244,8 +244,8 @@ export default function RanksPage() {
   return (
     <div className="min-h-screen bg-background pb-32">
       {/* Header */}
-      <header className="sticky top-0 z-50 glass-premium border-b border-foreground/5 py-6 px-4">
-        <div className="max-w-screen-xl mx-auto flex items-center gap-4">
+      <header className="sticky top-0 z-50 glass-premium border-b border-foreground/5 py-6 px-4 sm:px-6 lg:px-10 xl:px-14 2xl:px-16">
+        <div className="max-w-screen-2xl mx-auto flex items-center gap-4">
           <Link href="/">
             <button className="w-10 h-10 rounded-xl bg-foreground/5 border border-foreground/10 flex items-center justify-center hover:bg-foreground/10 transition-all">
               <ArrowLeft className="w-5 h-5 text-foreground/70" />
@@ -262,7 +262,7 @@ export default function RanksPage() {
         </div>
       </header>
 
-      <main className="max-w-screen-xl mx-auto px-4 py-12 space-y-24">
+      <main className="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-10 xl:px-14 2xl:px-16 py-12 space-y-24">
         {/* Intro Section */}
         <section className="text-center space-y-6 max-w-2xl mx-auto">
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-2xl bg-primary/10 border border-primary/20">

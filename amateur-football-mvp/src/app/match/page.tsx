@@ -422,7 +422,7 @@ function MatchLobbyContent() {
             <ArrowLeft className="w-6 h-6" />
           </Link>
 
-          <div className="relative z-10 max-w-[1700px] mx-auto px-4 h-full flex flex-col justify-end pb-16">
+          <div className="relative z-10 max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-10 xl:px-14 2xl:px-16 h-full flex flex-col justify-end pb-16">
 
             <div className="space-y-6 max-w-2xl">
               <div className="flex items-center gap-3">
@@ -455,7 +455,7 @@ function MatchLobbyContent() {
           </div>
         </div>
 
-        <div className="max-w-[1700px] mx-auto px-4 -mt-12 relative z-20">
+        <div className="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-10 xl:px-14 2xl:px-16 -mt-12 relative z-20">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
             <div className="lg:col-span-8 space-y-12">
                {/* Call to Action Card */}
@@ -581,7 +581,7 @@ function MatchLobbyContent() {
           <ArrowLeft className="w-6 h-6" />
         </Link>
 
-        <div className="relative z-10 max-w-[1700px] mx-auto px-4 h-full flex flex-col justify-end pb-16">
+        <div className="relative z-10 max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-10 xl:px-14 2xl:px-16 h-full flex flex-col justify-end pb-16">
 
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-8">
             <div className="space-y-4">
@@ -624,7 +624,7 @@ function MatchLobbyContent() {
         </div>
       </div>
 
-      <div className="max-w-[1700px] mx-auto px-4 mt-8 relative z-20">
+      <div className="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-10 xl:px-14 2xl:px-16 mt-8 relative z-20">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
           {/* ── LEFT: PITCH & TEAMS ── */}
           <div className="lg:col-span-8 space-y-8">

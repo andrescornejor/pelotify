@@ -79,7 +79,7 @@ export default function SearchPage() {
   return (
     <div
       className={cn(
-        'flex flex-col gap-8 p-4 lg:p-10 lg:pt-4 max-w-screen-2xl mx-auto h-full bg-background relative overflow-hidden min-h-screen snap-y snap-proximity overflow-y-auto',
+        'flex flex-col gap-8 p-4 sm:p-6 lg:px-10 lg:pt-4 xl:px-14 2xl:px-16 max-w-screen-2xl mx-auto h-full bg-background relative overflow-hidden min-h-screen snap-y snap-proximity overflow-y-auto',
         isPerfMode && 'perf-mode'
       )}
     >

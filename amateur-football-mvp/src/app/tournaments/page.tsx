@@ -64,7 +64,7 @@ export default function TournamentsPage() {
 
   return (
     <div className={cn(
-      "min-h-screen bg-background relative overflow-hidden p-4 lg:p-10 pb-32",
+      "min-h-screen bg-background relative overflow-hidden p-4 sm:p-6 lg:px-10 lg:pt-4 xl:px-14 2xl:px-16 pb-32",
       isPerfMode && "perf-mode"
     )}>
       {/* ── AMBIENT DECORATION ── */}

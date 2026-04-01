@@ -118,7 +118,7 @@ export default function TeamBuilderPage() {
   );
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-[100dvh] p-4 lg:p-8 relative overflow-hidden bg-background">
+    <div className="flex flex-col items-center justify-center min-h-[100dvh] p-4 sm:p-6 lg:px-10 lg:pt-4 xl:px-14 2xl:px-16 relative overflow-hidden bg-background">
       {/* Ambient Colors based on selected colors */}
       <div
         className="absolute inset-0 z-0 transition-colors duration-1000"
