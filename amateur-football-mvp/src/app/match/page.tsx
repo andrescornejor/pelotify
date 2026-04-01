@@ -105,6 +105,94 @@ const TEAM_CONFIG = {
   },
 } as const;
 
+function CapacityVisual({ current, total, className }: { current: number; total: number; className?: string }) {
+  const percentage = Math.min((current / total) * 100, 100);
+  const isFull = current >= total;
+  const remaining = total - current;
+
+  return (
+    <div className={cn("space-y-6 w-full", className)}>
+      <div className="flex items-end justify-between px-1">
+        <div className="flex flex-col">
+          <span className="text-[10px] font-black text-foreground/30 uppercase tracking-[0.2em] mb-1.5">Ocupación del Encuentro</span>
+          <div className="flex items-baseline gap-2">
+            <motion.span 
+              key={current}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="text-5xl md:text-7xl font-black italic text-foreground leading-[0.8] tracking-tighter"
+            >
+              {current}
+            </motion.span>
+            <span className="text-xl md:text-2xl font-black italic text-foreground/10 uppercase">/ {total}</span>
+          </div>
+        </div>
+        <div className="text-right pb-1">
+          <div className={cn(
+            "text-xl md:text-3xl font-black italic leading-none tracking-tighter uppercase",
+            isFull ? "text-rose-500" : "text-primary text-glow-primary"
+          )}>
+            {isFull ? 'Agotado' : `${remaining} Libre${remaining !== 1 ? 's' : ''}`}
+          </div>
+          <div className="text-[10px] font-black text-foreground/20 uppercase tracking-widest mt-1">Garantizá tu lugar</div>
+        </div>
+      </div>
+
+      <div className="relative group/progress">
+        <div className="h-4 md:h-6 w-full bg-foreground/[0.03] rounded-full overflow-hidden border border-white/5 relative perspective-1000">
+          <motion.div
+            initial={{ width: 0 }}
+            animate={{ width: `${percentage}%` }}
+            transition={{ duration: 1.5, ease: [0.16, 1, 0.3, 1] }}
+            className={cn(
+              "h-full relative rounded-full shadow-[0_0_20px_rgba(var(--primary-rgb),0.3)]",
+              isFull ? "bg-rose-500 shadow-rose-500/20" : "bg-primary"
+            )}
+          >
+            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent animate-shimmer" />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
+          </motion.div>
+          
+          <div className="absolute inset-0 flex justify-between px-1 pointer-events-none">
+            {Array.from({ length: total - 1 }).map((_, i) => (
+              <div key={i} className="h-full w-px bg-black/10" />
+            ))}
+          </div>
+        </div>
+        
+        <div 
+          className="absolute inset-0 blur-3xl opacity-10 pointer-events-none transition-opacity duration-500 group-hover/progress:opacity-30"
+          style={{ 
+            background: `linear-gradient(90deg, ${isFull ? '#f43f5e' : 'var(--primary)'} ${percentage}%, transparent ${percentage}%)` 
+          }}
+        />
+      </div>
+
+      <div className="flex flex-wrap gap-1.5 md:gap-2 pt-2 px-1 justify-center md:justify-start">
+        {Array.from({ length: total }).map((_, i) => {
+          const isOccupied = i < current;
+          return (
+            <motion.div
+              key={i}
+              initial={{ scale: 0, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{ delay: i * 0.03, duration: 0.5 }}
+              className={cn(
+                "w-3 h-3 md:w-5 md:h-5 rounded-md border transition-all duration-500",
+                isOccupied 
+                  ? isFull 
+                    ? "bg-rose-500 border-rose-400 shadow-[0_4px_12px_rgba(244,63,94,0.3)]" 
+                    : "bg-primary border-primary shadow-[0_4px_12px_rgba(var(--primary-rgb),0.3)]"
+                  : "bg-foreground/5 border-white/5"
+              )}
+            />
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
 function MatchLobbyContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -341,7 +429,8 @@ function MatchLobbyContent() {
                 <span className="px-3 py-1 rounded-full bg-primary/10 border border-primary/20 text-primary text-[10px] font-black uppercase tracking-widest">
                   {match.type} • {match.is_private ? 'Privado' : 'Público'}
                 </span>
-                <span className="px-3 py-1 rounded-full bg-white/5 border border-white/10 text-foreground/40 text-[10px] font-black uppercase tracking-widest">
+                <span className="px-3 py-1 rounded-full bg-white/5 border border-white/10 text-foreground/40 text-[10px] font-black uppercase tracking-widest flex items-center gap-2">
+                  <span className={cn("w-1.5 h-1.5 rounded-full animate-pulse", participants.length >= teamSize * 2 ? "bg-rose-500" : "bg-primary")} />
                   {participants.length} / {teamSize * 2} Jugadores
                 </span>
               </div>
@@ -383,6 +472,8 @@ function MatchLobbyContent() {
                          Unite al partido para reservar tu lugar. El organizador te asignará a un equipo una vez que estés dentro.
                        </p>
                     </div>
+
+                    <CapacityVisual current={participants.length} total={teamSize * 2} />
 
                     <div className="grid grid-cols-2 gap-4">
                        <div className="p-6 rounded-3xl bg-foreground/5 space-y-1">
@@ -431,17 +522,32 @@ function MatchLobbyContent() {
                   <h4 className="text-xs font-black italic uppercase text-foreground/20 tracking-widest">Detalles Rápidos</h4>
                   <div className="space-y-6">
                     {[
-                      { icon: Users, label: 'Cupos Disponibles', value: `${(teamSize * 2) - participants.length} Lugares`, color: 'text-primary' },
-                      { icon: Shield, label: 'Tipo de Partido', value: match.type || 'F5', color: 'text-blue-400' },
-                      { icon: DollarSign, label: 'Pago', value: match.payment_method === 'mercado_pago' ? 'Digital' : 'En cancha', color: 'text-emerald-400' },
+                      { icon: Users, label: 'Ocupación', value: `${participants.length}/${teamSize * 2} Jugadores`, color: 'text-primary', percentage: (participants.length / (teamSize * 2)) * 100 },
+                      { icon: Shield, label: 'Formato de Juego', value: match.type || 'F5', color: 'text-indigo-400' },
+                      { icon: DollarSign, label: 'Método de Pago', value: match.payment_method === 'mercado_pago' ? 'Transferencia' : 'En cancha', color: 'text-emerald-400' },
                     ].map((item, i) => (
-                      <div key={i} className="flex items-center gap-4">
-                        <div className={cn("w-12 h-12 rounded-2xl bg-foreground/5 flex items-center justify-center", item.color)}>
-                          <item.icon className="w-6 h-6" />
+                      <div key={i} className="flex items-center gap-5">
+                        <div className="relative flex-shrink-0">
+                          <div className={cn("w-14 h-14 rounded-2xl bg-foreground/5 flex items-center justify-center transition-transform hover:scale-110", item.color)}>
+                            <item.icon className="w-7 h-7" />
+                          </div>
+                          {item.percentage !== undefined && (
+                            <svg className="absolute -inset-1 w-[calc(100%+8px)] h-[calc(100%+8px)] -rotate-90 pointer-events-none">
+                              <circle cx="32" cy="32" r="28" stroke="currentColor" strokeWidth="1.5" fill="transparent" className="text-white/5" />
+                              <motion.circle 
+                                cx="32" cy="32" r="28" stroke="currentColor" strokeWidth="2" fill="transparent" 
+                                strokeDasharray={176}
+                                initial={{ strokeDashoffset: 176 }}
+                                animate={{ strokeDashoffset: 176 - (item.percentage / 100) * 176 }}
+                                className={item.percentage >= 100 ? "text-rose-500" : "text-primary"}
+                                strokeLinecap="round"
+                              />
+                            </svg>
+                          )}
                         </div>
                         <div>
-                          <div className="text-[10px] font-black text-foreground/20 uppercase tracking-widest">{item.label}</div>
-                          <div className="font-black italic uppercase text-foreground">{item.value}</div>
+                          <div className="text-[10px] font-black text-foreground/20 uppercase tracking-[0.2em]">{item.label}</div>
+                          <div className="font-black italic uppercase text-foreground leading-tight mt-0.5">{item.value}</div>
                         </div>
                       </div>
                     ))}
@@ -536,7 +642,10 @@ function MatchLobbyContent() {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.1 * i }}
                   whileHover={{ y: -5 }}
-                  className="p-6 md:p-8 rounded-[2.5rem] glass-premium border-white/5 space-y-4 transition-all group/stat relative overflow-hidden"
+                  className={cn(
+                    "p-6 md:p-8 rounded-[2.5rem] glass-premium border-white/5 space-y-4 transition-all group/stat relative overflow-hidden",
+                    stat.label === 'Cupos' && "md:col-span-1 lg:col-span-1"
+                  )}
                 >
                   <div className="absolute inset-0 bg-gradient-to-br from-white/[0.02] to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
                   <div className="flex items-center justify-between relative z-10">
@@ -547,6 +656,18 @@ function MatchLobbyContent() {
                   </div>
                   <div className="relative z-10">
                     <div className="text-2xl font-black italic font-kanit uppercase tracking-tighter text-foreground group-hover/stat:text-primary transition-colors">{stat.value}</div>
+                    {stat.label === 'Cupos' && (
+                      <div className="mt-4 h-1.5 w-full bg-foreground/5 rounded-full overflow-hidden">
+                        <motion.div 
+                          initial={{ width: 0 }}
+                          animate={{ width: `${(participants.length / (teamSize * 2)) * 100}%` }}
+                          className={cn(
+                            "h-full rounded-full",
+                            participants.length >= teamSize * 2 ? "bg-rose-500" : "bg-primary shadow-[0_0_10px_rgba(var(--primary-rgb),0.5)]"
+                          )}
+                        />
+                      </div>
+                    )}
                   </div>
                 </motion.div>
               ))}
