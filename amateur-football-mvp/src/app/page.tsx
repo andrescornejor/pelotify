@@ -588,26 +588,6 @@ export default function HomePage() {
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
           <div className="lg:col-span-8 xl:col-span-8 space-y-6">
-            <motion.section
-              id="stat-cards"
-              initial="hidden"
-              animate="visible"
-              variants={{ visible: { transition: { staggerChildren: 0.08 } } }}
-              className="grid grid-cols-2 sm:grid-cols-4 gap-4 snap-start scroll-mt-26"
-            >
-              {statCardsData.map((stat, i) => (
-                <StatCard
-                  key={stat.label}
-                  stat={stat}
-                  i={i}
-                  performanceMode={performanceMode}
-                  fadeUp={fadeUp}
-                />
-              ))}
-            </motion.section>
-
-            <SectionDivider />
-
             {/* --- DASHBOARD TAB CONTROLLER --- */}
             <section className="sticky top-20 lg:top-4 z-40 bg-background/80 backdrop-blur-xl py-2 -mx-2 px-2 lg:bg-transparent lg:static lg:pb-6">
                <div className="max-w-fit mx-auto lg:mx-0 p-1.5 rounded-[2rem] glass-premium border-foreground/20 flex items-center gap-1 shadow-2xl relative overflow-hidden">
@@ -660,6 +640,26 @@ export default function HomePage() {
                      variants={tabContentVariants}
                      className="space-y-6"
                   >
+                     <motion.section
+                        id="stat-cards"
+                        initial="hidden"
+                        animate="visible"
+                        variants={{ visible: { transition: { staggerChildren: 0.08 } } }}
+                        className="grid grid-cols-2 sm:grid-cols-4 gap-4 snap-start scroll-mt-26"
+                     >
+                        {statCardsData.map((stat, i) => (
+                           <StatCard
+                              key={stat.label}
+                              stat={stat}
+                              i={i}
+                              performanceMode={performanceMode}
+                              fadeUp={fadeUp}
+                           />
+                        ))}
+                     </motion.section>
+
+                     <SectionDivider />
+
                      <motion.div
                         variants={fadeUp}
                         whileHover={performanceMode ? {} : { scale: 1.01 }}
