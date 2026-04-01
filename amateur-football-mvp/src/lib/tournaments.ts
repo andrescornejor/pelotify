@@ -12,6 +12,7 @@ export interface Tournament {
   type: 'F5' | 'F7' | 'F11';
   max_teams: number;
   entry_fee: number;
+  match_fee: number;
   status: 'upcoming' | 'ongoing' | 'completed' | 'cancelled';
   creator_id?: string;
   prize_percentage?: number;
@@ -89,4 +90,30 @@ export async function deleteTournament(id: string) {
     throw error;
   }
   return true;
+}
+
+export async function createTournamentMatches(tournamentId: string, matches: { team_a_id: string, team_b_id: string, round: number, match_number: number }[]) {
+  const { data: tournament, error: tErr } = await supabase.from('tournaments').select('*').eq('id', tournamentId).single();
+  if (tErr) throw tErr;
+
+  const matchPromises = matches.map(m => {
+    return supabase.from('matches').insert([{
+      name: `COPA: ${tournament.name} - R${m.round} M${m.match_number}`,
+      date: tournament.start_date,
+      time: tournament.time || '18:00',
+      location: tournament.location,
+      type: tournament.type,
+      price_per_player: tournament.match_fee,
+      creator_id: tournament.creator_id,
+      tournament_id: tournamentId,
+      tournament_round: m.round,
+      tournament_match_number: m.match_number,
+      status: 'open',
+      team_a_id: m.team_a_id,
+      team_b_id: m.team_b_id
+    }]).select().single();
+  });
+
+  const results = await Promise.all(matchPromises);
+  return results.map(r => r.data);
 }

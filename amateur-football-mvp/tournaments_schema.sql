@@ -14,10 +14,9 @@ CREATE TABLE IF NOT EXISTS public.tournaments (
     lat DOUBLE PRECISION,
     lng DOUBLE PRECISION,
     type TEXT CHECK (type IN ('F5', 'F7', 'F11')),
-    max_teams INTEGER DEFAULT 8,
-    entry_fee DECIMAL(10,2) DEFAULT 0,
-    prize_description TEXT,
     prize_percentage INTEGER DEFAULT 0,
+    entry_fee DECIMAL(10,2) DEFAULT 0,
+    match_fee DECIMAL(10,2) DEFAULT 0,
     status TEXT DEFAULT 'upcoming' CHECK (status IN ('upcoming', 'ongoing', 'completed', 'cancelled')),
     creator_id UUID REFERENCES public.profiles(id),
     field_id UUID REFERENCES public.canchas_fields(id) ON DELETE SET NULL,
@@ -40,8 +39,8 @@ BEGIN
     IF NOT EXISTS (SELECT 1 FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = 'tournaments' AND COLUMN_NAME = 'field_id') THEN
         ALTER TABLE public.tournaments ADD COLUMN field_id UUID REFERENCES public.canchas_fields(id) ON DELETE SET NULL;
     END IF;
-    IF NOT EXISTS (SELECT 1 FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = 'tournaments' AND COLUMN_NAME = 'business_id') THEN
-        ALTER TABLE public.tournaments ADD COLUMN business_id UUID REFERENCES public.canchas_businesses(id) ON DELETE SET NULL;
+    IF NOT EXISTS (SELECT 1 FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = 'tournaments' AND COLUMN_NAME = 'match_fee') THEN
+        ALTER TABLE public.tournaments ADD COLUMN match_fee DECIMAL(10,2) DEFAULT 0;
     END IF;
 END $$;
 
