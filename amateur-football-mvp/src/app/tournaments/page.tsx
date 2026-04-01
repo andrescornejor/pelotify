@@ -126,11 +126,6 @@ export default function TournamentsPage() {
           </div>
 
           <div className="flex items-center gap-4">
-             <div className="hidden lg:flex flex-col items-end">
-                <span className="text-[9px] font-black text-foreground/30 uppercase tracking-widest">Premios acumulados</span>
-                <span className="text-2xl font-black text-primary italic">$250.000+</span>
-             </div>
-             <div className="h-10 w-px bg-foreground/10 mx-2 hidden lg:block" />
              <button className="h-14 px-8 bg-foreground/5 text-foreground border border-foreground/10 rounded-2xl font-black text-[10px] uppercase tracking-widest hover:bg-primary hover:text-black transition-all flex items-center gap-3">
                 <Trophy className="w-4 h-4" />
                 SALÓN DE LA FAMA

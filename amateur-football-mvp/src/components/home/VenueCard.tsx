@@ -35,12 +35,6 @@ export const VenueCard = ({ venue, performanceMode }: VenueCardProps) => {
           
           {/* Status Badge */}
           <div className="absolute top-4 left-4 flex gap-2">
-            <div className="px-4 py-2 glass rounded-2xl border border-foreground/25 shadow-2xl backdrop-blur-md">
-              <div className="flex items-center gap-1.5">
-                <Star className="w-3.5 h-3.5 fill-accent text-accent" />
-                <span className="text-[12px] font-black text-white italic">4.9</span>
-              </div>
-            </div>
           </div>
 
           <div className="absolute top-4 right-4">
