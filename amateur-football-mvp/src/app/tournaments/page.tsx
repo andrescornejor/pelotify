@@ -1,6 +1,3 @@
-'use client';
-
-import { motion, AnimatePresence } from 'framer-motion';
 import {
   Trophy,
   Calendar,
@@ -13,31 +10,35 @@ import {
   Star,
   Target,
   Zap,
+  Trash2,
 } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { cn } from '@/lib/utils';
-import { getTournaments, type Tournament } from '@/lib/tournaments';
+import { getTournaments, deleteTournament, type Tournament } from '@/lib/tournaments';
 import { useSettings } from '@/contexts/SettingsContext';
+import { useAuth } from '@/contexts/AuthContext';
 
 export default function TournamentsPage() {
+  const { user } = useAuth();
   const [activeFilter, setActiveFilter] = useState<'All' | 'F5' | 'F7' | 'F11'>('All');
   const [tournaments, setTournaments] = useState<Tournament[]>([]);
   const [loading, setLoading] = useState(true);
   const { performanceMode: isPerfMode } = useSettings();
 
-  useEffect(() => {
-    async function load() {
-      try {
-        setLoading(true);
-        const data = await getTournaments();
-        setTournaments(data || []);
-      } catch (err) {
-        console.error(err);
-      } finally {
-        setLoading(false);
-      }
+  const load = async () => {
+    try {
+      setLoading(true);
+      const data = await getTournaments();
+      setTournaments(data || []);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoading(false);
     }
+  };
+
+  useEffect(() => {
     load();
   }, []);
 
@@ -47,6 +48,16 @@ export default function TournamentsPage() {
 
   const officialTournaments = filteredTournaments.filter(t => t.is_official);
   const communityTournaments = filteredTournaments.filter(t => !t.is_official);
+
+  const handleDelete = async (id: string) => {
+    if (!confirm('¿Seguro quieres eliminar este torneo?')) return;
+    try {
+      await deleteTournament(id);
+      load();
+    } catch (err) {
+      alert('Error eliminando el torneo');
+    }
+  };
 
   return (
     <div className={cn(
@@ -141,7 +152,7 @@ export default function TournamentsPage() {
               ))
             ) : officialTournaments.length > 0 ? (
               officialTournaments.map((tournament, i) => (
-                <TournamentCard key={tournament.id} tournament={tournament} i={i} />
+                <TournamentCard key={tournament.id} tournament={tournament} i={i} currentUserId={user?.id} onDelete={handleDelete} />
               ))
             ) : (
               <NoTournaments message="No hay torneos oficiales activos." />
@@ -163,7 +174,7 @@ export default function TournamentsPage() {
               ))
             ) : communityTournaments.length > 0 ? (
               communityTournaments.map((tournament, i) => (
-                <TournamentCard key={tournament.id} tournament={tournament} i={i} />
+                <TournamentCard key={tournament.id} tournament={tournament} i={i} currentUserId={user?.id} onDelete={handleDelete} />
               ))
             ) : (
               <NoTournaments message="Aún no hay torneos creados por la comunidad." />
@@ -175,7 +186,19 @@ export default function TournamentsPage() {
   );
 }
 
-function TournamentCard({ tournament, i }: { tournament: Tournament; i: number }) {
+function TournamentCard({ 
+  tournament, 
+  i, 
+  currentUserId,
+  onDelete 
+}: { 
+  tournament: Tournament; 
+  i: number;
+  currentUserId?: string;
+  onDelete: (id: string) => void;
+}) {
+  const isCreator = currentUserId === tournament.creator_id;
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 30 }}
@@ -184,6 +207,25 @@ function TournamentCard({ tournament, i }: { tournament: Tournament; i: number }
       whileHover={{ y: -8 }}
       className="group relative"
     >
+      <div className="absolute top-6 right-6 z-20 flex gap-2">
+         {isCreator && (
+            <button 
+               onClick={(e) => {
+                  e.preventDefault();
+                  onDelete(tournament.id);
+               }}
+               className="w-10 h-10 rounded-xl bg-red-500 text-white flex items-center justify-center shadow-lg hover:scale-110 active:scale-95 transition-all group/trash"
+            >
+               <Trash2 className="w-4 h-4 group-hover/trash:animate-shake" />
+            </button>
+         )}
+         {tournament.is_official && (
+            <div className="w-10 h-10 rounded-xl bg-yellow-500/20 border border-yellow-500/40 flex items-center justify-center backdrop-blur-md">
+               <Star className="w-4 h-4 text-yellow-500 fill-current" />
+            </div>
+         )}
+      </div>
+
       <Link href={`/tournaments/${tournament.id}`}>
         <div className="glass-premium rounded-[3rem] overflow-hidden border border-foreground/10 h-[480px] flex flex-col relative bg-surface-elevated/40">
           {/* Banner Image */}
@@ -205,13 +247,6 @@ function TournamentCard({ tournament, i }: { tournament: Tournament; i: number }
                 {tournament.status === 'upcoming' ? 'Inscripciones' : 'En Curso'}
               </span>
             </div>
-            {tournament.is_official && (
-              <div className="absolute top-6 right-6">
-                 <div className="w-8 h-8 rounded-full bg-yellow-500/20 border border-yellow-500/40 flex items-center justify-center">
-                    <Star className="w-4 h-4 text-yellow-500 fill-current" />
-                 </div>
-              </div>
-            )}
           </div>
 
           {/* Content */}

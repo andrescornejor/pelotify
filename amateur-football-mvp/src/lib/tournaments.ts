@@ -73,3 +73,16 @@ export async function registerTeamForTournament(tournamentId: string, teamId: st
   }
   return data;
 }
+
+export async function deleteTournament(id: string) {
+  const { error } = await supabase
+    .from('tournaments')
+    .delete()
+    .eq('id', id);
+
+  if (error) {
+    console.error('Error deleting tournament:', error);
+    throw error;
+  }
+  return true;
+}
