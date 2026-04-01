@@ -52,14 +52,14 @@ interface NavGroup {
 
 // --- Sub-components ---
 
-const SidebarGroup = ({ 
-  group, 
-  pathname, 
-  onClose, 
-  isMobile 
-}: { 
-  group: NavGroup; 
-  pathname: string; 
+const SidebarGroup = ({
+  group,
+  pathname,
+  onClose,
+  isMobile
+}: {
+  group: NavGroup;
+  pathname: string;
   onClose?: () => void;
   isMobile: boolean;
 }) => {
@@ -83,8 +83,8 @@ const SidebarGroup = ({
               <div
                 className={cn(
                   "relative flex items-center justify-between px-4 py-3 rounded-2xl transition-all duration-300 overflow-hidden",
-                  isActive 
-                    ? "bg-primary/10 border border-primary/20 shadow-[0_0_20px_rgba(44,252,125,0.05)]" 
+                  isActive
+                    ? "bg-primary/10 border border-primary/20 shadow-[0_0_20px_rgba(44,252,125,0.05)]"
                     : "hover:bg-foreground/[0.03] border border-transparent"
                 )}
               >
@@ -134,7 +134,7 @@ const SidebarGroup = ({
                     <ChevronRight className="w-3 h-3 text-foreground/20 group-hover:text-foreground/40 transition-all opacity-0 group-hover:opacity-100" />
                   )}
                 </div>
-                
+
                 {/* Subtle hover glow */}
                 {!isActive && (
                   <div className="absolute inset-0 bg-gradient-to-r from-primary/0 via-primary/[0.03] to-primary/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000 pointer-events-none" />
@@ -195,11 +195,11 @@ export const SidebarContent = memo(function SidebarContent({
       title: "Social",
       items: [
         { icon: MessageSquare, label: 'Chats', href: '/messages' },
-        { 
-          icon: Users, 
-          label: 'Amigos', 
-          href: '/friends', 
-          badge: pendingCount > 0 && pathname !== '/friends' ? pendingCount : null 
+        {
+          icon: Users,
+          label: 'Amigos',
+          href: '/friends',
+          badge: pendingCount > 0 && pathname !== '/friends' ? pendingCount : null
         },
         { icon: Flame, label: 'Futtok Moments', href: '/highlights', isNew: true },
         { icon: Shield, label: 'Mis Equipos', href: '/teams' },
@@ -215,7 +215,7 @@ export const SidebarContent = memo(function SidebarContent({
 
   const metadata = user?.user_metadata || {};
   const elo = metadata?.elo || 0;
-  
+
   const getRankInfo = (elo: number) => {
     if (elo < 1000) return { name: 'ROOKIE', color: '#94a3b8', icon: Star };
     if (elo < 3000) return { name: 'AMATEUR', color: '#60a5fa', icon: Shield };
@@ -223,7 +223,7 @@ export const SidebarContent = memo(function SidebarContent({
     if (elo < 10000) return { name: 'ELITE', color: '#f59e0b', icon: Crown };
     return { name: 'WORLD CLASS', color: '#ec4899', icon: Zap };
   };
-  
+
   const rank = getRankInfo(elo);
   const RankIcon = rank.icon;
 
@@ -250,7 +250,7 @@ export const SidebarContent = memo(function SidebarContent({
               PELOTI<span className="text-primary pr-4">FY</span>
             </span>
             <span className="text-[7px] font-black uppercase tracking-[0.4em] text-foreground/30 mt-0.5">
-              EST. 2024
+              EST. 2026
             </span>
           </div>
         </Link>
@@ -263,7 +263,7 @@ export const SidebarContent = memo(function SidebarContent({
           >
             {theme === 'dark' ? <Sun className="w-4 h-4 text-foreground/50" /> : <Moon className="w-4 h-4 text-foreground/50" />}
           </motion.button>
-          
+
           {isMobile && onClose && (
             <button onClick={onClose} className="w-9 h-9 flex items-center justify-center rounded-xl bg-foreground/[0.04] border border-white/5 ml-1">
               <X className="w-4 h-4 text-foreground/40" />
@@ -279,7 +279,7 @@ export const SidebarContent = memo(function SidebarContent({
             <div className="relative overflow-hidden rounded-3xl p-4 border border-white/[0.06] shadow-2xl transition-all duration-500 hover:scale-[1.02] active:scale-[0.98]">
               {/* Card Surface */}
               <div className="absolute inset-0 bg-gradient-to-br from-foreground/[0.08] to-foreground/[0.03] backdrop-blur-xl" />
-              
+
               {/* Dynamic Glow */}
               <div className="absolute -top-12 -right-12 w-32 h-32 bg-primary/10 blur-[40px] rounded-full group-hover:bg-primary/20 transition-all duration-700" />
               <div className="absolute -bottom-8 -left-8 w-24 h-24 bg-blue-500/5 blur-[40px] rounded-full group-hover:bg-blue-500/10 transition-all duration-700" />
@@ -306,10 +306,10 @@ export const SidebarContent = memo(function SidebarContent({
                     {user.name || 'Invitado'}
                   </h3>
                   <div className="flex items-center gap-2 mt-1">
-                    <div 
+                    <div
                       className="px-2 py-0.5 rounded-lg text-[8px] font-black italic uppercase tracking-widest border"
-                      style={{ 
-                        color: rank.color, 
+                      style={{
+                        color: rank.color,
                         borderColor: `${rank.color}33`,
                         background: `${rank.color}11`
                       }}
@@ -326,11 +326,11 @@ export const SidebarContent = memo(function SidebarContent({
                   <ChevronRight className="w-4 h-4 text-foreground/30" />
                 </div>
               </div>
-              
+
               {/* Status bar */}
               <div className="mt-4 pt-3 border-t border-white/[0.04] flex items-center justify-between gap-2">
                 <div className="flex-1 h-1.5 bg-foreground/5 rounded-full overflow-hidden">
-                  <motion.div 
+                  <motion.div
                     initial={{ width: 0 }}
                     animate={{ width: `${(elo % 1000) / 10}%` }}
                     className="h-full bg-primary rounded-full relative"
@@ -339,7 +339,7 @@ export const SidebarContent = memo(function SidebarContent({
                   </motion.div>
                 </div>
                 <span className="text-[8px] font-black text-foreground/20 italic uppercase tracking-tighter">
-                   PARA EL SIGUIENTE LVL: {1000 - (elo % 1000)}
+                  PARA EL SIGUIENTE LVL: {1000 - (elo % 1000)}
                 </span>
               </div>
             </div>
@@ -350,12 +350,12 @@ export const SidebarContent = memo(function SidebarContent({
       {/* ── Navigation Groups ── */}
       <div className="relative z-10 flex-1 overflow-y-auto no-scrollbar min-h-0 py-2">
         {navigationGroups.map((group, index) => (
-          <SidebarGroup 
-            key={index} 
-            group={group} 
-            pathname={pathname} 
-            onClose={onClose} 
-            isMobile={isMobile} 
+          <SidebarGroup
+            key={index}
+            group={group}
+            pathname={pathname}
+            onClose={onClose}
+            isMobile={isMobile}
           />
         ))}
       </div>
@@ -385,7 +385,7 @@ export const SidebarContent = memo(function SidebarContent({
             </span>
           </button>
         </div>
-        
+
         <div className="mt-4 flex flex-col items-center gap-1 opacity-20">
           <div className="flex items-center gap-1.5">
             <LayoutGrid className="w-2.5 h-2.5" />
@@ -406,7 +406,7 @@ export function Sidebar() {
   useEffect(() => {
     setMounted(true);
   }, []);
-  
+
   useEffect(() => {
     if (isOpen) onClose();
   }, [pathname]);
@@ -423,20 +423,20 @@ export function Sidebar() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             className="absolute inset-0 backdrop-blur-sm"
-            style={{ 
-              background: 'radial-gradient(circle at center, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0.7) 100%)' 
+            style={{
+              background: 'radial-gradient(circle at center, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0.7) 100%)'
             }}
             onClick={onClose}
           />
-          
+
           {/* Panel */}
           <motion.div
             initial={{ x: '-100%', opacity: 0.5 }}
             animate={{ x: 0, opacity: 1 }}
             exit={{ x: '-100%', opacity: 0.5 }}
-            transition={{ 
-              type: 'spring', 
-              stiffness: 400, 
+            transition={{
+              type: 'spring',
+              stiffness: 400,
               damping: 40,
               opacity: { duration: 0.2 }
             }}
@@ -450,9 +450,9 @@ export function Sidebar() {
           >
             {/* Header ambient glow */}
             <div className="absolute top-0 left-0 right-0 h-40 bg-gradient-to-b from-primary/5 to-transparent pointer-events-none" />
-            
+
             <SidebarContent isMobile onClose={onClose} />
-            
+
             {/* Decorative edge line */}
             <div className="absolute inset-y-0 right-0 w-[1px] bg-gradient-to-b from-transparent via-white/10 to-transparent" />
           </motion.div>
