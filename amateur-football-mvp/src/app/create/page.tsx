@@ -18,7 +18,9 @@ import {
   Lock,
   Unlock,
   ChevronRight,
+  AlertTriangle,
 } from 'lucide-react';
+import Link from 'next/link';
 import { useState, useEffect } from 'react';
 import { createMatch } from '@/lib/matches';
 import { supabase } from '@/lib/supabase';
@@ -192,6 +194,16 @@ export default function CreateMatchPage() {
   const [dbVenues, setDbVenues] = useState<any[]>([]);
   const [dbFields, setDbFields] = useState<any[]>([]);
   const [bookedTimes, setBookedTimes] = useState<string[]>([]);
+  const [isMpLinked, setIsMpLinked] = useState<boolean | null>(null);
+
+  useEffect(() => {
+    const checkMp = async () => {
+      if (!user?.id) return;
+      const { data } = await supabase.from('profiles').select('mp_user_id').eq('id', user.id).single();
+      setIsMpLinked(!!data?.mp_user_id);
+    };
+    checkMp();
+  }, [user]);
 
   useEffect(() => {
     // Fetch real venues from database
@@ -1197,6 +1209,33 @@ export default function CreateMatchPage() {
                     )}
                   </AnimatePresence>
                 </div>
+
+                {/* MP Linking Warning */}
+                <AnimatePresence>
+                  {formData.price > 0 && !formData.business_id && isMpLinked === false && (
+                    <motion.div
+                      initial={{ opacity: 0, scale: 0.95 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      className="p-6 rounded-[2rem] bg-amber-500/10 border border-amber-500/20 space-y-3 relative overflow-hidden"
+                    >
+                      <div className="flex items-center gap-3 text-amber-500">
+                        <AlertTriangle className="w-5 h-5" />
+                        <span className="text-xs font-black uppercase tracking-tighter italic">¡Atención Organizador!</span>
+                      </div>
+                      <p className="text-[10px] font-bold text-foreground/60 leading-relaxed uppercase tracking-wide">
+                        Para recibir los pagos de los jugadores directamente en tu cuenta de Mercado Pago, necesitas vincularla en tu perfil. 
+                        De lo contrario, los pagos se procesarán pero la gestión de los mismos será manual o a través de la plataforma.
+                      </p>
+                      <Link 
+                        href="/profile?id=me" 
+                        target="_blank"
+                        className="inline-flex items-center gap-2 text-[10px] font-black text-amber-500 uppercase tracking-widest hover:underline"
+                      >
+                        Vincular cuenta ahora <ChevronRight className="w-3 h-3" />
+                      </Link>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
 
                 {/* Privacy */}
                 <div className="space-y-4">
