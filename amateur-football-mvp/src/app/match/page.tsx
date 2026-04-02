@@ -203,7 +203,7 @@ function MatchLobbyContent() {
   const id = searchParams.get('id');
   const queryClient = useQueryClient();
 
-  // React Query Hooks
+  // 1. ALL HOOKS MUST BE AT THE TOP (Unconditional)
   const { data: match, isLoading, error } = useMatchById(id || undefined);
   const { data: matchStats } = useMatchStats(match?.id);
 
@@ -213,24 +213,52 @@ function MatchLobbyContent() {
   const deleteMutation = useDeleteMatch();
   const bulkUpdateMutation = useBulkUpdateParticipants();
 
-  const isEmergencyRecruitment = match?.is_recruitment && !match?.is_completed && searchParams.get('mode') !== 'detail';
-
-  // Redirect to Emergency Lobby if match is in recruitment mode
-  useEffect(() => {
-    if (isEmergencyRecruitment) {
-      router.replace(`/match/emergency?id=${match.id}`);
-    }
-  }, [isEmergencyRecruitment, match?.id, router]);
-
-  if (isLoading || isEmergencyRecruitment) return <MatchSkeleton />;
-  if (error || !match) return <div>Error loading match</div>;
-
   const [isPostMatchModalOpen, setIsPostMatchModalOpen] = useState(false);
   const [venueInfo, setVenueInfo] = useState<any>(null);
   const [isQRModalOpen, setIsQRModalOpen] = useState(false);
   const [managedParticipant, setManagedParticipant] = useState<MatchParticipant | null>(null);
+  const [isAdminMode, setIsAdminMode] = useState(false);
+  const [isTacticalMode, setIsTacticalMode] = useState(false);
+  const [selectedPlayerId, setSelectedPlayerId] = useState<string | null>(null);
 
-  // Derived Data
+  const updateMatchMutation = useUpdateMatch();
+  const [teamAName, setTeamAName] = useState('Local');
+  const [teamBName, setTeamBName] = useState('Visitante');
+  const [isEditingNames, setIsEditingNames] = useState(false);
+
+  // 2. LOGIC & EFFECTS
+  const isEmergencyRecruitment = !!(match?.is_recruitment && !match?.is_completed && searchParams.get('mode') !== 'detail');
+
+  // Sync team names
+  useEffect(() => {
+    if (match) {
+      setTeamAName(match.team_a_name || 'Local');
+      setTeamBName(match.team_b_name || 'Visitante');
+    }
+  }, [match?.team_a_name, match?.team_b_name]);
+
+  // Redirect to Emergency Lobby if match is in recruitment mode
+  useEffect(() => {
+    if (isEmergencyRecruitment && match?.id) {
+      router.replace(`/match/emergency?id=${match.id}`);
+    }
+  }, [isEmergencyRecruitment, match?.id, router]);
+
+  // 3. EARLY RETURNS (Only AFTER all hooks)
+  if (isLoading || isEmergencyRecruitment) return <MatchSkeleton />;
+  if (error || !match) {
+    return (
+      <div className="min-h-screen bg-black flex flex-col items-center justify-center p-6 text-center">
+        <AlertTriangle className="w-16 h-16 text-red-500 mb-4" />
+        <h2 className="text-2xl font-black text-white uppercase italic">Partido no encontrado</h2>
+        <button onClick={() => router.push('/')} className="mt-6 px-8 py-3 bg-white/5 border border-white/10 rounded-2xl text-[10px] font-black uppercase tracking-widest text-white">
+          Volver al Inicio
+        </button>
+      </div>
+    );
+  }
+
+  // 4. DERIVED DATA (Only after guards)
   const participants: MatchParticipant[] = match?.participants || [];
   const teamA = participants.filter(p => p.team === 'A');
   const teamB = participants.filter(p => p.team === 'B');
@@ -245,25 +273,6 @@ function MatchLobbyContent() {
   const hasJoined = !!myEntry;
   const isConfirmed = myEntry?.status === 'confirmed';
   const myTeam = myEntry?.team;
-  const [isAdminMode, setIsAdminMode] = useState(false);
-  const [isTacticalMode, setIsTacticalMode] = useState(false);
-  
-  // Tactical Selection State
-  const [selectedPlayerId, setSelectedPlayerId] = useState<string | null>(null);
-
-  // Team Name Editing State
-  const updateMatchMutation = useUpdateMatch();
-  const [teamAName, setTeamAName] = useState(match?.team_a_name || 'Local');
-  const [teamBName, setTeamBName] = useState(match?.team_b_name || 'Visitante');
-  const [isEditingNames, setIsEditingNames] = useState(false);
-
-  // Update local state when match data changes
-  useEffect(() => {
-    if (match) {
-      setTeamAName(match.team_a_name || 'Local');
-      setTeamBName(match.team_b_name || 'Visitante');
-    }
-  }, [match?.team_a_name, match?.team_b_name]);
 
   const handleUpdateTeamNames = async () => {
     if (!match) return;
