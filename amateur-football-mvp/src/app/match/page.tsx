@@ -213,12 +213,17 @@ function MatchLobbyContent() {
   const deleteMutation = useDeleteMatch();
   const bulkUpdateMutation = useBulkUpdateParticipants();
 
+  const isEmergencyRecruitment = match?.is_recruitment && !match?.is_completed && searchParams.get('mode') !== 'detail';
+
   // Redirect to Emergency Lobby if match is in recruitment mode
   useEffect(() => {
-    if (match?.is_recruitment && !match.is_completed && searchParams.get('mode') !== 'detail') {
+    if (isEmergencyRecruitment) {
       router.replace(`/match/emergency?id=${match.id}`);
     }
-  }, [match, router, searchParams]);
+  }, [isEmergencyRecruitment, match?.id, router]);
+
+  if (isLoading || isEmergencyRecruitment) return <MatchSkeleton />;
+  if (error || !match) return <div>Error loading match</div>;
 
   const [isPostMatchModalOpen, setIsPostMatchModalOpen] = useState(false);
   const [venueInfo, setVenueInfo] = useState<any>(null);
