@@ -321,12 +321,6 @@ function MatchLobbyContent() {
   const isConfirmed = myEntry?.status === 'confirmed';
   const myTeam = myEntry?.team;
 
-      setIsEditingNames(false);
-    } catch (e) {
-      console.error('Error updating team names:', e);
-    }
-  };
-
   // 3. HANDLERS (Regular functions, safe to keep here)
   const handleJoinTeam = async (team: 'A' | 'B' | null) => {
     if (!match || !user) return;
