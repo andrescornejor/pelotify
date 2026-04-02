@@ -24,16 +24,16 @@ import {
   Bell,
   X,
   Check,
-  XCircle,
   Users,
   Calendar,
   Loader2,
-  Info,
   ArrowRight,
   Shield,
   Swords,
-  DollarSign,
   MapPin,
+  Clock,
+  ChevronRight,
+  Sparkles,
 } from 'lucide-react';
 import Link from 'next/link';
 
@@ -51,6 +51,14 @@ export function NotificationCenter({ isOpen, onClose }: NotificationCenterProps)
   const [teamChallenges, setTeamChallenges] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [actionLoading, setActionLoading] = useState<string | null>(null);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 1024);
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   const fetchData = async () => {
     if (!user) return;
@@ -64,10 +72,10 @@ export function NotificationCenter({ isOpen, onClose }: NotificationCenterProps)
         getPendingChallengesForMember(user.id),
       ]);
       setFriendRequests(f);
-      setMatchInvites(m);
-      setTeamRequests(t);
-      setTeamInvitations(ti);
-      setTeamChallenges(tc);
+      setMatchInvites(m || []);
+      setTeamRequests(t || []);
+      setTeamInvitations(ti || []);
+      setTeamChallenges(tc || []);
     } catch (err) {
       console.error('Error fetching notifications:', err);
     } finally {
@@ -130,12 +138,8 @@ export function NotificationCenter({ isOpen, onClose }: NotificationCenterProps)
     try {
       await respondToChallenge(challengeId, accept ? 'accepted' : 'declined');
       setTeamChallenges((prev) => prev.filter((c) => c.id !== challengeId));
-      if (accept) {
-        alert('¡Desafío aceptado! El partido ha sido creado y los jugadores notificados.');
-      }
     } catch (err: any) {
       console.error(err);
-      alert(`Error: ${err.message}`);
     } finally {
       setActionLoading(null);
     }
@@ -146,7 +150,6 @@ export function NotificationCenter({ isOpen, onClose }: NotificationCenterProps)
     setActionLoading(actionId);
     try {
       await voteForVenue(challengeId, user!.id, venueName);
-      // Local update for instant feedback
       setTeamChallenges((prev) =>
         prev.map((c) => {
           if (c.id === challengeId) {
@@ -169,6 +172,19 @@ export function NotificationCenter({ isOpen, onClose }: NotificationCenterProps)
     teamInvitations.length > 0 ||
     teamChallenges.length > 0;
 
+  const totalNotifs =
+    friendRequests.length +
+    matchInvites.length +
+    teamRequests.length +
+    teamInvitations.length +
+    teamChallenges.length;
+
+  const panelVariants = {
+    initial: isMobile ? { y: '100%', x: 0 } : { x: '100%', y: 0 },
+    animate: { x: 0, y: 0 },
+    exit: isMobile ? { y: '100%', x: 0 } : { x: '100%', y: 0 },
+  };
+
   return (
     <AnimatePresence>
       {isOpen && (
@@ -179,496 +195,347 @@ export function NotificationCenter({ isOpen, onClose }: NotificationCenterProps)
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={onClose}
-            className="fixed inset-0 z-[100] bg-black/60 backdrop-blur-sm lg:hidden"
+            className="fixed inset-0 z-[100] bg-black/60 backdrop-blur-md"
           />
 
           {/* Panel */}
           <motion.div
-            initial={{ opacity: 0, y: -20, scale: 0.95 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: -20, scale: 0.95 }}
-            className="fixed top-28 right-4 left-4 lg:left-auto lg:right-6 lg:top-24 lg:w-[400px] z-[101] glass-premium rounded-[2.5rem] overflow-hidden shadow-[0_25px_80px_rgba(0,0,0,0.6)] border border-white/5 bg-[#08080c]/95 backdrop-blur-3xl"
+            variants={panelVariants}
+            initial="initial"
+            animate="animate"
+            exit="exit"
+            transition={{ type: 'spring', damping: 28, stiffness: 220 }}
+            className="fixed bottom-0 lg:top-0 lg:right-0 h-[92dvh] lg:h-full w-full lg:w-[480px] z-[101] flex flex-col bg-[#08080c] shadow-[0_-20px_60px_-15px_rgba(0,0,0,0.5)] lg:shadow-[-20px_0_60px_-15px_rgba(0,0,0,0.5)] border-t lg:border-t-0 lg:border-l border-white/5 lg:rounded-l-[3.5rem] rounded-t-[3.5rem] lg:rounded-tr-none overflow-hidden"
           >
-            <div className="p-6 border-b border-white/[0.04] flex items-center justify-between bg-white/[0.01]">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-2xl bg-primary/10 flex items-center justify-center border border-primary/20">
-                  <Bell className="w-5 h-5 text-primary" />
+            {/* Header / Mobile Handle */}
+            <div className="relative pt-4 sm:pt-6 lg:p-10 lg:pb-6 flex flex-col gap-6 overflow-hidden shrink-0">
+              {/* Handle for mobile */}
+              <div className="flex lg:hidden justify-center items-center py-2">
+                <div className="w-12 h-1.5 rounded-full bg-white/10" />
+              </div>
+
+              <div className="p-8 lg:p-0 flex flex-col gap-6">
+                {/* Background gradient for header */}
+                <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-primary/5 blur-[100px] rounded-full pointer-events-none" />
+                
+                <div className="flex items-center justify-between relative z-10">
+                  <div className="flex items-center gap-5">
+                    <div className="w-14 h-14 rounded-[1.75rem] bg-primary/10 flex items-center justify-center border border-primary/20 shadow-[0_0_30px_rgba(44,252,125,0.1)]">
+                      <Bell className="w-7 h-7 text-primary" />
+                    </div>
+                    <div>
+                      <h2 className="text-2xl font-black text-foreground tracking-tight uppercase italic flex items-center gap-3">
+                        Notificaciones
+                        {totalNotifs > 0 && (
+                          <motion.span 
+                            initial={{ scale: 0 }}
+                            animate={{ scale: 1 }}
+                            className="inline-flex items-center justify-center bg-primary text-background text-[11px] font-black h-6 min-w-[24px] px-2 rounded-full ring-4 ring-primary/10 shadow-lg shadow-primary/20"
+                          >
+                            {totalNotifs}
+                          </motion.span>
+                        )}
+                      </h2>
+                      <p className="text-[11px] font-black text-foreground/30 uppercase tracking-[0.3em] mt-1 italic">
+                        Centro de Comandancia
+                      </p>
+                    </div>
+                  </div>
+                  <button
+                    onClick={onClose}
+                    className="w-12 h-12 flex items-center justify-center transition-all hover:bg-white/[0.05] rounded-full border border-transparent hover:border-white/10 group"
+                  >
+                    <X className="w-6 h-6 text-foreground/20 group-hover:text-foreground transition-colors" />
+                  </button>
                 </div>
-                <div className="flex flex-col">
-                  <h3 className="font-black text-foreground uppercase tracking-widest text-xs">
-                    Centro de Operaciones
-                  </h3>
-                  <span className="text-[9px] font-black text-foreground/30 uppercase tracking-[0.2em]">
-                    Novedades y Reclutamiento
-                  </span>
+
+                {/* Filter Pills */}
+                <div className="flex items-center gap-3 relative z-10 overflow-x-auto no-scrollbar py-2">
+                  {[
+                    { id: 'all', label: 'Todo', active: true },
+                    { id: 'challenges', label: 'Retos', count: teamChallenges.length },
+                    { id: 'teams', label: 'Equipos', count: teamRequests.length + teamInvitations.length },
+                    { id: 'friends', label: 'Amigos', count: friendRequests.length },
+                  ].map((filter) => (
+                    <button
+                      key={filter.id}
+                      className={`px-6 py-3 rounded-full text-[11px] font-black uppercase tracking-widest transition-all whitespace-nowrap shadow-xl flex items-center gap-2 ${
+                        filter.active 
+                          ? 'bg-primary text-background shadow-primary/20' 
+                          : 'bg-white/[0.03] text-foreground/40 border border-white/5 hover:bg-white/[0.06] hover:text-foreground hover:shadow-white/5'
+                      }`}
+                    >
+                      {filter.label}
+                      {filter.count! > 0 && <span className={`w-1.5 h-1.5 rounded-full ${filter.active ? 'bg-background/40' : 'bg-primary/60'}`} />}
+                    </button>
+                  ))}
                 </div>
               </div>
-              <button
-                onClick={onClose}
-                className="w-10 h-10 flex items-center justify-center transition-all hover:bg-white/[0.05] rounded-2xl border border-transparent hover:border-white/10"
-              >
-                <X className="w-4 h-4 text-foreground/30" />
-              </button>
             </div>
 
-            <div className="max-h-[65vh] overflow-y-auto no-scrollbar p-0 flex flex-col">
+            {/* Scrollable Content */}
+            <div className="flex-1 overflow-y-auto no-scrollbar px-8 pb-40">
               {isLoading ? (
-                <div className="py-20 flex flex-col items-center gap-4">
+                <div className="h-[50vh] flex flex-col items-center justify-center gap-6">
                   <div className="relative">
-                    <Loader2 className="w-10 h-10 animate-spin text-primary/20" />
-                    <div className="absolute inset-0 w-10 h-10 border-t-2 border-primary rounded-full animate-spin" />
+                    <div className="w-20 h-20 rounded-[2.5rem] border-2 border-primary/10 flex items-center justify-center bg-primary/[0.02]">
+                      <Loader2 className="w-10 h-10 animate-spin text-primary" />
+                    </div>
+                    <div className="absolute inset-x-0 -bottom-6 h-1.5 bg-primary/10 rounded-full overflow-hidden">
+                      <motion.div 
+                        initial={{ x: '-100%' }}
+                        animate={{ x: '100%' }}
+                        transition={{ repeat: Infinity, duration: 1.5, ease: 'linear' }}
+                        className="w-1/2 h-full bg-primary"
+                      />
+                    </div>
                   </div>
-                  <span className="text-[10px] text-foreground/30 font-black uppercase tracking-[0.3em] animate-pulse">
-                    Sincronizando...
-                  </span>
+                  <div className="text-center">
+                    <h4 className="text-base font-black text-foreground/80 uppercase italic tracking-[0.2em]">Pateando Servidores</h4>
+                    <p className="text-[11px] text-foreground/20 font-black uppercase tracking-widest mt-2">Sincronizando el potrero...</p>
+                  </div>
                 </div>
               ) : !hasNotifications ? (
-                <div className="py-12 flex flex-col items-center gap-3 text-center px-6">
-                  <div className="w-16 h-16 rounded-full bg-foreground/[0.03] flex items-center justify-center mb-2">
-                    <Bell className="w-8 h-8 text-foreground/10" />
+                <div className="h-[45vh] flex flex-col items-center justify-center text-center px-10">
+                  <div className="relative mb-10">
+                    <div className="absolute inset-0 bg-primary/10 blur-[60px] rounded-full scale-[2]" />
+                    <div className="relative w-32 h-32 rounded-[3.5rem] bg-foreground/[0.02] border border-white/5 flex items-center justify-center shadow-2xl">
+                      <Sparkles className="w-14 h-14 text-primary/20" />
+                    </div>
                   </div>
-                  <span className="text-sm font-bold text-foreground/40">Todo al día</span>
-                  <p className="text-xs text-foreground/30">
-                    No tienes notificaciones pendientes por ahora.
+                  <h3 className="text-2xl font-black text-foreground italic uppercase tracking-tight">Cancha Despejada</h3>
+                  <p className="text-sm text-foreground/30 mt-4 leading-relaxed font-bold uppercase tracking-widest">
+                    No hay eventos pendientes. <br/>¡Salí a jugar!
                   </p>
+                  <button 
+                    onClick={onClose}
+                    className="mt-10 px-10 py-4 rounded-3xl bg-white/[0.04] border border-white/10 text-[11px] font-black uppercase tracking-[0.3em] text-foreground/40 hover:text-primary hover:border-primary/30 hover:bg-primary/5 transition-all active:scale-95"
+                  >
+                    Entendido
+                  </button>
                 </div>
               ) : (
                 <motion.div
-                  variants={{
-                    show: { transition: { staggerChildren: 0.08, delayChildren: 0.1 } },
-                  }}
                   initial="hidden"
                   animate="show"
-                  className="p-4 flex flex-col gap-3"
+                  variants={{
+                    show: { transition: { staggerChildren: 0.1 } }
+                  }}
+                  className="flex flex-col gap-5 py-6"
                 >
-                  {/* Team Join Requests (Captain) */}
+                  {/* Notifications will be rendered here */}
                   <AnimatePresence mode="popLayout">
-                    {teamRequests.map((req) => {
-                      const actionId = `${req.team_id}-${req.user_id}`;
-                      return (
-                        <motion.div
-                          key={actionId}
-                          variants={{
-                            hidden: { opacity: 0, y: 15, scale: 0.96, filter: 'blur(4px)' },
-                            show: { opacity: 1, y: 0, scale: 1, filter: 'blur(0px)' },
-                          }}
-                          layout
-                          transition={{
-                            type: 'spring',
-                            stiffness: 400,
-                            damping: 30,
-                          }}
-                          className="p-4 rounded-3xl bg-primary/[0.02] border border-primary/10 hover:bg-primary/[0.04] hover:border-primary/30 transition-all flex flex-col gap-3 group"
-                        >
-                          <div className="flex items-center gap-4">
-                            <div className="w-12 h-12 rounded-2xl bg-[#0a0a10] border-2 border-primary/20 flex items-center justify-center shrink-0 overflow-hidden shadow-lg group-hover:border-primary/40 transition-colors">
-                              {req.profiles?.avatar_url ? (
-                                <img
-                                  src={req.profiles.avatar_url}
-                                  alt=""
-                                  className="w-full h-full object-cover"
-                                />
-                              ) : (
-                                <span className="font-black text-primary text-xl italic">
-                                  {req.profiles?.name?.charAt(0)}
-                                </span>
-                              )}
-                            </div>
-                            <div className="flex-1 min-w-0">
-                              <p className="text-[13px] font-black text-foreground italic uppercase tracking-tight truncate leading-none mb-1 group-hover:text-primary transition-colors">
-                                {req.profiles?.name || 'Jugador'}
-                              </p>
-                              <div className="flex items-center gap-1.5">
-                                <span className="text-[9px] text-foreground/30 font-black uppercase tracking-widest">
-                                  Quiere unirse a{' '}
-                                </span>
-                                <span className="text-[9px] text-primary font-black uppercase tracking-widest truncate max-w-[100px]">
-                                  {req.teams?.name}
-                                </span>
-                              </div>
-                            </div>
-                            <div className="flex gap-2">
-                              <button
-                                onClick={() => handleTeamAction(req.team_id, req.user_id, true)}
-                                disabled={actionLoading === actionId}
-                                className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center text-background hover:scale-105 transition-all active:scale-95 disabled:opacity-50 shadow-lg shadow-primary/20"
-                              >
-                                {actionLoading === actionId ? (
-                                  <Loader2 className="w-4 h-4 animate-spin" />
-                                ) : (
-                                  <Check className="w-5 h-5" strokeWidth={3} />
-                                )}
-                              </button>
-                              <button
-                                onClick={() => handleTeamAction(req.team_id, req.user_id, false)}
-                                disabled={actionLoading === actionId}
-                                className="w-10 h-10 rounded-xl bg-white/[0.03] border border-white/[0.05] flex items-center justify-center text-foreground/20 hover:text-red-400 hover:border-red-400/30 hover:bg-red-400/5 transition-all active:scale-95 disabled:opacity-50"
-                              >
-                                <XCircle className="w-5 h-5" />
-                              </button>
-                            </div>
-                          </div>
-                        </motion.div>
-                      );
-                    })}
-                  </AnimatePresence>
-
-                  {/* Team Challenges (All involved members) */}
-                  <AnimatePresence mode="popLayout">
-                    {teamChallenges.map((challenge) => {
-                      const isCaptainOfChallenged =
-                        user?.id === challenge.challenged_team?.captain_id;
-                      const hasVenueOptions =
-                        challenge.venue_candidates && challenge.venue_candidates.length > 0;
-                      const userVote = challenge.votes?.[user!.id];
-
-                      // Calculate vote counts
-                      const voteCounts: Record<string, number> = {};
-                      if (challenge.votes) {
-                        Object.values(challenge.votes).forEach((venue: any) => {
-                          voteCounts[venue] = (voteCounts[venue] || 0) + 1;
-                        });
-                      }
-
-                      return (
-                        <motion.div
-                          key={challenge.id}
-                          variants={{
-                            hidden: { opacity: 0, y: 15, scale: 0.96, filter: 'blur(4px)' },
-                            show: { opacity: 1, y: 0, scale: 1, filter: 'blur(0px)' },
-                          }}
-                          layout
-                          transition={{
-                            type: 'spring',
-                            stiffness: 400,
-                            damping: 30,
-                          }}
-                          className="p-4 rounded-[2.5rem] bg-amber-500/[0.03] border border-amber-500/20 hover:bg-amber-500/[0.05] hover:border-amber-500/40 transition-all flex flex-col gap-4 group"
-                        >
-                          <div className="flex items-center gap-4">
-                            <div className="w-12 h-12 rounded-2xl bg-amber-500/10 flex items-center justify-center shrink-0 border border-amber-500/20 shadow-lg group-hover:rotate-6 transition-transform">
-                              <Swords className="w-6 h-6 text-amber-500" />
-                            </div>
-                            <div className="flex-1 min-w-0">
-                              <div className="flex items-center gap-2 mb-1">
-                                <span className="text-[10px] text-amber-500 font-black uppercase tracking-widest italic animate-pulse">
-                                  ¡RETO EN CURSO!
-                                </span>
-                              </div>
-                              <p className="text-[14px] font-black text-foreground italic uppercase tracking-tight truncate leading-tight">
-                                {challenge.challenger_team?.name}{' '}
-                                <span className="text-foreground/20 lowercase font-medium not-italic">
-                                  vs
-                                </span>{' '}
-                                {challenge.challenged_team?.name}
-                              </p>
-                              <div className="flex items-center gap-2 mt-1">
-                                <span className="text-[9px] text-foreground/40 font-black uppercase tracking-widest leading-none">
-                                  {challenge.match_date} · {challenge.match_time} HS
-                                </span>
-                                {challenge.price > 0 && (
-                                  <>
-                                    <div className="w-1 h-1 rounded-full bg-foreground/10" />
-                                    <span className="text-[9px] text-primary/60 font-black uppercase tracking-widest leading-none">
-                                      ${challenge.price} x Jug.
-                                    </span>
-                                  </>
-                                )}
-                              </div>
-                            </div>
-                          </div>
-
-                          {/* Voting Section */}
-                          {hasVenueOptions && (
-                            <div className="space-y-3 bg-black/20 p-4 rounded-3xl border border-white/5 shadow-inner">
-                              <div className="flex items-center justify-between px-1">
-                                <label className="text-[9px] font-black text-foreground/40 uppercase tracking-[0.2em] flex items-center gap-2">
-                                  <MapPin className="w-3 h-3 text-amber-500" /> Elegir Sede
-                                  (Votación)
-                                </label>
-                                <span className="text-[8px] font-black text-foreground/20 uppercase tracking-widest">
-                                  {Object.keys(challenge.votes || {}).length} VOTOS
-                                </span>
-                              </div>
-                              <div className="grid grid-cols-1 gap-2">
-                                {challenge.venue_candidates!.map((venue: string) => {
-                                  const votes = voteCounts[venue] || 0;
-                                  const isVoted = userVote === venue;
-                                  const actionId = `${challenge.id}-vote-${venue}`;
-
-                                  return (
-                                    <button
-                                      key={venue}
-                                      onClick={() => handleVote(challenge.id, venue)}
-                                      disabled={actionLoading === actionId}
-                                      className={`group/btn relative h-10 px-4 rounded-xl border flex items-center justify-between transition-all ${
-                                        isVoted
-                                          ? 'bg-amber-500 border-amber-500 text-background shadow-lg shadow-amber-500/20'
-                                          : 'bg-white/[0.02] border-white/5 text-foreground/50 hover:border-amber-500/30'
-                                      }`}
-                                    >
-                                      <span className="text-[10px] font-black uppercase tracking-tight truncate max-w-[150px]">
-                                        {venue}
-                                      </span>
-                                      <div className="flex items-center gap-2">
-                                        {votes > 0 && (
-                                          <span className="text-[9px] font-black opacity-40">
-                                            {votes}
-                                          </span>
-                                        )}
-                                        <div
-                                          className={`w-4 h-4 rounded-lg flex items-center justify-center border ${isVoted ? 'bg-white border-white text-amber-500' : 'border-white/20'}`}
-                                        >
-                                          {isVoted && <Check className="w-3 h-3" strokeWidth={4} />}
-                                        </div>
-                                      </div>
-                                    </button>
-                                  );
-                                })}
-                              </div>
-                            </div>
-                          )}
-
-                          {/* Admin Actions (ONLY for Challenged Captain) */}
-                          {isCaptainOfChallenged && (
-                            <div className="flex gap-2 pt-2">
-                              <button
-                                onClick={() => handleChallengeAction(challenge.id, true)}
-                                disabled={actionLoading === challenge.id}
-                                className="flex-[2] py-3 bg-amber-500 text-background text-[10px] font-black uppercase tracking-widest rounded-xl hover:scale-[1.02] transition-all disabled:opacity-50 shadow-xl shadow-amber-500/10 active:scale-95 flex items-center justify-center gap-2"
-                              >
-                                {actionLoading === challenge.id ? (
-                                  <Loader2 className="w-4 h-4 animate-spin" />
-                                ) : (
-                                  <>
-                                    <Check className="w-4 h-4" /> Aceptar Desafío
-                                  </>
-                                )}
-                              </button>
-                              <button
-                                onClick={() => handleChallengeAction(challenge.id, false)}
-                                disabled={actionLoading === challenge.id}
-                                className="flex-1 py-3 bg-white/[0.03] border border-white/[0.05] text-foreground/30 text-[10px] font-black uppercase tracking-widest rounded-xl hover:text-red-400 hover:border-red-400/20 transition-all disabled:opacity-50 active:scale-95"
-                              >
-                                Ignorar
-                              </button>
-                            </div>
-                          )}
-                        </motion.div>
-                      );
-                    })}
-                  </AnimatePresence>
-
-                  {/* Team Invitations (Player) */}
-                  <AnimatePresence mode="popLayout">
-                    {teamInvitations.map((inv) => {
-                      const actionId = `${inv.team_id}-${user?.id}`;
-                      return (
-                        <motion.div
-                          key={actionId}
-                          variants={{
-                            hidden: { opacity: 0, y: 15, scale: 0.96, filter: 'blur(4px)' },
-                            show: { opacity: 1, y: 0, scale: 1, filter: 'blur(0px)' },
-                          }}
-                          layout
-                          transition={{
-                            type: 'spring',
-                            stiffness: 400,
-                            damping: 30,
-                          }}
-                          className="p-4 rounded-3xl bg-accent/[0.02] border border-accent/10 hover:bg-accent/[0.04] hover:border-accent/30 transition-all flex flex-col gap-3 group"
-                        >
-                          <div className="flex items-center gap-4">
-                            <div className="w-12 h-12 rounded-2xl bg-[#0a0a10] border-2 border-accent/20 flex items-center justify-center shrink-0 overflow-hidden shadow-lg group-hover:border-accent/40 transition-colors">
-                              {inv.teams?.logo_url ? (
-                                <img
-                                  src={inv.teams.logo_url}
-                                  alt=""
-                                  className="w-full h-full object-cover"
-                                />
-                              ) : (
-                                <Shield className="w-6 h-6 text-accent" />
-                              )}
-                            </div>
-                            <div className="flex-1 min-w-0">
-                              <p className="text-[13px] font-black text-foreground italic uppercase tracking-tight truncate leading-none mb-1 group-hover:text-accent transition-colors">
-                                {inv.teams?.name || 'Equipo'}
-                              </p>
-                              <div className="flex items-center gap-1.5">
-                                <span className="text-[9px] text-accent font-black uppercase tracking-widest italic animate-pulse">
-                                  ¡Convocatoria Abierta!
-                                </span>
-                              </div>
-                            </div>
-                            <div className="flex gap-2">
-                              <button
-                                onClick={() => handleTeamAction(inv.team_id, user!.id, true)}
-                                disabled={actionLoading === actionId}
-                                className="w-10 h-10 rounded-xl bg-accent flex items-center justify-center text-background hover:scale-105 transition-all active:scale-95 disabled:opacity-50 shadow-lg shadow-accent/20"
-                              >
-                                {actionLoading === actionId ? (
-                                  <Loader2 className="w-4 h-4 animate-spin" />
-                                ) : (
-                                  <Check className="w-5 h-5" strokeWidth={3} />
-                                )}
-                              </button>
-                              <button
-                                onClick={() => handleTeamAction(inv.team_id, user!.id, false)}
-                                disabled={actionLoading === actionId}
-                                className="w-10 h-10 rounded-xl bg-white/[0.03] border border-white/[0.05] flex items-center justify-center text-foreground/20 hover:text-red-400 hover:border-red-400/30 hover:bg-red-400/5 transition-all active:scale-95 disabled:opacity-50"
-                              >
-                                <XCircle className="w-5 h-5" />
-                              </button>
-                            </div>
-                          </div>
-                        </motion.div>
-                      );
-                    })}
-                  </AnimatePresence>
-
-                  {/* Friend Requests */}
-                  <AnimatePresence mode="popLayout">
-                    {friendRequests.map((req) => (
-                      <motion.div
-                        key={req.id}
-                        variants={{
-                          hidden: { opacity: 0, y: 15, scale: 0.96, filter: 'blur(4px)' },
-                          show: { opacity: 1, y: 0, scale: 1, filter: 'blur(0px)' },
-                        }}
-                        layout
-                        transition={{
-                          type: 'spring',
-                          stiffness: 400,
-                          damping: 30,
-                        }}
-                        className="p-4 rounded-3xl bg-white/[0.02] border border-white/[0.04] hover:bg-white/[0.04] hover:border-primary/20 transition-all flex items-center gap-4 group"
-                      >
-                        <div className="w-12 h-12 rounded-2xl bg-[#0a0a10] border-2 border-primary/20 flex items-center justify-center shrink-0 overflow-hidden shadow-lg group-hover:border-primary/40 transition-colors">
-                          {req.profiles?.avatar_url ? (
-                            <img
-                              src={req.profiles.avatar_url}
-                              alt=""
-                              className="w-full h-full object-cover"
-                            />
-                          ) : (
-                            <span className="font-black text-primary text-xl italic">
-                              {req.profiles?.name?.charAt(0)}
-                            </span>
-                          )}
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <p className="text-[13px] font-black text-foreground italic uppercase tracking-tight truncate group-hover:text-primary transition-colors">
-                            {req.profiles?.name || 'Jugador'}
-                          </p>
-                          <div className="flex items-center gap-1.5 mt-0.5">
-                            <Users className="w-3 h-3 text-foreground/30" />
-                            <span className="text-[9px] text-foreground/30 font-black uppercase tracking-widest">
-                              Solicitud de Alianza
-                            </span>
-                          </div>
-                        </div>
-                        <div className="flex gap-2">
-                          <button
-                            onClick={() => handleFriendAction(req.id, true)}
-                            disabled={actionLoading === req.id}
-                            className="w-9 h-9 rounded-xl bg-primary flex items-center justify-center text-background hover:scale-105 transition-all active:scale-95 disabled:opacity-50 shadow-lg shadow-primary/20"
-                          >
-                            {actionLoading === req.id ? (
-                              <Loader2 className="w-4 h-4 animate-spin" />
-                            ) : (
-                              <Check className="w-5 h-5" strokeWidth={3} />
-                            )}
-                          </button>
-                          <button
-                            onClick={() => handleFriendAction(req.id, false)}
-                            disabled={actionLoading === req.id}
-                            className="w-9 h-9 rounded-xl bg-white/[0.03] border border-white/[0.05] flex items-center justify-center text-foreground/20 hover:text-red-400 hover:border-red-400/30 hover:bg-red-400/5 transition-all active:scale-95 disabled:opacity-50"
-                          >
-                            <XCircle className="w-5 h-5" />
-                          </button>
-                        </div>
-                      </motion.div>
+                    {teamChallenges.map((challenge) => (
+                      <NotificationItem key={challenge.id} type="challenge" data={challenge} onAction={handleChallengeAction} onVote={handleVote} actionLoading={actionLoading} userId={user?.id} />
                     ))}
-                  </AnimatePresence>
-
-                  {/* Match Invites */}
-                  <AnimatePresence mode="popLayout">
+                    {teamRequests.map((req) => (
+                      <NotificationItem key={`${req.team_id}-${req.user_id}`} type="team_request" data={req} onAction={(id, accept) => handleTeamAction(req.team_id, req.user_id, accept)} actionLoading={actionLoading} />
+                    ))}
+                    {teamInvitations.map((inv) => (
+                      <NotificationItem key={`${inv.team_id}-${user?.id}`} type="team_invitation" data={inv} onAction={(id, accept) => handleTeamAction(inv.team_id, user!.id, accept)} actionLoading={actionLoading} />
+                    ))}
                     {matchInvites.map((inv) => (
-                      <motion.div
-                        key={inv.id}
-                        variants={{
-                          hidden: { opacity: 0, y: 15, scale: 0.96, filter: 'blur(4px)' },
-                          show: { opacity: 1, y: 0, scale: 1, filter: 'blur(0px)' },
-                        }}
-                        layout
-                        transition={{
-                          type: 'spring',
-                          stiffness: 400,
-                          damping: 30,
-                        }}
-                        className="p-5 rounded-[2rem] bg-white/[0.02] border border-white/[0.04] hover:bg-white/[0.04] hover:border-accent/20 transition-all flex flex-col gap-4 group"
-                      >
-                        <div className="flex items-center gap-4">
-                          <div className="w-12 h-12 rounded-2xl bg-accent/10 flex items-center justify-center shrink-0 border border-accent/20 shadow-lg group-hover:rotate-3 transition-transform">
-                            <Calendar className="w-6 h-6 text-accent" />
-                          </div>
-                          <div className="flex-1 min-w-0">
-                            <p className="text-[14px] font-black text-foreground italic uppercase tracking-tight truncate leading-tight group-hover:text-accent transition-colors">
-                              {inv.matches?.location}
-                            </p>
-                            <div className="flex items-center gap-2 mt-1">
-                              <span className="text-[10px] text-accent font-black uppercase tracking-widest italic">
-                                {inv.matches?.date}
-                              </span>
-                              <div className="w-1 h-1 rounded-full bg-white/10" />
-                              <span className="text-[10px] text-foreground/40 font-black uppercase tracking-widest">
-                                {inv.matches?.time}
-                              </span>
-                            </div>
-                          </div>
-                        </div>
-                        <div className="flex gap-2">
-                          <button
-                            onClick={() => handleMatchAction(inv.id, true)}
-                            disabled={actionLoading === inv.id}
-                            className="flex-[2] py-3 bg-accent text-background text-[10px] font-black uppercase tracking-widest rounded-xl hover:bg-white transition-all disabled:opacity-50 shadow-xl shadow-accent/10 active:scale-95"
-                          >
-                            {actionLoading === inv.id ? (
-                              <Loader2 className="w-4 h-4 animate-spin mx-auto" />
-                            ) : (
-                              'Confirmar Asistencia'
-                            )}
-                          </button>
-                          <button
-                            onClick={() => handleMatchAction(inv.id, false)}
-                            disabled={actionLoading === inv.id}
-                            className="flex-1 py-3 bg-white/[0.03] border border-white/[0.05] text-foreground/30 text-[10px] font-black uppercase tracking-widest rounded-xl hover:text-foreground hover:bg-white/[0.08] transition-all disabled:opacity-50 active:scale-95"
-                          >
-                            Declinar
-                          </button>
-                        </div>
-                      </motion.div>
+                      <NotificationItem key={inv.id} type="match" data={inv} onAction={handleMatchAction} actionLoading={actionLoading} />
+                    ))}
+                    {friendRequests.map((req) => (
+                      <NotificationItem key={req.id} type="friend" data={req} onAction={handleFriendAction} actionLoading={actionLoading} />
                     ))}
                   </AnimatePresence>
                 </motion.div>
               )}
             </div>
 
+            {/* Bottom Floating Footer / Action Bar */}
             {hasNotifications && (
-              <div className="p-5 border-t border-white/[0.04] bg-white/[0.01]">
-                <Link
-                  href="/friends"
-                  onClick={onClose}
-                  className="flex items-center justify-center gap-2 w-full py-3 rounded-2xl bg-white/[0.03] hover:bg-white/[0.06] border border-white/[0.06] text-[10px] font-black uppercase text-foreground/40 hover:text-primary transition-all tracking-[0.2em] group"
-                >
-                  Ir al Centro Comunitario
-                  <ArrowRight className="w-3 h-3 group-hover:translate-x-1 transition-transform" />
-                </Link>
+              <div className="absolute inset-x-0 bottom-0 p-8 pt-0 pointer-events-none">
+                <div className="h-20 bg-gradient-to-t from-[#08080c] to-transparent w-full mb-[-1px]" />
+                <div className="bg-[#08080c]/80 backdrop-blur-2xl p-6 lg:pb-10 rounded-[2.5rem] border border-white/5 shadow-[0_-20px_50px_rgba(0,0,0,0.5)] pointer-events-auto">
+                  <Link
+                    href="/friends"
+                    onClick={onClose}
+                    className="group relative flex items-center justify-between w-full h-[70px] px-8 rounded-[1.75rem] bg-primary text-background overflow-hidden shadow-2xl shadow-primary/20 active:scale-[0.98] transition-transform"
+                  >
+                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent -translate-x-full group-hover:animate-[wave_1.5s_infinite] pointer-events-none" />
+                    <div className="flex flex-col items-start relative z-10">
+                      <span className="text-[10px] font-black uppercase tracking-[0.2em] opacity-40 leading-none mb-1">Centro Comunitario</span>
+                      <span className="text-base font-black uppercase tracking-tight italic">Ver Todas las Alianzas</span>
+                    </div>
+                    <div className="w-12 h-12 rounded-full bg-background/10 backdrop-blur-md flex items-center justify-center relative z-10 group-hover:translate-x-1 transition-transform">
+                      <ArrowRight className="w-6 h-6" />
+                    </div>
+                  </Link>
+                </div>
               </div>
             )}
           </motion.div>
         </>
       )}
     </AnimatePresence>
+  );
+}
+
+function NotificationItem({ type, data, onAction, onVote, actionLoading, userId }: any) {
+  const itemVariants = {
+    hidden: { opacity: 0, y: 20, scale: 0.95 },
+    show: { opacity: 1, y: 0, scale: 1 },
+    exit: { opacity: 0, x: 20, scale: 0.95, transition: { duration: 0.2 } }
+  };
+
+  const getStyle = () => {
+    switch (type) {
+      case 'challenge': return 'border-amber-500/20 bg-amber-500/[0.04] shadow-amber-500/5';
+      case 'match': return 'border-accent/20 bg-accent/[0.04] shadow-accent/5';
+      default: return 'border-white/5 bg-white/[0.03] shadow-black/20';
+    }
+  };
+
+  const isActionLoading = actionLoading === (data.id || (type === 'team_request' ? `${data.team_id}-${data.user_id}` : `${data.team_id}-${userId}`));
+
+  return (
+    <motion.div
+      variants={itemVariants}
+      layout
+      className={`relative p-6 sm:p-7 rounded-[2.5rem] border shadow-2xl transition-all duration-300 group overflow-hidden ${getStyle()}`}
+    >
+      <div className="flex flex-col sm:flex-row items-start gap-5 sm:gap-6">
+        {/* Avatar Section */}
+        <div className="shrink-0 relative">
+          <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-[1.75rem] bg-[#0d0d15] border-2 border-white/5 overflow-hidden flex items-center justify-center shadow-2xl group-hover:scale-105 transition-transform duration-500">
+            {type === 'friend' || type === 'team_request' ? (
+              data.profiles?.avatar_url ? (
+                <img src={data.profiles.avatar_url} className="w-full h-full object-cover" />
+              ) : (
+                <span className="text-3xl font-black italic text-primary">{data.profiles?.name?.charAt(0)}</span>
+              )
+            ) : type === 'team_invitation' ? (
+              data.teams?.logo_url ? (
+                <img src={data.teams.logo_url} className="w-full h-full object-cover" />
+              ) : (
+                <Shield className="w-10 h-10 text-primary/30" strokeWidth={1} />
+              )
+            ) : type === 'challenge' ? (
+              <div className="w-full h-full bg-amber-500/10 flex items-center justify-center">
+                <Swords className="w-10 h-10 text-amber-500" strokeWidth={1.5} />
+              </div>
+            ) : (
+              <div className="w-full h-full bg-accent/10 flex items-center justify-center">
+                <Calendar className="w-10 h-10 text-accent" strokeWidth={1.5} />
+              </div>
+            )}
+          </div>
+          {type === 'challenge' && (
+            <motion.div 
+              animate={{ scale: [1, 1.2, 1] }} 
+              transition={{ repeat: Infinity, duration: 2 }}
+              className="absolute -top-2 -right-2 w-7 h-7 bg-amber-500 rounded-full border-4 border-[#08080c] flex items-center justify-center shadow-xl"
+            >
+              <Swords className="w-3.5 h-3.5 text-background" />
+            </motion.div>
+          )}
+        </div>
+
+        <div className="flex-1 min-w-0 flex flex-col gap-4">
+          <div className="flex flex-col gap-1">
+            <div className="flex items-center gap-2 flex-wrap">
+              <span className={`text-[9px] font-black px-2 py-0.5 rounded-full uppercase tracking-widest italic ${
+                type === 'challenge' ? 'bg-amber-500/10 text-amber-500' :
+                type === 'match' ? 'bg-accent/10 text-accent' :
+                'bg-primary/10 text-primary'
+              }`}>
+                {type === 'challenge' ? 'Pacto de Sangre' :
+                 type === 'match' ? 'Invocación' :
+                 type === 'team_request' ? 'Mercado de Pases' :
+                 type === 'team_invitation' ? 'Fichaje' : 'Social'}
+              </span>
+              <span className="text-[9px] text-foreground/20 font-black uppercase tracking-widest flex items-center gap-1.5">
+                <Clock className="w-3 h-3" /> AHORA
+              </span>
+            </div>
+
+            <h4 className="text-lg sm:text-xl font-black text-foreground italic uppercase tracking-tight leading-tight group-hover:text-primary transition-colors">
+              {type === 'challenge' ? `${data.challenger_team?.name} VS ${data.challenged_team?.name}` : 
+               type === 'match' ? data.matches?.location :
+               type === 'team_invitation' ? data.teams?.name :
+               data.profiles?.name || 'Jugador'}
+            </h4>
+
+            <p className="text-xs sm:text-[13px] text-foreground/40 font-medium leading-relaxed max-w-[280px]">
+              {type === 'challenge' ? `Un nuevo rival te desafía a dominar el potrero.` :
+               type === 'match' ? `Te convocaron para jugar el ${data.matches?.date}.` :
+               type === 'team_request' ? `Está pidiendo el pase para unirse a ${data.teams?.name}.` :
+               type === 'team_invitation' ? `Te ofrecen contrato para sumarte a sus filas.` :
+               `Busca sellar una alianza contigo.`}
+            </p>
+          </div>
+
+          {/* Voting or Metadata */}
+          {type === 'challenge' && data.venue_candidates?.length > 0 && (
+            <div className="space-y-3 bg-black/40 p-4 rounded-3xl border border-white/5 shadow-inner">
+              <div className="flex items-center justify-between px-1">
+                <p className="text-[10px] font-black text-foreground/40 uppercase tracking-widest flex items-center gap-2 italic">
+                  <MapPin className="w-3.5 h-3.5 text-amber-500" /> Sede en Disputa
+                </p>
+              </div>
+              <div className="flex flex-col gap-2">
+                {data.venue_candidates.map((venue: string) => {
+                  const isVoted = data.votes?.[userId] === venue;
+                  const voteCount = Object.values(data.votes || {}).filter(v => v === venue).length;
+                  return (
+                    <button
+                      key={venue}
+                      onClick={() => onVote(data.id, venue)}
+                      className={`flex items-center justify-between p-3.5 rounded-2xl border text-[11px] font-black uppercase transition-all ${
+                        isVoted ? 'bg-amber-500 border-amber-500 text-background shadow-lg shadow-amber-500/20' : 'bg-white/[0.02] border-white/5 text-foreground/40 hover:bg-white/[0.05] hover:border-white/10'
+                      }`}
+                    >
+                      <span className="truncate max-w-[150px] italic">{venue}</span>
+                      <div className="flex items-center gap-3">
+                        {voteCount > 0 && <span className="text-[10px] opacity-60 bg-black/20 px-2 py-0.5 rounded-full">{voteCount}</span>}
+                        <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center ${isVoted ? 'bg-background border-background' : 'border-white/10'}`}>
+                          {isVoted && <div className="w-1.5 h-1.5 rounded-full bg-amber-500" />}
+                        </div>
+                      </div>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+
+          {/* Buttons Area */}
+          <div className="flex items-center gap-3">
+            <button
+              onClick={() => onAction(data.id, true)}
+              disabled={isActionLoading}
+              className={`flex-[2] h-14 rounded-[1.5rem] flex items-center justify-center gap-3 text-xs font-black uppercase tracking-[0.2em] italic transition-all ${
+                type === 'challenge' ? 'bg-amber-500 text-background shadow-xl shadow-amber-500/20' :
+                type === 'match' ? 'bg-accent text-background shadow-xl shadow-accent/20' :
+                'bg-primary text-background shadow-xl shadow-primary/20'
+              } hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 group/act`}
+            >
+              {isActionLoading ? <Loader2 className="w-5 h-5 animate-spin" /> : (
+                <>
+                  <Check className="w-5 h-5 group-hover/act:scale-125 transition-transform" strokeWidth={4} />
+                  <span>Confirmar</span>
+                </>
+              )}
+            </button>
+            <button
+              onClick={() => onAction(data.id, false)}
+              disabled={isActionLoading}
+              className="flex-1 h-14 rounded-[1.5rem] bg-white/[0.04] border border-white/5 flex items-center justify-center text-foreground/20 hover:text-red-400 hover:bg-red-400/5 hover:border-red-400/20 transition-all active:scale-[0.98]"
+            >
+              <X className="w-6 h-6" strokeWidth={3} />
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* Decorative background effects for cards */}
+      <div className={`absolute top-0 right-0 w-32 h-32 blur-[60px] opacity-10 rounded-full pointer-events-none translate-x-1/2 -translate-y-1/2 ${
+         type === 'challenge' ? 'bg-amber-500' :
+         type === 'match' ? 'bg-accent' : 'bg-primary'
+      }`} />
+    </motion.div>
   );
 }
