@@ -344,7 +344,7 @@ export default function HomePage() {
           </div>
 
           {/* Content Wrapper */}
-          <div className="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-6 lg:gap-10 p-6 sm:p-12 lg:p-16 xl:p-20">
+          <div className="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-6 lg:gap-10 p-5 sm:p-12 lg:p-16 xl:p-20">
             {/* Left: Text & Branding */}
             <div className="flex-1 space-y-6 lg:space-y-8 max-w-2xl">
               <motion.div

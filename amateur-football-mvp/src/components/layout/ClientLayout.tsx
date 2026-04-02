@@ -59,7 +59,7 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
                 pathname.startsWith('/profile/') ||
                 pathname.startsWith('/messages')
                 ? 'pb-24 lg:pb-0'
-                : 'pt-32 lg:pt-24 pb-24 lg:pb-0'
+                : 'pt-24 pb-24 lg:pb-0'
               : ''
           )}
         >

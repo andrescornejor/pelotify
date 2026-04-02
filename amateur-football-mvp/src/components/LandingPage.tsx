@@ -135,7 +135,7 @@ export default function LandingPage() {
                initial={{ opacity: 0, scale: 0.5, rotateY: 180 }}
                animate={{ opacity: 1, scale: 1, rotateY: 0 }}
                transition={{ duration: 1.5, type: "spring", stiffness: 40 }}
-               className="relative group perspective-1000 z-[110] mt-24 flex flex-col items-center"
+               className="relative group perspective-1000 z-[110] mt-16 md:mt-24 flex flex-col items-center"
             >
                <div className="absolute -inset-10 bg-primary/30 blur-[60px] rounded-full group-hover:bg-primary/50 transition-all duration-700 animate-pulse" />
                <div className="w-36 h-36 md:w-56 md:h-56 relative rounded-[3rem] bg-gradient-to-br from-[#0A0A0A] to-black flex items-center justify-center border-2 border-primary/30 shadow-[0_40px_80px_rgba(0,0,0,0.8),inset_0_0_40px_rgba(44,252,125,0.2)] backdrop-blur-3xl group-hover:scale-110 group-hover:border-primary/60 transition-all duration-700 z-10 preserve-3d">
