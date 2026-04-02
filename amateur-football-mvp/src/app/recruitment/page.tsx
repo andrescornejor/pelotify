@@ -25,6 +25,7 @@ import { cn } from '@/lib/utils';
 export default function RecruitmentPage() {
   const { user } = useAuth();
   const router = useRouter();
+  const joinMutation = useJoinEmergencyMatch();
   const [matches, setMatches] = useState<Match[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
