@@ -98,8 +98,7 @@ export async function getMatchById(id: string) {
                 team,
                 paid,
                 created_at
-            ),
-
+            )
         `
     )
     .eq('id', id)
