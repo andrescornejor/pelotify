@@ -214,8 +214,7 @@ export const TopHeader = memo(function TopHeader() {
                     cleanPath === cleanHref ||
                     (cleanHref !== '/' && cleanPath.startsWith(cleanHref));
                   const hasBadge =
-                    (item.id === 'friends' && friendsCount > 0 && !isActive) ||
-                    (item.label === 'Mensajes' && unreadChatCount > 0 && !isActive);
+                    (item.id === 'friends' && friendsCount > 0 && !isActive);
 
                   return (
                     <Link key={item.href} href={item.href} className="relative">
