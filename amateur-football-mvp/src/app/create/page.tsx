@@ -233,11 +233,6 @@ export default function CreateMatchPage() {
     payment_method: 'mercado_pago' as 'mercado_pago' | 'cash',
     lat: undefined as number | undefined,
     lng: undefined as number | undefined,
-    // Recruitment
-    is_recruitment: false,
-    recruitment_title: '',
-    recruitment_description: '',
-    slots: [] as { position: 'GK' | 'DF' | 'MF' | 'FW'; team: 'A' | 'B' }[],
   });
 
   useEffect(() => {
@@ -417,18 +412,6 @@ export default function CreateMatchPage() {
                return;
             }
          }
-      }
-
-      // CREATE SLOTS if recruitment
-      if (formData.is_recruitment && formData.slots.length > 0) {
-         await Promise.all(formData.slots.map(slot => 
-            supabase.from('match_slots').insert([{
-               match_id: match.id,
-               team: slot.team,
-               position: slot.position,
-               status: 'open'
-            }])
-         ));
       }
 
       router.push(`/match?id=${match.id}`);
@@ -1047,96 +1030,6 @@ export default function CreateMatchPage() {
                       );
                     })}
                   </div>
-                </div>
-
-                {/* Recruitment Mode Toggle */}
-                <div className="space-y-6">
-                  <div className="flex items-center justify-between px-1">
-                    <div className="flex flex-col">
-                      <span className="text-[10px] font-black text-foreground/30 uppercase tracking-[0.4em]">Marketplace</span>
-                      <h3 className="text-lg font-black italic uppercase tracking-tighter text-foreground leading-none mt-1">Busco Jugadores</h3>
-                    </div>
-                    <button 
-                      type="button"
-                      onClick={() => setFormData(prev => ({ ...prev, is_recruitment: !prev.is_recruitment }))}
-                      className={cn(
-                        "w-14 h-8 rounded-full relative transition-all duration-500 overflow-hidden border",
-                        formData.is_recruitment ? "bg-primary border-primary" : "bg-foreground/5 border-white/5"
-                      )}
-                    >
-                      <motion.div 
-                        animate={{ x: formData.is_recruitment ? 24 : 4 }}
-                        className={cn("w-6 h-6 rounded-full absolute top-1", formData.is_recruitment ? "bg-black" : "bg-white/20")} 
-                      />
-                    </button>
-                  </div>
-
-                  <AnimatePresence>
-                    {formData.is_recruitment && (
-                      <motion.div
-                        initial={{ opacity: 0, height: 0 }}
-                        animate={{ opacity: 1, height: 'auto' }}
-                        exit={{ opacity: 0, height: 0 }}
-                        className="space-y-6 overflow-hidden"
-                      >
-                         <div className="space-y-4">
-                            <input 
-                              type="text"
-                              placeholder="Título"
-                              value={formData.recruitment_title}
-                              onChange={e => setFormData(p => ({ ...p, recruitment_title: e.target.value }))}
-                              className="w-full h-14 px-5 rounded-2xl bg-foreground/[0.03] border border-white/5 focus:border-primary/40 outline-none text-sm font-black italic uppercase text-foreground tracking-tight"
-                            />
-                            <textarea 
-                              placeholder="Descripción breve..."
-                              value={formData.recruitment_description}
-                              onChange={e => setFormData(p => ({ ...p, recruitment_description: e.target.value }))}
-                              className="w-full h-24 p-5 rounded-2xl bg-foreground/[0.03] border border-white/5 focus:border-primary/40 outline-none text-[11px] font-bold uppercase tracking-widest text-foreground"
-                            />
-                         </div>
-
-                         <div className="space-y-4">
-                            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                               {['GK', 'DF', 'MF', 'FW'].map(pos => {
-                                  const count = formData.slots.filter(s => s.position === pos).length;
-                                  const label = pos === 'GK' ? 'Portero' : pos === 'DF' ? 'Defensa' : pos === 'MF' ? 'Medio' : 'Delantero';
-                                  return (
-                                    <div key={pos} className="p-4 rounded-2xl bg-foreground/[0.02] border border-white/5 flex flex-col items-center gap-2">
-                                       <span className="text-[9px] font-bold text-foreground/40 uppercase">{label}</span>
-                                       <div className="flex items-center gap-4">
-                                          <button 
-                                            type="button"
-                                            onClick={() => {
-                                               const idx = formData.slots.findLastIndex(s => s.position === pos);
-                                               if (idx !== -1) {
-                                                  const newSlots = [...formData.slots];
-                                                  newSlots.splice(idx, 1);
-                                                  setFormData(p => ({ ...p, slots: newSlots }));
-                                               }
-                                            }}
-                                            className="font-black text-foreground/40 hover:text-red-500"
-                                          >
-                                             -
-                                          </button>
-                                          <span className="text-lg font-black italic">{count}</span>
-                                          <button 
-                                            type="button"
-                                            onClick={() => {
-                                               setFormData(p => ({ ...p, slots: [...p.slots, { position: pos as any, team: 'A' }] }));
-                                            }}
-                                            className="font-black text-foreground/40 hover:text-primary"
-                                          >
-                                             +
-                                          </button>
-                                       </div>
-                                    </div>
-                                  )
-                               })}
-                            </div>
-                         </div>
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
                 </div>
 
 

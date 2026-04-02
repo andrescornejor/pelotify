@@ -11,6 +11,7 @@ import {
   Search,
   Trophy,
   LayoutGrid,
+  UserPlus,
   MessageSquare
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -50,10 +51,10 @@ export function BottomNav() {
       activeColor: '#2cfc7d'
     },
     { 
-      label: 'FUTTOK', 
-      href: '/highlights', 
-      icon: Flame,
-      activeColor: '#f59e0b'
+      label: 'FICHAJES', 
+      href: '/recruitment', 
+      icon: UserPlus,
+      activeColor: '#10b981'
     },
     { 
       label: 'CHATS', 

@@ -22,6 +22,7 @@ import {
   Award,
   Crown,
   LayoutGrid,
+  UserPlus,
 } from 'lucide-react';
 import Link from 'next/link';
 import { useAuth } from '@/contexts/AuthContext';
@@ -186,6 +187,7 @@ export const SidebarContent = memo(function SidebarContent({
       items: [
         { icon: HomeIcon, label: 'Inicio', href: '/' },
         { icon: Search, label: 'Buscar Partidos', href: '/search' },
+        { icon: UserPlus, label: 'Mercado Fichajes', href: '/recruitment', isNew: true },
         { icon: MapPin, label: 'Sedes en tu zona', href: '/establecimientos', isPro: true },
         { icon: Target, label: 'Torneos/Copas', href: '/tournaments', isNew: true },
       ]

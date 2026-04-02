@@ -131,4 +131,11 @@ export const queryKeys = {
     all: ['home'] as const,
     data: (userId: string) => [...queryKeys.home.all, 'data', userId] as const,
   },
+
+  // ── Recruitment ──
+  recruitment: {
+    all: ['recruitment'] as const,
+    lists: () => [...queryKeys.recruitment.all, 'list'] as const,
+    byId: (id: string) => [...queryKeys.recruitment.all, 'detail', id] as const,
+  },
 } as const;
