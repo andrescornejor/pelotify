@@ -444,9 +444,9 @@ function MatchLobbyContent() {
             <img
               src="https://images.unsplash.com/photo-1574629810360-7efbbe195018?auto=format&fit=crop&q=80&w=2000"
               alt=""
-              className="w-full h-full object-cover grayscale opacity-20"
+              className="w-full h-full object-cover grayscale opacity-40"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-background via-background/60 to-transparent" />
+            <div className="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent" />
           </div>
 
           <Link
@@ -614,9 +614,9 @@ function MatchLobbyContent() {
           <img
             src="https://images.unsplash.com/photo-1574629810360-7efbbe195018?auto=format&fit=crop&q=80&w=2000"
             alt=""
-            className="w-full h-full object-cover grayscale opacity-20 object-[center_35%]"
+            className="w-full h-full object-cover grayscale opacity-40 object-[center_35%]"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-background via-background/20 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-t from-background via-background/10 to-transparent" />
         </div>
 
         <Link
