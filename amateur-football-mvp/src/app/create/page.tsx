@@ -227,7 +227,6 @@ export default function CreateMatchPage() {
     price: 0,
     level: 'Amateur',
     is_private: false,
-    is_recruitment: false,
     missing_players: 0,
     field_id: '', // To link with canchas schema
     business_id: '',
@@ -354,21 +353,14 @@ export default function CreateMatchPage() {
     // Reset manual edit flag if changing format, to allow venue price to take over
     setPriceManuallyEdited(false);
 
-    // Update missing players if they exceed the new format's limit
-    let newMissingPlayers = formData.missing_players;
-    if (formData.is_recruitment) {
-      const maxPlayersMap = { F5: 9, F7: 13, F11: 21 };
-      if (newMissingPlayers > maxPlayersMap[type]) {
-        newMissingPlayers = maxPlayersMap[type];
-      }
-    }
+
 
     setFormData({ 
       ...formData, 
       type, 
       price: newPrice, 
       field_id: fieldId,
-      missing_players: newMissingPlayers 
+      missing_players: 0 
     });
   };
 
@@ -1040,89 +1032,7 @@ export default function CreateMatchPage() {
                   </div>
                 </div>
 
-                {/* Match Mode Selection */}
-                <div className="space-y-4">
-                  <span className="text-[10px] font-black text-foreground/30 uppercase tracking-[0.4em] px-1">
-                    Tipo de Convocatoria
-                  </span>
-                  <div className="grid grid-cols-2 gap-4">
-                    <button
-                      type="button"
-                      onClick={() => setFormData({ ...formData, is_recruitment: false, missing_players: 0 })}
-                      className={cn(
-                        "p-5 rounded-3xl border text-left transition-all duration-300 flex flex-col gap-3 relative overflow-hidden",
-                        !formData.is_recruitment 
-                          ? "border-primary bg-primary/[0.08]" 
-                          : "border-foreground/[0.06] bg-foreground/[0.02] hover:border-foreground/15"
-                      )}
-                    >
-                      <div className={cn(
-                        "w-10 h-10 rounded-2xl flex items-center justify-center transition-all",
-                        !formData.is_recruitment ? "bg-primary text-black" : "bg-foreground/[0.04] text-foreground/20"
-                      )}>
-                        <Users className="w-5 h-5" />
-                      </div>
-                      <div>
-                        <span className={cn("block text-sm font-black italic uppercase tracking-tight", !formData.is_recruitment ? "text-foreground" : "text-foreground/30")}>Partido Completo</span>
-                        <span className={cn("block text-[10px] font-bold tracking-wide mt-0.5", !formData.is_recruitment ? "text-foreground/50" : "text-foreground/15")}>Todos se unen por la App</span>
-                      </div>
-                    </button>
 
-                    <button
-                      type="button"
-                      onClick={() => setFormData({ ...formData, is_recruitment: true, missing_players: 1 })}
-                      className={cn(
-                        "p-5 rounded-3xl border text-left transition-all duration-300 flex flex-col gap-3 relative overflow-hidden",
-                        formData.is_recruitment 
-                          ? "border-amber-500 bg-amber-500/[0.08]" 
-                          : "border-foreground/[0.06] bg-foreground/[0.02] hover:border-foreground/15"
-                      )}
-                    >
-                      <div className={cn(
-                        "w-10 h-10 rounded-2xl flex items-center justify-center transition-all",
-                        formData.is_recruitment ? "bg-amber-500 text-black" : "bg-foreground/[0.04] text-foreground/20"
-                      )}>
-                        <Zap className="w-5 h-5" />
-                      </div>
-                      <div>
-                        <span className={cn("block text-sm font-black italic uppercase tracking-tight", formData.is_recruitment ? "text-foreground" : "text-foreground/30")}>Búsqueda de Emergencia</span>
-                        <span className={cn("block text-[10px] font-bold tracking-wide mt-0.5", formData.is_recruitment ? "text-foreground/50" : "text-foreground/15")}>Solo busco algunos jugadores</span>
-                      </div>
-                    </button>
-                  </div>
-                </div>
-
-                {/* Recruiting Count Slider (Only if is_recruitment is true) */}
-                <AnimatePresence>
-                  {formData.is_recruitment && (
-                    <motion.div
-                      initial={{ opacity: 0, height: 0 }}
-                      animate={{ opacity: 1, height: 'auto' }}
-                      exit={{ opacity: 0, height: 0 }}
-                      className="space-y-4"
-                    >
-                      <div className="flex items-center justify-between px-1">
-                        <span className="text-[10px] font-black text-amber-500 uppercase tracking-[0.4em]">
-                          ¿Cuántos te faltan?
-                        </span>
-                        <span className="text-2xl font-black italic text-amber-500 font-kanit">
-                          {formData.missing_players} {formData.missing_players === 1 ? 'JUGADOR' : 'JUGADORES'}
-                        </span>
-                      </div>
-                      <input 
-                        type="range"
-                        min="1"
-                        max={formData.type === 'F5' ? 9 : formData.type === 'F7' ? 13 : 21}
-                        value={formData.missing_players}
-                        onChange={(e) => setFormData({ ...formData, missing_players: parseInt(e.target.value) })}
-                        className="w-full h-2 bg-foreground/10 rounded-lg appearance-none cursor-pointer accent-amber-500"
-                      />
-                      <p className="text-[9px] font-medium text-foreground/30 italic">
-                        * Los otros {formData.type === 'F5' ? 10 - formData.missing_players : formData.type === 'F7' ? 14 - formData.missing_players : 22 - formData.missing_players} jugadores se consideran ya confirmados fuera de la plataforma.
-                      </p>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
               </motion.div>
             )}
 

@@ -387,38 +387,27 @@ export default function SearchPage() {
                       </div>
                       <div className="flex items-center gap-2">
                         {(() => {
-                          const maxPlayers =
-                            match.type === 'F5' ? 10 : match.type === 'F7' ? 14 : 22;
-                          const countObj = match.participants?.[0];
-                          const currentPlayers =
-                            typeof countObj === 'number'
-                              ? countObj
-                              : countObj?.count !== undefined
-                                ? countObj.count
-                                : match.participants?.length || 0;
-                          const isRecruitment = match.is_recruitment && match.missing_players !== undefined;
-                          const missing = isRecruitment 
-                            ? match.missing_players 
-                            : Math.max(0, maxPlayers - currentPlayers);
-                          const currentVirtualCount = isRecruitment 
-                            ? maxPlayers - match.missing_players 
-                            : currentPlayers;
+                          const maxPlayers = match.type === 'F5' ? 10 : match.type === 'F7' ? 14 : 22;
+                          const currentPlayers = typeof match.participants?.[0] === 'number'
+                            ? match.participants[0]
+                            : (match.participants?.[0] as any)?.count ?? (match.participants?.length || 0);
+                          const missing = Math.max(0, maxPlayers - currentPlayers);
 
                           return (
                             <>
                               <div
                                 className={cn(
                                   'w-1.5 h-1.5 rounded-full',
-                                  missing > 0 ? (isRecruitment ? 'bg-amber-500 animate-pulse' : 'bg-primary animate-pulse') : 'bg-zinc-700'
+                                  missing > 0 ? 'bg-primary animate-pulse' : 'bg-zinc-700'
                                 )}
                               />
                               <span
                                 className={cn(
                                   'text-[10px] font-black uppercase italic tracking-widest leading-none',
-                                  missing > 0 ? (isRecruitment ? 'text-amber-500' : 'text-primary') : 'text-foreground/30'
+                                  missing > 0 ? 'text-primary' : 'text-foreground/30'
                                 )}
                               >
-                                {isRecruitment ? `FALTAN ${missing}` : (missing > 0 ? `Faltan ${missing}` : 'COMPLETO')}
+                                {missing > 0 ? `Faltan ${missing}` : 'COMPLETO'}
                               </span>
                             </>
                           );
@@ -435,33 +424,20 @@ export default function SearchPage() {
                           Disponibilidad
                         </span>
                         {(() => {
-                          const maxPlayers =
-                            match.type === 'F5' ? 10 : match.type === 'F7' ? 14 : 22;
-                          const countObj = match.participants?.[0];
-                          const realPlayers =
-                            typeof countObj === 'number'
-                              ? countObj
-                              : countObj?.count !== undefined
-                                ? countObj.count
-                                : match.participants?.length || 0;
-                          
-                          const isRecruitment = match.is_recruitment && match.missing_players !== undefined;
-                          const currentVirtualCount = isRecruitment 
-                            ? maxPlayers - match.missing_players 
-                            : realPlayers;
-                          
-                          const missing = isRecruitment 
-                            ? match.missing_players 
-                            : Math.max(0, maxPlayers - realPlayers);
+                          const maxPlayers = match.type === 'F5' ? 10 : match.type === 'F7' ? 14 : 22;
+                          const realPlayers = typeof match.participants?.[0] === 'number'
+                            ? match.participants[0]
+                            : (match.participants?.[0] as any)?.count ?? (match.participants?.length || 0);
+                          const missing = Math.max(0, maxPlayers - realPlayers);
 
                           return (
                             <span
                               className={cn(
                                 'text-[11px] font-black uppercase tracking-widest italic',
-                                missing > 0 ? (isRecruitment ? 'text-amber-500' : 'text-primary') : 'text-foreground/20'
+                                missing > 0 ? 'text-primary' : 'text-foreground/20'
                               )}
                             >
-                              {currentVirtualCount} / {maxPlayers}
+                              {realPlayers} / {maxPlayers}
                             </span>
                           );
                         })()}

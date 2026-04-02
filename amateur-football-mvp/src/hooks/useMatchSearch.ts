@@ -64,7 +64,6 @@ export function useMatchSearch() {
     const baseFiltered = matches.filter((match) => {
       if (match.is_completed) return false;
       if (match.is_private && !joinedIds.has(match.id)) return false;
-      if (match.is_recruitment) return false; // Exclude emergency recruitment from the main radar
 
       // Type Filter
       if (typeFilter !== 'All' && match.type !== typeFilter) return false;

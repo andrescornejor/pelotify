@@ -23,7 +23,7 @@ export interface Match {
   team_a_name?: string;
   team_b_name?: string;
   is_private?: boolean;
-  is_recruitment?: boolean;
+
   payment_method?: 'mercado_pago' | 'cash';
   field_id?: string;
   business_id?: string;
@@ -99,7 +99,7 @@ export async function getMatchById(id: string) {
                 paid,
                 created_at
             ),
-            recruitment:match_recruitment(*)
+
         `
     )
     .eq('id', id)
@@ -131,15 +131,7 @@ export async function getMatchById(id: string) {
     matchData.team_b_score = matchData.team_b_score ?? (matchData as any).score_b ?? 0;
   }
 
-  // Step 4: Sync recruitment fields (robust check)
-  const recruitmentData = Array.isArray((matchData as any).recruitment) 
-    ? (matchData as any).recruitment[0] 
-    : (matchData as any).recruitment;
 
-  if (recruitmentData) {
-    matchData.is_recruitment = recruitmentData.is_active;
-    (matchData as any).missing_players = recruitmentData.missing_players;
-  }
 
   return matchData;
 }
@@ -169,14 +161,7 @@ export async function createMatch(matchData: Partial<Match> & { field_id?: strin
   if (error) throw error;
   const match = data as Match;
 
-  // Add recruitment specific entry if needed
-  if (match.is_recruitment) {
-    await supabase.from('match_recruitment').insert([{
-      match_id: match.id,
-      missing_players: insertData.missing_players || 1,
-      is_active: true
-    }]);
-  }
+
 
   // If this match happens in a registered venue field, automatically book it
   if (finalFieldId && match.date && match.time && match.price !== undefined) {
@@ -244,23 +229,7 @@ export async function joinMatch(matchId: string, userId: string, team: 'A' | 'B'
 
   if (joinError) throw joinError;
 
-  // Si el partido está en modo reclutamiento, actualizamos el contador y el estado si corresponde
-  const { data: match } = await supabase
-    .from('matches')
-    .select('is_recruitment, missing_players')
-    .eq('id', matchId)
-    .single();
 
-  if (match?.is_recruitment && (match.missing_players || 0) > 0) {
-    const newMissing = Math.max(0, match.missing_players - 1);
-    await supabase
-      .from('matches')
-      .update({ 
-        missing_players: newMissing,
-        is_recruitment: newMissing > 0 
-      })
-      .eq('id', matchId);
-  }
 }
 
 export async function switchTeam(matchId: string, userId: string, team: 'A' | 'B' | null) {

@@ -227,15 +227,7 @@ function MatchLobbyContent() {
   const [isEditingNames, setIsEditingNames] = useState(false);
 
   // 2. LOGIC & EFFECTS
-  const recruitmentItem = Array.isArray((match as any)?.recruitment) 
-    ? (match as any).recruitment[0] 
-    : (match as any)?.recruitment;
 
-  const isEmergencyRecruitment = !!(
-    (match?.is_recruitment || recruitmentItem?.is_active) && 
-    !match?.is_completed && 
-    searchParams.get('mode') !== 'detail'
-  );
 
   // Sync team names
   useEffect(() => {
@@ -245,12 +237,7 @@ function MatchLobbyContent() {
     }
   }, [match?.team_a_name, match?.team_b_name]);
 
-  // Redirect to Emergency Lobby if match is in recruitment mode
-  useEffect(() => {
-    if (isEmergencyRecruitment && match?.id) {
-      router.replace(`/match/emergency?id=${match.id}`);
-    }
-  }, [isEmergencyRecruitment, match?.id, router]);
+
 
   // Sync venue info when match loads
   useEffect(() => {
@@ -300,7 +287,7 @@ function MatchLobbyContent() {
   };
 
   // 3. EARLY RETURNS (Only AFTER all hooks)
-  if (isLoading || isEmergencyRecruitment) return <MatchSkeleton />;
+  if (isLoading) return <MatchSkeleton />;
   if (error || !match) {
     return (
       <div className="min-h-screen bg-black flex flex-col items-center justify-center p-6 text-center">

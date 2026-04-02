@@ -188,7 +188,6 @@ export const SidebarContent = memo(function SidebarContent({
         { icon: Search, label: 'Buscar Partidos', href: '/search' },
         { icon: MapPin, label: 'Sedes en tu zona', href: '/establecimientos', isPro: true },
         { icon: Target, label: 'Torneos/Copas', href: '/tournaments', isNew: true },
-        { icon: Zap, label: 'Fichajes / Mercado', href: '/recruitment', isPro: true },
       ]
     },
     {
