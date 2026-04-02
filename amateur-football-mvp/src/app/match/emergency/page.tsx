@@ -18,16 +18,16 @@ import {
   MessageSquare,
   Activity,
   Award,
-  AlertTriangle
+  AlertTriangle,
+  Trash2, 
+  ExternalLink
 } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useEmergencyMatch, useJoinEmergencyMatch, useLeaveEmergencyMatch } from '@/hooks/useEmergencyQueries';
 import { useDeleteMatch } from '@/hooks/useMatchQueries';
 import { MatchParticipant } from '@/lib/matches';
 import { cn } from '@/lib/utils';
-import PlayerSlot from '@/components/PlayerSlot';
 import Link from 'next/link';
-import { Trash2, ExternalLink } from 'lucide-react';
 
 function EmergencyLobbyContent() {
   const searchParams = useSearchParams();
@@ -39,16 +39,17 @@ function EmergencyLobbyContent() {
   const joinMutation = useJoinEmergencyMatch();
   const leaveMutation = useLeaveEmergencyMatch();
   const deleteMutation = useDeleteMatch();
+  
+  const [copied, setCopied] = useState(false);
 
-  // If recruitment is disabled or match is completed, go back to normal lobby
+  // Redirect logic
   useEffect(() => {
     if (match && (!match.is_recruitment || match.is_completed)) {
       router.replace(`/match?id=${match.id}`);
     }
   }, [match, router]);
 
-  const [copied, setCopied] = useState(false);
-
+  // Derived state (always calculate after hooks, before any potential return)
   const participants: MatchParticipant[] = match?.participants || [];
   const hasJoined = participants.some(p => p.user_id === user?.id);
   const isCreator = match?.creator_id === user?.id;
@@ -56,7 +57,6 @@ function EmergencyLobbyContent() {
   const formatNum = parseInt(match?.type?.replace('F', '') || '5');
   const totalSlots = formatNum * 2;
   
-  // Si el usuario puso manualmente cuántos faltan, respetamos eso para el contador visual
   const missingCount = (match?.is_recruitment && match.missing_players !== undefined) 
     ? match.missing_players 
     : Math.max(0, totalSlots - participants.length);
@@ -91,6 +91,9 @@ function EmergencyLobbyContent() {
     }
   };
 
+  // --- STABLE RENDER LOGIC ---
+  
+  // 1. Loading State
   if (isLoading || (match && (!match.is_recruitment || match.is_completed))) {
     return (
       <div className="min-h-screen bg-black flex flex-col items-center justify-center gap-6">
@@ -105,6 +108,7 @@ function EmergencyLobbyContent() {
     );
   }
 
+  // 2. Error State
   if (error && !match) {
     return (
       <div className="min-h-screen bg-black flex flex-col items-center justify-center p-6 text-center">
@@ -117,6 +121,7 @@ function EmergencyLobbyContent() {
     );
   }
 
+  // 3. Null Guard (last check before full render)
   if (!match) return null;
 
   return (
