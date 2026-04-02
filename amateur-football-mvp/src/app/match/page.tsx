@@ -215,10 +215,10 @@ function MatchLobbyContent() {
 
   // Redirect to Emergency Lobby if match is in recruitment mode
   useEffect(() => {
-    if (match?.is_recruitment && !match.is_completed) {
+    if (match?.is_recruitment && !match.is_completed && searchParams.get('mode') !== 'detail') {
       router.replace(`/match/emergency?id=${match.id}`);
     }
-  }, [match, router]);
+  }, [match, router, searchParams]);
 
   const [isPostMatchModalOpen, setIsPostMatchModalOpen] = useState(false);
   const [venueInfo, setVenueInfo] = useState<any>(null);

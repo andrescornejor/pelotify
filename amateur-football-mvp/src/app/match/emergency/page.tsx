@@ -22,10 +22,12 @@ import {
 } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/lib/supabase';
-import { useMatchById, useJoinMatch, useLeaveMatch } from '@/hooks/useMatchQueries';
+import { useMatchById, useJoinMatch, useLeaveMatch, useDeleteMatch } from '@/hooks/useMatchQueries';
 import { MatchParticipant } from '@/lib/matches';
 import { cn } from '@/lib/utils';
 import PlayerSlot from '@/components/PlayerSlot';
+import Link from 'next/link';
+import { Trash2, ExternalLink } from 'lucide-react';
 
 function EmergencyLobbyContent() {
   const searchParams = useSearchParams();
@@ -36,6 +38,7 @@ function EmergencyLobbyContent() {
   const { data: match, isLoading, error } = useMatchById(id || undefined);
   const joinMutation = useJoinMatch();
   const leaveMutation = useLeaveMatch();
+  const deleteMutation = useDeleteMatch();
 
   // If recruitment is disabled or match is completed, go back to normal lobby
   useEffect(() => {
@@ -52,7 +55,13 @@ function EmergencyLobbyContent() {
   
   const formatNum = parseInt(match?.type?.replace('F', '') || '5');
   const totalSlots = formatNum * 2;
-  const missingCount = Math.max(0, totalSlots - participants.length);
+  
+  // Si el usuario puso manualmente cuántos faltan, respetamos eso para el contador visual
+  const missingCount = (match?.is_recruitment && match.missing_players !== undefined) 
+    ? match.missing_players 
+    : Math.max(0, totalSlots - participants.length);
+  
+  const filledCount = totalSlots - missingCount;
 
   const handleShare = () => {
     const url = window.location.href;
@@ -67,6 +76,18 @@ function EmergencyLobbyContent() {
       await joinMutation.mutateAsync({ matchId: match.id, userId: user.id, team: null });
     } catch (e) {
       console.error(e);
+    }
+  };
+
+  const handleDelete = async () => {
+    if (!match) return;
+    if (window.confirm('¿Estás seguro que querés eliminar este partido?')) {
+      try {
+        await deleteMutation.mutateAsync(match.id);
+        router.push('/');
+      } catch (e) {
+        console.error(e);
+      }
     }
   };
 
@@ -204,11 +225,11 @@ function EmergencyLobbyContent() {
           <div className="space-y-6">
             <div className="flex items-center justify-between px-2">
                <h4 className="text-[10px] font-black uppercase tracking-[0.3em] text-white/30 italic">Unidades Desplegadas</h4>
-               <span className="text-[10px] font-black text-amber-500">{participants.length} / {totalSlots}</span>
+               <span className="text-[10px] font-black text-amber-500">{filledCount} / {totalSlots}</span>
             </div>
 
             <div className="grid grid-cols-4 sm:grid-cols-5 gap-4">
-               {/* Occupied Slots */}
+               {/* Confirmed Participants in App */}
                {participants.map((p) => (
                  <motion.div 
                    key={p.id}
@@ -216,21 +237,32 @@ function EmergencyLobbyContent() {
                    animate={{ scale: 1, opacity: 1 }}
                    className="relative group"
                  >
-                    <div className="aspect-square rounded-2xl bg-white/5 border border-white/10 p-1 flex items-center justify-center relative overflow-hidden">
+                    <div className="aspect-square rounded-2xl bg-amber-500/10 border-2 border-amber-500/30 p-1 flex items-center justify-center relative overflow-hidden">
                        {p.profiles?.avatar_url ? (
                          <img src={p.profiles.avatar_url} alt="" className="w-full h-full object-cover rounded-xl" />
                        ) : (
-                         <Users className="w-6 h-6 text-white/10" />
+                         <div className="w-full h-full flex items-center justify-center bg-surface">
+                            <Users className="w-6 h-6 text-amber-500/40" />
+                         </div>
                        )}
                        {p.user_id === user?.id && (
                          <div className="absolute inset-0 border-2 border-amber-500 rounded-2xl pointer-events-none" />
                        )}
                     </div>
-                    {p.profiles?.name && (
-                      <div className="absolute -bottom-8 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity bg-black border border-white/10 px-2 py-1 rounded text-[8px] font-black whitespace-nowrap z-20">
-                        {p.profiles.name.toUpperCase()}
-                      </div>
-                    )}
+                 </motion.div>
+               ))}
+
+               {/* External Players (Calculated from manual missing_players) */}
+               {Array.from({ length: Math.max(0, totalSlots - participants.length - missingCount) }).map((_, i) => (
+                 <motion.div 
+                    key={`external-${i}`}
+                    initial={{ scale: 0, opacity: 0 }}
+                    animate={{ scale: 1, opacity: 0.8 }}
+                    className="aspect-square rounded-2xl bg-white/5 border border-white/20 flex items-center justify-center"
+                 >
+                    <div className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center border border-white/10 group">
+                       <Check className="w-4 h-4 text-white/20 group-hover:text-amber-500 transition-colors" />
+                    </div>
                  </motion.div>
                ))}
 
@@ -241,7 +273,7 @@ function EmergencyLobbyContent() {
                     initial={{ scale: 0, opacity: 0 }}
                     animate={{ scale: 1, opacity: 0.5 }}
                     transition={{ delay: i * 0.1 }}
-                    className="aspect-square rounded-2xl border-2 border-dashed border-white/10 flex items-center justify-center group/empty hover:border-amber-500/50 hover:bg-amber-500/5 transition-all cursor-pointer"
+                    className="aspect-square rounded-2xl border-2 border-dashed border-white/10 flex items-center justify-center group/empty hover:border-amber-500/50 hover:bg-amber-500/10 transition-all cursor-pointer shadow-[inset_0_0_20px_rgba(255,255,255,0.02)]"
                     onClick={!hasJoined ? handleJoin : undefined}
                  >
                     <Zap className={cn(
@@ -282,7 +314,22 @@ function EmergencyLobbyContent() {
                 >
                   <Share2 className="w-4 h-4" /> Reclutar Amigos
                 </button>
-                {!isCreator && (
+                {isCreator ? (
+                  <div className="flex gap-2 w-full">
+                     <button
+                        onClick={handleDelete}
+                        className="w-16 h-16 rounded-2xl bg-red-500/10 border border-red-500/20 text-red-500 flex items-center justify-center hover:bg-red-500/20 transition-all active:scale-90"
+                      >
+                        <Trash2 className="w-6 h-6" />
+                      </button>
+                      <Link 
+                        href={`/match?id=${match.id}&mode=detail`}
+                        className="flex-1 h-16 rounded-2xl bg-white/5 border border-white/10 font-black italic uppercase text-[10px] tracking-widest flex items-center justify-center gap-3 hover:bg-white/10 transition-all text-white"
+                      >
+                        <ExternalLink className="w-4 h-4" /> Lobby Detallado
+                      </Link>
+                  </div>
+                ) : (
                   <button
                     onClick={() => leaveMutation.mutateAsync({ matchId: match.id, userId: user!.id })}
                     className="w-16 h-16 rounded-2xl bg-red-500/10 border border-red-500/20 text-red-500 flex items-center justify-center hover:bg-red-500/20 transition-all active:scale-90"
