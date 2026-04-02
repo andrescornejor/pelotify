@@ -178,17 +178,17 @@ export default function HomePage() {
 
   const tabContentVariants = {
     hidden: { opacity: 0, y: 10, scale: 0.98 },
-    visible: { 
-      opacity: 1, 
-      y: 0, 
+    visible: {
+      opacity: 1,
+      y: 0,
       scale: 1,
-      transition: { type: 'spring' as const, stiffness: 300, damping: 30, duration: 0.4 } 
+      transition: { type: 'spring' as const, stiffness: 300, damping: 30, duration: 0.4 }
     },
-    exit: { 
-      opacity: 0, 
-      y: -10, 
+    exit: {
+      opacity: 0,
+      y: -10,
       scale: 0.98,
-      transition: { duration: 0.2, ease: "easeIn" as const } 
+      transition: { duration: 0.2, ease: "easeIn" as const }
     }
   };
 
@@ -383,42 +383,42 @@ export default function HomePage() {
                 </motion.h1>
               </div>
 
-                <motion.div
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ delay: 0.5 }}
-                  className="flex items-center gap-4 py-2"
-                >
-                  <div className="h-[2px] w-12 bg-primary/30" />
-                  {/* Avatar with rank glow */}
-                  <div id="hero-avatar" className="relative group/avatar">
-                    <div
-                      className="absolute -inset-4 blur-3xl rounded-full opacity-25 group-hover/avatar:opacity-45 transition-opacity"
-                      style={{ backgroundColor: rankCalculation.rank.glow }}
-                    />
-                    <div
-                      className="relative w-12 h-12 rounded-full border-2 overflow-hidden flex items-center justify-center bg-surface shadow-2xl"
-                      style={{ borderColor: rankCalculation.info.color }}
-                    >
-                      {metadata?.avatar_url ? (
-                        <img src={metadata.avatar_url} alt="" className="w-full h-full object-cover" />
-                      ) : (
-                        <User2 className="w-6 h-6 text-foreground/40" />
-                      )}
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.5 }}
+                className="flex items-center gap-4 py-2"
+              >
+                <div className="h-[2px] w-12 bg-primary/30" />
+                {/* Avatar with rank glow */}
+                <div id="hero-avatar" className="relative group/avatar">
+                  <div
+                    className="absolute -inset-4 blur-3xl rounded-full opacity-25 group-hover/avatar:opacity-45 transition-opacity"
+                    style={{ backgroundColor: rankCalculation.rank.glow }}
+                  />
+                  <div
+                    className="relative w-12 h-12 rounded-full border-2 overflow-hidden flex items-center justify-center bg-surface shadow-2xl"
+                    style={{ borderColor: rankCalculation.info.color }}
+                  >
+                    {metadata?.avatar_url ? (
+                      <img src={metadata.avatar_url} alt="" className="w-full h-full object-cover" />
+                    ) : (
+                      <User2 className="w-6 h-6 text-foreground/40" />
+                    )}
 
-                      {/* Floating Rank Icon */}
-                      <div
-                        className="absolute -top-1 -right-1 w-5 h-5 rounded-full bg-background border border-foreground/20 flex items-center justify-center shadow-lg"
-                      >
-                        <rankCalculation.rank.icon className="w-3 h-3" style={{ color: rankCalculation.rank.hex }} />
-                      </div>
+                    {/* Floating Rank Icon */}
+                    <div
+                      className="absolute -top-1 -right-1 w-5 h-5 rounded-full bg-background border border-foreground/20 flex items-center justify-center shadow-lg"
+                    >
+                      <rankCalculation.rank.icon className="w-3 h-3" style={{ color: rankCalculation.rank.hex }} />
                     </div>
                   </div>
-                  <p className="text-foreground/60 text-lg font-medium font-kanit">
-                    Bienvenido,{' '}
-                    <span className="text-foreground font-black uppercase">{userName}</span>
-                  </p>
-                </motion.div>
+                </div>
+                <p className="text-foreground/60 text-lg font-medium font-kanit">
+                  Bienvenido,{' '}
+                  <span className="text-foreground font-black uppercase">{userName}</span>
+                </p>
+              </motion.div>
 
               {/* Stats / Rank Summary */}
               <motion.div
@@ -550,7 +550,7 @@ export default function HomePage() {
                     )}
                     <Search className="w-5 h-5 relative z-10 text-primary group-hover:scale-110 transition-transform duration-500" />
                     <span className="relative z-10 italic font-bold tracking-[0.2em] group-hover:text-primary transition-colors">BUSCAR PARTIDO</span>
-                    
+
                     <div className="absolute top-2.5 right-4 flex items-center gap-1.5 z-20">
                       <div className="w-1.5 h-1.5 bg-primary/40 rounded-full animate-pulse" />
                     </div>
@@ -577,380 +577,380 @@ export default function HomePage() {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
           <div className="lg:col-span-8 xl:col-span-8 space-y-6 order-2 lg:order-1">
             {/* --- DASHBOARD TAB CONTROLLER --- */}
-             <section className="sticky top-20 lg:top-4 z-40 bg-background/80 backdrop-blur-xl py-2 -mx-2 px-2 lg:bg-transparent lg:static lg:pb-6">
-                <div className="w-full p-1.5 rounded-[2rem] glass-premium border-foreground/20 flex items-center gap-1 shadow-2xl relative overflow-hidden">
-                   {!performanceMode && (
-                      <div className="absolute inset-0 bg-gradient-to-r from-primary/5 via-transparent to-primary/5 pointer-events-none" />
-                   )}
-                   {[
-                      { id: 'activity', label: 'Feed', icon: Activity },
-                      { id: 'teams', label: 'Equipos', icon: Users },
-                      { id: 'venues', label: 'Sedes', icon: MapPin },
-                      { id: 'futtok', label: 'FutTok', icon: Flame },
-                   ].map((tab) => {
-                      const isSelected = activeTab === tab.id;
-                      return (
-                         <button
-                            key={tab.id}
-                            onClick={() => setActiveTab(tab.id as any)}
-                            className={cn(
-                               "relative flex-1 px-5 py-2.5 rounded-full flex items-center justify-center gap-2.5 transition-all duration-500 group",
-                               isSelected ? "text-background" : "text-foreground/40 hover:text-foreground/70"
-                            )}
-                         >
-                           {isSelected && (
-                              <motion.div
-                                 layoutId="active-dashboard-pill"
-                                 className="absolute inset-0 bg-gradient-to-br from-primary to-primary-dark rounded-full shadow-[0_4px_20px_rgba(44,252,125,0.4)]"
-                                 transition={{ type: "spring", stiffness: 400, damping: 35 }}
-                              />
-                           )}
-                           <tab.icon className={cn(
-                              "w-4 h-4 relative z-10 transition-transform duration-500",
-                              isSelected ? "scale-110 text-background" : "group-hover:scale-110"
-                           )} />
-                           <span className="text-[11px] font-black uppercase tracking-widest italic relative z-10 leading-none">
-                              {tab.label}
-                           </span>
-                        </button>
-                     );
-                  })}
-               </div>
+            <section className="sticky top-20 lg:top-4 z-40 bg-background/80 backdrop-blur-xl py-2 -mx-2 px-2 lg:bg-transparent lg:static lg:pb-6">
+              <div className="w-full p-1.5 rounded-[2rem] glass-premium border-foreground/20 flex items-center gap-1 shadow-2xl relative overflow-hidden">
+                {!performanceMode && (
+                  <div className="absolute inset-0 bg-gradient-to-r from-primary/5 via-transparent to-primary/5 pointer-events-none" />
+                )}
+                {[
+                  { id: 'activity', label: 'Feed', icon: Activity },
+                  { id: 'teams', label: 'Equipos', icon: Users },
+                  { id: 'venues', label: 'Sedes', icon: MapPin },
+                  { id: 'futtok', label: 'FutTok', icon: Flame },
+                ].map((tab) => {
+                  const isSelected = activeTab === tab.id;
+                  return (
+                    <button
+                      key={tab.id}
+                      onClick={() => setActiveTab(tab.id as any)}
+                      className={cn(
+                        "relative flex-1 px-5 py-2.5 rounded-full flex items-center justify-center gap-2.5 transition-all duration-500 group",
+                        isSelected ? "text-background" : "text-foreground/40 hover:text-foreground/70"
+                      )}
+                    >
+                      {isSelected && (
+                        <motion.div
+                          layoutId="active-dashboard-pill"
+                          className="absolute inset-0 bg-gradient-to-br from-primary to-primary-dark rounded-full shadow-[0_4px_20px_rgba(44,252,125,0.4)]"
+                          transition={{ type: "spring", stiffness: 400, damping: 35 }}
+                        />
+                      )}
+                      <tab.icon className={cn(
+                        "w-4 h-4 relative z-10 transition-transform duration-500",
+                        isSelected ? "scale-110 text-background" : "group-hover:scale-110"
+                      )} />
+                      <span className="text-[11px] font-black uppercase tracking-widest italic relative z-10 leading-none">
+                        {tab.label}
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
             </section>
 
             <AnimatePresence mode="wait">
-               {activeTab === 'activity' && (
-                  <motion.div
-                     key="activity-tab"
-                     initial="hidden"
-                     animate="visible"
-                     exit="exit"
-                     variants={tabContentVariants}
-                     className="space-y-6"
+              {activeTab === 'activity' && (
+                <motion.div
+                  key="activity-tab"
+                  initial="hidden"
+                  animate="visible"
+                  exit="exit"
+                  variants={tabContentVariants}
+                  className="space-y-6"
+                >
+                  <motion.section
+                    id="stat-cards"
+                    initial="hidden"
+                    animate="visible"
+                    variants={{ visible: { transition: { staggerChildren: 0.08 } } }}
+                    className="grid grid-cols-2 sm:grid-cols-4 gap-4 snap-start scroll-mt-26"
                   >
-                     <motion.section
-                        id="stat-cards"
-                        initial="hidden"
-                        animate="visible"
-                        variants={{ visible: { transition: { staggerChildren: 0.08 } } }}
-                        className="grid grid-cols-2 sm:grid-cols-4 gap-4 snap-start scroll-mt-26"
-                     >
-                        {statCardsData.map((stat, i) => (
-                           <StatCard
-                              key={stat.label}
-                              stat={stat}
-                              i={i}
-                              performanceMode={performanceMode}
-                              fadeUp={fadeUp}
-                           />
-                        ))}
-                     </motion.section>
+                    {statCardsData.map((stat, i) => (
+                      <StatCard
+                        key={stat.label}
+                        stat={stat}
+                        i={i}
+                        performanceMode={performanceMode}
+                        fadeUp={fadeUp}
+                      />
+                    ))}
+                  </motion.section>
 
-                     <SectionDivider />
+                  <SectionDivider />
 
-                     <motion.div
-                        variants={fadeUp}
-                        whileHover={performanceMode ? {} : { scale: 1.01 }}
-                        className={cn(
-                           'relative overflow-hidden rounded-[2.5rem] p-6 flex flex-col sm:flex-row items-center justify-between gap-6 glass-premium border-primary/10',
-                           performanceMode && 'bg-surface'
-                        )}
-                     >
-                        {!performanceMode && (
-                           <div
-                              className="absolute right-0 top-0 w-full h-full opacity-10 pointer-events-none"
-                              style={{
-                                 background:
-                                    'radial-gradient(ellipse at 100% 0%, rgba(44,252,125,0.6) 0%, transparent 60%)',
-                              }}
-                           />
-                        )}
-                        <div className="flex items-center gap-5 relative z-10">
-                           <div className="w-14 h-14 rounded-2xl flex items-center justify-center shrink-0 glass shadow-inner border-foreground/15">
-                              <Users className="w-7 h-7 text-primary" />
-                           </div>
-                           <div>
-                              <h4 className="text-xl font-black text-foreground italic uppercase tracking-tighter leading-none font-kanit">
-                                 Comunidad Activa
-                              </h4>
-                              <p className="text-[10px] font-black text-foreground/40 uppercase tracking-[0.25em] mt-1 font-kanit">
-                                 <span className="text-primary text-base font-black mr-1">{totalPlayers}</span>{' '}
-                                 JUGADORES REGISTRADOS
+                  <motion.div
+                    variants={fadeUp}
+                    whileHover={performanceMode ? {} : { scale: 1.01 }}
+                    className={cn(
+                      'relative overflow-hidden rounded-[2.5rem] p-6 flex flex-col sm:flex-row items-center justify-between gap-6 glass-premium border-primary/10',
+                      performanceMode && 'bg-surface'
+                    )}
+                  >
+                    {!performanceMode && (
+                      <div
+                        className="absolute right-0 top-0 w-full h-full opacity-10 pointer-events-none"
+                        style={{
+                          background:
+                            'radial-gradient(ellipse at 100% 0%, rgba(44,252,125,0.6) 0%, transparent 60%)',
+                        }}
+                      />
+                    )}
+                    <div className="flex items-center gap-5 relative z-10">
+                      <div className="w-14 h-14 rounded-2xl flex items-center justify-center shrink-0 glass shadow-inner border-foreground/15">
+                        <Users className="w-7 h-7 text-primary" />
+                      </div>
+                      <div>
+                        <h4 className="text-xl font-black text-foreground italic uppercase tracking-tighter leading-none font-kanit">
+                          Comunidad Activa
+                        </h4>
+                        <p className="text-[10px] font-black text-foreground/40 uppercase tracking-[0.25em] mt-1 font-kanit">
+                          <span className="text-primary text-base font-black mr-1">{totalPlayers}</span>{' '}
+                          JUGADORES REGISTRADOS
+                        </p>
+                      </div>
+                    </div>
+                    <div className="flex gap-3 relative z-10 shrink-0 w-full sm:w-auto">
+                      <Link href="/teams" className="flex-1 sm:flex-none">
+                        <button className="w-full h-11 px-6 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all hover:bg-foreground/5 glass border-foreground/20 text-foreground/60 font-kanit">
+                          CLUBES TOP
+                        </button>
+                      </Link>
+                      <Link href="/search" className="flex-1 sm:flex-none">
+                        <button className="w-full h-11 px-6 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all hover:scale-[1.03] text-background bg-gradient-to-br from-primary to-primary-dark shadow-xl shadow-primary/20 font-kanit">
+                          MAPA VIVO
+                        </button>
+                      </Link>
+                    </div>
+                  </motion.div>
+
+                  <SectionDivider />
+
+                  <motion.section
+                    variants={fadeUp}
+                    className="space-y-6"
+                  >
+                    <div className="flex items-end justify-between px-1">
+                      <div className="flex flex-col gap-1">
+                        <h2 className="text-xl lg:text-2xl font-black italic text-foreground uppercase tracking-tighter leading-none font-kanit">
+                          Road to Glory
+                        </h2>
+                        <span className="text-[9px] font-semibold text-foreground/40 tracking-wide font-kanit">
+                          Tu camino hacia la leyenda
+                        </span>
+                      </div>
+                      <Sparkles className="w-5 h-5 text-primary/30 shrink-0 mb-1 animate-pulse" />
+                    </div>
+
+                    <div className="glass-premium p-8 rounded-[2.5rem] border-foreground/15 relative overflow-hidden">
+                      <div className="absolute inset-0 opacity-[0.03] pointer-events-none">
+                        <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_center,_var(--primary)_0%,_transparent_70%)]" />
+                      </div>
+
+                      <div className="relative z-10 space-y-10">
+                        <div className="relative flex items-center justify-between px-4 sm:px-10">
+                          <div className="absolute left-0 right-0 h-1 bg-foreground/5 top-1/2 -translate-y-1/2" />
+                          <motion.div
+                            initial={{ width: 0 }}
+                            whileInView={{ width: '100%' }}
+                            transition={{ duration: 2, ease: 'circOut' }}
+                            className="absolute left-0 h-1 bg-gradient-to-r from-primary/20 via-primary to-primary-light top-1/2 -translate-y-1/2"
+                            style={{
+                              width: `${(RANKS.findIndex((rank) => rank.name === rankCalculation.info.name) / (RANKS.length - 1)) * 100}%`,
+                            }}
+                          />
+
+                          {RANKS.map((rankItem, i) => {
+                            const isReached = statsSummary.elo >= rankItem.minElo;
+                            const isCurrent = rankCalculation.info.name === rankItem.name;
+
+                            return (
+                              <div
+                                key={rankItem.name}
+                                className="relative flex flex-col items-center group"
+                              >
+                                <motion.div
+                                  whileHover={{ scale: 1.2 }}
+                                  className={cn(
+                                    'w-10 h-10 rounded-xl flex items-center justify-center border-2 transition-all duration-500',
+                                    isReached
+                                      ? 'bg-background border-primary shadow-[0_0_15px_rgba(44,252,125,0.3)]'
+                                      : 'bg-surface/50 border-foreground/15 opacity-40 group-hover:opacity-100'
+                                  )}
+                                >
+                                  <RankBadgeInline rankName={rankItem.name} size="sm" className="scale-75" />
+                                </motion.div>
+                                {isCurrent && (
+                                  <motion.div
+                                    layoutId="current-rank-indicator"
+                                    className="absolute -top-12"
+                                  >
+                                    <div className="px-2 py-1 rounded bg-primary text-background text-[7px] font-black uppercase tracking-widest whitespace-nowrap relative">
+                                      TU RANGO
+                                      <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-2 h-2 bg-primary rotate-45" />
+                                    </div>
+                                  </motion.div>
+                                )}
+                              </div>
+                            );
+                          })}
+                        </div>
+
+                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-4">
+                          {[
+                            { icon: Activity, color: '#2cfc7d', label: 'Partidos', value: statsSummary.totalMatches },
+                            { icon: Target, color: '#f59e0b', label: 'Goles', value: metadata?.goals || 0 },
+                            { icon: Award, color: '#6366f1', label: 'Honores', value: metadata?.mvp_count || 0 },
+                          ].map((item, i) => (
+                            <div key={i} className="flex items-center gap-4 p-4 rounded-2xl bg-foreground/[0.02] border border-foreground/15 group hover:bg-foreground/[0.04] transition-colors">
+                              <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0" style={{ backgroundColor: `${item.color}15` }}>
+                                <item.icon className="w-5 h-5" style={{ color: item.color }} />
+                              </div>
+                              <div>
+                                <p className="text-[10px] font-black text-foreground/40 uppercase tracking-widest">{item.label}</p>
+                                <p className="text-xl font-black italic font-kanit text-foreground">{item.value}</p>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  </motion.section>
+
+                  <SectionDivider />
+
+                  <section className="space-y-6">
+                    <div className="flex items-center justify-between px-1">
+                      <div className="flex flex-col gap-1">
+                        <h2 className="text-xl lg:text-2xl font-black text-foreground italic uppercase tracking-tighter font-kanit">
+                          Feed de Actividad
+                        </h2>
+                        <span className="text-[9px] font-semibold text-foreground/40 tracking-wide font-kanit">
+                          Comunidad en tiempo real
+                        </span>
+                      </div>
+                      <Activity className="w-5 h-5 text-primary/30" />
+                    </div>
+
+                    <div className="space-y-4">
+                      {activities.length > 0 ? (
+                        activities.map((activity, idx) => (
+                          <motion.div
+                            key={idx}
+                            initial={{ opacity: 0, x: -10 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            transition={{ delay: idx * 0.1 }}
+                            className="p-4 rounded-2xl glass-premium border-foreground/15 flex items-center gap-4 group"
+                          >
+                            <div className="w-10 h-10 rounded-full bg-surface border border-foreground/15 flex items-center justify-center shrink-0">
+                              {activity.type === 'RANK_UP' ? <TrendingUp className="w-4 h-4 text-primary" /> : <Star className="w-4 h-4 text-accent" />}
+                            </div>
+                            <div className="flex-1 min-w-0">
+                              <p className="text-[10px] font-bold text-foreground">
+                                {activity.user} <span className="text-foreground/40 font-medium tracking-tight"> {activity.detail}</span>
                               </p>
-                           </div>
-                        </div>
-                        <div className="flex gap-3 relative z-10 shrink-0 w-full sm:w-auto">
-                           <Link href="/teams" className="flex-1 sm:flex-none">
-                              <button className="w-full h-11 px-6 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all hover:bg-foreground/5 glass border-foreground/20 text-foreground/60 font-kanit">
-                                 CLUBES TOP
-                              </button>
-                           </Link>
-                           <Link href="/search" className="flex-1 sm:flex-none">
-                              <button className="w-full h-11 px-6 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all hover:scale-[1.03] text-background bg-gradient-to-br from-primary to-primary-dark shadow-xl shadow-primary/20 font-kanit">
-                                 MAPA VIVO
-                              </button>
-                           </Link>
-                        </div>
-                     </motion.div>
+                              <p className="text-[8px] font-black text-primary/60 uppercase mt-0.5 tracking-tighter">hace {activity.time}</p>
+                            </div>
+                          </motion.div>
+                        ))
+                      ) : (
+                        <EmptyState icon={Activity} title="Silencio en la Cancha" description="No hay actividad reciente en tu zona." />
+                      )}
+                    </div>
+                  </section>
+                </motion.div>
+              )}
 
-                     <SectionDivider />
+              {activeTab === 'teams' && (
+                <motion.div
+                  key="teams-tab"
+                  initial="hidden"
+                  animate="visible"
+                  exit="exit"
+                  variants={tabContentVariants}
+                  className="space-y-6"
+                >
+                  <div className="flex items-center justify-between px-1">
+                    <div className="flex flex-col gap-1">
+                      <h2 className="text-xl lg:text-2xl font-black text-foreground italic uppercase tracking-tighter font-kanit">
+                        Tus Equipos
+                      </h2>
+                      <span className="text-[9px] font-semibold text-foreground/40 tracking-wide font-kanit">
+                        Plantel profesional
+                      </span>
+                    </div>
+                    <Link href="/teams" className="group flex items-center gap-1.5 px-4 py-2 rounded-2xl text-[9px] font-black text-foreground/55 hover:text-foreground transition-all tracking-[0.2em] uppercase glass border-foreground/20">
+                      VER TODOS <ChevronRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
+                    </Link>
+                  </div>
 
-                     <motion.section
-                        variants={fadeUp}
-                        className="space-y-6"
-                     >
-                        <div className="flex items-end justify-between px-1">
-                           <div className="flex flex-col gap-1">
-                              <h2 className="text-xl lg:text-2xl font-black italic text-foreground uppercase tracking-tighter leading-none font-kanit">
-                                 Road to Glory
-                              </h2>
-                              <span className="text-[9px] font-semibold text-foreground/40 tracking-wide font-kanit">
-                                 Tu camino hacia la leyenda
-                              </span>
-                           </div>
-                           <Sparkles className="w-5 h-5 text-primary/30 shrink-0 mb-1 animate-pulse" />
-                        </div>
+                  <div className="flex flex-col gap-5">
+                    {userTeams.length > 0 ? (
+                      userTeams.map((team) => <TeamCard key={team.id} team={team} performanceMode={performanceMode} />)
+                    ) : (
+                      <EmptyState icon={Shield} title="Sin Plantel" description="Aún no eres parte de ningún equipo." />
+                    )}
+                  </div>
+                </motion.div>
+              )}
 
-                        <div className="glass-premium p-8 rounded-[2.5rem] border-foreground/15 relative overflow-hidden">
-                           <div className="absolute inset-0 opacity-[0.03] pointer-events-none">
-                              <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_center,_var(--primary)_0%,_transparent_70%)]" />
-                           </div>
+              {activeTab === 'venues' && (
+                <motion.div
+                  key="venues-tab"
+                  initial="hidden"
+                  animate="visible"
+                  exit="exit"
+                  variants={tabContentVariants}
+                  className="space-y-6"
+                >
+                  <div className="flex items-center justify-between px-1">
+                    <div className="flex flex-col gap-1">
+                      <h2 className="text-xl lg:text-2xl font-black text-foreground italic uppercase tracking-tighter font-kanit">
+                        Sedes Destacadas
+                      </h2>
+                      <span className="text-[9px] font-semibold text-foreground/40 tracking-wide font-kanit">
+                        Complejos verificados en Rosario
+                      </span>
+                    </div>
+                    <Link href="/establecimientos" className="group flex items-center gap-2 px-5 py-2.5 rounded-full text-[9px] font-black text-white hover:text-primary transition-all tracking-[0.2em] uppercase glass-premium border-primary/20 hover:border-primary/50 shadow-lg shadow-primary/5">
+                      EXPLORAR <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
+                    </Link>
+                  </div>
 
-                           <div className="relative z-10 space-y-10">
-                              <div className="relative flex items-center justify-between px-4 sm:px-10">
-                                 <div className="absolute left-0 right-0 h-1 bg-foreground/5 top-1/2 -translate-y-1/2" />
-                                 <motion.div
-                                    initial={{ width: 0 }}
-                                    whileInView={{ width: '100%' }}
-                                    transition={{ duration: 2, ease: 'circOut' }}
-                                    className="absolute left-0 h-1 bg-gradient-to-r from-primary/20 via-primary to-primary-light top-1/2 -translate-y-1/2"
-                                    style={{
-                                       width: `${(RANKS.findIndex((rank) => rank.name === rankCalculation.info.name) / (RANKS.length - 1)) * 100}%`,
-                                    }}
-                                 />
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                    {featuredVenues.length > 0 ? (
+                      featuredVenues.map((venue) => <VenueCard key={venue.id} venue={venue} performanceMode={performanceMode} />)
+                    ) : (
+                      Array(2).fill(0).map((_, i) => <div key={i} className="h-80 rounded-[3rem] bg-surface animate-pulse" />)
+                    )}
+                  </div>
+                </motion.div>
+              )}
 
-                                 {RANKS.map((rankItem, i) => {
-                                    const isReached = statsSummary.elo >= rankItem.minElo;
-                                    const isCurrent = rankCalculation.info.name === rankItem.name;
+              {activeTab === 'futtok' && (
+                <motion.div
+                  key="futtok-tab"
+                  initial="hidden"
+                  animate="visible"
+                  exit="exit"
+                  variants={tabContentVariants}
+                  className="space-y-6"
+                >
+                  <div className="flex items-center justify-between px-1">
+                    <div className="flex flex-col gap-1">
+                      <h2 className="text-xl lg:text-2xl font-black text-foreground italic uppercase tracking-tighter font-kanit">
+                        Tendencias en FutTok
+                      </h2>
+                      <span className="text-[9px] font-semibold text-foreground/40 tracking-wide font-kanit">
+                        Lo mejor de la comunidad
+                      </span>
+                    </div>
+                    <Link href="/highlights" className="group flex items-center gap-2 px-5 py-2.5 rounded-full text-[9px] font-black text-white hover:text-emerald-400 transition-all tracking-[0.2em] uppercase glass-premium border-emerald-500/20 hover:border-emerald-500/50 shadow-lg shadow-emerald-500/5">
+                      VER TODO <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
+                    </Link>
+                  </div>
 
-                                    return (
-                                       <div
-                                          key={rankItem.name}
-                                          className="relative flex flex-col items-center group"
-                                       >
-                                          <motion.div
-                                             whileHover={{ scale: 1.2 }}
-                                             className={cn(
-                                                'w-10 h-10 rounded-xl flex items-center justify-center border-2 transition-all duration-500',
-                                                isReached
-                                                   ? 'bg-background border-primary shadow-[0_0_15px_rgba(44,252,125,0.3)]'
-                                                   : 'bg-surface/50 border-foreground/15 opacity-40 group-hover:opacity-100'
-                                             )}
-                                          >
-                                             <RankBadgeInline rankName={rankItem.name} size="sm" className="scale-75" />
-                                          </motion.div>
-                                          {isCurrent && (
-                                             <motion.div
-                                                layoutId="current-rank-indicator"
-                                                className="absolute -top-12"
-                                             >
-                                                <div className="px-2 py-1 rounded bg-primary text-background text-[7px] font-black uppercase tracking-widest whitespace-nowrap relative">
-                                                   TU RANGO
-                                                   <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-2 h-2 bg-primary rotate-45" />
-                                                </div>
-                                             </motion.div>
-                                          )}
-                                       </div>
-                                    );
-                                 })}
-                              </div>
-
-                              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-4">
-                                 {[
-                                    { icon: Activity, color: '#2cfc7d', label: 'Partidos', value: statsSummary.totalMatches },
-                                    { icon: Target, color: '#f59e0b', label: 'Goles', value: metadata?.goals || 0 },
-                                    { icon: Award, color: '#6366f1', label: 'Honores', value: metadata?.mvp_count || 0 },
-                                 ].map((item, i) => (
-                                    <div key={i} className="flex items-center gap-4 p-4 rounded-2xl bg-foreground/[0.02] border border-foreground/15 group hover:bg-foreground/[0.04] transition-colors">
-                                       <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0" style={{ backgroundColor: `${item.color}15` }}>
-                                          <item.icon className="w-5 h-5" style={{ color: item.color }} />
-                                       </div>
-                                       <div>
-                                          <p className="text-[10px] font-black text-foreground/40 uppercase tracking-widest">{item.label}</p>
-                                          <p className="text-xl font-black italic font-kanit text-foreground">{item.value}</p>
-                                       </div>
-                                    </div>
-                                 ))}
-                              </div>
-                           </div>
-                        </div>
-                     </motion.section>
-
-                     <SectionDivider />
-
-                     <section className="space-y-6">
-                        <div className="flex items-center justify-between px-1">
-                           <div className="flex flex-col gap-1">
-                              <h2 className="text-xl lg:text-2xl font-black text-foreground italic uppercase tracking-tighter font-kanit">
-                                 Feed de Actividad
-                              </h2>
-                              <span className="text-[9px] font-semibold text-foreground/40 tracking-wide font-kanit">
-                                 Comunidad en tiempo real
-                              </span>
-                           </div>
-                           <Activity className="w-5 h-5 text-primary/30" />
-                        </div>
-
-                        <div className="space-y-4">
-                           {activities.length > 0 ? (
-                              activities.map((activity, idx) => (
-                                 <motion.div
-                                    key={idx}
-                                    initial={{ opacity: 0, x: -10 }}
-                                    animate={{ opacity: 1, x: 0 }}
-                                    transition={{ delay: idx * 0.1 }}
-                                    className="p-4 rounded-2xl glass-premium border-foreground/15 flex items-center gap-4 group"
-                                 >
-                                    <div className="w-10 h-10 rounded-full bg-surface border border-foreground/15 flex items-center justify-center shrink-0">
-                                       {activity.type === 'RANK_UP' ? <TrendingUp className="w-4 h-4 text-primary" /> : <Star className="w-4 h-4 text-accent" />}
-                                    </div>
-                                    <div className="flex-1 min-w-0">
-                                       <p className="text-[10px] font-bold text-foreground">
-                                          {activity.user} <span className="text-foreground/40 font-medium tracking-tight"> {activity.detail}</span>
-                                       </p>
-                                       <p className="text-[8px] font-black text-primary/60 uppercase mt-0.5 tracking-tighter">hace {activity.time}</p>
-                                    </div>
-                                 </motion.div>
-                              ))
-                           ) : (
-                              <EmptyState icon={Activity} title="Silencio en la Cancha" description="No hay actividad reciente en tu zona." />
-                           )}
-                        </div>
-                     </section>
-                  </motion.div>
-               )}
-
-               {activeTab === 'teams' && (
-                  <motion.div
-                     key="teams-tab"
-                     initial="hidden"
-                     animate="visible"
-                     exit="exit"
-                     variants={tabContentVariants}
-                     className="space-y-6"
-                  >
-                     <div className="flex items-center justify-between px-1">
-                        <div className="flex flex-col gap-1">
-                           <h2 className="text-xl lg:text-2xl font-black text-foreground italic uppercase tracking-tighter font-kanit">
-                              Tus Equipos
-                           </h2>
-                           <span className="text-[9px] font-semibold text-foreground/40 tracking-wide font-kanit">
-                              Plantel profesional
-                           </span>
-                        </div>
-                        <Link href="/teams" className="group flex items-center gap-1.5 px-4 py-2 rounded-2xl text-[9px] font-black text-foreground/55 hover:text-foreground transition-all tracking-[0.2em] uppercase glass border-foreground/20">
-                           VER TODOS <ChevronRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
+                  <div className="flex gap-4 overflow-x-auto pb-4 scrollbar-none snap-x h-[320px] sm:h-[420px]">
+                    {highlights.length > 0 ? (
+                      highlights.map((h) => (
+                        <Link key={h.id} href={`/highlights?v=${h.id}`} className="shrink-0 aspect-[9/16] h-full rounded-[2rem] overflow-hidden relative group snap-start border border-foreground/15 shadow-xl">
+                          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent z-10" />
+                          <LazyVideo src={h.video_url} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 opacity-60 group-hover:opacity-100" />
+                          <div className="absolute bottom-4 left-4 right-4 z-20 flex items-center gap-2">
+                            <div className="w-6 h-6 rounded-full bg-surface border border-foreground/20 flex items-center justify-center overflow-hidden">
+                              {h.profiles?.avatar_url ? <img src={h.profiles.avatar_url} className="w-full h-full object-cover" /> : <User2 className="w-3 h-3 text-white/40" />}
+                            </div>
+                            <span className="text-[8px] font-black text-white">@{h.profiles?.name || 'user'}</span>
+                          </div>
                         </Link>
-                     </div>
-
-                     <div className="flex flex-col gap-5">
-                        {userTeams.length > 0 ? (
-                           userTeams.map((team) => <TeamCard key={team.id} team={team} performanceMode={performanceMode} />)
-                        ) : (
-                           <EmptyState icon={Shield} title="Sin Plantel" description="Aún no eres parte de ningún equipo." />
-                        )}
-                     </div>
-                  </motion.div>
-               )}
-
-               {activeTab === 'venues' && (
-                  <motion.div
-                     key="venues-tab"
-                     initial="hidden"
-                     animate="visible"
-                     exit="exit"
-                     variants={tabContentVariants}
-                     className="space-y-6"
-                  >
-                     <div className="flex items-center justify-between px-1">
-                        <div className="flex flex-col gap-1">
-                           <h2 className="text-xl lg:text-2xl font-black text-foreground italic uppercase tracking-tighter font-kanit">
-                              Sedes Destacadas
-                           </h2>
-                           <span className="text-[9px] font-semibold text-foreground/40 tracking-wide font-kanit">
-                              Complejos verificados en Rosario
-                           </span>
-                        </div>
-                        <Link href="/establecimientos" className="group flex items-center gap-2 px-5 py-2.5 rounded-full text-[9px] font-black text-white hover:text-primary transition-all tracking-[0.2em] uppercase glass-premium border-primary/20 hover:border-primary/50 shadow-lg shadow-primary/5">
-                           EXPLORAR <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
-                        </Link>
-                     </div>
-
-                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                        {featuredVenues.length > 0 ? (
-                           featuredVenues.map((venue) => <VenueCard key={venue.id} venue={venue} performanceMode={performanceMode} />)
-                        ) : (
-                           Array(2).fill(0).map((_, i) => <div key={i} className="h-80 rounded-[3rem] bg-surface animate-pulse" />)
-                        )}
-                     </div>
-                  </motion.div>
-               )}
-
-               {activeTab === 'futtok' && (
-                  <motion.div
-                     key="futtok-tab"
-                     initial="hidden"
-                     animate="visible"
-                     exit="exit"
-                     variants={tabContentVariants}
-                     className="space-y-6"
-                  >
-                     <div className="flex items-center justify-between px-1">
-                        <div className="flex flex-col gap-1">
-                           <h2 className="text-xl lg:text-2xl font-black text-foreground italic uppercase tracking-tighter font-kanit">
-                              Tendencias en FutTok
-                           </h2>
-                           <span className="text-[9px] font-semibold text-foreground/40 tracking-wide font-kanit">
-                              Lo mejor de la comunidad
-                           </span>
-                        </div>
-                        <Link href="/highlights" className="group flex items-center gap-2 px-5 py-2.5 rounded-full text-[9px] font-black text-white hover:text-emerald-400 transition-all tracking-[0.2em] uppercase glass-premium border-emerald-500/20 hover:border-emerald-500/50 shadow-lg shadow-emerald-500/5">
-                           VER TODO <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
-                        </Link>
-                     </div>
-
-                     <div className="flex gap-4 overflow-x-auto pb-4 scrollbar-none snap-x h-[320px] sm:h-[420px]">
-                        {highlights.length > 0 ? (
-                           highlights.map((h) => (
-                              <Link key={h.id} href={`/highlights?v=${h.id}`} className="shrink-0 aspect-[9/16] h-full rounded-[2rem] overflow-hidden relative group snap-start border border-foreground/15 shadow-xl">
-                                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent z-10" />
-                                 <LazyVideo src={h.video_url} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 opacity-60 group-hover:opacity-100" />
-                                 <div className="absolute bottom-4 left-4 right-4 z-20 flex items-center gap-2">
-                                    <div className="w-6 h-6 rounded-full bg-surface border border-foreground/20 flex items-center justify-center overflow-hidden">
-                                       {h.profiles?.avatar_url ? <img src={h.profiles.avatar_url} className="w-full h-full object-cover" /> : <User2 className="w-3 h-3 text-white/40" />}
-                                    </div>
-                                    <span className="text-[8px] font-black text-white">@{h.profiles?.name || 'user'}</span>
-                                 </div>
-                              </Link>
-                           ))
-                        ) : (
-                           <EmptyState icon={Flame} title="Sin Brillo" description="Aún no hay clips tendencia." />
-                        )}
-                        <Link href="/highlights" className="shrink-0 aspect-[9/16] h-full rounded-[2rem] glass-premium border-dashed border-foreground/20 flex flex-col items-center justify-center gap-3 group hover:border-primary/40 transition-all text-foreground/30 snap-start">
-                           <div className="w-10 h-10 rounded-full bg-surface flex items-center justify-center group-hover:scale-110 transition-transform">
-                              <PlusCircle className="w-5 h-5 text-emerald-500" />
-                           </div>
-                           <span className="text-[8px] font-semibold tracking-wide text-center px-4">Subir jugada</span>
-                        </Link>
-                     </div>
-                  </motion.div>
-               )}
+                      ))
+                    ) : (
+                      <EmptyState icon={Flame} title="Sin Brillo" description="Aún no hay clips tendencia." />
+                    )}
+                    <Link href="/highlights" className="shrink-0 aspect-[9/16] h-full rounded-[2rem] glass-premium border-dashed border-foreground/20 flex flex-col items-center justify-center gap-3 group hover:border-primary/40 transition-all text-foreground/30 snap-start">
+                      <div className="w-10 h-10 rounded-full bg-surface flex items-center justify-center group-hover:scale-110 transition-transform">
+                        <PlusCircle className="w-5 h-5 text-emerald-500" />
+                      </div>
+                      <span className="text-[8px] font-semibold tracking-wide text-center px-4">Subir jugada</span>
+                    </Link>
+                  </div>
+                </motion.div>
+              )}
             </AnimatePresence>
           </div>
 
           <aside className={cn(
-             "lg:col-span-4 xl:col-span-4 lg:col-start-9 space-y-8",
-             nextMatch ? "order-1 lg:order-2" : "order-3 lg:order-2"
+            "lg:col-span-4 xl:col-span-4 lg:col-start-9 space-y-8",
+            nextMatch ? "order-1 lg:order-2" : "order-3 lg:order-2"
           )}>
             <div id="featured-match" className="relative group/match overflow-hidden rounded-[3rem] glass-premium border-primary/20 shadow-[0_20px_50px_rgba(0,0,0,0.3)]">
               {/* Background Effects */}
@@ -974,16 +974,16 @@ export default function HomePage() {
                   </div>
                   {nextMatch && (
                     <div className="flex items-center gap-2">
-                       <WeatherWidget 
-                          lat={nextMatch.lat} 
-                          lng={nextMatch.lng} 
-                          location={nextMatch.location}
-                          date={nextMatch.date} 
-                          time={nextMatch.time} 
-                       />
-                       <div className="px-4 py-2 rounded-2xl bg-foreground/[0.05] border border-foreground/20 backdrop-blur-md">
-                         <span className="text-[10px] font-black text-foreground/60 uppercase tracking-widest">{nextMatch.type || 'F5'}</span>
-                       </div>
+                      <WeatherWidget
+                        lat={nextMatch.lat}
+                        lng={nextMatch.lng}
+                        location={nextMatch.location}
+                        date={nextMatch.date}
+                        time={nextMatch.time}
+                      />
+                      <div className="px-4 py-2 rounded-2xl bg-foreground/[0.05] border border-foreground/20 backdrop-blur-md">
+                        <span className="text-[10px] font-black text-foreground/60 uppercase tracking-widest">{nextMatch.type || 'F5'}</span>
+                      </div>
                     </div>
                   )}
                 </div>
@@ -1079,21 +1079,21 @@ export default function HomePage() {
                     </div>
 
                     <div className="flex flex-col gap-3 pt-2">
-                       <div className="flex gap-3">
-                          <Link href={`/match?id=${nextMatch.id}`} className="flex-1">
-                            <motion.button
-                              whileHover={{ scale: 1.02 }}
-                              whileTap={{ scale: 0.98 }}
-                              className="w-full h-14 rounded-2xl bg-foreground text-background font-black uppercase text-[10px] tracking-[0.3em] flex items-center justify-center gap-3 shadow-xl hover:bg-primary hover:text-background transition-all"
-                            >
-                              ENTRAR AL MATCH <ArrowRight className="w-4 h-4" />
-                            </motion.button>
-                          </Link>
-                          <button className="w-14 h-14 rounded-2xl glass-premium border-foreground/20 flex items-center justify-center text-foreground/40 hover:text-primary hover:border-primary/40 transition-all">
-                            <PlusCircle className="w-6 h-6" />
-                          </button>
-                       </div>
-                       <CalendarButton match={nextMatch} className="w-full h-12" />
+                      <div className="flex gap-3">
+                        <Link href={`/match?id=${nextMatch.id}`} className="flex-1">
+                          <motion.button
+                            whileHover={{ scale: 1.02 }}
+                            whileTap={{ scale: 0.98 }}
+                            className="w-full h-14 rounded-2xl bg-foreground text-background font-black uppercase text-[10px] tracking-[0.3em] flex items-center justify-center gap-3 shadow-xl hover:bg-primary hover:text-background transition-all"
+                          >
+                            ENTRAR AL MATCH <ArrowRight className="w-4 h-4" />
+                          </motion.button>
+                        </Link>
+                        <button className="w-14 h-14 rounded-2xl glass-premium border-foreground/20 flex items-center justify-center text-foreground/40 hover:text-primary hover:border-primary/40 transition-all">
+                          <PlusCircle className="w-6 h-6" />
+                        </button>
+                      </div>
+                      <CalendarButton match={nextMatch} className="w-full h-12" />
                     </div>
                   </div>
                 ) : (
@@ -1170,7 +1170,7 @@ export default function HomePage() {
                 <span className="text-xl font-black italic uppercase tracking-tighter text-foreground font-kanit">PELOTI<span className="text-primary">FY</span></span>
               </div>
               <p className="text-[11px] text-foreground/40 font-medium tracking-wide leading-relaxed max-w-sm">
-                La plataforma definitiva para el fútbol amateur competitivo. Dominá el potrero.
+                La plataforma definitiva para el futbol amateur competitivo. Dominá el potrero.
               </p>
             </div>
           </div>

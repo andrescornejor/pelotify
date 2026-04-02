@@ -34,6 +34,8 @@ import {
   Clock,
   ChevronRight,
   Sparkles,
+
+
 } from 'lucide-react';
 import Link from 'next/link';
 
@@ -217,7 +219,7 @@ export function NotificationCenter({ isOpen, onClose }: NotificationCenterProps)
               <div className="p-8 lg:p-0 flex flex-col gap-6">
                 {/* Background gradient for header */}
                 <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-primary/5 blur-[100px] rounded-full pointer-events-none" />
-                
+
                 <div className="flex items-center justify-between relative z-10">
                   <div className="flex items-center gap-5">
                     <div className="w-14 h-14 rounded-[1.75rem] bg-primary/10 flex items-center justify-center border border-primary/20 shadow-[0_0_30px_rgba(44,252,125,0.1)]">
@@ -227,7 +229,7 @@ export function NotificationCenter({ isOpen, onClose }: NotificationCenterProps)
                       <h2 className="text-2xl font-black text-foreground tracking-tight uppercase italic flex items-center gap-3">
                         Notificaciones
                         {totalNotifs > 0 && (
-                          <motion.span 
+                          <motion.span
                             initial={{ scale: 0 }}
                             animate={{ scale: 1 }}
                             className="inline-flex items-center justify-center bg-primary text-background text-[11px] font-black h-6 min-w-[24px] px-2 rounded-full ring-4 ring-primary/10 shadow-lg shadow-primary/20"
@@ -259,11 +261,10 @@ export function NotificationCenter({ isOpen, onClose }: NotificationCenterProps)
                   ].map((filter) => (
                     <button
                       key={filter.id}
-                      className={`px-6 py-3 rounded-full text-[11px] font-black uppercase tracking-widest transition-all whitespace-nowrap shadow-xl flex items-center gap-2 ${
-                        filter.active 
-                          ? 'bg-primary text-background shadow-primary/20' 
+                      className={`px-6 py-3 rounded-full text-[11px] font-black uppercase tracking-widest transition-all whitespace-nowrap shadow-xl flex items-center gap-2 ${filter.active
+                          ? 'bg-primary text-background shadow-primary/20'
                           : 'bg-white/[0.03] text-foreground/40 border border-white/5 hover:bg-white/[0.06] hover:text-foreground hover:shadow-white/5'
-                      }`}
+                        }`}
                     >
                       {filter.label}
                       {filter.count! > 0 && <span className={`w-1.5 h-1.5 rounded-full ${filter.active ? 'bg-background/40' : 'bg-primary/60'}`} />}
@@ -282,7 +283,7 @@ export function NotificationCenter({ isOpen, onClose }: NotificationCenterProps)
                       <Loader2 className="w-10 h-10 animate-spin text-primary" />
                     </div>
                     <div className="absolute inset-x-0 -bottom-6 h-1.5 bg-primary/10 rounded-full overflow-hidden">
-                      <motion.div 
+                      <motion.div
                         initial={{ x: '-100%' }}
                         animate={{ x: '100%' }}
                         transition={{ repeat: Infinity, duration: 1.5, ease: 'linear' }}
@@ -305,9 +306,9 @@ export function NotificationCenter({ isOpen, onClose }: NotificationCenterProps)
                   </div>
                   <h3 className="text-2xl font-black text-foreground italic uppercase tracking-tight">Cancha Despejada</h3>
                   <p className="text-sm text-foreground/30 mt-4 leading-relaxed font-bold uppercase tracking-widest">
-                    No hay eventos pendientes. <br/>¡Salí a jugar!
+                    No hay eventos pendientes. <br />¡Salí a jugar!
                   </p>
-                  <button 
+                  <button
                     onClick={onClose}
                     className="mt-10 px-10 py-4 rounded-3xl bg-white/[0.04] border border-white/10 text-[11px] font-black uppercase tracking-[0.3em] text-foreground/40 hover:text-primary hover:border-primary/30 hover:bg-primary/5 transition-all active:scale-95"
                   >
@@ -433,8 +434,8 @@ function NotificationItem({ type, data, onAction, onVote, actionLoading, userId 
             )}
           </div>
           {type === 'challenge' && (
-            <motion.div 
-              animate={{ scale: [1, 1.2, 1] }} 
+            <motion.div
+              animate={{ scale: [1, 1.2, 1] }}
               transition={{ repeat: Infinity, duration: 2 }}
               className="absolute -top-2 -right-2 w-7 h-7 bg-amber-500 rounded-full border-4 border-[#08080c] flex items-center justify-center shadow-xl"
             >
@@ -446,15 +447,14 @@ function NotificationItem({ type, data, onAction, onVote, actionLoading, userId 
         <div className="flex-1 min-w-0 flex flex-col gap-4">
           <div className="flex flex-col gap-1">
             <div className="flex items-center gap-2 flex-wrap">
-              <span className={`text-[9px] font-black px-2 py-0.5 rounded-full uppercase tracking-widest italic ${
-                type === 'challenge' ? 'bg-amber-500/10 text-amber-500' :
-                type === 'match' ? 'bg-accent/10 text-accent' :
-                'bg-primary/10 text-primary'
-              }`}>
+              <span className={`text-[9px] font-black px-2 py-0.5 rounded-full uppercase tracking-widest italic ${type === 'challenge' ? 'bg-amber-500/10 text-amber-500' :
+                  type === 'match' ? 'bg-accent/10 text-accent' :
+                    'bg-primary/10 text-primary'
+                }`}>
                 {type === 'challenge' ? 'Pacto de Sangre' :
-                 type === 'match' ? 'Invocación' :
-                 type === 'team_request' ? 'Mercado de Pases' :
-                 type === 'team_invitation' ? 'Fichaje' : 'Social'}
+                  type === 'match' ? 'Invocación' :
+                    type === 'team_request' ? 'Mercado de Pases' :
+                      type === 'team_invitation' ? 'Fichaje' : 'Social'}
               </span>
               <span className="text-[9px] text-foreground/20 font-black uppercase tracking-widest flex items-center gap-1.5">
                 <Clock className="w-3 h-3" /> AHORA
@@ -462,18 +462,18 @@ function NotificationItem({ type, data, onAction, onVote, actionLoading, userId 
             </div>
 
             <h4 className="text-lg sm:text-xl font-black text-foreground italic uppercase tracking-tight leading-tight group-hover:text-primary transition-colors">
-              {type === 'challenge' ? `${data.challenger_team?.name} VS ${data.challenged_team?.name}` : 
-               type === 'match' ? data.matches?.location :
-               type === 'team_invitation' ? data.teams?.name :
-               data.profiles?.name || 'Jugador'}
+              {type === 'challenge' ? `${data.challenger_team?.name} VS ${data.challenged_team?.name}` :
+                type === 'match' ? data.matches?.location :
+                  type === 'team_invitation' ? data.teams?.name :
+                    data.profiles?.name || 'Jugador'}
             </h4>
 
             <p className="text-xs sm:text-[13px] text-foreground/40 font-medium leading-relaxed max-w-[280px]">
               {type === 'challenge' ? `Un nuevo rival te desafía a dominar el potrero.` :
-               type === 'match' ? `Te convocaron para jugar el ${data.matches?.date}.` :
-               type === 'team_request' ? `Está pidiendo el pase para unirse a ${data.teams?.name}.` :
-               type === 'team_invitation' ? `Te ofrecen contrato para sumarte a sus filas.` :
-               `Busca sellar una alianza contigo.`}
+                type === 'match' ? `Te convocaron para jugar el ${data.matches?.date}.` :
+                  type === 'team_request' ? `Está pidiendo el pase para unirse a ${data.teams?.name}.` :
+                    type === 'team_invitation' ? `Te ofrecen contrato para sumarte a sus filas.` :
+                      `Busca sellar una alianza contigo.`}
             </p>
           </div>
 
@@ -493,9 +493,8 @@ function NotificationItem({ type, data, onAction, onVote, actionLoading, userId 
                     <button
                       key={venue}
                       onClick={() => onVote(data.id, venue)}
-                      className={`flex items-center justify-between p-3.5 rounded-2xl border text-[11px] font-black uppercase transition-all ${
-                        isVoted ? 'bg-amber-500 border-amber-500 text-background shadow-lg shadow-amber-500/20' : 'bg-white/[0.02] border-white/5 text-foreground/40 hover:bg-white/[0.05] hover:border-white/10'
-                      }`}
+                      className={`flex items-center justify-between p-3.5 rounded-2xl border text-[11px] font-black uppercase transition-all ${isVoted ? 'bg-amber-500 border-amber-500 text-background shadow-lg shadow-amber-500/20' : 'bg-white/[0.02] border-white/5 text-foreground/40 hover:bg-white/[0.05] hover:border-white/10'
+                        }`}
                     >
                       <span className="truncate max-w-[150px] italic">{venue}</span>
                       <div className="flex items-center gap-3">
@@ -516,11 +515,10 @@ function NotificationItem({ type, data, onAction, onVote, actionLoading, userId 
             <button
               onClick={() => onAction(data.id, true)}
               disabled={isActionLoading}
-              className={`flex-[2] h-14 rounded-[1.5rem] flex items-center justify-center gap-3 text-xs font-black uppercase tracking-[0.2em] italic transition-all ${
-                type === 'challenge' ? 'bg-amber-500 text-background shadow-xl shadow-amber-500/20' :
-                type === 'match' ? 'bg-accent text-background shadow-xl shadow-accent/20' :
-                'bg-primary text-background shadow-xl shadow-primary/20'
-              } hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 group/act`}
+              className={`flex-[2] h-14 rounded-[1.5rem] flex items-center justify-center gap-3 text-xs font-black uppercase tracking-[0.2em] italic transition-all ${type === 'challenge' ? 'bg-amber-500 text-background shadow-xl shadow-amber-500/20' :
+                  type === 'match' ? 'bg-accent text-background shadow-xl shadow-accent/20' :
+                    'bg-primary text-background shadow-xl shadow-primary/20'
+                } hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 group/act`}
             >
               {isActionLoading ? <Loader2 className="w-5 h-5 animate-spin" /> : (
                 <>
@@ -541,10 +539,9 @@ function NotificationItem({ type, data, onAction, onVote, actionLoading, userId 
       </div>
 
       {/* Decorative background effects for cards */}
-      <div className={`absolute top-0 right-0 w-32 h-32 blur-[60px] opacity-10 rounded-full pointer-events-none translate-x-1/2 -translate-y-1/2 ${
-         type === 'challenge' ? 'bg-amber-500' :
-         type === 'match' ? 'bg-accent' : 'bg-primary'
-      }`} />
+      <div className={`absolute top-0 right-0 w-32 h-32 blur-[60px] opacity-10 rounded-full pointer-events-none translate-x-1/2 -translate-y-1/2 ${type === 'challenge' ? 'bg-amber-500' :
+          type === 'match' ? 'bg-accent' : 'bg-primary'
+        }`} />
     </motion.div>
   );
 }
