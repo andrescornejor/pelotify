@@ -471,6 +471,16 @@
   }
 }
 
+@keyframes progress-glow {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(200%); }
+}
+
+@keyframes spin-reverse {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(-360deg); }
+}
+
 @keyframes slide-up-fade {
   from {
     opacity: 0;
@@ -526,6 +536,14 @@
 
 .animate-loading-bar {
   animation: loading-bar 2s ease-in-out infinite;
+}
+
+.animate-progress-glow {
+  animation: progress-glow 3s ease-in-out infinite;
+}
+
+.animate-spin-reverse {
+  animation: spin-reverse 1.5s linear infinite;
 }
 
 .animate-slide-up-fade {

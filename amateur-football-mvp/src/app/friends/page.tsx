@@ -144,7 +144,7 @@ const PlayerCard = ({
         <button
           onClick={(e) => {
             e.preventDefault();
-            handleSendRequest(p.id);
+            handleSendRequest(p.id, p.name);
           }}
           disabled={actionLoading === p.id}
           className="w-full h-14 rounded-2xl bg-primary text-background flex items-center justify-center gap-3 hover:bg-white hover:text-black hover:scale-[1.02] shadow-[0_10px_30px_rgba(16,185,129,0.3)] transition-all active:scale-95 border-2 border-primary group/btn"
@@ -183,6 +183,7 @@ export default function FriendsPage() {
   const [isLoadingInit, setIsLoadingInit] = useState(true);
   const [isSearching, setIsSearching] = useState(false);
   const [actionLoading, setActionLoading] = useState<string | null>(null);
+  const [showToast, setShowToast] = useState<{ show: boolean; name: string } | null>(null);
 
   // Initial fetch
   useEffect(() => {
@@ -233,14 +234,24 @@ export default function FriendsPage() {
   }, [searchQuery, activeTab, user]);
 
   // Actions
-  const handleSendRequest = async (friendId: string) => {
+  const handleSendRequest = async (friendId: string, friendName?: string) => {
     if (!user) return;
     setActionLoading(friendId);
     try {
       await sendFriendRequest(user.id, friendId);
+      
+      // Update both lists to ensure visual feedback regardless of where the button was clicked
       setSearchResults((prev) =>
         prev.map((p) => (p.id === friendId ? { ...p, relationshipStatus: 'pending_sent' } : p))
       );
+      setRecommendedPlayers((prev) =>
+        prev.map((p) => (p.id === friendId ? { ...p, relationshipStatus: 'pending_sent' } : p))
+      );
+
+      // Show floating notification
+      setShowToast({ show: true, name: friendName || 'Jugador' });
+      setTimeout(() => setShowToast(null), 4000);
+
     } catch (err: any) {
       alert('Error: ' + err.message);
     } finally {
@@ -1024,6 +1035,48 @@ export default function FriendsPage() {
         recipientId={chatRecipient?.id}
         recipientName={chatRecipient?.name}
       />
+
+      {/* ── SUCCESS TOAST ── */}
+      <AnimatePresence>
+        {showToast?.show && (
+          <motion.div
+            initial={{ opacity: 0, y: 50, scale: 0.9 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.8, filter: 'blur(10px)' }}
+            className="fixed bottom-32 left-1/2 -translate-x-1/2 z-[100] w-[90%] max-w-md"
+          >
+            <div className="glass-premium p-6 rounded-[2rem] border border-primary/30 bg-primary/5 backdrop-blur-2xl shadow-[0_20px_50px_rgba(16,185,129,0.3)] flex items-center gap-5 relative overflow-hidden">
+              <div className="absolute top-0 right-0 w-full h-full bg-gradient-to-r from-transparent via-primary/5 to-transparent -translate-x-full animate-progress-glow" />
+              
+              <div className="w-14 h-14 rounded-2xl bg-primary flex items-center justify-center shrink-0 shadow-lg shadow-primary/20">
+                <motion.div
+                  initial={{ rotate: -180, scale: 0 }}
+                  animate={{ rotate: 0, scale: 1 }}
+                  transition={{ delay: 0.2, type: 'spring' }}
+                >
+                  <Check className="w-8 h-8 text-background" strokeWidth={3} />
+                </motion.div>
+              </div>
+              
+              <div className="flex-1">
+                <h4 className="text-sm font-black text-foreground italic uppercase tracking-tighter">
+                  Solicitud Enviada
+                </h4>
+                <p className="text-[10px] font-black text-primary uppercase tracking-[0.2em] mt-1">
+                  Jugador: <span className="text-foreground">{showToast.name}</span>
+                </p>
+              </div>
+
+              <button 
+                onClick={() => setShowToast(null)}
+                className="w-10 h-10 rounded-xl hover:bg-foreground/5 flex items-center justify-center transition-colors"
+              >
+                <X className="w-5 h-5 text-foreground/20" />
+              </button>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
