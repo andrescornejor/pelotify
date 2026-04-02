@@ -329,10 +329,10 @@ export function NotificationCenter({ isOpen, onClose }: NotificationCenterProps)
                       <NotificationItem key={challenge.id} type="challenge" data={challenge} onAction={handleChallengeAction} onVote={handleVote} actionLoading={actionLoading} userId={user?.id} />
                     ))}
                     {teamRequests.map((req) => (
-                      <NotificationItem key={`${req.team_id}-${req.user_id}`} type="team_request" data={req} onAction={(id, accept) => handleTeamAction(req.team_id, req.user_id, accept)} actionLoading={actionLoading} />
+                      <NotificationItem key={`${req.team_id}-${req.user_id}`} type="team_request" data={req} onAction={(id: string, accept: boolean) => handleTeamAction(req.team_id, req.user_id, accept)} actionLoading={actionLoading} />
                     ))}
                     {teamInvitations.map((inv) => (
-                      <NotificationItem key={`${inv.team_id}-${user?.id}`} type="team_invitation" data={inv} onAction={(id, accept) => handleTeamAction(inv.team_id, user!.id, accept)} actionLoading={actionLoading} />
+                      <NotificationItem key={`${inv.team_id}-${user?.id}`} type="team_invitation" data={inv} onAction={(id: string, accept: boolean) => handleTeamAction(inv.team_id, user!.id, accept)} actionLoading={actionLoading} />
                     ))}
                     {matchInvites.map((inv) => (
                       <NotificationItem key={inv.id} type="match" data={inv} onAction={handleMatchAction} actionLoading={actionLoading} />
@@ -374,7 +374,16 @@ export function NotificationCenter({ isOpen, onClose }: NotificationCenterProps)
   );
 }
 
-function NotificationItem({ type, data, onAction, onVote, actionLoading, userId }: any) {
+interface NotificationItemProps {
+  type: 'challenge' | 'match' | 'team_request' | 'team_invitation' | 'friend';
+  data: any;
+  onAction: (id: string, accept: boolean) => void;
+  onVote?: (challengeId: string, venueName: string) => void;
+  actionLoading: string | null;
+  userId?: string;
+}
+
+function NotificationItem({ type, data, onAction, onVote, actionLoading, userId }: NotificationItemProps) {
   const itemVariants = {
     hidden: { opacity: 0, y: 20, scale: 0.95 },
     show: { opacity: 1, y: 0, scale: 1 },
