@@ -854,7 +854,7 @@ function MatchLobbyContent() {
                       <p className="text-[10px] font-black text-[#009EE3] uppercase tracking-widest mt-1">
                         {!!venueInfo || !!match.business_id 
                           ? (venueInfo?.name || 'Sede Asociada') 
-                          : `Para ${participants.find(p => p.user_id === match.creator_id)?.user_name || 'el creador'}`}
+                          : `Para ${participants.find(p => p.user_id === match.creator_id)?.profiles?.name || 'el creador'}`}
                       </p>
                     </div>
                   </div>
