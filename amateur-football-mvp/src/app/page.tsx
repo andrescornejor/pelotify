@@ -379,7 +379,7 @@ export default function HomePage() {
                   className="font-black italic uppercase font-kanit tracking-tighter text-foreground"
                   style={{ fontSize: 'clamp(3rem, 10vw, 7.5rem)', lineHeight: '0.85' }}
                 >
-                  DOMINÁ <span className="text-primary italic">LA CANCHA</span>
+                  DOMINÁ <br /> <span className="text-primary italic">LA CANCHA</span>
                 </motion.h1>
               </div>
 
