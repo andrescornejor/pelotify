@@ -42,76 +42,20 @@ export async function getEmergencyMatch(id: string) {
   return matchData as Match & { participants: MatchParticipant[] };
 }
 
-export async function joinEmergencyMatch(matchId: string, userId: string) {
-  // Use a transaction-like approach or just direct sequence for now
-  // 1. Join the match
-  const { error: joinError } = await supabase.from('match_participants').insert([
-    {
-      match_id: matchId,
-      user_id: userId,
-      status: 'confirmed',
-      team: null,
-    },
-  ]);
+export async function joinEmergencyMatch(matchId: string, userId: string): Promise<void> {
+  const { error: rpcError } = await supabase.rpc('join_emergency_match_v1', {
+    p_match_id: matchId,
+    p_user_id: userId
+  });
 
-  if (joinError) throw joinError;
-
-  // 2. Update recruitment table atomic state
-  const { data: rec } = await supabase
-    .from('match_recruitment')
-    .select('missing_players, is_active')
-    .eq('match_id', matchId)
-    .single();
-
-  if (rec && rec.is_active) {
-    const nextMissing = Math.max(0, (rec.missing_players || 0) - 1);
-    await supabase
-      .from('match_recruitment')
-      .update({
-        missing_players: nextMissing,
-        is_active: nextMissing > 0
-      })
-      .eq('match_id', matchId);
-      
-    // Sync back to main table for fallback
-    await supabase.from('matches').update({ 
-      missing_players: nextMissing,
-      is_recruitment: nextMissing > 0 
-    }).eq('id', matchId);
-  }
+  if (rpcError) throw rpcError;
 }
 
-export async function leaveEmergencyMatch(matchId: string, userId: string) {
-  const { error: leaveError } = await supabase
-    .from('match_participants')
-    .delete()
-    .eq('match_id', matchId)
-    .eq('user_id', userId);
+export async function leaveEmergencyMatch(matchId: string, userId: string): Promise<void> {
+  const { error: rpcError } = await supabase.rpc('leave_emergency_match_v1', {
+    p_match_id: matchId,
+    p_user_id: userId
+  });
 
-  if (leaveError) throw leaveError;
-
-  // 2. Re-increment missing players in recruitment table
-  const { data: rec } = await supabase
-    .from('match_recruitment')
-    .select('missing_players, is_active')
-    .eq('match_id', matchId)
-    .single();
-
-  if (rec) {
-    // We assume re-opening recruitment if someone leaves
-    const nextMissing = (rec.missing_players || 0) + 1;
-    await supabase
-      .from('match_recruitment')
-      .update({
-        missing_players: nextMissing,
-        is_active: true
-      })
-      .eq('match_id', matchId);
-
-    // Sync back to main table
-    await supabase.from('matches').update({ 
-      missing_players: nextMissing,
-      is_recruitment: true 
-    }).eq('id', matchId);
-  }
+  if (rpcError) throw rpcError;
 }
