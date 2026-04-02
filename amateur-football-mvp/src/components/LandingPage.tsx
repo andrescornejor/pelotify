@@ -154,7 +154,7 @@ export default function LandingPage() {
                   <div className="space-y-4">
                      <h1 className="text-5xl sm:text-7xl md:text-[10rem] lg:text-[11rem] font-black font-kanit italic uppercase tracking-tighter leading-[0.8] text-white drop-shadow-2xl">
                         DOMINÁ <br />
-                        <span className="text-primary drop-shadow-[0_0_30px_rgba(44,252,125,0.5)]">LA CANCHA.</span>
+                        <span className="text-primary drop-shadow-[0_0_40px_rgba(44,252,125,0.6)]">LA CANCHA</span>
                      </h1>
 
                      {/* ⬇️ SCROLL INDICATOR */}
