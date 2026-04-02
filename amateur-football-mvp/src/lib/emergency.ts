@@ -34,9 +34,13 @@ export async function getEmergencyMatch(id: string) {
   }
 
   // Synchronize recruitment fields for UI (backward compatibility)
-  if (matchData.recruitment?.[0]) {
-    matchData.is_recruitment = matchData.recruitment[0].is_active;
-    matchData.missing_players = matchData.recruitment[0].missing_players;
+  const recruitmentData = Array.isArray(matchData.recruitment) 
+    ? matchData.recruitment[0] 
+    : matchData.recruitment;
+
+  if (recruitmentData) {
+    matchData.is_recruitment = recruitmentData.is_active;
+    matchData.missing_players = recruitmentData.missing_players;
   }
 
   return matchData as Match & { participants: MatchParticipant[] };

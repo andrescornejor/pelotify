@@ -131,6 +131,16 @@ export async function getMatchById(id: string) {
     matchData.team_b_score = matchData.team_b_score ?? (matchData as any).score_b ?? 0;
   }
 
+  // Step 4: Sync recruitment fields (robust check)
+  const recruitmentData = Array.isArray((matchData as any).recruitment) 
+    ? (matchData as any).recruitment[0] 
+    : (matchData as any).recruitment;
+
+  if (recruitmentData) {
+    matchData.is_recruitment = recruitmentData.is_active;
+    (matchData as any).missing_players = recruitmentData.missing_players;
+  }
+
   return matchData;
 }
 

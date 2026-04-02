@@ -227,8 +227,12 @@ function MatchLobbyContent() {
   const [isEditingNames, setIsEditingNames] = useState(false);
 
   // 2. LOGIC & EFFECTS
+  const recruitmentItem = Array.isArray((match as any)?.recruitment) 
+    ? (match as any).recruitment[0] 
+    : (match as any)?.recruitment;
+
   const isEmergencyRecruitment = !!(
-    (match?.is_recruitment || (match as any)?.recruitment?.[0]?.is_active) && 
+    (match?.is_recruitment || recruitmentItem?.is_active) && 
     !match?.is_completed && 
     searchParams.get('mode') !== 'detail'
   );
