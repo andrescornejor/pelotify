@@ -24,7 +24,7 @@ export async function POST(request: Request) {
     // 1. Obtener la información del partido y su creador
     const { data: match, error: matchError } = await supabaseAdmin
       .from('matches')
-      .select('creator_id')
+      .select('creator_id, business_id')
       .eq('id', matchId)
       .single();
 
@@ -88,10 +88,10 @@ export async function POST(request: Request) {
 
     const isPartner = !!match.business_id;
 
-    if (venueToken) {
-      // Prioridad 1: Token específico de la sede socia desde canchas_fields
+    if (businessToken) {
+      // Prioridad 1: Token específico de la sede socia desde canchas_fields o perfil del dueño
        console.log("Cobro dirigido al token de la sede (Canchas Schema)");
-       clientToUse = new MercadoPagoConfig({ accessToken: venueToken });
+       clientToUse = new MercadoPagoConfig({ accessToken: businessToken });
     } else if (creatorProfile && creatorProfile.mp_access_token && isPartner) {
       // Prioridad 2: Token del creador SOLO si es un partido en sede socia (respaldo)
       console.log("Cobro dirigido al creador como negocio (Partner)");
