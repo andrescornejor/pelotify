@@ -213,6 +213,13 @@ function MatchLobbyContent() {
   const deleteMutation = useDeleteMatch();
   const bulkUpdateMutation = useBulkUpdateParticipants();
 
+  // Redirect to Emergency Lobby if match is in recruitment mode
+  useEffect(() => {
+    if (match?.is_recruitment && !match.is_completed) {
+      router.replace(`/match/emergency?id=${match.id}`);
+    }
+  }, [match, router]);
+
   const [isPostMatchModalOpen, setIsPostMatchModalOpen] = useState(false);
   const [venueInfo, setVenueInfo] = useState<any>(null);
   const [isQRModalOpen, setIsQRModalOpen] = useState(false);

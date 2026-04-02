@@ -1113,14 +1113,14 @@ export default function HomePage() {
                       </p>
                     </div>
 
-                    <Link href="/recruitment" className="w-full relative z-10">
+                    <Link href="/search" className="w-full relative z-10">
                       <motion.button
                         whileHover={{ scale: 1.02 }}
                         whileTap={{ scale: 0.98 }}
                         className="w-full h-14 rounded-2xl bg-primary text-black font-black uppercase text-[11px] tracking-[0.3em] flex items-center justify-center gap-3 shadow-[0_15px_30px_rgba(44,252,125,0.2)] hover:shadow-[0_20px_40px_rgba(44,252,125,0.4)] transition-all"
                       >
-                        <Zap className="w-4 h-4" />
-                        <span>FICHAR YA</span>
+                        <Search className="w-4 h-4" />
+                        <span>RECLUTAR</span>
                       </motion.button>
                     </Link>
 
