@@ -2,7 +2,7 @@ import { supabase } from './supabase';
 import { Match, MatchParticipant } from './matches';
 
 export async function getEmergencyMatch(id: string) {
-  // Step 1: get match + participants + recruitment settings (try joined table first)
+  // Step 1: get match + participants + recruitment settings
   const { data: matchData, error: matchError } = await supabase
     .from('matches')
     .select(`
@@ -33,11 +33,10 @@ export async function getEmergencyMatch(id: string) {
     }
   }
 
-  // Defensive Sync: Use recruitment table data if available, otherwise fallback to matches table
-  const recData = matchData.recruitment?.[0];
-  if (recData) {
-    matchData.is_recruitment = recData.is_active;
-    matchData.missing_players = recData.missing_players;
+  // Synchronize recruitment fields for UI (backward compatibility)
+  if (matchData.recruitment?.[0]) {
+    matchData.is_recruitment = matchData.recruitment[0].is_active;
+    matchData.missing_players = matchData.recruitment[0].missing_players;
   }
 
   return matchData as Match & { participants: MatchParticipant[] };
@@ -57,51 +56,28 @@ export async function joinEmergencyMatch(matchId: string, userId: string) {
 
   if (joinError) throw joinError;
 
-  // 2. Update recruitment atomic state (Defensive with fallbacks)
-  try {
-    const { data: rec } = await supabase
+  // 2. Update recruitment table atomic state
+  const { data: rec } = await supabase
+    .from('match_recruitment')
+    .select('missing_players, is_active')
+    .eq('match_id', matchId)
+    .single();
+
+  if (rec && rec.is_active) {
+    const nextMissing = Math.max(0, (rec.missing_players || 0) - 1);
+    await supabase
       .from('match_recruitment')
-      .select('missing_players, is_active')
-      .eq('match_id', matchId)
-      .single();
-
-    if (rec && rec.is_active) {
-      const nextMissing = Math.max(0, (rec.missing_players || 0) - 1);
-      await supabase
-        .from('match_recruitment')
-        .update({
-          missing_players: nextMissing,
-          is_active: nextMissing > 0
-        })
-        .eq('match_id', matchId);
-        
-      // Sync back to main table
-      await supabase.from('matches').update({ 
+      .update({
         missing_players: nextMissing,
-        is_recruitment: nextMissing > 0 
-      }).eq('id', matchId);
-    } else {
-       // Fallback logic if no record in recruitment table
-       throw new Error("No recruitment record found, falling back");
-    }
-  } catch (e) {
-    // Fallback to update matches table directly
-    const { data: match } = await supabase
-      .from('matches')
-      .select('missing_players, is_recruitment')
-      .eq('id', matchId)
-      .single();
-
-    if (match && match.is_recruitment) {
-      const nextMissing = Math.max(0, (match.missing_players || 0) - 1);
-      await supabase
-        .from('matches')
-        .update({ 
-          missing_players: nextMissing,
-          is_recruitment: nextMissing > 0 
-        })
-        .eq('id', matchId);
-    }
+        is_active: nextMissing > 0
+      })
+      .eq('match_id', matchId);
+      
+    // Sync back to main table for fallback
+    await supabase.from('matches').update({ 
+      missing_players: nextMissing,
+      is_recruitment: nextMissing > 0 
+    }).eq('id', matchId);
   }
 }
 
@@ -114,53 +90,28 @@ export async function leaveEmergencyMatch(matchId: string, userId: string) {
 
   if (leaveError) throw leaveError;
 
-  // 2. Re-increment missing players in recruitment table (Defensive)
-  try {
-    const { data: rec } = await supabase
+  // 2. Re-increment missing players in recruitment table
+  const { data: rec } = await supabase
+    .from('match_recruitment')
+    .select('missing_players, is_active')
+    .eq('match_id', matchId)
+    .single();
+
+  if (rec) {
+    // We assume re-opening recruitment if someone leaves
+    const nextMissing = (rec.missing_players || 0) + 1;
+    await supabase
       .from('match_recruitment')
-      .select('missing_players, is_active')
-      .eq('match_id', matchId)
-      .single();
-
-    if (rec) {
-      const nextMissing = (rec.missing_players || 0) + 1;
-      try {
-        await supabase
-          .from('match_recruitment')
-          .update({
-            missing_players: nextMissing,
-            is_active: true
-          })
-          .eq('match_id', matchId);
-      } catch (e) {
-        console.warn("Recruitment table update failed, relying on main table sync");
-      }
-
-      // Sync back to main table
-      await supabase.from('matches').update({ 
+      .update({
         missing_players: nextMissing,
-        is_recruitment: true 
-      }).eq('id', matchId);
-    } else {
-      throw new Error("No recruitment record found");
-    }
-  } catch (e) {
-    // Fallback to update matches table directly
-    const { data: match } = await supabase
-      .from('matches')
-      .select('missing_players, is_recruitment, type')
-      .eq('id', matchId)
-      .single();
+        is_active: true
+      })
+      .eq('match_id', matchId);
 
-    if (match) {
-      const nextMissing = (match.missing_players || 0) + 1;
-      await supabase
-        .from('matches')
-        .update({
-          missing_players: nextMissing,
-          is_recruitment: true
-        })
-        .eq('id', matchId);
-    }
+    // Sync back to main table
+    await supabase.from('matches').update({ 
+      missing_players: nextMissing,
+      is_recruitment: true 
+    }).eq('id', matchId);
   }
 }
