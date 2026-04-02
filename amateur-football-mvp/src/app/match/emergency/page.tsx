@@ -91,7 +91,7 @@ function EmergencyLobbyContent() {
     }
   };
 
-  if (isLoading) {
+  if (isLoading || (match && (!match.is_recruitment || match.is_completed))) {
     return (
       <div className="min-h-screen bg-black flex flex-col items-center justify-center gap-6">
         <div className="relative">
@@ -105,7 +105,7 @@ function EmergencyLobbyContent() {
     );
   }
 
-  if (error || !match) {
+  if (error && !match) {
     return (
       <div className="min-h-screen bg-black flex flex-col items-center justify-center p-6 text-center">
         <AlertTriangle className="w-16 h-16 text-red-500 mb-4" />
