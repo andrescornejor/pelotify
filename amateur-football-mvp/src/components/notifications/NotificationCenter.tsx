@@ -119,16 +119,16 @@ export function NotificationCenter({ isOpen, onClose }: NotificationCenterProps)
     }
   };
 
-  const handleTeamAction = async (teamId: string, targetUserId: string, accept: boolean) => {
-    const actionId = `${teamId}-${targetUserId}`;
+  const handleTeamAction = async (teamId: string, targetUserId: string, accept: boolean, id?: string) => {
+    const actionId = id || `${teamId}-${targetUserId}`;
     setActionLoading(actionId);
     try {
       await respondToTeamInvitation(teamId, targetUserId, accept ? 'accept' : 'decline');
       setTeamRequests((prev) =>
-        prev.filter((r) => r.team_id !== teamId || r.user_id !== targetUserId)
+        prev.filter((r) => (id ? r.id !== id : (r.team_id !== teamId || r.user_id !== targetUserId)))
       );
       setTeamInvitations((prev) =>
-        prev.filter((r) => r.team_id !== teamId || r.user_id !== targetUserId)
+        prev.filter((r) => (id ? r.id !== id : (r.team_id !== teamId || r.user_id !== targetUserId)))
       );
     } catch (err) {
       console.error(err);

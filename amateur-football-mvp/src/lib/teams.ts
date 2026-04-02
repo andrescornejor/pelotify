@@ -322,7 +322,9 @@ export async function getTeamInvitations(userId: string) {
     .from('team_members')
     .select(
       `
+            id,
             team_id,
+            user_id,
             teams:team_id (
                 name,
                 logo_url
@@ -424,6 +426,7 @@ export async function getPendingJoinRequestsForCaptain(captainId: string) {
     .from('team_members')
     .select(
       `
+            id,
             team_id,
             user_id,
             status,
