@@ -16,9 +16,21 @@ import {
 } from 'lucide-react';
 import { useRecruitmentMatches, useJoinRecruitmentSlot } from '@/hooks/useRecruitmentQueries';
 import { useAuth } from '@/contexts/AuthContext';
-import { format } from 'date-fns';
-import { es } from 'date-fns/locale';
 import Link from 'next/link';
+
+// Simple helper to format date without date-fns
+const formatDate = (dateStr: string) => {
+  try {
+    const date = new Date(dateStr);
+    return new Intl.DateTimeFormat('es-ES', { 
+      weekday: 'long', 
+      day: '2-digit', 
+      month: '2-digit' 
+    }).format(date);
+  } catch (e) {
+    return dateStr;
+  }
+};
 
 export default function RecruitmentMarketplace() {
   const { user } = useAuth();
@@ -165,8 +177,8 @@ export default function RecruitmentMarketplace() {
                           </div>
                           <div>
                             <p className="text-[10px] uppercase font-black text-white/30 tracking-widest">Fecha</p>
-                            <p className="font-bold text-sm">
-                              {format(new Date(match.date), 'EEEE dd/MM', { locale: es })}
+                            <p className="font-bold text-sm capitalize">
+                              {formatDate(match.date)}
                             </p>
                           </div>
                         </div>
