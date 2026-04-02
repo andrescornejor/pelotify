@@ -39,7 +39,9 @@ import {
   useRespondToInvitation,
   useUpdateMatch,
   useMatchStats,
-  useBulkUpdateParticipants
+  useBulkUpdateParticipants,
+  useMatchSlots,
+  useConfirmSlotApplication,
 } from '@/hooks/useMatchQueries';
 import {
   MatchParticipant,
@@ -107,6 +109,13 @@ const TEAM_CONFIG = {
     accent: '#e11d48'
   },
 } as const;
+
+const RECRUITMENT_POSITIONS = [
+  { id: 'GK', label: 'Porteros', short: 'POR', color: 'text-yellow-400', bg: 'bg-yellow-400/10' },
+  { id: 'DF', label: 'Defensas', short: 'DEF', color: 'text-blue-400', bg: 'bg-blue-400/10' },
+  { id: 'MF', label: 'Mediocampistas', short: 'MED', color: 'text-green-400', bg: 'bg-green-400/10' },
+  { id: 'FW', label: 'Delanteros', short: 'DEL', color: 'text-red-400', bg: 'bg-red-400/10' },
+];
 
 function CapacityVisual({ current, total, className }: { current: number; total: number; className?: string }) {
   const percentage = Math.min((current / total) * 100, 100);
@@ -212,6 +221,8 @@ function MatchLobbyContent() {
   const leaveMutation = useLeaveMatch();
   const deleteMutation = useDeleteMatch();
   const bulkUpdateMutation = useBulkUpdateParticipants();
+  const { data: slots } = useMatchSlots(match?.id);
+  const confirmSlotMutation = useConfirmSlotApplication();
 
   const [isPostMatchModalOpen, setIsPostMatchModalOpen] = useState(false);
   const [venueInfo, setVenueInfo] = useState<any>(null);
@@ -854,8 +865,6 @@ function MatchLobbyContent() {
                            {isMine && <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center shadow-lg shadow-primary/20"><Check className="w-4 h-4 text-black" /></div>}
                          </div>
 
-
-
                         <div className="grid grid-cols-4 sm:grid-cols-5 gap-4">
                           {Array.from({ length: teamSize }).map((_, idx) => {
                             const p = members[idx];
@@ -925,6 +934,48 @@ function MatchLobbyContent() {
                   </div>
                 </div>
              )}
+
+              {/* ── ORGANIZER RECRUITMENT MANAGER ── */}
+              {isCreator && match.is_recruitment && slots && slots.some(s => s.status === 'pending') && (
+                 <motion.div 
+                   initial={{ opacity: 0, scale: 0.95 }}
+                   animate={{ opacity: 1, scale: 1 }}
+                   className="p-8 rounded-[3rem] glass-premium border-primary/20 space-y-6"
+                 >
+                   <div className="flex items-center gap-4">
+                     <div className="w-12 h-12 rounded-2xl bg-primary flex items-center justify-center">
+                        <Users className="w-6 h-6 text-black" />
+                     </div>
+                     <div>
+                        <h4 className="text-lg font-black italic uppercase tracking-tighter text-foreground leading-none">Solicitudes</h4>
+                        <span className="text-[10px] font-black text-primary uppercase tracking-widest mt-1">Candidatos a tus vacantes</span>
+                     </div>
+                   </div>
+
+                   <div className="space-y-3">
+                      {slots.filter(s => s.status === 'pending').map(slot => (
+                         <div key={slot.id} className="p-4 rounded-2xl bg-white/[0.03] border border-white/5 flex items-center justify-between group">
+                            <div className="flex items-center gap-3">
+                               <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary font-black italic text-xs">
+                                  {RECRUITMENT_POSITIONS.find(p => p.id === slot.position)?.short}
+                               </div>
+                               <div>
+                                  <div className="text-[11px] font-black italic uppercase text-foreground leading-none">Candidato {slot.user_id.substring(0, 4)}</div>
+                                  <div className="text-[9px] font-bold text-foreground/40 uppercase tracking-widest mt-0.5">Postulado a {slot.team === 'A' ? 'Equipo A' : 'Equipo B'}</div>
+                               </div>
+                            </div>
+                            <button 
+                              onClick={() => confirmSlotMutation.mutate({ slotId: slot.id })}
+                              disabled={confirmSlotMutation.isPending}
+                              className="h-10 px-4 rounded-xl bg-primary text-black font-black italic uppercase text-[10px] tracking-widest hover:scale-105 transition-all shadow-lg shadow-primary/20"
+                            >
+                               Confirmar
+                            </button>
+                         </div>
+                      ))}
+                   </div>
+                 </motion.div>
+              )}
 
               {/* Centro de Seguridad (Escrow & Report) */}
               {hasJoined && !isCompleted && match.price > 0 && (

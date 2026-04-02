@@ -24,6 +24,11 @@ import {
   invitePlayer,
   respondToInvitation,
   getUserBadges,
+  getMatchSlots,
+  createMatchSlot,
+  applyToSlot,
+  confirmSlotApplication,
+  getRecruitmentMatches,
   type Match,
   type PlayerRating,
 } from '@/lib/matches';
@@ -493,6 +498,58 @@ export function useBulkUpdateParticipants() {
     onSettled: (data, error, { matchId }) => {
       queryClient.invalidateQueries({ queryKey: queryKeys.matches.byId(matchId) });
       queryClient.invalidateQueries({ queryKey: queryKeys.home.all });
+    },
+  });
+}
+
+/**
+ * Fetch match slots for a recruitment match.
+ */
+export function useMatchSlots(matchId: string | undefined) {
+  return useQuery({
+    queryKey: ['match_slots', matchId],
+    queryFn: () => getMatchSlots(matchId!),
+    enabled: !!matchId,
+  });
+}
+
+/**
+ * Fetch all recruitment matches.
+ */
+export function useRecruitmentMatches(position?: string) {
+  return useQuery({
+    queryKey: ['recruitment_matches', position],
+    queryFn: () => getRecruitmentMatches(position),
+  });
+}
+
+/**
+ * Apply to a match slot.
+ */
+export function useApplyToSlot() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({ slotId, userId }: { slotId: string; userId: string }) =>
+      applyToSlot(slotId, userId),
+    onSuccess: (_, { slotId }) => {
+      queryClient.invalidateQueries({ queryKey: ['match_slots'] });
+      queryClient.invalidateQueries({ queryKey: ['recruitment_matches'] });
+    },
+  });
+}
+
+/**
+ * Confirm a slot application.
+ */
+export function useConfirmSlotApplication() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({ slotId }: { slotId: string }) => confirmSlotApplication(slotId),
+    onSuccess: (_, { slotId }) => {
+      queryClient.invalidateQueries({ queryKey: ['match_slots'] });
+      queryClient.invalidateQueries({ queryKey: ['matches'] }); // Participants will change
     },
   });
 }

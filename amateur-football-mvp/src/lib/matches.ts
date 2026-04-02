@@ -29,6 +29,11 @@ export interface Match {
   business_id?: string;
   participants?: any[]; // Flexible for both full details and count-only queries
   user_team?: 'A' | 'B' | null;
+
+  // Recruitment
+  is_recruitment?: boolean;
+  recruitment_title?: string;
+  recruitment_description?: string;
 }
 
 export async function updateMatch(matchId: string, updates: Partial<Match>) {
@@ -56,6 +61,24 @@ export interface MatchParticipant {
     name: string;
     avatar_url?: string;
     position?: string;
+  };
+  // Recruitment slot tie
+  slot_id?: string;
+}
+
+export interface MatchSlot {
+  id: string;
+  match_id: string;
+  team: 'A' | 'B';
+  position: 'GK' | 'DF' | 'MF' | 'FW';
+  user_id: string | null;
+  status: 'open' | 'pending' | 'filled';
+  price_to_pay: number;
+  created_at: string;
+  profiles?: {
+    name: string;
+    avatar_url?: string;
+    elo?: number;
   };
 }
 
@@ -609,4 +632,89 @@ export async function getMatchStats(matchId: string) {
     goalScorers: goalScorers || [],
     mvp: mvpProfile ? { id: mvpId as string, ...mvpProfile, votes: maxVotes } : null,
   };
+}
+
+// RECRUITMENT / MATCH SLOTS
+export async function getMatchSlots(matchId: string) {
+  const { data, error } = await supabase
+    .from('match_slots')
+    .select(
+      `
+            *,
+            profiles:user_id(name, avatar_url, elo)
+        `
+    )
+    .eq('match_id', matchId)
+    .order('created_at', { ascending: true });
+
+  if (error) throw error;
+  return data as MatchSlot[];
+}
+
+export async function createMatchSlot(slotData: Partial<MatchSlot>) {
+  const { data, error } = await supabase
+    .from('match_slots')
+    .insert([slotData])
+    .select()
+    .single();
+
+  if (error) throw error;
+  return data as MatchSlot;
+}
+
+export async function applyToSlot(slotId: string, userId: string) {
+  const { error } = await supabase
+    .from('match_slots')
+    .update({ 
+      user_id: userId,
+      status: 'pending' 
+    })
+    .eq('id', slotId)
+    .eq('status', 'open'); // Only apply if still open
+
+  if (error) throw error;
+}
+
+export async function confirmSlotApplication(slotId: string, userId: string) {
+  const { error } = await supabase
+    .from('match_slots')
+    .update({ 
+      status: 'filled' 
+    })
+    .eq('id', slotId)
+    .eq('user_id', userId);
+
+  if (error) throw error;
+}
+
+export async function getRecruitmentMatches(positionFilter?: string) {
+  let query = supabase
+    .from('matches')
+    .select(
+      `
+            *,
+            slots:match_slots(*)
+        `
+    )
+    .eq('is_recruitment', true)
+    .eq('status', 'published')
+    .order('date', { ascending: true });
+
+  if (positionFilter) {
+    // This is tricky because it's a join filter. 
+    // Usually we filter the matches that HAVE at least one open slot of that position.
+    // In Supabase we can use .filter('match_slots.position', 'eq', positionFilter)
+    // and then .filter('match_slots.status', 'eq', 'open')
+    // But it's easier to fetch all recruitment and filter in JS for small sets, 
+    // or use a more advanced query.
+  }
+
+  const { data, error } = await query;
+  if (error) throw error;
+  
+  // Post-filter in JS to ensure they have at least one open slot
+  return (data || []).map(m => ({
+    ...m,
+    open_slots: m.slots.filter((s: any) => s.status === 'open')
+  })).filter(m => m.open_slots.length > 0) as (Match & { open_slots: MatchSlot[] })[];
 }
