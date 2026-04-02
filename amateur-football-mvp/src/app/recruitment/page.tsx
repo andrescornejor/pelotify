@@ -1,18 +1,20 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Calendar, 
   Clock, 
   MapPin, 
-  Trophy, 
-  UserPlus, 
-  Filter, 
+  AlertCircle, 
   CheckCircle2, 
-  AlertCircle,
+  Plus,
+  Info,
   ChevronRight,
-  Plus
+  Zap,
+  Target,
+  Trophy,
+  X 
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useRecruitmentMatches, useJoinRecruitmentSlot } from '@/hooks/useRecruitmentQueries';
@@ -33,12 +35,105 @@ const formatDate = (dateStr: string) => {
   }
 };
 
+function TutorialModal({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) {
+  const steps = [
+    {
+      title: "INTELIGENCIA DE PUESTO",
+      desc: "Los equipos buscan perfiles específicos. Filtrá por tu posición ideal (🧤 Arquero, 🛡️ Defensa, etc.) para jugar donde más rindas.",
+      icon: <Target className="text-primary w-8 h-8" />
+    },
+    {
+      title: "FICHAJE INSTANTÁNEO",
+      desc: "Al postularte, el sistema te suma automáticamente al roster del partido. Sin chats eternos ni vueltas.",
+      icon: <Zap className="text-primary w-8 h-8" />
+    },
+    {
+      title: "PRESTIGIO PELOTIFY",
+      desc: "Cumplí con tus compromisos. Los equipos valoran a los cracks que llegan a tiempo y dan el 100%.",
+      icon: <Trophy className="text-primary w-8 h-8" />
+    }
+  ];
+
+  return (
+    <AnimatePresence>
+      {isOpen && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-6">
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={onClose}
+            className="absolute inset-0 bg-background/80 backdrop-blur-xl"
+          />
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9, y: 20 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.9, y: 20 }}
+            className="relative w-full max-w-xl glass-premium rounded-[3rem] border border-primary/20 overflow-hidden shadow-[0_0_80px_rgba(44,252,125,0.15)]"
+          >
+            <div className="p-8 md:p-12 space-y-10">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h2 className="text-4xl font-black italic uppercase font-kanit tracking-tighter leading-none mb-1">GUÍA <span className="text-primary text-glow-primary">TÁCTICA</span></h2>
+                  <p className="text-[10px] font-black text-foreground/40 uppercase tracking-[0.4em]">¿Cómo dominar el mercado?</p>
+                </div>
+                <button onClick={onClose} className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center hover:bg-white/10 transition-all">
+                  <X size={20} className="text-foreground/40" />
+                </button>
+              </div>
+
+              <div className="space-y-8">
+                {steps.map((step, i) => (
+                  <motion.div 
+                    key={i}
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: i * 0.1 }}
+                    className="flex gap-6"
+                  >
+                    <div className="flex-shrink-0 w-16 h-16 rounded-[1.5rem] bg-primary/10 border border-primary/10 flex items-center justify-center shadow-glow-primary overflow-hidden">
+                       <div className="absolute inset-0 bg-primary/5 animate-pulse" />
+                       {step.icon}
+                    </div>
+                    <div>
+                      <h4 className="text-xs font-black italic uppercase text-primary mb-1 tracking-widest">{step.title}</h4>
+                      <p className="text-foreground/50 text-sm font-medium leading-relaxed italic">{step.desc}</p>
+                    </div>
+                  </motion.div>
+                ))}
+              </div>
+
+              <button 
+                onClick={onClose}
+                className="w-full py-5 rounded-[1.5rem] bg-primary text-black font-black text-lg font-kanit italic uppercase shadow-glow-primary hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-3"
+              >
+                ENTENDIDO, SOY UN CRACK
+                <ChevronRight size={20} className="stroke-[3]" />
+              </button>
+            </div>
+          </motion.div>
+        </div>
+      )}
+    </AnimatePresence>
+  );
+}
+
 export default function RecruitmentMarketplace() {
   const { user } = useAuth();
   const { data: matches, isLoading } = useRecruitmentMatches();
   const joinSlotMutation = useJoinRecruitmentSlot();
   
   const [filterPos, setFilterPos] = useState<string | null>(null);
+  const [showTutorial, setShowTutorial] = useState(false);
+
+  useEffect(() => {
+    const hasSeenTutorial = localStorage.getItem('recruitment_tutorial_seen_v2');
+    if (!hasSeenTutorial) {
+      const timer = setTimeout(() => setShowTutorial(true), 1500);
+      localStorage.setItem('recruitment_tutorial_seen_v2', 'true');
+      return () => clearTimeout(timer);
+    }
+  }, []);
   
   const positions = [
     { code: 'GK', label: 'Arqueros', icon: '🧤' },
@@ -63,6 +158,7 @@ export default function RecruitmentMarketplace() {
 
   return (
     <div className="min-h-screen bg-background text-foreground pb-32 font-outfit">
+      <TutorialModal isOpen={showTutorial} onClose={() => setShowTutorial(false)} />
       {/* Hero Section - Cinematic Glassmorphism */}
       <div className="relative overflow-hidden pt-24 pb-16 px-6">
         {/* Animated background glows */}
@@ -75,10 +171,18 @@ export default function RecruitmentMarketplace() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, ease: "easeOut" }}
           >
-            <h1 className="text-5xl md:text-8xl font-black italic tracking-tighter mb-4 font-kanit uppercase leading-[0.9]">
-              MERCADO DE <br/>
-              <span className="text-primary text-glow-primary">FICHAJES</span>
-            </h1>
+            <div className="flex items-center gap-4 mb-4">
+              <button 
+                onClick={() => setShowTutorial(true)}
+                className="w-10 h-10 rounded-full bg-surface-elevated border border-white/5 flex items-center justify-center hover:bg-primary/10 hover:text-primary transition-all text-foreground/40 group"
+              >
+                <Info size={20} className="stroke-[2.5]" />
+              </button>
+              <h1 className="text-5xl md:text-8xl font-black italic tracking-tighter font-kanit uppercase leading-[0.9]">
+                MERCADO DE <br/>
+                <span className="text-primary text-glow-primary">FICHAJES</span>
+              </h1>
+            </div>
             <p className="text-foreground/50 text-lg md:text-2xl max-w-2xl font-medium italic">
               Conectamos la pasión con el juego. Encontrá tu lugar en la cancha o fichá a los mejores para tu equipo.
             </p>
