@@ -960,7 +960,9 @@ function MatchLobbyContent() {
                                   {RECRUITMENT_POSITIONS.find(p => p.id === slot.position)?.short}
                                </div>
                                <div>
-                                  <div className="text-[11px] font-black italic uppercase text-foreground leading-none">Candidato {slot.user_id.substring(0, 4)}</div>
+                                  <div className="text-[11px] font-black italic uppercase text-foreground leading-none">
+                                     {slot.profiles?.name || `Candidato ${slot.user_id?.substring(0, 4) || '...'}`}
+                                  </div>
                                   <div className="text-[9px] font-bold text-foreground/40 uppercase tracking-widest mt-0.5">Postulado a {slot.team === 'A' ? 'Equipo A' : 'Equipo B'}</div>
                                </div>
                             </div>

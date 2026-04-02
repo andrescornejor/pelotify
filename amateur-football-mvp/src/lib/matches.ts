@@ -675,14 +675,13 @@ export async function applyToSlot(slotId: string, userId: string) {
   if (error) throw error;
 }
 
-export async function confirmSlotApplication(slotId: string, userId: string) {
+export async function confirmSlotApplication(slotId: string) {
   const { error } = await supabase
     .from('match_slots')
     .update({ 
       status: 'filled' 
     })
-    .eq('id', slotId)
-    .eq('user_id', userId);
+    .eq('id', slotId);
 
   if (error) throw error;
 }

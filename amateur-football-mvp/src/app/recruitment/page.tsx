@@ -293,7 +293,7 @@ export default function RecruitmentMarketplace() {
                              </div>
 
                              {/* Footer Action */}
-                             <Link href={`/match/${match.id}`} className="block mt-6">
+                             <Link href={`/match?id=${match.id}`} className="block mt-6">
                                 <button className="w-full h-14 rounded-2xl glass border border-white/5 flex items-center justify-center gap-2 hover:bg-white/5 transition-all text-[10px] font-black uppercase tracking-widest text-white/40 group-hover:text-white/80">
                                     Ver Detalle del Partido
                                     <ChevronRight className="w-4 h-4" />
