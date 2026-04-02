@@ -51,7 +51,7 @@ const PlayerCard = ({
   i: number;
   actionLoading: string | null;
   handleAcceptRequest: (id: string) => void;
-  handleSendRequest: (id: string) => void;
+  handleSendRequest: (id: string, name?: string) => void;
   setSearchResults: React.Dispatch<React.SetStateAction<SearchResult[]>>;
 }) => (
   <motion.div
