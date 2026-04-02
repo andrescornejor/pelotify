@@ -341,9 +341,12 @@ export default function MessagesPage() {
   if (!user) return null;
 
   return (
-    <div className="min-h-screen bg-background pt-20 lg:pt-24 pb-32 px-4 sm:px-6 lg:px-10 xl:px-14 2xl:px-16 relative overflow-hidden">
+    <div className="min-h-screen bg-background pt-22 lg:pt-28 pb-32 px-4 sm:px-6 lg:px-10 xl:px-14 2xl:px-16 relative">
       {/* Animated Background Blobs */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+      <div className="absolute inset-0 overflow-x-hidden pointer-events-none">
+        {/* Superior blending glow */}
+        <div className="absolute top-0 left-0 right-0 h-[300px] bg-gradient-to-b from-primary/10 to-transparent pointer-events-none" />
+        
         <motion.div
           animate={{
             scale: [1, 1.2, 1],
@@ -351,7 +354,7 @@ export default function MessagesPage() {
             y: [0, 30, 0],
           }}
           transition={{ duration: 20, repeat: Infinity, ease: 'linear' }}
-          className="absolute -top-[10%] -left-[10%] w-[40%] h-[40%] bg-primary/10 blur-[120px] rounded-full"
+          className="absolute -top-[15%] -left-[10%] w-[50%] h-[50%] bg-primary/15 blur-[120px] rounded-full"
         />
         <motion.div
           animate={{
@@ -360,7 +363,7 @@ export default function MessagesPage() {
             y: [0, 50, 0],
           }}
           transition={{ duration: 25, repeat: Infinity, ease: 'linear' }}
-          className="absolute top-[20%] -right-[15%] w-[50%] h-[50%] bg-primary/5 blur-[150px] rounded-full"
+          className="absolute top-[5%] -right-[15%] w-[60%] h-[60%] bg-primary/10 blur-[150px] rounded-full"
         />
       </div>
 
@@ -368,11 +371,11 @@ export default function MessagesPage() {
         {/* Conversations List */}
         <div
           className={cn(
-            'lg:col-span-4 flex flex-col gap-6 transition-all h-full overflow-hidden',
+            'lg:col-span-4 flex flex-col gap-2 transition-all h-full overflow-hidden',
             selectedChat ? 'hidden lg:flex' : 'flex'
           )}
         >
-          <div className="flex flex-col gap-5">
+          <div className="flex flex-col gap-2">
             <div className="flex items-center justify-between">
               <div className="flex flex-col gap-1">
                 <h1 className="text-5xl font-black text-foreground italic uppercase tracking-tighter leading-none text-gradient drop-shadow-sm">
@@ -497,7 +500,7 @@ export default function MessagesPage() {
               className="flex flex-col h-full bg-surface/30 dark:bg-foreground/[0.02] backdrop-blur-3xl border border-foreground/10 rounded-[3.5rem] overflow-hidden relative shadow-[0_40px_100px_-20px_rgba(0,0,0,0.1)] dark:shadow-[0_50px_120px_rgba(0,0,0,0.6)]"
             >
               {/* Chat Header */}
-              <div className="px-6 sm:px-10 py-6 bg-foreground/[0.03] backdrop-blur-2xl border-b border-foreground/5 flex items-center justify-between relative z-20">
+              <div className="px-6 sm:px-10 py-3 bg-foreground/[0.03] backdrop-blur-2xl border-b border-foreground/5 flex items-center justify-between relative z-20">
                 <div className="flex items-center gap-4">
                   <button
                     onClick={() => setSelectedChat(null)}

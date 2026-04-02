@@ -32,24 +32,39 @@ export default function CanchasLoginPage() {
 
   return (
     <div className="flex min-h-[100dvh] bg-background selection:bg-primary selection:text-background overflow-hidden relative font-kanit">
-      {/* ── LEFT PANEL: AUTH FORM ── */}
-      <div className="flex-1 flex flex-col items-center justify-center p-6 lg:p-12 relative z-10">
+      {/* Background Decor */}
+      <div className="absolute top-0 left-0 w-[800px] h-[800px] bg-primary/5 blur-[150px] rounded-full -translate-x-1/3 -translate-y-1/3 pointer-events-none" />
+      
+      <div className="flex-1 flex flex-col items-center justify-center p-6 lg:p-12 relative z-20 bg-zinc-950">
         <motion.div
-          initial={{ opacity: 0, x: -20 }}
-          animate={{ opacity: 1, x: 0 }}
-          className="w-full max-w-[420px]"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="w-full max-w-[440px]"
         >
           {/* Header */}
-          <div className="flex flex-col items-center lg:items-start gap-3 mb-10">
-             <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-primary to-primary-dark flex items-center justify-center glow-primary mb-2">
-                <MapPin className="w-8 h-8 text-black" />
+          <div className="flex flex-col items-center lg:items-start gap-10 mb-14">
+             <Link href="/" className="group/logo transition-all duration-700 hover:scale-110">
+                <div className="relative">
+                   <div className="absolute -inset-8 bg-primary/20 blur-[40px] rounded-full opacity-0 group-hover/logo:opacity-100 transition-opacity" />
+                   <img 
+                      src="/logo_pelotify.png" 
+                      className="w-32 h-32 md:w-40 md:h-40 object-contain relative z-10 drop-shadow-[0_0_25px_rgba(44,252,125,0.5)]" 
+                      alt="Pelotify Premium" 
+                   />
+                </div>
+             </Link>
+             
+             <div className="space-y-4">
+                <h1 className="text-5xl lg:text-7xl font-black italic text-white tracking-tighter uppercase leading-[0.8] text-center lg:text-left font-kanit">
+                  PANEL <br /> <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary via-primary to-white drop-shadow-[0_0_20px_rgba(44,252,125,0.3)]">DUEÑOS</span>
+                </h1>
+                <div className="flex items-center gap-3 justify-center lg:justify-start">
+                   <div className="h-px w-8 bg-primary/40" />
+                   <p className="text-[12px] font-black text-white/40 uppercase tracking-[0.4em] italic">
+                     Professional Management
+                   </p>
+                </div>
              </div>
-             <h1 className="text-4xl lg:text-5xl font-black italic text-foreground tracking-tighter uppercase leading-[0.9] text-center lg:text-left font-kanit">
-               Dashboard <br /> <span className="text-primary">Canchas</span>
-             </h1>
-             <p className="text-[10px] font-black text-foreground/40 uppercase tracking-[0.4em] italic lg:ml-1 text-center lg:text-left w-full">
-               Panel de establecimientos
-             </p>
           </div>
 
           <div className="flex flex-col gap-8">
@@ -116,40 +131,55 @@ export default function CanchasLoginPage() {
       </div>
 
       {/* ── RIGHT PANEL: CINEMATIC HERO ── */}
-      <div className="hidden lg:flex flex-[1.2] relative overflow-hidden bg-zinc-950 border-l border-white/5">
+      <div className="hidden lg:flex flex-[1.2] relative overflow-hidden bg-zinc-950">
          <motion.div 
            initial={{ scale: 1.1, opacity: 0 }}
            animate={{ scale: 1, opacity: 1 }}
            transition={{ duration: 1.5 }}
            className="absolute inset-0"
            style={{
-             backgroundImage: "url('https://images.unsplash.com/photo-1574629810360-7efbb1b377b5?q=80&w=2675&auto=format&fit=crop')",
+             backgroundImage: "url('https://images.unsplash.com/photo-1522778119026-d647f0596c20?q=80&w=2670&auto=format&fit=crop')",
              backgroundSize: "cover",
              backgroundPosition: "center"
            }}
          >
-           <div className="absolute inset-0 bg-gradient-to-r from-background via-background/60 to-transparent" />
-           <div className="absolute inset-0 bg-black/40 backdrop-blur-[2px]" />
-           <div className="absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t from-background via-transparent to-transparent" />
+           {/* Transición Ultra-Suave (Sin Corte) */}
+           <div className="absolute inset-0 bg-gradient-to-r from-zinc-950 via-zinc-950/80 via-zinc-950/20 to-transparent z-10 pointer-events-none" />
+           <div className="absolute inset-0 bg-black/20 backdrop-blur-[1px] z-0" />
+           <div className="absolute bottom-0 inset-x-0 h-1/2 bg-gradient-to-t from-zinc-950 via-zinc-950/50 to-transparent z-10" />
          </motion.div>
 
-         <div className="relative z-20 flex flex-col justify-end p-20 w-full">
+         <div className="relative z-20 flex flex-col justify-end p-20 w-full pb-24">
             <motion.div
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.5 }}
-              className="space-y-6"
+              className="space-y-8"
             >
                <div className="flex items-center gap-4">
-                 <div className="w-12 h-1 bg-primary rounded-full" />
-                 <span className="text-xs font-black uppercase tracking-[0.5em] text-primary italic">Business</span>
+                 <div className="w-16 h-1.5 bg-primary rounded-full shadow-[0_0_20px_rgba(44,252,125,0.6)]" />
+                 <span className="text-xs font-black uppercase tracking-[0.5em] text-primary italic">Manager Solutions</span>
                </div>
-               <h2 className="text-7xl font-black italic text-white uppercase tracking-tighter leading-[0.8] drop-shadow-2xl font-kanit">
-                 GESTIONA TUS <br /> CANCHAS <br /> <span className="text-primary">COMO NUNCA.</span>
-               </h2>
-               <p className="text-sm text-white/60 font-medium tracking-wide max-w-md leading-relaxed mt-4">
-                 Todo en un solo lugar. Reservas, señas, reportes, precios y disponibilidad en tiempo real para todos los jugadores.
-               </p>
+               
+               <div className="space-y-4">
+                 <h2 className="text-7xl xl:text-8xl font-black italic text-white uppercase tracking-tighter leading-[0.8] drop-shadow-2xl font-kanit">
+                   GESTIONA TU <br /> PREDIO <br /> <span className="text-primary italic">AL MÁXIMO.</span>
+                 </h2>
+                 <p className="text-[11px] font-black text-white/40 uppercase tracking-[0.3em] max-w-sm leading-relaxed italic border-l-2 border-white/10 pl-6">
+                    Automatiza tus ingresos, controla tus turnos y domina la zona con la herramienta definitiva para dueños de canchas.
+                 </p>
+               </div>
+
+               <div className="flex gap-10 pt-10 border-t border-white/5">
+                  <div className="space-y-1">
+                    <p className="text-2xl font-black italic text-white">100%</p>
+                    <p className="text-[8px] font-black uppercase text-zinc-500 tracking-widest">Seguridad</p>
+                  </div>
+                  <div className="space-y-1">
+                    <p className="text-2xl font-black italic text-white">24/7</p>
+                    <p className="text-[8px] font-black uppercase text-zinc-500 tracking-widest">Disponibilidad</p>
+                  </div>
+               </div>
             </motion.div>
          </div>
       </div>

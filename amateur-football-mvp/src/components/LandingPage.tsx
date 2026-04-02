@@ -19,7 +19,13 @@ import {
    BarChart3,
    ShieldCheck,
    CheckCircle2,
-   Medal
+   Medal,
+   Video,
+   Shield,
+   Star,
+   Hexagon,
+   Flame,
+   Crown
 } from 'lucide-react';
 import Link from 'next/link';
 import { FifaCard } from './FifaCard';
@@ -256,13 +262,13 @@ export default function LandingPage() {
                            <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
                               <FeatureCard
                                  title="Reservas al Instante"
-                                 desc="Buscador inteligente con disponibilidad 100% real. Elige tu sede, cruza horarios con tu equipo y asegúrate tu lugar."
+                                 desc="Buscador inteligente con disponibilidad 100% real. Elige tu sede,  y arma el futbol."
                                  icon={Search}
                                  delay={0.1}
                               />
                               <FeatureCard
                                  title="Integración Segura"
-                                 desc="Mercado Pago nativo. Todos apañan su seña directamente por la plataforma, cero transferencias al aire."
+                                 desc="Mercado Pago nativo. Todos pueden pagar su parte directamente por la plataforma."
                                  icon={Zap}
                                  delay={0.2}
                               />
@@ -279,6 +285,117 @@ export default function LandingPage() {
                                  delay={0.4}
                               />
                            </div>
+                        </div>
+                     </section>
+
+                     {/* 🔵 NUEVA SECCIÓN: BUSCADOR DE PARTIDOS (MAPA EN VIVO) */}
+                     <section className="py-20 md:py-40 px-6 lg:px-12 bg-[#050505] relative border-y border-primary/10 overflow-hidden">
+                        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full text-center pointer-events-none z-0 opacity-[0.02]">
+                           <h1 className="text-[5rem] sm:text-[15rem] md:text-[25rem] font-black italic font-kanit uppercase leading-none whitespace-nowrap text-primary">
+                              EN VIVO
+                           </h1>
+                        </div>
+
+                        <div className="max-w-[1400px] mx-auto flex flex-col lg:flex-row items-center gap-16 md:gap-32 relative z-10">
+                           <motion.div
+                              initial={{ opacity: 0, x: -50 }}
+                              whileInView={{ opacity: 1, x: 0 }}
+                              viewport={{ once: true }}
+                              transition={{ duration: 1 }}
+                              className="flex-1 space-y-12"
+                           >
+                              <div className="inline-flex items-center gap-4 px-8 py-4 rounded-2xl bg-primary/10 border border-primary/30 shadow-[0_0_30px_rgba(44,252,125,0.2)]">
+                                 <Activity className="w-8 h-8 text-primary animate-pulse" />
+                                 <span className="text-sm font-black uppercase tracking-[0.4em] text-primary">PRÓXIMOS PARTIDOS EN VIVO</span>
+                              </div>
+
+                              <h2 className="text-5xl md:text-8xl lg:text-[9rem] font-black font-kanit italic uppercase tracking-tighter leading-[0.8] text-white">
+                                 ENCUENTRA PARTIDO <br />
+                                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-white drop-shadow-[0_0_40px_rgba(44,252,125,0.5)]">PARA HOY.</span>
+                              </h2>
+
+                              <p className="text-lg md:text-3xl font-bold text-zinc-400 leading-relaxed max-w-2xl italic uppercase tracking-widest">
+                                 Explora el mapa y únete a partidos que necesitan jugadores ahora mismo. Sin grupos de WhatsApp, sin esperas. Elige tu nivel, reserva tu lugar y salta a la cancha.
+                              </p>
+
+
+                           </motion.div>
+
+                           <motion.div
+                              initial={{ opacity: 0, scale: 0.9 }}
+                              whileInView={{ opacity: 1, scale: 1 }}
+                              viewport={{ once: true }}
+                              transition={{ duration: 1.5, type: "spring" }}
+                              className="flex-1 w-full relative"
+                           >
+                              <div className="absolute inset-0 bg-primary/20 blur-[150px] rounded-full scale-90 -z-10 animate-pulse" />
+
+                              <div className="w-full aspect-square md:aspect-[4/3] rounded-[3.5rem] bg-[#0A0A0A] border-4 border-white/5 overflow-hidden relative shadow-[0_60px_100px_rgba(0,0,0,1)] group">
+                                 <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-[0.1]" />
+
+                                 <div className="absolute inset-4 rounded-[2.5rem] border border-white/5 bg-zinc-900/50 backdrop-blur-sm overflow-hidden">
+                                    <div className="absolute inset-0 opacity-20">
+                                       {Array.from({ length: 10 }).map((_, i) => (
+                                          <div key={i} className="absolute w-px h-full bg-primary/20" style={{ left: `${(i + 1) * 10}%` }} />
+                                       ))}
+                                       {Array.from({ length: 10 }).map((_, i) => (
+                                          <div key={i} className="absolute h-px w-full bg-primary/20" style={{ top: `${(i + 1) * 10}%` }} />
+                                       ))}
+                                    </div>
+
+                                    {[
+                                       { x: '25%', y: '35%', name: 'F5 Estelar', time: '21:00hs', status: 'FALTAN 2' },
+                                       { x: '65%', y: '25%', name: 'Desafío Elite', time: '19:30hs', status: 'FALTA 1' },
+                                       { x: '45%', y: '65%', name: 'Amistoso Mixto', time: '22:00hs', status: 'CUPO LLENO', full: true },
+                                       { x: '75%', y: '70%', name: 'Copa Pelotify', time: '20:00hs', status: '3 LUGARES' }
+                                    ].map((match, i) => (
+                                       <motion.div
+                                          key={i}
+                                          initial={{ scale: 0 }}
+                                          whileInView={{ scale: 1 }}
+                                          transition={{ delay: 0.5 + (i * 0.2), type: "spring" }}
+                                          className="absolute z-20 group/pin"
+                                          style={{ left: match.x, top: match.y }}
+                                       >
+                                          <div className="relative pointer-events-auto">
+                                             <div className={cn(
+                                                "absolute -inset-4 blur-xl rounded-full animate-pulse opacity-0 group-hover/pin:opacity-100 transition-opacity",
+                                                match.full ? "bg-zinc-500/40" : "bg-primary/40"
+                                             )} />
+                                             <div className={cn(
+                                                "w-6 h-6 rounded-full border-4 border-black shadow-lg relative z-10 cursor-pointer group-hover/pin:scale-125 transition-transform",
+                                                match.full ? "bg-zinc-600" : "bg-primary shadow-[0_0_20px_rgba(44,252,125,0.8)]"
+                                             )} />
+
+                                             <div className="absolute bottom-full mb-4 left-1/2 -translate-x-1/2 opacity-0 group-hover/pin:opacity-100 transition-all scale-90 group-hover/pin:scale-100 bg-black border border-primary/30 p-4 rounded-2xl backdrop-blur-md min-w-[180px] z-30 pointer-events-none shadow-2xl">
+                                                <div className="flex justify-between items-start mb-2">
+                                                   <p className="text-[10px] font-black uppercase tracking-widest text-primary leading-none">{match.name}</p>
+                                                   <span className="text-[8px] font-black text-zinc-500">{match.time}</span>
+                                                </div>
+                                                <p className={cn(
+                                                   "text-[9px] font-black tracking-[0.2em]",
+                                                   match.full ? "text-zinc-500" : "text-white"
+                                                )}>
+                                                   {match.status}
+                                                </p>
+                                             </div>
+                                          </div>
+                                       </motion.div>
+                                    ))}
+
+                                    <div className="absolute bottom-8 left-8 right-8 flex items-center justify-center">
+                                       <div className="bg-black/80 backdrop-blur-xl border border-white/10 px-6 py-3 rounded-2xl flex items-center gap-4 shadow-2xl">
+                                          <div className="flex gap-2">
+                                             <div className="w-2 h-2 rounded-full bg-primary animate-ping" />
+                                             <div className="w-2 h-2 rounded-full bg-zinc-700" />
+                                             <div className="w-2 h-2 rounded-full bg-zinc-700" />
+                                          </div>
+                                          <span className="text-[10px] font-black uppercase tracking-widest text-white">4 PARTIDOS DISPONIBLES CERCA</span>
+                                       </div>
+                                    </div>
+                                 </div>
+                              </div>
+                           </motion.div>
                         </div>
                      </section>
 
@@ -356,6 +473,289 @@ export default function LandingPage() {
                                  <div className="animate-[float_6s_ease-in-out_infinite] hover:scale-110 hover:-rotate-y-12 transition-transform duration-700 drop-shadow-[0_60px_100px_rgba(0,0,0,0.9)] filter brightness-110">
                                     <FifaCard player={dummyPlayer} />
                                  </div>
+                              </div>
+                           </motion.div>
+                        </div>
+                     </section>
+
+                     {/* 🔵 NUEVA SECCIÓN: ESCALAMIENTO DE RANGOS (SISTEMA ELO) */}
+                     <section className="py-20 md:py-56 px-6 lg:px-12 bg-[#020202] relative border-b border-primary/10 overflow-hidden">
+                        <div className="max-w-[1400px] mx-auto text-center mb-24 space-y-8 relative z-10">
+                           <motion.div
+                              initial={{ opacity: 0, scale: 0.8 }}
+                              whileInView={{ opacity: 1, scale: 1 }}
+                              viewport={{ once: true }}
+                              className="inline-flex items-center gap-4 px-6 py-3 rounded-xl bg-primary/10 border border-primary/20 backdrop-blur-md"
+                           >
+                              <Trophy className="w-5 h-5 text-primary" />
+                              <span className="text-[10px] font-black uppercase tracking-[0.4em] text-primary">EL CAMINO A LA CIMA</span>
+                           </motion.div>
+                           <h2 className="text-5xl md:text-8xl lg:text-[10rem] font-black font-kanit italic uppercase tracking-tighter leading-[0.8] text-white">
+                              SÉ <span className="text-primary">LEYENDA.</span> <br />
+                              <span className="text-transparent bg-clip-text bg-gradient-to-r from-white to-zinc-600">SUBE DE NIVEL.</span>
+                           </h2>
+                           <p className="text-sm md:text-xl font-bold text-zinc-500 uppercase tracking-[0.2em] max-w-4xl mx-auto">
+                              Tu ELO define tu prestigio. De Hierro a Maestro, cada victoria cuenta para tu legado global.
+                           </p>
+                        </div>
+
+                        <div className="max-w-[1600px] mx-auto grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-4 px-4">
+                           {[
+                              { name: 'HIERRO', color: 'from-zinc-900 to-black', level: '0', icon: Shield, desc: '"EL PUNTO DE PARTIDA DE TODO JUGADOR."', glow: 'group-hover:shadow-zinc-500/20' },
+                              { name: 'BRONCE', color: 'from-orange-950 to-black', level: '1,000', icon: Zap, desc: '"YA NO SOS HORRIBLE. HAS DEMOSTRADO CONSISTENCIA EN LA CANCHA."', glow: 'group-hover:shadow-orange-500/20' },
+                              { name: 'PLATA', color: 'from-[#1e293b] to-black', level: '3,000', icon: Medal, desc: '"UN JUGADOR RESPETADO QUE ENTIENDE LA DINÁMICA DEL JUEGO."', glow: 'group-hover:shadow-slate-400/20' },
+                              { name: 'ORO', color: 'from-[#451a03] to-black', level: '6,000', icon: Trophy, desc: '"TALENTO PURO. ERES LA REFERENCIA DE TU EQUIPO."', glow: 'group-hover:shadow-yellow-500/20' },
+                              { name: 'PLATINO', color: 'from-[#083344] to-black', level: '10,000', icon: Star, desc: '"DOMINIO TOTAL. POCOS PUEDEN SEGUIRTE EL RITMO CUANDO ACELERAS."', glow: 'group-hover:shadow-cyan-500/20' },
+                              { name: 'DIAMANTE', color: 'from-[#1e3a8a] to-black', level: '16,000', icon: Hexagon, desc: '"LA JOYA DE LA CANCHA. TU NOMBRE YA SUENA EN CADA ESTADIO."', glow: 'group-hover:shadow-blue-500/20' },
+                              { name: 'ELITE', color: 'from-[#3b0764] to-black', level: '25,000', icon: Flame, desc: '"SOLO PARA LOS PRIVILEGIADOS. EL 1% DE LA COMUNIDAD DE PELOTIFY."', glow: 'group-hover:shadow-purple-500/20' },
+                              { name: 'LEYENDA', color: 'from-[#064e3b] to-black', level: '40,000', icon: Crown, desc: '"INMORTAL. TU ESTATUS TRASCIENDE LOS PARTIDOS. ERES HISTORIA PURA."', special: true, glow: 'group-hover:shadow-primary/30' },
+                           ].map((rank, i) => (
+                              <motion.div
+                                 key={i}
+                                 initial={{ opacity: 0, y: 30 }}
+                                 whileInView={{ opacity: 1, y: 0 }}
+                                 transition={{ delay: i * 0.05 }}
+                                 className="group perspective-1000"
+                              >
+                                 <div className={cn(
+                                    "aspect-[3/5] rounded-[2.5rem] p-6 flex flex-col items-center text-center border border-white/5 bg-gradient-to-b transition-all duration-700 group-hover:-translate-y-4 shadow-2xl relative overflow-hidden",
+                                    rank.color,
+                                    rank.glow,
+                                    rank.special && "ring-2 ring-primary/40 shadow-primary/20"
+                                 )}>
+                                    {/* Icon Glow */}
+                                    <div className="absolute top-10 w-24 h-24 bg-white/5 blur-[40px] rounded-full pointer-events-none" />
+
+                                    <div className="space-y-8 flex-1 flex flex-col items-center w-full">
+                                       {/* Icon Container */}
+                                       <div className="w-16 h-16 rounded-full bg-black/40 backdrop-blur-md flex items-center justify-center border border-white/10 shadow-inner group-hover:scale-110 transition-transform duration-500">
+                                          <rank.icon className={cn(
+                                             "w-8 h-8",
+                                             i === 0 && "text-zinc-400",
+                                             i === 1 && "text-orange-500",
+                                             i === 2 && "text-slate-300",
+                                             i === 3 && "text-yellow-500",
+                                             i === 4 && "text-cyan-400",
+                                             i === 5 && "text-blue-400",
+                                             i === 6 && "text-emerald-400",
+                                             i === 7 && "text-primary drop-shadow-[0_0_10px_rgba(44,252,125,0.8)]"
+                                          )} />
+                                       </div>
+
+                                       <div className="space-y-4 w-full">
+                                          <h5 className={cn(
+                                             "text-2xl font-black italic font-kanit uppercase leading-none tracking-tighter",
+                                             i === 0 && "text-white",
+                                             i === 1 && "text-orange-500",
+                                             i === 2 && "text-white",
+                                             i === 3 && "text-yellow-500",
+                                             i === 4 && "text-cyan-400",
+                                             i === 5 && "text-blue-400",
+                                             i === 6 && "text-emerald-400",
+                                             i === 7 && "text-primary"
+                                          )}>{rank.name}</h5>
+
+                                          {/* XP Badge */}
+                                          <div className="py-1.5 px-4 rounded-full bg-white/5 border border-white/10 inline-block">
+                                             <p className="text-[8px] font-black tracking-widest text-zinc-500 uppercase">MÍNIMO <span className="text-white">{rank.level} XP</span></p>
+                                          </div>
+                                       </div>
+
+                                       {/* Quote */}
+                                       <p className="text-[9px] font-black italic text-zinc-400 leading-relaxed px-2 line-clamp-4">
+                                          {rank.desc}
+                                       </p>
+
+                                       {/* Status Decoration */}
+                                       <div className="w-full pt-6 space-y-4 mt-auto">
+                                          <div className="w-full h-px bg-gradient-to-r from-transparent via-white/10 to-transparent" />
+                                          <p className="text-[7px] font-black tracking-[0.3em] text-zinc-600 uppercase">ESTATUS REGISTRADO</p>
+                                       </div>
+                                    </div>
+                                 </div>
+                              </motion.div>
+                           ))}
+                        </div>
+                     </section>
+
+                     {/* 🔵 SECCIÓN FUTTOK - EL ESCAPARATE DE TALENTO SEGURO */}
+                     <section className="py-20 md:py-56 px-6 lg:px-12 bg-black relative border-b border-primary/10 overflow-hidden">
+                        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full text-center pointer-events-none z-0 opacity-[0.03]">
+                           <h1 className="text-[5rem] sm:text-[15rem] md:text-[25rem] font-black italic font-kanit uppercase leading-none whitespace-nowrap text-primary">
+                              TENDENCIA
+                           </h1>
+                        </div>
+
+                        <div className="max-w-[1400px] mx-auto flex flex-col lg:flex-row items-center gap-16 md:gap-32 relative z-10">
+                           <motion.div
+                              initial={{ opacity: 0, x: -50 }}
+                              whileInView={{ opacity: 1, x: 0 }}
+                              viewport={{ once: true }}
+                              transition={{ duration: 1 }}
+                              className="flex-1 space-y-12"
+                           >
+                              <div className="inline-flex items-center gap-4 px-8 py-4 rounded-2xl bg-primary/10 border border-primary/30 shadow-[0_0_30px_rgba(44,252,125,0.2)]">
+                                 <Video className="w-8 h-8 text-primary animate-pulse" />
+                                 <span className="text-sm font-black uppercase tracking-[0.4em] text-primary">FUTTOK: TU MOMENTO DE GLORIA</span>
+                              </div>
+
+                              <h2 className="text-5xl md:text-8xl lg:text-[10rem] font-black font-kanit italic uppercase tracking-tighter leading-[0.8] text-white">
+                                 DALE PLAY A <br />
+                                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-white drop-shadow-[0_0_40px_rgba(44,252,125,0.5)]">TU TALENTO.</span>
+                              </h2>
+
+                              <p className="text-lg md:text-3xl font-bold text-zinc-400 leading-relaxed max-w-2xl italic uppercase tracking-widest">
+                                 Sube tus mejores jugadas, compite por ser tendencia y deja que la comunidad te descubra. FutTok es el escaparate vertical definitivo para los que dominan el potrero.
+                              </p>
+
+                              <div className="flex flex-wrap gap-6 pt-6">
+                                 <motion.button
+                                    whileHover={{ scale: 1.05, boxShadow: '0 0 50px rgba(44,252,125,0.4)' }}
+                                    whileTap={{ scale: 0.95 }}
+                                    className="h-20 px-12 bg-primary text-black font-black uppercase tracking-[0.3em] text-sm md:text-lg rounded-2xl transition-all duration-500"
+                                 >
+                                    EXPLORAR CLIPS
+                                 </motion.button>
+                                 <div className="flex flex-col justify-center">
+                                    <span className="text-xl font-black text-white">+50K</span>
+                                    <span className="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-500 text-center">Vistas hoy</span>
+                                 </div>
+                              </div>
+                           </motion.div>
+
+                           <motion.div
+                              initial={{ opacity: 0, scale: 0.8, rotate: 12 }}
+                              whileInView={{ opacity: 1, scale: 1, rotate: 6 }}
+                              viewport={{ once: true }}
+                              transition={{ duration: 1, type: "spring" }}
+                              className="flex-1 flex justify-center relative perspective-1000"
+                           >
+                              <div className="absolute inset-x-0 top-0 h-full bg-primary/20 blur-[150px] rounded-full scale-110 -z-10 animate-pulse" />
+
+                              <div className="w-72 h-[600px] md:w-80 md:h-[650px] rounded-[3.5rem] bg-zinc-900 border-[12px] border-zinc-800 shadow-[0_50px_100px_rgba(0,0,0,1)] relative overflow-hidden group transition-all duration-700 hover:rotate-0 hover:scale-110 shadow-2xl hover:shadow-primary/20">
+                                 <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1574629810360-7efbbe195018?q=80&w=1000&auto=format&fit=crop')] bg-cover bg-center opacity-80 group-hover:scale-110 transition-transform duration-2000" />
+                                 <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-transparent to-transparent" />
+
+                                 <div className="absolute top-10 left-6 right-6 flex justify-between text-white/40 font-black text-[10px] tracking-widest">
+                                    <span>FUTTOK LIVE</span>
+                                    <div className="flex gap-1 items-center">
+                                       <div className="w-1.5 h-1.5 rounded-full bg-red-600 animate-ping" />
+                                       <span>EN VIVO</span>
+                                    </div>
+                                 </div>
+
+                                 <div className="absolute bottom-12 left-8 right-8 space-y-6">
+                                    <div className="flex items-center gap-4">
+                                       <div className="w-12 h-12 rounded-2xl bg-primary flex items-center justify-center text-black font-black text-xl shadow-lg">M</div>
+                                       <div>
+                                          <p className="text-sm font-black uppercase tracking-widest text-white italic">@maestro_fu</p>
+                                          <div className="flex items-center gap-2">
+                                             <span className="w-2 h-2 rounded-full bg-primary" />
+                                             <p className="text-[10px] font-black uppercase tracking-widest text-primary">Nivel 99</p>
+                                          </div>
+                                       </div>
+                                    </div>
+                                    <p className="text-xs font-bold text-white/90 leading-relaxed uppercase tracking-tighter line-clamp-3">
+                                       Golazo de chilena en el último minuto para ganar la final del torneo elite. 🔥👑 #Pelotify #FutTok #Fútbol
+                                    </p>
+                                 </div>
+
+                                 <div className="absolute right-6 top-1/2 -translate-y-1/2 flex flex-col gap-10 text-white z-20">
+                                    <div className="flex flex-col items-center gap-2">
+                                       <div className="w-14 h-14 rounded-2xl bg-white/5 backdrop-blur-xl border border-white/10 flex items-center justify-center shadow-2xl group-hover:bg-primary group-hover:text-black transition-all">
+                                          <CheckCircle2 className="w-7 h-7" />
+                                       </div>
+                                       <span className="text-[10px] font-black uppercase tracking-widest">14.2K</span>
+                                    </div>
+                                    <div className="flex flex-col items-center gap-2">
+                                       <div className="w-14 h-14 rounded-2xl bg-white/5 backdrop-blur-xl border border-white/10 flex items-center justify-center shadow-2xl">
+                                          <Zap className="w-7 h-7 text-primary" />
+                                       </div>
+                                       <span className="text-[10px] font-black uppercase tracking-widest">4.8K</span>
+                                    </div>
+                                 </div>
+                              </div>
+                           </motion.div>
+                        </div>
+                     </section>
+
+                     {/* 🔵 SECCIÓN TORNEOS - LA COMPETICIÓN DEFINITIVA */}
+                     <section className="py-20 md:py-56 px-6 lg:px-12 bg-[#020202] relative border-b border-primary/20 overflow-hidden">
+                        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full text-center pointer-events-none z-0 opacity-[0.03]">
+                           <h1 className="text-[5rem] sm:text-[15rem] md:text-[25rem] font-black italic font-kanit uppercase leading-none whitespace-nowrap text-white">
+                              GLORIA
+                           </h1>
+                        </div>
+
+                        <div className="max-w-[1400px] mx-auto flex flex-col lg:flex-row-reverse items-center gap-16 md:gap-32 relative z-10">
+                           <motion.div
+                              initial={{ opacity: 0, x: 50 }}
+                              whileInView={{ opacity: 1, x: 0 }}
+                              viewport={{ once: true }}
+                              transition={{ duration: 1 }}
+                              className="flex-1 space-y-12"
+                           >
+                              <div className="inline-flex items-center gap-4 px-8 py-4 rounded-2xl bg-primary/10 border border-primary/30 shadow-[0_0_30px_rgba(44,252,125,0.2)]">
+                                 <Trophy className="w-8 h-8 text-primary" />
+                                 <span className="text-sm font-black uppercase tracking-[0.4em] text-primary">RECOMPENSAS Y LEGADO</span>
+                              </div>
+
+                              <h2 className="text-5xl md:text-8xl lg:text-[9.5rem] font-black font-kanit italic uppercase tracking-tighter leading-[0.8] text-white">
+                                 GLORIA Y <br />
+                                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-white drop-shadow-[0_0_40px_rgba(44,252,125,0.5)]">RECOMPENSAS.</span>
+                              </h2>
+
+                              <p className="text-lg md:text-3xl font-bold text-zinc-400 leading-relaxed max-w-2xl italic uppercase tracking-widest">
+                                 Inscribe a tu equipo, sube de división y compite por premios en efectivo en las sedes más exclusivas de la ciudad. El reconocimiento es para muchos, la gloria eterna solo para los campeones.
+                              </p>
+
+                              <div className="grid grid-cols-2 gap-8 py-10 border-y border-white/5">
+                                 <div className="space-y-4">
+                                    <div className="flex items-center gap-4">
+                                       <DollarSign className="w-8 h-8 text-primary drop-shadow-[0_0_10px_rgba(44,252,125,0.6)]" />
+                                       <h4 className="text-xl font-black uppercase tracking-widest text-white">CASH PRIZES</h4>
+                                    </div>
+                                    <p className="text-xs font-black text-zinc-500 uppercase tracking-widest leading-loose">Premios en efectivo directos por MercadoPago para los ganadores del podio.</p>
+                                 </div>
+                                 <div className="space-y-4">
+                                    <div className="flex items-center gap-4">
+                                       <Award className="w-8 h-8 text-primary drop-shadow-[0_0_10px_rgba(44,252,125,0.6)]" />
+                                       <h4 className="text-xl font-black uppercase tracking-widest text-white">HALL OF FAME</h4>
+                                    </div>
+                                    <p className="text-xs font-black text-zinc-500 uppercase tracking-widest leading-loose">Tu equipo inmortalizado en la historia de la liga local para siempre.</p>
+                                 </div>
+                              </div>
+
+                              <motion.button
+                                 whileHover={{ scale: 1.05, boxShadow: '0 0 50px rgba(44,252,125,0.4)' }}
+                                 whileTap={{ scale: 0.95 }}
+                                 className="h-20 px-12 bg-primary text-black font-black uppercase tracking-[0.3em] text-sm md:text-lg rounded-2xl transition-all duration-500"
+                              >
+                                 VER TORNEOS ACTIVOS
+                              </motion.button>
+                           </motion.div>
+
+                           <motion.div
+                              initial={{ opacity: 0, scale: 0.7, y: 50 }}
+                              whileInView={{ opacity: 1, scale: 1, y: 0 }}
+                              viewport={{ once: true }}
+                              transition={{ duration: 1.5, type: "spring", stiffness: 40 }}
+                              className="flex-1 flex justify-center relative perspective-1000"
+                           >
+                              <div className="absolute inset-x-0 top-0 h-full bg-primary/30 blur-[150px] rounded-full scale-110 -z-10 animate-pulse" />
+                              <div className="relative group">
+                                 <div className="absolute -inset-10 bg-gradient-to-tr from-primary/40 to-white/20 blur-[80px] rounded-full opacity-40 group-hover:opacity-100 transition-opacity duration-700" />
+                                 <Trophy className="w-64 h-64 md:w-96 md:h-96 text-white drop-shadow-[0_0_80px_rgba(44,252,125,1)] group-hover:scale-110 group-hover:-rotate-12 transition-transform duration-1000 relative z-10" />
+
+                                 <motion.div
+                                    animate={{
+                                       opacity: [0.2, 0.5, 0.2],
+                                       scale: [1, 1.1, 1],
+                                       rotate: [0, 90, 180, 270, 360]
+                                    }}
+                                    transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
+                                    className="absolute inset-0 border-4 border-dashed border-primary/40 rounded-full scale-125 -z-10"
+                                 />
                               </div>
                            </motion.div>
                         </div>
@@ -655,6 +1055,106 @@ export default function LandingPage() {
                            </motion.div>
                         </div>
                      </section>
+
+                     {/* 🔴 NUEVA SECCIÓN PARA DUEÑOS: GESTIÓN DE TORNEOS */}
+                     <section className="py-20 md:py-40 px-6 lg:px-12 bg-[#020202] relative border-b border-primary/20 overflow-hidden">
+                        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full text-center pointer-events-none z-0 opacity-[0.02]">
+                           <h1 className="text-[5rem] sm:text-[12rem] md:text-[22rem] font-black italic font-kanit uppercase leading-none whitespace-nowrap text-white">
+                              COMPETICIÓN
+                           </h1>
+                        </div>
+
+                        <div className="max-w-[1400px] mx-auto flex flex-col lg:flex-row-reverse items-center gap-16 md:gap-32 relative z-10">
+                           <motion.div
+                              initial={{ opacity: 0, x: 50 }}
+                              whileInView={{ opacity: 1, x: 0 }}
+                              viewport={{ once: true }}
+                              transition={{ duration: 1 }}
+                              className="flex-1 space-y-12"
+                           >
+                              <div className="inline-flex items-center gap-4 px-8 py-4 rounded-2xl bg-primary/10 border border-primary/30 shadow-[0_0_30px_rgba(44,252,125,0.2)]">
+                                 <Trophy className="w-8 h-8 text-primary" />
+                                 <span className="text-sm font-black uppercase tracking-[0.4em] text-primary">NEGOCIO RECURRENTE</span>
+                              </div>
+
+                              <h2 className="text-5xl md:text-8xl lg:text-[8.5rem] font-black font-kanit italic uppercase tracking-tighter leading-[0.8] text-white">
+                                 TU LIGA <br />
+                                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-white drop-shadow-[0_0_40px_rgba(44,252,125,0.5)]">PROFESIONAL.</span>
+                              </h2>
+
+                              <p className="text-lg md:text-3xl font-bold text-zinc-400 leading-relaxed max-w-2xl italic uppercase tracking-widest">
+                                 No solo alquiles canchas. Crea comunidades. Nuestra plataforma automatiza fixtures, tablas y pagos de inscripciones para que tú solo veas rodar la pelota.
+                              </p>
+
+                              <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 py-10 border-y border-white/5 uppercase">
+                                 <div className="space-y-3">
+                                    <h4 className="text-xl font-black text-white">Fixtures Automáticos</h4>
+                                    <p className="text-xs font-bold text-zinc-500 tracking-widest leading-relaxed">El sistema genera el calendario de todo el año en un segundo.</p>
+                                 </div>
+                                 <div className="space-y-3">
+                                    <h4 className="text-xl font-black text-white">Tablas en Real-time</h4>
+                                    <p className="text-xs font-bold text-zinc-500 tracking-widest leading-relaxed">Los resultados se actualizan al instante para que todos lo sigan.</p>
+                                 </div>
+                              </div>
+                              <motion.div
+                                 initial={{ opacity: 0, y: 20 }}
+                                 whileInView={{ opacity: 1, y: 0 }}
+                                 className="flex items-center gap-6 pt-6"
+                              >
+
+                              </motion.div>
+                           </motion.div>
+
+                           <motion.div
+                              initial={{ opacity: 0, scale: 0.8, rotate: -5 }}
+                              whileInView={{ opacity: 1, scale: 1, rotate: 0 }}
+                              viewport={{ once: true }}
+                              transition={{ duration: 1, type: "spring" }}
+                              className="flex-1 w-full bg-[#0A0A0A] border-4 border-primary/20 rounded-[3rem] p-8 md:p-12 shadow-2xl relative overflow-hidden group"
+                           >
+                              <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
+
+                              <div className="space-y-10 relative z-10">
+                                 <div className="flex items-center justify-between border-b border-white/10 pb-8">
+                                    <div className="space-y-1">
+                                       <h3 className="text-2xl font-black italic font-kanit text-white uppercase tracking-tighter">TABLA LIGA ELITE</h3>
+                                       <p className="text-[10px] font-bold text-zinc-500 uppercase tracking-[0.2em]">Temporada Apertura 2024</p>
+                                    </div>
+                                    <div className="px-4 py-2 rounded-lg bg-primary/20 border border-primary/40 text-primary font-black text-[10px] animate-pulse">EN VIVO</div>
+                                 </div>
+                                 <div className="space-y-4">
+                                    {[
+                                       { pos: 1, team: "GALÁCTICOS FC", pts: 24, win: "8 PJ • 8 PG", color: "text-primary" },
+                                       { pos: 2, team: "ROSARIO CENTRAL", pts: 21, win: "8 PJ • 7 PG", color: "text-white" },
+                                       { pos: 3, team: "LA MÁQUINA", pts: 18, win: "8 PJ • 6 PG", color: "text-white" }
+                                    ].map((team, i) => (
+                                       <motion.div
+                                          key={i}
+                                          initial={{ opacity: 0, x: -20 }}
+                                          whileInView={{ opacity: 1, x: 0 }}
+                                          transition={{ delay: i * 0.1 }}
+                                          className="flex items-center gap-6 p-6 rounded-3xl bg-white/5 border border-white/5 hover:border-primary/30 hover:bg-primary/5 transition-all duration-500 cursor-pointer"
+                                       >
+                                          <span className="text-3xl font-black text-primary/40 w-8 italic">{team.pos}</span>
+                                          <div className="flex-1">
+                                             <p className={cn("text-lg font-black uppercase tracking-tight", team.color)}>{team.team}</p>
+                                             <p className="text-[9px] font-black text-zinc-500 uppercase tracking-widest">{team.win}</p>
+                                          </div>
+                                          <div className="text-right">
+                                             <p className="text-2xl font-black text-white italic leading-none">{team.pts}</p>
+                                             <p className="text-[8px] font-black text-primary uppercase">PTS</p>
+                                          </div>
+                                       </motion.div>
+                                    ))}
+                                 </div>
+                                 <div className="pt-4 flex justify-center">
+                                    <Link href="/canchas/tournaments" className="text-[10px] font-black uppercase tracking-[0.3em] text-primary hover:text-white transition-colors">CONFIGURAR MI TORNEO →</Link>
+                                 </div>
+                              </div>
+                           </motion.div>
+                        </div>
+                     </section>
+
                      {/* 🔴 FINAL CTA BLOCK DUEÑO */}
                      <section className="py-20 md:py-40 px-6 text-center border-b border-primary/20 relative bg-[#050505] overflow-hidden">
                         <div className="absolute top-0 right-0 w-[1000px] h-[1000px] bg-primary/5 blur-[200px] pointer-events-none" />

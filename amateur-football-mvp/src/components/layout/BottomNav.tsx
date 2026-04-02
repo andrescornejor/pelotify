@@ -10,7 +10,8 @@ import {
   MapPin, 
   Search,
   Trophy,
-  LayoutGrid
+  LayoutGrid,
+  MessageSquare
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -60,10 +61,11 @@ export function BottomNav() {
       activeColor: '#f59e0b'
     },
     { 
-      label: 'PERFIL', 
-      href: '/profile/me', 
-      icon: User2,
-      activeColor: '#a855f7'
+      label: 'CHATS', 
+      href: '/messages', 
+      icon: MessageSquare,
+      activeColor: '#a855f7',
+      isChat: true
     }
   ], []);
 
@@ -174,16 +176,27 @@ export function BottomNav() {
                       animate={isActive ? { y: -2, scale: 1.1 } : { y: 0, scale: 1 }}
                       transition={{ type: "spring", stiffness: 500, damping: 20 }}
                     >
-                      <Icon 
-                        className={cn(
-                          "w-5 h-5 transition-all duration-500",
-                          isActive 
-                            ? "text-primary drop-shadow-[0_0_8px_rgba(44,252,125,0.4)]" 
-                            : "text-foreground/40 group-hover:text-foreground/70"
+                        <Icon 
+                          className={cn(
+                            "w-5 h-5 transition-all duration-500",
+                            isActive 
+                              ? "text-primary drop-shadow-[0_0_8px_rgba(44,252,125,0.4)]" 
+                              : "text-foreground/40 group-hover:text-foreground/70"
+                          )}
+                          strokeWidth={isActive ? 2.5 : 2}
+                        />
+
+                        {/* Unread badge for Chat */}
+                        {item.isChat && unreadCount > 0 && !isActive && (
+                          <motion.span
+                            initial={{ scale: 0 }}
+                            animate={{ scale: 1 }}
+                            className="absolute -top-1 -right-1 w-3.5 h-3.5 bg-red-500 rounded-full border border-background flex items-center justify-center"
+                          >
+                            <span className="text-[7px] font-black text-white">{unreadCount > 9 ? '9+' : unreadCount}</span>
+                          </motion.span>
                         )}
-                        strokeWidth={isActive ? 2.5 : 2}
-                      />
-                    </motion.div>
+                      </motion.div>
     
                     {/* Active Background Pill (Subtle) */}
                     {isActive && (
