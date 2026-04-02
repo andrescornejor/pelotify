@@ -41,6 +41,7 @@ export function useJoinEmergencyMatch() {
           participants: [
             ...(previousMatch.participants || []),
             { 
+              id: `temp-${userId}`,
               user_id: userId, 
               team: null, 
               status: 'confirmed', 
