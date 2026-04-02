@@ -838,7 +838,7 @@ function MatchLobbyContent() {
           {/* ── RIGHT: SIDEBAR ── */}
           <div className="lg:col-span-4 space-y-8">
              {/* Payment Card if needed */}
-             {isConfirmed && match.price > 0 && !isCompleted && !myEntry?.paid && (
+             {isConfirmed && match.price > 0 && !isCompleted && !myEntry?.paid && (!isCreator || !!venueInfo || !!match.business_id) && (
                 <div className="p-8 rounded-[3rem] bg-[#009EE3]/5 border border-[#009EE3]/20 space-y-6 relative overflow-hidden group">
                   <div className="absolute top-0 right-0 p-8 opacity-5 group-hover:scale-110 transition-transform duration-1000">
                     <DollarSign className="w-32 h-32 text-[#009EE3]" />
