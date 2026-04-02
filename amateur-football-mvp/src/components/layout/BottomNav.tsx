@@ -71,6 +71,10 @@ export function BottomNav() {
 
   const updateUnreadCount = async () => {
     if (!user) return;
+    if (pathname === '/messages') {
+      setUnreadCount(0);
+      return;
+    }
     try {
       const count = await getUnreadMessagesCount(user.id);
       setUnreadCount(count);
@@ -90,8 +94,15 @@ export function BottomNav() {
 
     const channel = supabase
       .channel('unread-nav-messages')
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'direct_messages' }, () =>
-        updateUnreadCount()
+      .on(
+        'postgres_changes', 
+        { 
+          event: '*', 
+          schema: 'public', 
+          table: 'direct_messages',
+          filter: `recipient_id=eq.${user.id}`
+        }, 
+        () => updateUnreadCount()
       )
       .subscribe();
 

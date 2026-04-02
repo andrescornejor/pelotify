@@ -172,6 +172,8 @@ export async function getRecentChats(userId: string) {
   const conversations = new Map<string, any>();
   data.forEach((msg) => {
     const otherId = msg.sender_id === userId ? msg.recipient_id : msg.sender_id;
+    const isUnreadForMe = msg.recipient_id === userId && !msg.is_read;
+
     if (!conversations.has(otherId)) {
       const isSender = msg.sender_id === userId;
       const otherProfile = isSender ? msg.recipient : msg.sender;
@@ -182,8 +184,11 @@ export async function getRecentChats(userId: string) {
         avatar_url: (otherProfile as any)?.avatar_url,
         lastMessage: msg.content,
         timestamp: msg.created_at,
-        isUnread: msg.recipient_id === userId && !msg.is_read,
+        isUnread: isUnreadForMe,
       });
+    } else if (isUnreadForMe) {
+      // If we already have the conversation entry but find an unread message further down the list
+      conversations.get(otherId).isUnread = true;
     }
   });
 
@@ -224,6 +229,7 @@ export async function markAllDirectMessagesAsRead(userId: string) {
     .from('direct_messages')
     .update({ is_read: true })
     .eq('recipient_id', userId)
+    .neq('sender_id', userId)
     .eq('is_read', false);
 
   if (error) {
