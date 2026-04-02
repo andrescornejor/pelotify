@@ -308,28 +308,21 @@ function EmergencyLobbyContent() {
               </button>
            ) : (
              <div className="flex gap-4">
+                {isCreator && (
+                  <button
+                    onClick={handleDelete}
+                    className="w-16 h-16 rounded-2xl bg-red-500/10 border border-red-500/20 text-red-500 flex items-center justify-center hover:bg-red-500/20 transition-all active:scale-90"
+                  >
+                    <Trash2 className="w-6 h-6" />
+                  </button>
+                )}
                 <button
                   onClick={handleShare}
                   className="flex-1 h-16 rounded-2xl bg-white/5 border border-white/10 font-black italic uppercase text-[10px] tracking-widest flex items-center justify-center gap-3 hover:bg-white/10 transition-all"
                 >
                   <Share2 className="w-4 h-4" /> Reclutar Amigos
                 </button>
-                {isCreator ? (
-                  <div className="flex gap-2 w-full">
-                     <button
-                        onClick={handleDelete}
-                        className="w-16 h-16 rounded-2xl bg-red-500/10 border border-red-500/20 text-red-500 flex items-center justify-center hover:bg-red-500/20 transition-all active:scale-90"
-                      >
-                        <Trash2 className="w-6 h-6" />
-                      </button>
-                      <Link 
-                        href={`/match?id=${match.id}&mode=detail`}
-                        className="flex-1 h-16 rounded-2xl bg-white/5 border border-white/10 font-black italic uppercase text-[10px] tracking-widest flex items-center justify-center gap-3 hover:bg-white/10 transition-all text-white"
-                      >
-                        <ExternalLink className="w-4 h-4" /> Lobby Detallado
-                      </Link>
-                  </div>
-                ) : (
+                {!isCreator && (
                   <button
                     onClick={() => leaveMutation.mutateAsync({ matchId: match.id, userId: user!.id })}
                     className="w-16 h-16 rounded-2xl bg-red-500/10 border border-red-500/20 text-red-500 flex items-center justify-center hover:bg-red-500/20 transition-all active:scale-90"

@@ -212,7 +212,8 @@ export async function createMatch(matchData: Partial<Match> & { field_id?: strin
 }
 
 export async function joinMatch(matchId: string, userId: string, team: 'A' | 'B' | null = null) {
-  const { error } = await supabase.from('match_participants').insert([
+  // Primero insertamos al participante
+  const { error: joinError } = await supabase.from('match_participants').insert([
     {
       match_id: matchId,
       user_id: userId,
@@ -221,7 +222,25 @@ export async function joinMatch(matchId: string, userId: string, team: 'A' | 'B'
     },
   ]);
 
-  if (error) throw error;
+  if (joinError) throw joinError;
+
+  // Si el partido está en modo reclutamiento, actualizamos el contador y el estado si corresponde
+  const { data: match } = await supabase
+    .from('matches')
+    .select('is_recruitment, missing_players')
+    .eq('id', matchId)
+    .single();
+
+  if (match?.is_recruitment && (match.missing_players || 0) > 0) {
+    const newMissing = Math.max(0, match.missing_players - 1);
+    await supabase
+      .from('matches')
+      .update({ 
+        missing_players: newMissing,
+        is_recruitment: newMissing > 0 
+      })
+      .eq('id', matchId);
+  }
 }
 
 export async function switchTeam(matchId: string, userId: string, team: 'A' | 'B' | null) {
