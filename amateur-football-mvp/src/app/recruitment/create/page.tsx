@@ -13,8 +13,10 @@ import {
   Trash2, 
   Gamepad2,
   Users2,
-  ChevronLeft
+  ChevronLeft,
+  ChevronRight
 } from 'lucide-react';
+import { cn } from '@/lib/utils';
 import { useCreateRecruitmentMatch } from '@/hooks/useRecruitmentQueries';
 import { useAuth } from '@/contexts/AuthContext';
 import Link from 'next/link';

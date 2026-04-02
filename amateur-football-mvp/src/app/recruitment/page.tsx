@@ -14,6 +14,7 @@ import {
   ChevronRight,
   Plus
 } from 'lucide-react';
+import { cn } from '@/lib/utils';
 import { useRecruitmentMatches, useJoinRecruitmentSlot } from '@/hooks/useRecruitmentQueries';
 import { useAuth } from '@/contexts/AuthContext';
 import Link from 'next/link';
