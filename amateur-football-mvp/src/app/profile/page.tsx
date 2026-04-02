@@ -532,7 +532,7 @@ function ProfileContent() {
           initial={{ scale: 1.1, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
           transition={{ duration: 1.5 }}
-          src={editedData.cover_url || "https://images.unsplash.com/photo-1574629810360-7efbbe195018?auto=format&fit=crop&q=80&w=2000"} 
+          src={isEditing ? editedData.cover_url : getField('cover_url', "https://images.unsplash.com/photo-1574629810360-7efbbe195018?auto=format&fit=crop&q=80&w=2000")} 
           alt="Cover" 
           className="w-full h-full object-cover grayscale-[0.2] brightness-[0.7] group-hover/banner:scale-105 transition-transform duration-[4s]"
         />
@@ -681,9 +681,9 @@ function ProfileContent() {
                       </div>
                     </div>
                   ) : (
-                    editedData.bio && (
+                    getField('bio', '') && (
                       <p className="text-sm sm:text-base text-foreground/80 dark:text-white/60 font-medium leading-relaxed italic max-w-2xl">
-                        {editedData.bio}
+                        {getField('bio', '')}
                       </p>
                     )
                   )}
