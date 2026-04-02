@@ -2,20 +2,39 @@ import { supabase } from './supabase';
 import { Match, MatchParticipant } from './matches';
 
 export async function getEmergencyMatch(id: string) {
-  const { data, error } = await supabase
+  // Step 1: get match + participants (without profile join to avoid issues)
+  const { data: matchData, error: matchError } = await supabase
     .from('matches')
     .select(`
       *,
       participants:match_participants(
-        *,
-        profiles:profiles(*)
+        *
       )
     `)
     .eq('id', id)
     .single();
 
-  if (error) throw error;
-  return data as Match & { participants: MatchParticipant[] };
+  if (matchError) throw matchError;
+
+  // Step 2: enrich participants with profiles (best-effort)
+  const participants: any[] = matchData.participants || [];
+  if (participants.length > 0) {
+    const userIds = participants.map((p: any) => p.user_id);
+    const { data: profiles } = await supabase
+      .from('profiles')
+      .select('id, name, avatar_url, position')
+      .in('id', userIds);
+
+    if (profiles) {
+      const profileMap = Object.fromEntries(profiles.map((pr: any) => [pr.id, pr]));
+      matchData.participants = participants.map((p: any) => ({
+        ...p,
+        profiles: profileMap[p.user_id] || null,
+      }));
+    }
+  }
+
+  return matchData as Match & { participants: MatchParticipant[] };
 }
 
 export async function joinEmergencyMatch(matchId: string, userId: string) {

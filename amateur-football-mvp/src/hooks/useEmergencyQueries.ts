@@ -13,7 +13,9 @@ export function useEmergencyMatch(id: string | undefined) {
     queryKey: ['emergencyMatch', id],
     queryFn: () => getEmergencyMatch(id!),
     enabled: !!id,
-    refetchInterval: 3000, // Slightly slower polling to be more stable
+    refetchInterval: 3000, 
+    retry: 3,
+    staleTime: 5000,
   });
 }
 
