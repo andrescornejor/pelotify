@@ -171,12 +171,16 @@ export default function RecruitmentMarketplace() {
     }
   };
 
-  const handleDeletePosting = async (id: string) => {
+  const handleDeletePosting = async (e: React.MouseEvent, id: string) => {
+    e.preventDefault();
+    e.stopPropagation();
+    console.log('Tentativa de eliminar búsqueda ID:', id);
     if (!confirm('¿Estás seguro de que querés eliminar esta búsqueda?')) return;
     try {
       await deleteMutation.mutateAsync(id);
+      console.log('Búsqueda eliminada con éxito');
     } catch (err) {
-      console.error(err);
+      console.error('Error al eliminar:', err);
       alert('Error al eliminar la búsqueda.');
     }
   };
@@ -297,9 +301,10 @@ export default function RecruitmentMarketplace() {
                         </div>
                         {user && match.creator_id === user.id && (
                           <button
-                            onClick={() => handleDeletePosting(match.id)}
+                            type="button"
+                            onClick={(e) => handleDeletePosting(e, match.id)}
                             disabled={deleteMutation.isPending}
-                            className="p-3 bg-red-500/10 text-red-500 rounded-2xl border border-red-500/20 hover:bg-red-500 hover:text-white transition-all disabled:opacity-50"
+                            className="p-3 bg-red-500/10 text-red-500 rounded-2xl border border-red-500/20 hover:bg-red-500 hover:text-white transition-all disabled:opacity-50 relative z-50 pointer-events-auto"
                           >
                             <Trash2 size={20} />
                           </button>
