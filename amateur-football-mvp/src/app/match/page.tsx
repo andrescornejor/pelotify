@@ -848,13 +848,24 @@ function MatchLobbyContent() {
                       <DollarSign className="w-6 h-6 text-white" />
                     </div>
                     <div>
-                      <h4 className="text-lg font-black italic uppercase tracking-tighter text-foreground leading-none">Pago del Partido</h4>
-                      <p className="text-[10px] font-black text-[#009EE3] uppercase tracking-widest mt-1">Mercado Pago</p>
+                      <h4 className="text-lg font-black italic uppercase tracking-tighter text-foreground leading-none">
+                        {!!venueInfo || !!match.business_id ? 'Pago a la Sede' : 'Pago al Organizador'}
+                      </h4>
+                      <p className="text-[10px] font-black text-[#009EE3] uppercase tracking-widest mt-1">
+                        {!!venueInfo || !!match.business_id 
+                          ? (venueInfo?.name || 'Sede Asociada') 
+                          : `Para ${participants.find(p => p.user_id === match.creator_id)?.user_name || 'el creador'}`}
+                      </p>
                     </div>
                   </div>
-                  <div className="p-6 rounded-3xl bg-foreground/[0.03] border border-white/5 space-y-1 relative z-10 transition-colors group-hover:bg-foreground/[0.05]">
+                  <div className="p-6 rounded-3xl bg-foreground/[0.03] border border-white/5 space-y-2 relative z-10 transition-colors group-hover:bg-foreground/[0.05]">
                     <span className="text-[10px] font-black text-foreground/30 uppercase tracking-widest">Monto a pagar</span>
-                    <div className="text-3xl font-black italic font-kanit text-foreground">${match.price}</div>
+                    <div className="text-3xl font-black italic font-kanit text-foreground leading-none">${match.price}</div>
+                    <p className="text-[9px] font-bold text-foreground/40 leading-tight italic uppercase tracking-wider !mt-3">
+                      {!!venueInfo || !!match.business_id 
+                        ? 'El pago se acredita directamente al establecimiento para confirmar tu reserva.'
+                        : 'El pago se acredita al organizador para que rinda cuentas y pague al llegar a la sede.'}
+                    </p>
                   </div>
                   <div className="relative z-10">
                     <MercadoPagoButton 
