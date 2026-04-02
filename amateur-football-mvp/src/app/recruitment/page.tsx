@@ -62,14 +62,18 @@ function TutorialModal({ isOpen, onClose }: { isOpen: boolean; onClose: () => vo
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            onClick={onClose}
-            className="absolute inset-0 bg-background/80 backdrop-blur-xl"
+            onClick={() => {
+              console.log('Backdrop clicked');
+              onClose();
+            }}
+            className="absolute inset-0 bg-background/90 backdrop-blur-2xl cursor-pointer"
           />
           <motion.div
             initial={{ opacity: 0, scale: 0.9, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.9, y: 20 }}
-            className="relative w-full max-w-xl glass-premium rounded-[3rem] border border-primary/20 overflow-hidden shadow-[0_0_80px_rgba(44,252,125,0.15)]"
+            onClick={(e) => e.stopPropagation()}
+            className="relative w-full max-w-xl glass-premium rounded-[3rem] border border-primary/20 overflow-hidden shadow-[0_0_80px_rgba(44,252,125,0.2)] z-10"
           >
             <div className="p-8 md:p-12 space-y-10">
               <div className="flex items-center justify-between">
@@ -77,8 +81,14 @@ function TutorialModal({ isOpen, onClose }: { isOpen: boolean; onClose: () => vo
                   <h2 className="text-4xl font-black italic uppercase font-kanit tracking-tighter leading-none mb-1">GUÍA <span className="text-primary text-glow-primary">TÁCTICA</span></h2>
                   <p className="text-[10px] font-black text-foreground/40 uppercase tracking-[0.4em]">¿Cómo dominar el mercado?</p>
                 </div>
-                <button onClick={onClose} className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center hover:bg-white/10 transition-all">
-                  <X size={20} className="text-foreground/40" />
+                <button 
+                  onClick={() => {
+                    console.log('X clicked');
+                    onClose();
+                  }} 
+                  className="w-12 h-12 rounded-2xl bg-white/5 flex items-center justify-center hover:bg-white/10 active:scale-90 transition-all border border-white/10"
+                >
+                  <X size={24} className="text-foreground/40" />
                 </button>
               </div>
 
@@ -104,11 +114,14 @@ function TutorialModal({ isOpen, onClose }: { isOpen: boolean; onClose: () => vo
               </div>
 
               <button 
-                onClick={onClose}
-                className="w-full py-5 rounded-[1.5rem] bg-primary text-black font-black text-lg font-kanit italic uppercase shadow-glow-primary hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-3"
+                onClick={() => {
+                  console.log('Understand clicked');
+                  onClose();
+                }}
+                className="w-full py-6 rounded-[2rem] bg-primary text-black font-black text-xl font-kanit italic uppercase shadow-glow-primary hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-4 relative z-20"
               >
                 ENTENDIDO, SOY UN CRACK
-                <ChevronRight size={20} className="stroke-[3]" />
+                <ChevronRight size={24} className="stroke-[3]" />
               </button>
             </div>
           </motion.div>
