@@ -371,7 +371,7 @@ export default function MessagesPage() {
         {/* Conversations List */}
         <div
           className={cn(
-            'lg:col-span-4 flex flex-col gap-2 transition-all h-full overflow-hidden',
+            'lg:col-span-4 flex flex-col gap-2 transition-all h-full overflow-hidden pt-8 lg:pt-0',
             selectedChat ? 'hidden lg:flex' : 'flex'
           )}
         >
@@ -614,7 +614,7 @@ export default function MessagesPage() {
         {/* New Message / Friend Search Modal */}
         <AnimatePresence>
           {isSearchOpen && (
-            <div className="fixed inset-0 z-[100] flex items-end sm:items-center justify-center p-0 sm:p-4">
+            <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
               <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
@@ -631,7 +631,7 @@ export default function MessagesPage() {
                 initial={{ opacity: 0, y: 100, scale: 0.95 }}
                 animate={{ opacity: 1, y: 0, scale: 1 }}
                 exit={{ opacity: 0, y: 100, scale: 0.95 }}
-                className="relative w-full max-w-lg bg-surface/40 backdrop-blur-2xl border border-foreground/10 rounded-t-[3rem] sm:rounded-[3rem] p-8 sm:p-12 shadow-[0_32px_64px_rgba(0,0,0,0.4)] overflow-hidden z-10"
+                className="relative w-full max-w-lg bg-surface/40 backdrop-blur-2xl border border-foreground/10 rounded-[3rem] p-8 sm:p-12 shadow-[0_32px_64px_rgba(0,0,0,0.4)] overflow-hidden z-10"
               >
                 <div className="absolute top-0 right-0 p-12 opacity-[0.03] pointer-events-none">
                   <MessageSquare className="w-48 h-48" />
