@@ -18,7 +18,8 @@ import {
 } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/lib/supabase';
-import { Match, joinMatch } from '@/lib/matches';
+import { useJoinEmergencyMatch } from '@/hooks/useEmergencyQueries';
+import { Match } from '@/lib/matches';
 import { cn } from '@/lib/utils';
 
 export default function RecruitmentPage() {
@@ -61,7 +62,7 @@ export default function RecruitmentPage() {
   const handleJoin = async (matchId: string) => {
     if (!user) return;
     try {
-      await joinMatch(matchId, user.id);
+      await joinMutation.mutateAsync({ matchId, userId: user.id });
       setDirection('right');
       setTimeout(() => {
         router.push(`/match/emergency?id=${matchId}`);

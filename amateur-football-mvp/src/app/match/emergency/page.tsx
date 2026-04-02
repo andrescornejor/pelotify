@@ -21,8 +21,8 @@ import {
   AlertTriangle
 } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
-import { supabase } from '@/lib/supabase';
-import { useMatchById, useJoinMatch, useLeaveMatch, useDeleteMatch } from '@/hooks/useMatchQueries';
+import { useEmergencyMatch, useJoinEmergencyMatch, useLeaveEmergencyMatch } from '@/hooks/useEmergencyQueries';
+import { useDeleteMatch } from '@/hooks/useMatchQueries';
 import { MatchParticipant } from '@/lib/matches';
 import { cn } from '@/lib/utils';
 import PlayerSlot from '@/components/PlayerSlot';
@@ -35,9 +35,9 @@ function EmergencyLobbyContent() {
   const { user } = useAuth();
   const id = searchParams.get('id');
 
-  const { data: match, isLoading, error } = useMatchById(id || undefined);
-  const joinMutation = useJoinMatch();
-  const leaveMutation = useLeaveMatch();
+  const { data: match, isLoading, error } = useEmergencyMatch(id || undefined);
+  const joinMutation = useJoinEmergencyMatch();
+  const leaveMutation = useLeaveEmergencyMatch();
   const deleteMutation = useDeleteMatch();
 
   // If recruitment is disabled or match is completed, go back to normal lobby
