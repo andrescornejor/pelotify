@@ -244,52 +244,6 @@ function MatchLobbyContent() {
     }
   }, [isEmergencyRecruitment, match?.id, router]);
 
-  // 3. EARLY RETURNS (Only AFTER all hooks)
-  if (isLoading || isEmergencyRecruitment) return <MatchSkeleton />;
-  if (error || !match) {
-    return (
-      <div className="min-h-screen bg-black flex flex-col items-center justify-center p-6 text-center">
-        <AlertTriangle className="w-16 h-16 text-red-500 mb-4" />
-        <h2 className="text-2xl font-black text-white uppercase italic">Partido no encontrado</h2>
-        <button onClick={() => router.push('/')} className="mt-6 px-8 py-3 bg-white/5 border border-white/10 rounded-2xl text-[10px] font-black uppercase tracking-widest text-white">
-          Volver al Inicio
-        </button>
-      </div>
-    );
-  }
-
-  // 4. DERIVED DATA (Only after guards)
-  const participants: MatchParticipant[] = match?.participants || [];
-  const teamA = participants.filter(p => p.team === 'A');
-  const teamB = participants.filter(p => p.team === 'B');
-  const unassigned = participants.filter(p => p.team === null);
-  
-  const formatNum = parseInt(match?.type?.replace('F', '') || '5');
-  const teamSize = formatNum;
-  
-  const isCreator = user?.id === match?.creator_id;
-  const isCompleted = match?.is_completed;
-  const myEntry = participants.find((p) => p.user_id === user?.id);
-  const hasJoined = !!myEntry;
-  const isConfirmed = myEntry?.status === 'confirmed';
-  const myTeam = myEntry?.team;
-
-  const handleUpdateTeamNames = async () => {
-    if (!match) return;
-    try {
-      await updateMatchMutation.mutateAsync({
-        matchId: match.id,
-        updates: {
-          team_a_name: teamAName,
-          team_b_name: teamBName
-        }
-      });
-      setIsEditingNames(false);
-    } catch (e) {
-      console.error('Error updating team names:', e);
-    }
-  };
-
   // Sync venue info when match loads
   useEffect(() => {
     if (match) {
@@ -321,7 +275,59 @@ function MatchLobbyContent() {
     }
   }, [match]);
 
-  // Handlers
+  const handleUpdateTeamNames = async () => {
+    if (!match) return;
+    try {
+      await updateMatchMutation.mutateAsync({
+        matchId: match.id,
+        updates: {
+          team_a_name: teamAName,
+          team_b_name: teamBName
+        }
+      });
+      setIsEditingNames(false);
+    } catch (e) {
+      console.error('Error updating team names:', e);
+    }
+  };
+
+  // 3. EARLY RETURNS (Only AFTER all hooks)
+  if (isLoading || isEmergencyRecruitment) return <MatchSkeleton />;
+  if (error || !match) {
+    return (
+      <div className="min-h-screen bg-black flex flex-col items-center justify-center p-6 text-center">
+        <AlertTriangle className="w-16 h-16 text-red-500 mb-4" />
+        <h2 className="text-2xl font-black text-white uppercase italic">Partido no encontrado</h2>
+        <button onClick={() => router.push('/')} className="mt-6 px-8 py-3 bg-white/5 border border-white/10 rounded-2xl text-[10px] font-black uppercase tracking-widest text-white">
+          Volver al Inicio
+        </button>
+      </div>
+    );
+  }
+
+  // 4. DERIVED DATA (Only after guards)
+  const participants: MatchParticipant[] = match?.participants || [];
+  const teamA = participants.filter(p => p.team === 'A');
+  const teamB = participants.filter(p => p.team === 'B');
+  const unassigned = participants.filter(p => p.team === null);
+  
+  const formatNum = parseInt(match?.type?.replace('F', '') || '5');
+  const teamSize = formatNum;
+  
+  const isCreator = user?.id === match?.creator_id;
+  const isCompleted = match?.is_completed;
+  const myEntry = participants.find((p) => p.user_id === user?.id);
+  const hasJoined = !!myEntry;
+  const isConfirmed = myEntry?.status === 'confirmed';
+  const myTeam = myEntry?.team;
+
+      setIsEditingNames(false);
+    } catch (e) {
+      console.error('Error updating team names:', e);
+    }
+  };
+
+  // 3. HANDLERS (Regular functions, safe to keep here)
   const handleJoinTeam = async (team: 'A' | 'B' | null) => {
     if (!match || !user) return;
     try {
