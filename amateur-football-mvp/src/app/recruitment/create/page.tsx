@@ -14,11 +14,13 @@ import {
   Gamepad2,
   Users2,
   ChevronLeft,
-  ChevronRight
+  ChevronRight,
+  Zap
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useCreateRecruitmentMatch } from '@/hooks/useRecruitmentQueries';
 import { useAuth } from '@/contexts/AuthContext';
+import { AVAILABLE_TIMES } from '@/lib/constants';
 import Link from 'next/link';
 
 export default function CreateRecruitmentPage() {
@@ -27,7 +29,7 @@ export default function CreateRecruitmentPage() {
   const createMutation = useCreateRecruitmentMatch();
   
   const [formData, setFormData] = useState({
-    date: '',
+    date: new Date().toISOString().split('T')[0],
     time: '20:00',
     description: '',
     skill_level: 'pro-vibe', // casual, competitive, pro-vibe
@@ -80,7 +82,7 @@ export default function CreateRecruitmentPage() {
       </div>
 
       {/* Header */}
-      <div className="relative z-10 pt-16 pb-12 px-6 max-w-3xl mx-auto flex items-center justify-between">
+      <div className="relative z-10 pt-16 pb-12 px-6 max-w-4xl mx-auto flex items-center justify-between">
         <div className="flex items-center gap-6">
           <Link href="/recruitment">
             <motion.div 
@@ -93,109 +95,156 @@ export default function CreateRecruitmentPage() {
           </Link>
           <div>
             <h1 className="text-4xl font-black italic tracking-tighter uppercase font-kanit">NUEVA <span className="text-primary">BÚSQUEDA</span></h1>
-            <p className="text-foreground/30 text-xs font-black uppercase tracking-[0.3em] mt-1">Player Marketplace v2.0</p>
+            <p className="text-foreground/30 text-[10px] font-black uppercase tracking-[0.4em] mt-1">Inteligencia de Fichajes v2.0</p>
           </div>
         </div>
-        <div className="bg-primary/10 px-4 py-2 rounded-xl border border-primary/20 hidden md:block">
-          <span className="text-primary font-black text-xs uppercase tracking-widest italic">Organizador Pro</span>
+        <div className="hidden md:flex gap-4">
+           {/* Roster Explanation Hint */}
+           <div className="bg-surface-elevated p-3 rounded-2xl border border-white/5 text-[10px] font-bold text-foreground/40 italic max-w-[200px]">
+             💡 <span className="text-primary font-black uppercase">¿Roster?</span> Es tu lista de puestos estratégicos para completar el equipo.
+           </div>
         </div>
       </div>
 
-      <div className="max-w-3xl mx-auto px-6 relative z-10">
+      <div className="max-w-4xl mx-auto px-6 relative z-10">
         <form onSubmit={handleSubmit} className="space-y-12">
           
-          {/* Section: Basic Intel */}
-          <div className="glass-premium rounded-[3rem] p-10 border border-white/10 space-y-10">
-            <div className="flex items-center gap-4 mb-2">
+          {/* Section: Temporal Intel */}
+          <div className="glass-premium rounded-[3rem] p-10 border border-white/10 space-y-12">
+            <div className="flex items-center gap-4">
               <div className="w-1.5 h-6 bg-primary rounded-full shadow-glow-primary" />
-              <h3 className="text-xl font-black italic uppercase font-kanit">INFORMACIÓN TÁCTICA</h3>
+              <h3 className="text-xl font-black italic uppercase font-kanit">LOGÍSTICA DEL PARTIDO</h3>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-               <div className="space-y-3">
-                  <label className="text-[10px] uppercase font-black text-foreground/30 tracking-[0.25em] ml-2 block">Día del Partido</label>
-                  <div className="relative group">
-                    <Calendar className="absolute left-5 top-1/2 -translate-y-1/2 text-primary/40 group-focus-within:text-primary transition-colors" size={18} />
-                    <input 
-                      type="date"
-                      required
-                      value={formData.date}
-                      onChange={(e) => setFormData({...formData, date: e.target.value})}
-                      className="w-full bg-surface-elevated border border-white/5 rounded-2xl py-5 pl-14 pr-6 font-bold text-foreground outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/20 transition-all text-sm"
-                    />
-                  </div>
-               </div>
-               <div className="space-y-3">
-                  <label className="text-[10px] uppercase font-black text-foreground/30 tracking-[0.25em] ml-2 block">Hora de Inicio</label>
-                  <div className="relative group">
-                    <Clock className="absolute left-5 top-1/2 -translate-y-1/2 text-primary/40 group-focus-within:text-primary transition-colors" size={18} />
-                    <input 
-                      type="time"
-                      required
-                      value={formData.time}
-                      onChange={(e) => setFormData({...formData, time: e.target.value})}
-                      className="w-full bg-surface-elevated border border-white/5 rounded-2xl py-5 pl-14 pr-6 font-bold text-foreground outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/20 transition-all text-sm"
-                    />
-                  </div>
-               </div>
-            </div>
-
+            {/* Date Selection - Match Experience */}
             <div className="space-y-4">
-              <label className="text-[10px] uppercase font-black text-foreground/30 tracking-[0.25em] ml-2 block">NIVEL REQUERIDO</label>
-              <div className="grid grid-cols-3 gap-4">
-                {[
-                  { id: 'casual', label: 'Casual', icon: '🍻' },
-                  { id: 'competitive', label: 'Compete', icon: '⚔️' },
-                  { id: 'pro-vibe', label: 'Elite Pro', icon: '💎' },
-                ].map((level) => (
-                  <button
-                    key={level.id}
-                    type="button"
-                    onClick={() => setFormData({...formData, skill_level: level.id})}
-                    className={cn(
-                      "p-5 rounded-2xl border transition-all text-center flex flex-col items-center gap-2",
-                      formData.skill_level === level.id 
-                        ? "bg-primary/10 border-primary shadow-[0_0_30px_rgba(44,252,125,0.1)] scale-[1.02]" 
-                        : "bg-surface-elevated border-white/5 hover:border-white/20"
-                    )}
-                  >
-                    <span className="text-3xl">{level.icon}</span>
-                    <span className={cn(
-                      "text-[10px] font-black uppercase tracking-widest italic", 
-                      formData.skill_level === level.id ? "text-primary" : "text-foreground/40"
-                    )}>
-                      {level.label}
-                    </span>
-                  </button>
-                ))}
+              <div className="flex items-center justify-between px-2">
+                <span className="text-[10px] font-black text-foreground/30 uppercase tracking-[0.4em]">¿Qué día se juega?</span>
+                <span className="text-[10px] font-black text-primary uppercase tracking-[0.2em] italic bg-primary/10 px-3 py-1 rounded-full border border-primary/20">
+                   {formData.date}
+                </span>
+              </div>
+              <div className="flex gap-4 overflow-x-auto no-scrollbar pb-4 -mx-10 px-10">
+                {Array.from({ length: 14 }).map((_, i) => {
+                  const d = new Date();
+                  d.setDate(d.getDate() + i);
+                  const dateStr = d.toISOString().split('T')[0];
+                  const dayName = d.toLocaleDateString('es-ES', { weekday: 'short' }).replace('.', '').toUpperCase();
+                  const dayNumber = d.getDate();
+                  const isSelected = formData.date === dateStr;
+                  
+                  return (
+                    <motion.button
+                      key={dateStr}
+                      type="button"
+                      whileHover={{ y: -4 }}
+                      whileTap={{ scale: 0.9 }}
+                      onClick={() => setFormData({ ...formData, date: dateStr })}
+                      className={cn(
+                        "flex-shrink-0 w-20 h-28 rounded-3xl border transition-all flex flex-col items-center justify-center gap-1",
+                        isSelected 
+                          ? "border-primary bg-primary text-black shadow-glow-primary scale-105" 
+                          : "bg-surface-elevated border-white/5 hover:border-white/20 text-foreground/40 hover:text-foreground/70"
+                      )}
+                    >
+                      <span className="text-[9px] font-black tracking-widest">{dayName}</span>
+                      <span className="text-3xl font-black italic tracking-tighter leading-none">{dayNumber}</span>
+                    </motion.button>
+                  );
+                })}
               </div>
             </div>
 
-            <div className="space-y-3">
-              <label className="text-[10px] uppercase font-black text-foreground/30 tracking-[0.25em] ml-2 block">MENSAJE PARA LOS POSTULADOS</label>
-              <textarea 
-                placeholder="Escribe algo que motive a los cracks a unirse... (ej: Nivel alto, tercer tiempo asegurado)"
-                value={formData.description}
-                onChange={(e) => setFormData({...formData, description: e.target.value})}
-                className="w-full bg-surface-elevated border border-white/5 rounded-2xl p-6 min-h-[140px] text-foreground outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/20 transition-all resize-none italic font-medium leading-relaxed"
-              />
+            {/* Time Selection - Grid Experience */}
+            <div className="space-y-4">
+              <span className="text-[10px] font-black text-foreground/30 uppercase tracking-[0.4em] px-2 block">HORARIO</span>
+              <div className="grid grid-cols-4 sm:grid-cols-6 lg:grid-cols-9 gap-3">
+                {AVAILABLE_TIMES.map((t) => {
+                  const isSelected = formData.time === t;
+                  return (
+                    <motion.button
+                      key={t}
+                      type="button"
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                      onClick={() => setFormData({ ...formData, time: t })}
+                      className={cn(
+                        "py-3 rounded-xl border text-[11px] font-black transition-all",
+                        isSelected 
+                          ? "bg-primary text-black border-primary shadow-glow-primary" 
+                          : "bg-surface-elevated border-white/5 text-foreground/40 hover:border-white/20"
+                      )}
+                    >
+                      {t}
+                    </motion.button>
+                  );
+                })}
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-10 pt-4">
+               {/* Vibe Selección */}
+               <div className="space-y-4 text-center md:text-left">
+                  <label className="text-[10px] uppercase font-black text-foreground/30 tracking-[0.25em] ml-2 block italic">STAKE / NIVEL</label>
+                  <div className="flex gap-4">
+                    {[
+                      { id: 'casual', label: 'Casual', icon: '🍻' },
+                      { id: 'competitive', label: 'Pro', icon: '⚔️' },
+                      { id: 'pro-vibe', label: 'Elite', icon: '💎' },
+                    ].map((level) => (
+                      <button
+                        key={level.id}
+                        type="button"
+                        onClick={() => setFormData({...formData, skill_level: level.id})}
+                        className={cn(
+                          "flex-1 p-5 rounded-2xl border transition-all text-center flex flex-col items-center gap-1",
+                          formData.skill_level === level.id 
+                            ? "bg-primary/10 border-primary" 
+                            : "bg-surface-elevated border-white/5"
+                        )}
+                      >
+                        <span className="text-2xl">{level.icon}</span>
+                        <span className={cn("text-[8px] font-black uppercase", formData.skill_level === level.id ? "text-primary" : "text-foreground/40")}>{level.label}</span>
+                      </button>
+                    ))}
+                  </div>
+               </div>
+
+               {/* Mensaje */}
+               <div className="space-y-4">
+                  <label className="text-[10px] uppercase font-black text-foreground/30 tracking-[0.25em] ml-2 block italic">DETALLES EXTRA</label>
+                  <textarea 
+                    placeholder="Buscamos arquero... etc."
+                    value={formData.description}
+                    onChange={(e) => setFormData({...formData, description: e.target.value})}
+                    className="w-full bg-surface-elevated border border-white/5 rounded-2xl p-4 min-h-[100px] text-sm outline-none focus:border-primary/50 transition-all resize-none italic font-medium"
+                  />
+               </div>
             </div>
           </div>
 
-          {/* Section: Roster Strategy */}
+          {/* Section: Tactical Roster (Armado del Roster) */}
           <div className="glass-premium rounded-[3rem] p-10 border border-white/10 space-y-10">
             <div className="flex items-center justify-between">
-               <div className="flex items-center gap-4">
-                 <div className="w-1.5 h-6 bg-primary rounded-full shadow-glow-primary" />
-                 <h3 className="text-xl font-black italic uppercase font-kanit">ARMADO DEL ROSTER</h3>
+               <div className="flex flex-col">
+                  <div className="flex items-center gap-4">
+                    <div className="w-1.5 h-6 bg-primary rounded-full shadow-glow-primary" />
+                    <h3 className="text-xl font-black italic uppercase font-kanit">ARMADO DEL ROSTER</h3>
+                  </div>
+                  <p className="text-[9px] font-bold text-foreground/30 uppercase tracking-[0.2em] mt-2 ml-6">Define los puestos libres estratégicamente</p>
                </div>
                <div className="bg-surface-elevated px-4 py-2 rounded-xl border border-white/5 text-[11px] font-black text-primary italic">
-                 {slots.length} / 12 CUPOS
+                 {slots.length} REFUERZOS
                </div>
             </div>
 
+            {/* Tactical Explanation for Mobile */}
+            <div className="md:hidden bg-primary/5 p-4 rounded-2xl border border-primary/10 text-[11px] font-medium leading-relaxed italic text-foreground/60">
+              💡 <span className="text-primary font-black uppercase">TIP:</span> El "Roster" es tu plantilla ideal. Añade los puestos que te faltan cubrir hoy.
+            </div>
+
             {/* Tactical Grid Visualization */}
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+            <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-6 gap-4">
               <AnimatePresence>
                 {slots.map((pos, idx) => (
                   <motion.div 
@@ -203,34 +252,25 @@ export default function CreateRecruitmentPage() {
                     initial={{ opacity: 0, scale: 0.9 }}
                     animate={{ opacity: 1, scale: 1 }}
                     exit={{ opacity: 0, scale: 0.9 }}
-                    whileHover={{ y: -4 }}
-                    className="flex flex-col items-center justify-center bg-surface-elevated border border-white/5 p-6 rounded-3xl relative group transition-all hover:border-primary/20"
+                    className="group flex flex-col items-center justify-center bg-surface-elevated border border-white/5 p-6 rounded-3xl relative transition-all hover:border-primary/30"
                   >
                     <div className="w-14 h-14 rounded-2xl bg-primary text-black font-black flex items-center justify-center text-sm shadow-glow-primary mb-3">
                       {pos}
                     </div>
-                    <span className="font-black text-[10px] uppercase tracking-widest text-foreground/60 italic">
-                      {pos === 'GK' ? 'Arquero' : 
-                       pos === 'DEF' ? 'Defensa' :
-                       pos === 'MID' ? 'Volante' : 
-                       pos === 'FW' ? 'Delantero' : 'Libre'}
-                    </span>
                     
                     <button 
                       type="button"
                       onClick={() => removeSlot(idx)}
-                      className="absolute -top-2 -right-2 w-8 h-8 bg-red-500/10 text-red-500 rounded-xl flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all border border-red-500/20 hover:bg-red-500 hover:text-white"
+                      className="absolute -top-1 -right-1 w-7 h-7 bg-red-400/20 text-red-500 rounded-lg flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all border border-red-500/20"
                     >
-                      <Trash2 size={14} className="stroke-[3]" />
+                      <Trash2 size={12} className="stroke-[3]" />
                     </button>
                   </motion.div>
                 ))}
                 
-                {/* Empty Add State */}
                 {slots.length < 12 && (
-                  <div className="flex flex-col items-center justify-center border-2 border-dashed border-white/10 rounded-3xl py-10 opacity-40">
-                    <Plus size={24} className="mb-2" />
-                    <span className="text-[10px] font-black uppercase tracking-widest italic">Añadir</span>
+                  <div className="flex flex-col items-center justify-center border-2 border-dashed border-white/10 rounded-3xl py-10 opacity-20">
+                    <Zap size={20} className="text-primary" />
                   </div>
                 )}
               </AnimatePresence>
@@ -238,26 +278,22 @@ export default function CreateRecruitmentPage() {
 
             {/* Tactical Selector Bar */}
             <div className="space-y-4">
-              <p className="text-[10px] uppercase font-black text-foreground/30 tracking-[0.25em] text-center italic">Seleccionar Refuerzo</p>
               <div className="flex flex-wrap justify-center gap-3">
                  {[
-                   { code: 'GK', emoji: '🧤', label: 'Arquero' },
-                   { code: 'DEF', emoji: '🛡️', label: 'Defensa' },
-                   { code: 'MID', emoji: '🎯', label: 'Volante' },
-                   { code: 'FW', emoji: '⚽', label: 'Delantero' },
-                   { code: 'ANY', emoji: '🌟', label: 'Cualquiera' }
+                   { code: 'GK', emoji: '🧤' },
+                   { code: 'DEF', emoji: '🛡️' },
+                   { code: 'MID', emoji: '🎯' },
+                   { code: 'FW', emoji: '⚽' },
+                   { code: 'ANY', emoji: '🌟' }
                  ].map((btn) => (
                    <button
                      key={btn.code}
                      type="button"
                      onClick={() => addSlot(btn.code)}
-                     className="bg-surface-elevated hover:bg-primary/5 border border-white/5 hover:border-primary/40 px-6 py-4 rounded-2xl flex items-center gap-3 transition-all active:scale-95 group"
+                     className="bg-surface-elevated hover:bg-white/[0.03] border border-white/5 hover:border-primary/50 w-16 h-16 rounded-2xl flex flex-col items-center justify-center gap-0.5 transition-all active:scale-90"
                    >
-                     <span className="text-2xl grayscale group-hover:grayscale-0 transition-all">{btn.emoji}</span>
-                     <div className="text-left">
-                       <span className="block text-[8px] font-black text-foreground/20 uppercase tracking-widest">{btn.code}</span>
-                       <span className="block text-[10px] font-black text-foreground/60 uppercase italic">{btn.label}</span>
-                     </div>
+                     <span className="text-xl grayscale group-hover:grayscale-0">{btn.emoji}</span>
+                     <span className="text-[9px] font-black text-foreground/40">{btn.code}</span>
                    </button>
                  ))}
               </div>
@@ -272,23 +308,9 @@ export default function CreateRecruitmentPage() {
               disabled={createMutation.isPending}
               className="w-full py-8 rounded-[2rem] bg-primary text-black font-black text-2xl font-kanit italic tracking-tighter uppercase shadow-glow-primary disabled:opacity-50 transition-all flex items-center justify-center gap-4 group"
             >
-              {createMutation.isPending ? (
-                <>
-                  <div className="w-6 h-6 border-4 border-black/20 border-t-black rounded-full animate-spin" />
-                  <span>PUBLICANDO TÁCTICA...</span>
-                </>
-              ) : (
-                <>
-                  <span>SOLICITAR REFUERZOS</span>
-                  <div className="w-8 h-8 rounded-full bg-black/10 flex items-center justify-center group-hover:translate-x-2 transition-transform">
-                    <ChevronRight size={20} className="stroke-[3]" />
-                  </div>
-                </>
-              )}
+              {createMutation.isPending ? 'ENVIANDO TÁCTICA...' : 'PUBLICAR FICHAJE'}
+              <ChevronRight size={24} className="stroke-[3] group-hover:translate-x-2 transition-transform" />
             </motion.button>
-            <p className="text-center text-foreground/20 text-[10px] font-black uppercase tracking-[0.4em] mt-6 italic">
-              Al publicar, todos los cracks libres recibirán la notificación
-            </p>
           </div>
 
         </form>
