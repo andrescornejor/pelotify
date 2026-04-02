@@ -86,18 +86,23 @@ export async function POST(request: Request) {
 
     let marketplaceFee = 0;
 
-    if (businessToken) {
-      // El Establecimiento cobrará el dinero directamente!
-      clientToUse = new MercadoPagoConfig({ accessToken: businessToken });
-      marketplaceFee = platformCommissionPerItem * Number(quantity);
-      console.log("Cobro dirigido al establecimiento de la cancha");
-    } else if (creatorProfile && creatorProfile.mp_access_token) {
-      // El creador conectó su cuenta: creamos la preferencia en SU nombre
+    const isPartner = !!match.business_id;
+
+    if (venueToken) {
+      // Prioridad 1: Token específico de la sede socia desde canchas_fields
+       console.log("Cobro dirigido al token de la sede (Canchas Schema)");
+       clientToUse = new MercadoPagoConfig({ accessToken: venueToken });
+    } else if (creatorProfile && creatorProfile.mp_access_token && isPartner) {
+      // Prioridad 2: Token del creador SOLO si es un partido en sede socia (respaldo)
+      console.log("Cobro dirigido al creador como negocio (Partner)");
       clientToUse = new MercadoPagoConfig({ accessToken: creatorProfile.mp_access_token });
       marketplaceFee = platformCommissionPerItem * Number(quantity); 
-      console.log("Cobro dirigido al creador del partido");
     } else {
-      console.warn("Nadie vinculó Mercado Pago, el dinero irá a la plataforma");
+      // Prioridad 3: Sistema Escrow (Independientes)
+      // Para partidos particulares o sin sede certificada, el dinero llega a la plataforma
+      // centralizada para ser liberado post-partido tras validación.
+      console.log("Cobro hacia la plataforma (Escrow Activo)");
+      // clientToUse se mantiene con el token de la plataforma definido arriba
     }
 
     const preference = new Preference(clientToUse);

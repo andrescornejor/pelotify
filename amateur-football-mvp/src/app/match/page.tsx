@@ -8,17 +8,9 @@ import {
   Users,
   ArrowLeft,
   Loader2,
-  DollarSign,
-  Zap,
-  Shield,
-  LogOut,
-  Trophy,
-  X,
-  Check,
-  ChevronRight,
-  ExternalLink,
-  UserMinus,
   Trash2,
+  ShieldAlert,
+  AlertTriangle,
 } from 'lucide-react';
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
@@ -395,6 +387,37 @@ function MatchLobbyContent() {
       setSelectedPlayerId(null);
     } catch (e) {
       console.error('Error moving player in tactical mode:', e);
+    }
+  };
+
+  const handleReportFraud = async () => {
+    if (!match || !user) return;
+    
+    const confirmReport = window.confirm(
+      '¿Estás seguro de reportar fraude o inasistencia del organizador?\n\n' +
+      'Esto bloqueará la liberación del dinero y nuestro equipo de soporte revisará el caso. ' +
+      'Si el reporte es falso, tu cuenta podría ser penalizada.'
+    );
+
+    if (!confirmReport) return;
+
+    try {
+      const { error: disputeError } = await supabase.from('match_disputes').insert([{
+        match_id: match.id,
+        reporter_id: user.id,
+        reason: 'Organizador no se presentó / Fraude en el cobro'
+      }]);
+
+      if (disputeError) throw disputeError;
+
+      // Actualizar estado del pago del partido a disputado
+      await supabase.from('matches').update({ payout_status: 'disputed' }).eq('id', match.id);
+      
+      alert('Reporte enviado con éxito. El pago ha sido bloqueado preventivamente.');
+      queryClient.invalidateQueries({ queryKey: queryKeys.matches.byId(match.id) });
+    } catch (err) {
+      console.error('Error reporting fraud:', err);
+      alert('Error al enviar el reporte. Asegúrate de que la tabla match_disputes esté configurada.');
     }
   };
 
@@ -876,6 +899,73 @@ function MatchLobbyContent() {
                   </div>
                 </div>
              )}
+
+              {/* Centro de Seguridad (Escrow & Report) */}
+              {hasJoined && !isCompleted && match.price > 0 && (
+                <div className="space-y-4">
+                  {/* Vista para el Jugador que pagó */}
+                  {myEntry?.paid && !isCreator && (
+                    <motion.div 
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      className="p-6 rounded-[2.5rem] glass-premium border-red-500/20 space-y-4"
+                    >
+                      <div className="flex items-center gap-3 text-red-500/80">
+                        <ShieldAlert className="w-5 h-5" />
+                        <span className="text-[10px] font-black uppercase tracking-widest italic">Centro de Seguridad</span>
+                      </div>
+                      <p className="text-[9px] font-bold text-foreground/40 uppercase tracking-wide leading-relaxed">
+                        Tu dinero está protegido por el sistema <b>Escrow de Pelotify</b>. 
+                        Si el organizador no se presenta, repórtalo aquí.
+                      </p>
+                      
+                      {(match as any).payout_status === 'disputed' ? (
+                        <div className="w-full py-3 rounded-xl bg-red-500/10 border border-red-500/20 text-red-500 text-[10px] font-black uppercase tracking-widest text-center">
+                          Partido en Disputa
+                        </div>
+                      ) : (
+                        <button 
+                          onClick={handleReportFraud}
+                          className="w-full h-11 rounded-2xl border border-red-500/20 text-red-500 text-[10px] font-black uppercase tracking-[0.2em] hover:bg-red-500/10 transition-all flex items-center justify-center gap-2 group/report"
+                        >
+                          <AlertTriangle className="w-4 h-4 transition-transform group-hover:scale-125" />
+                          Reportar Fraude
+                        </button>
+                      )}
+                    </motion.div>
+                  )}
+
+                  {/* Vista para el Organizador (Independent) */}
+                  {isCreator && !venueInfo && !match.business_id && (
+                    <motion.div 
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      className="p-6 rounded-[2.5rem] glass-premium border-primary/20 space-y-4"
+                    >
+                      <div className="flex items-center gap-3 text-primary/80">
+                        <DollarSign className="w-5 h-5" />
+                        <span className="text-[10px] font-black uppercase tracking-widest italic">Estado de Ganancias</span>
+                      </div>
+                      
+                      {(match as any).payout_status === 'disputed' ? (
+                        <div className="space-y-2">
+                           <div className="px-3 py-1 rounded-lg bg-red-500/10 text-red-500 text-[9px] font-black uppercase inline-block">Pago Bloqueado</div>
+                           <p className="text-[9px] font-bold text-foreground/40 uppercase leading-relaxed">
+                             Un jugador ha reportado una irregularidad. El dinero se encuentra retenido para revisión.
+                           </p>
+                        </div>
+                      ) : (
+                        <div className="space-y-2">
+                           <div className="px-3 py-1 rounded-lg bg-primary/10 text-primary text-[9px] font-black uppercase inline-block">Fideicomiso Activo</div>
+                           <p className="text-[9px] font-bold text-foreground/40 uppercase leading-relaxed font-kanit">
+                             Las ganancias se acreditarán en tu perfil <b>1 hora después</b> de iniciado el partido, tras validar que se haya jugado correctamente.
+                           </p>
+                        </div>
+                      )}
+                    </motion.div>
+                  )}
+                </div>
+              )}
 
              {/* Location / Venue */}
              <div className="rounded-[2.5rem] glass-premium border-white/5 overflow-hidden">
