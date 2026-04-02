@@ -227,7 +227,11 @@ function MatchLobbyContent() {
   const [isEditingNames, setIsEditingNames] = useState(false);
 
   // 2. LOGIC & EFFECTS
-  const isEmergencyRecruitment = !!(match?.is_recruitment && !match?.is_completed && searchParams.get('mode') !== 'detail');
+  const isEmergencyRecruitment = !!(
+    (match?.is_recruitment || (match as any)?.recruitment?.[0]?.is_active) && 
+    !match?.is_completed && 
+    searchParams.get('mode') !== 'detail'
+  );
 
   // Sync team names
   useEffect(() => {
