@@ -14,7 +14,9 @@ import {
   ArrowRight,
   Shield,
   Activity,
-  Award
+  Award,
+  User2,
+  DollarSign
 } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/lib/supabase';
@@ -41,7 +43,7 @@ export default function RecruitmentPage() {
       try {
         const { data, error } = await supabase
           .from('matches')
-          .select('*, participants:match_participants(count)')
+          .select('*, profiles:creator_id(name, avatar_url), participants:match_participants(count)')
           .eq('is_recruitment', true)
           .gte('date', new Date().toISOString().split('T')[0])
           .order('date', { ascending: true });
@@ -159,44 +161,80 @@ export default function RecruitmentPage() {
 
                 <div className="space-y-6">
                    <div className="space-y-4">
+                      {/* Match Context & Urgent Status */}
                       <div className="flex flex-col gap-1 text-center">
-                        <h2 className="text-[clamp(1.5rem,5vw,2.5rem)] font-black italic uppercase tracking-tighter text-foreground font-kanit leading-none">
+                        <div className="flex items-center justify-center gap-2 mb-2">
+                           <div className="px-2 py-0.5 rounded-md bg-amber-500 text-black text-[8px] font-black uppercase tracking-widest italic animate-pulse">
+                              PARTIDO YA ARMADO
+                           </div>
+                        </div>
+                        <h2 className="text-[clamp(1.5rem,5vw,2.2rem)] font-black italic uppercase tracking-tighter text-foreground font-kanit leading-none">
                           {currentMatch.location}
                         </h2>
                         <div className="flex items-center justify-center gap-2 opacity-40">
                           <MapPin className="w-3 h-3" />
-                          <span className="text-[9px] font-black uppercase tracking-widest">Cancha Localizada</span>
+                          <span className="text-[9px] font-black uppercase tracking-widest">En {currentMatch.location.split(',')[0]}</span>
                         </div>
                       </div>
                       
+                      {/* Key Emergency Stats */}
                       <div className="grid grid-cols-2 gap-3">
-                         <div className="p-4 rounded-3xl bg-foreground/[0.03] border border-white/5 flex flex-col gap-1 items-center">
-                            <Calendar className="w-4 h-4 text-primary opacity-40" />
-                            <span className="text-[10px] font-black text-foreground">{new Date(currentMatch.date).toLocaleDateString('es-ES', { day: 'numeric', month: 'short' }).toUpperCase()}</span>
+                         <div className="p-4 rounded-3xl bg-foreground/[0.03] border border-white/5 flex flex-col gap-1 items-center group/info">
+                            <Clock className="w-5 h-5 text-amber-500 group-hover/info:scale-110 transition-transform" />
+                            <span className="text-[11px] font-black text-foreground mt-1 uppercase">{currentMatch.time} HS</span>
+                            <span className="text-[7px] font-black text-foreground/20 uppercase tracking-widest">Kickoff</span>
                          </div>
-                         <div className="p-4 rounded-3xl bg-foreground/[0.03] border border-white/5 flex flex-col gap-1 items-center">
-                            <Clock className="w-4 h-4 text-primary opacity-40" />
-                            <span className="text-[10px] font-black text-foreground">{currentMatch.time} HS</span>
+                         <div className="p-4 rounded-3xl bg-foreground/[0.03] border border-white/5 flex flex-col gap-1 items-center group/info">
+                            <DollarSign className="w-5 h-5 text-emerald-400 group-hover/info:scale-110 transition-transform" />
+                            <span className="text-[11px] font-black text-foreground mt-1 uppercase">${currentMatch.price || 0}</span>
+                            <span className="text-[7px] font-black text-foreground/20 uppercase tracking-widest">Por Jugador</span>
                          </div>
                       </div>
                    </div>
 
+                   {/* The "Emergency Call" Section */}
                    <div className="p-6 rounded-[2.5rem] bg-gradient-to-br from-amber-500/10 to-transparent border border-amber-500/20 text-center space-y-3 relative overflow-hidden group/slots">
                       <div className="absolute inset-0 bg-amber-500/5 opacity-0 group-hover/slots:opacity-100 transition-opacity" />
-                      <Users className="w-8 h-8 text-amber-500/40 mx-auto mb-1" />
-                      <h4 className="text-3xl font-black italic font-kanit text-amber-500 leading-none">FALTAN {currentMatch.missing_players}</h4>
-                      <p className="text-[9px] font-black text-foreground/40 uppercase tracking-[0.2em]">PUESTOS VACANTES</p>
+                      
+                      <div className="relative flex flex-col items-center">
+                         <div className="flex -space-x-3 mb-4">
+                            {Array.from({ length: 3 }).map((_, i) => (
+                               <div key={i} className="w-10 h-10 rounded-full border-2 border-background bg-surface flex items-center justify-center">
+                                  <User2 className="w-5 h-5 text-foreground/20" />
+                               </div>
+                            ))}
+                            <div className="w-10 h-10 rounded-full border-2 border-background bg-amber-500 flex items-center justify-center shadow-lg shadow-amber-500/20">
+                               <span className="text-xs font-black text-black">+{currentMatch.missing_players}</span>
+                            </div>
+                         </div>
+                         
+                         <h4 className="text-4xl font-black italic font-kanit text-amber-500 leading-none tracking-tighter uppercase whitespace-nowrap">
+                            NECESITAMOS {currentMatch.missing_players} {currentMatch.missing_players === 1 ? 'MÁS' : 'MÁS'}
+                         </h4>
+                         <p className="text-[9px] font-black text-foreground/40 uppercase tracking-[0.2em] mt-2 italic">
+                            Partido de {currentMatch.type} casi lleno
+                         </p>
+                      </div>
                    </div>
                    
-                   <div className="flex items-center justify-center gap-4">
-                      <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-foreground/[0.02] border border-white/5">
-                        <Award className="w-4 h-4 text-primary/40" />
-                        <span className="text-[9px] font-black text-foreground/60 uppercase tracking-widest">{currentMatch.level || 'Amateur'}</span>
-                      </div>
-                      <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-foreground/[0.02] border border-white/5">
-                        <Shield className="w-4 h-4 text-primary/40" />
-                        <span className="text-[9px] font-black text-foreground/60 uppercase tracking-widest">Fair Play</span>
-                      </div>
+                   {/* Organizer / Reputation */}
+                   <div className="flex items-center justify-center gap-6 py-2">
+                       <div className="flex items-center gap-3">
+                          <div className="w-8 h-8 rounded-full bg-surface border border-white/10 flex items-center justify-center shrink-0">
+                             <User2 className="w-4 h-4 text-primary/40" />
+                          </div>
+                          <div className="flex flex-col text-left">
+                             <span className="text-[8px] font-black text-foreground/20 uppercase tracking-widest leading-none">Organiza</span>
+                             <span className="text-[10px] font-black text-foreground/60 italic uppercase truncate max-w-[80px]">{(currentMatch as any).profiles?.name || 'Veterano'}</span>
+                          </div>
+                       </div>
+                       
+                       <div className="h-4 w-px bg-white/5" />
+                       
+                       <div className="flex items-center gap-2">
+                          <Shield className="w-3.5 h-3.5 text-primary/40" />
+                          <span className="text-[9px] font-black text-foreground/50 uppercase tracking-tighter italic">Vía Pelotify ✅</span>
+                       </div>
                    </div>
                 </div>
 
