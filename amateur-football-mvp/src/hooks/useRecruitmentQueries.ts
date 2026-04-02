@@ -5,7 +5,8 @@ import { queryKeys } from '@/lib/queryKeys';
 import { 
   getRecruitmentMatches, 
   createRecruitmentMatch, 
-  joinRecruitmentSlot 
+  joinRecruitmentSlot,
+  deleteRecruitmentPosting
 } from '@/lib/recruitment';
 
 export function useRecruitmentMatches() {
@@ -36,6 +37,17 @@ export function useJoinRecruitmentSlot() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: queryKeys.recruitment.all });
       queryClient.invalidateQueries({ queryKey: queryKeys.matches.all });
+    },
+  });
+}
+
+export function useDeleteRecruitmentPosting() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (postingId: string) => deleteRecruitmentPosting(postingId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: queryKeys.recruitment.all });
     },
   });
 }

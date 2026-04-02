@@ -14,10 +14,11 @@ import {
   Zap,
   Target,
   Trophy,
-  X 
+  X,
+  Trash2 
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { useRecruitmentMatches, useJoinRecruitmentSlot } from '@/hooks/useRecruitmentQueries';
+import { useRecruitmentMatches, useJoinRecruitmentSlot, useDeleteRecruitmentPosting } from '@/hooks/useRecruitmentQueries';
 import { useAuth } from '@/contexts/AuthContext';
 import Link from 'next/link';
 
@@ -135,6 +136,7 @@ export default function RecruitmentMarketplace() {
   const { user } = useAuth();
   const { data: matches, isLoading } = useRecruitmentMatches();
   const joinSlotMutation = useJoinRecruitmentSlot();
+  const deleteMutation = useDeleteRecruitmentPosting();
   
   const [filterPos, setFilterPos] = useState<string | null>(null);
   const [showTutorial, setShowTutorial] = useState(false);
@@ -166,6 +168,16 @@ export default function RecruitmentMarketplace() {
     } catch (err) {
       console.error(err);
       alert('Error al postularse. El cupo podría estar lleno.');
+    }
+  };
+
+  const handleDeletePosting = async (id: string) => {
+    if (!confirm('¿Estás seguro de que querés eliminar esta búsqueda?')) return;
+    try {
+      await deleteMutation.mutateAsync(id);
+    } catch (err) {
+      console.error(err);
+      alert('Error al eliminar la búsqueda.');
     }
   };
 
@@ -283,6 +295,15 @@ export default function RecruitmentMarketplace() {
                             REFUERZO <span className="text-primary/40 group-hover:text-primary/60 transition-colors">SOLICITADO</span>
                           </h3>
                         </div>
+                        {user && match.creator_id === user.id && (
+                          <button
+                            onClick={() => handleDeletePosting(match.id)}
+                            disabled={deleteMutation.isPending}
+                            className="p-3 bg-red-500/10 text-red-500 rounded-2xl border border-red-500/20 hover:bg-red-500 hover:text-white transition-all disabled:opacity-50"
+                          >
+                            <Trash2 size={20} />
+                          </button>
+                        )}
                       </div>
 
                       <p className="text-foreground/40 text-lg font-medium italic border-l-2 border-primary/20 pl-6 py-2 leading-relaxed max-w-xl">

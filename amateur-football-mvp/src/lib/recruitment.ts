@@ -75,3 +75,13 @@ export async function joinRecruitmentSlot(slotId: string, userId: string) {
   if (error) throw error;
   return !!data;
 }
+
+export async function deleteRecruitmentPosting(postingId: string) {
+  const { error } = await supabase
+    .from('player_recruitments')
+    .delete()
+    .eq('id', postingId);
+
+  if (error) throw error;
+  return true;
+}
