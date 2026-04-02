@@ -158,6 +158,15 @@ export async function createMatch(matchData: Partial<Match> & { field_id?: strin
   if (error) throw error;
   const match = data as Match;
 
+  // Add recruitment specific entry if needed
+  if (match.is_recruitment) {
+    await supabase.from('match_recruitment').insert([{
+      match_id: match.id,
+      missing_players: insertData.missing_players || 1,
+      is_active: true
+    }]);
+  }
+
   // If this match happens in a registered venue field, automatically book it
   if (finalFieldId && match.date && match.time && match.price !== undefined) {
     try {
