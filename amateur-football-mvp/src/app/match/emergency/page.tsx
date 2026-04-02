@@ -73,7 +73,7 @@ function EmergencyLobbyContent() {
   const handleJoin = async () => {
     if (!match || !user) return;
     try {
-      await joinMutation.mutateAsync({ matchId: match.id, userId: user.id, team: null });
+      await joinMutation.mutateAsync({ matchId: match.id, userId: user.id });
     } catch (e) {
       console.error(e);
     }
