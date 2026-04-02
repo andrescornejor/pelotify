@@ -15,10 +15,7 @@ import {
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useState, useEffect, useMemo } from 'react';
-import { useAuth } from '@/contexts/AuthContext';
-import { getUnreadMessagesCount } from '@/lib/chat';
-import { supabase } from '@/lib/supabase';
+import { useMemo } from 'react';
 import { useSettings } from '@/contexts/SettingsContext';
 
 /**
@@ -29,9 +26,7 @@ import { useSettings } from '@/contexts/SettingsContext';
 
 export function BottomNav() {
   const pathname = usePathname();
-  const { user } = useAuth();
   const { performanceMode } = useSettings();
-  const [unreadCount, setUnreadCount] = useState(0);
 
   // Define the core navigation architecture
   const navItems = useMemo(() => [
@@ -68,48 +63,6 @@ export function BottomNav() {
       isChat: true
     }
   ], []);
-
-  const updateUnreadCount = async () => {
-    if (!user) return;
-    if (pathname === '/messages') {
-      setUnreadCount(0);
-      return;
-    }
-    try {
-      const count = await getUnreadMessagesCount(user.id);
-      setUnreadCount(count);
-    } catch (err) {
-      console.error(err);
-    }
-  };
-
-  useEffect(() => {
-    if (!user) return;
-    updateUnreadCount();
-
-    // Clear unread if on messages
-    if (pathname === '/messages') {
-      setUnreadCount(0);
-    }
-
-    const channel = supabase
-      .channel('unread-nav-messages')
-      .on(
-        'postgres_changes', 
-        { 
-          event: '*', 
-          schema: 'public', 
-          table: 'direct_messages',
-          filter: `recipient_id=eq.${user.id}`
-        }, 
-        () => updateUnreadCount()
-      )
-      .subscribe();
-
-    return () => {
-      supabase.removeChannel(channel);
-    };
-  }, [user, pathname]);
 
   if (['/login', '/register', '/update-password'].includes(pathname)) {
     return null;
@@ -196,17 +149,6 @@ export function BottomNav() {
                           )}
                           strokeWidth={isActive ? 2.5 : 2}
                         />
-
-                        {/* Unread badge for Chat */}
-                        {item.isChat && unreadCount > 0 && !isActive && (
-                          <motion.span
-                            initial={{ scale: 0 }}
-                            animate={{ scale: 1 }}
-                            className="absolute -top-1 -right-1 w-3.5 h-3.5 bg-red-500 rounded-full border border-background flex items-center justify-center"
-                          >
-                            <span className="text-[7px] font-black text-white">{unreadCount > 9 ? '9+' : unreadCount}</span>
-                          </motion.span>
-                        )}
                       </motion.div>
     
                     {/* Active Background Pill (Subtle) */}
