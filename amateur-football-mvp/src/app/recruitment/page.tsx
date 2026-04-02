@@ -276,7 +276,7 @@ export default function RecruitmentMarketplace() {
                         <div>
                           <div className="flex items-center gap-3 mb-4">
                             <span className="bg-primary/10 text-primary px-4 py-1 rounded-lg text-[10px] font-black uppercase tracking-[0.25em] border border-primary/20">
-                              {match.required_skill_level || 'Elite Pro'}
+                              {match.skill_level || 'Elite Pro'}
                             </span>
                           </div>
                           <h3 className="text-4xl md:text-5xl font-black italic font-kanit uppercase leading-tight group-hover:text-primary transition-colors">

@@ -1,11 +1,11 @@
 import { supabase } from './supabase';
 import { Match } from './matches';
 
-export interface MatchSlot {
+export interface RecruitmentSlot {
   id: string;
-  match_id: string;
+  recruitment_id: string;
   position: 'GK' | 'DEF' | 'MID' | 'FW' | 'ANY';
-  status: 'open' | 'filled' | 'pending';
+  status: 'open' | 'filled';
   user_id: string | null;
   profiles?: {
     name: string;
@@ -13,35 +13,39 @@ export interface MatchSlot {
   };
 }
 
-export interface RecruitmentMatch extends Match {
+export interface RecruitmentPosting {
+  id: string;
+  creator_id: string;
+  date: string;
+  time: string;
   description: string;
-  required_skill_level: string;
+  skill_level: string;
+  location: string;
+  status: string;
   venue?: {
     name: string;
     address: string;
   };
-  slots: MatchSlot[];
+  slots: RecruitmentSlot[];
 }
 
 export async function getRecruitmentMatches() {
   const { data, error } = await supabase
-    .from('matches')
+    .from('player_recruitments')
     .select(`
       *,
       venue:business_id(name, address),
-      slots:match_slots(
+      slots:player_recruitment_slots(
         *,
         profiles:user_id(name, avatar_url)
       )
     `)
-    .eq('match_type', 'recruitment')
-    .eq('is_completed', false)
+    .eq('status', 'active')
     .order('date', { ascending: true });
 
   if (error) throw error;
   
-  // Mapping business_id relation if manual select didn't work as expected
-  return data as RecruitmentMatch[];
+  return data as RecruitmentPosting[];
 }
 
 export async function createRecruitmentMatch(params: {
@@ -56,14 +60,18 @@ export async function createRecruitmentMatch(params: {
 }) {
   const { data, error } = await supabase.rpc('create_recruitment_match', params);
   if (error) throw error;
-  return data as string; // returns match_id
+  return data as string; // returns recruitment_id
 }
 
 export async function joinRecruitmentSlot(slotId: string, userId: string) {
-  const { data, error } = await supabase.rpc('join_recruitment_slot', {
-    p_slot_id: slotId,
-    p_user_id: userId
-  });
+  const { data, error } = await supabase
+    .from('player_recruitment_slots')
+    .update({ user_id: userId, status: 'filled' })
+    .eq('id', slotId)
+    .eq('status', 'open')
+    .select()
+    .single();
+
   if (error) throw error;
-  return data as boolean;
+  return !!data;
 }
