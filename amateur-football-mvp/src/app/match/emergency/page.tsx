@@ -117,6 +117,8 @@ function EmergencyLobbyContent() {
     );
   }
 
+  if (!match) return null;
+
   return (
     <div className="min-h-screen bg-black text-white selection:bg-amber-500 selection:text-black overflow-x-hidden">
       {/* Background Atmosphere */}
