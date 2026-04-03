@@ -1,6 +1,6 @@
 'use client';
 
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import {
   Search,
   MapPin,
@@ -14,8 +14,6 @@ import {
   Zap,
   Star,
   Navigation,
-  Map as MapIcon,
-  List as ListIcon
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import Link from 'next/link';
@@ -56,6 +54,7 @@ export default function SearchPage() {
   } = useMatchSearch();
   const { performanceMode: isPerfMode } = useSettings();
 
+
   const handleLocateMe = () => {
     if (!navigator.geolocation) {
       alert('La geolocalización no está soportada por tu navegador.');
@@ -80,301 +79,538 @@ export default function SearchPage() {
   return (
     <div
       className={cn(
-        'flex flex-col h-full bg-background relative overflow-hidden min-h-screen',
+        'flex flex-col gap-8 p-4 sm:p-6 lg:px-10 lg:pt-4 xl:px-14 2xl:px-16 max-w-screen-2xl mx-auto h-full bg-background relative overflow-hidden min-h-screen snap-y snap-proximity overflow-y-auto',
         isPerfMode && 'perf-mode'
       )}
     >
-      {/* ── AMBIENT BACKGROUND ── */}
+      {/* ── RADAR AMBIENT ── */}
       {!isPerfMode && (
-        <div className="fixed inset-0 pointer-events-none opacity-20 z-0">
-          <div className="absolute top-[-10%] right-[-5%] w-[400px] h-[400px] rounded-full bg-primary/20 blur-[120px]" />
-          <div className="absolute bottom-[20%] left-[-10%] w-[500px] h-[500px] rounded-full bg-blue-500/10 blur-[150px]" />
+        <div className="absolute top-0 left-0 w-full h-[300px] pointer-events-none opacity-20">
+          <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-primary/50 to-transparent" />
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(16,185,129,0.1),transparent_70%)]" />
         </div>
       )}
 
-      {/* ── HEADER PRO APP STYLE ── */}
+      {/* ── HEADER & RADAR SCANNER ── */}
       <div
         className={cn(
-          'sticky top-0 z-40 pt-4 pb-3 px-4 sm:px-6 lg:px-12 border-b border-foreground/5 shadow-sm transition-all',
-          isPerfMode ? 'bg-background' : 'bg-background/80 backdrop-blur-3xl'
+          'sticky top-0 z-30 pt-4 pb-6 -mx-4 px-4 lg:-mx-12 lg:px-12 border-b border-foreground/5 shadow-2xl shadow-black/5',
+          isPerfMode ? 'bg-background' : 'bg-background/80 backdrop-blur-xl'
         )}
       >
-        <div className="flex flex-col gap-4 relative z-10 max-w-screen-2xl mx-auto">
-          {/* Location & Title */}
-          <div className="flex justify-between items-center">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center relative overflow-hidden shrink-0">
-                <div className="absolute inset-0 bg-primary/20 animate-ping opacity-20" />
-                <MapPin className="w-5 h-5 text-primary relative z-10" />
+        <div className="flex flex-col gap-8 relative z-10 text-center lg:text-left max-w-screen-2xl mx-auto">
+          <div className="flex flex-col gap-2 relative">
+            {/* Radar Sweep Animation behind title */}
+            {!isPerfMode && (
+              <div className="absolute -top-10 -left-10 lg:-left-20 w-32 lg:w-48 h-32 lg:h-48 pointer-events-none opacity-20">
+                <div className="absolute inset-0 border border-primary/30 rounded-full" />
+                <div className="absolute inset-0 border border-primary/10 rounded-full scale-150" />
+                <motion.div
+                  animate={{ rotate: 360 }}
+                  transition={{ duration: 4, repeat: Infinity, ease: 'linear' }}
+                  className="absolute inset-0 border-r-2 border-primary/40 rounded-full"
+                  style={{ clipPath: 'polygon(50% 50%, 100% 0, 100% 100%)' }}
+                />
+                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-1.5 h-1.5 bg-primary rounded-full shadow-[0_0_10px_rgba(44,252,125,1)]" />
               </div>
-              <div className="flex flex-col min-w-0">
-                <span className="text-[10px] font-black uppercase tracking-widest text-primary/80">Radar Activo</span>
-                <span className="text-sm font-black text-foreground uppercase tracking-tight flex items-center gap-1.5 truncate">
-                  {userLocation ? 'Mi Ubicación' : 'Explorar Zona'}
-                  <ChevronRight className="w-3.5 h-3.5 text-foreground/40 shrink-0" />
-                </span>
-              </div>
-            </div>
-            
-            <button
-               onClick={handleLocateMe}
-               className={cn(
-                 "w-10 h-10 rounded-full flex items-center justify-center transition-all active:scale-95 border shrink-0",
-                 userLocation 
-                   ? "bg-primary text-black border-primary shadow-lg shadow-primary/20" 
-                   : "bg-foreground/5 text-foreground/50 border-foreground/5 hover:bg-foreground/10"
-               )}
-            >
-              <Navigation className={cn("w-4 h-4", userLocation && "fill-current")} />
-            </button>
-          </div>
+            )}
 
-          {/* Search Input */}
-          <div className="relative group">
-            <div className="absolute inset-y-0 left-4 flex items-center pointer-events-none">
-              <Search className="w-5 h-5 text-foreground/30 group-focus-within:text-primary transition-all duration-300" />
-            </div>
-            <input
-              type="text"
-              placeholder="Buscá por cancha, barrio o tipo..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full h-12 lg:h-14 pl-12 pr-4 rounded-[1.2rem] bg-foreground/[0.04] border border-foreground/10 focus:bg-foreground/[0.06] focus:border-primary/40 focus:ring-4 focus:ring-primary/10 outline-none transition-all text-sm lg:text-base font-bold text-foreground placeholder:text-foreground/40"
-            />
-          </div>
-
-          {/* Scrollable Filters Row */}
-          <div className="flex overflow-x-auto no-scrollbar gap-2 pb-1 -mx-4 px-4 sm:mx-0 sm:px-0 scroll-smooth">
-            {/* Format Pills */}
-            {(['All', 'F5', 'F7', 'F11'] as const).map((type) => (
-              <button
-                key={type}
-                onClick={() => setTypeFilter(type)}
+            <div className="flex items-center gap-3 justify-center lg:justify-start">
+              <div
                 className={cn(
-                  'flex-shrink-0 px-5 py-2.5 rounded-xl text-[11px] font-black uppercase tracking-wider transition-all whitespace-nowrap border',
-                  typeFilter === type
-                    ? 'bg-foreground text-background border-foreground shadow-md scale-100'
-                    : 'bg-transparent text-foreground/60 border-foreground/10 hover:bg-foreground/5 scale-95'
+                  'w-1.5 h-1.5 rounded-full bg-primary',
+                  !isPerfMode && 'animate-pulse'
                 )}
-              >
-                {type === 'All' ? 'Todas' : type}
-              </button>
-            ))}
-
-            {/* Filter: Only Available */}
-            <button
-              onClick={() => setOnlyAvailable(!onlyAvailable)}
-              className={cn(
-                'flex-shrink-0 flex items-center gap-1.5 px-4 py-2.5 rounded-xl border transition-all text-[11px] font-black uppercase tracking-wider whitespace-nowrap',
-                onlyAvailable
-                  ? 'bg-emerald-500/15 border-emerald-500/30 text-emerald-400 font-black'
-                  : 'bg-transparent border-foreground/10 text-foreground/60 hover:bg-foreground/5 font-bold'
-              )}
-            >
-              CUPOS LIBRES <CheckCircle2 className={cn("w-3.5 h-3.5", onlyAvailable ? "text-emerald-400" : "text-foreground/40")} />
-            </button>
-
-            {/* Radius Filter */}
-            <div className="flex-shrink-0 flex items-center gap-2 bg-transparent px-3 py-2 rounded-xl border border-foreground/10">
-              <span className="text-[11px] font-black text-foreground/50 uppercase tracking-wider">Radio:</span>
-              <span className="text-[11px] font-black text-primary">{radiusFilter || '∞'} km</span>
-              <input
-                type="range"
-                min="1"
-                max="50"
-                value={radiusFilter || 0}
-                onChange={(e) => setRadiusFilter(parseInt(e.target.value))}
-                className="w-20 h-1.5 bg-foreground/10 rounded-full appearance-none cursor-pointer accent-primary ml-1"
               />
+              <span className="text-[10px] font-black uppercase tracking-[0.5em] text-primary italic">
+                Sintonizando Frecuencias
+              </span>
+            </div>
+            <h1 className="text-5xl lg:text-7xl font-black italic text-foreground uppercase tracking-tightest leading-none">
+              Radar de <span className="text-foreground/20">Partidos</span>
+            </h1>
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-end">
+            <div className="lg:col-span-8 space-y-6">
+              <div className="relative group">
+                <div className="absolute inset-y-0 left-7 flex items-center pointer-events-none">
+                  <Search className="w-6 h-6 text-foreground/20 group-focus-within:text-primary transition-all duration-500" />
+                </div>
+                <input
+                  type="text"
+                  placeholder="Buscá canchas, zonas o tipo de partido..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="w-full h-16 lg:h-20 pl-16 lg:pl-20 pr-10 rounded-[1.8rem] lg:rounded-[2.5rem] bg-foreground/[0.03] border border-foreground/10 focus:bg-foreground/[0.05] focus:border-primary/30 outline-none transition-all text-lg lg:text-xl font-black text-foreground placeholder:text-foreground/20 placeholder:italic shadow-2xl focus:shadow-primary/5"
+                />
+                <div className="absolute inset-y-0 right-10 flex items-center">
+                  <Filter className="w-6 h-6 text-primary cursor-pointer hover:text-primary transition-colors" />
+                </div>
+              </div>
+
+              {/* Advanced Filters */}
+              <div className="flex flex-wrap items-center gap-3 px-2">
+                <div className="flex items-center p-1 bg-foreground/5 rounded-2xl border border-foreground/5 gap-1">
+                  {(['All', 'F5', 'F7', 'F11'] as const).map((type) => (
+                    <button
+                      key={type}
+                      onClick={() => setTypeFilter(type)}
+                      className={cn(
+                        'px-5 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest italic transition-all',
+                        typeFilter === type
+                          ? 'bg-primary text-black shadow-lg shadow-primary/20'
+                          : 'text-foreground/40 hover:text-foreground/60 hover:bg-foreground/5'
+                      )}
+                    >
+                      {type === 'All' ? 'TODOS' : type}
+                    </button>
+                  ))}
+                </div>
+
+                <div className="h-8 w-px bg-foreground/10 mx-1 hidden sm:block" />
+
+                <button
+                  onClick={() => setOnlyAvailable(!onlyAvailable)}
+                  className={cn(
+                    'flex items-center gap-3 px-6 py-3.5 rounded-2xl border transition-all text-[10px] font-black uppercase tracking-widest italic',
+                    onlyAvailable
+                      ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400 shadow-lg shadow-emerald-500/5'
+                      : 'bg-foreground/5 border-foreground/5 text-foreground/40 hover:border-foreground/10'
+                  ) + ' active:scale-95'}
+                >
+                  Solo con cupo
+                </button>
+
+                <div className="h-8 w-px bg-foreground/10 mx-1 hidden sm:block" />
+
+                <div className="flex items-center gap-4 bg-foreground/5 p-1 px-4 rounded-2xl border border-foreground/5">
+                  <div className="flex flex-col gap-0.5">
+                    <span className="text-[8px] font-black text-foreground/30 uppercase tracking-widest leading-none">Radio (km)</span>
+                    <input
+                      type="range"
+                      min="1"
+                      max="50"
+                      value={radiusFilter || 0}
+                      onChange={(e) => setRadiusFilter(parseInt(e.target.value))}
+                      className="w-24 h-1.5 bg-foreground/10 rounded-full appearance-none cursor-pointer accent-primary"
+                    />
+                  </div>
+                  <span className="text-[10px] font-black text-primary w-8 italic">{radiusFilter || '∞'}k</span>
+                  <button
+                    onClick={handleLocateMe}
+                    className={cn(
+                      "p-2 rounded-xl transition-all active:scale-95",
+                      userLocation ? "bg-primary text-black" : "bg-foreground/10 text-foreground/40 hover:bg-foreground/20"
+                    )}
+                    title="Usar mi ubicación GPS"
+                  >
+                    <Navigation className={cn("w-3.5 h-3.5", userLocation && "fill-current")} />
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <div className="lg:col-span-4 self-center lg:self-end">
+              {/* Tab Switcher */}
+              <div className="flex p-1 bg-foreground/5 rounded-2xl border border-foreground/5 relative h-14 items-center">
+                <button
+                  onClick={() => setActiveTab('list')}
+                  className={cn(
+                    'flex-1 h-full text-[9px] font-black uppercase tracking-[0.1em] rounded-xl transition-all relative z-10 flex items-center justify-center gap-1.5 italic',
+                    activeTab === 'list' ? 'text-black' : 'text-foreground/40 hover:text-foreground/60'
+                  )}
+                >
+                  <LayoutGrid className="w-3 h-3" /> LISTA
+                </button>
+                <button
+                  onClick={() => setActiveTab('map')}
+                  className={cn(
+                    'flex-1 h-full text-[9px] font-black uppercase tracking-[0.1em] rounded-xl transition-all relative z-10 flex items-center justify-center gap-1.5 italic',
+                    activeTab === 'map' ? 'text-black' : 'text-foreground/40 hover:text-foreground/60'
+                  )}
+                >
+                  <MapPin className="w-3 h-3" /> MAPA
+                </button>
+                <motion.div
+                  layoutId="radar-pill"
+                  className="absolute inset-y-1 bg-primary rounded-xl shadow-[0_5px_15px_rgba(16,185,129,0.2)]"
+                  initial={false}
+                  animate={{
+                    left: activeTab === 'list' ? '4px' : '50%',
+                    right: activeTab === 'list' ? '50%' : '4px',
+                  }}
+                  transition={{ type: 'spring' as const, stiffness: 350, damping: 25 }}
+                />
+              </div>
             </div>
           </div>
         </div>
       </div>
 
-      {/* ── CONTENT AREA ── */}
-      <div className="flex-1 overflow-y-auto w-full max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-12 py-6 pb-32 z-10 no-scrollbar">
-        <AnimatePresence mode="wait">
-          {isLoading ? (
-            <motion.div
-              key="loading"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              className="flex flex-col gap-4"
-            >
-               {/* Skeleton Loaders */}
-               {[1, 2, 3].map((i) => (
-                 <div key={`skel-${i}`} className="w-full rounded-[1.5rem] bg-foreground/[0.02] border border-foreground/[0.05] p-4 flex flex-col gap-4">
-                   <div className="flex gap-4">
-                     <div className="w-14 h-14 rounded-xl bg-foreground/[0.05] animate-pulse" />
-                     <div className="space-y-2 flex-1 pt-1">
-                       <div className="h-5 w-2/3 bg-foreground/[0.05] rounded-full animate-pulse" />
-                       <div className="h-3 w-1/2 bg-foreground/[0.05] rounded-full animate-pulse" />
-                     </div>
-                   </div>
-                   <div className="flex justify-between items-center pt-2">
-                     <div className="h-6 w-24 bg-foreground/[0.05] rounded-full animate-pulse" />
-                     <div className="h-10 w-28 bg-foreground/[0.05] rounded-xl animate-pulse" />
-                   </div>
-                 </div>
-               ))}
-            </motion.div>
-          ) : activeTab === 'list' ? (
-            <motion.div
-              key="list"
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0 }}
-              className="flex flex-col gap-4"
-            >
-              <div className="flex items-center justify-between mb-2">
-                <h2 className="text-sm font-black text-foreground uppercase tracking-wider">
-                  Resultados <span className="text-primary/80">({filteredMatches.length})</span>
-                </h2>
+      <div className="flex-1 overflow-y-auto no-scrollbar pb-24 relative z-10">
+        {isLoading ? (
+          <div className="flex flex-col gap-6">
+            <div className="flex flex-col items-center justify-center py-12 text-zinc-500 gap-4 mb-4">
+              <div className="relative">
+                <div className="w-16 h-16 border-2 border-primary/20 rounded-full animate-ping" />
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <Search className="w-6 h-6 text-primary animate-pulse" />
+                </div>
               </div>
-              
-              {filteredMatches.length > 0 ? (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-                  {filteredMatches.map((match: Match, i: number) => {
-                    const venue = findVenueByLocation(match.location || '');
-                    const displayName = venue?.displayName || venue?.name || match.location;
-                    const maxPlayers = match.type === 'F5' ? 10 : match.type === 'F7' ? 14 : 22;
-                    const countObj = match.participants?.[0];
-                    const currentPlayers = typeof countObj === 'number' ? countObj : countObj?.count !== undefined ? countObj.count : match.participants?.length || 0;
-                    const missing = Math.max(0, maxPlayers - currentPlayers);
+              <p className="text-[10px] font-black uppercase tracking-[0.5em] animate-pulse text-primary/60 italic">
+                Sintonizando Señales...
+              </p>
+            </div>
+            {[1, 2, 3].map((i) => (
+              <div
+                key={`skeleton-${i}`}
+                className="glass-premium rounded-[1.8rem] lg:rounded-[3rem] p-4 lg:p-8 flex flex-col lg:flex-row items-stretch lg:items-center gap-3 lg:gap-14 relative overflow-hidden border border-foreground/[0.05] bg-foreground/[0.01]"
+              >
+                <div className="flex lg:flex-col items-center lg:items-start justify-between lg:justify-center gap-2 lg:min-w-[150px] lg:border-r border-foreground/5 lg:pr-14">
+                  <div className="flex flex-row lg:flex-col gap-2">
+                    <div className="w-16 h-6 bg-foreground/10 rounded-lg animate-pulse" />
+                    <div className="w-12 h-6 bg-foreground/5 rounded-lg animate-pulse" />
+                  </div>
+                  <div className="hidden lg:flex flex-col gap-2 mt-5">
+                    <div className="w-20 h-2 bg-foreground/10 rounded-full animate-pulse" />
+                    <div className="w-24 h-4 bg-foreground/5 rounded-full animate-pulse" />
+                  </div>
+                </div>
+                <div className="flex-1 space-y-3">
+                  <div className="w-2/3 h-10 lg:h-14 bg-foreground/10 rounded-2xl animate-pulse" />
+                  <div className="w-1/3 h-4 bg-foreground/5 rounded-full animate-pulse" />
+                </div>
+                <div className="hidden lg:flex items-center gap-14 lg:min-w-[320px] lg:border-l border-foreground/5 lg:pl-10">
+                  <div className="flex-1 space-y-4">
+                    <div className="flex justify-between">
+                      <div className="w-20 h-2 bg-foreground/10 rounded-full animate-pulse" />
+                      <div className="w-12 h-2 bg-foreground/10 rounded-full animate-pulse" />
+                    </div>
+                    <div className="w-full h-2 bg-foreground/5 rounded-full animate-pulse" />
+                    <div className="flex gap-2">
+                      <div className="w-4 h-4 bg-foreground/10 rounded-full animate-pulse" />
+                      <div className="w-32 h-4 bg-foreground/5 rounded-full animate-pulse" />
+                    </div>
+                  </div>
+                  <div className="w-32 h-16 bg-foreground/10 rounded-2xl animate-pulse" />
+                </div>
+                <div className="w-full lg:w-[250px] h-12 lg:h-24 bg-foreground/10 rounded-[1.2rem] lg:rounded-[2.2rem] animate-pulse" />
+              </div>
+            ))}
+          </div>
+        ) : activeTab === 'list' ? (
+          <div className="flex flex-col gap-6">
+            {filteredMatches.length > 0 ? (
+              filteredMatches.map((match: Match, i: number) => (
+                <motion.div
+                  key={match.id}
+                  initial={isPerfMode ? { opacity: 1 } : { opacity: 0, scale: 0.98, y: 15 }}
+                  whileInView={isPerfMode ? { opacity: 1 } : { opacity: 1, scale: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={isPerfMode ? { duration: 0 } : { delay: i * 0.04, duration: 0.4 }}
+                  whileHover={isPerfMode ? {} : { y: -4, scale: 1.01 }}
+                  className={cn(
+                    'glass-premium rounded-[1.8rem] lg:rounded-[3rem] p-4 lg:p-8 flex flex-col lg:flex-row items-stretch lg:items-center gap-3 lg:gap-14 relative overflow-hidden group border border-foreground/[0.08] bg-foreground/[0.01] transition-all',
+                    isPerfMode ? 'duration-0' : 'hover:bg-foreground/[0.03] duration-500'
+                  )}
+                >
+                  {/* ── BACKGROUND DECORATION ── */}
+                  <div className="absolute top-0 right-0 w-80 h-80 bg-primary/5 blur-[100px] rounded-full group-hover:bg-primary/10 transition-colors pointer-events-none" />
 
-                    return (
-                      <motion.div
-                        key={match.id}
-                        initial={isPerfMode ? { opacity: 1 } : { opacity: 0, scale: 0.98, y: 15 }}
-                        whileInView={isPerfMode ? { opacity: 1 } : { opacity: 1, scale: 1, y: 0 }}
-                        viewport={{ once: true, margin: "-50px" }}
-                        transition={isPerfMode ? { duration: 0 } : { delay: i * 0.03, duration: 0.3 }}
-                        whileHover={isPerfMode ? {} : { y: -2 }}
-                        className="bg-foreground/[0.02] border border-foreground/[0.06] rounded-[1.5rem] p-4 flex flex-col gap-3 relative overflow-hidden group hover:bg-foreground/[0.04] transition-all shadow-sm"
+                  {/* Radar Scan Line */}
+                  <div className="absolute inset-y-0 left-0 w-1 bg-gradient-to-b from-transparent via-primary/40 to-transparent group-hover:h-full transition-all duration-700 pointer-events-none" />
+
+                  {/* ── LEFT SECTION: Context & Level ── */}
+                  <div className="flex lg:flex-col items-center lg:items-start justify-between lg:justify-center gap-2 lg:min-w-[150px] relative z-10 lg:border-r border-foreground/5 lg:pr-14">
+                    <div className="flex flex-row lg:flex-col gap-2">
+                      <div className="flex items-center gap-2 px-2.5 py-1 bg-primary/10 text-primary border border-primary/20 rounded-lg w-fit shadow-sm">
+                        <div className="w-1 h-1 rounded-full bg-primary animate-pulse" />
+                        <span className="text-[9px] font-black uppercase tracking-widest">
+                          {match.type}
+                        </span>
+                      </div>
+                      <div className="px-2.5 py-1 bg-blue-500/10 text-blue-400 border border-blue-500/20 rounded-lg text-[9px] font-black uppercase tracking-widest italic w-fit">
+                        {match.level}
+                      </div>
+                    </div>
+                    <div className="hidden lg:flex flex-col gap-1.5 mt-5">
+                      <span className="text-[9px] font-black uppercase text-foreground/30 tracking-[0.2em]">
+                        Despliegue
+                      </span>
+                      <div className="flex items-center gap-2.5 text-foreground">
+                        <Calendar className="w-3.5 h-3.5 text-primary/60" />
+                        <span className="text-[11px] font-black uppercase tracking-[0.15em] italic">
+                          {match.date}
+                        </span>
+                      </div>
+                      <div className="flex items-center gap-2.5 text-foreground/60 mt-0.5">
+                        <div className="w-3.5 h-3.5 flex items-center justify-center">
+                          <div className="w-1 h-1 rounded-full bg-foreground/30" />
+                        </div>
+                        <span className="text-[10px] font-bold uppercase tracking-widest">
+                          {match.time} HS
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* ── CENTER SECTION: Venue Info ── */}
+                  <div className="flex-1 relative z-10 space-y-1 lg:space-y-3 py-0 lg:py-0">
+                    {(() => {
+                      const venue = findVenueByLocation(match.location || '');
+                      const displayName = venue?.displayName || venue?.name || match.location;
+                      return (
+                        <div className="space-y-0.5 lg:space-y-2">
+                          <h3 className="font-black text-2xl lg:text-5xl text-foreground italic uppercase group-hover:text-primary transition-colors tracking-tighter leading-tight">
+                            {displayName}
+                          </h3>
+                          <div className="flex items-center gap-2">
+                            <div className="w-6 h-6 lg:w-8 lg:h-8 rounded-full bg-foreground/5 flex items-center justify-center border border-foreground/10">
+                              <MapPin className="w-3 h-3 lg:w-4 lg:h-4 text-foreground/40 group-hover:text-primary/60 transition-colors" />
+                            </div>
+                            <p className="text-[9px] lg:text-xs text-foreground/50 font-bold uppercase tracking-widest max-w-[200px] lg:max-w-sm truncate">
+                              {match.location}
+                            </p>
+                          </div>
+                        </div>
+                      );
+                    })()}
+
+                    {/* Mobile Info Overlay (Single Line Tighter) */}
+                    <div className="lg:hidden flex justify-between items-center pt-2 mt-2 border-t border-foreground/5">
+                      <div className="flex items-center gap-1.5">
+                        <Calendar className="w-3 h-3 text-primary/40" />
+                        <span className="text-[10px] text-foreground/60 font-black uppercase italic tracking-widest">
+                          {match.date}
+                        </span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        {(() => {
+                          const maxPlayers = match.type === 'F5' ? 10 : match.type === 'F7' ? 14 : 22;
+                          const currentPlayers = typeof match.participants?.[0] === 'number'
+                            ? match.participants[0]
+                            : (match.participants?.[0] as any)?.count ?? (match.participants?.length || 0);
+                          const missing = Math.max(0, maxPlayers - currentPlayers);
+
+                          return (
+                            <>
+                              <div
+                                className={cn(
+                                  'w-1.5 h-1.5 rounded-full',
+                                  missing > 0 ? 'bg-primary animate-pulse' : 'bg-zinc-700'
+                                )}
+                              />
+                              <span
+                                className={cn(
+                                  'text-[10px] font-black uppercase italic tracking-widest leading-none',
+                                  missing > 0 ? 'text-primary' : 'text-foreground/30'
+                                )}
+                              >
+                                {missing > 0 ? `Faltan ${missing}` : 'COMPLETO'}
+                              </span>
+                            </>
+                          );
+                        })()}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* ── DESKTOP DETAILS: Availability ── */}
+                  <div className="hidden lg:flex items-center gap-14 relative z-10 px-0 lg:px-4 border-l border-foreground/5 lg:min-w-[320px]">
+                    <div className="flex flex-col gap-4 w-full">
+                      <div className="flex justify-between items-end">
+                        <span className="text-[10px] font-black uppercase text-foreground/30 tracking-[0.2em]">
+                          Disponibilidad
+                        </span>
+                        {(() => {
+                          const maxPlayers = match.type === 'F5' ? 10 : match.type === 'F7' ? 14 : 22;
+                          const realPlayers = typeof match.participants?.[0] === 'number'
+                            ? match.participants[0]
+                            : (match.participants?.[0] as any)?.count ?? (match.participants?.length || 0);
+                          const missing = Math.max(0, maxPlayers - realPlayers);
+
+                          return (
+                            <span
+                              className={cn(
+                                'text-[11px] font-black uppercase tracking-widest italic',
+                                missing > 0 ? 'text-primary' : 'text-foreground/20'
+                              )}
+                            >
+                              {realPlayers} / {maxPlayers}
+                            </span>
+                          );
+                        })()}
+                      </div>
+
+                      {/* Progress Bar */}
+                      <div className="w-full h-2 bg-foreground/5 rounded-full overflow-hidden border border-foreground/5 relative">
+                        {(() => {
+                          const maxPlayers =
+                            match.type === 'F5' ? 10 : match.type === 'F7' ? 14 : 22;
+                          const countObj = match.participants?.[0];
+                          const currentPlayers =
+                            typeof countObj === 'number'
+                              ? countObj
+                              : countObj?.count !== undefined
+                                ? countObj.count
+                                : match.participants?.length || 0;
+                          const percent = (currentPlayers / maxPlayers) * 100;
+                          return (
+                            <motion.div
+                              initial={{ width: 0 }}
+                              whileInView={{ width: `${percent}%` }}
+                              transition={{ duration: 1, ease: 'circOut' }}
+                              className={cn(
+                                'h-full rounded-full transition-colors relative',
+                                percent >= 100 ? 'bg-zinc-700' : 'bg-primary'
+                              )}
+                            >
+                              {percent < 100 && (
+                                <div className="absolute inset-0 bg-white/20 animate-shimmer" />
+                              )}
+                            </motion.div>
+                          );
+                        })()}
+                      </div>
+
+                      <div className="flex items-center gap-3">
+                        {(() => {
+                          const maxPlayers =
+                            match.type === 'F5' ? 10 : match.type === 'F7' ? 14 : 22;
+                          const countObj = match.participants?.[0];
+                          const currentPlayers =
+                            typeof countObj === 'number'
+                              ? countObj
+                              : countObj?.count !== undefined
+                                ? countObj.count
+                                : match.participants?.length || 0;
+                          const missing = Math.max(0, maxPlayers - currentPlayers);
+                          return (
+                            <>
+                              <Users
+                                className={cn(
+                                  'w-5 h-5',
+                                  missing > 0 ? 'text-primary animate-pulse' : 'text-foreground/10'
+                                )}
+                              />
+                              <span
+                                className={cn(
+                                  'text-xs font-black uppercase tracking-[0.2em] italic',
+                                  missing > 0 ? 'text-foreground/40' : 'text-foreground/10'
+                                )}
+                              >
+                                {missing > 0 ? `Se buscan ${missing} pibes` : 'Pelotón completo'}
+                              </span>
+                            </>
+                          );
+                        })()}
+                      </div>
+                    </div>
+
+                    <div className="flex flex-col items-end min-w-[140px] border-l border-foreground/5 pl-14">
+                      <span className="text-[9px] font-black uppercase text-foreground/20 tracking-[0.2em] mb-1.5">
+                        Matrícula
+                      </span>
+                      <div className="flex items-baseline gap-0.5">
+                        <span className="text-[14px] font-black text-foreground/40 italic">$</span>
+                        <span className="text-5xl font-black text-foreground leading-none tracking-tighter italic tabular-nums group-hover:text-primary/90 transition-colors">
+                          {match.price.toLocaleString()}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* ── ACTION SECTION (Mobile Tighter) ── */}
+                  <div className="lg:w-[300px] relative z-20 flex flex-col gap-3 lg:gap-5 lg:pl-10 lg:border-l border-foreground/5">
+                    <div className="lg:hidden flex items-center justify-between px-1">
+                      <div className="flex items-baseline gap-1">
+                        <span className="text-[14px] font-black text-foreground/20 italic">$</span>
+                        <span className="text-2xl font-black text-foreground italic tracking-tight">
+                          {match.price.toLocaleString()}
+                        </span>
+                      </div>
+                      <Link
+                        href={`/match?id=${match.id}`}
+                        className="text-primary text-[10px] font-black uppercase italic tracking-widest flex items-center gap-1"
                       >
-                        {/* ── CARD BACKDROP ── */}
-                        <div className="absolute -top-12 -right-12 w-32 h-32 bg-primary/10 blur-[40px] rounded-full group-hover:bg-primary/20 transition-colors pointer-events-none" />
+                        DETALLES <ChevronRight className="w-3 h-3" />
+                      </Link>
+                    </div>
 
-                        <div className="flex justify-between items-start z-10 relative">
-                          <div className="flex gap-3 items-center min-w-0">
-                             {/* Date & Time Block */}
-                             <div className="flex flex-col items-center justify-center bg-foreground/5 w-14 h-14 rounded-2xl border border-foreground/5 shadow-inner shrink-0">
-                                <span className="text-[10px] font-black text-foreground uppercase tracking-wider">{match.date}</span>
-                                <span className="text-[10px] font-bold text-foreground/50 mt-0.5">{match.time}</span>
-                             </div>
-                             
-                             <div className="flex flex-col min-w-0">
-                                <h3 className="font-black text-base text-foreground leading-tight tracking-tight truncate">{displayName}</h3>
-                                <p className="text-[10px] text-foreground/50 font-bold flex items-center gap-1 mt-1 truncate">
-                                  <MapPin className="w-3 h-3 text-primary/60 shrink-0" /> <span className="truncate">{match.location}</span>
-                                </p>
-                             </div>
-                          </div>
-                          
-                          {/* Missing players tag */}
-                          <div className="flex shrink-0 ml-2">
-                            {missing === 0 ? (
-                              <div className="px-2 py-1 rounded-lg bg-zinc-500/10 text-zinc-400 text-[9px] font-black uppercase tracking-widest border border-zinc-500/20">Lleno</div>
-                            ) : (
-                              <div className="px-2 py-1 rounded-lg bg-primary/10 text-primary text-[9px] font-black uppercase tracking-widest border border-primary/20 flex items-center gap-1">
-                                <Users className="w-2.5 h-2.5" /> {missing}
-                              </div>
-                            )}
-                          </div>
-                        </div>
-
-                        {/* Badges */}
-                        <div className="flex items-center gap-2 mt-1 z-10 relative">
-                          <div className="px-2.5 py-1 rounded-lg bg-foreground/5 text-[9px] font-black text-foreground/70 uppercase tracking-widest border border-foreground/5">{match.type}</div>
-                          <div className="px-2.5 py-1 rounded-lg bg-blue-500/10 text-blue-400 text-[9px] font-black uppercase tracking-widest border border-blue-500/10">{match.level || 'MIXTO'}</div>
-                        </div>
-
-                        {/* Divider */}
-                        <div className="h-px w-full bg-foreground/5 mt-1 relative z-10" />
-
-                        {/* Bottom Section: Price & Action */}
-                        <div className="flex justify-between items-center z-10 relative pt-1">
-                          <div className="flex items-baseline gap-0.5">
-                            <span className="text-[10px] font-black text-foreground/40">$</span>
-                            <span className="text-xl font-black text-foreground tracking-tighter">{match.price.toLocaleString()}</span>
-                            <span className="text-[9px] text-foreground/30 font-bold ml-1 uppercase">/ pers</span>
-                          </div>
-                          
-                          <Link href={`/match?id=${match.id}`} className="block">
-                             <button className={cn(
-                               "px-5 py-2.5 rounded-xl font-black text-[10px] uppercase tracking-widest transition-all active:scale-95 flex items-center gap-1.5",
-                               joinedIds.has(match.id)
-                                 ? "bg-foreground/10 text-foreground/50 border border-foreground/10"
-                                 : "bg-foreground text-background shadow-lg hover:shadow-xl hover:bg-primary hover:text-black hover:shadow-primary/20"
-                             )}>
-                               {joinedIds.has(match.id) ? (
-                                 <><CheckCircle2 className="w-3.5 h-3.5" /> Unido</>
-                               ) : (
-                                 <>Sumarme <ChevronRight className="w-3.5 h-3.5" /></>
-                               )}
-                             </button>
-                          </Link>
-                        </div>
-                      </motion.div>
-                    );
-                  })}
-                </div>
-              ) : (
-                <div className="flex flex-col items-center justify-center py-20 text-center gap-6 bg-foreground/[0.02] rounded-[2rem] border border-dashed border-foreground/10 mt-4">
-                  <div className="w-20 h-20 bg-foreground/5 rounded-full flex items-center justify-center">
-                    <Search className="w-8 h-8 text-foreground/30" />
+                    <Link
+                      href={`/match?id=${match.id}`}
+                      className={cn(
+                        'w-full h-12 lg:h-24 rounded-[1.2rem] lg:rounded-[2.2rem] text-[10px] lg:text-[12px] font-black uppercase tracking-[0.3em] transition-all text-center flex items-center justify-center gap-3 active:scale-95 shadow-xl relative overflow-hidden',
+                        joinedIds.has(match.id)
+                          ? 'bg-foreground/5 text-foreground/40 border border-foreground/5'
+                          : 'bg-primary text-black shadow-primary/20 hover:bg-white hover:text-black transition-colors'
+                      )}
+                    >
+                      {joinedIds.has(match.id) ? (
+                        <>
+                          <CheckCircle2 className="w-4 h-4 text-primary" />
+                          <span>RECLUTADO</span>
+                        </>
+                      ) : (
+                        <>
+                          <span>SOLICITAR INGRESO</span>
+                          <ChevronRight className="w-4 h-4 lg:hidden" />
+                        </>
+                      )}
+                    </Link>
                   </div>
-                  <div className="max-w-xs mx-auto space-y-2">
-                    <h3 className="text-xl font-black text-foreground uppercase tracking-tight">Zona Desierta</h3>
-                    <p className="text-[10px] text-foreground/50 font-medium uppercase tracking-wider leading-relaxed">
-                      No hay partidos que coincidan con estos filtros.
-                    </p>
+                </motion.div>
+              ))
+            ) : (
+              <div className="col-span-full flex flex-col items-center justify-center py-40 text-center gap-12 glass-premium rounded-[4rem] border-dashed border-2 border-foreground/5 bg-foreground/[0.01]">
+                <div className="relative group">
+                  <div className="w-32 h-32 bg-foreground/5 rounded-[2.5rem] flex items-center justify-center animate-float shadow-inner border border-foreground/10">
+                    <Search className="w-14 h-14 text-foreground/20 group-hover:scale-110 transition-transform duration-700" />
                   </div>
-                  <Link href="/create">
-                    <button className="mt-2 px-6 py-3 bg-primary text-black font-black uppercase text-[10px] tracking-widest rounded-xl shadow-lg shadow-primary/20 active:scale-95 transition-transform">
-                      Armar Pícalo Nuevo
-                    </button>
-                  </Link>
+                  <div className="absolute inset-0 border border-primary/20 rounded-[2.5rem] animate-pulse" />
                 </div>
-              )}
-            </motion.div>
-          ) : (
-            <motion.div
-              key="map"
-              initial={{ opacity: 0, scale: 0.98 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.98 }}
-              className="w-full h-[calc(100vh-220px)] min-h-[500px] relative overflow-hidden rounded-[2rem] border border-foreground/10 shadow-2xl bg-surface"
-            >
-              <MapSearch matches={mapMatches} userLocation={userLocation} radius={radiusFilter} />
-              {!userLocation && (
-                <div className="absolute top-4 right-4 z-20">
-                  <button
-                    onClick={handleLocateMe}
-                    className="px-4 py-2 bg-background/90 backdrop-blur-md text-foreground border border-foreground/10 font-black text-[10px] uppercase tracking-widest rounded-xl shadow-lg flex items-center gap-2 hover:bg-primary hover:text-black transition-all"
-                  >
-                    <Navigation className="w-3.5 h-3.5" /> Activar GPS
+                <div className="max-w-xl mx-auto space-y-4">
+                  <h3 className="text-3xl font-black text-foreground italic uppercase tracking-tighter">
+                    Zona Desierta
+                  </h3>
+                  <p className="text-[10px] text-foreground/30 font-black uppercase tracking-[0.3em] leading-relaxed">
+                    No hay partidos por acá. Probá buscando otra cosa o armá uno nuevo.
+                  </p>
+                </div>
+                <Link href="/create">
+                  <button className="h-16 px-12 bg-foreground/5 text-foreground/40 hover:bg-primary hover:text-black font-black uppercase text-[10px] tracking-[0.3em] rounded-[1.8rem] border border-foreground/10 hover:border-primary transition-all shadow-2xl hover:shadow-primary/20">
+                    ARMAR NUEVO PARTIDO
                   </button>
-                </div>
-              )}
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </div>
+                </Link>
+              </div>
+            )}
+          </div>
 
-      {/* ── FLOATING VIEW TOGGLE ── */}
-      <div className="fixed bottom-8 left-1/2 -translate-x-1/2 z-50">
-        <button 
-          onClick={() => setActiveTab(activeTab === 'list' ? 'map' : 'list')}
-          className="bg-foreground text-background px-6 py-3 rounded-full font-black text-[11px] uppercase tracking-[0.15em] shadow-[0_10px_40px_rgba(0,0,0,0.5)] flex items-center gap-2.5 active:scale-95 transition-all hover:bg-primary hover:text-black border border-transparent"
-        >
-          {activeTab === 'list' ? (
-            <><MapIcon className="w-4 h-4" /> VER MAPA</>
-          ) : (
-            <><ListIcon className="w-4 h-4" /> VER LISTA</>
-          )}
-        </button>
+        ) : (
+          <div className="w-full h-full min-h-[600px] relative overflow-hidden rounded-[4rem] border border-foreground/10 shadow-[0_50px_100px_rgba(0,0,0,0.5)] bg-surface">
+            <MapSearch matches={mapMatches} userLocation={userLocation} radius={radiusFilter} />
+            <div className="absolute top-8 right-8 z-20 flex flex-col gap-3">
+              <div className="px-5 py-2.5 bg-background/60 backdrop-blur-xl border border-foreground/10 rounded-2xl flex items-center gap-3">
+                <div className={cn(
+                  "w-2 h-2 rounded-full",
+                  userLocation ? "bg-primary animate-pulse shadow-[0_0_10px_rgba(16,185,129,1)]" : "bg-foreground/20"
+                )} />
+                <span className="text-[9px] font-black text-foreground uppercase tracking-widest">
+                  {userLocation ? 'GPS ACTIVO' : 'GPS INACTIVO'}
+                </span>
+              </div>
+              {!userLocation && (
+                <button
+                  onClick={handleLocateMe}
+                  className="px-5 py-2.5 bg-primary text-black font-black text-[9px] uppercase tracking-widest rounded-2xl shadow-lg shadow-primary/20 hover:scale-105 transition-transform"
+                >
+                  ACTIVAR RADAR GPS
+                </button>
+              )}
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
