@@ -32,7 +32,9 @@ import {
   Activity,
   Star,
   Search,
-  Filter
+  Filter,
+  AlertTriangle,
+  XCircle
 } from 'lucide-react';
 
 import { useAuth } from '@/contexts/AuthContext';
