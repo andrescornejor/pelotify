@@ -35,7 +35,7 @@ export function useMatchSearch() {
   
   // New Distance Filters
   const [userLocation, setUserLocation] = useState<{ lat: number; lng: number } | null>(null);
-  const [radiusFilter, setRadiusFilter] = useState<number | null>(null); // in km
+  const [radiusFilter, setRadiusFilter] = useState<number>(50); // in km, 50 = unlimited
 
   const isLoading = isLoadingAll || (!!user && isLoadingUser);
 
@@ -109,7 +109,7 @@ export function useMatchSearch() {
 
     const listMatches = baseFiltered.filter(match => {
       // Distance Filter for List only
-      if (userLocation && radiusFilter && radiusFilter > 0) {
+      if (userLocation && radiusFilter && radiusFilter > 0 && radiusFilter < 50) {
         let matchLat = match.lat;
         let matchLng = match.lng;
 

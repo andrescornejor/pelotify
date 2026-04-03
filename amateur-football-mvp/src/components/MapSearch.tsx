@@ -139,11 +139,11 @@ export default function MapSearch({ matches, userLocation, radius }: MapSearchPr
             <Marker position={[userLocation.lat, userLocation.lng]} icon={UserPinIcon}>
               <Popup>Estás acá</Popup>
             </Marker>
-            {radius && (
+            {radius && radius < 50 && (
               <Circle
                 center={[userLocation.lat, userLocation.lng]}
                 radius={radius * 1000}
-                pathOptions={{ color: '#4285F4', fillColor: '#4285F4', fillOpacity: 0.1, weight: 1 }}
+                pathOptions={{ color: '#10b981', fillColor: '#10b981', fillOpacity: 0.1, weight: 1 }}
               />
             )}
           </>

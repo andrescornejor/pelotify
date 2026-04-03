@@ -14,6 +14,8 @@ import {
   Zap,
   Star,
   Navigation,
+  Target,
+  Sliders,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import Link from 'next/link';
@@ -67,7 +69,7 @@ export default function SearchPage() {
           lat: position.coords.latitude,
           lng: position.coords.longitude,
         });
-        if (!radiusFilter) setRadiusFilter(10); // Default to 10km if not set
+        if (radiusFilter === 50) setRadiusFilter(20); // Focus radar to 20km locally
       },
       (error) => {
         console.error('Error getting location:', error);
@@ -149,63 +151,96 @@ export default function SearchPage() {
                 </div>
               </div>
 
-              {/* Advanced Filters */}
-              <div className="flex flex-wrap items-center gap-3 px-2">
-                <div className="flex items-center p-1 bg-foreground/5 rounded-2xl border border-foreground/5 gap-1">
-                  {(['All', 'F5', 'F7', 'F11'] as const).map((type) => (
-                    <button
-                      key={type}
-                      onClick={() => setTypeFilter(type)}
-                      className={cn(
-                        'px-5 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest italic transition-all',
-                        typeFilter === type
-                          ? 'bg-primary text-black shadow-lg shadow-primary/20'
-                          : 'text-foreground/40 hover:text-foreground/60 hover:bg-foreground/5'
-                      )}
-                    >
-                      {type === 'All' ? 'TODOS' : type}
-                    </button>
-                  ))}
-                </div>
-
-                <div className="h-8 w-px bg-foreground/10 mx-1 hidden sm:block" />
-
-                <button
-                  onClick={() => setOnlyAvailable(!onlyAvailable)}
-                  className={cn(
-                    'flex items-center gap-3 px-6 py-3.5 rounded-2xl border transition-all text-[10px] font-black uppercase tracking-widest italic',
-                    onlyAvailable
-                      ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400 shadow-lg shadow-emerald-500/5'
-                      : 'bg-foreground/5 border-foreground/5 text-foreground/40 hover:border-foreground/10'
-                  ) + ' active:scale-95'}
-                >
-                  Solo con cupo
-                </button>
-
-                <div className="h-8 w-px bg-foreground/10 mx-1 hidden sm:block" />
-
-                <div className="flex items-center gap-4 bg-foreground/5 p-1 px-4 rounded-2xl border border-foreground/5">
-                  <div className="flex flex-col gap-0.5">
-                    <span className="text-[8px] font-black text-foreground/30 uppercase tracking-widest leading-none">Radio (km)</span>
-                    <input
-                      type="range"
-                      min="1"
-                      max="50"
-                      value={radiusFilter || 0}
-                      onChange={(e) => setRadiusFilter(parseInt(e.target.value))}
-                      className="w-24 h-1.5 bg-foreground/10 rounded-full appearance-none cursor-pointer accent-primary"
-                    />
-                  </div>
-                  <span className="text-[10px] font-black text-primary w-8 italic">{radiusFilter || '∞'}k</span>
+              {/* PRO ADVANCED FILTERS (PedidosYa/Uber Style) */}
+              <div className="flex flex-col lg:flex-row items-center gap-3 w-full">
+                {/* 1. Location & Radius Card (Premium Area) */}
+                <div className="flex items-center gap-3 bg-black/40 p-2 pr-4 lg:pr-6 rounded-3xl border border-white/5 shadow-2xl backdrop-blur-md w-full lg:w-auto relative group">
+                  <div className="absolute inset-0 bg-gradient-to-r from-primary/5 to-transparent rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
+                  
                   <button
                     onClick={handleLocateMe}
                     className={cn(
-                      "p-2 rounded-xl transition-all active:scale-95",
-                      userLocation ? "bg-primary text-black" : "bg-foreground/10 text-foreground/40 hover:bg-foreground/20"
+                      "w-12 h-12 lg:w-14 lg:h-14 flex flex-shrink-0 items-center justify-center rounded-2xl transition-all active:scale-95 z-10 relative overflow-hidden",
+                      userLocation 
+                        ? "bg-primary text-black shadow-[0_0_20px_rgba(16,185,129,0.3)] shadow-primary/20 border border-primary/50" 
+                        : "bg-foreground/5 text-foreground/40 hover:bg-foreground/10 hover:text-white border border-foreground/10"
                     )}
                     title="Usar mi ubicación GPS"
                   >
-                    <Navigation className={cn("w-3.5 h-3.5", userLocation && "fill-current")} />
+                    {userLocation && (
+                      <>
+                        <div className="absolute inset-0 bg-white/20 animate-pulse pointer-events-none" />
+                        <div className="absolute inset-0 border-[3px] border-black/10 rounded-2xl" />
+                      </>
+                    )}
+                    <Navigation className={cn("w-5 h-5 lg:w-6 lg:h-6 transition-all", userLocation && "fill-current animate-pulse text-zinc-900")} />
+                  </button>
+                  
+                  <div className="flex flex-col gap-1.5 flex-1 min-w-[200px] lg:min-w-[240px] z-10">
+                    <div className="flex justify-between items-center px-1">
+                      <span className="text-[9px] lg:text-[10px] font-black text-foreground/40 uppercase tracking-[0.2em] flex items-center gap-1.5">
+                        <Target className="w-3 h-3 text-primary/60" /> Foco del Radar
+                      </span>
+                      <div className="px-2 py-0.5 bg-foreground/5 rounded-md border border-foreground/10 flex items-center gap-1.5 shadow-inner">
+                        <div className={cn("w-1.5 h-1.5 rounded-full", radiusFilter === 50 || !radiusFilter ? "bg-red-500 animate-pulse" : "bg-primary")} />
+                        <span className="text-[10px] lg:text-[11px] font-black text-foreground italic">
+                          {radiusFilter === 50 || !radiusFilter ? 'RADIO GLOBAL' : `${radiusFilter} KM`}
+                        </span>
+                      </div>
+                    </div>
+                    {/* Pro Premium Slider */}
+                    <div className="relative h-3 lg:h-4 bg-black/60 rounded-full border border-white/5 flex items-center shadow-inner group/slider overflow-hidden px-1">
+                      <input
+                        type="range"
+                        min="1"
+                        max="50"
+                        value={radiusFilter || 50}
+                        onChange={(e) => setRadiusFilter(parseInt(e.target.value))}
+                        className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-20"
+                      />
+                      <div 
+                        className={cn(
+                          "h-1.5 lg:h-2 rounded-full relative pointer-events-none transition-all duration-150 flex items-center justify-end",
+                          radiusFilter === 50 || !radiusFilter ? "bg-gradient-to-r from-red-500/20 to-red-500" : "bg-gradient-to-r from-primary/20 to-primary"
+                        )}
+                        style={{ width: `${((radiusFilter || 50) / 50) * 100}%` }}
+                      >
+                         <div className="w-2.5 h-2.5 lg:w-3.5 lg:h-3.5 bg-white rounded-full shadow-[0_0_15px_rgba(255,255,255,0.8)] border border-black/20 mr-0.5" />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* 2. Format & Cupo Card */}
+                <div className="flex flex-1 items-center gap-2 p-1.5 lg:p-2 bg-black/20 rounded-3xl border border-white/5 backdrop-blur-sm overflow-x-auto no-scrollbar">
+                  <div className="flex items-center gap-1 bg-black/40 p-1 rounded-2xl border border-white/5">
+                    {(['All', 'F5', 'F7', 'F11'] as const).map((type) => (
+                      <button
+                        key={type}
+                        onClick={() => setTypeFilter(type)}
+                        className={cn(
+                          'px-4 lg:px-5 py-3 lg:py-4 rounded-xl text-[10px] font-black uppercase tracking-widest italic transition-all whitespace-nowrap',
+                          typeFilter === type
+                            ? 'bg-zinc-100 text-black shadow-lg shadow-white/10'
+                            : 'text-foreground/40 hover:text-foreground/80 hover:bg-white/5'
+                        )}
+                      >
+                        {type === 'All' ? 'TODOS' : type}
+                      </button>
+                    ))}
+                  </div>
+
+                  <button
+                    onClick={() => setOnlyAvailable(!onlyAvailable)}
+                    className={cn(
+                      'ml-auto flex items-center justify-center gap-2 px-5 lg:px-6 py-3 lg:py-4 rounded-2xl border transition-all text-[10px] font-black uppercase tracking-widest italic whitespace-nowrap',
+                      onlyAvailable
+                        ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400 shadow-[0_0_20px_rgba(16,185,129,0.1)]'
+                        : 'bg-black/40 border-white/5 text-foreground/40 hover:border-white/10'
+                    ) + ' active:scale-95'}
+                  >
+                    <Sliders className={cn("w-3 h-3", onlyAvailable && "text-emerald-400")} />
+                    Solo Cupo
                   </button>
                 </div>
               </div>
