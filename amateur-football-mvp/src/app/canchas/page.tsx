@@ -151,7 +151,7 @@ export default function CanchasDashboard() {
 
   if (loadingDb) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
+      <div className="dark min-h-screen bg-background flex items-center justify-center">
         <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
       </div>
     );
@@ -211,7 +211,7 @@ export default function CanchasDashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-background text-foreground pb-20 md:pb-0 font-kanit">
+    <div className="dark min-h-screen bg-background text-foreground pb-20 md:pb-0 font-kanit">
       
       {/* HEADER TRAY */}
       <header className="fixed top-0 w-full z-40 glass border-b border-border/40 backdrop-blur-xl">
