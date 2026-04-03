@@ -435,7 +435,7 @@ export default function RecruitmentMarketplace() {
                               {isOpen ? (
                                 <button
                                   onClick={() => handleJoinSlot(slot.id, match.id, match.creator_id)}
-                                  disabled={joinSlotMutation.isPending || (user && user.id === match.creator_id)}
+                                  disabled={joinSlotMutation.isPending || user?.id === match.creator_id}
                                   className={cn(
                                     "group w-14 h-14 rounded-[1.5rem] flex items-center justify-center transition-all shadow-glow-primary relative overflow-hidden",
                                     user?.id === match.creator_id 
