@@ -19,14 +19,9 @@ export default function AuthCallbackPage() {
       if (session?.user) {
         const { id, user_metadata, email } = session.user;
 
-        // Check if profile exists
-        const { data: profile } = await supabase
-          .from('profiles')
-          .select('id')
-          .eq('id', id)
-          .single();
+        const isVenueAdmin = user_metadata?.role === 'venue_admin';
 
-        if (!profile) {
+        if (!profile && !isVenueAdmin) {
           // Create default profile for OAuth users
           await supabase.from('profiles').insert({
             id: id,

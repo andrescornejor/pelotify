@@ -71,8 +71,7 @@ export default function CanchasRegisterPage() {
       setSuccess(true);
       
       // Auto-login and bypass email confirmation for demo
-      await login(formData.email, formData.password);
-      router.push('/canchas');
+      await login(formData.email, formData.password, '/canchas');
 
     } catch (err: any) {
       setError(err.message || 'Error al registrar el establecimiento.');

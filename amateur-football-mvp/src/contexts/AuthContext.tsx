@@ -17,7 +17,7 @@ interface User {
 interface AuthContextType {
   user: User | null;
   isAuthenticated: boolean;
-  login: (email: string, password?: string) => Promise<void>;
+  login: (email: string, password?: string, redirectTo?: string) => Promise<void>;
   loginWithGoogle: () => Promise<void>;
   updatePassword: (newPassword: string) => Promise<void>;
   sendPasswordResetEmail: (email: string) => Promise<void>;
@@ -60,18 +60,20 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           console.error('Error fetching profile:', profileError);
         }
 
-        // 1.5. Check if user is a business owner
+        // 1.5. Check if user is a business owner (Venue Admin)
+        // We check both the database and the auth metadata for faster/more reliable detection
         const { data: business } = await supabase
           .from('canchas_businesses')
           .select('id')
           .eq('owner_id', authUser.id)
           .maybeSingle();
 
-        const isBusiness = !!business;
+        const isBusiness = !!business || metadata.role === 'venue_admin';
 
         // 2. Ensure profile exists (especially for new Google users)
         // Skip for business owners as they don't necessarily need a player profile
-        if (!profile && !isBusiness) {
+        // and we want to avoid creating accidental player records for them
+        if (!profile && !isBusiness && metadata.role !== 'venue_admin') {
           console.log('Ensuring profile for user:', authUser.id);
           const { data: newProfile, error: insertError } = await supabase
             .from('profiles')
@@ -217,7 +219,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return true;
   };
 
-  const login = async (email: string, password?: string) => {
+  const login = async (email: string, password?: string, redirectTo: string = '/') => {
     if (!checkConfig()) return;
 
     // Si no pasan password, usamos un genérico para la demo si el usuario insiste
@@ -234,7 +236,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       throw error;
     }
 
-    router.push('/');
+    router.push(redirectTo);
   };
 
   const loginWithGoogle = async () => {

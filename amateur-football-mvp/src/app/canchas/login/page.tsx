@@ -20,9 +20,7 @@ export default function CanchasLoginPage() {
     setIsLoading(true);
     setError('');
     try {
-      await login(email, password);
-      // Wait for AuthContext routing to take over, but fallback to manually routing
-      router.push('/canchas');
+      await login(email, password, '/canchas');
     } catch (err: any) {
       setError(err.message || 'Error al iniciar sesión');
     } finally {

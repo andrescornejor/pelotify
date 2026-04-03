@@ -43,7 +43,11 @@ import { useEffect, useMemo, useState } from 'react';
 
 
 export default function HomePage() {
-  const { user } = useAuth();
+  const { user, isLoading: isAuthLoading } = useAuth();
+
+  if (user?.is_business) {
+    return null; // Will be redirected by AuthContext
+  }
 
   const { data: homeData, isLoading: isDataLoading } = useHomeData(user?.id);
 
