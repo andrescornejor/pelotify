@@ -324,51 +324,52 @@ export default function CanchasDashboard() {
           <div className="px-4 pb-4 border-b border-border/40 mb-3">
             <p className="text-[10px] font-black uppercase tracking-[0.4em] text-muted-foreground/70">Control Tower</p>
           </div>
-          {tabs.map((tab) => {
-            const Icon = tab.icon;
-            const isActive = activeTab === tab.id;
-            return (
-              <button
-                key={tab.id}
-                onClick={() => setActiveTab(tab.id)}
-                className={`flex items-center gap-4 px-5 py-4 rounded-2xl transition-all duration-300 relative overflow-hidden group ${isActive ? 'text-primary' : 'text-muted-foreground hover:text-foreground hover:bg-foreground/5 border border-transparent hover:border-border/50'
-                  }`}
-              >
-                {isActive && (
-                  <motion.div
-                    layoutId="activeTabSidebar"
-                    className="absolute inset-0 bg-primary/15 border border-primary/30 rounded-2xl"
-                    initial={false}
-                    transition={{ type: "spring", stiffness: 300, damping: 30 }}
-                  />
-                )}
-                <Icon className={`w-5 h-5 relative z-10 ${isActive ? 'drop-shadow-[0_0_8px_rgba(44,252,125,0.5)]' : ''}`} />
-                <span className="font-semibold relative z-10">{tab.label}</span>
-                {isActive && <ChevronRight className="w-4 h-4 ml-auto relative z-10" />}
-              </button>
-            );
-          })}
-        </div>
+          <div className="flex-1 overflow-y-auto space-y-1 no-scrollbar">
+            {tabs.map((tab) => {
+              const Icon = tab.icon;
+              const isActive = activeTab === tab.id;
+              return (
+                <button
+                  key={tab.id}
+                  onClick={() => setActiveTab(tab.id)}
+                  className={`flex items-center gap-4 px-5 py-4 rounded-2xl transition-all duration-300 relative overflow-hidden group w-full ${isActive ? 'text-primary' : 'text-muted-foreground hover:text-foreground hover:bg-foreground/5 border border-transparent hover:border-border/50'
+                    }`}
+                >
+                  {isActive && (
+                    <motion.div
+                      layoutId="activeTabSidebar"
+                      className="absolute inset-0 bg-primary/15 border border-primary/30 rounded-2xl"
+                      initial={false}
+                      transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                    />
+                  )}
+                  <Icon className={`w-5 h-5 relative z-10 ${isActive ? 'drop-shadow-[0_0_8px_rgba(44,252,125,0.5)]' : ''}`} />
+                  <span className="font-semibold relative z-10">{tab.label}</span>
+                  {isActive && <ChevronRight className="w-4 h-4 ml-auto relative z-10" />}
+                </button>
+              );
+            })}
+          </div>
 
-        <div className="p-4 border-t border-border/40 space-y-2">
-          {business?.id && (
+          <div className="p-4 border-t border-border/40 space-y-2">
+            {business?.id && (
+              <button
+                onClick={() => window.open(`/establecimientos/${business.id}`, '_blank')}
+                className="w-full p-4 rounded-2xl bg-foreground/5 hover:bg-primary/20 text-muted-foreground hover:text-primary transition-all flex items-center gap-4 group"
+              >
+                <ExternalLink className="w-5 h-5 group-hover:rotate-12 transition-transform" />
+                <span className="font-bold text-sm">Ver Perfil Público</span>
+              </button>
+            )}
             <button
-              onClick={() => window.open(`/establecimientos/${business.id}`, '_blank')}
-              className="w-full p-4 rounded-2xl bg-foreground/5 hover:bg-primary/20 text-muted-foreground hover:text-primary transition-all flex items-center gap-4 group"
+              onClick={logout}
+              className="w-full p-4 rounded-2xl bg-danger/5 hover:bg-danger text-danger hover:text-white transition-all flex items-center gap-4 group"
             >
-              <ExternalLink className="w-5 h-5 group-hover:rotate-12 transition-transform" />
-              <span className="font-bold text-sm">Ver Perfil Público</span>
+              <LogOut className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
+              <span className="font-bold text-sm">Cerrar Sesión</span>
             </button>
-          )}
-          <button
-            onClick={logout}
-            className="w-full p-4 rounded-2xl bg-danger/5 hover:bg-danger text-danger hover:text-white transition-all flex items-center gap-4 group"
-          >
-            <LogOut className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
-            <span className="font-bold text-sm">Cerrar Sesión</span>
-          </button>
-        </div>
-      </aside>
+          </div>
+        </aside>
 
         {/* CONTENT AREA */}
         <main className="flex-1 w-full pb-32 md:pb-8 max-w-full">
