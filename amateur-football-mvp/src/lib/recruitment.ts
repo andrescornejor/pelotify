@@ -39,6 +39,7 @@ export async function getRecruitmentMatches() {
     .select(`
       *,
       venue:business_id(name, address),
+      creator:creator_id(name, avatar_url),
       slots:match_slots(
         *,
         profiles:user_id(name, avatar_url)
@@ -61,6 +62,7 @@ export async function getRecruitmentMatches() {
     .select(`
       *,
       venue:business_id(name, address),
+      creator:creator_id(name, avatar_url),
       slots:player_recruitment_slots(
         *,
         profiles:user_id(name, avatar_url)

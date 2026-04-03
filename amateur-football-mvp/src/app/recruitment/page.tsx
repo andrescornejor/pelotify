@@ -29,6 +29,9 @@ import { cn } from '@/lib/utils';
 import { useRecruitmentMatches, useJoinRecruitmentSlot, useDeleteRecruitmentPosting } from '@/hooks/useRecruitmentQueries';
 import { useAuth } from '@/contexts/AuthContext';
 import Link from 'next/link';
+import ChatModal from '@/components/ChatModal';
+import { queryKeys } from '@/lib/queryKeys';
+import { useQueryClient } from '@tanstack/react-query';
 
 // Simple helper to format date
 const formatDate = (dateStr: string) => {
@@ -141,12 +144,14 @@ function TutorialModal({ isOpen, onClose }: { isOpen: boolean; onClose: () => vo
 
 export default function RecruitmentMarketplace() {
   const { user } = useAuth();
+  const queryClient = useQueryClient();
   const { data: matches, isLoading } = useRecruitmentMatches();
   const joinSlotMutation = useJoinRecruitmentSlot();
   const deleteMutation = useDeleteRecruitmentPosting();
   
   const [filterPos, setFilterPos] = useState<string | null>(null);
   const [showTutorial, setShowTutorial] = useState(false);
+  const [activeChat, setActiveChat] = useState<{ id: string; name: string } | null>(null);
 
   useEffect(() => {
     const hasSeenTutorial = localStorage.getItem('recruitment_tutorial_seen_v3');
@@ -340,12 +345,20 @@ export default function RecruitmentMarketplace() {
                 <div className="absolute top-8 right-8 z-10 flex items-center gap-4">
                   {/* Coordination Actions */}
                   {user?.id !== match.creator_id && (user?.id === match.creator_id || match.slots?.some(s => s.user_id === user?.id)) && (
-                     <Link 
-                       href={`/messages?user=${match.creator_id}`}
-                       className="w-14 h-14 rounded-2xl bg-primary text-black flex items-center justify-center hover:scale-105 active:scale-95 transition-all shadow-glow-primary/20"
-                     >
-                       <MessageSquare size={22} />
-                     </Link>
+                    <div className="flex items-center gap-2">
+                       <Link 
+                         href={`/profile?id=${match.creator_id}`}
+                         className="px-4 h-14 rounded-2xl bg-white/5 border border-white/10 text-[10px] font-black uppercase tracking-widest hover:bg-white/10 transition-all flex items-center justify-center italic"
+                       >
+                         Ver Perfil
+                       </Link>
+                       <button 
+                         onClick={() => setActiveChat({ id: match.creator_id, name: match.creator?.name || 'Organizador' })}
+                         className="w-14 h-14 rounded-2xl bg-primary text-black flex items-center justify-center hover:scale-105 active:scale-95 transition-all shadow-glow-primary/20"
+                       >
+                         <MessageSquare size={22} />
+                       </button>
+                    </div>
                   )}
 
                   <span className="bg-white/5 backdrop-blur-md text-foreground/60 px-5 py-2 rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] border border-white/5">
@@ -519,6 +532,22 @@ export default function RecruitmentMarketplace() {
             )}
           </div>
         )}
+        <div className="max-w-7xl mx-auto px-4 fixed bottom-8 left-0 right-0 z-[100] flex justify-center pointer-events-none">
+          <Link 
+            href="/recruitment/create"
+            className="h-16 px-10 rounded-[2rem] bg-primary text-black font-black italic uppercase text-xs tracking-widest hover:scale-105 active:scale-95 transition-all shadow-2xl flex items-center gap-3 pointer-events-auto shadow-glow-primary/40"
+          >
+            <Plus size={18} /> Publicar Búsqueda
+          </Link>
+        </div>
+
+        {/* --- MODALS --- */}
+        <ChatModal 
+          isOpen={!!activeChat}
+          onClose={() => setActiveChat(null)}
+          recipientId={activeChat?.id}
+          recipientName={activeChat?.name}
+        />
       </div>
     </div>
   );
