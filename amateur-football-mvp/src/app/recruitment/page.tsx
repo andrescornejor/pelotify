@@ -247,40 +247,40 @@ export default function RecruitmentMarketplace() {
       </div>
 
       {/* Hero Section */}
-      <div className="relative pt-24 pb-16 px-6">
+      <div className="relative pt-12 pb-8 px-6">
         <div className="max-w-7xl mx-auto">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, ease: "easeOut" }}
-            className="flex flex-col md:flex-row md:items-end justify-between gap-12"
+            className="flex flex-col md:flex-row md:items-end justify-between gap-8"
           >
-            <div className="space-y-6">
+            <div className="space-y-4">
               <div className="flex items-center gap-4">
                 <button 
                   onClick={() => setShowTutorial(true)}
-                  className="w-12 h-12 rounded-2xl bg-surface-elevated border border-white/5 flex items-center justify-center hover:bg-primary/20 hover:text-primary transition-all text-foreground/40 group relative overflow-hidden"
+                  className="w-10 h-10 rounded-xl bg-surface-elevated border border-white/5 flex items-center justify-center hover:bg-primary/20 hover:text-primary transition-all text-foreground/40 group relative overflow-hidden"
                 >
                   <div className="absolute inset-0 bg-primary/5 group-hover:animate-pulse" />
-                  <Info size={24} className="stroke-[2.5]" />
+                  <Info size={20} className="stroke-[2.5]" />
                 </button>
-                <div className="h-0.5 w-12 bg-primary/20 rounded-full" />
-                <span className="text-[10px] font-black uppercase tracking-[0.5em] text-primary">Inteligencia v.03</span>
+                <div className="h-0.5 w-8 bg-primary/20 rounded-full" />
+                <span className="text-[10px] font-black uppercase tracking-[0.5em] text-primary">v.03</span>
               </div>
-              <h1 className="text-6xl md:text-9xl font-black italic tracking-tighter font-kanit uppercase leading-[0.85] select-none">
+              <h1 className="text-5xl md:text-7xl font-black italic tracking-tighter font-kanit uppercase leading-[0.85] select-none">
                 MERCADO DE <br/>
                 <span className="text-primary text-glow-primary">FICHAJES</span>
               </h1>
-              <p className="text-foreground/40 text-lg md:text-2xl max-w-2xl font-medium italic leading-relaxed">
+              <p className="text-foreground/40 text-sm md:text-lg max-w-2xl font-medium italic leading-relaxed">
                 El lugar donde los cracks encuentran su destino. Buscamos refuerzos para completar la gloria.
               </p>
 
               {/* TAB SELECTOR */}
-              <div className="flex items-center p-1 bg-surface-elevated border border-white/5 rounded-[2rem] shadow-2xl mt-8 w-fit">
+              <div className="flex items-center p-1 bg-surface-elevated border border-white/5 rounded-2xl shadow-2xl mt-4 w-fit">
                  <button 
                   onClick={() => setActiveTab('market')}
                   className={cn(
-                    "px-8 h-12 rounded-[1.5rem] text-[10px] font-black uppercase tracking-widest transition-all",
+                    "px-6 h-10 rounded-xl text-[9px] font-black uppercase tracking-widest transition-all",
                     activeTab === 'market' ? "bg-primary text-black shadow-glow-primary" : "text-foreground/40 hover:text-foreground/70"
                   )}
                  >
@@ -289,7 +289,7 @@ export default function RecruitmentMarketplace() {
                  <button 
                   onClick={() => setActiveTab('my-posts')}
                   className={cn(
-                    "px-8 h-12 rounded-[1.5rem] text-[10px] font-black uppercase tracking-widest transition-all",
+                    "px-6 h-10 rounded-xl text-[9px] font-black uppercase tracking-widest transition-all",
                     activeTab === 'my-posts' ? "bg-primary text-black shadow-glow-primary" : "text-foreground/40 hover:text-foreground/70"
                   )}
                  >
@@ -297,26 +297,14 @@ export default function RecruitmentMarketplace() {
                  </button>
               </div>
             </div>
-
-            <Link href="/recruitment/create">
-               <motion.button 
-                 whileHover={{ scale: 1.05, y: -4 }}
-                 whileTap={{ scale: 0.95 }}
-                 className="group relative bg-foreground text-background px-12 py-6 rounded-[2rem] font-black text-lg uppercase tracking-tight italic flex items-center gap-6 shadow-2xl transition-all overflow-hidden"
-               >
-                 <div className="absolute inset-0 bg-primary translate-y-full group-hover:translate-y-0 transition-transform duration-500" />
-                 <span className="relative z-10 transition-colors duration-500 group-hover:text-black">BUSCAR REFUERZOS</span>
-                 <Plus size={28} className="relative z-10 stroke-[3] transition-colors duration-500 group-hover:text-black" />
-               </motion.button>
-            </Link>
           </motion.div>
         </div>
       </div>
 
       {/* Modern Filter Dock */}
-      <div className="sticky top-0 z-40 backdrop-blur-3xl bg-background/60 border-y border-white/5 py-8">
+      <div className="sticky top-0 z-40 backdrop-blur-3xl bg-background/60 border-y border-white/5 py-4">
         <div className="max-w-7xl mx-auto px-6">
-          <div className="flex flex-wrap items-center gap-6">
+          <div className="flex flex-wrap items-center gap-4">
             <h4 className="text-[10px] font-black uppercase tracking-[0.3em] text-foreground/30 mr-2">FILTRAR POR PUESTO</h4>
             <div className="flex bg-surface-elevated/50 p-2 rounded-3xl border border-white/5 shadow-2xl overflow-x-auto no-scrollbar max-w-full">
               <button 
@@ -343,11 +331,19 @@ export default function RecruitmentMarketplace() {
               ))}
             </div>
 
-            <div className="ml-auto hidden xl:flex items-center gap-4 text-[11px] font-bold text-foreground/30 italic">
-               <span className="flex items-center gap-2">
-                 <div className="w-2 h-2 rounded-full bg-primary animate-pulse" />
-                 {filteredMatches?.length || 0} BÚSQUEDAS ACTIVAS
-               </span>
+            <div className="ml-auto flex items-center gap-6">
+                <div className="hidden xl:flex items-center gap-4 text-[9px] font-bold text-foreground/30 italic uppercase tracking-widest">
+                  <span className="flex items-center gap-2">
+                    <div className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
+                    {filteredMatches?.length || 0} BÚSQUEDAS ACTIVAS
+                  </span>
+                </div>
+                
+                <Link href="/recruitment/create">
+                  <button className="h-12 px-6 rounded-2xl bg-primary text-black font-black text-[10px] uppercase tracking-widest flex items-center gap-2 hover:scale-105 active:scale-95 transition-all shadow-glow-primary/20">
+                    <Plus size={16} /> Publicar
+                  </button>
+                </Link>
             </div>
           </div>
         </div>
@@ -356,13 +352,24 @@ export default function RecruitmentMarketplace() {
       {/* Mercado Grid */}
       <div className="max-w-7xl mx-auto px-6 mt-16">
         {isLoading ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             {[1, 2, 3, 4].map((i) => (
-              <div key={i} className="h-[400px] bg-surface-elevated rounded-[4rem] animate-pulse border border-white/5" />
+              <div key={i} className="h-[350px] bg-surface-elevated rounded-[2.5rem] p-8 border border-white/5 relative overflow-hidden">
+                 <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent animate-shimmer" />
+                 <div className="space-y-4">
+                    <div className="w-48 h-8 bg-white/5 rounded-lg" />
+                    <div className="w-full h-12 bg-white/5 rounded-xl" />
+                    <div className="flex gap-4">
+                       <div className="flex-1 h-16 bg-white/5 rounded-2xl" />
+                       <div className="flex-1 h-16 bg-white/5 rounded-2xl" />
+                    </div>
+                    <div className="w-full h-24 bg-white/5 rounded-2xl" />
+                 </div>
+              </div>
             ))}
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             <AnimatePresence mode="popLayout">
               {filteredMatches?.map((match) => (
                 <motion.div
@@ -407,18 +414,18 @@ export default function RecruitmentMarketplace() {
                   )}
                 </div>
 
-                  <div className="p-10 md:p-14 space-y-12 h-full flex flex-col">
+                  <div className="p-6 md:p-8 space-y-8 h-full flex flex-col">
                     {/* Top Info */}
                     <div className="space-y-6">
                       <div className="flex items-center gap-4">
                         <div className="w-1.5 h-10 bg-primary rounded-full shadow-glow-primary" />
-                        <h3 className="text-4xl md:text-5xl font-black italic font-kanit uppercase leading-[0.9] tracking-tighter">
+                        <h3 className="text-2xl md:text-3xl font-black italic font-kanit uppercase leading-[0.9] tracking-tighter">
                           RECLUTAMIENTO <br/>
                           <span className="text-primary/40 group-hover:text-primary transition-colors duration-500">TACTICO</span>
                         </h3>
                       </div>
                       
-                      <p className="text-foreground/50 text-xl font-medium italic border-l-2 border-white/10 pl-8 py-2 leading-relaxed">
+                      <p className="text-foreground/50 text-base font-medium italic border-l-2 border-white/10 pl-6 py-1 leading-relaxed">
                         "{match.description || 'Se busca completar el partido con cracks de buen nivel.'}"
                       </p>
                     </div>
@@ -564,14 +571,7 @@ export default function RecruitmentMarketplace() {
             )}
           </div>
         )}
-        <div className="max-w-7xl mx-auto px-4 fixed bottom-8 left-0 right-0 z-[100] flex justify-center pointer-events-none">
-          <Link 
-            href="/recruitment/create"
-            className="h-16 px-10 rounded-[2rem] bg-primary text-black font-black italic uppercase text-xs tracking-widest hover:scale-105 active:scale-95 transition-all shadow-2xl flex items-center gap-3 pointer-events-auto shadow-glow-primary/40"
-          >
-            <Plus size={18} /> Publicar Búsqueda
-          </Link>
-        </div>
+        {/* Modals will handle the rest */}
 
         {/* --- MODALS --- */}
         <ChatModal 
