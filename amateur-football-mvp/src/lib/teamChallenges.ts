@@ -1,4 +1,5 @@
 import { supabase } from './supabase';
+import { sendNotificationToUser } from './notifications';
 
 export interface TeamChallenge {
   id: string;
@@ -42,10 +43,31 @@ export async function createTeamChallenge(
         votes: {},
       },
     ])
-    .select()
+    .select(
+      `
+            *,
+            challenger_team:teams!challenger_team_id(name),
+            challenged_team:teams!challenged_team_id(captain_id)
+        `
+    )
     .single();
 
   if (error) throw error;
+
+  // 🔔 Notify challenged team captain
+  try {
+    if (data?.challenged_team?.captain_id) {
+      sendNotificationToUser(
+        data.challenged_team.captain_id,
+        '⚔️ ¡Nuevo reto para tu equipo!',
+        `${data.challenger_team.name} los desafió para el ${date} a las ${time}`,
+        { clickAction: '/teams' }
+      ).catch(() => {});
+    }
+  } catch (e) {
+    // Non-blocking
+  }
+
   return data as TeamChallenge;
 }
 
@@ -237,10 +259,36 @@ export async function respondToChallenge(challengeId: string, status: 'accepted'
     .from('team_challenges')
     .update({ status })
     .eq('id', challengeId)
-    .select()
+    .select(
+      `
+            *,
+            challenger_team:teams!challenger_team_id(captain_id),
+            challenged_team:teams!challenged_team_id(name)
+        `
+    )
     .single();
 
   if (error) throw error;
+
+  // 🔔 Notify challenger team captain
+  try {
+    if (data?.challenger_team?.captain_id) {
+      const title = status === 'accepted' ? '✅ ¡Reto aceptado!' : '❌ Reto rechazado';
+      const body = status === 'accepted' 
+        ? `${data.challenged_team.name} aceptó tu desafío. Se ha creado el partido.`
+        : `${data.challenged_team.name} rechazó tu desafío.`;
+
+      sendNotificationToUser(
+        data.challenger_team.captain_id,
+        title,
+        body,
+        { clickAction: '/teams' }
+      ).catch(() => {});
+    }
+  } catch (e) {
+    // Non-blocking
+  }
+
   return data as TeamChallenge;
 }
 

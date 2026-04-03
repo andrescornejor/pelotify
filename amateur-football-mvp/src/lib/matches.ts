@@ -1,4 +1,5 @@
 import { supabase } from './supabase';
+import { notifyMatchParticipants, sendNotificationToUser } from './notifications';
 
 export interface Match {
   id: string;
@@ -228,7 +229,26 @@ export async function joinMatch(matchId: string, userId: string, team: 'A' | 'B'
 
   if (joinError) throw joinError;
 
+  // 🔔 Send push notification to other participants
+  try {
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('name')
+      .eq('id', userId)
+      .single();
 
+    const playerName = profile?.name || 'Un jugador';
+
+    notifyMatchParticipants(
+      matchId,
+      userId,
+      '⚽ Nuevo jugador confirmado',
+      `${playerName} se unió al partido`,
+      `/match?id=${matchId}`
+    ).catch(() => {}); // Fire and forget
+  } catch (e) {
+    // Non-blocking
+  }
 }
 
 export async function switchTeam(matchId: string, userId: string, team: 'A' | 'B' | null) {
@@ -365,6 +385,26 @@ export async function invitePlayer(matchId: string, userId: string) {
     }
     throw error;
   }
+
+  // 🔔 Push notification to the invited player
+  try {
+    const { data: match } = await supabase
+      .from('matches')
+      .select('location, date, time, type')
+      .eq('id', matchId)
+      .single();
+
+    if (match) {
+      sendNotificationToUser(
+        userId,
+        '📩 ¡Te invitaron a un partido!',
+        `${match.type} en ${match.location} — ${match.date} a las ${match.time}`,
+        { clickAction: `/match?id=${matchId}` }
+      ).catch(() => {}); // Fire and forget
+    }
+  } catch (e) {
+    // Non-blocking
+  }
 }
 
 export async function getMatchInvitations(userId: string) {
@@ -465,6 +505,19 @@ export async function reportMatchScore(report: {
           console.error('Error finalizing match stats:', finalizeError);
           // Fallback to basic update if RPC fails
           await submitMatchResult(report.match_id, lastAScoreA, lastAScoreB);
+        }
+
+        // 🔔 Notify all participants that match results are final
+        try {
+          notifyMatchParticipants(
+            report.match_id,
+            '', // don't exclude anyone
+            '🏆 Resultado final confirmado',
+            `Equipo A ${lastAScoreA} - ${lastAScoreB} Equipo B. ¡Mirá tus stats!`,
+            `/match?id=${report.match_id}`
+          ).catch(() => {});
+        } catch (e) {
+          // Non-blocking
         }
 
         return { consensus: true, teamAScore: lastAScoreA, teamBScore: lastAScoreB };

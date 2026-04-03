@@ -1,4 +1,5 @@
 import { supabase } from './supabase';
+import { sendNotificationToUser } from './notifications';
 
 export interface Profile {
   id: string;
@@ -235,6 +236,24 @@ export async function sendFriendRequest(userId: string, friendId: string) {
   ]);
 
   if (error) throw error;
+
+  // 🔔 Push notification to the target player
+  try {
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('name')
+      .eq('id', userId)
+      .single();
+
+    sendNotificationToUser(
+      friendId,
+      '🤝 Solicitud de amistad',
+      `${profile?.name || 'Un jugador'} quiere agregarte como amigo`,
+      { clickAction: '/friends' }
+    ).catch(() => {}); // Fire and forget
+  } catch (e) {
+    // Non-blocking
+  }
 }
 
 // 5. Accept a friend request

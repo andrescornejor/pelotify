@@ -1,4 +1,5 @@
 import { supabase } from './supabase';
+import { notifyMatchParticipants, sendNotificationToUser } from './notifications';
 
 export interface ChatMessage {
   id: string;
@@ -49,6 +50,25 @@ export async function sendMatchMessage(
     .insert({ match_id: matchId, user_id: userId, content: content.trim() });
 
   if (error) throw error;
+
+  // 🔔 Notify match participants
+  try {
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('name')
+      .eq('id', userId)
+      .single();
+
+    notifyMatchParticipants(
+      matchId,
+      userId,
+      `💬 Mensaje en partido`,
+      `${profile?.name || 'Alguien'}: ${content.slice(0, 50)}${content.length > 50 ? '...' : ''}`,
+      `/match?id=${matchId}`
+    ).catch(() => {});
+  } catch (e) {
+    // Non-blocking
+  }
 }
 
 // For Direct Messages (To be implemented in DB if not exists)
@@ -87,6 +107,24 @@ export async function sendDirectMessage(
     .insert({ sender_id: senderId, recipient_id: recipientId, content: content.trim() });
 
   if (error) throw error;
+
+  // 🔔 Notify recipient
+  try {
+    const { data: sender } = await supabase
+      .from('profiles')
+      .select('name')
+      .eq('id', senderId)
+      .single();
+
+    sendNotificationToUser(
+      recipientId,
+      `💬 Nuevo mensaje de ${sender?.name || 'Alguien'}`,
+      `${content.slice(0, 50)}${content.length > 50 ? '...' : ''}`,
+      { clickAction: `/messages?id=${senderId}` }
+    ).catch(() => {});
+  } catch (e) {
+    // Non-blocking
+  }
 }
 
 export function subscribeToMatchMessages(matchId: string, onMessage: (msg: ChatMessage) => void) {

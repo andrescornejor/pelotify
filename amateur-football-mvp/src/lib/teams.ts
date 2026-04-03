@@ -1,4 +1,5 @@
 import { supabase } from './supabase';
+import { sendNotificationToUser } from './notifications';
 
 export interface Team {
   id: string;
@@ -281,6 +282,26 @@ export async function inviteToTeam(teamId: string, userId: string) {
       throw new Error('El jugador ya fue invitado o ya es parte del equipo.');
     }
     throw error;
+  }
+
+  // 🔔 Push notification to invited player
+  try {
+    const { data: team } = await supabase
+      .from('teams')
+      .select('name')
+      .eq('id', teamId)
+      .single();
+
+    if (team) {
+      sendNotificationToUser(
+        userId,
+        '🛡️ Invitación a equipo',
+        `¡Te invitaron a unirte a ${team.name}!`,
+        { clickAction: `/team/${teamId}` }
+      ).catch(() => {}); // Fire and forget
+    }
+  } catch (e) {
+    // Non-blocking
   }
 }
 

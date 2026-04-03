@@ -9,13 +9,16 @@ import { useAuth } from '@/contexts/AuthContext';
 import { cn } from '@/lib/utils';
 import { useSidebar } from '@/contexts/SidebarContext';
 import { NotificationCenter } from '@/components/notifications/NotificationCenter';
+import { NotificationToast, NotificationPromptBanner } from '@/components/notifications/NotificationUI';
 import { FloatingChat } from '@/components/FloatingChat';
+import { initializePushNotifications } from '@/lib/notifications';
 
 export default function ClientLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const { user } = useAuth();
   const { isNotificationsOpen, setNotificationsOpen } = useSidebar();
   const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const fcmInitRef = useRef(false);
 
   // Scroll to top on route change
   useEffect(() => {
@@ -24,6 +27,21 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
     }
     window.scrollTo(0, 0);
   }, [pathname]);
+
+  // Initialize FCM push notifications when user is logged in
+  useEffect(() => {
+    if (!user?.id || fcmInitRef.current) return;
+
+    // Only auto-initialize if permission was previously granted
+    if (typeof window !== 'undefined' && 'Notification' in window && Notification.permission === 'granted') {
+      fcmInitRef.current = true;
+      initializePushNotifications(user.id).then((token) => {
+        if (token) {
+          console.log('🔔 FCM Push Notifications initialized');
+        }
+      });
+    }
+  }, [user?.id]);
 
   const isAuthPage =
     pathname === '/login' ||
@@ -41,6 +59,9 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
 
   return (
     <div className="flex min-h-[100dvh] w-full relative bg-background">
+      {/* Global Push Notification Toast (foreground messages) */}
+      {showNav && <NotificationToast />}
+
       <div
         ref={scrollContainerRef}
         className={cn(
@@ -63,6 +84,8 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
               : ''
           )}
         >
+          {/* Push Notification Permission Banner */}
+          {showNav && <NotificationPromptBanner />}
           {children}
         </main>
 
