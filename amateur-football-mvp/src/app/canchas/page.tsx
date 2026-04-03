@@ -27,7 +27,12 @@ import {
   LogOut,
   Sun,
   Moon,
-  Share2
+  Users,
+  PieChart,
+  Activity,
+  Star,
+  Search,
+  Filter
 } from 'lucide-react';
 
 import { useAuth } from '@/contexts/AuthContext';
@@ -69,8 +74,10 @@ export default function CanchasDashboard() {
   // Tab configurations
   const tabs = [
     { id: 'overview', label: 'Resumen', icon: LayoutDashboard },
-    { id: 'calendar', label: 'Horarios', icon: CalendarDays },
+    { id: 'calendar', label: 'Agenda', icon: CalendarDays },
     { id: 'finances', label: 'Finanzas', icon: Wallet },
+    { id: 'customers', label: 'Clientes', icon: Users },
+    { id: 'analytics', label: 'Métricas', icon: PieChart },
     { id: 'settings', label: 'Ajustes', icon: Settings },
   ];
 
@@ -216,10 +223,13 @@ export default function CanchasDashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-background text-foreground pb-20 md:pb-0 font-kanit">
+    <div className="min-h-screen bg-[#020205] text-white pb-20 md:pb-0 font-kanit relative selection:bg-primary/30 selection:text-white">
+      {/* Background Decor */}
+      <div className="fixed top-0 left-1/4 w-[800px] h-[800px] bg-primary/5 rounded-full blur-[150px] -translate-y-1/2 pointer-events-none z-0"></div>
+      <div className="fixed bottom-0 right-0 w-[600px] h-[600px] bg-blue-500/5 rounded-full blur-[120px] translate-y-1/4 translate-x-1/4 pointer-events-none z-0"></div>
 
       {/* HEADER TRAY */}
-      <header className="fixed top-0 w-full z-40 glass border-b border-border/40 backdrop-blur-xl">
+      <header className="fixed top-0 w-full z-40 bg-background/80 border-b border-white/10 backdrop-blur-2xl shadow-sm">
         <div className="max-w-7xl mx-auto px-4 h-16 sm:h-24 flex items-center justify-between">
           <div className="flex items-center gap-4">
             <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-primary via-primary to-primary-dark flex items-center justify-center glow-primary rotate-3 transition-transform hover:rotate-0 cursor-pointer">
@@ -250,7 +260,7 @@ export default function CanchasDashboard() {
             </div>
           </div>
 
-          <div className="flex items-center gap-2 sm:gap-6">
+          <div className="flex items-center gap-4 sm:gap-6">
             <div className="hidden lg:flex items-center gap-2 px-4 py-2 rounded-2xl bg-foreground/[0.03] border border-white/5 relative group overflow-hidden">
               <div className="absolute top-0 right-0 w-8 h-8 bg-primary/5 rounded-full blur-xl group-hover:bg-primary/20 transition-colors"></div>
               <div className="text-right relative z-10">
@@ -271,7 +281,7 @@ export default function CanchasDashboard() {
               <div className="absolute top-2.5 right-2.5 w-2 h-2 rounded-full bg-accent border-2 border-background animate-bounce shadow-[0_0_8px_rgba(255,107,107,0.5)]"></div>
             </button>
 
-            <button onClick={async () => { await logout(); router.push('/canchas/login'); }} className="hidden sm:flex relative p-3 rounded-xl bg-surface-elevated border border-white/5 hover:bg-danger/10 hover:border-danger/30 transition-all group" title="Cerrar Sesión">
+            <button onClick={async () => { await logout(); router.push('/canchas/login'); }} className="relative p-3 rounded-xl bg-surface-elevated border border-white/5 hover:bg-danger/10 hover:border-danger/30 transition-all group" title="Cerrar Sesión">
               <LogOut className="w-5 h-5 text-muted-foreground group-hover:text-danger transition-colors" />
             </button>
 
@@ -301,10 +311,13 @@ export default function CanchasDashboard() {
       </header>
 
       {/* MAIN LAYOUT */}
-      <div className="pt-20 sm:pt-24 max-w-7xl mx-auto px-4 flex flex-col md:flex-row gap-6 md:gap-8 min-h-screen">
+      <div className="pt-24 max-w-[1400px] mx-auto px-4 sm:px-8 flex flex-col md:flex-row gap-8 min-h-screen relative z-10">
 
         {/* DESKTOP SIDEBAR */}
-        <aside className="hidden md:flex flex-col w-64 shrink-0 gap-2 sticky top-28 h-[calc(100vh-8rem)]">
+        <aside className="hidden md:flex flex-col w-64 shrink-0 gap-3 sticky top-28 h-[calc(100vh-8rem)] glass-premium rounded-[2.5rem] p-4 border-white/10 shadow-2xl bg-surface-elevated/40">
+          <div className="px-4 pb-4 border-b border-white/5 mb-2">
+            <p className="text-[10px] font-black uppercase tracking-[0.3em] text-muted-foreground">Panel de Control</p>
+          </div>
           {tabs.map((tab) => {
             const Icon = tab.icon;
             const isActive = activeTab === tab.id;
@@ -312,13 +325,13 @@ export default function CanchasDashboard() {
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                className={`flex items-center gap-3 px-4 py-3.5 rounded-2xl transition-all duration-300 relative overflow-hidden ${isActive ? 'text-primary' : 'text-muted-foreground hover:text-foreground hover:bg-surface-elevated'
+                className={`flex items-center gap-4 px-5 py-4 rounded-2xl transition-all duration-300 relative overflow-hidden group ${isActive ? 'text-primary' : 'text-muted-foreground hover:text-foreground hover:bg-surface-elevated/80 border border-transparent hover:border-white/10'
                   }`}
               >
                 {isActive && (
                   <motion.div
                     layoutId="activeTabSidebar"
-                    className="absolute inset-0 bg-primary/[0.15] border border-primary/30 rounded-2xl"
+                    className="absolute inset-0 bg-primary/15 border border-primary/30 rounded-2xl"
                     initial={false}
                     transition={{ type: "spring", stiffness: 300, damping: 30 }}
                   />
@@ -345,6 +358,8 @@ export default function CanchasDashboard() {
               {activeTab === 'calendar' && <CalendarTab bookings={bookings} fields={fields} selectedDate={selectedDate} setSelectedDate={setSelectedDate} onSlotClick={(time: string, fieldId: string) => { setSelectedSlot({ time, fieldId }); setShowBookingModal(true); }} onBookingClick={(booking: any) => { setSelectedBooking(booking); setShowEditBookingModal(true); }} />}
 
               {activeTab === 'finances' && <FinancesTab business={business} bookings={bookings} hasMP={hasMP} user={user} />}
+              {activeTab === 'customers' && <CustomersTab bookings={bookings} />}
+              {activeTab === 'analytics' && <AnalyticsTab bookings={bookings} stats={stats} />}
               {activeTab === 'settings' && <SettingsTab business={business} fields={fields} setFields={setFields} hasMP={hasMP} setBusiness={setBusiness} />}
             </motion.div>
           </AnimatePresence>
@@ -432,27 +447,16 @@ function OverviewTab({ business, bookings, fields, onNewBooking, onBookingClick,
       {/* Header */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <h2 className="text-2xl sm:text-3xl font-black font-kanit italic uppercase tracking-tighter text-foreground drop-shadow-md">
+          <h2 className="text-2xl font-black font-kanit italic uppercase tracking-tighter">
             Hoy en <span className="text-primary">{business?.name || "tu sede"}</span>
           </h2>
-          <p className="text-xs font-bold text-muted-foreground mt-0.5 tracking-widest uppercase">
+          <p className="text-xs text-muted-foreground mt-0.5">
             {new Date().toLocaleDateString('es-AR', { weekday: 'long', day: 'numeric', month: 'long' })}
           </p>
         </div>
-        <div className="flex items-center gap-3 w-full sm:w-auto">
-          <button 
-            onClick={() => {
-              navigator.clipboard.writeText(`${window.location.origin}/establecimientos/${business?.id}`);
-              alert('Enlace copiado al portapapeles');
-            }} 
-            className="flex-1 sm:flex-none bg-surface-elevated text-muted-foreground hover:text-white font-bold text-xs uppercase tracking-widest py-3 px-4 rounded-xl flex justify-center items-center gap-2 border border-white/5 transition-all active:scale-95"
-          >
-            <Share2 className="w-4 h-4" /> <span className="hidden sm:inline">Compartir</span>
-          </button>
-          <button onClick={onNewBooking} className="flex-1 sm:flex-none bg-primary text-black font-black uppercase tracking-widest text-xs py-3 px-6 rounded-xl flex justify-center items-center gap-2 hover:bg-white transition-all shadow-[0_0_15px_rgba(44,252,125,0.3)] active:scale-95">
-            <Plus className="w-4 h-4" /> Reserva
-          </button>
-        </div>
+        <button onClick={onNewBooking} className="bg-primary text-black font-bold text-sm py-3 px-6 rounded-xl flex items-center gap-2 hover:bg-primary-light transition-all shadow-lg shadow-primary/20 press-effect">
+          <Plus className="w-4 h-4" /> Nueva Reserva
+        </button>
       </div>
 
       {/* Stats Row */}
@@ -502,43 +506,37 @@ function OverviewTab({ business, bookings, fields, onNewBooking, onBookingClick,
             No hay turnos para hoy
           </div>
         ) : (
-          <div className="space-y-3">
-            {todayBookings.map((booking: any, index: number) => (
-              <motion.div 
+          <div className="space-y-2">
+            {todayBookings.map((booking: any) => (
+              <UpcomingMatch
                 key={booking.id}
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: index * 0.1 }}
-              >
-                <UpcomingMatch
-                  time={booking.start_time.substring(0, 5)}
-                  field={booking.canchas_fields?.name || 'Cancha'}
-                  team={booking.title || 'Reserva'}
-                  status={getStatusLabel(booking.status)}
-                  price={formatMoney(booking.total_price)}
-                  isPending={booking.status === 'pending'}
-                  isApp={!!booking.match_id}
-                  onClick={() => onBookingClick?.(booking)}
-                />
-              </motion.div>
+                time={booking.start_time.substring(0, 5)}
+                field={booking.canchas_fields?.name || 'Cancha'}
+                team={booking.title || 'Reserva'}
+                status={getStatusLabel(booking.status)}
+                price={formatMoney(booking.total_price)}
+                isPending={booking.status === 'pending'}
+                isApp={!!booking.match_id}
+                onClick={() => onBookingClick?.(booking)}
+              />
             ))}
           </div>
         )}
       </div>
 
       {/* Quick nav */}
-      <div className="grid grid-cols-3 gap-3 pt-4">
-        <button onClick={() => onTabChange('calendar')} className="p-4 rounded-2xl bg-gradient-to-br from-surface-elevated to-background border border-white/5 hover:border-primary/40 transition-all active:scale-95 flex flex-col items-center gap-3 group">
-          <div className="p-3 rounded-full bg-primary/10 group-hover:bg-primary group-hover:text-black transition-colors"><CalendarDays className="w-5 h-5 text-primary group-hover:text-black" /></div>
-          <span className="text-[10px] font-black text-muted-foreground uppercase group-hover:text-foreground">Agenda</span>
+      <div className="grid grid-cols-3 gap-3">
+        <button onClick={() => onTabChange('calendar')} className="glass-card p-4 flex flex-col items-center gap-2 hover:border-primary/30 transition-all press-effect">
+          <CalendarDays className="w-5 h-5 text-primary" />
+          <span className="text-[10px] font-bold text-muted-foreground uppercase">Agenda</span>
         </button>
-        <button onClick={() => onTabChange('finances')} className="p-4 rounded-2xl bg-gradient-to-br from-surface-elevated to-background border border-white/5 hover:border-accent/40 transition-all active:scale-95 flex flex-col items-center gap-3 group">
-          <div className="p-3 rounded-full bg-accent/10 group-hover:bg-accent group-hover:text-black transition-colors"><Wallet className="w-5 h-5 text-accent group-hover:text-black" /></div>
-          <span className="text-[10px] font-black text-muted-foreground uppercase group-hover:text-foreground">Finanzas</span>
+        <button onClick={() => onTabChange('finances')} className="glass-card p-4 flex flex-col items-center gap-2 hover:border-primary/30 transition-all press-effect">
+          <Wallet className="w-5 h-5 text-accent" />
+          <span className="text-[10px] font-bold text-muted-foreground uppercase">Finanzas</span>
         </button>
-        <button onClick={() => onTabChange('settings')} className="p-4 rounded-2xl bg-gradient-to-br from-surface-elevated to-background border border-white/5 hover:border-white/40 transition-all active:scale-95 flex flex-col items-center gap-3 group">
-          <div className="p-3 rounded-full bg-foreground/5 group-hover:bg-foreground group-hover:text-black transition-colors"><Settings className="w-5 h-5 text-muted-foreground group-hover:text-black" /></div>
-          <span className="text-[10px] font-black text-muted-foreground uppercase group-hover:text-foreground">Ajustes</span>
+        <button onClick={() => onTabChange('settings')} className="glass-card p-4 flex flex-col items-center gap-2 hover:border-primary/30 transition-all press-effect">
+          <Settings className="w-5 h-5 text-muted-foreground" />
+          <span className="text-[10px] font-bold text-muted-foreground uppercase">Ajustes</span>
         </button>
       </div>
     </div>
@@ -1496,45 +1494,6 @@ function SettingsTab({ business, fields, setFields, hasMP, setBusiness }: any) {
           ))}
         </div>
       </div>
-
-      {/* DANGER ZONE - Eliminar Cuenta */}
-      <div className="glass-premium rounded-[2.5rem] p-10 border-danger/20 mt-8 relative overflow-hidden group">
-        <div className="absolute top-0 right-0 w-64 h-64 bg-danger/10 rounded-full blur-3xl -z-10 group-hover:bg-danger/20 transition-all"></div>
-        
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 relative z-10">
-          <div>
-            <h3 className="text-2xl font-black font-kanit italic uppercase tracking-tighter text-danger mb-2">Zona Peligrosa</h3>
-            <p className="text-xs text-muted-foreground max-w-md leading-relaxed">
-              Eliminar tu cuenta borrará permanentemente todos tus establecimientos, canchas, reservas e historial financiero. <strong className="text-white">Esta acción no se puede deshacer.</strong>
-            </p>
-          </div>
-          
-          <button 
-            onClick={async () => {
-              const confirm1 = window.confirm("¿Estás completamente seguro de que deseas ELIMINAR tu cuenta y todos tus datos? Esta acción es irreversible.");
-              if (!confirm1) return;
-              
-              const confirm2 = window.confirm("Última advertencia: Se borrarán todas las reservas, canchas y tu establecimiento. ¿Continuar?");
-              if (!confirm2) return;
-              
-              if (business?.id) {
-                const { error } = await supabase.from('canchas_businesses').delete().eq('id', business.id);
-                if (error) {
-                  alert("Hubo un error al eliminar tu negocio: " + error.message);
-                  return;
-                }
-              }
-              
-              alert("Tu cuenta ha sido eliminada. Lamentamos verte partir.");
-              window.location.href = '/canchas/login';
-            }}
-            className="shrink-0 flex items-center gap-3 py-4 px-6 rounded-2xl bg-danger/10 text-danger border border-danger/30 hover:bg-danger hover:text-white transition-all font-black uppercase text-xs tracking-widest shadow-lg shadow-danger/10 active:scale-95"
-          >
-            <Trash2 className="w-5 h-5" />
-            Eliminar Mi Cuenta
-          </button>
-        </div>
-      </div>
     </div>
   );
 }
@@ -1754,6 +1713,191 @@ function EditBookingModal({ booking, onClose, onUpdate, onDelete }: any) {
           </div>
         </form>
       </motion.div>
+    </div>
+  );
+}
+
+/* =========================================
+   CUSTOMERS TAB (CLIENTES)
+========================================= */
+function CustomersTab({ bookings }: any) {
+  // Aggregate bookings by user or name to simulate a customer list
+  const customersMap = new Map();
+  bookings.forEach((b: any) => {
+    if (!b.title) return;
+    const name = b.title.toUpperCase();
+    if (!customersMap.has(name)) {
+      customersMap.set(name, {
+        name: b.title,
+        totalBookings: 0,
+        totalSpent: 0,
+        lastBooking: b.date,
+        isAppUser: !!b.match_id
+      });
+    }
+    const customer = customersMap.get(name);
+    customer.totalBookings++;
+    customer.totalSpent += (b.total_price || 0);
+    if (new Date(b.date) > new Date(customer.lastBooking)) {
+      customer.lastBooking = b.date;
+    }
+  });
+
+  const customers = Array.from(customersMap.values()).sort((a, b) => b.totalBookings - a.totalBookings);
+
+  return (
+    <div className="space-y-8 animate-reveal-up pb-20">
+      <div className="flex flex-col gap-1">
+        <h2 className="text-3xl font-black font-kanit italic uppercase tracking-tighter text-foreground">
+          Gestión de <span className="text-primary">Clientes</span>
+        </h2>
+        <p className="text-[10px] font-black uppercase tracking-[0.4em] text-muted-foreground">Fidelización y Base de Datos</p>
+      </div>
+
+      <div className="glass-premium rounded-[2.5rem] p-8 border-white/10 shadow-2xl">
+        <div className="flex justify-between items-center mb-6">
+          <div className="flex items-center gap-3">
+            <div className="p-3 bg-primary/10 rounded-xl border border-primary/20">
+              <Users className="w-6 h-6 text-primary" />
+            </div>
+            <div>
+              <h3 className="text-xl font-black font-kanit italic uppercase tracking-tighter">Mejores Jugadores</h3>
+              <p className="text-xs text-muted-foreground">{customers.length} clientes únicos registrados</p>
+            </div>
+          </div>
+          <div className="relative w-64 hidden sm:block">
+            <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+            <input type="text" placeholder="Buscar cliente..." className="w-full bg-surface-elevated border border-white/10 rounded-xl pl-10 pr-4 py-2 text-sm outline-none focus:border-primary/50 transition-colors" />
+          </div>
+        </div>
+
+        <div className="overflow-x-auto">
+          <table className="w-full text-left border-collapse min-w-[600px]">
+            <thead>
+              <tr className="border-b border-white/10 text-[10px] font-black uppercase tracking-widest text-muted-foreground">
+                <th className="pb-3 pl-4">Cliente / Equipo</th>
+                <th className="pb-3 text-center">Turnos Realizados</th>
+                <th className="pb-3 text-center">Total Invertido</th>
+                <th className="pb-3 text-right pr-4">Última Reserva</th>
+              </tr>
+            </thead>
+            <tbody>
+              {customers.map((c: any, index: number) => (
+                <tr key={index} className="border-b border-white/5 hover:bg-surface-elevated/50 transition-colors">
+                  <td className="py-4 pl-4">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-full bg-foreground/5 border border-white/10 flex items-center justify-center font-black italic">
+                        {c.name.substring(0,2).toUpperCase()}
+                      </div>
+                      <div>
+                        <div className="flex items-center gap-2">
+                          <span className="font-bold text-sm">{c.name}</span>
+                          {c.isAppUser && <Zap className="w-3 h-3 text-primary" />}
+                        </div>
+                        {index < 3 && <span className="text-[9px] font-black uppercase tracking-widest text-[#F59E0B] flex items-center gap-1 mt-0.5"><Star className="w-3 h-3 fill-[#F59E0B]" /> VIP</span>}
+                      </div>
+                    </div>
+                  </td>
+                  <td className="py-4 text-center font-black font-kanit text-lg">{c.totalBookings}</td>
+                  <td className="py-4 text-center font-black text-primary font-kanit">${new Intl.NumberFormat('es-AR').format(c.totalSpent)}</td>
+                  <td className="py-4 text-right pr-4 text-xs text-muted-foreground">{c.lastBooking}</td>
+                </tr>
+              ))}
+              {customers.length === 0 && (
+                <tr>
+                  <td colSpan={4} className="py-12 text-center text-muted-foreground text-sm uppercase tracking-widest font-black">
+                    No hay información de clientes aún.
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* =========================================
+   ANALYTICS TAB (MÉTRICAS)
+========================================= */
+function AnalyticsTab({ bookings, stats }: any) {
+  // Mock data calculations for analytics
+  const completedBookings = bookings.filter((b:any) => b.status === "full_paid" || b.status === "partial_paid").length;
+  const pendingBookings = bookings.filter((b:any) => b.status === "pending").length;
+  const cancelledBookings = bookings.filter((b:any) => b.status === "cancelled").length;
+
+  return (
+    <div className="space-y-8 animate-reveal-up pb-20">
+      <div className="flex flex-col gap-1">
+        <h2 className="text-3xl font-black font-kanit italic uppercase tracking-tighter text-foreground">
+          Panel de <span className="text-primary">Métricas</span>
+        </h2>
+        <p className="text-[10px] font-black uppercase tracking-[0.4em] text-muted-foreground">Analíticas y Performance (BETA)</p>
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* KPI Cards */}
+        <div className="lg:col-span-3 grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <div className="glass-premium rounded-3xl p-6 border-white/10 relative overflow-hidden group">
+            <div className="absolute -right-4 -bottom-4 w-24 h-24 bg-primary/20 rounded-full blur-2xl group-hover:bg-primary/30 transition-colors"></div>
+            <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground mb-1">Efectividad de Cobro</p>
+            <div className="flex items-end gap-2">
+              <h3 className="text-4xl font-black italic font-kanit text-foreground">{bookings.length > 0 ? Math.round((completedBookings / bookings.length) * 100) : 0}%</h3>
+              <TrendingUp className="w-6 h-6 text-primary mb-1" />
+            </div>
+            <p className="text-xs text-muted-foreground mt-2">{completedBookings} de {bookings.length} turnos pagados</p>
+          </div>
+          <div className="glass-premium rounded-3xl p-6 border-white/10 relative overflow-hidden group">
+            <div className="absolute -right-4 -bottom-4 w-24 h-24 bg-danger/20 rounded-full blur-2xl group-hover:bg-danger/30 transition-colors"></div>
+            <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground mb-1">Turnos Impagos</p>
+            <div className="flex items-end gap-2">
+              <h3 className="text-4xl font-black italic font-kanit text-danger">{pendingBookings}</h3>
+              <Activity className="w-6 h-6 text-danger mb-1" />
+            </div>
+            <p className="text-xs text-danger mt-2 font-black uppercase tracking-tighter">Acción Requerida</p>
+          </div>
+          <div className="glass-premium rounded-3xl p-6 border-white/10 relative overflow-hidden group">
+            <div className="absolute -right-4 -bottom-4 w-24 h-24 bg-accent/20 rounded-full blur-2xl group-hover:bg-accent/30 transition-colors"></div>
+            <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground mb-1">Cancelaciones</p>
+            <div className="flex items-end gap-2">
+              <h3 className="text-4xl font-black italic font-kanit text-foreground">{cancelledBookings}</h3>
+            </div>
+            <p className="text-xs text-muted-foreground mt-2">En los últimos 30 días</p>
+          </div>
+        </div>
+
+        {/* Placeholder Chart Area */}
+        <div className="lg:col-span-2 glass-premium rounded-[2.5rem] p-8 border-white/10 shadow-2xl flex flex-col justify-between min-h-[400px]">
+          <div className="flex justify-between items-center mb-6">
+            <div>
+              <h3 className="text-xl font-black font-kanit italic uppercase tracking-tighter">Evolución de Reservas</h3>
+              <p className="text-xs text-muted-foreground">Últimos 7 días</p>
+            </div>
+            <div className="flex gap-2">
+              <div className="w-2 h-2 rounded-full bg-primary mt-1"></div>
+              <span className="text-[10px] font-black uppercase text-muted-foreground">Ingresos</span>
+            </div>
+          </div>
+          
+          <div className="flex-1 border-b border-l border-white/10 relative flex items-end justify-between pt-10 pb-2 px-4 gap-2">
+             {/* Fake chart bars */}
+             {[40, 60, 30, 80, 50, 90, 100].map((height, i) => (
+                <div key={i} className="w-full bg-primary/20 hover:bg-primary/80 transition-colors rounded-t-sm" style={{ height: `${height}%` }}></div>
+             ))}
+          </div>
+          <div className="flex justify-between px-4 mt-2 text-[10px] uppercase font-black text-muted-foreground">
+             <span>LUN</span><span>MAR</span><span>MIE</span><span>JUE</span><span>VIE</span><span>SAB</span><span>DOM</span>
+          </div>
+        </div>
+
+        <div className="lg:col-span-1 glass-premium rounded-[2.5rem] p-8 border-white/10 shadow-2xl flex flex-col items-center justify-center text-center">
+            <PieChart className="w-16 h-16 text-primary mb-6 opacity-80" />
+            <h3 className="text-xl font-black font-kanit italic uppercase tracking-tighter mb-2">Reportes Detallados</h3>
+            <p className="text-sm text-muted-foreground mb-6">La sección de analíticas avanzadas estará disponible próximamente con gráficos interactivos y exportación PDF/Excel.</p>
+            <button className="px-6 py-3 rounded-xl bg-surface-elevated border border-white/10 text-xs font-black uppercase tracking-widest text-muted-foreground">Próximamente</button>
+        </div>
+      </div>
     </div>
   );
 }
