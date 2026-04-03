@@ -168,6 +168,30 @@ export default function RecruitmentMarketplace() {
       return;
     }
     
+    // --- POSITIONS RESTRICTION ---
+    const match = matches?.find(m => m.id === matchId);
+    const slot = match?.slots?.find((s: any) => s.id === slotId);
+
+    if (slot && slot.position !== 'ANY') {
+      const userPos = (user.user_metadata?.position || 'ANY').toUpperCase();
+      const reqPos = slot.position.toUpperCase();
+
+      const positionGroups: Record<string, string[]> = {
+        'GK': ['PO', 'POR', 'ARQUERO', 'GK'],
+        'DEF': ['DF', 'DEFENSA', 'DEF', 'LI', 'LD', 'DFC', 'LB', 'RB', 'CB', 'LTD', 'LTI'],
+        'MID': ['MC', 'MCD', 'MCO', 'MEDIOCAMPISTA', 'MID', 'MI', 'MD', 'CDM', 'CAM', 'LM', 'RM'],
+        'FW': ['DC', 'ED', 'EI', 'DELANTERO', 'FW', 'ST', 'LW', 'RW', 'CF', 'SD'],
+      };
+
+      const isMatch = positionGroups[reqPos]?.includes(userPos) || userPos === reqPos;
+
+      if (!isMatch) {
+         alert(`⚠️ Esta búsqueda es para la posición: ${reqPos}.\nTu perfil indica que sos: ${userPos}.\n\nActualizá tu posición en tu Perfil si querés postularte.`);
+         return;
+      }
+    }
+    // ----------------------------
+
     try {
       const result = await joinSlotMutation.mutateAsync({ slotId, userId: user.id });
       if (result) {
