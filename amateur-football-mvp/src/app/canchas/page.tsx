@@ -41,6 +41,8 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useTheme } from '@/contexts/ThemeContext';
 import { supabase } from '@/lib/supabase';
 import { useRouter } from 'next/navigation';
+import { QRCodeSVG } from 'qrcode.react';
+import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from 'recharts';
 
 export default function CanchasDashboard() {
   const { user, logout } = useAuth();
@@ -1040,7 +1042,22 @@ function FinancesTab({ business, bookings, hasMP, user }: any) {
               <button disabled className="flex-1 bg-surface-elevated text-muted-foreground font-black uppercase text-[10px] tracking-widest py-4 px-6 rounded-2xl flex justify-center items-center gap-2 border border-border/40 opacity-50 cursor-not-allowed">
                 Retirar Fondos <ArrowUpRight className="w-5 h-5" />
               </button>
-              <button className="flex-1 bg-primary text-black font-black uppercase text-[10px] tracking-widest py-4 px-6 rounded-2xl flex justify-center items-center gap-2 hover:bg-primary-light transition-all shadow-lg shadow-primary/20">
+              <button 
+                onClick={() => {
+                  const rows = [["Fecha", "Hora", "Cancha", "Cliente", "Estado", "Total ($)", "Sena ($)"]];
+                  bookings.forEach((b: any) => {
+                    rows.push([b.date, b.start_time, b.canchas_fields?.name || 'N/A', b.title || 'Reserva', b.status, (b.total_price || 0).toString(), (b.down_payment_paid || 0).toString()]);
+                  });
+                  const csvContent = "data:text/csv;charset=utf-8," + rows.map(e => e.join(",")).join("\n");
+                  const link = document.createElement("a");
+                  link.href = encodeURI(csvContent);
+                  link.download = `reporte_financiero_${new Date().toISOString().split('T')[0]}.csv`;
+                  document.body.appendChild(link);
+                  link.click();
+                  document.body.removeChild(link);
+                }}
+                className="flex-1 bg-primary text-black font-black uppercase text-[10px] tracking-widest py-4 px-6 rounded-2xl flex justify-center items-center gap-2 hover:bg-primary-light transition-all shadow-lg shadow-primary/20"
+              >
                 Descargar Reporte <BarChart3 className="w-5 h-5" />
               </button>
             </div>
@@ -1661,7 +1678,9 @@ function NewBookingModal({ onClose, fields, selectedSlot, onBooked, selectedDate
     fieldId: selectedSlot?.fieldId || (fields[0]?.id || ''),
     time: selectedSlot?.time || '18:00',
     date: selectedDate || new Date().toISOString().split('T')[0],
-    paid: false
+    paid: false,
+    isRecurring: false,
+    weeks: 4
   });
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -1685,22 +1704,33 @@ function NewBookingModal({ onClose, fields, selectedSlot, onBooked, selectedDate
     const endTime = `${endHours.toString().padStart(2, '0')}:${minutes}:00`;
     const startTimeFull = `${formData.time}:00`;
 
-    const { data, error } = await supabase.from('canchas_bookings').insert([{
-      field_id: formData.fieldId,
-      booker_id: user?.id,
-      title: formData.title || 'Reserva Presencial',
-      date: formData.date,
-      start_time: startTimeFull,
-      end_time: endTime,
-      total_price: price,
-      down_payment_paid: formData.paid ? price : 0,
-      status: formData.paid ? 'full_paid' : 'pending'
-    }]).select('*, canchas_fields(name, type)').single();
+    const newBookings = [];
+    let currentDate = new Date(formData.date + 'T00:00:00');
+
+    for (let i = 0; i < (formData.isRecurring ? formData.weeks : 1); i++) {
+       const dateStr = currentDate.toISOString().split('T')[0];
+       newBookings.push({
+         field_id: formData.fieldId,
+         booker_id: user?.id,
+         title: formData.title || 'Reserva Presencial',
+         date: dateStr,
+         start_time: startTimeFull,
+         end_time: endTime,
+         total_price: price,
+         down_payment_paid: formData.paid && i === 0 ? price : 0,
+         status: formData.paid ? 'full_paid' : 'pending'
+       });
+       currentDate.setDate(currentDate.getDate() + 7);
+    }
+
+    const { data, error } = await supabase.from('canchas_bookings').insert(newBookings).select('*, canchas_fields(name, type)');
 
     if (error) {
       alert("Error al guardar reserva: " + error.message);
     } else {
-      onBooked(data);
+      if (data && data.length > 0) {
+        data.forEach(b => onBooked(b));
+      }
       onClose();
     }
     setLoading(false);
@@ -1746,9 +1776,25 @@ function NewBookingModal({ onClose, fields, selectedSlot, onBooked, selectedDate
             </div>
           </div>
 
-          <div className="flex items-center gap-3 pt-2">
-            <input type="checkbox" id="paid" checked={formData.paid} onChange={e => setFormData(prev => ({ ...prev, paid: e.target.checked }))} className="w-5 h-5 accent-primary rounded bg-surface border-border" />
-            <label htmlFor="paid" className="text-sm font-semibold select-none">Marcar como cobrado en efectivo</label>
+          <div className="flex flex-col gap-3 pt-2">
+            <div className="flex items-center gap-3">
+              <input type="checkbox" id="paid" checked={formData.paid} onChange={e => setFormData(prev => ({ ...prev, paid: e.target.checked }))} className="w-5 h-5 accent-primary rounded bg-surface border-border cursor-pointer" />
+              <label htmlFor="paid" className="text-sm font-semibold select-none cursor-pointer">Marcar como cobrado en efectivo</label>
+            </div>
+            <div className="flex items-center gap-3">
+              <input type="checkbox" id="recurring" checked={formData.isRecurring} onChange={e => setFormData(prev => ({ ...prev, isRecurring: e.target.checked }))} className="w-5 h-5 accent-primary rounded bg-surface border-border cursor-pointer" />
+              <label htmlFor="recurring" className="text-sm font-semibold select-none cursor-pointer">Turno Fijo (Recurrente)</label>
+            </div>
+            {formData.isRecurring && (
+              <div className="flex items-center gap-2 mt-1">
+                 <label className="text-xs text-muted-foreground uppercase">Duración:</label>
+                 <select value={formData.weeks} onChange={e => setFormData(prev => ({ ...prev, weeks: parseInt(e.target.value) }))} className="bg-surface-elevated border border-border/50 rounded-lg px-2 py-1 outline-none text-xs flex-1">
+                    <option value="4">1 Mes (4 Semanas)</option>
+                    <option value="8">2 Meses (8 Semanas)</option>
+                    <option value="12">3 Meses (12 Semanas)</option>
+                 </select>
+              </div>
+            )}
           </div>
 
           <button type="submit" disabled={loading} className="w-full mt-4 h-12 bg-primary text-black font-black text-sm uppercase tracking-wider rounded-xl hover:bg-white transition-all disabled:opacity-50">
@@ -1767,6 +1813,7 @@ function EditBookingModal({ booking, onClose, onUpdate, onDelete }: any) {
   const [loading, setLoading] = useState(false);
   const [status, setStatus] = useState(booking.status);
   const [downPayment, setDownPayment] = useState(booking.down_payment_paid || 0);
+  const [showQR, setShowQR] = useState(false);
 
   const handleUpdate = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -1852,6 +1899,19 @@ function EditBookingModal({ booking, onClose, onUpdate, onDelete }: any) {
             <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-1 block">Monto Cobrado ($)</label>
             <input type="number" value={downPayment} onChange={e => setDownPayment(parseInt(e.target.value))} className="w-full bg-surface-elevated border border-border/50 rounded-xl px-4 py-3 outline-none" placeholder="0" />
           </div>
+
+          <div className="flex justify-between items-center bg-primary/10 border border-primary/20 p-3 rounded-xl mt-4 cursor-pointer hover:bg-primary/20 transition-all select-none" onClick={() => setShowQR(!showQR)}>
+            <div className="flex items-center gap-2 text-primary text-xs font-black uppercase tracking-widest">
+              <Zap className="w-4 h-4" /> Mostrar Código de Ingreso (QR)
+            </div>
+          </div>
+          {showQR && (
+            <div className="flex flex-col items-center justify-center p-6 bg-white rounded-xl mt-2 animate-reveal-up shadow-xl shadow-primary/10">
+              <QRCodeSVG value={`checkin:${booking.id}`} size={160} level="H" fgColor="#000000" bgColor="#FFFFFF" />
+              <p className="text-black font-black uppercase tracking-widest text-[11px] mt-4">Escanea en Recepción</p>
+              <p className="text-black/60 font-medium text-[9px] mt-1 text-center max-w-[150px]">Validá tu reserva directamente en puerta con este código.</p>
+            </div>
+          )}
 
           <div className="flex gap-3 pt-4 border-t border-border/50">
             <button type="button" onClick={handleDelete} disabled={loading} className="px-4 h-12 bg-danger/10 text-danger border border-danger/30 font-bold text-sm rounded-xl hover:bg-danger/20 transition-all disabled:opacity-50">
@@ -2048,22 +2108,24 @@ function AnalyticsTab({ bookings, stats }: any) {
             </div>
           </div>
           
-          <div className="flex-1 border-b border-l border-white/5 relative flex items-end justify-between pt-16 pb-2 px-6 gap-3">
-             {/* Fake chart bars with gradients */}
-             {[40, 65, 35, 85, 55, 95, 100].map((height, i) => (
-                <div key={i} className="flex-1 max-w-[40px] group/bar relative">
-                  <div className="absolute -top-10 left-1/2 -translate-x-1/2 opacity-0 group-hover/bar:opacity-100 transition-opacity bg-primary text-black text-[9px] font-black px-2 py-1 rounded-lg pointer-events-none">
-                    {height}%
-                  </div>
-                  <div 
-                    className="w-full bg-gradient-to-t from-primary/30 via-primary/60 to-primary group-hover/bar:to-white transition-all duration-500 rounded-t-xl shadow-[0_0_15px_rgba(44,252,125,0.2)]" 
-                    style={{ height: `${height * 1.5}px` }}
-                  ></div>
-                </div>
-             ))}
-          </div>
-          <div className="flex justify-between px-4 mt-2 text-[10px] uppercase font-black text-muted-foreground">
-             <span>LUN</span><span>MAR</span><span>MIE</span><span>JUE</span><span>VIE</span><span>SAB</span><span>DOM</span>
+          <div className="flex-1 w-full relative mt-4 min-h-[250px]">
+             <ResponsiveContainer width="100%" height="100%">
+               <BarChart data={[
+                 { day: 'LUN', val: 40 },
+                 { day: 'MAR', val: 65 },
+                 { day: 'MIE', val: 35 },
+                 { day: 'JUE', val: 85 },
+                 { day: 'VIE', val: 55 },
+                 { day: 'SAB', val: 95 },
+                 { day: 'DOM', val: 100 },
+               ]}>
+                 <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" vertical={false} />
+                 <XAxis dataKey="day" axisLine={false} tickLine={false} tick={{ fontSize: 10, fill: '#888' }} dy={10} />
+                 <YAxis hide />
+                 <Tooltip cursor={{ fill: 'rgba(255,255,255,0.02)' }} contentStyle={{ backgroundColor: '#000', border: '1px solid #333', borderRadius: '12px' }} itemStyle={{ color: '#2cfc7d', fontWeight: 'bold' }} />
+                 <Bar dataKey="val" name="Ocupación %" fill="#2cfc7d" radius={[6, 6, 0, 0]} />
+               </BarChart>
+             </ResponsiveContainer>
           </div>
         </div>
 
