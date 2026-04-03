@@ -287,6 +287,13 @@ export default function CanchasDashboard() {
               </div>
               <div className="w-px h-8 bg-border/40 mx-2 relative z-10"></div>
               <button 
+                onClick={() => router.push('/canchas/scanner')} 
+                className="w-10 h-10 mr-2 rounded-xl bg-foreground/[0.03] text-primary border border-primary/30 flex items-center justify-center hover:bg-primary/10 hover:scale-105 active:scale-95 transition-all shadow-lg relative z-10"
+                title="Escanear QR de Check-In"
+              >
+                <Zap className="w-5 h-5 font-black" />
+              </button>
+              <button 
                 onClick={onNewBooking} 
                 className="w-10 h-10 rounded-xl bg-primary text-black flex items-center justify-center hover:scale-105 active:scale-95 transition-all shadow-lg shadow-primary/20 relative z-10 glow-primary"
                 title="Acceso Rápido"

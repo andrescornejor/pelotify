@@ -28,6 +28,7 @@
     "clsx": "^2.1.1",
     "framer-motion": "^12.36.0",
     "html-to-image": "^1.11.13",
+    "html5-qrcode": "^2.3.8",
     "leaflet": "^1.9.4",
     "lucide-react": "^0.577.0",
     "mercadopago": "^2.12.0",
