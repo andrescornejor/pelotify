@@ -339,23 +339,13 @@ export default function RecruitmentMarketplace() {
                 {/* Skill Badge Floating */}
                 <div className="absolute top-8 right-8 z-10 flex items-center gap-4">
                   {/* Coordination Actions */}
-                  {(user?.id === match.creator_id || match.slots?.some(s => s.user_id === user?.id)) && (
-                    <div className="flex items-center gap-2">
-                       <Link 
-                         href={`/match?id=${match.id}`}
-                         className="px-4 h-10 rounded-xl bg-primary text-black flex items-center justify-center gap-2 hover:scale-105 active:scale-95 transition-all text-[10px] font-black uppercase tracking-widest group/lobby shadow-glow-primary/20"
-                       >
-                         <ExternalLink size={14} /> LOBBY
-                       </Link>
-                       {user?.id !== match.creator_id && (
-                         <Link 
-                           href={`/messages?user=${match.creator_id}`}
-                           className="w-10 h-10 rounded-xl bg-white/5 border border-white/10 text-primary flex items-center justify-center hover:bg-white/10 transition-all active:scale-90"
-                         >
-                           <MessageSquare size={16} />
-                         </Link>
-                       )}
-                    </div>
+                  {user?.id !== match.creator_id && (user?.id === match.creator_id || match.slots?.some(s => s.user_id === user?.id)) && (
+                     <Link 
+                       href={`/messages?user=${match.creator_id}`}
+                       className="w-14 h-14 rounded-2xl bg-primary text-black flex items-center justify-center hover:scale-105 active:scale-95 transition-all shadow-glow-primary/20"
+                     >
+                       <MessageSquare size={22} />
+                     </Link>
                   )}
 
                   <span className="bg-white/5 backdrop-blur-md text-foreground/60 px-5 py-2 rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] border border-white/5">
@@ -401,7 +391,7 @@ export default function RecruitmentMarketplace() {
                         <Clock className="text-primary opacity-50" size={20} />
                         <div>
                           <p className="text-[9px] font-black uppercase tracking-widest text-foreground/20">HORA</p>
-                          <p className="text-lg font-black italic font-kanit uppercase">{match.time} HS</p>
+                          <p className="text-lg font-black italic font-kanit uppercase">{match.time?.slice(0, 5)} HS</p>
                         </div>
                       </div>
                       {match.venue && (
