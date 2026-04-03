@@ -235,29 +235,33 @@ export default function CanchasDashboard() {
       <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[40%] h-[40%] bg-purple-500/5 rounded-full blur-[140px] pointer-events-none z-0"></div>
 
       {/* HEADER TRAY */}
-      <header className="fixed top-0 w-full z-40 bg-surface-elevated/80 border-b border-border/50 backdrop-blur-2xl shadow-sm">
+      <header className="fixed top-0 w-full z-40 bg-gradient-to-b from-surface-elevated/95 to-surface-elevated/80 border-b border-border/40 backdrop-blur-[30px] shadow-[0_4px_30px_rgba(0,0,0,0.05)]">
+        <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-primary/20 to-transparent"></div>
         <div className="max-w-[1600px] mx-auto px-4 h-16 sm:h-24 flex items-center justify-between">
           <div className="flex items-center gap-4">
             <div className="w-14 h-14 sm:w-16 sm:h-16 shrink-0 relative flex items-center justify-center drop-shadow-[0_0_15px_rgba(44,252,125,0.3)] transition-transform hover:scale-105">
               <img src="/logo_pelotify.png" alt="Pelotify Logo" className="w-full h-full object-contain" />
             </div>
             <div>
-              <div className="flex items-center gap-2">
-                <h1 className="text-lg sm:text-2xl font-black font-kanit tracking-tighter italic uppercase text-foreground leading-none">
+              <div className="flex items-center gap-2.5">
+                <h1 className="text-xl sm:text-2xl font-black font-kanit tracking-tighter italic uppercase text-foreground leading-none drop-shadow-sm">
                   {business?.name || "Pelotify Business"}
                 </h1>
-                <div className="px-2 py-0.5 rounded-md bg-primary/20 border border-primary/30 hidden sm:block">
-                  <span className="text-[8px] font-black text-primary uppercase tracking-widest leading-none">PRO PLAN</span>
+                <div className="px-2 py-0.5 rounded-lg bg-primary/10 border border-primary/20 hidden sm:flex items-center gap-1">
+                  <Star className="w-2 h-2 text-primary fill-primary" />
+                  <span className="text-[7px] font-black text-primary uppercase tracking-widest leading-none">PRO</span>
                 </div>
               </div>
               <div className="flex items-center gap-3 mt-1.5 overflow-hidden">
-                <p className="text-[9px] text-muted-foreground flex items-center gap-1.5 font-black uppercase tracking-widest whitespace-nowrap">
-                  <span className="w-2 h-2 rounded-full bg-primary animate-pulse shadow-[0_0_8px_rgba(44,252,125,0.6)]"></span>
-                  Sede Verificada
-                </p>
-                <div className="hidden sm:flex items-center gap-2 pl-3 border-l border-border/30">
-                  <Clock className="w-3 h-3 text-muted-foreground" />
-                  <span className="text-[9px] font-black text-muted-foreground uppercase tracking-widest">
+                <div className="px-2 py-0.5 rounded-full bg-primary/5 border border-primary/10 flex items-center gap-1.5 group/status cursor-default">
+                  <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse shadow-[0_0_8px_rgba(44,252,125,0.8)]"></span>
+                  <span className="text-[8px] font-black uppercase tracking-widest text-primary/80 group-hover:text-primary transition-colors">Verificada</span>
+                </div>
+                <div className="hidden sm:flex items-center gap-2 pl-3 border-l border-border/40 group/time cursor-default">
+                  <div className="p-1 rounded-md bg-foreground/[0.03] border border-border/30 group-hover/time:bg-primary/10 group-hover/time:border-primary/20 transition-all">
+                    <Clock className="w-2.5 h-2.5 text-muted-foreground group-hover/time:text-primary transition-colors" />
+                  </div>
+                  <span className="text-[8px] font-black text-muted-foreground uppercase tracking-widest group-hover/time:text-foreground transition-colors">
                     {new Date().toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit' })}
                   </span>
                 </div>
@@ -266,50 +270,70 @@ export default function CanchasDashboard() {
           </div>
 
           <div className="flex items-center gap-4 sm:gap-6">
-            <div className="hidden lg:flex items-center gap-2 px-4 py-2 rounded-2xl bg-foreground/[0.03] border border-border/50 relative group overflow-hidden">
-              <div className="absolute top-0 right-0 w-8 h-8 bg-primary/5 rounded-full blur-xl group-hover:bg-primary/20 transition-colors"></div>
-              <div className="text-right relative z-10">
-                <div className="flex items-center gap-1 justify-end">
-                  <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse shadow-[0_0_8px_rgba(44,252,125,0.8)]"></span>
-                  <p className="text-[9px] font-black text-muted-foreground uppercase tracking-widest leading-none">Tu Balance</p>
+            <div className="hidden lg:flex items-center gap-2 px-5 py-2.5 rounded-[1.25rem] bg-foreground/[0.02] border border-white/5 shadow-inner hover:bg-foreground/[0.04] transition-all group overflow-hidden relative">
+              <div className="absolute top-0 right-0 w-12 h-12 bg-primary/10 rounded-full blur-2xl -translate-y-1/2 translate-x-1/2 group-hover:bg-primary/20 transition-all duration-500"></div>
+              <div className="text-right relative z-10 pr-1">
+                <p className="text-[8px] font-black text-muted-foreground/60 uppercase tracking-[0.2em] leading-none mb-1.5">Capital Estimado</p>
+                <div className="flex items-center gap-2 justify-end">
+                  <span className="text-sm sm:text-base font-black text-foreground italic font-kanit tracking-tighter">${new Intl.NumberFormat('es-AR').format(stats.monthIncome)}</span>
+                  <div className="p-1 rounded-md bg-primary/10 border border-primary/20">
+                    <TrendingUp className="w-3 h-3 text-primary" />
+                  </div>
                 </div>
-                <p className="text-sm font-black text-foreground italic font-kanit leading-none mt-1">${new Intl.NumberFormat('es-AR').format(stats.monthIncome)}</p>
               </div>
-              <div className="w-px h-6 bg-border/50 mx-2 relative z-10"></div>
-              <button onClick={onNewBooking} className="p-2 rounded-xl bg-primary text-black hover:scale-110 transition-transform shadow-lg shadow-primary/20 relative z-10">
-                <Plus className="w-4 h-4" />
+              <div className="w-px h-8 bg-border/40 mx-2 relative z-10"></div>
+              <button 
+                onClick={onNewBooking} 
+                className="w-10 h-10 rounded-xl bg-primary text-black flex items-center justify-center hover:scale-105 active:scale-95 transition-all shadow-lg shadow-primary/20 relative z-10 glow-primary"
+                title="Acceso Rápido"
+              >
+                <Plus className="w-5 h-5 font-black" />
               </button>
             </div>
 
             {/* Notifications button removed */}
 
-            <button onClick={async () => { await logout(); router.push('/canchas/login'); }} className="relative p-3 rounded-xl bg-surface-elevated border border-border/50 hover:bg-danger/10 hover:border-danger/30 transition-all group" title="Cerrar Sesión">
-              <LogOut className="w-5 h-5 text-muted-foreground group-hover:text-danger transition-colors" />
+            <button 
+              onClick={async () => { await logout(); router.push('/canchas/login'); }} 
+              className="relative p-3.5 rounded-2xl bg-foreground/[0.02] border border-white/5 hover:bg-danger/10 hover:border-danger/30 transition-all group shadow-sm active:scale-95" 
+              title="Cerrar Sesión"
+            >
+              <LogOut className="w-5 h-5 text-muted-foreground group-hover:text-danger transition-colors drop-shadow-sm" />
             </button>
 
             <button
               onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
-              className="relative p-3 rounded-xl bg-surface-elevated border border-border/50 hover:bg-primary/10 hover:border-primary/30 transition-all group"
+              className="relative p-3.5 rounded-2xl bg-foreground/[0.02] border border-white/5 hover:bg-primary/10 hover:border-primary/30 transition-all group shadow-sm active:scale-95"
               title={theme === 'dark' ? 'Modo Claro' : 'Modo Oscuro'}
             >
               {theme === 'dark' ? (
-                <Sun className="w-5 h-5 text-muted-foreground group-hover:text-primary transition-colors" />
+                <Sun className="w-5 h-5 text-muted-foreground group-hover:text-primary transition-colors drop-shadow-sm" />
               ) : (
-                <Moon className="w-5 h-5 text-muted-foreground group-hover:text-primary transition-colors" />
+                <Moon className="w-5 h-5 text-muted-foreground group-hover:text-primary transition-colors drop-shadow-sm" />
               )}
             </button>
 
-            <div className="flex items-center gap-3 pl-4 border-l border-border/50">
+            <div className="flex items-center gap-3 pl-4 border-l border-white/10">
               <div className="hidden sm:block text-right">
-                <p className="text-[10px] font-black text-foreground uppercase tracking-tighter leading-none">{user?.user_metadata?.full_name || 'Administrador'}</p>
-                <p className="text-[8px] font-bold text-muted-foreground uppercase mt-1">Owner</p>
+                <p className="text-[10px] font-black text-foreground uppercase tracking-wider leading-none drop-shadow-sm">{user?.user_metadata?.full_name || 'Administrador'}</p>
+                <div className="flex items-center gap-1 justify-end mt-1.5">
+                  <div className="w-1 h-1 rounded-full bg-primary shadow-[0_0_5px_rgba(44,252,125,0.6)]"></div>
+                  <p className="text-[8px] font-black text-muted-foreground/60 uppercase tracking-widest leading-none">ADMINISTRADOR</p>
+                </div>
               </div>
               <button 
                 onClick={() => setActiveTab('settings')}
-                className="w-12 h-12 rounded-2xl bg-surface-elevated overflow-hidden border-2 border-border/50 hover:border-primary shadow-xl p-0.5 transition-all group press-effect"
-                title="Configuración de Perfil Público"
+                className="p-1 rounded-[1.25rem] bg-gradient-to-tr from-border/50 to-transparent border border-white/10 hover:border-primary/50 shadow-2xl transition-all group press-effect relative overflow-hidden"
+                title="Ajustes de Cuenta"
               >
-                <img src={user?.user_metadata?.avatar_url || `https://ui-avatars.com/api/?name=${user?.name || 'Admin'}&background=2cfc7d&color=000`} alt="Admin" className="w-full h-full object-cover rounded-xl group-hover:scale-105 transition-transform" />
+                <div className="w-12 h-12 rounded-[1rem] overflow-hidden relative z-10 border border-white/5">
+                  <img 
+                    src={user?.user_metadata?.avatar_url || `https://ui-avatars.com/api/?name=${user?.name || 'Admin'}&background=2cfc7d&color=000`} 
+                    alt="Admin" 
+                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" 
+                  />
+                </div>
+                <div className="absolute inset-0 bg-primary/20 opacity-0 group-hover:opacity-100 transition-opacity"></div>
               </button>
             </div>
           </div>
