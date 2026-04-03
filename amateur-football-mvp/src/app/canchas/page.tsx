@@ -2,13 +2,13 @@
 
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { 
-  LayoutDashboard, 
-  CalendarDays, 
-  Wallet, 
-  Settings, 
-  TrendingUp, 
-  Clock, 
+import {
+  LayoutDashboard,
+  CalendarDays,
+  Wallet,
+  Settings,
+  TrendingUp,
+  Clock,
   ChevronRight,
   Bell,
   MapPin,
@@ -26,7 +26,8 @@ import {
   Info,
   LogOut,
   Sun,
-  Moon
+  Moon,
+  Share2
 } from 'lucide-react';
 
 import { useAuth } from '@/contexts/AuthContext';
@@ -48,13 +49,13 @@ export default function CanchasDashboard() {
 
   // Modals state
   const [showBookingModal, setShowBookingModal] = useState(false);
-  const [selectedSlot, setSelectedSlot] = useState<{time: string, fieldId: string} | null>(null);
+  const [selectedSlot, setSelectedSlot] = useState<{ time: string, fieldId: string } | null>(null);
   const [selectedBooking, setSelectedBooking] = useState<any>(null);
   const [showEditBookingModal, setShowEditBookingModal] = useState(false);
   // Calendar Date
   const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0]);
   const [hasMP, setHasMP] = useState<boolean>(false);
-  
+
   const onNewBooking = () => setShowBookingModal(true);
 
   // Stats state
@@ -125,7 +126,7 @@ export default function CanchasDashboard() {
           const today = new Date().toISOString().split('T')[0];
           const tIncome = bkData?.filter((b: any) => b.date === today && b.status !== 'cancelled')
             .reduce((acc: number, curr: any) => acc + (curr.total_price || 0), 0) || 0;
-          
+
           setStats({
             todayIncome: tIncome,
             monthIncome: bkData?.filter((b: any) => b.status === 'full_paid' || b.status === 'partial_paid')
@@ -146,7 +147,7 @@ export default function CanchasDashboard() {
       } catch (err) {
         console.error('Unexpected error fetching dashboard data:', err);
       } finally {
-         setLoadingDb(false);
+        setLoadingDb(false);
       }
     };
 
@@ -169,7 +170,7 @@ export default function CanchasDashboard() {
         <div className="absolute top-0 left-0 w-[500px] h-[500px] bg-primary/10 blur-[120px] rounded-full -translate-x-1/2 -translate-y-1/2 pointer-events-none" />
         <div className="absolute bottom-0 right-0 w-[500px] h-[500px] bg-primary/5 blur-[120px] rounded-full translate-x-1/2 translate-y-1/2 pointer-events-none" />
 
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
           className="max-w-lg w-full glass-premium rounded-[2.5rem] p-10 text-center space-y-8 relative z-10 border-white/10 shadow-2xl"
@@ -192,20 +193,20 @@ export default function CanchasDashboard() {
           </div>
 
           <div className="flex flex-col gap-3">
-            <button 
+            <button
               onClick={() => window.open('https://wa.me/your-number', '_blank')}
               className="w-full bg-primary text-zinc-950 font-black text-sm uppercase tracking-widest py-4 px-6 rounded-2xl hover:bg-white hover:scale-[1.02] transition-all active:scale-95 shadow-xl shadow-primary/10"
             >
               Hablar con Soporte
             </button>
-            <button 
-              onClick={() => router.push('/')} 
+            <button
+              onClick={() => router.push('/')}
               className="w-full bg-white/5 text-white/60 hover:text-white hover:bg-white/10 font-bold text-xs uppercase tracking-widest py-4 px-6 rounded-2xl border border-white/5 transition-all"
             >
               Volver al Inicio
             </button>
           </div>
-          
+
           <div className="pt-4 border-t border-white/5 text-[10px] font-black text-white/20 uppercase tracking-[0.3em]">
             Pelotify Business Elite
           </div>
@@ -216,7 +217,7 @@ export default function CanchasDashboard() {
 
   return (
     <div className="min-h-screen bg-background text-foreground pb-20 md:pb-0 font-kanit">
-      
+
       {/* HEADER TRAY */}
       <header className="fixed top-0 w-full z-40 glass border-b border-border/40 backdrop-blur-xl">
         <div className="max-w-7xl mx-auto px-4 h-16 sm:h-24 flex items-center justify-between">
@@ -233,12 +234,12 @@ export default function CanchasDashboard() {
                   <span className="text-[8px] font-black text-primary uppercase tracking-widest">PRO PLAN</span>
                 </div>
                 {business?.id && (
-                  <button 
+                  <button
                     onClick={() => window.open(`/establecimientos/${business.id}`, '_blank')}
                     className="p-1.5 rounded-lg bg-foreground/5 hover:bg-primary/20 text-muted-foreground hover:text-primary transition-all flex items-center gap-1.5 px-2"
                   >
-                     <ExternalLink className="w-3 h-3" />
-                     <span className="text-[8px] font-black uppercase tracking-widest">Perfil Público</span>
+                    <ExternalLink className="w-3 h-3" />
+                    <span className="text-[8px] font-black uppercase tracking-widest">Perfil Público</span>
                   </button>
                 )}
               </div>
@@ -248,35 +249,35 @@ export default function CanchasDashboard() {
               </p>
             </div>
           </div>
-          
-          <div className="flex items-center gap-4 sm:gap-6">
+
+          <div className="flex items-center gap-2 sm:gap-6">
             <div className="hidden lg:flex items-center gap-2 px-4 py-2 rounded-2xl bg-foreground/[0.03] border border-white/5 relative group overflow-hidden">
-               <div className="absolute top-0 right-0 w-8 h-8 bg-primary/5 rounded-full blur-xl group-hover:bg-primary/20 transition-colors"></div>
-               <div className="text-right relative z-10">
-                  <div className="flex items-center gap-1 justify-end">
-                     <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse shadow-[0_0_8px_rgba(44,252,125,0.8)]"></span>
-                     <p className="text-[9px] font-black text-muted-foreground uppercase tracking-widest leading-none">Tu Balance</p>
-                  </div>
-                  <p className="text-sm font-black text-foreground italic font-kanit leading-none mt-1">${new Intl.NumberFormat('es-AR').format(stats.monthIncome)}</p>
-               </div>
-               <div className="w-px h-6 bg-white/10 mx-2 relative z-10"></div>
-               <button onClick={onNewBooking} className="p-2 rounded-xl bg-primary text-black hover:scale-110 transition-transform shadow-lg shadow-primary/20 relative z-10">
-                  <Plus className="w-4 h-4" />
-               </button>
+              <div className="absolute top-0 right-0 w-8 h-8 bg-primary/5 rounded-full blur-xl group-hover:bg-primary/20 transition-colors"></div>
+              <div className="text-right relative z-10">
+                <div className="flex items-center gap-1 justify-end">
+                  <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse shadow-[0_0_8px_rgba(44,252,125,0.8)]"></span>
+                  <p className="text-[9px] font-black text-muted-foreground uppercase tracking-widest leading-none">Tu Balance</p>
+                </div>
+                <p className="text-sm font-black text-foreground italic font-kanit leading-none mt-1">${new Intl.NumberFormat('es-AR').format(stats.monthIncome)}</p>
+              </div>
+              <div className="w-px h-6 bg-white/10 mx-2 relative z-10"></div>
+              <button onClick={onNewBooking} className="p-2 rounded-xl bg-primary text-black hover:scale-110 transition-transform shadow-lg shadow-primary/20 relative z-10">
+                <Plus className="w-4 h-4" />
+              </button>
             </div>
 
             <button className="relative p-3 rounded-xl bg-surface-elevated border border-white/5 hover:bg-surface-bright transition-all group" onClick={() => alert("Soporte Técnico pronto estará disponible por WhatsApp.")}>
-               <Bell className="w-5 h-5 text-muted-foreground group-hover:text-primary transition-colors" />
-               <div className="absolute top-2.5 right-2.5 w-2 h-2 rounded-full bg-accent border-2 border-background animate-bounce shadow-[0_0_8px_rgba(255,107,107,0.5)]"></div>
+              <Bell className="w-5 h-5 text-muted-foreground group-hover:text-primary transition-colors" />
+              <div className="absolute top-2.5 right-2.5 w-2 h-2 rounded-full bg-accent border-2 border-background animate-bounce shadow-[0_0_8px_rgba(255,107,107,0.5)]"></div>
             </button>
 
-            <button onClick={async () => { await logout(); router.push('/canchas/login'); }} className="relative p-3 rounded-xl bg-surface-elevated border border-white/5 hover:bg-danger/10 hover:border-danger/30 transition-all group" title="Cerrar Sesión">
-               <LogOut className="w-5 h-5 text-muted-foreground group-hover:text-danger transition-colors" />
+            <button onClick={async () => { await logout(); router.push('/canchas/login'); }} className="hidden sm:flex relative p-3 rounded-xl bg-surface-elevated border border-white/5 hover:bg-danger/10 hover:border-danger/30 transition-all group" title="Cerrar Sesión">
+              <LogOut className="w-5 h-5 text-muted-foreground group-hover:text-danger transition-colors" />
             </button>
 
-            <button 
-              onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')} 
-              className="relative p-3 rounded-xl bg-surface-elevated border border-white/5 hover:bg-primary/10 hover:border-primary/30 transition-all group" 
+            <button
+              onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+              className="relative p-3 rounded-xl bg-surface-elevated border border-white/5 hover:bg-primary/10 hover:border-primary/30 transition-all group"
               title={theme === 'dark' ? 'Modo Claro' : 'Modo Oscuro'}
             >
               {theme === 'dark' ? (
@@ -288,8 +289,8 @@ export default function CanchasDashboard() {
 
             <div className="flex items-center gap-3 pl-4 border-l border-border/50">
               <div className="hidden sm:block text-right">
-                 <p className="text-[10px] font-black text-foreground uppercase tracking-tighter leading-none">{user?.user_metadata?.full_name || 'Administrador'}</p>
-                 <p className="text-[8px] font-bold text-muted-foreground uppercase mt-1">Owner</p>
+                <p className="text-[10px] font-black text-foreground uppercase tracking-tighter leading-none">{user?.user_metadata?.full_name || 'Administrador'}</p>
+                <p className="text-[8px] font-bold text-muted-foreground uppercase mt-1">Owner</p>
               </div>
               <div className="w-10 h-10 rounded-2xl bg-surface-elevated overflow-hidden border-2 border-primary/20 shadow-xl p-0.5">
                 <img src={user?.user_metadata?.avatar_url || `https://ui-avatars.com/api/?name=${user?.name || 'Admin'}&background=2cfc7d&color=000`} alt="Admin" className="w-full h-full object-cover rounded-xl" />
@@ -301,7 +302,7 @@ export default function CanchasDashboard() {
 
       {/* MAIN LAYOUT */}
       <div className="pt-20 sm:pt-24 max-w-7xl mx-auto px-4 flex flex-col md:flex-row gap-6 md:gap-8 min-h-screen">
-        
+
         {/* DESKTOP SIDEBAR */}
         <aside className="hidden md:flex flex-col w-64 shrink-0 gap-2 sticky top-28 h-[calc(100vh-8rem)]">
           {tabs.map((tab) => {
@@ -311,14 +312,13 @@ export default function CanchasDashboard() {
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                className={`flex items-center gap-3 px-4 py-3.5 rounded-2xl transition-all duration-300 relative overflow-hidden ${
-                  isActive ? 'text-primary' : 'text-muted-foreground hover:text-foreground hover:bg-surface-elevated'
-                }`}
+                className={`flex items-center gap-3 px-4 py-3.5 rounded-2xl transition-all duration-300 relative overflow-hidden ${isActive ? 'text-primary' : 'text-muted-foreground hover:text-foreground hover:bg-surface-elevated'
+                  }`}
               >
                 {isActive && (
-                  <motion.div 
+                  <motion.div
                     layoutId="activeTabSidebar"
-                    className="absolute inset-0 bg-primary/10 border border-primary/20 rounded-2xl"
+                    className="absolute inset-0 bg-primary/[0.15] border border-primary/30 rounded-2xl"
                     initial={false}
                     transition={{ type: "spring", stiffness: 300, damping: 30 }}
                   />
@@ -342,7 +342,7 @@ export default function CanchasDashboard() {
               transition={{ duration: 0.2 }}
             >
               {activeTab === 'overview' && <OverviewTab business={business} bookings={bookings} fields={fields} onNewBooking={() => setShowBookingModal(true)} onBookingClick={(booking: any) => { setSelectedBooking(booking); setShowEditBookingModal(true); }} onTabChange={setActiveTab} />}
-              {activeTab === 'calendar' && <CalendarTab bookings={bookings} fields={fields} selectedDate={selectedDate} setSelectedDate={setSelectedDate} onSlotClick={(time: string, fieldId: string) => { setSelectedSlot({time, fieldId}); setShowBookingModal(true); }} onBookingClick={(booking: any) => { setSelectedBooking(booking); setShowEditBookingModal(true); }} />}
+              {activeTab === 'calendar' && <CalendarTab bookings={bookings} fields={fields} selectedDate={selectedDate} setSelectedDate={setSelectedDate} onSlotClick={(time: string, fieldId: string) => { setSelectedSlot({ time, fieldId }); setShowBookingModal(true); }} onBookingClick={(booking: any) => { setSelectedBooking(booking); setShowEditBookingModal(true); }} />}
 
               {activeTab === 'finances' && <FinancesTab business={business} bookings={bookings} hasMP={hasMP} user={user} />}
               {activeTab === 'settings' && <SettingsTab business={business} fields={fields} setFields={setFields} hasMP={hasMP} setBusiness={setBusiness} />}
@@ -354,20 +354,20 @@ export default function CanchasDashboard() {
       {/* MODALS */}
       <AnimatePresence>
         {showBookingModal && (
-          <NewBookingModal 
-            onClose={() => { setShowBookingModal(false); setSelectedSlot(null); }} 
-            fields={fields} 
+          <NewBookingModal
+            onClose={() => { setShowBookingModal(false); setSelectedSlot(null); }}
+            fields={fields}
             selectedSlot={selectedSlot}
             onBooked={(newBooking: any) => setBookings(prev => [...prev, newBooking])}
             selectedDate={selectedDate}
           />
         )}
         {showEditBookingModal && selectedBooking && (
-          <EditBookingModal 
-             booking={selectedBooking}
-             onClose={() => { setShowEditBookingModal(false); setSelectedBooking(null); }}
-             onUpdate={(updated: any) => setBookings(prev => prev.map(b => b.id === updated.id ? updated : b))}
-             onDelete={(id: string) => setBookings(prev => prev.filter(b => b.id !== id))}
+          <EditBookingModal
+            booking={selectedBooking}
+            onClose={() => { setShowEditBookingModal(false); setSelectedBooking(null); }}
+            onUpdate={(updated: any) => setBookings(prev => prev.map(b => b.id === updated.id ? updated : b))}
+            onDelete={(id: string) => setBookings(prev => prev.filter(b => b.id !== id))}
           />
         )}
       </AnimatePresence>
@@ -385,7 +385,7 @@ export default function CanchasDashboard() {
                 className="relative flex flex-col items-center justify-center w-16 h-full gap-1"
               >
                 {isActive && (
-                  <motion.div 
+                  <motion.div
                     layoutId="activeTabMobile"
                     className="absolute inset-0 bg-primary/10 rounded-xl my-1"
                     initial={false}
@@ -432,16 +432,27 @@ function OverviewTab({ business, bookings, fields, onNewBooking, onBookingClick,
       {/* Header */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <h2 className="text-2xl font-black font-kanit italic uppercase tracking-tighter">
+          <h2 className="text-2xl sm:text-3xl font-black font-kanit italic uppercase tracking-tighter text-foreground drop-shadow-md">
             Hoy en <span className="text-primary">{business?.name || "tu sede"}</span>
           </h2>
-          <p className="text-xs text-muted-foreground mt-0.5">
+          <p className="text-xs font-bold text-muted-foreground mt-0.5 tracking-widest uppercase">
             {new Date().toLocaleDateString('es-AR', { weekday: 'long', day: 'numeric', month: 'long' })}
           </p>
         </div>
-        <button onClick={onNewBooking} className="bg-primary text-black font-bold text-sm py-3 px-6 rounded-xl flex items-center gap-2 hover:bg-primary-light transition-all shadow-lg shadow-primary/20 press-effect">
-          <Plus className="w-4 h-4" /> Nueva Reserva
-        </button>
+        <div className="flex items-center gap-3 w-full sm:w-auto">
+          <button 
+            onClick={() => {
+              navigator.clipboard.writeText(`${window.location.origin}/establecimientos/${business?.id}`);
+              alert('Enlace copiado al portapapeles');
+            }} 
+            className="flex-1 sm:flex-none bg-surface-elevated text-muted-foreground hover:text-white font-bold text-xs uppercase tracking-widest py-3 px-4 rounded-xl flex justify-center items-center gap-2 border border-white/5 transition-all active:scale-95"
+          >
+            <Share2 className="w-4 h-4" /> <span className="hidden sm:inline">Compartir</span>
+          </button>
+          <button onClick={onNewBooking} className="flex-1 sm:flex-none bg-primary text-black font-black uppercase tracking-widest text-xs py-3 px-6 rounded-xl flex justify-center items-center gap-2 hover:bg-white transition-all shadow-[0_0_15px_rgba(44,252,125,0.3)] active:scale-95">
+            <Plus className="w-4 h-4" /> Reserva
+          </button>
+        </div>
       </div>
 
       {/* Stats Row */}
@@ -491,37 +502,43 @@ function OverviewTab({ business, bookings, fields, onNewBooking, onBookingClick,
             No hay turnos para hoy
           </div>
         ) : (
-          <div className="space-y-2">
-            {todayBookings.map((booking: any) => (
-              <UpcomingMatch
+          <div className="space-y-3">
+            {todayBookings.map((booking: any, index: number) => (
+              <motion.div 
                 key={booking.id}
-                time={booking.start_time.substring(0, 5)}
-                field={booking.canchas_fields?.name || 'Cancha'}
-                team={booking.title || 'Reserva'}
-                status={getStatusLabel(booking.status)}
-                price={formatMoney(booking.total_price)}
-                isPending={booking.status === 'pending'}
-                isApp={!!booking.match_id}
-                onClick={() => onBookingClick?.(booking)}
-              />
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: index * 0.1 }}
+              >
+                <UpcomingMatch
+                  time={booking.start_time.substring(0, 5)}
+                  field={booking.canchas_fields?.name || 'Cancha'}
+                  team={booking.title || 'Reserva'}
+                  status={getStatusLabel(booking.status)}
+                  price={formatMoney(booking.total_price)}
+                  isPending={booking.status === 'pending'}
+                  isApp={!!booking.match_id}
+                  onClick={() => onBookingClick?.(booking)}
+                />
+              </motion.div>
             ))}
           </div>
         )}
       </div>
 
       {/* Quick nav */}
-      <div className="grid grid-cols-3 gap-3">
-        <button onClick={() => onTabChange('calendar')} className="glass-card p-4 flex flex-col items-center gap-2 hover:border-primary/30 transition-all press-effect">
-          <CalendarDays className="w-5 h-5 text-primary" />
-          <span className="text-[10px] font-bold text-muted-foreground uppercase">Agenda</span>
+      <div className="grid grid-cols-3 gap-3 pt-4">
+        <button onClick={() => onTabChange('calendar')} className="p-4 rounded-2xl bg-gradient-to-br from-surface-elevated to-background border border-white/5 hover:border-primary/40 transition-all active:scale-95 flex flex-col items-center gap-3 group">
+          <div className="p-3 rounded-full bg-primary/10 group-hover:bg-primary group-hover:text-black transition-colors"><CalendarDays className="w-5 h-5 text-primary group-hover:text-black" /></div>
+          <span className="text-[10px] font-black text-muted-foreground uppercase group-hover:text-foreground">Agenda</span>
         </button>
-        <button onClick={() => onTabChange('finances')} className="glass-card p-4 flex flex-col items-center gap-2 hover:border-primary/30 transition-all press-effect">
-          <Wallet className="w-5 h-5 text-accent" />
-          <span className="text-[10px] font-bold text-muted-foreground uppercase">Finanzas</span>
+        <button onClick={() => onTabChange('finances')} className="p-4 rounded-2xl bg-gradient-to-br from-surface-elevated to-background border border-white/5 hover:border-accent/40 transition-all active:scale-95 flex flex-col items-center gap-3 group">
+          <div className="p-3 rounded-full bg-accent/10 group-hover:bg-accent group-hover:text-black transition-colors"><Wallet className="w-5 h-5 text-accent group-hover:text-black" /></div>
+          <span className="text-[10px] font-black text-muted-foreground uppercase group-hover:text-foreground">Finanzas</span>
         </button>
-        <button onClick={() => onTabChange('settings')} className="glass-card p-4 flex flex-col items-center gap-2 hover:border-primary/30 transition-all press-effect">
-          <Settings className="w-5 h-5 text-muted-foreground" />
-          <span className="text-[10px] font-bold text-muted-foreground uppercase">Ajustes</span>
+        <button onClick={() => onTabChange('settings')} className="p-4 rounded-2xl bg-gradient-to-br from-surface-elevated to-background border border-white/5 hover:border-white/40 transition-all active:scale-95 flex flex-col items-center gap-3 group">
+          <div className="p-3 rounded-full bg-foreground/5 group-hover:bg-foreground group-hover:text-black transition-colors"><Settings className="w-5 h-5 text-muted-foreground group-hover:text-black" /></div>
+          <span className="text-[10px] font-black text-muted-foreground uppercase group-hover:text-foreground">Ajustes</span>
         </button>
       </div>
     </div>
@@ -555,11 +572,10 @@ function UpcomingMatch({ time, field, team, status, price, isPending = false, is
       </div>
       <div className="text-right">
         <p className="font-bold text-sm font-kanit">{price}</p>
-        <p className={`text-[9px] font-bold uppercase px-2 py-0.5 rounded-md mt-1 inline-block ${
-          isPending ? 'bg-danger/10 text-danger border border-danger/20' : 
-          status.includes('Seña') ? 'bg-accent/10 text-accent border border-accent/20' : 
-          'bg-primary/10 text-primary border border-primary/20'
-        }`}>
+        <p className={`text-[9px] font-bold uppercase px-2 py-0.5 rounded-md mt-1 inline-block ${isPending ? 'bg-danger/10 text-danger border border-danger/20' :
+            status.includes('Seña') ? 'bg-accent/10 text-accent border border-accent/20' :
+              'bg-primary/10 text-primary border border-primary/20'
+          }`}>
           {status}
         </p>
       </div>
@@ -687,11 +703,10 @@ function CalendarTab({ bookings, fields, selectedDate, setSelectedDate, onSlotCl
           </button>
           <button
             onClick={() => setWeekOffset(0)}
-            className={`px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all press-effect ${
-              weekOffset === 0
+            className={`px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all press-effect ${weekOffset === 0
                 ? 'bg-primary text-black shadow-lg shadow-primary/20'
                 : 'bg-surface-elevated border border-white/5 text-muted-foreground hover:text-foreground hover:border-primary/30'
-            }`}
+              }`}
           >
             Esta Semana
           </button>
@@ -713,11 +728,10 @@ function CalendarTab({ bookings, fields, selectedDate, setSelectedDate, onSlotCl
           <button
             key={f.id}
             onClick={() => setActiveFieldId(f.id)}
-            className={`shrink-0 px-5 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all press-effect ${
-              activeFieldId === f.id
+            className={`shrink-0 px-5 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all press-effect ${activeFieldId === f.id
                 ? 'bg-primary text-black shadow-lg shadow-primary/20'
                 : 'bg-surface-elevated border border-white/5 text-muted-foreground hover:text-foreground hover:border-primary/20'
-            }`}
+              }`}
           >
             {f.name}
             <span className="ml-1.5 opacity-60">{f.type}</span>
@@ -813,9 +827,8 @@ function CalendarTab({ bookings, fields, selectedDate, setSelectedDate, onSlotCl
                     style={{ gridTemplateColumns: '72px repeat(7, 1fr)' }}
                   >
                     {/* Hour label */}
-                    <div className={`p-2 flex items-center justify-center border-r border-white/10 relative ${
-                      isCurrentHour ? 'bg-primary/[0.05]' : ''
-                    }`}>
+                    <div className={`p-2 flex items-center justify-center border-r border-white/10 relative ${isCurrentHour ? 'bg-primary/[0.05]' : ''
+                      }`}>
                       {isCurrentHour && (
                         <div className="absolute left-0 top-0 bottom-0 w-[3px] bg-primary rounded-r shadow-[0_0_8px_rgba(44,252,125,0.6)]"></div>
                       )}
@@ -839,9 +852,8 @@ function CalendarTab({ bookings, fields, selectedDate, setSelectedDate, onSlotCl
                       return (
                         <div
                           key={date}
-                          className={`border-l border-white/10 p-1.5 min-h-[56px] flex items-center justify-center ${
-                            isToday && weekOffset === 0 ? 'bg-primary/[0.04]' : ''
-                          } ${isCellPast ? 'opacity-30' : ''}`}
+                          className={`border-l border-white/10 p-1.5 min-h-[56px] flex items-center justify-center ${isToday && weekOffset === 0 ? 'bg-primary/[0.04]' : ''
+                            } ${isCellPast ? 'opacity-30' : ''}`}
                         >
                           {booking ? (
                             <button
@@ -858,11 +870,10 @@ function CalendarTab({ bookings, fields, selectedDate, setSelectedDate, onSlotCl
                               <div className="absolute z-30 bottom-full left-1/2 -translate-x-1/2 mb-2 hidden group-hover:block pointer-events-none">
                                 <div className="bg-background border border-white/10 rounded-xl p-3 shadow-2xl min-w-[160px] text-left">
                                   <p className="text-[10px] font-black uppercase tracking-tighter text-foreground truncate">{booking.title || 'Reserva Directa'}</p>
-                                  <p className="text-[9px] text-muted-foreground mt-0.5">{booking.start_time.substring(0,5)} — {booking.end_time.substring(0,5)}</p>
+                                  <p className="text-[9px] text-muted-foreground mt-0.5">{booking.start_time.substring(0, 5)} — {booking.end_time.substring(0, 5)}</p>
                                   <div className="flex items-center justify-between mt-1.5">
-                                    <span className={`text-[8px] font-black uppercase tracking-widest ${
-                                      booking.status === 'pending' ? 'text-danger' : booking.status === 'partial_paid' ? 'text-accent' : 'text-primary'
-                                    }`}>{getStatusLabel(booking.status)}</span>
+                                    <span className={`text-[8px] font-black uppercase tracking-widest ${booking.status === 'pending' ? 'text-danger' : booking.status === 'partial_paid' ? 'text-accent' : 'text-primary'
+                                      }`}>{getStatusLabel(booking.status)}</span>
                                     <span className="text-[9px] font-black font-kanit italic text-foreground">{formatMoney(booking.total_price)}</span>
                                   </div>
                                 </div>
@@ -903,109 +914,109 @@ function FinancesTab({ business, bookings, hasMP, user }: any) {
 
   return (
     <div className="space-y-8 animate-reveal-up">
-       <div className="flex flex-col gap-1">
-          <h2 className="text-3xl font-black font-kanit italic uppercase tracking-tighter text-foreground">
-            Bóveda <span className="text-primary">Financiera</span>
-          </h2>
-          <p className="text-[10px] font-black uppercase tracking-[0.4em] text-muted-foreground">Flujo de Caja & Liquidaciones</p>
+      <div className="flex flex-col gap-1">
+        <h2 className="text-3xl font-black font-kanit italic uppercase tracking-tighter text-foreground">
+          Bóveda <span className="text-primary">Financiera</span>
+        </h2>
+        <p className="text-[10px] font-black uppercase tracking-[0.4em] text-muted-foreground">Flujo de Caja & Liquidaciones</p>
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        {/* Main Balance */}
+        <div className="lg:col-span-2 glass-premium rounded-[3rem] p-10 border-white/5 relative overflow-hidden group shadow-2xl">
+          <div className="absolute top-0 right-0 w-80 h-80 bg-primary/10 rounded-full blur-[100px] -z-10 group-hover:bg-primary/20 transition-colors"></div>
+
+          <div className="relative z-10 flex flex-col h-full justify-between">
+            <div>
+              <p className="text-[11px] font-black text-muted-foreground uppercase tracking-[0.3em] mb-4">Balance Proyectado (30d)</p>
+              <div className="flex items-baseline gap-2">
+                <h1 className="text-6xl sm:text-7xl font-kanit font-black italic tracking-tighter text-foreground leading-none">
+                  <span className="text-primary">$</span>{new Intl.NumberFormat('es-AR', { maximumFractionDigits: 0 }).format(totalIncome)}
+                </h1>
+              </div>
+            </div>
+
+            <div className="flex flex-wrap gap-4 mt-12">
+              <button disabled className="flex-1 bg-surface-elevated text-muted-foreground font-black uppercase text-[10px] tracking-widest py-4 px-6 rounded-2xl flex justify-center items-center gap-2 border border-white/5 opacity-50 cursor-not-allowed">
+                Retirar Fondos <ArrowUpRight className="w-5 h-5" />
+              </button>
+              <button className="flex-1 bg-primary text-black font-black uppercase text-[10px] tracking-widest py-4 px-6 rounded-2xl flex justify-center items-center gap-2 hover:bg-primary-light transition-all shadow-lg shadow-primary/20">
+                Descargar Reporte <BarChart3 className="w-5 h-5" />
+              </button>
+            </div>
+          </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Main Balance */}
-          <div className="lg:col-span-2 glass-premium rounded-[3rem] p-10 border-white/5 relative overflow-hidden group shadow-2xl">
-            <div className="absolute top-0 right-0 w-80 h-80 bg-primary/10 rounded-full blur-[100px] -z-10 group-hover:bg-primary/20 transition-colors"></div>
-            
-            <div className="relative z-10 flex flex-col h-full justify-between">
-              <div>
-                <p className="text-[11px] font-black text-muted-foreground uppercase tracking-[0.3em] mb-4">Balance Proyectado (30d)</p>
-                <div className="flex items-baseline gap-2">
-                   <h1 className="text-6xl sm:text-7xl font-kanit font-black italic tracking-tighter text-foreground leading-none">
-                     <span className="text-primary">$</span>{new Intl.NumberFormat('es-AR', { maximumFractionDigits: 0 }).format(totalIncome)}
-                   </h1>
-                </div>
-              </div>
-
-              <div className="flex flex-wrap gap-4 mt-12">
-                <button disabled className="flex-1 bg-surface-elevated text-muted-foreground font-black uppercase text-[10px] tracking-widest py-4 px-6 rounded-2xl flex justify-center items-center gap-2 border border-white/5 opacity-50 cursor-not-allowed">
-                  Retirar Fondos <ArrowUpRight className="w-5 h-5" />
-                </button>
-                <button className="flex-1 bg-primary text-black font-black uppercase text-[10px] tracking-widest py-4 px-6 rounded-2xl flex justify-center items-center gap-2 hover:bg-primary-light transition-all shadow-lg shadow-primary/20">
-                  Descargar Reporte <BarChart3 className="w-5 h-5" />
-                </button>
-              </div>
+        <div className="lg:col-span-1 flex flex-col gap-6">
+          <div className="glass-premium rounded-[2.5rem] p-8 border-white/5 flex items-center justify-between group hover:border-primary/30 transition-all">
+            <div>
+              <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest mb-2">Comisión Plataforma</p>
+              <h3 className="text-3xl font-black italic font-kanit">5.0<span className="text-primary">%</span></h3>
+            </div>
+            <div className="w-14 h-14 rounded-2xl bg-surface-elevated border border-white/10 flex items-center justify-center group-hover:rotate-12 transition-transform shadow-xl">
+              <Shield className="w-7 h-7 text-primary" />
             </div>
           </div>
 
-          <div className="lg:col-span-1 flex flex-col gap-6">
-             <div className="glass-premium rounded-[2.5rem] p-8 border-white/5 flex items-center justify-between group hover:border-primary/30 transition-all">
-                <div>
-                   <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest mb-2">Comisión Plataforma</p>
-                   <h3 className="text-3xl font-black italic font-kanit">5.0<span className="text-primary">%</span></h3>
-                </div>
-                <div className="w-14 h-14 rounded-2xl bg-surface-elevated border border-white/10 flex items-center justify-center group-hover:rotate-12 transition-transform shadow-xl">
-                   <Shield className="w-7 h-7 text-primary" />
-                </div>
-             </div>
-             
-             <div className="glass-premium rounded-[2.5rem] p-8 border-white/5 group hover:border-[#009EE3]/30 transition-all">
-                <div className="flex justify-between items-start mb-6">
-                   <div>
-                      <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest mb-1">Pasarela de Pago</p>
-                      <h3 className={`text-2xl font-black italic font-kanit ${hasMP ? 'text-[#009EE3]' : 'text-danger'}`}>
-                        {hasMP ? 'MERCADO PAGO' : 'SIN VINCULAR'}
-                      </h3>
-                   </div>
-                   <div className="w-12 h-12 rounded-xl bg-[#009EE3]/10 border border-[#009EE3]/20 flex items-center justify-center group-hover:-translate-y-1 transition-transform">
-                      <DollarSign className="w-6 h-6 text-[#009EE3]" />
-                   </div>
-                </div>
-                
-                {hasMP ? (
-                  <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-[#009EE3]/10 border border-[#009EE3]/20 w-fit">
-                     <Check className="w-3.5 h-3.5 text-[#009EE3]" />
-                     <span className="text-[9px] font-black text-[#009EE3] uppercase tracking-widest">Cuenta Vinculada</span>
-                  </div>
-                ) : (
-                  <button onClick={() => window.location.href = `/api/mercadopago/authorize?userId=${user?.id}`} className="w-full bg-[#009EE3] text-white font-black uppercase text-[10px] tracking-widest py-3.5 rounded-xl hover:bg-[#009EE3]/80 transition-all shadow-lg shadow-[#009EE3]/20">
-                    CONECTAR CUENTA
-                  </button>
-                )}
-             </div>
-          </div>
-        </div>
-
-        {/* RECENT TRANSACTIONS */}
-        <div className="glass-premium rounded-[2.5rem] p-10 border-white/5">
-          <div className="flex justify-between items-center mb-8">
-            <h3 className="text-2xl font-black font-kanit italic uppercase tracking-tighter">Historial de Cobros</h3>
-            <div className="p-1 px-2 bg-foreground/5 rounded-xl border border-white/5 text-[9px] font-black uppercase tracking-widest">Últimos 30 días</div>
-          </div>
-          <div className="space-y-2">
-            {bookings.filter((b:any) => b.status === 'full_paid' || b.status === 'partial_paid').slice(0, 8).map((booking: any, i: number) => (
-              <div key={`tx-${i}`} className="flex items-center justify-between p-5 rounded-2xl hover:bg-foreground/[0.03] transition-all border border-transparent hover:border-white/5 group">
-                <div className="flex items-center gap-4">
-                  <div className={`w-12 h-12 rounded-2xl flex items-center justify-center transition-colors ${booking.match_id ? 'bg-primary/20 text-primary border border-primary/20' : 'bg-surface-elevated text-muted-foreground border border-white/10'}`}>
-                    {booking.match_id ? <Zap className="w-6 h-6" /> : <Wallet className="w-6 h-6" />}
-                  </div>
-                  <div>
-                    <h4 className="font-black text-sm uppercase tracking-tighter group-hover:text-primary transition-colors">{booking.title || 'Reserva Acreditada'}</h4>
-                    <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest italic mt-1">{booking.date} • {booking.status === 'partial_paid' ? 'Seña acreditada' : 'Pago Total'}</p>
-                  </div>
-                </div>
-                <div className="text-right">
-                   <p className="text-2xl font-black italic font-kanit text-primary">+{new Intl.NumberFormat('es-AR', { maximumFractionDigits: 0 }).format(booking.down_payment_paid || booking.total_price)}</p>
-                   <p className="text-[8px] font-black text-muted-foreground uppercase tracking-widest mt-1">Neto Acreditado</p>
-                </div>
+          <div className="glass-premium rounded-[2.5rem] p-8 border-white/5 group hover:border-[#009EE3]/30 transition-all">
+            <div className="flex justify-between items-start mb-6">
+              <div>
+                <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest mb-1">Pasarela de Pago</p>
+                <h3 className={`text-2xl font-black italic font-kanit ${hasMP ? 'text-[#009EE3]' : 'text-danger'}`}>
+                  {hasMP ? 'MERCADO PAGO' : 'SIN VINCULAR'}
+                </h3>
               </div>
-            ))}
-            {bookings.filter((b:any) => b.status === 'full_paid' || b.status === 'partial_paid').length === 0 && (
-               <div className="flex flex-col items-center justify-center py-20 bg-surface-elevated/30 rounded-[2rem] border border-dashed border-white/10">
-                 <Wallet className="w-12 h-12 text-muted-foreground/30 mb-4" />
-                 <p className="text-muted-foreground font-black uppercase text-[10px] tracking-widest">Esperando primer cobro...</p>
-               </div>
+              <div className="w-12 h-12 rounded-xl bg-[#009EE3]/10 border border-[#009EE3]/20 flex items-center justify-center group-hover:-translate-y-1 transition-transform">
+                <DollarSign className="w-6 h-6 text-[#009EE3]" />
+              </div>
+            </div>
+
+            {hasMP ? (
+              <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-[#009EE3]/10 border border-[#009EE3]/20 w-fit">
+                <Check className="w-3.5 h-3.5 text-[#009EE3]" />
+                <span className="text-[9px] font-black text-[#009EE3] uppercase tracking-widest">Cuenta Vinculada</span>
+              </div>
+            ) : (
+              <button onClick={() => window.location.href = `/api/mercadopago/authorize?userId=${user?.id}`} className="w-full bg-[#009EE3] text-white font-black uppercase text-[10px] tracking-widest py-3.5 rounded-xl hover:bg-[#009EE3]/80 transition-all shadow-lg shadow-[#009EE3]/20">
+                CONECTAR CUENTA
+              </button>
             )}
           </div>
         </div>
+      </div>
+
+      {/* RECENT TRANSACTIONS */}
+      <div className="glass-premium rounded-[2.5rem] p-10 border-white/5">
+        <div className="flex justify-between items-center mb-8">
+          <h3 className="text-2xl font-black font-kanit italic uppercase tracking-tighter">Historial de Cobros</h3>
+          <div className="p-1 px-2 bg-foreground/5 rounded-xl border border-white/5 text-[9px] font-black uppercase tracking-widest">Últimos 30 días</div>
+        </div>
+        <div className="space-y-2">
+          {bookings.filter((b: any) => b.status === 'full_paid' || b.status === 'partial_paid').slice(0, 8).map((booking: any, i: number) => (
+            <div key={`tx-${i}`} className="flex items-center justify-between p-5 rounded-2xl hover:bg-foreground/[0.03] transition-all border border-transparent hover:border-white/5 group">
+              <div className="flex items-center gap-4">
+                <div className={`w-12 h-12 rounded-2xl flex items-center justify-center transition-colors ${booking.match_id ? 'bg-primary/20 text-primary border border-primary/20' : 'bg-surface-elevated text-muted-foreground border border-white/10'}`}>
+                  {booking.match_id ? <Zap className="w-6 h-6" /> : <Wallet className="w-6 h-6" />}
+                </div>
+                <div>
+                  <h4 className="font-black text-sm uppercase tracking-tighter group-hover:text-primary transition-colors">{booking.title || 'Reserva Acreditada'}</h4>
+                  <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest italic mt-1">{booking.date} • {booking.status === 'partial_paid' ? 'Seña acreditada' : 'Pago Total'}</p>
+                </div>
+              </div>
+              <div className="text-right">
+                <p className="text-2xl font-black italic font-kanit text-primary">+{new Intl.NumberFormat('es-AR', { maximumFractionDigits: 0 }).format(booking.down_payment_paid || booking.total_price)}</p>
+                <p className="text-[8px] font-black text-muted-foreground uppercase tracking-widest mt-1">Neto Acreditado</p>
+              </div>
+            </div>
+          ))}
+          {bookings.filter((b: any) => b.status === 'full_paid' || b.status === 'partial_paid').length === 0 && (
+            <div className="flex flex-col items-center justify-center py-20 bg-surface-elevated/30 rounded-[2rem] border border-dashed border-white/10">
+              <Wallet className="w-12 h-12 text-muted-foreground/30 mb-4" />
+              <p className="text-muted-foreground font-black uppercase text-[10px] tracking-widest">Esperando primer cobro...</p>
+            </div>
+          )}
+        </div>
+      </div>
     </div>
   );
 }
@@ -1016,7 +1027,7 @@ function TransactionRow({ date, concept, amount, type, status }: any) {
     <div className="flex justify-between items-center py-3 border-b border-border/50 last:border-0">
       <div className="flex items-center gap-4">
         <div className={`w-10 h-10 rounded-full flex items-center justify-center border ${isIncome ? 'bg-success/10 border-success/20 text-success' : 'bg-foreground/5 border-border/50 text-foreground'}`}>
-           {isIncome ? <ArrowDownRight className="w-5 h-5" /> : <ArrowUpRight className="w-5 h-5" />}
+          {isIncome ? <ArrowDownRight className="w-5 h-5" /> : <ArrowUpRight className="w-5 h-5" />}
         </div>
         <div>
           <h4 className="font-semibold text-sm">{concept}</h4>
@@ -1060,7 +1071,7 @@ function SettingsTab({ business, fields, setFields, hasMP, setBusiness }: any) {
   const [phone, setPhone] = useState(business?.phone || '');
   const [profileImageUrl, setProfileImageUrl] = useState(business?.profile_image_url || '');
   const [amenities, setAmenities] = useState<string[]>(business?.amenities || []);
-  const [coords, setCoords] = useState({ 
+  const [coords, setCoords] = useState({
     link: business?.google_maps_link || ''
   });
   const [isSavingPrices, setIsSavingPrices] = useState(false);
@@ -1093,17 +1104,17 @@ function SettingsTab({ business, fields, setFields, hasMP, setBusiness }: any) {
       const trimmedAlias = aliasCbu.trim();
       const { data: updatedBiz, error: aliasError } = await supabase
         .from('canchas_businesses')
-        .update({ 
+        .update({
           name: businessName.trim(),
           phone: phone.trim(),
           profile_image_url: profileImageUrl.trim(),
-          alias_cbu: trimmedAlias, 
+          alias_cbu: trimmedAlias,
           amenities,
           description,
           address,
           city,
           google_maps_link: coords.link,
-          updated_at: new Date().toISOString() 
+          updated_at: new Date().toISOString()
         })
         .eq('id', business.id)
         .eq('owner_id', user?.id)
@@ -1125,12 +1136,12 @@ function SettingsTab({ business, fields, setFields, hasMP, setBusiness }: any) {
       if (setBusiness) {
         setBusiness(updatedBiz[0]);
       }
-        
+
       // Actualizamos estado local
-      setFields((prev: any) => prev.map((f: any) => ({ 
-        ...f, 
+      setFields((prev: any) => prev.map((f: any) => ({
+        ...f,
         down_payment_percentage: deposit,
-        price_per_match: fieldPrices[f.id] ?? f.price_per_match 
+        price_per_match: fieldPrices[f.id] ?? f.price_per_match
       })));
       alert("✅ Configuración guardada correctamente.");
     } catch (err: any) {
@@ -1144,18 +1155,18 @@ function SettingsTab({ business, fields, setFields, hasMP, setBusiness }: any) {
     if (!fieldName) return;
     const type = prompt("Tipo (F5, F7, F11):") || 'F5';
     const priceStr = prompt("Precio por partido:");
-    
+
     if (fieldName && priceStr && business) {
       setLoading(true);
       const { data, error } = await supabase.from('canchas_fields').insert([
-        { 
-          business_id: business.id, 
-          name: fieldName, 
-          type: type, 
-          price_per_match: parseInt(priceStr) || 15000 
+        {
+          business_id: business.id,
+          name: fieldName,
+          type: type,
+          price_per_match: parseInt(priceStr) || 15000
         }
       ]).select();
-      
+
       if (!error && data) {
         setFields((prev: any) => [...prev, ...data]);
       } else {
@@ -1167,324 +1178,363 @@ function SettingsTab({ business, fields, setFields, hasMP, setBusiness }: any) {
 
   return (
     <div className="space-y-8 animate-reveal-up pb-20">
-       <div className="flex flex-col gap-1">
-          <h2 className="text-3xl font-black font-kanit italic uppercase tracking-tighter text-foreground">
-            Configuración <span className="text-primary">Maestra</span>
-          </h2>
-          <p className="text-[10px] font-black uppercase tracking-[0.4em] text-muted-foreground">Personalización del Establecimiento</p>
-       </div>
+      <div className="flex flex-col gap-1">
+        <h2 className="text-3xl font-black font-kanit italic uppercase tracking-tighter text-foreground">
+          Configuración <span className="text-primary">Maestra</span>
+        </h2>
+        <p className="text-[10px] font-black uppercase tracking-[0.4em] text-muted-foreground">Personalización del Establecimiento</p>
+      </div>
 
-       <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
-          {/* General Info & Pricing */}
-          <div className="xl:col-span-2 space-y-8">
-             {/* General Info Card */}
-           <div className="glass-premium rounded-[2.5rem] p-10 border-white/5 space-y-8">
-              <div className="flex items-center gap-4 mb-2">
-                 <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center border border-primary/20">
-                    <Settings className="w-5 h-5 text-primary" />
-                 </div>
-                 <h3 className="text-xl font-black font-kanit italic uppercase tracking-tighter">Perfil del Complejo</h3>
+      <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
+        {/* General Info & Pricing */}
+        <div className="xl:col-span-2 space-y-8">
+          {/* General Info Card */}
+          <div className="glass-premium rounded-[2.5rem] p-10 border-white/5 space-y-8">
+            <div className="flex items-center gap-4 mb-2">
+              <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center border border-primary/20">
+                <Settings className="w-5 h-5 text-primary" />
               </div>
- 
-              <div className="space-y-6">
-                 <div>
-                   <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground mb-2 block">Nombre del Establecimiento</label>
-                   <input 
-                     type="text" 
-                     value={businessName}
-                     onChange={(e) => setBusinessName(e.target.value)}
-                     className="w-full bg-foreground/[0.03] border border-white/5 rounded-2xl p-4 text-sm focus:border-primary/50 outline-none transition-all font-black"
-                   />
-                 </div>
-                 <div>
-                   <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground mb-2 block">Descripción Pública</label>
-                   <textarea 
-                     value={description}
-                     onChange={(e) => setDescription(e.target.value)}
-                     className="w-full bg-foreground/[0.03] border border-white/5 rounded-2xl p-4 text-sm focus:border-primary/50 outline-none transition-all min-h-[100px]"
-                     placeholder="Contanos sobre tu complejo, servicios, etc..."
-                   />
-                 </div>
-                 <div className="grid grid-cols-2 gap-4">
-                    <div>
-                     <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground mb-2 block">Dirección</label>
-                     <input 
-                       type="text" 
-                       value={address}
-                       onChange={(e) => setAddress(e.target.value)}
-                       className="w-full bg-foreground/[0.03] border border-white/5 rounded-2xl p-4 text-sm focus:border-primary/50 outline-none transition-all"
-                     />
-                    </div>
-                    <div>
-                     <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground mb-2 block">Teléfono de Contacto</label>
-                     <input 
-                       type="text" 
-                       value={phone}
-                       onChange={(e) => setPhone(e.target.value)}
-                       className="w-full bg-foreground/[0.03] border border-white/5 rounded-2xl p-4 text-sm focus:border-primary/50 outline-none transition-all"
-                     />
-                    </div>
-                 </div>
-                 <div className="grid grid-cols-2 gap-4">
-                    <div>
-                       <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground mb-2 block">Ciudad</label>
-                       <input 
-                         type="text" 
-                         value={city}
-                         onChange={(e) => setCity(e.target.value)}
-                         className="w-full bg-foreground/[0.03] border border-white/5 rounded-2xl p-4 text-sm focus:border-primary/50 outline-none transition-all"
-                       />
-                    </div>
-                    <div>
-                       <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground mb-4 block">Imagen del Complejo</label>
-                       <div className="grid grid-cols-4 gap-2 mb-4">
-                          {PRESET_IMAGES.map((img, i) => (
-                             <button 
-                                key={i}
-                                onClick={() => setProfileImageUrl(img)}
-                                className={`aspect-square rounded-xl overflow-hidden border-2 transition-all ${profileImageUrl === img ? 'border-primary scale-95' : 'border-transparent opacity-60 hover:opacity-100'}`}
-                             >
-                                <img src={img} className="w-full h-full object-cover" />
-                             </button>
-                          ))}
-                       </div>
-                       <input 
-                         type="text" 
-                         value={profileImageUrl}
-                         onChange={(e) => setProfileImageUrl(e.target.value)}
-                         placeholder="O pega una URL custom..."
-                         className="w-full bg-foreground/[0.03] border border-white/5 rounded-2xl p-4 text-sm focus:border-primary/50 outline-none transition-all font-mono text-[10px]"
-                       />
-                    </div>
-                 </div>
-                 <div>
-                   <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground mb-4 block">Servicios y Amenities</label>
-                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 mb-8">
-                       {['Luces LED', 'Seguridad 24hs', 'Vestuarios', 'Estacionamiento', 'Bar / Buffet', 'WiFi', 'Techada', 'Parrillas'].map(item => {
-                          const isSelected = amenities.includes(item);
-                          return (
-                             <button 
-                                key={item}
-                                onClick={() => {
-                                   if(isSelected) setAmenities(amenities.filter(a => a !== item));
-                                   else setAmenities([...amenities, item]);
-                                }}
-                                className={`p-4 rounded-2xl border transition-all text-left group ${isSelected ? 'bg-primary/10 border-primary shadow-lg shadow-primary/10' : 'bg-foreground/[0.03] border-white/5 hover:border-white/20'}`}
-                             >
-                                <div className={`text-[10px] font-black uppercase tracking-widest transition-colors ${isSelected ? 'text-primary' : 'text-muted-foreground'}`}>{item}</div>
-                             </button>
-                          );
-                       })}
-                    </div>
+              <h3 className="text-xl font-black font-kanit italic uppercase tracking-tighter">Perfil del Complejo</h3>
+            </div>
+
+            <div className="space-y-6">
+              <div>
+                <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground mb-2 block">Nombre del Establecimiento</label>
+                <input
+                  type="text"
+                  value={businessName}
+                  onChange={(e) => setBusinessName(e.target.value)}
+                  className="w-full bg-foreground/[0.03] border border-white/5 rounded-2xl p-4 text-sm focus:border-primary/50 outline-none transition-all font-black"
+                />
+              </div>
+              <div>
+                <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground mb-2 block">Descripción Pública</label>
+                <textarea
+                  value={description}
+                  onChange={(e) => setDescription(e.target.value)}
+                  className="w-full bg-foreground/[0.03] border border-white/5 rounded-2xl p-4 text-sm focus:border-primary/50 outline-none transition-all min-h-[100px]"
+                  placeholder="Contanos sobre tu complejo, servicios, etc..."
+                />
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground mb-2 block">Dirección</label>
+                  <input
+                    type="text"
+                    value={address}
+                    onChange={(e) => setAddress(e.target.value)}
+                    className="w-full bg-foreground/[0.03] border border-white/5 rounded-2xl p-4 text-sm focus:border-primary/50 outline-none transition-all"
+                  />
+                </div>
+                <div>
+                  <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground mb-2 block">Teléfono de Contacto</label>
+                  <input
+                    type="text"
+                    value={phone}
+                    onChange={(e) => setPhone(e.target.value)}
+                    className="w-full bg-foreground/[0.03] border border-white/5 rounded-2xl p-4 text-sm focus:border-primary/50 outline-none transition-all"
+                  />
+                </div>
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground mb-2 block">Ciudad</label>
+                  <input
+                    type="text"
+                    value={city}
+                    onChange={(e) => setCity(e.target.value)}
+                    className="w-full bg-foreground/[0.03] border border-white/5 rounded-2xl p-4 text-sm focus:border-primary/50 outline-none transition-all"
+                  />
+                </div>
+                <div>
+                  <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground mb-4 block">Imagen del Complejo</label>
+                  <div className="grid grid-cols-4 gap-2 mb-4">
+                    {PRESET_IMAGES.map((img, i) => (
+                      <button
+                        key={i}
+                        onClick={() => setProfileImageUrl(img)}
+                        className={`aspect-square rounded-xl overflow-hidden border-2 transition-all ${profileImageUrl === img ? 'border-primary scale-95' : 'border-transparent opacity-60 hover:opacity-100'}`}
+                      >
+                        <img src={img} className="w-full h-full object-cover" />
+                      </button>
+                    ))}
                   </div>
-                  <div>
-                    <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground mb-2 block">Google Maps Link</label>
-                   <input 
-                     type="text" 
-                     value={coords.link}
-                     onChange={(e) => setCoords({...coords, link: e.target.value})}
-                     placeholder="https://goo.gl/maps/..."
-                     className="w-full bg-foreground/[0.03] border border-white/5 rounded-2xl p-4 text-sm focus:border-primary/50 outline-none transition-all"
-                   />
-                 </div>
+                  <input
+                    type="text"
+                    value={profileImageUrl}
+                    onChange={(e) => setProfileImageUrl(e.target.value)}
+                    placeholder="O pega una URL custom..."
+                    className="w-full bg-foreground/[0.03] border border-white/5 rounded-2xl p-4 text-sm focus:border-primary/50 outline-none transition-all font-mono text-[10px]"
+                  />
+                </div>
               </div>
-           </div>
+              <div>
+                <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground mb-4 block">Servicios y Amenities</label>
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 mb-8">
+                  {['Luces LED', 'Seguridad 24hs', 'Vestuarios', 'Estacionamiento', 'Bar / Buffet', 'WiFi', 'Techada', 'Parrillas'].map(item => {
+                    const isSelected = amenities.includes(item);
+                    return (
+                      <button
+                        key={item}
+                        onClick={() => {
+                          if (isSelected) setAmenities(amenities.filter(a => a !== item));
+                          else setAmenities([...amenities, item]);
+                        }}
+                        className={`p-4 rounded-2xl border transition-all text-left group ${isSelected ? 'bg-primary/10 border-primary shadow-lg shadow-primary/10' : 'bg-foreground/[0.03] border-white/5 hover:border-white/20'}`}
+                      >
+                        <div className={`text-[10px] font-black uppercase tracking-widest transition-colors ${isSelected ? 'text-primary' : 'text-muted-foreground'}`}>{item}</div>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+              <div>
+                <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground mb-2 block">Google Maps Link</label>
+                <input
+                  type="text"
+                  value={coords.link}
+                  onChange={(e) => setCoords({ ...coords, link: e.target.value })}
+                  placeholder="https://goo.gl/maps/..."
+                  className="w-full bg-foreground/[0.03] border border-white/5 rounded-2xl p-4 text-sm focus:border-primary/50 outline-none transition-all"
+                />
+              </div>
+            </div>
+          </div>
 
           {/* Pricing & Payments */}
           <div className="glass-premium rounded-[2.5rem] p-10 border-white/5 space-y-8">
-             <div className="flex items-center gap-4 mb-2">
-                <div className="w-10 h-10 rounded-xl bg-accent/10 flex items-center justify-center border border-accent/20">
-                   <DollarSign className="w-5 h-5 text-accent" />
-                </div>
-                <h3 className="text-xl font-black font-kanit italic uppercase tracking-tighter">Pagos y Señas</h3>
-             </div>
+            <div className="flex items-center gap-4 mb-2">
+              <div className="w-10 h-10 rounded-xl bg-accent/10 flex items-center justify-center border border-accent/20">
+                <DollarSign className="w-5 h-5 text-accent" />
+              </div>
+              <h3 className="text-xl font-black font-kanit italic uppercase tracking-tighter">Pagos y Señas</h3>
+            </div>
 
-             <div className="space-y-6">
-                 <div className="p-8 rounded-[2.5rem] bg-surface-elevated/50 border border-white/5 space-y-6">
-                    <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                       <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Lógica de la Seña</label>
-                       <div className="flex gap-2 bg-background/50 p-1 rounded-xl border border-white/5">
-                          <button 
-                            onClick={() => setDepositMode('share')}
-                            className={`px-4 py-2 rounded-lg text-[9px] font-black uppercase transition-all ${depositMode === 'share' ? 'bg-primary text-black' : 'text-muted-foreground hover:text-foreground'}`}
-                          >
-                             Una Parte (1/N)
-                          </button>
-                          <button 
-                            onClick={() => setDepositMode('percentage')}
-                            className={`px-4 py-2 rounded-lg text-[9px] font-black uppercase transition-all ${depositMode === 'percentage' ? 'bg-primary text-black' : 'text-muted-foreground hover:text-foreground'}`}
-                          >
-                             Porcentaje Fijo
-                          </button>
-                       </div>
-                    </div>
-
-                    {depositMode === 'share' ? (
-                       <div className="grid grid-cols-3 gap-3">
-                          {[
-                             { label: 'Fútbol 5', value: 10, desc: '10% del total' },
-                             { label: 'Fútbol 7', value: 7, desc: '7% aprox.' },
-                             { label: 'Fútbol 11', value: 5, desc: '5% aprox.' }
-                          ].map(opt => (
-                             <button 
-                                key={opt.value}
-                                onClick={() => setDeposit(opt.value)}
-                                className={`p-4 rounded-2xl border transition-all text-center ${deposit === opt.value ? 'bg-primary/10 border-primary' : 'bg-background/40 border-white/5 hover:border-white/10'}`}
-                             >
-                                <p className={`text-[10px] font-black uppercase tracking-tighter ${deposit === opt.value ? 'text-primary' : 'text-foreground'}`}>{opt.label}</p>
-                                <p className="text-[10px] font-bold text-muted-foreground mt-1">{opt.desc}</p>
-                             </button>
-                          ))}
-                       </div>
-                    ) : (
-                       <div className="space-y-4">
-                          <div className="flex justify-between items-center px-1">
-                             <div className="flex items-center gap-2">
-                                <span className="w-2 h-2 rounded-full bg-primary animate-pulse" />
-                                <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground italic">Monto Personalizado</label>
-                             </div>
-                             <span className="text-2xl font-black italic font-kanit text-primary">{deposit}%</span>
-                          </div>
-                          <input 
-                            type="range" min="0" max="100" step="5"
-                            value={deposit}
-                            onChange={(e) => setDeposit(Number(e.target.value))}
-                            className="w-full accent-primary h-2 bg-foreground/10 rounded-full"
-                          />
-                       </div>
-                    )}
-
-                    <div className="p-4 rounded-2xl bg-primary/5 border border-primary/10">
-                       <p className="text-[9px] font-bold text-primary/80 uppercase tracking-widest leading-relaxed italic">
-                          💡 REGLA DE NEGOCIO: El creador del partido pagará este monto para reservar. 
-                          {depositMode === 'share' ? ' Al elegir una parte, el creador paga exactamente lo mismo que el resto de los jugadores.' : ' Al elegir porcentaje, el creador puede pagar más o menos que su cuota individual.'}
-                       </p>
-                    </div>
-                 </div>
-
-                <div>
-                   <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground mb-4 block">Precios por Cancha (1 Hora)</label>
-                   <div className="space-y-3">
-                      {fields.map((f: any) => (
-                        <div key={f.id} className="flex items-center justify-between p-4 rounded-2xl bg-foreground/[0.03] border border-white/5">
-                           <span className="text-xs font-black uppercase tracking-tighter">{f.name}</span>
-                           <div className="flex items-center gap-2">
-                              <span className="text-sm font-black text-muted-foreground">$</span>
-                              <input 
-                                type="number" 
-                                value={fieldPrices[f.id] || 0}
-                                onChange={(e) => setFieldPrices({...fieldPrices, [f.id]: Number(e.target.value)})}
-                                className="w-24 bg-transparent text-right font-black italic font-kanit text-lg outline-none"
-                              />
-                           </div>
-                        </div>
-                      ))}
-                   </div>
+            <div className="space-y-6">
+              <div className="p-8 rounded-[2.5rem] bg-surface-elevated/50 border border-white/5 space-y-6">
+                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                  <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Lógica de la Seña</label>
+                  <div className="flex gap-2 bg-background/50 p-1 rounded-xl border border-white/5">
+                    <button
+                      onClick={() => setDepositMode('share')}
+                      className={`px-4 py-2 rounded-lg text-[9px] font-black uppercase transition-all ${depositMode === 'share' ? 'bg-primary text-black' : 'text-muted-foreground hover:text-foreground'}`}
+                    >
+                      Una Parte (1/N)
+                    </button>
+                    <button
+                      onClick={() => setDepositMode('percentage')}
+                      className={`px-4 py-2 rounded-lg text-[9px] font-black uppercase transition-all ${depositMode === 'percentage' ? 'bg-primary text-black' : 'text-muted-foreground hover:text-foreground'}`}
+                    >
+                      Porcentaje Fijo
+                    </button>
+                  </div>
                 </div>
 
-                <div>
-                   <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground mb-2 block">Alias / CBU para Transferencia</label>
-                   <input 
-                     type="text" 
-                     value={aliasCbu}
-                     onChange={(e) => setAliasCbu(e.target.value)}
-                     placeholder="complejo.ejemplo.mp"
-                     className="w-full bg-foreground/[0.03] border border-white/5 rounded-2xl p-4 text-sm focus:border-primary/50 outline-none transition-all font-mono"
-                   />
-                </div>
-             </div>
-
-             <button 
-                onClick={handleSavePrices} 
-                className="w-full bg-primary text-black font-black uppercase text-xs tracking-widest py-5 rounded-2xl hover:bg-primary-light transition-all shadow-[0_10px_30_rgba(44,252,125,0.3)] press-effect mt-4"
-                disabled={isSavingPrices}
-             >
-                {isSavingPrices ? 'Guardando...' : 'Guardar Todo'}
-             </button>
-          </div>
-           </div>
-
-          {/* Preview Card */}
-          <div className="hidden xl:block space-y-6">
-             <div className="sticky top-10">
-                <div className="flex flex-col gap-1 mb-6">
-                   <h3 className="text-xl font-black font-kanit italic uppercase tracking-tighter">Vista <span className="text-primary">Previa</span></h3>
-                   <p className="text-[10px] font-black uppercase tracking-[0.4em] text-muted-foreground">Así te ven los pibes</p>
-                </div>
-                
-                <div className="glass-premium rounded-[3rem] overflow-hidden border-white/5 shadow-2xl group">
-                   <div className="h-48 relative">
-                      <img src={profileImageUrl || "https://images.unsplash.com/photo-1574629810360-7efbbe195018?q=80&w=600&auto=format&fit=crop"} className="w-full h-full object-cover brightness-[0.4] contrast-125" />
-                      <div className="absolute inset-0 bg-gradient-to-t from-background to-transparent" />
-                      <div className="absolute bottom-4 left-6">
-                         <h4 className="text-2xl font-black italic uppercase text-white tracking-tighter">{businessName || "Tu Complejo"}</h4>
-                         <div className="flex items-center gap-2 mt-1">
-                            <MapPin className="w-3 h-3 text-primary" />
-                            <span className="text-[8px] font-bold text-white/60 uppercase tracking-widest">{address || "Rosario, Argentina"}</span>
-                         </div>
-                      </div>
-                   </div>
-                   <div className="p-8 space-y-6 bg-surface-elevated/30">
-                      <div className="space-y-2">
-                         <p className="text-[9px] font-black uppercase tracking-widest text-primary">Sobre nosotros</p>
-                         <p className="text-[11px] text-muted-foreground leading-relaxed line-clamp-3 italic">
-                            {description || "Contanos un poco sobre tu sede para atraer a más jugadores..."}
-                         </p>
-                      </div>
-                      <div className="flex gap-2">
-                         {(Array.from(new Set(fields.map((f: any) => f.type))) as string[]).map(type => (
-                            <div key={type} className="px-4 h-12 rounded-xl bg-foreground/5 border border-white/5 flex items-center justify-center font-black italic font-kanit text-[10px] text-primary/40">
-                               {type}
-                            </div>
-                         ))}
-                      </div>
-                      <div className="h-0.5 w-full bg-white/5" />
-                      <button className="w-full py-4 bg-primary text-black font-black uppercase text-[10px] tracking-widest rounded-xl shadow-lg shadow-primary/10 transition-all hover:scale-105 active:scale-95">
-                         RESERVAR AHORA
+                {depositMode === 'share' ? (
+                  <div className="grid grid-cols-3 gap-3">
+                    {[
+                      { label: 'Fútbol 5', value: 10, desc: '10% del total' },
+                      { label: 'Fútbol 7', value: 7, desc: '7% aprox.' },
+                      { label: 'Fútbol 11', value: 5, desc: '5% aprox.' }
+                    ].map(opt => (
+                      <button
+                        key={opt.value}
+                        onClick={() => setDeposit(opt.value)}
+                        className={`p-4 rounded-2xl border transition-all text-center ${deposit === opt.value ? 'bg-primary/10 border-primary' : 'bg-background/40 border-white/5 hover:border-white/10'}`}
+                      >
+                        <p className={`text-[10px] font-black uppercase tracking-tighter ${deposit === opt.value ? 'text-primary' : 'text-foreground'}`}>{opt.label}</p>
+                        <p className="text-[10px] font-bold text-muted-foreground mt-1">{opt.desc}</p>
                       </button>
-                   </div>
-                </div>
-                
-                <div className="mt-8 p-6 rounded-[2rem] bg-amber-500/5 border border-amber-500/10 flex items-start gap-4">
-                   <Info className="w-5 h-5 text-amber-500 shrink-0 mt-1" />
-                   <p className="text-[10px] font-bold text-amber-500/80 uppercase tracking-widest leading-relaxed">
-                      Recordá usar imágenes de alta calidad para destacar entre los complejos.
-                   </p>
-                </div>
-             </div>
-          </div>
-       </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="space-y-4">
+                    <div className="flex justify-between items-center px-1">
+                      <div className="flex items-center gap-2">
+                        <span className="w-2 h-2 rounded-full bg-primary animate-pulse" />
+                        <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground italic">Monto Personalizado</label>
+                      </div>
+                      <span className="text-2xl font-black italic font-kanit text-primary">{deposit}%</span>
+                    </div>
+                    <input
+                      type="range" min="0" max="100" step="5"
+                      value={deposit}
+                      onChange={(e) => setDeposit(Number(e.target.value))}
+                      className="w-full accent-primary h-2 bg-foreground/10 rounded-full"
+                    />
+                  </div>
+                )}
 
-       {/* Managed Fields List */}
-       <div className="glass-premium rounded-[2.5rem] p-10 border-white/5">
-          <div className="flex justify-between items-center mb-8">
-            <h3 className="text-2xl font-black font-kanit italic uppercase tracking-tighter">Inventario de Canchas</h3>
-            <button onClick={handleCreateField} className="p-3 rounded-2xl bg-primary text-black hover:bg-primary-light transition-all shadow-lg shadow-primary/20">
-               <Plus className="w-6 h-6" />
+                <div className="p-4 rounded-2xl bg-primary/5 border border-primary/10">
+                  <p className="text-[9px] font-bold text-primary/80 uppercase tracking-widest leading-relaxed italic">
+                    💡 REGLA DE NEGOCIO: El creador del partido pagará este monto para reservar.
+                    {depositMode === 'share' ? ' Al elegir una parte, el creador paga exactamente lo mismo que el resto de los jugadores.' : ' Al elegir porcentaje, el creador puede pagar más o menos que su cuota individual.'}
+                  </p>
+                </div>
+              </div>
+
+              <div>
+                <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground mb-4 block">Precios por Cancha (1 Hora)</label>
+                <div className="space-y-3">
+                  {fields.map((f: any) => (
+                    <div key={f.id} className="flex items-center justify-between p-4 rounded-2xl bg-foreground/[0.03] border border-white/5">
+                      <span className="text-xs font-black uppercase tracking-tighter">{f.name}</span>
+                      <div className="flex items-center gap-2">
+                        <span className="text-sm font-black text-muted-foreground">$</span>
+                        <input
+                          type="number"
+                          value={fieldPrices[f.id] || 0}
+                          onChange={(e) => setFieldPrices({ ...fieldPrices, [f.id]: Number(e.target.value) })}
+                          className="w-24 bg-transparent text-right font-black italic font-kanit text-lg outline-none"
+                        />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div>
+                <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground mb-2 block">Alias / CBU para Transferencia</label>
+                <input
+                  type="text"
+                  value={aliasCbu}
+                  onChange={(e) => setAliasCbu(e.target.value)}
+                  placeholder="complejo.ejemplo.mp"
+                  className="w-full bg-foreground/[0.03] border border-white/5 rounded-2xl p-4 text-sm focus:border-primary/50 outline-none transition-all font-mono"
+                />
+              </div>
+            </div>
+
+            <button
+              onClick={handleSavePrices}
+              className="w-full bg-primary text-black font-black uppercase text-xs tracking-widest py-5 rounded-2xl hover:bg-primary-light transition-all shadow-[0_10px_30_rgba(44,252,125,0.3)] press-effect mt-4"
+              disabled={isSavingPrices}
+            >
+              {isSavingPrices ? 'Guardando...' : 'Guardar Todo'}
             </button>
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-             {fields.map((f: any) => (
-               <div key={f.id} className="p-6 rounded-3xl bg-surface-elevated/30 border border-white/5 hover:border-primary/30 transition-all group">
-                  <div className="flex justify-between items-start mb-6">
-                     <div className="p-3 rounded-xl bg-background border border-white/10 group-hover:bg-primary/10 transition-colors">
-                        <MapPin className="w-6 h-6 text-primary" />
-                     </div>
-                     <span className="text-[9px] font-black uppercase tracking-widest text-muted-foreground px-2 py-1 rounded bg-foreground/5">{f.type}</span>
+        </div>
+
+        {/* Preview Card */}
+        <div className="hidden xl:block space-y-6">
+          <div className="sticky top-10">
+            <div className="flex flex-col gap-1 mb-6">
+              <h3 className="text-xl font-black font-kanit italic uppercase tracking-tighter">Vista <span className="text-primary">Previa</span></h3>
+              <p className="text-[10px] font-black uppercase tracking-[0.4em] text-muted-foreground">Así te ven los pibes</p>
+            </div>
+
+            <div className="glass-premium rounded-[3rem] overflow-hidden border-white/5 shadow-2xl group">
+              <div className="h-48 relative">
+                <img src={profileImageUrl || "https://images.unsplash.com/photo-1574629810360-7efbbe195018?q=80&w=600&auto=format&fit=crop"} className="w-full h-full object-cover brightness-[0.4] contrast-125" />
+                <div className="absolute inset-0 bg-gradient-to-t from-background to-transparent" />
+                <div className="absolute bottom-4 left-6">
+                  <h4 className="text-2xl font-black italic uppercase text-white tracking-tighter">{businessName || "Tu Complejo"}</h4>
+                  <div className="flex items-center gap-2 mt-1">
+                    <MapPin className="w-3 h-3 text-primary" />
+                    <span className="text-[8px] font-bold text-white/60 uppercase tracking-widest">{address || "Rosario, Argentina"}</span>
                   </div>
-                  <h4 className="text-lg font-black uppercase tracking-tighter mb-1">{f.name}</h4>
-                  <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Activa • {f.is_active ? 'Visible' : 'Oculta'}</p>
-                  
-                  <div className="mt-8 flex gap-3">
-                     <button className="flex-1 py-3 rounded-xl bg-foreground/5 hover:bg-foreground/10 text-[9px] font-black uppercase tracking-widest transition-all">Editar Horarios</button>
-                     <button className="p-3 rounded-xl bg-danger/10 text-danger hover:bg-danger transition-all hover:text-white">
-                        <Trash2 className="w-4 h-4" />
-                     </button>
-                  </div>
-               </div>
-             ))}
+                </div>
+              </div>
+              <div className="p-8 space-y-6 bg-surface-elevated/30">
+                <div className="space-y-2">
+                  <p className="text-[9px] font-black uppercase tracking-widest text-primary">Sobre nosotros</p>
+                  <p className="text-[11px] text-muted-foreground leading-relaxed line-clamp-3 italic">
+                    {description || "Contanos un poco sobre tu sede para atraer a más jugadores..."}
+                  </p>
+                </div>
+                <div className="flex gap-2">
+                  {(Array.from(new Set(fields.map((f: any) => f.type))) as string[]).map(type => (
+                    <div key={type} className="px-4 h-12 rounded-xl bg-foreground/5 border border-white/5 flex items-center justify-center font-black italic font-kanit text-[10px] text-primary/40">
+                      {type}
+                    </div>
+                  ))}
+                </div>
+                <div className="h-0.5 w-full bg-white/5" />
+                <button className="w-full py-4 bg-primary text-black font-black uppercase text-[10px] tracking-widest rounded-xl shadow-lg shadow-primary/10 transition-all hover:scale-105 active:scale-95">
+                  RESERVAR AHORA
+                </button>
+              </div>
+            </div>
+
+            <div className="mt-8 p-6 rounded-[2rem] bg-amber-500/5 border border-amber-500/10 flex items-start gap-4">
+              <Info className="w-5 h-5 text-amber-500 shrink-0 mt-1" />
+              <p className="text-[10px] font-bold text-amber-500/80 uppercase tracking-widest leading-relaxed">
+                Recordá usar imágenes de alta calidad para destacar entre los complejos.
+              </p>
+            </div>
           </div>
-       </div>
+        </div>
+      </div>
+
+      {/* Managed Fields List */}
+      <div className="glass-premium rounded-[2.5rem] p-10 border-white/5">
+        <div className="flex justify-between items-center mb-8">
+          <h3 className="text-2xl font-black font-kanit italic uppercase tracking-tighter">Inventario de Canchas</h3>
+          <button onClick={handleCreateField} className="p-3 rounded-2xl bg-primary text-black hover:bg-primary-light transition-all shadow-lg shadow-primary/20">
+            <Plus className="w-6 h-6" />
+          </button>
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {fields.map((f: any) => (
+            <div key={f.id} className="p-6 rounded-3xl bg-surface-elevated/30 border border-white/5 hover:border-primary/30 transition-all group">
+              <div className="flex justify-between items-start mb-6">
+                <div className="p-3 rounded-xl bg-background border border-white/10 group-hover:bg-primary/10 transition-colors">
+                  <MapPin className="w-6 h-6 text-primary" />
+                </div>
+                <span className="text-[9px] font-black uppercase tracking-widest text-muted-foreground px-2 py-1 rounded bg-foreground/5">{f.type}</span>
+              </div>
+              <h4 className="text-lg font-black uppercase tracking-tighter mb-1">{f.name}</h4>
+              <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Activa • {f.is_active ? 'Visible' : 'Oculta'}</p>
+
+              <div className="mt-8 flex gap-3">
+                <button className="flex-1 py-3 rounded-xl bg-foreground/5 hover:bg-foreground/10 text-[9px] font-black uppercase tracking-widest transition-all">Editar Horarios</button>
+                <button className="p-3 rounded-xl bg-danger/10 text-danger hover:bg-danger transition-all hover:text-white">
+                  <Trash2 className="w-4 h-4" />
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* DANGER ZONE - Eliminar Cuenta */}
+      <div className="glass-premium rounded-[2.5rem] p-10 border-danger/20 mt-8 relative overflow-hidden group">
+        <div className="absolute top-0 right-0 w-64 h-64 bg-danger/10 rounded-full blur-3xl -z-10 group-hover:bg-danger/20 transition-all"></div>
+        
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 relative z-10">
+          <div>
+            <h3 className="text-2xl font-black font-kanit italic uppercase tracking-tighter text-danger mb-2">Zona Peligrosa</h3>
+            <p className="text-xs text-muted-foreground max-w-md leading-relaxed">
+              Eliminar tu cuenta borrará permanentemente todos tus establecimientos, canchas, reservas e historial financiero. <strong className="text-white">Esta acción no se puede deshacer.</strong>
+            </p>
+          </div>
+          
+          <button 
+            onClick={async () => {
+              const confirm1 = window.confirm("¿Estás completamente seguro de que deseas ELIMINAR tu cuenta y todos tus datos? Esta acción es irreversible.");
+              if (!confirm1) return;
+              
+              const confirm2 = window.confirm("Última advertencia: Se borrarán todas las reservas, canchas y tu establecimiento. ¿Continuar?");
+              if (!confirm2) return;
+              
+              if (business?.id) {
+                const { error } = await supabase.from('canchas_businesses').delete().eq('id', business.id);
+                if (error) {
+                  alert("Hubo un error al eliminar tu negocio: " + error.message);
+                  return;
+                }
+              }
+              
+              alert("Tu cuenta ha sido eliminada. Lamentamos verte partir.");
+              window.location.href = '/canchas/login';
+            }}
+            className="shrink-0 flex items-center gap-3 py-4 px-6 rounded-2xl bg-danger/10 text-danger border border-danger/30 hover:bg-danger hover:text-white transition-all font-black uppercase text-xs tracking-widest shadow-lg shadow-danger/10 active:scale-95"
+          >
+            <Trash2 className="w-5 h-5" />
+            Eliminar Mi Cuenta
+          </button>
+        </div>
+      </div>
     </div>
   );
 }
@@ -1496,7 +1546,7 @@ function SettingsTab({ business, fields, setFields, hasMP, setBusiness }: any) {
 function NewBookingModal({ onClose, fields, selectedSlot, onBooked, selectedDate }: any) {
   const [loading, setLoading] = useState(false);
   const { user } = useAuth();
-  
+
   const [formData, setFormData] = useState({
     title: '',
     fieldId: selectedSlot?.fieldId || (fields[0]?.id || ''),
@@ -1508,18 +1558,18 @@ function NewBookingModal({ onClose, fields, selectedSlot, onBooked, selectedDate
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!formData.fieldId) {
-       alert("No tienes canchas disponibles o no seleccionaste una.");
-       return;
+      alert("No tienes canchas disponibles o no seleccionaste una.");
+      return;
     }
 
     setLoading(true);
     const selectedFieldObj = fields.find((f: any) => f.id === formData.fieldId);
     if (!selectedFieldObj) {
-        setLoading(false);
-        return;
+      setLoading(false);
+      return;
     }
     const price = selectedFieldObj.price_per_match || 15000;
-    
+
     // Calculate end time (assuming 1 hour matches)
     const [hours, minutes] = formData.time.split(':');
     const endHours = parseInt(hours) + 1;
@@ -1535,7 +1585,7 @@ function NewBookingModal({ onClose, fields, selectedSlot, onBooked, selectedDate
       end_time: endTime,
       total_price: price,
       down_payment_paid: formData.paid ? price : 0,
-      status: formData.paid ? 'full_paid' : 'pending' 
+      status: formData.paid ? 'full_paid' : 'pending'
     }]).select('*, canchas_fields(name, type)').single();
 
     if (error) {
@@ -1556,45 +1606,45 @@ function NewBookingModal({ onClose, fields, selectedSlot, onBooked, selectedDate
         className="glass-card w-full max-w-md p-6 overflow-hidden relative"
       >
         <div className="absolute top-0 right-0 w-32 h-32 bg-primary/10 rounded-full blur-2xl -translate-y-1/2 translate-x-1/2 pointer-events-none"></div>
-        
+
         <div className="flex justify-between items-center mb-6 relative z-10">
-           <h3 className="text-2xl font-black font-kanit">Nueva Reserva</h3>
-           <button onClick={onClose} className="text-muted-foreground hover:text-foreground">X</button>
+          <h3 className="text-2xl font-black font-kanit">Nueva Reserva</h3>
+          <button onClick={onClose} className="text-muted-foreground hover:text-foreground">X</button>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4 relative z-10">
-           <div>
-             <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-1 block">A Nombre De</label>
-             <input type="text" value={formData.title} onChange={e => setFormData(prev => ({...prev, title: e.target.value}))} className="w-full bg-surface-elevated border border-border/50 rounded-xl px-4 py-3 outline-none" placeholder="Nombre completo o equipo..." required />
-           </div>
+          <div>
+            <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-1 block">A Nombre De</label>
+            <input type="text" value={formData.title} onChange={e => setFormData(prev => ({ ...prev, title: e.target.value }))} className="w-full bg-surface-elevated border border-border/50 rounded-xl px-4 py-3 outline-none" placeholder="Nombre completo o equipo..." required />
+          </div>
 
-           <div className="grid grid-cols-2 gap-4">
-             <div>
-               <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-1 block">Cancha</label>
-               <select value={formData.fieldId} onChange={e => setFormData(prev => ({...prev, fieldId: e.target.value}))} className="w-full bg-surface-elevated border border-border/50 rounded-xl px-4 py-3 outline-none appearance-none">
-                 {fields.map((f: any) => (
-                    <option key={f.id} value={f.id}>{f.name} ({f.type})</option>
-                 ))}
-               </select>
-             </div>
-             <div>
-               <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-1 block">Hora Inicio</label>
-               <select value={formData.time} onChange={e => setFormData(prev => ({...prev, time: e.target.value}))} className="w-full bg-surface-elevated border border-border/50 rounded-xl px-4 py-3 outline-none appearance-none">
-                 {["08:00", "09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00", "19:00", "20:00", "21:00", "22:00", "23:00"].map(t => (
-                    <option key={t} value={t}>{t}</option>
-                 ))}
-               </select>
-             </div>
-           </div>
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-1 block">Cancha</label>
+              <select value={formData.fieldId} onChange={e => setFormData(prev => ({ ...prev, fieldId: e.target.value }))} className="w-full bg-surface-elevated border border-border/50 rounded-xl px-4 py-3 outline-none appearance-none">
+                {fields.map((f: any) => (
+                  <option key={f.id} value={f.id}>{f.name} ({f.type})</option>
+                ))}
+              </select>
+            </div>
+            <div>
+              <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-1 block">Hora Inicio</label>
+              <select value={formData.time} onChange={e => setFormData(prev => ({ ...prev, time: e.target.value }))} className="w-full bg-surface-elevated border border-border/50 rounded-xl px-4 py-3 outline-none appearance-none">
+                {["08:00", "09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00", "19:00", "20:00", "21:00", "22:00", "23:00"].map(t => (
+                  <option key={t} value={t}>{t}</option>
+                ))}
+              </select>
+            </div>
+          </div>
 
-           <div className="flex items-center gap-3 pt-2">
-             <input type="checkbox" id="paid" checked={formData.paid} onChange={e => setFormData(prev => ({...prev, paid: e.target.checked}))} className="w-5 h-5 accent-primary rounded bg-surface border-border" />
-             <label htmlFor="paid" className="text-sm font-semibold select-none">Marcar como cobrado en efectivo</label>
-           </div>
+          <div className="flex items-center gap-3 pt-2">
+            <input type="checkbox" id="paid" checked={formData.paid} onChange={e => setFormData(prev => ({ ...prev, paid: e.target.checked }))} className="w-5 h-5 accent-primary rounded bg-surface border-border" />
+            <label htmlFor="paid" className="text-sm font-semibold select-none">Marcar como cobrado en efectivo</label>
+          </div>
 
-           <button type="submit" disabled={loading} className="w-full mt-4 h-12 bg-primary text-black font-black text-sm uppercase tracking-wider rounded-xl hover:bg-white transition-all disabled:opacity-50">
-             {loading ? 'Guardando...' : 'Confirmar Turno'}
-           </button>
+          <button type="submit" disabled={loading} className="w-full mt-4 h-12 bg-primary text-black font-black text-sm uppercase tracking-wider rounded-xl hover:bg-white transition-all disabled:opacity-50">
+            {loading ? 'Guardando...' : 'Confirmar Turno'}
+          </button>
         </form>
       </motion.div>
     </div>
@@ -1612,10 +1662,10 @@ function EditBookingModal({ booking, onClose, onUpdate, onDelete }: any) {
   const handleUpdate = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    
+
     // Si viene desde la app (match_id) y se cancela, ideally cancelamos también en matches o se maneja asíncrono.
     // Para el MVP de canchas actualizamos este booking local:
-    
+
     const { data, error } = await supabase.from('canchas_bookings')
       .update({ status, down_payment_paid: downPayment })
       .eq('id', booking.id)
@@ -1632,14 +1682,14 @@ function EditBookingModal({ booking, onClose, onUpdate, onDelete }: any) {
   };
 
   const handleDelete = async () => {
-    if(!window.confirm("¿Estás seguro de que quieres eliminar esta reserva permanentemente? Esta acción liberará la cancha para este horario.")) return;
+    if (!window.confirm("¿Estás seguro de que quieres eliminar esta reserva permanentemente? Esta acción liberará la cancha para este horario.")) return;
     setLoading(true);
     const { error } = await supabase.from('canchas_bookings').delete().eq('id', booking.id);
-    if(error){
-       alert("Error al eliminar: " + error.message);
+    if (error) {
+      alert("Error al eliminar: " + error.message);
     } else {
-       onDelete(booking.id);
-       onClose();
+      onDelete(booking.id);
+      onClose();
     }
     setLoading(false);
   };
@@ -1653,55 +1703,55 @@ function EditBookingModal({ booking, onClose, onUpdate, onDelete }: any) {
         className="glass-card w-full max-w-md p-6 overflow-hidden relative"
       >
         <div className="flex justify-between items-center mb-6 relative z-10">
-           <div>
-             <h3 className="text-2xl font-black font-kanit">Gestionar Reserva</h3>
-             <p className="text-xs text-muted-foreground">{booking.title}</p>
-           </div>
-           <button onClick={onClose} className="text-muted-foreground hover:text-foreground">X</button>
+          <div>
+            <h3 className="text-2xl font-black font-kanit">Gestionar Reserva</h3>
+            <p className="text-xs text-muted-foreground">{booking.title}</p>
+          </div>
+          <button onClick={onClose} className="text-muted-foreground hover:text-foreground">X</button>
         </div>
 
         <form onSubmit={handleUpdate} className="space-y-4 relative z-10">
-           <div className="grid grid-cols-2 gap-4 bg-surface-elevated/30 p-4 rounded-xl border border-border/50">
-             <div>
-               <p className="text-[10px] font-bold text-muted-foreground uppercase">Cancha</p>
-               <p className="font-semibold text-sm">{booking.canchas_fields?.name}</p>
-             </div>
-             <div>
-               <p className="text-[10px] font-bold text-muted-foreground uppercase">Horario</p>
-               <p className="font-semibold text-sm">{booking.start_time.substring(0,5)} a {booking.end_time.substring(0,5)}</p>
-             </div>
-             <div>
-               <p className="text-[10px] font-bold text-muted-foreground uppercase">Monto Total</p>
-               <p className="font-semibold text-sm text-foreground">${booking.total_price}</p>
-             </div>
-             <div>
-               <p className="text-[10px] font-bold text-primary uppercase">Origen</p>
-               <p className="font-semibold text-sm">{booking.match_id ? "App Pelotify 📱" : "Manual 📅"}</p>
-             </div>
-           </div>
+          <div className="grid grid-cols-2 gap-4 bg-surface-elevated/30 p-4 rounded-xl border border-border/50">
+            <div>
+              <p className="text-[10px] font-bold text-muted-foreground uppercase">Cancha</p>
+              <p className="font-semibold text-sm">{booking.canchas_fields?.name}</p>
+            </div>
+            <div>
+              <p className="text-[10px] font-bold text-muted-foreground uppercase">Horario</p>
+              <p className="font-semibold text-sm">{booking.start_time.substring(0, 5)} a {booking.end_time.substring(0, 5)}</p>
+            </div>
+            <div>
+              <p className="text-[10px] font-bold text-muted-foreground uppercase">Monto Total</p>
+              <p className="font-semibold text-sm text-foreground">${booking.total_price}</p>
+            </div>
+            <div>
+              <p className="text-[10px] font-bold text-primary uppercase">Origen</p>
+              <p className="font-semibold text-sm">{booking.match_id ? "App Pelotify 📱" : "Manual 📅"}</p>
+            </div>
+          </div>
 
-           <div>
-             <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-1 block">Estado de Cobro</label>
-             <select value={status} onChange={e => setStatus(e.target.value)} className="w-full bg-surface-elevated border border-border/50 rounded-xl px-4 py-3 outline-none appearance-none">
-               <option value="pending">Impago (Pendiente)</option>
-               <option value="partial_paid">Seña Abonada</option>
-               <option value="full_paid">Completamente Pagado</option>
-             </select>
-           </div>
+          <div>
+            <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-1 block">Estado de Cobro</label>
+            <select value={status} onChange={e => setStatus(e.target.value)} className="w-full bg-surface-elevated border border-border/50 rounded-xl px-4 py-3 outline-none appearance-none">
+              <option value="pending">Impago (Pendiente)</option>
+              <option value="partial_paid">Seña Abonada</option>
+              <option value="full_paid">Completamente Pagado</option>
+            </select>
+          </div>
 
-           <div>
-             <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-1 block">Monto Cobrado ($)</label>
-             <input type="number" value={downPayment} onChange={e => setDownPayment(parseInt(e.target.value))} className="w-full bg-surface-elevated border border-border/50 rounded-xl px-4 py-3 outline-none" placeholder="0" />
-           </div>
+          <div>
+            <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-1 block">Monto Cobrado ($)</label>
+            <input type="number" value={downPayment} onChange={e => setDownPayment(parseInt(e.target.value))} className="w-full bg-surface-elevated border border-border/50 rounded-xl px-4 py-3 outline-none" placeholder="0" />
+          </div>
 
-           <div className="flex gap-3 pt-4 border-t border-border/50">
-             <button type="button" onClick={handleDelete} disabled={loading} className="px-4 h-12 bg-danger/10 text-danger border border-danger/30 font-bold text-sm rounded-xl hover:bg-danger/20 transition-all disabled:opacity-50">
-               Liberar/Borrar
-             </button>
-             <button type="submit" disabled={loading} className="flex-1 h-12 bg-primary text-black font-black text-sm uppercase tracking-wider rounded-xl hover:bg-white transition-all disabled:opacity-50">
-               {loading ? 'Guardando...' : 'Actualizar Reserva'}
-             </button>
-           </div>
+          <div className="flex gap-3 pt-4 border-t border-border/50">
+            <button type="button" onClick={handleDelete} disabled={loading} className="px-4 h-12 bg-danger/10 text-danger border border-danger/30 font-bold text-sm rounded-xl hover:bg-danger/20 transition-all disabled:opacity-50">
+              Liberar/Borrar
+            </button>
+            <button type="submit" disabled={loading} className="flex-1 h-12 bg-primary text-black font-black text-sm uppercase tracking-wider rounded-xl hover:bg-white transition-all disabled:opacity-50">
+              {loading ? 'Guardando...' : 'Actualizar Reserva'}
+            </button>
+          </div>
         </form>
       </motion.div>
     </div>
