@@ -34,7 +34,8 @@ import {
   Search,
   Filter,
   AlertTriangle,
-  XCircle
+  XCircle,
+  Download
 } from 'lucide-react';
 
 import { useAuth } from '@/contexts/AuthContext';
@@ -2054,6 +2055,22 @@ function AnalyticsTab({ bookings, stats }: any) {
   const pendingBookings = bookings.filter((b:any) => b.status === "pending").length;
   const cancelledBookings = bookings.filter((b:any) => b.status === "cancelled").length;
 
+  const handleExportCSV = () => {
+    const headers = ['ID,Cliente,Cancha,Fecha,Hora,Monto,Estado'];
+    const rows = bookings.map((b: any) => {
+      return `${b.id},"${b.title || 'N/A'}", "${b.canchas_fields?.name || 'N/A'}",${b.date},${b.start_time},${b.total_price || 0},${b.status}`;
+    });
+    const csvContent = [headers, ...rows].join("\n");
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.setAttribute("href", url);
+    link.setAttribute("download", "reporte_reservas.csv");
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   return (
     <div className="space-y-8 animate-reveal-up pb-20">
       <div className="flex flex-col gap-1">
@@ -2137,10 +2154,15 @@ function AnalyticsTab({ bookings, stats }: any) {
         </div>
 
         <div className="lg:col-span-1 glass-premium rounded-[2.5rem] p-8 border-border/50 shadow-2xl flex flex-col items-center justify-center text-center">
-            <PieChart className="w-16 h-16 text-primary mb-6 opacity-80" />
+            <Download className="w-16 h-16 text-primary mb-6 opacity-80" />
             <h3 className="text-xl font-black font-kanit italic uppercase tracking-tighter mb-2">Reportes Detallados</h3>
-            <p className="text-sm text-muted-foreground mb-6">La sección de analíticas avanzadas estará disponible próximamente con gráficos interactivos y exportación PDF/Excel.</p>
-            <button className="px-6 py-3 rounded-xl bg-surface-elevated border border-border/50 text-xs font-black uppercase tracking-widest text-muted-foreground">Próximamente</button>
+            <p className="text-sm text-muted-foreground mb-6">Descargá tus datos de reservas en formato CSV para un análisis más profundo del progreso.</p>
+            <button 
+              onClick={handleExportCSV}
+              className="px-8 py-4 w-full rounded-2xl bg-primary text-black font-black uppercase text-xs tracking-widest hover:bg-white hover:scale-105 transition-all shadow-[0_0_20px_rgba(44,252,125,0.2)]"
+            >
+              Exportar CSV
+            </button>
         </div>
       </div>
     </div>

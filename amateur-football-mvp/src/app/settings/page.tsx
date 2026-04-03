@@ -192,19 +192,7 @@ export default function SettingsPage() {
               </div>
             </Link>
 
-            <div className="flex items-center justify-between p-4 rounded-[1.5rem] bg-foreground/[0.01] hover:bg-foreground/[0.03] transition-colors group cursor-pointer border border-transparent hover:border-foreground/5 opacity-50">
-              <div className="flex items-center gap-4">
-                <div className="w-12 h-12 bg-foreground/10 rounded-xl flex items-center justify-center border border-foreground/10 text-foreground/50">
-                  <Shield className="w-5 h-5" />
-                </div>
-                <div className="flex flex-col">
-                  <span className="text-sm font-black text-foreground uppercase">Privacidad</span>
-                  <span className="text-[10px] text-foreground/50 font-black uppercase tracking-widest mt-0.5">
-                    Próximamente
-                  </span>
-                </div>
-              </div>
-            </div>
+
           </div>
         </motion.section>
 
