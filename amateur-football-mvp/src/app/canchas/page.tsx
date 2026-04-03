@@ -224,9 +224,15 @@ export default function CanchasDashboard() {
 
   return (
     <div className="min-h-screen bg-background text-foreground pb-20 md:pb-0 font-kanit relative selection:bg-primary/30 selection:text-foreground">
-      {/* Background Decor */}
-      <div className="fixed top-0 left-1/4 w-[800px] h-[800px] bg-primary/5 rounded-full blur-[150px] -translate-y-1/2 pointer-events-none z-0"></div>
-      <div className="fixed bottom-0 right-0 w-[600px] h-[600px] bg-blue-500/5 rounded-full blur-[120px] translate-y-1/4 translate-x-1/4 pointer-events-none z-0"></div>
+      {/* Professional Background Texture */}
+      <div className="fixed inset-0 z-0 pointer-events-none overflow-hidden opacity-[0.03] dark:opacity-[0.07] flex items-center justify-center">
+        <img src="/main_bg.png" alt="Background Texture" className="w-full h-full object-cover scale-110" />
+      </div>
+
+      {/* Decorative Vivid Gradients */}
+      <div className="fixed top-[-10%] left-[-10%] w-[60%] h-[60%] bg-primary/10 rounded-full blur-[160px] pointer-events-none z-0 animate-pulse"></div>
+      <div className="fixed bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-blue-600/10 rounded-full blur-[140px] pointer-events-none z-0"></div>
+      <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[40%] h-[40%] bg-purple-500/5 rounded-full blur-[140px] pointer-events-none z-0"></div>
 
       {/* HEADER TRAY */}
       <header className="fixed top-0 w-full z-40 bg-surface-elevated/80 border-b border-border/50 backdrop-blur-2xl shadow-sm">
@@ -315,9 +321,9 @@ export default function CanchasDashboard() {
       <div className="pt-24 max-w-[1600px] mx-auto px-4 sm:px-8 flex flex-col md:flex-row gap-8 min-h-screen relative z-10">
 
         {/* DESKTOP SIDEBAR */}
-        <aside className="hidden md:flex flex-col w-64 shrink-0 gap-3 sticky top-28 h-[calc(100vh-8rem)] bg-surface-elevated/70 backdrop-blur-2xl rounded-[2.5rem] p-4 border border-border/50 shadow-2xl">
-          <div className="px-4 pb-4 border-b border-border/50 mb-2">
-            <p className="text-[10px] font-black uppercase tracking-[0.3em] text-muted-foreground">Panel de Control</p>
+        <aside className="hidden md:flex flex-col w-64 shrink-0 gap-3 sticky top-28 h-[calc(100vh-8rem)] bg-surface-elevated/40 backdrop-blur-3xl rounded-[2.5rem] p-5 border border-white/10 dark:border-white/5 shadow-[0_32px_64px_-16px_rgba(0,0,0,0.5)]">
+          <div className="px-4 pb-4 border-b border-border/40 mb-3">
+            <p className="text-[10px] font-black uppercase tracking-[0.4em] text-muted-foreground/70">Control Tower</p>
           </div>
           {tabs.map((tab) => {
             const Icon = tab.icon;
@@ -461,34 +467,38 @@ function OverviewTab({ business, bookings, fields, onNewBooking, onBookingClick,
       </div>
 
       {/* Stats Row */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="glass-card p-6 flex flex-col justify-center gap-3">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-5">
+        <div className="glass-premium p-7 flex flex-col justify-center gap-3 group hover:border-primary/40 transition-all duration-500 relative overflow-hidden">
+          <div className="absolute top-0 right-0 w-16 h-16 bg-primary/5 rounded-full blur-2xl -translate-y-1/2 translate-x-1/2 group-hover:bg-primary/10 transition-all"></div>
           <div className="flex items-center gap-3 mb-1">
-            <div className="p-2.5 rounded-xl bg-primary/10"><DollarSign className="w-6 h-6 text-primary" /></div>
-            <p className="text-xs text-muted-foreground font-black uppercase tracking-widest">Ingresos Hoy</p>
+            <div className="p-3 rounded-2xl bg-primary/10 text-primary border border-primary/20 shadow-[0_0_20px_rgba(44,252,125,0.15)]"><DollarSign className="w-7 h-7" /></div>
+            <p className="text-xs text-muted-foreground font-black uppercase tracking-[0.2em]">Caja Hoy</p>
           </div>
-          <p className="text-3xl font-black font-kanit tracking-tight ml-1">{formatMoney(todayIncome)}</p>
+          <p className="text-4xl font-black font-kanit italic tracking-tighter ml-1 text-foreground">{formatMoney(todayIncome)}</p>
         </div>
-        <div className="glass-card p-6 flex flex-col justify-center gap-3">
+        <div className="glass-premium p-7 flex flex-col justify-center gap-3 group hover:border-accent/40 transition-all duration-500 relative overflow-hidden">
+          <div className="absolute top-0 right-0 w-16 h-16 bg-accent/5 rounded-full blur-2xl -translate-y-1/2 translate-x-1/2 group-hover:bg-accent/10 transition-all"></div>
           <div className="flex items-center gap-3 mb-1">
-            <div className="p-2.5 rounded-xl bg-accent/10"><CalendarDays className="w-6 h-6 text-accent" /></div>
-            <p className="text-xs text-muted-foreground font-black uppercase tracking-widest">Turnos Hoy</p>
+            <div className="p-3 rounded-2xl bg-accent/10 text-accent border border-accent/20 shadow-[0_0_20px_rgba(245,158,11,0.15)]"><CalendarDays className="w-7 h-7" /></div>
+            <p className="text-xs text-muted-foreground font-black uppercase tracking-[0.2em]">Turnos Hoy</p>
           </div>
-          <p className="text-3xl font-black font-kanit tracking-tight ml-1">{todayBookings.length}</p>
+          <p className="text-4xl font-black font-kanit italic tracking-tighter ml-1 text-foreground">{todayBookings.length}</p>
         </div>
-        <div className="glass-card p-6 flex flex-col justify-center gap-3">
+        <div className="glass-premium p-7 flex flex-col justify-center gap-3 group hover:border-danger/40 transition-all duration-500 relative overflow-hidden">
+          <div className="absolute top-0 right-0 w-16 h-16 bg-danger/5 rounded-full blur-2xl -translate-y-1/2 translate-x-1/2 group-hover:bg-danger/10 transition-all"></div>
           <div className="flex items-center gap-3 mb-1">
-            <div className="p-2.5 rounded-xl bg-danger/10"><Clock className="w-6 h-6 text-danger" /></div>
-            <p className="text-xs text-muted-foreground font-black uppercase tracking-widest">Impagos</p>
+            <div className="p-3 rounded-2xl bg-danger/10 text-danger border border-danger/20 shadow-[0_0_20px_rgba(244,63,94,0.15)]"><Clock className="w-7 h-7" /></div>
+            <p className="text-xs text-muted-foreground font-black uppercase tracking-[0.2em]">Impagos</p>
           </div>
-          <p className="text-3xl font-black font-kanit tracking-tight ml-1">{pendingCount}</p>
+          <p className="text-4xl font-black font-kanit italic tracking-tighter ml-1 text-foreground">{pendingCount}</p>
         </div>
-        <div className="glass-card p-6 flex flex-col justify-center gap-3">
+        <div className="glass-premium p-7 flex flex-col justify-center gap-3 group hover:border-primary/40 transition-all duration-500 relative overflow-hidden">
+          <div className="absolute top-0 right-0 w-16 h-16 bg-primary/5 rounded-full blur-2xl -translate-y-1/2 translate-x-1/2 group-hover:bg-primary/10 transition-all"></div>
           <div className="flex items-center gap-3 mb-1">
-            <div className="p-2.5 rounded-xl bg-primary/10"><TrendingUp className="w-6 h-6 text-primary" /></div>
-            <p className="text-xs text-muted-foreground font-black uppercase tracking-widest">Ocupación</p>
+            <div className="p-3 rounded-2xl bg-primary/10 text-primary border border-primary/20 shadow-[0_0_20px_rgba(44,252,125,0.15)]"><TrendingUp className="w-7 h-7" /></div>
+            <p className="text-xs text-muted-foreground font-black uppercase tracking-[0.2em]">Ocupación</p>
           </div>
-          <p className="text-3xl font-black font-kanit tracking-tight ml-1">{occupancy}%</p>
+          <p className="text-4xl font-black font-kanit italic tracking-tighter ml-1 text-foreground">{occupancy}%</p>
         </div>
       </div>
 
@@ -547,36 +557,41 @@ function OverviewTab({ business, bookings, fields, onNewBooking, onBookingClick,
 
 function UpcomingMatch({ time, field, team, status, price, isPending = false, isApp = false, onClick }: any) {
   return (
-    <div onClick={onClick} className="cursor-pointer flex items-center justify-between p-4 rounded-xl bg-surface-elevated/40 hover:bg-surface-elevated border border-border/40 hover:border-primary/20 transition-all group relative overflow-hidden">
+    <div 
+      onClick={onClick} 
+      className="cursor-pointer flex items-center justify-between p-5 rounded-[1.5rem] bg-surface-elevated/30 hover:bg-surface-elevated/60 border border-white/5 hover:border-primary/30 transition-all duration-300 group relative overflow-hidden shadow-sm hover:shadow-primary/5"
+    >
       {isApp && (
-        <div className="absolute top-0 left-0 w-1 h-full bg-primary shadow-[0_0_10px_rgba(44,252,125,0.6)]"></div>
+        <div className="absolute top-0 left-0 w-1.5 h-full bg-primary shadow-[0_0_15px_rgba(44,252,125,0.4)]"></div>
       )}
-      <div className="flex items-center gap-4">
-        <div className="text-center w-12 shrink-0">
-          <span className="block text-lg font-black font-kanit italic tracking-tighter group-hover:text-primary transition-colors">{time}</span>
+      <div className="flex items-center gap-5">
+        <div className="text-center w-14 shrink-0 flex flex-col">
+          <span className="text-lg font-black font-kanit italic tracking-tighter group-hover:text-primary transition-colors leading-none">{time}</span>
+          <span className="text-[8px] font-black uppercase text-muted-foreground tracking-widest mt-1">Check-in</span>
         </div>
-        <div className="w-px h-10 bg-foreground/5 hidden sm:block"></div>
+        <div className="w-px h-10 bg-border/40 hidden sm:block"></div>
         <div>
-          <div className="flex items-center gap-2">
-            <h4 className="font-bold text-sm text-foreground">{field}</h4>
+          <div className="flex items-center gap-3">
+            <h4 className="font-black text-sm uppercase tracking-tight text-foreground/90">{field}</h4>
             {isApp && (
-              <div className="flex items-center gap-1 px-1.5 py-0.5 rounded-md bg-primary/10 border border-primary/20">
+              <div className="flex items-center gap-1 px-2 py-0.5 rounded-full bg-primary/10 border border-primary/20">
                 <Zap className="w-2.5 h-2.5 text-primary" />
-                <span className="text-[7px] font-bold text-primary uppercase">APP</span>
+                <span className="text-[7px] font-black text-primary uppercase tracking-tighter">APP RESERVA</span>
               </div>
             )}
           </div>
-          <p className="text-xs text-muted-foreground mt-0.5">{team}</p>
+          <p className="text-xs text-muted-foreground/80 font-medium mt-1">{team}</p>
         </div>
       </div>
-      <div className="text-right">
-        <p className="font-bold text-sm font-kanit">{price}</p>
-        <p className={`text-[9px] font-bold uppercase px-2 py-0.5 rounded-md mt-1 inline-block ${isPending ? 'bg-danger/10 text-danger border border-danger/20' :
-            status.includes('Seña') ? 'bg-accent/10 text-accent border border-accent/20' :
-              'bg-primary/10 text-primary border border-primary/20'
-          }`}>
+      <div className="text-right flex flex-col items-end gap-1">
+        <p className="font-black text-base font-kanit text-foreground italic">{price}</p>
+        <span className={`text-[8px] font-black uppercase tracking-widest px-2.5 py-1 rounded-full border ${
+          isPending ? 'bg-danger/10 text-danger border-danger/30' :
+          status.includes('Seña') ? 'bg-accent/10 text-accent border-accent/30' :
+          'bg-primary/10 text-primary border-primary/30'
+        }`}>
           {status}
-        </p>
+        </span>
       </div>
     </div>
   );
@@ -783,9 +798,9 @@ function CalendarTab({ bookings, fields, selectedDate, setSelectedDate, onSlotCl
       </div>
 
       {/* ── WEEKLY GRID ── */}
-      <div className="rounded-[2rem] border border-border/50 overflow-hidden shadow-xl bg-surface-elevated/50">
+      <div className="rounded-[2.5rem] border border-white/10 dark:border-white/5 overflow-hidden shadow-2xl bg-surface-elevated/30 backdrop-blur-3xl">
         <div className="overflow-x-auto no-scrollbar">
-          <div className="min-w-[700px]">
+          <div className="min-w-[800px]">
             {/* Column headers: days */}
             <div className="grid border-b border-border/60 bg-foreground/[0.05]" style={{ gridTemplateColumns: '72px repeat(7, 1fr)' }}>
               <div className="p-3 flex items-center justify-center">
@@ -922,8 +937,9 @@ function FinancesTab({ business, bookings, hasMP, user }: any) {
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Main Balance */}
-        <div className="lg:col-span-2 glass-premium rounded-[3rem] p-10 border-border/40 relative overflow-hidden group shadow-2xl">
-          <div className="absolute top-0 right-0 w-80 h-80 bg-primary/10 rounded-full blur-[100px] -z-10 group-hover:bg-primary/20 transition-colors"></div>
+        <div className="lg:col-span-2 bg-slate-950/40 backdrop-blur-3xl rounded-[3.5rem] p-12 border border-white/10 relative overflow-hidden group shadow-[0_48px_80px_-16px_rgba(0,0,0,0.6)]">
+          <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-primary/10 rounded-full blur-[120px] -z-10 group-hover:bg-primary/20 transition-all duration-700 animate-pulse"></div>
+          <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-blue-600/5 rounded-full blur-[100px] -z-10"></div>
 
           <div className="relative z-10 flex flex-col h-full justify-between">
             <div>
@@ -1775,33 +1791,33 @@ function CustomersTab({ bookings }: any) {
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse min-w-[600px]">
             <thead>
-              <tr className="border-b border-border/50 text-[10px] font-black uppercase tracking-widest text-muted-foreground">
-                <th className="pb-3 pl-4">Cliente / Equipo</th>
-                <th className="pb-3 text-center">Turnos Realizados</th>
-                <th className="pb-3 text-center">Total Invertido</th>
-                <th className="pb-3 text-right pr-4">Última Reserva</th>
+              <tr className="border-b border-white/10 text-[10px] font-black uppercase tracking-[0.3em] text-muted-foreground/60">
+                <th className="pb-5 pl-6">Cliente / Equipo</th>
+                <th className="pb-5 text-center">Turnos Realizados</th>
+                <th className="pb-5 text-center">Gasto Total</th>
+                <th className="pb-5 text-right pr-6">Última Actividad</th>
               </tr>
             </thead>
             <tbody>
               {customers.map((c: any, index: number) => (
-                <tr key={index} className="border-b border-border/40 hover:bg-surface-elevated/50 transition-colors">
-                  <td className="py-4 pl-4">
-                    <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-full bg-foreground/5 border border-border/50 flex items-center justify-center font-black italic">
+                <tr key={index} className="border-b border-white/5 hover:bg-white/[0.02] transition-colors group">
+                  <td className="py-5 pl-6">
+                    <div className="flex items-center gap-4">
+                      <div className="w-12 h-12 rounded-2xl bg-surface-elevated/50 border border-white/10 flex items-center justify-center font-black italic text-lg shadow-inner group-hover:border-primary/40 transition-colors">
                         {c.name.substring(0,2).toUpperCase()}
                       </div>
                       <div>
                         <div className="flex items-center gap-2">
-                          <span className="font-bold text-sm">{c.name}</span>
-                          {c.isAppUser && <Zap className="w-3 h-3 text-primary" />}
+                          <span className="font-black text-sm uppercase tracking-tight text-foreground/90 group-hover:text-primary transition-colors">{c.name}</span>
+                          {c.isAppUser && <Zap className="w-3.5 h-3.5 text-primary drop-shadow-[0_0_8px_rgba(44,252,125,0.4)]" />}
                         </div>
-                        {index < 3 && <span className="text-[9px] font-black uppercase tracking-widest text-[#F59E0B] flex items-center gap-1 mt-0.5"><Star className="w-3 h-3 fill-[#F59E0B]" /> VIP</span>}
+                        {index < 3 && <span className="text-[8px] font-black uppercase tracking-[0.2em] text-[#F59E0B] flex items-center gap-1.5 mt-1"><Star className="w-3 h-3 fill-[#F59E0B]" /> Jugador Elite</span>}
                       </div>
                     </div>
                   </td>
-                  <td className="py-4 text-center font-black font-kanit text-lg">{c.totalBookings}</td>
-                  <td className="py-4 text-center font-black text-primary font-kanit">${new Intl.NumberFormat('es-AR').format(c.totalSpent)}</td>
-                  <td className="py-4 text-right pr-4 text-xs text-muted-foreground">{c.lastBooking}</td>
+                  <td className="py-5 text-center font-black font-kanit text-2xl italic text-foreground/80">{c.totalBookings}</td>
+                  <td className="py-5 text-center font-black text-primary font-kanit text-lg italic">${new Intl.NumberFormat('es-AR').format(c.totalSpent)}</td>
+                  <td className="py-5 text-right pr-6 text-[11px] font-bold text-muted-foreground/70 uppercase tracking-widest">{c.lastBooking}</td>
                 </tr>
               ))}
               {customers.length === 0 && (
@@ -1839,32 +1855,40 @@ function AnalyticsTab({ bookings, stats }: any) {
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* KPI Cards */}
-        <div className="lg:col-span-3 grid grid-cols-1 sm:grid-cols-3 gap-4">
-          <div className="glass-premium rounded-3xl p-6 border-border/50 relative overflow-hidden group">
-            <div className="absolute -right-4 -bottom-4 w-24 h-24 bg-primary/20 rounded-full blur-2xl group-hover:bg-primary/30 transition-colors"></div>
-            <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground mb-1">Efectividad de Cobro</p>
-            <div className="flex items-end gap-2">
-              <h3 className="text-4xl font-black italic font-kanit text-foreground">{bookings.length > 0 ? Math.round((completedBookings / bookings.length) * 100) : 0}%</h3>
-              <TrendingUp className="w-6 h-6 text-primary mb-1" />
+        <div className="lg:col-span-3 grid grid-cols-1 sm:grid-cols-3 gap-6">
+          <div className="glass-premium rounded-[2.5rem] p-8 border-white/10 relative overflow-hidden group hover:border-primary/40 transition-all duration-500">
+            <div className="absolute -right-4 -bottom-4 w-32 h-32 bg-primary/10 rounded-full blur-3xl group-hover:bg-primary/20 transition-all"></div>
+            <p className="text-[10px] font-black uppercase tracking-[0.3em] text-muted-foreground/70 mb-3">Efectividad Global</p>
+            <div className="flex items-end gap-3">
+              <h3 className="text-5xl font-black italic font-kanit text-foreground tracking-tighter">
+                {bookings.length > 0 ? Math.round((completedBookings / bookings.length) * 100) : 0}<span className="text-primary">%</span>
+              </h3>
+              <TrendingUp className="w-7 h-7 text-primary mb-2 animate-bounce shadow-primary/20" />
             </div>
-            <p className="text-xs text-muted-foreground mt-2">{completedBookings} de {bookings.length} turnos pagados</p>
+            <p className="text-[10px] font-bold text-muted-foreground/60 mt-4 uppercase tracking-widest">{completedBookings} de {bookings.length} Pagados</p>
           </div>
-          <div className="glass-premium rounded-3xl p-6 border-border/50 relative overflow-hidden group">
-            <div className="absolute -right-4 -bottom-4 w-24 h-24 bg-danger/20 rounded-full blur-2xl group-hover:bg-danger/30 transition-colors"></div>
-            <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground mb-1">Turnos Impagos</p>
-            <div className="flex items-end gap-2">
-              <h3 className="text-4xl font-black italic font-kanit text-danger">{pendingBookings}</h3>
-              <Activity className="w-6 h-6 text-danger mb-1" />
+
+          <div className="glass-premium rounded-[2.5rem] p-8 border-white/10 relative overflow-hidden group hover:border-danger/40 transition-all duration-500">
+            <div className="absolute -right-4 -bottom-4 w-32 h-32 bg-danger/10 rounded-full blur-3xl group-hover:bg-danger/20 transition-all"></div>
+            <p className="text-[10px] font-black uppercase tracking-[0.3em] text-muted-foreground/70 mb-3">Fuga de Capital</p>
+            <div className="flex items-end gap-3">
+              <h3 className="text-5xl font-black italic font-kanit text-danger tracking-tighter">{pendingBookings}</h3>
+              <Activity className="w-7 h-7 text-danger mb-2 opacity-80" />
             </div>
-            <p className="text-xs text-danger mt-2 font-black uppercase tracking-tighter">Acción Requerida</p>
+            <p className="text-[10px] font-black text-danger/80 mt-4 uppercase tracking-[0.2em] flex items-center gap-2">
+              <span className="w-2 h-2 rounded-full bg-danger animate-pulse"></span>
+              Requiere Gestión
+            </p>
           </div>
-          <div className="glass-premium rounded-3xl p-6 border-border/50 relative overflow-hidden group">
-            <div className="absolute -right-4 -bottom-4 w-24 h-24 bg-accent/20 rounded-full blur-2xl group-hover:bg-accent/30 transition-colors"></div>
-            <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground mb-1">Cancelaciones</p>
-            <div className="flex items-end gap-2">
-              <h3 className="text-4xl font-black italic font-kanit text-foreground">{cancelledBookings}</h3>
+
+          <div className="glass-premium rounded-[2.5rem] p-8 border-white/10 relative overflow-hidden group hover:border-accent/40 transition-all duration-500">
+            <div className="absolute -right-4 -bottom-4 w-32 h-32 bg-accent/10 rounded-full blur-3xl group-hover:bg-accent/20 transition-all"></div>
+            <p className="text-[10px] font-black uppercase tracking-[0.3em] text-muted-foreground/70 mb-3">Cancelaciones</p>
+            <div className="flex items-end gap-3">
+              <h3 className="text-5xl font-black italic font-kanit text-foreground/90 tracking-tighter">{cancelledBookings}</h3>
+              <XCircle className="w-7 h-7 text-muted-foreground/50 mb-2" />
             </div>
-            <p className="text-xs text-muted-foreground mt-2">En los últimos 30 días</p>
+            <p className="text-[10px] font-bold text-muted-foreground/60 mt-4 uppercase tracking-widest leading-none">Ratio 30 días</p>
           </div>
         </div>
 
@@ -1881,10 +1905,18 @@ function AnalyticsTab({ bookings, stats }: any) {
             </div>
           </div>
           
-          <div className="flex-1 border-b border-l border-border/50 relative flex items-end justify-between pt-10 pb-2 px-4 gap-2">
-             {/* Fake chart bars */}
-             {[40, 60, 30, 80, 50, 90, 100].map((height, i) => (
-                <div key={i} className="w-full bg-primary/20 hover:bg-primary/80 transition-colors rounded-t-sm" style={{ height: `${height}%` }}></div>
+          <div className="flex-1 border-b border-l border-white/5 relative flex items-end justify-between pt-16 pb-2 px-6 gap-3">
+             {/* Fake chart bars with gradients */}
+             {[40, 65, 35, 85, 55, 95, 100].map((height, i) => (
+                <div key={i} className="flex-1 max-w-[40px] group/bar relative">
+                  <div className="absolute -top-10 left-1/2 -translate-x-1/2 opacity-0 group-hover/bar:opacity-100 transition-opacity bg-primary text-black text-[9px] font-black px-2 py-1 rounded-lg pointer-events-none">
+                    {height}%
+                  </div>
+                  <div 
+                    className="w-full bg-gradient-to-t from-primary/30 via-primary/60 to-primary group-hover/bar:to-white transition-all duration-500 rounded-t-xl shadow-[0_0_15px_rgba(44,252,125,0.2)]" 
+                    style={{ height: `${height * 1.5}px` }}
+                  ></div>
+                </div>
              ))}
           </div>
           <div className="flex justify-between px-4 mt-2 text-[10px] uppercase font-black text-muted-foreground">
