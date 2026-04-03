@@ -1916,7 +1916,7 @@ function CustomersTab({ bookings }: any) {
             </div>
             <div>
               <h3 className="text-xl font-black font-kanit italic uppercase tracking-tighter">Mejores Jugadores</h3>
-              <p className="text-xs text-muted-foreground">{customers.length} clientes únicos registrados</p>
+              <p className="text-xs text-muted-foreground">{customersMap.size} clientes únicos registrados</p>
             </div>
           </div>
           <div className="relative w-full sm:w-64">
