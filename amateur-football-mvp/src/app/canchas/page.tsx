@@ -160,17 +160,52 @@ export default function CanchasDashboard() {
   // If no business found, show a placeholder asking to create one
   if (!business) {
     return (
-      <div className="min-h-screen bg-background text-foreground flex items-center justify-center font-kanit p-4">
-        <div className="max-w-md w-full glass-card p-8 text-center space-y-6">
-          <div className="w-16 h-16 bg-primary/10 text-primary rounded-2xl flex items-center justify-center mx-auto mb-4">
-            <MapPin className="w-8 h-8" />
+      <div className="dark min-h-screen bg-[#020205] text-white flex items-center justify-center font-kanit p-6 relative overflow-hidden">
+        {/* Background Decor */}
+        <div className="absolute top-0 left-0 w-[500px] h-[500px] bg-primary/10 blur-[120px] rounded-full -translate-x-1/2 -translate-y-1/2 pointer-events-none" />
+        <div className="absolute bottom-0 right-0 w-[500px] h-[500px] bg-primary/5 blur-[120px] rounded-full translate-x-1/2 translate-y-1/2 pointer-events-none" />
+
+        <motion.div 
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          className="max-w-lg w-full glass-premium rounded-[2.5rem] p-10 text-center space-y-8 relative z-10 border-white/10 shadow-2xl"
+        >
+          <div className="relative mx-auto w-24 h-24">
+            <div className="absolute inset-0 bg-primary/20 blur-2xl rounded-full animate-pulse" />
+            <div className="relative w-full h-full bg-gradient-to-br from-primary to-primary-dark text-black rounded-[2rem] flex items-center justify-center shadow-lg shadow-primary/20 rotate-3">
+              <MapPin className="w-10 h-10" />
+            </div>
           </div>
-          <h2 className="text-3xl font-Kanit font-bold">¡Bienvenido!</h2>
-          <p className="text-muted-foreground text-sm font-medium">No tienes ningún establecimiento asociado a tu cuenta. Contacta a soporte para dar de alta tu primera sucursal de canchas.</p>
-          <button onClick={() => router.push('/')} className="w-full bg-surface-elevated text-foreground hover:bg-surface-bright font-bold py-3 px-4 rounded-xl border border-border/50 transition-colors">
-            Volver al inicio
-          </button>
-        </div>
+
+          <div className="space-y-4">
+            <h2 className="text-4xl lg:text-5xl font-black italic uppercase tracking-tighter leading-none">
+              ¡HOLA, <span className="text-primary italic">SOCIO!</span>
+            </h2>
+            <p className="text-zinc-400 text-sm font-medium leading-relaxed max-w-sm mx-auto">
+              Aún no tienes un complejo asociado a tu cuenta. <br />
+              <span className="text-white/60">Contáctanos para activar tu panel profesional y empezar a recibir reservas.</span>
+            </p>
+          </div>
+
+          <div className="flex flex-col gap-3">
+            <button 
+              onClick={() => window.open('https://wa.me/your-number', '_blank')}
+              className="w-full bg-primary text-zinc-950 font-black text-sm uppercase tracking-widest py-4 px-6 rounded-2xl hover:bg-white hover:scale-[1.02] transition-all active:scale-95 shadow-xl shadow-primary/10"
+            >
+              Hablar con Soporte
+            </button>
+            <button 
+              onClick={() => router.push('/')} 
+              className="w-full bg-white/5 text-white/60 hover:text-white hover:bg-white/10 font-bold text-xs uppercase tracking-widest py-4 px-6 rounded-2xl border border-white/5 transition-all"
+            >
+              Volver al Inicio
+            </button>
+          </div>
+          
+          <div className="pt-4 border-t border-white/5 text-[10px] font-black text-white/20 uppercase tracking-[0.3em]">
+            Pelotify Business Elite
+          </div>
+        </motion.div>
       </div>
     );
   }

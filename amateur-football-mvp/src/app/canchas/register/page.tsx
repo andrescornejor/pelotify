@@ -82,21 +82,21 @@ export default function CanchasRegisterPage() {
   };
 
   return (
-    <div className="flex min-h-[100dvh] bg-background selection:bg-primary selection:text-background overflow-hidden relative font-kanit">
+    <div className="dark flex min-h-[100dvh] bg-background selection:bg-primary selection:text-background overflow-hidden relative font-kanit">
       {/* Background Decor */}
       <div className="absolute top-0 left-0 w-[800px] h-[800px] bg-primary/5 blur-[150px] rounded-full -translate-x-1/3 -translate-y-1/3 pointer-events-none" />
       
-      <div className="flex-1 flex flex-col items-center justify-center p-4 lg:p-12 relative z-20 overflow-y-auto pt-16 lg:pt-12">
+      <div className="flex-1 flex flex-col items-center justify-center p-6 lg:p-12 relative z-20 overflow-y-auto pt-16 lg:pt-12 bg-zinc-950">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           className="w-full max-w-[440px] py-4"
         >
           {/* Header */}
-          <div className="flex flex-col items-center lg:items-start gap-10 mb-12">
+          <div className="flex flex-col items-center lg:items-start gap-10 mb-14">
              <Link href="/" className="group/logo transition-all duration-700 hover:scale-110">
                 <div className="relative">
-                   <div className="absolute -inset-8 bg-primary/20 blur-[40px] rounded-full opacity-0 group-hover/logo:opacity-100 transition-opacity" />
+                   <div className="absolute -inset-10 bg-primary/20 blur-[50px] rounded-full opacity-0 group-hover/logo:opacity-100 transition-opacity" />
                    <img 
                       src="/logo_pelotify.png" 
                       className="w-32 h-32 md:w-36 md:h-36 object-contain relative z-10 drop-shadow-[0_0_25px_rgba(44,252,125,0.5)]" 
@@ -106,8 +106,8 @@ export default function CanchasRegisterPage() {
              </Link>
              
              <div className="space-y-4">
-                <h1 className="text-4xl lg:text-6xl font-black italic text-white tracking-tighter uppercase leading-[0.8] text-center lg:text-left font-kanit">
-                  REGISTRA TU <br /> <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary via-primary to-white drop-shadow-[0_0_20px_rgba(44,252,125,0.3)]">COMPLEJO</span>
+                <h1 className="text-5xl lg:text-7xl font-black italic text-white tracking-tighter uppercase leading-[0.8] text-center lg:text-left font-kanit">
+                  REGISTRA TU <br /> <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary via-primary to-white drop-shadow-[0_0_20px_rgba(44,252,125,0.3)] font-kanit">COMPLEJO</span>
                 </h1>
                 <div className="flex items-center gap-3 justify-center lg:justify-start">
                    <div className="h-px w-8 bg-primary/40" />
@@ -118,32 +118,32 @@ export default function CanchasRegisterPage() {
              </div>
           </div>
 
-          <div className="flex flex-col gap-6">
+          <div className="flex flex-col gap-8">
             {error && (
-              <div className="bg-danger/10 text-danger border border-danger/20 p-4 rounded-xl text-sm font-semibold">
+              <div className="bg-danger/10 text-danger border border-danger/20 p-4 rounded-xl text-sm font-semibold animate-scale-in">
                 {error}
               </div>
             )}
             
             {success && (
-              <div className="bg-success/10 text-success border border-success/20 p-4 rounded-xl text-sm font-semibold flex items-center gap-2">
+              <div className="bg-success/10 text-success border border-success/20 p-4 rounded-xl text-sm font-semibold flex items-center gap-2 animate-scale-in">
                 <Loader2 className="animate-spin w-4 h-4"/> ¡Cuenta creada! Redirigiendo al panel...
               </div>
             )}
 
             {/* Form */}
-            <form onSubmit={handleRegister} className="flex flex-col gap-3">
+            <form onSubmit={handleRegister} className="flex flex-col gap-4">
               <div className="space-y-1">
                 <div className="relative group/input">
-                  <div className="absolute inset-y-0 left-4 flex items-center pointer-events-none">
-                    <Building className="w-4 h-4 text-foreground/20 group-focus-within/input:text-primary transition-colors" />
+                  <div className="absolute inset-y-0 left-5 flex items-center pointer-events-none">
+                    <Building className="w-5 h-5 text-foreground/20 group-focus-within/input:text-primary transition-colors" />
                   </div>
                   <input
                     type="text"
                     placeholder="Nombre del Complejo (ej. El Óvalo)"
                     value={formData.businessName}
                     onChange={(e) => setFormData(prev => ({...prev, businessName: e.target.value}))}
-                    className="w-full h-12 pl-12 pr-4 rounded-xl bg-white/[0.02] border border-white/5 focus:bg-white/[0.04] focus:border-primary/50 outline-none transition-all text-sm font-bold text-foreground placeholder:text-zinc-700 font-kanit"
+                    className="w-full h-14 pl-14 pr-6 rounded-2xl bg-white/[0.03] border border-white/10 focus:bg-white/[0.06] focus:border-primary/50 outline-none transition-all text-sm font-bold text-white placeholder:text-zinc-600 font-kanit"
                     required
                   />
                 </div>
@@ -151,15 +151,15 @@ export default function CanchasRegisterPage() {
 
               <div className="space-y-1">
                 <div className="relative group/input">
-                  <div className="absolute inset-y-0 left-4 flex items-center pointer-events-none">
-                    <Mail className="w-4 h-4 text-foreground/20 group-focus-within/input:text-primary transition-colors" />
+                  <div className="absolute inset-y-0 left-5 flex items-center pointer-events-none">
+                    <Mail className="w-5 h-5 text-foreground/20 group-focus-within/input:text-primary transition-colors" />
                   </div>
                   <input
                     type="email"
                     placeholder="dueño@complejo.com"
                     value={formData.email}
                     onChange={(e) => setFormData(prev => ({...prev, email: e.target.value}))}
-                    className="w-full h-12 pl-12 pr-4 rounded-xl bg-white/[0.02] border border-white/5 focus:bg-white/[0.04] focus:border-primary/50 outline-none transition-all text-sm font-bold text-foreground placeholder:text-zinc-700 font-kanit"
+                    className="w-full h-14 pl-14 pr-6 rounded-2xl bg-white/[0.03] border border-white/10 focus:bg-white/[0.06] focus:border-primary/50 outline-none transition-all text-sm font-bold text-white placeholder:text-zinc-600 font-kanit"
                     required
                   />
                 </div>
@@ -167,15 +167,15 @@ export default function CanchasRegisterPage() {
 
               <div className="space-y-1">
                 <div className="relative group/input">
-                  <div className="absolute inset-y-0 left-4 flex items-center pointer-events-none">
-                    <Lock className="w-4 h-4 text-foreground/20 group-focus-within/input:text-primary transition-colors" />
+                  <div className="absolute inset-y-0 left-5 flex items-center pointer-events-none">
+                    <Lock className="w-5 h-5 text-foreground/20 group-focus-within/input:text-primary transition-colors" />
                   </div>
                   <input
                     type="password"
                     placeholder="Contraseña"
                     value={formData.password}
                     onChange={(e) => setFormData(prev => ({...prev, password: e.target.value}))}
-                    className="w-full h-12 pl-12 pr-4 rounded-xl bg-white/[0.02] border border-white/5 focus:bg-white/[0.04] focus:border-primary/50 outline-none transition-all text-sm font-bold text-foreground placeholder:text-zinc-700 font-kanit"
+                    className="w-full h-14 pl-14 pr-6 rounded-2xl bg-white/[0.03] border border-white/10 focus:bg-white/[0.06] focus:border-primary/50 outline-none transition-all text-sm font-bold text-white placeholder:text-zinc-600 font-kanit"
                     required
                   />
                 </div>
@@ -183,8 +183,8 @@ export default function CanchasRegisterPage() {
 
               <div className="space-y-1">
                 <div className="relative group/input">
-                  <div className="absolute inset-y-0 left-4 flex items-center pointer-events-none">
-                    <Lock className="w-4 h-4 text-foreground/20 group-focus-within/input:text-primary transition-colors" />
+                  <div className="absolute inset-y-0 left-5 flex items-center pointer-events-none">
+                    <Lock className="w-5 h-5 text-foreground/20 group-focus-within/input:text-primary transition-colors" />
                   </div>
                   <input
                     type="password"
@@ -192,10 +192,10 @@ export default function CanchasRegisterPage() {
                     value={formData.confirmPassword}
                     onChange={(e) => setFormData(prev => ({...prev, confirmPassword: e.target.value}))}
                     className={cn(
-                      "w-full h-12 pl-12 pr-4 rounded-xl bg-white/[0.02] border outline-none transition-all text-sm font-bold text-foreground placeholder:text-zinc-700 font-kanit",
+                      "w-full h-14 pl-14 pr-6 rounded-2xl bg-white/[0.03] border outline-none transition-all text-sm font-bold text-white placeholder:text-zinc-600 font-kanit",
                       formData.confirmPassword && formData.password !== formData.confirmPassword
                         ? 'border-red-500/50 focus:border-red-500'
-                        : 'border-white/5 focus:border-primary/50'
+                        : 'border-white/10 focus:border-primary/50'
                     )}
                     required
                   />
@@ -205,7 +205,7 @@ export default function CanchasRegisterPage() {
               <button
                 type="submit"
                 disabled={isLoading || success}
-                className="w-full h-12 bg-primary text-zinc-950 font-black text-[12px] uppercase tracking-[0.3em] rounded-xl flex items-center justify-center gap-3 hover:bg-white hover:scale-[1.02] transition-all active:scale-95 disabled:opacity-70 shadow-xl shadow-primary/20 group/btn relative overflow-hidden mt-1"
+                className="w-full h-16 bg-primary text-zinc-950 font-black text-[13px] uppercase tracking-[0.3em] rounded-2xl flex items-center justify-center gap-3 hover:bg-white hover:scale-[1.02] transition-all active:scale-95 disabled:opacity-70 shadow-2xl shadow-primary/20 group/btn relative overflow-hidden mt-4"
               >
                 <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover/btn:translate-x-full transition-transform duration-1000" />
                 {isLoading ? <Loader2 className="w-5 h-5 animate-spin" /> : 'CONVERTIRSE EN SOCIO'}
@@ -213,7 +213,7 @@ export default function CanchasRegisterPage() {
             </form>
             
             <div className="text-center pb-6 lg:pb-0">
-              <p className="text-[9px] font-black text-foreground/40 uppercase tracking-[0.2em] font-kanit">
+              <p className="text-[10px] font-black text-foreground/40 uppercase tracking-[0.2em] font-kanit">
                 ¿YA TENÉS CUENTA?{' '}
                 <Link href="/canchas/login" className="text-primary hover:text-white transition-colors underline decoration-primary/30 underline-offset-4">
                   INGRESAR ACÁ
@@ -239,7 +239,7 @@ export default function CanchasRegisterPage() {
          >
            {/* Transición Ultra-Suave (Sin Corte) */}
            <div className="absolute inset-0 bg-gradient-to-r from-zinc-950 via-zinc-950/80 via-zinc-950/20 to-transparent z-10 pointer-events-none" />
-           <div className="absolute inset-0 bg-black/20 backdrop-blur-[1px] z-0" />
+           <div className="absolute inset-0 bg-black/40 backdrop-blur-[1px] z-0" />
            <div className="absolute bottom-0 inset-x-0 h-1/2 bg-gradient-to-t from-zinc-950 via-zinc-950/50 to-transparent z-10" />
          </motion.div>
 
@@ -267,16 +267,17 @@ export default function CanchasRegisterPage() {
                <div className="flex gap-10 pt-10 border-t border-white/5">
                   <div className="space-y-1">
                     <p className="text-2xl font-black italic text-white">+5000</p>
-                    <p className="text-[8px] font-black uppercase text-zinc-500 tracking-widest">Jugadores</p>
+                    <p className="text-[8px] font-black uppercase text-zinc-500 tracking-widest">Jugadores registrados</p>
                   </div>
                   <div className="space-y-1">
                     <p className="text-2xl font-black italic text-white">+140</p>
-                    <p className="text-[8px] font-black uppercase text-zinc-500 tracking-widest">Sedes</p>
+                    <p className="text-[8px] font-black uppercase text-zinc-500 tracking-widest">Complejos activos</p>
                   </div>
                </div>
             </motion.div>
          </div>
       </div>
     </div>
+
   );
 }
