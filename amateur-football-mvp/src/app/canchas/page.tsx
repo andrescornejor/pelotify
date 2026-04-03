@@ -230,7 +230,7 @@ export default function CanchasDashboard() {
 
       {/* HEADER TRAY */}
       <header className="fixed top-0 w-full z-40 bg-surface-elevated/80 border-b border-border/50 backdrop-blur-2xl shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 h-16 sm:h-24 flex items-center justify-between">
+        <div className="max-w-[1600px] mx-auto px-4 h-16 sm:h-24 flex items-center justify-between">
           <div className="flex items-center gap-4">
             <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-primary via-primary to-primary-dark flex items-center justify-center glow-primary rotate-3 transition-transform hover:rotate-0 cursor-pointer">
               <MapPin className="w-6 h-6 text-black" />
@@ -311,7 +311,7 @@ export default function CanchasDashboard() {
       </header>
 
       {/* MAIN LAYOUT */}
-      <div className="pt-24 max-w-[1400px] mx-auto px-4 sm:px-8 flex flex-col md:flex-row gap-8 min-h-screen relative z-10">
+      <div className="pt-24 max-w-[1600px] mx-auto px-4 sm:px-8 flex flex-col md:flex-row gap-8 min-h-screen relative z-10">
 
         {/* DESKTOP SIDEBAR */}
         <aside className="hidden md:flex flex-col w-64 shrink-0 gap-3 sticky top-28 h-[calc(100vh-8rem)] bg-surface-elevated/70 backdrop-blur-2xl rounded-[2.5rem] p-4 border border-border/50 shadow-2xl">
@@ -443,11 +443,11 @@ function OverviewTab({ business, bookings, fields, onNewBooking, onBookingClick,
   };
 
   return (
-    <div className="space-y-6 animate-reveal-up">
+    <div className="space-y-6 animate-reveal-up pt-6">
       {/* Header */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <h2 className="text-2xl font-black font-kanit italic uppercase tracking-tighter">
+          <h2 className="text-3xl font-black font-kanit italic uppercase tracking-tighter">
             Hoy en <span className="text-primary">{business?.name || "tu sede"}</span>
           </h2>
           <p className="text-xs text-muted-foreground mt-0.5">
@@ -460,42 +460,42 @@ function OverviewTab({ business, bookings, fields, onNewBooking, onBookingClick,
       </div>
 
       {/* Stats Row */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
-        <div className="glass-card p-4 flex items-center gap-3">
-          <div className="p-2 rounded-xl bg-primary/10"><DollarSign className="w-5 h-5 text-primary" /></div>
-          <div>
-            <p className="text-[10px] text-muted-foreground font-semibold uppercase">Ingresos Hoy</p>
-            <p className="text-lg font-black font-kanit tracking-tight">{formatMoney(todayIncome)}</p>
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="glass-card p-6 flex flex-col justify-center gap-3">
+          <div className="flex items-center gap-3 mb-1">
+            <div className="p-2.5 rounded-xl bg-primary/10"><DollarSign className="w-6 h-6 text-primary" /></div>
+            <p className="text-xs text-muted-foreground font-black uppercase tracking-widest">Ingresos Hoy</p>
           </div>
+          <p className="text-3xl font-black font-kanit tracking-tight ml-1">{formatMoney(todayIncome)}</p>
         </div>
-        <div className="glass-card p-4 flex items-center gap-3">
-          <div className="p-2 rounded-xl bg-accent/10"><CalendarDays className="w-5 h-5 text-accent" /></div>
-          <div>
-            <p className="text-[10px] text-muted-foreground font-semibold uppercase">Turnos Hoy</p>
-            <p className="text-lg font-black font-kanit tracking-tight">{todayBookings.length}</p>
+        <div className="glass-card p-6 flex flex-col justify-center gap-3">
+          <div className="flex items-center gap-3 mb-1">
+            <div className="p-2.5 rounded-xl bg-accent/10"><CalendarDays className="w-6 h-6 text-accent" /></div>
+            <p className="text-xs text-muted-foreground font-black uppercase tracking-widest">Turnos Hoy</p>
           </div>
+          <p className="text-3xl font-black font-kanit tracking-tight ml-1">{todayBookings.length}</p>
         </div>
-        <div className="glass-card p-4 flex items-center gap-3">
-          <div className="p-2 rounded-xl bg-danger/10"><Clock className="w-5 h-5 text-danger" /></div>
-          <div>
-            <p className="text-[10px] text-muted-foreground font-semibold uppercase">Impagos</p>
-            <p className="text-lg font-black font-kanit tracking-tight">{pendingCount}</p>
+        <div className="glass-card p-6 flex flex-col justify-center gap-3">
+          <div className="flex items-center gap-3 mb-1">
+            <div className="p-2.5 rounded-xl bg-danger/10"><Clock className="w-6 h-6 text-danger" /></div>
+            <p className="text-xs text-muted-foreground font-black uppercase tracking-widest">Impagos</p>
           </div>
+          <p className="text-3xl font-black font-kanit tracking-tight ml-1">{pendingCount}</p>
         </div>
-        <div className="glass-card p-4 flex items-center gap-3">
-          <div className="p-2 rounded-xl bg-primary/10"><TrendingUp className="w-5 h-5 text-primary" /></div>
-          <div>
-            <p className="text-[10px] text-muted-foreground font-semibold uppercase">Ocupación</p>
-            <p className="text-lg font-black font-kanit tracking-tight">{occupancy}%</p>
+        <div className="glass-card p-6 flex flex-col justify-center gap-3">
+          <div className="flex items-center gap-3 mb-1">
+            <div className="p-2.5 rounded-xl bg-primary/10"><TrendingUp className="w-6 h-6 text-primary" /></div>
+            <p className="text-xs text-muted-foreground font-black uppercase tracking-widest">Ocupación</p>
           </div>
+          <p className="text-3xl font-black font-kanit tracking-tight ml-1">{occupancy}%</p>
         </div>
       </div>
 
       {/* Today's Bookings List */}
-      <div className="glass-premium rounded-2xl p-6 border-border/40">
-        <div className="flex justify-between items-center mb-4">
-          <h3 className="text-base font-black font-kanit uppercase tracking-tight">Turnos del día</h3>
-          <button onClick={() => onTabChange('calendar')} className="text-xs text-primary font-bold hover:underline">
+      <div className="glass-premium rounded-[2.5rem] p-8 border-border/40 min-h-[400px]">
+        <div className="flex justify-between items-center mb-6">
+          <h3 className="text-xl font-black font-kanit uppercase tracking-tight">Turnos del día</h3>
+          <button onClick={() => onTabChange('calendar')} className="text-sm text-primary font-bold hover:underline">
             Ver semana →
           </button>
         </div>
