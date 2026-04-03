@@ -155,14 +155,22 @@ export default function RecruitmentMarketplace() {
     }
   }, []);
   
-  const handleJoinSlot = async (slotId: string) => {
+  const handleJoinSlot = async (slotId: string, matchId: string, creatorId: string) => {
     if (!user) {
       alert('Debes iniciar sesión para postularte.');
       return;
     }
+
+    if (user.id === creatorId) {
+      alert('⚠️ No podés unirte a tu propia búsqueda. ¡Ya sos parte de este partido!');
+      return;
+    }
     
     try {
-      await joinSlotMutation.mutateAsync({ slotId, userId: user.id });
+      const result = await joinSlotMutation.mutateAsync({ slotId, userId: user.id });
+      if (result) {
+        alert('✅ ¡FICHAJE CONFIRMADO! Ya estás en el roster del partido.');
+      }
     } catch (err) {
       console.error(err);
       alert('Error al postularse. El cupo podría estar lleno.');
@@ -175,9 +183,10 @@ export default function RecruitmentMarketplace() {
     if (!confirm('¿Estás seguro de que querés eliminar esta búsqueda?')) return;
     try {
       await deleteMutation.mutateAsync(id);
+      alert('🚀 Búsqueda eliminada con éxito.');
     } catch (err) {
       console.error('Error al eliminar:', err);
-      alert('Error al eliminar la búsqueda.');
+      alert('Error al eliminar la búsqueda. Verificá tus permisos.');
     }
   };
 
@@ -402,12 +411,23 @@ export default function RecruitmentMarketplace() {
 
                               {isOpen ? (
                                 <button
-                                  onClick={() => handleJoinSlot(slot.id)}
-                                  disabled={joinSlotMutation.isPending}
-                                  className="group w-14 h-14 bg-primary text-black rounded-[1.5rem] flex items-center justify-center hover:scale-110 active:scale-95 transition-all shadow-glow-primary relative overflow-hidden"
+                                  onClick={() => handleJoinSlot(slot.id, match.id, match.creator_id)}
+                                  disabled={joinSlotMutation.isPending || (user && user.id === match.creator_id)}
+                                  className={cn(
+                                    "group w-14 h-14 rounded-[1.5rem] flex items-center justify-center transition-all shadow-glow-primary relative overflow-hidden",
+                                    user?.id === match.creator_id 
+                                      ? "bg-white/5 border border-white/10 opacity-30 cursor-not-allowed" 
+                                      : "bg-primary text-black hover:scale-110 active:scale-95"
+                                  )}
                                 >
-                                  <div className="absolute inset-0 bg-white/20 -translate-y-full group-hover:translate-y-0 transition-transform" />
-                                  <Plus size={28} className="relative z-10 stroke-[3]" />
+                                  {user?.id === match.creator_id ? (
+                                    <Shield size={20} className="text-foreground/20" />
+                                  ) : (
+                                    <>
+                                      <div className="absolute inset-0 bg-white/20 -translate-y-full group-hover:translate-y-0 transition-transform" />
+                                      <Plus size={28} className="relative z-10 stroke-[3]" />
+                                    </>
+                                  )}
                                 </button>
                               ) : (
                                 <div className="w-14 h-14 rounded-[1.5rem] bg-white/5 flex items-center justify-center text-foreground/20 border border-white/5">

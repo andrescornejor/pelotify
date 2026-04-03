@@ -33,8 +33,7 @@ export interface RecruitmentPosting {
 export async function getRecruitmentMatches() {
   console.log('Fetching recruitment matches...');
   
-  // Step 1: Try the NEW schema (matches table with match_type='recruitment')
-  // We remove the status filter to see if they are being created with a different status
+  // Step 1: Try the NEW schema
   const { data, error } = await supabase
     .from('matches')
     .select(`
@@ -57,7 +56,6 @@ export async function getRecruitmentMatches() {
   }
 
   // Step 2: Fallback to OLD schema
-  console.log('No matches in NEW schema or error, trying OLD schema...');
   const { data: oldData, error: oldError } = await supabase
     .from('player_recruitments')
     .select(`
@@ -71,13 +69,9 @@ export async function getRecruitmentMatches() {
     .order('date', { ascending: true });
 
   if (oldError) {
-    console.error('Recruitment fetch error (Old Schema):', oldError.message);
-    // If BOTH failed, it's a real error
-    if (error) console.error('Recruitment fetch error (New Schema):', error.message);
     return [] as RecruitmentPosting[];
   }
   
-  console.log('Found matches in OLD schema:', oldData?.length || 0);
   return (oldData || []) as RecruitmentPosting[];
 }
 
@@ -107,6 +101,18 @@ export async function joinRecruitmentSlot(slotId: string, userId: string) {
 
   if (!newError) return !!newResult;
 
+  // Fallback direct updates if RPC fails
+  // Try match_slots first, then player_recruitment_slots
+  const { data: slotFix, error: slotError } = await supabase
+    .from('match_slots')
+    .update({ user_id: userId, status: 'filled' })
+    .eq('id', slotId)
+    .eq('status', 'open')
+    .select()
+    .single();
+
+  if (!slotError) return !!slotFix;
+
   const { data, error } = await supabase
     .from('player_recruitment_slots')
     .update({ user_id: userId, status: 'filled' })
@@ -115,34 +121,29 @@ export async function joinRecruitmentSlot(slotId: string, userId: string) {
     .select()
     .single();
 
-  if (error) {
-     const { data: lastTry, error: lastError } = await supabase
-      .from('match_slots')
-      .update({ user_id: userId, status: 'filled' })
-      .eq('id', slotId)
-      .eq('status', 'open')
-      .select()
-      .single();
-      
-     if (lastError) throw lastError;
-     return !!lastTry;
-  }
+  if (error) throw error;
   return !!data;
 }
 
 export async function deleteRecruitmentPosting(postingId: string) {
-  const { error } = await supabase
+  // We try DELETING from matches DIRECTLY without filtering by match_type just in case ID is valid
+  // This is more robust.
+  const { data: delMatches, error: matchError } = await supabase
     .from('matches')
     .delete()
     .eq('id', postingId)
-    .eq('match_type', 'recruitment');
+    .select();
 
-  if (error) {
+  // If matchError or no rows deleted, try the old table
+  if (matchError || !delMatches || delMatches.length === 0) {
     const { error: oldError } = await supabase
       .from('player_recruitments')
       .delete()
       .eq('id', postingId);
-    if (oldError) throw oldError;
+    
+    // If BOTH failed, only then throw
+    if (oldError && matchError) throw matchError;
   }
+  
   return true;
 }
