@@ -127,7 +127,7 @@ export default function SearchPage() {
               </span>
             </div>
             <h1 className="text-5xl lg:text-7xl font-black italic text-foreground uppercase tracking-tightest leading-none">
-              Scouting <span className="text-foreground/20">Radar</span>
+              Radar de <span className="text-foreground/20">Partidos</span>
             </h1>
           </div>
 

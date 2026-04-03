@@ -152,6 +152,7 @@ export default function RecruitmentMarketplace() {
   const [filterPos, setFilterPos] = useState<string | null>(null);
   const [showTutorial, setShowTutorial] = useState(false);
   const [activeChat, setActiveChat] = useState<{ id: string; name: string } | null>(null);
+  const [activeTab, setActiveTab] = useState<'market' | 'my-posts'>('market');
 
   useEffect(() => {
     const hasSeenTutorial = localStorage.getItem('recruitment_tutorial_seen_v3');
@@ -222,6 +223,15 @@ export default function RecruitmentMarketplace() {
   };
 
   const filteredMatches = matches?.filter(m => {
+    // Tab logic
+    if (activeTab === 'my-posts') {
+      if (m.creator_id !== user?.id) return false;
+    } else {
+      // Global market: everyone else's posts
+      if (m.creator_id === user?.id) return false;
+    }
+
+    // Position filter logic
     if (!filterPos) return true;
     return m.slots?.some(s => s.position === filterPos && s.status === 'open');
   });
@@ -264,6 +274,28 @@ export default function RecruitmentMarketplace() {
               <p className="text-foreground/40 text-lg md:text-2xl max-w-2xl font-medium italic leading-relaxed">
                 El lugar donde los cracks encuentran su destino. Buscamos refuerzos para completar la gloria.
               </p>
+
+              {/* TAB SELECTOR */}
+              <div className="flex items-center p-1 bg-surface-elevated border border-white/5 rounded-[2rem] shadow-2xl mt-8 w-fit">
+                 <button 
+                  onClick={() => setActiveTab('market')}
+                  className={cn(
+                    "px-8 h-12 rounded-[1.5rem] text-[10px] font-black uppercase tracking-widest transition-all",
+                    activeTab === 'market' ? "bg-primary text-black shadow-glow-primary" : "text-foreground/40 hover:text-foreground/70"
+                  )}
+                 >
+                   Mercado Global
+                 </button>
+                 <button 
+                  onClick={() => setActiveTab('my-posts')}
+                  className={cn(
+                    "px-8 h-12 rounded-[1.5rem] text-[10px] font-black uppercase tracking-widest transition-all",
+                    activeTab === 'my-posts' ? "bg-primary text-black shadow-glow-primary" : "text-foreground/40 hover:text-foreground/70"
+                  )}
+                 >
+                   Mis Búsquedas
+                 </button>
+              </div>
             </div>
 
             <Link href="/recruitment/create">

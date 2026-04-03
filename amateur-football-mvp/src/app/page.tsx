@@ -1140,7 +1140,6 @@ export default function HomePage() {
               <div className="grid grid-cols-1 gap-2">
                 {[
                   { label: 'Sedes', icon: MapPin, href: '/establecimientos' },
-                  { label: 'Mercado', icon: Target, href: '/scouting' },
                   { label: 'Mis Amigos', icon: Users, href: '/friends' },
                   { label: 'Chat Global', icon: MessageSquare, href: '/messages' },
                   { label: 'Configuración', icon: Target, href: '/settings' }
