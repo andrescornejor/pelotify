@@ -20,7 +20,8 @@ import {
   ZapIcon,
   Star,
   Users2,
-  ArrowRight
+  ArrowRight,
+  Skull
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useRecruitmentMatches, useJoinRecruitmentSlot, useDeleteRecruitmentPosting } from '@/hooks/useRecruitmentQueries';
