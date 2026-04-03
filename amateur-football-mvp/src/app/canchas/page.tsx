@@ -232,8 +232,8 @@ export default function CanchasDashboard() {
       <header className="fixed top-0 w-full z-40 bg-surface-elevated/80 border-b border-border/50 backdrop-blur-2xl shadow-sm">
         <div className="max-w-[1600px] mx-auto px-4 h-16 sm:h-24 flex items-center justify-between">
           <div className="flex items-center gap-4">
-            <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-primary via-primary to-primary-dark flex items-center justify-center glow-primary rotate-3 transition-transform hover:rotate-0 cursor-pointer">
-              <MapPin className="w-6 h-6 text-black" />
+            <div className="w-14 h-14 sm:w-16 sm:h-16 shrink-0 relative flex items-center justify-center drop-shadow-[0_0_15px_rgba(44,252,125,0.3)] transition-transform hover:scale-105">
+              <img src="/logo_pelotify.png" alt="Pelotify Logo" className="w-full h-full object-contain" />
             </div>
             <div>
               <div className="flex items-center gap-2">
@@ -276,10 +276,7 @@ export default function CanchasDashboard() {
               </button>
             </div>
 
-            <button className="relative p-3 rounded-xl bg-surface-elevated border border-border/50 hover:bg-surface-bright transition-all group" onClick={() => alert("Soporte Técnico pronto estará disponible por WhatsApp.")}>
-              <Bell className="w-5 h-5 text-muted-foreground group-hover:text-primary transition-colors" />
-              <div className="absolute top-2.5 right-2.5 w-2 h-2 rounded-full bg-accent border-2 border-background animate-bounce shadow-[0_0_8px_rgba(255,107,107,0.5)]"></div>
-            </button>
+            {/* Notifications button removed */}
 
             <button onClick={async () => { await logout(); router.push('/canchas/login'); }} className="relative p-3 rounded-xl bg-surface-elevated border border-border/50 hover:bg-danger/10 hover:border-danger/30 transition-all group" title="Cerrar Sesión">
               <LogOut className="w-5 h-5 text-muted-foreground group-hover:text-danger transition-colors" />
@@ -302,9 +299,13 @@ export default function CanchasDashboard() {
                 <p className="text-[10px] font-black text-foreground uppercase tracking-tighter leading-none">{user?.user_metadata?.full_name || 'Administrador'}</p>
                 <p className="text-[8px] font-bold text-muted-foreground uppercase mt-1">Owner</p>
               </div>
-              <div className="w-10 h-10 rounded-2xl bg-surface-elevated overflow-hidden border-2 border-primary/20 shadow-xl p-0.5">
-                <img src={user?.user_metadata?.avatar_url || `https://ui-avatars.com/api/?name=${user?.name || 'Admin'}&background=2cfc7d&color=000`} alt="Admin" className="w-full h-full object-cover rounded-xl" />
-              </div>
+              <button 
+                onClick={() => setActiveTab('settings')}
+                className="w-12 h-12 rounded-2xl bg-surface-elevated overflow-hidden border-2 border-border/50 hover:border-primary shadow-xl p-0.5 transition-all group press-effect"
+                title="Configuración de Perfil Público"
+              >
+                <img src={user?.user_metadata?.avatar_url || `https://ui-avatars.com/api/?name=${user?.name || 'Admin'}&background=2cfc7d&color=000`} alt="Admin" className="w-full h-full object-cover rounded-xl group-hover:scale-105 transition-transform" />
+              </button>
             </div>
           </div>
         </div>
