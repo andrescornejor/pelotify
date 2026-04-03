@@ -21,6 +21,13 @@ export default function AuthCallbackPage() {
 
         const isVenueAdmin = user_metadata?.role === 'venue_admin';
 
+        // Only create profile if it doesn't exist and user is not a venue admin
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('id')
+          .eq('id', id)
+          .maybeSingle();
+
         if (!profile && !isVenueAdmin) {
           // Create default profile for OAuth users
           await supabase.from('profiles').insert({
