@@ -24,15 +24,19 @@ import {
   Shield,
   ExternalLink,
   Info,
-  LogOut
+  LogOut,
+  Sun,
+  Moon
 } from 'lucide-react';
 
 import { useAuth } from '@/contexts/AuthContext';
+import { useTheme } from '@/contexts/ThemeContext';
 import { supabase } from '@/lib/supabase';
 import { useRouter } from 'next/navigation';
 
 export default function CanchasDashboard() {
   const { user, logout } = useAuth();
+  const { theme, setTheme } = useTheme();
   const router = useRouter();
   const [activeTab, setActiveTab] = useState('overview');
 
@@ -151,7 +155,7 @@ export default function CanchasDashboard() {
 
   if (loadingDb) {
     return (
-      <div className="dark min-h-screen bg-background flex items-center justify-center">
+      <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
       </div>
     );
@@ -211,7 +215,7 @@ export default function CanchasDashboard() {
   }
 
   return (
-    <div className="dark min-h-screen bg-background text-foreground pb-20 md:pb-0 font-kanit">
+    <div className="min-h-screen bg-background text-foreground pb-20 md:pb-0 font-kanit">
       
       {/* HEADER TRAY */}
       <header className="fixed top-0 w-full z-40 glass border-b border-border/40 backdrop-blur-xl">
@@ -268,6 +272,18 @@ export default function CanchasDashboard() {
 
             <button onClick={async () => { await logout(); router.push('/canchas/login'); }} className="relative p-3 rounded-xl bg-surface-elevated border border-white/5 hover:bg-danger/10 hover:border-danger/30 transition-all group" title="Cerrar Sesión">
                <LogOut className="w-5 h-5 text-muted-foreground group-hover:text-danger transition-colors" />
+            </button>
+
+            <button 
+              onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')} 
+              className="relative p-3 rounded-xl bg-surface-elevated border border-white/5 hover:bg-primary/10 hover:border-primary/30 transition-all group" 
+              title={theme === 'dark' ? 'Modo Claro' : 'Modo Oscuro'}
+            >
+              {theme === 'dark' ? (
+                <Sun className="w-5 h-5 text-muted-foreground group-hover:text-primary transition-colors" />
+              ) : (
+                <Moon className="w-5 h-5 text-muted-foreground group-hover:text-primary transition-colors" />
+              )}
             </button>
 
             <div className="flex items-center gap-3 pl-4 border-l border-border/50">
