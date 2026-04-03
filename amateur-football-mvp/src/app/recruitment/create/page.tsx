@@ -215,42 +215,81 @@ export default function CreateRecruitmentPage() {
               <h3 className="text-2xl font-black italic uppercase font-kanit">DATOS DEL ENCUENTRO</h3>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
-               {/* Date Selection */}
-               <div className="space-y-6">
-                 <div className="flex items-center justify-between">
-                   <label className="text-[10px] font-black text-foreground/30 uppercase tracking-[0.4em] italic">FECHA</label>
-                   <span className="text-[10px] font-black text-primary uppercase tracking-[0.2em] italic bg-primary/10 px-3 py-1 rounded-full border border-primary/20">
-                     {new Date(formData.date).toLocaleDateString('es-ES', { weekday: 'long', day: 'numeric', month: 'long' })}
-                   </span>
-                 </div>
-                 <div className="relative">
-                   <input 
-                     type="date" 
-                     value={formData.date}
-                     onChange={(e) => setFormData({...formData, date: e.target.value})}
-                     className="w-full bg-surface-elevated/50 border border-white/5 rounded-[1.5rem] p-6 text-xl font-black font-kanit italic uppercase outline-none focus:border-primary/40 transition-all appearance-none cursor-pointer"
-                   />
-                   <Calendar className="absolute right-6 top-1/2 -translate-y-1/2 text-primary opacity-50" size={24} />
-                 </div>
-               </div>
+            {/* Date Selection - Horizontal Scroll experience */}
+            <div className="space-y-6">
+              <div className="flex items-center justify-between">
+                <label className="text-[10px] font-black text-foreground/30 uppercase tracking-[0.4em] italic">FECHA DEL PARTIDO</label>
+                <div className="flex items-center gap-2 bg-primary/10 px-4 py-1.5 rounded-full border border-primary/20">
+                  <Calendar className="text-primary" size={12} />
+                  <span className="text-[10px] font-black text-primary uppercase tracking-[0.1em] italic">
+                    {new Date(formData.date + 'T00:00:00').toLocaleDateString('es-ES', { weekday: 'long', day: 'numeric', month: 'long' })}
+                  </span>
+                </div>
+              </div>
+              
+              <div className="flex gap-4 overflow-x-auto no-scrollbar pb-6 -mx-10 px-10">
+                {Array.from({ length: 14 }).map((_, i) => {
+                  const d = new Date();
+                  d.setDate(d.getDate() + i);
+                  const dateStr = d.toISOString().split('T')[0];
+                  const dayName = d.toLocaleDateString('es-ES', { weekday: 'short' }).replace('.', '').toUpperCase();
+                  const dayNumber = d.getDate();
+                  const isSelected = formData.date === dateStr;
+                  
+                  return (
+                    <motion.button
+                      key={dateStr}
+                      type="button"
+                      whileHover={{ y: -5, scale: 1.02 }}
+                      whileTap={{ scale: 0.95 }}
+                      onClick={() => setFormData({ ...formData, date: dateStr })}
+                      className={cn(
+                        "flex-shrink-0 w-24 h-32 rounded-[2rem] border transition-all flex flex-col items-center justify-center gap-2",
+                        isSelected 
+                          ? "border-primary bg-primary text-black shadow-glow-primary scale-105 z-10" 
+                          : "bg-surface-elevated border-white/5 hover:border-white/20 text-foreground/40 hover:text-foreground/70"
+                      )}
+                    >
+                      <span className={cn("text-[10px] font-black tracking-widest", isSelected ? "text-black/60" : "text-foreground/20")}>{dayName}</span>
+                      <span className="text-4xl font-black italic tracking-tighter leading-none font-kanit">{dayNumber}</span>
+                    </motion.button>
+                  );
+                })}
+              </div>
+            </div>
 
-               {/* Time Selection */}
-               <div className="space-y-6">
-                 <label className="text-[10px] font-black text-foreground/30 uppercase tracking-[0.4em] italic">HORARIO</label>
-                 <div className="relative">
-                   <select 
-                     value={formData.time}
-                     onChange={(e) => setFormData({...formData, time: e.target.value})}
-                     className="w-full bg-surface-elevated/50 border border-white/5 rounded-[1.5rem] p-6 text-xl font-black font-kanit italic uppercase outline-none focus:border-primary/40 transition-all appearance-none cursor-pointer"
-                   >
-                     {AVAILABLE_TIMES.map(t => (
-                       <option key={t} value={t}>{t} HS</option>
-                     ))}
-                   </select>
-                   <Clock className="absolute right-6 top-1/2 -translate-y-1/2 text-primary opacity-50 pointer-events-none" size={24} />
-                 </div>
-               </div>
+            {/* Time Selection - Grid experience */}
+            <div className="space-y-6">
+              <div className="flex items-center justify-between">
+                <label className="text-[10px] font-black text-foreground/30 uppercase tracking-[0.4em] italic">HORARIO DE INICIO</label>
+                <div className="flex items-center gap-2 bg-white/5 px-4 py-1.5 rounded-full border border-white/5">
+                  <Clock className="text-foreground/40" size={12} />
+                  <span className="text-[10px] font-black text-foreground/60 uppercase tracking-[0.1em] italic">{formData.time} HS</span>
+                </div>
+              </div>
+              
+              <div className="grid grid-cols-4 sm:grid-cols-6 lg:grid-cols-9 gap-3">
+                {AVAILABLE_TIMES.map((t) => {
+                  const isSelected = formData.time === t;
+                  return (
+                    <motion.button
+                      key={t}
+                      type="button"
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                      onClick={() => setFormData({ ...formData, time: t })}
+                      className={cn(
+                        "py-4 rounded-2xl border text-[13px] font-black italic font-kanit transition-all",
+                        isSelected 
+                          ? "bg-primary text-black border-primary shadow-glow-primary" 
+                          : "bg-surface-elevated border-white/5 text-foreground/40 hover:border-white/20"
+                      )}
+                    >
+                      {t}
+                    </motion.button>
+                  );
+                })}
+              </div>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
