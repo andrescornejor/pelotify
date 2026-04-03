@@ -3,15 +3,15 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
-import { 
-  Calendar, 
-  Clock, 
-  MapPin, 
-  Trophy, 
-  UserPlus, 
-  Plus, 
+import {
+  Calendar,
+  Clock,
+  MapPin,
+  Trophy,
+  UserPlus,
+  Plus,
   Minus,
-  Trash2, 
+  Trash2,
   Gamepad2,
   Users2,
   ChevronLeft,
@@ -41,7 +41,7 @@ export default function CreateRecruitmentPage() {
   const router = useRouter();
   const { user } = useAuth();
   const createMutation = useCreateRecruitmentMatch();
-  
+
   const [formData, setFormData] = useState({
     date: new Date().toISOString().split('T')[0],
     time: '20:00',
@@ -75,7 +75,7 @@ export default function CreateRecruitmentPage() {
       return;
     }
 
-    const slotsArray = Object.entries(slotCounts).flatMap(([pos, count]) => 
+    const slotsArray = Object.entries(slotCounts).flatMap(([pos, count]) =>
       Array(count).fill(pos)
     );
 
@@ -90,7 +90,7 @@ export default function CreateRecruitmentPage() {
         p_skill_level: formData.skill_level,
         p_slots: slotsArray
       });
-      
+
       router.push('/recruitment');
     } catch (err) {
       console.error(err);
@@ -110,7 +110,7 @@ export default function CreateRecruitmentPage() {
       <div className="relative z-10 pt-16 pb-12 px-6 max-w-4xl mx-auto flex items-center justify-between">
         <div className="flex items-center gap-6">
           <Link href="/recruitment">
-            <motion.div 
+            <motion.div
               whileHover={{ scale: 1.1, x: -4 }}
               whileTap={{ scale: 0.9 }}
               className="w-12 h-12 rounded-2xl bg-surface-elevated flex items-center justify-center border border-white/5 hover:border-primary/40 transition-all cursor-pointer"
@@ -124,15 +124,15 @@ export default function CreateRecruitmentPage() {
           </div>
         </div>
         <div className="hidden md:flex gap-4">
-           <div className="bg-surface-elevated p-3 rounded-2xl border border-white/5 text-[10px] font-bold text-foreground/40 italic max-w-[200px]">
-             💡 <span className="text-primary font-black uppercase">TACTICA:</span> Definí cuántos jugadores necesitás por puesto para completar tu equipo.
-           </div>
+          <div className="bg-surface-elevated p-3 rounded-2xl border border-white/5 text-[10px] font-bold text-foreground/40 italic max-w-[200px]">
+            💡 <span className="text-primary font-black uppercase">TACTICA:</span> Definí cuántos jugadores necesitás por puesto para completar tu equipo.
+          </div>
         </div>
       </div>
 
       <div className="max-w-4xl mx-auto px-6 relative z-10">
         <form onSubmit={handleSubmit} className="space-y-12">
-          
+
           {/* Section: Tactical Roster (Armado del Roster) - NOW FIRST */}
           <div className="glass-premium rounded-[3rem] p-10 border border-white/10 space-y-10 relative overflow-hidden">
             <div className="absolute top-0 right-0 p-8 opacity-5">
@@ -140,27 +140,27 @@ export default function CreateRecruitmentPage() {
             </div>
 
             <div className="flex items-center justify-between border-b border-white/5 pb-8">
-               <div className="flex flex-col">
-                  <div className="flex items-center gap-4">
-                    <div className="w-1.5 h-6 bg-primary rounded-full shadow-glow-primary" />
-                    <h3 className="text-2xl font-black italic uppercase font-kanit">EL ROSTER</h3>
-                  </div>
-                  <p className="text-[10px] font-bold text-foreground/30 uppercase tracking-[0.2em] mt-2">¿A quiénes salimos a buscar hoy?</p>
-               </div>
-               <div className="bg-primary text-black px-6 py-2 rounded-2xl font-black text-sm italic shadow-glow-primary">
-                 {totalSlots} VACANTES
-               </div>
+              <div className="flex flex-col">
+                <div className="flex items-center gap-4">
+                  <div className="w-1.5 h-6 bg-primary rounded-full shadow-glow-primary" />
+                  <h3 className="text-2xl font-black italic uppercase font-kanit">EL ROSTER</h3>
+                </div>
+                <p className="text-[10px] font-bold text-foreground/30 uppercase tracking-[0.2em] mt-2">¿A quiénes salimos a buscar hoy?</p>
+              </div>
+              <div className="bg-primary text-black px-6 py-2 rounded-2xl font-black text-sm italic shadow-glow-primary">
+                {totalSlots} VACANTES
+              </div>
             </div>
 
             {/* Tactical Grid Visualization - Modern Counter Style */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {POSITIONS.map((pos) => (
-                <div 
+                <div
                   key={pos.code}
                   className={cn(
                     "relative group p-6 rounded-[2.5rem] border transition-all duration-300 flex flex-col gap-6",
-                    slotCounts[pos.code] > 0 
-                      ? "bg-primary/5 border-primary/30 shadow-[0_0_20px_rgba(44,252,125,0.1)]" 
+                    slotCounts[pos.code] > 0
+                      ? "bg-primary/5 border-primary/30 shadow-[0_0_20px_rgba(44,252,125,0.1)]"
                       : "bg-surface-elevated border-white/5 hover:border-white/10"
                   )}
                 >
@@ -183,7 +183,7 @@ export default function CreateRecruitmentPage() {
                     >
                       <Minus size={20} className="text-foreground/40" />
                     </button>
-                    
+
                     <span className={cn(
                       "text-3xl font-black font-kanit italic tabular-nums transition-all",
                       slotCounts[pos.code] > 0 ? "text-primary" : "text-foreground/20"
@@ -226,7 +226,9 @@ export default function CreateRecruitmentPage() {
                   </span>
                 </div>
               </div>
-              
+
+
+
               <div className="flex gap-4 overflow-x-auto no-scrollbar pb-6 -mx-10 px-10">
                 {Array.from({ length: 14 }).map((_, i) => {
                   const d = new Date();
@@ -235,7 +237,7 @@ export default function CreateRecruitmentPage() {
                   const dayName = d.toLocaleDateString('es-ES', { weekday: 'short' }).replace('.', '').toUpperCase();
                   const dayNumber = d.getDate();
                   const isSelected = formData.date === dateStr;
-                  
+
                   return (
                     <motion.button
                       key={dateStr}
@@ -245,8 +247,8 @@ export default function CreateRecruitmentPage() {
                       onClick={() => setFormData({ ...formData, date: dateStr })}
                       className={cn(
                         "flex-shrink-0 w-24 h-32 rounded-[2rem] border transition-all flex flex-col items-center justify-center gap-2",
-                        isSelected 
-                          ? "border-primary bg-primary text-black shadow-glow-primary scale-105 z-10" 
+                        isSelected
+                          ? "border-primary bg-primary text-black shadow-glow-primary scale-105 z-10"
                           : "bg-surface-elevated border-white/5 hover:border-white/20 text-foreground/40 hover:text-foreground/70"
                       )}
                     >
@@ -267,7 +269,7 @@ export default function CreateRecruitmentPage() {
                   <span className="text-[10px] font-black text-foreground/60 uppercase tracking-[0.1em] italic">{formData.time} HS</span>
                 </div>
               </div>
-              
+
               <div className="grid grid-cols-4 sm:grid-cols-6 lg:grid-cols-9 gap-3">
                 {AVAILABLE_TIMES.map((t) => {
                   const isSelected = formData.time === t;
@@ -280,8 +282,8 @@ export default function CreateRecruitmentPage() {
                       onClick={() => setFormData({ ...formData, time: t })}
                       className={cn(
                         "py-4 rounded-2xl border text-[13px] font-black italic font-kanit transition-all",
-                        isSelected 
-                          ? "bg-primary text-black border-primary shadow-glow-primary" 
+                        isSelected
+                          ? "bg-primary text-black border-primary shadow-glow-primary"
                           : "bg-surface-elevated border-white/5 text-foreground/40 hover:border-white/20"
                       )}
                     >
@@ -293,51 +295,51 @@ export default function CreateRecruitmentPage() {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
-               {/* Vibe Selection */}
-               <div className="space-y-6">
-                  <label className="text-[10px] uppercase font-black text-foreground/30 tracking-[0.25em] block italic">NIVEL REQUERIDO</label>
-                  <div className="flex gap-4">
-                    {[
-                      { id: 'casual', label: 'Casual', icon: '🍻', color: 'bg-emerald-500/10 text-emerald-400' },
-                      { id: 'competitive', label: 'Pro', icon: '⚔️', color: 'bg-blue-500/10 text-blue-400' },
-                      { id: 'pro-vibe', label: 'Elite', icon: '💎', color: 'bg-primary/10 text-primary' },
-                    ].map((level) => (
-                      <button
-                        key={level.id}
-                        type="button"
-                        onClick={() => setFormData({...formData, skill_level: level.id})}
-                        className={cn(
-                          "flex-1 p-6 rounded-[2rem] border transition-all text-center flex flex-col items-center gap-2 group",
-                          formData.skill_level === level.id 
-                            ? "bg-foreground text-background border-foreground scale-[1.02]" 
-                            : "bg-surface-elevated border-white/5 hover:border-white/20"
-                        )}
-                      >
-                        <span className="text-3xl filter saturate-50 group-hover:saturate-100">{level.icon}</span>
-                        <span className={cn(
-                          "text-[10px] font-black uppercase tracking-widest",
-                          formData.skill_level === level.id ? "" : "text-foreground/40"
-                        )}>
-                          {level.label}
-                        </span>
-                      </button>
-                    ))}
-                  </div>
-               </div>
+              {/* Vibe Selection */}
+              <div className="space-y-6">
+                <label className="text-[10px] uppercase font-black text-foreground/30 tracking-[0.25em] block italic">NIVEL REQUERIDO</label>
+                <div className="flex gap-4">
+                  {[
+                    { id: 'casual', label: 'Casual', icon: '🍻', color: 'bg-emerald-500/10 text-emerald-400' },
+                    { id: 'competitive', label: 'Pro', icon: '⚔️', color: 'bg-blue-500/10 text-blue-400' },
+                    { id: 'pro-vibe', label: 'Elite', icon: '💎', color: 'bg-primary/10 text-primary' },
+                  ].map((level) => (
+                    <button
+                      key={level.id}
+                      type="button"
+                      onClick={() => setFormData({ ...formData, skill_level: level.id })}
+                      className={cn(
+                        "flex-1 p-6 rounded-[2rem] border transition-all text-center flex flex-col items-center gap-2 group",
+                        formData.skill_level === level.id
+                          ? "bg-foreground text-background border-foreground scale-[1.02]"
+                          : "bg-surface-elevated border-white/5 hover:border-white/20"
+                      )}
+                    >
+                      <span className="text-3xl filter saturate-50 group-hover:saturate-100">{level.icon}</span>
+                      <span className={cn(
+                        "text-[10px] font-black uppercase tracking-widest",
+                        formData.skill_level === level.id ? "" : "text-foreground/40"
+                      )}>
+                        {level.label}
+                      </span>
+                    </button>
+                  ))}
+                </div>
+              </div>
 
-               {/* Description */}
-               <div className="space-y-6">
-                  <label className="text-[10px] uppercase font-black text-foreground/30 tracking-[0.25em] block italic">CONSIGNAS EXTRA</label>
-                  <div className="relative">
-                    <textarea 
-                      placeholder="Ej: Solo gente puntual, traigan pechera si tienen..."
-                      value={formData.description}
-                      onChange={(e) => setFormData({...formData, description: e.target.value})}
-                      className="w-full bg-surface-elevated/50 border border-white/5 rounded-[1.5rem] p-6 min-h-[140px] text-base outline-none focus:border-primary/40 transition-all resize-none italic font-medium placeholder:text-foreground/20"
-                    />
-                    <Gamepad2 className="absolute right-6 bottom-6 text-foreground/10" size={32} />
-                  </div>
-               </div>
+              {/* Description */}
+              <div className="space-y-6">
+                <label className="text-[10px] uppercase font-black text-foreground/30 tracking-[0.25em] block italic">CONSIGNAS EXTRA</label>
+                <div className="relative">
+                  <textarea
+                    placeholder="Ej: Solo gente puntual, traigan pechera si tienen..."
+                    value={formData.description}
+                    onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                    className="w-full bg-surface-elevated/50 border border-white/5 rounded-[1.5rem] p-6 min-h-[140px] text-base outline-none focus:border-primary/40 transition-all resize-none italic font-medium placeholder:text-foreground/20"
+                  />
+                  <Gamepad2 className="absolute right-6 bottom-6 text-foreground/10" size={32} />
+                </div>
+              </div>
             </div>
           </div>
 
