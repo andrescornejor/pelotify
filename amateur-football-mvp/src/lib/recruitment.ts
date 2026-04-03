@@ -3,7 +3,7 @@ import { Match } from './matches';
 
 export interface RecruitmentSlot {
   id: string;
-  recruitment_id: string;
+  match_id: string;
   position: 'GK' | 'DEF' | 'MID' | 'FW' | 'ANY';
   status: 'open' | 'filled';
   user_id: string | null;
@@ -19,7 +19,7 @@ export interface RecruitmentPosting {
   date: string;
   time: string;
   description: string;
-  skill_level: string;
+  required_skill_level: string; // Updated from skill_level to match matches table
   location: string;
   status: string;
   venue?: {
@@ -31,21 +31,31 @@ export interface RecruitmentPosting {
 
 export async function getRecruitmentMatches() {
   const { data, error } = await supabase
-    .from('player_recruitments')
+    .from('matches')
     .select(`
       *,
       venue:business_id(name, address),
-      slots:player_recruitment_slots(
+      slots:match_slots(
         *,
         profiles:user_id(name, avatar_url)
       )
     `)
-    .eq('status', 'active')
+    .eq('match_type', 'recruitment')
+    .eq('status', 'published') // recruitment matches are 'published'
     .order('date', { ascending: true });
 
-  if (error) throw error;
+  if (error) {
+    console.error('Error fetching recruitment matches:', error);
+    // Fallback to empty array if table doesn't exist yet or other error
+    return [] as RecruitmentPosting[];
+  }
   
-  return data as RecruitmentPosting[];
+  // Transform to the RecruitmentPosting interface if needed
+  // the SQL uses required_skill_level now instead of skill_level
+  return (data || []).map(m => ({
+    ...m,
+    skill_level: m.required_skill_level || 'pro-vibe', // for backward compatibility/typing
+  })) as RecruitmentPosting[];
 }
 
 export async function createRecruitmentMatch(params: {
@@ -59,28 +69,33 @@ export async function createRecruitmentMatch(params: {
     p_slots: string[];
 }) {
   const { data, error } = await supabase.rpc('create_recruitment_match', params);
-  if (error) throw error;
-  return data as string; // returns recruitment_id
+  if (error) {
+    console.error('RPC Error creating match:', error);
+    throw error;
+  }
+  return data as string; // returns match_id
 }
 
 export async function joinRecruitmentSlot(slotId: string, userId: string) {
-  const { data, error } = await supabase
-    .from('player_recruitment_slots')
-    .update({ user_id: userId, status: 'filled' })
-    .eq('id', slotId)
-    .eq('status', 'open')
-    .select()
-    .single();
+  // Use the RPC defined in v3 for atomic join process
+  const { data, error } = await supabase.rpc('join_recruitment_slot', {
+    p_slot_id: slotId,
+    p_user_id: userId
+  });
 
-  if (error) throw error;
-  return !!data;
+  if (error) {
+    console.error('RPC Error joining slot:', error);
+    throw error;
+  }
+  return data as boolean;
 }
 
 export async function deleteRecruitmentPosting(postingId: string) {
   const { error } = await supabase
-    .from('player_recruitments')
+    .from('matches')
     .delete()
-    .eq('id', postingId);
+    .eq('id', postingId)
+    .eq('match_type', 'recruitment');
 
   if (error) throw error;
   return true;

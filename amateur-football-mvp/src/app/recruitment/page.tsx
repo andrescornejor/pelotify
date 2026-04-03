@@ -15,14 +15,19 @@ import {
   Target,
   Trophy,
   X,
-  Trash2 
+  Trash2,
+  Shield,
+  ZapIcon,
+  Star,
+  Users2,
+  ArrowRight
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useRecruitmentMatches, useJoinRecruitmentSlot, useDeleteRecruitmentPosting } from '@/hooks/useRecruitmentQueries';
 import { useAuth } from '@/contexts/AuthContext';
 import Link from 'next/link';
 
-// Simple helper to format date without date-fns
+// Simple helper to format date
 const formatDate = (dateStr: string) => {
   try {
     const date = new Date(dateStr);
@@ -35,6 +40,14 @@ const formatDate = (dateStr: string) => {
     return dateStr;
   }
 };
+
+const POSITIONS = [
+  { code: 'GK', label: 'Arqueros', icon: Shield, color: 'text-yellow-400', bg: 'bg-yellow-400/10' },
+  { code: 'DEF', label: 'Defensores', icon: Shield, color: 'text-blue-400', bg: 'bg-blue-400/10' },
+  { code: 'MID', label: 'Volantes', icon: Target, color: 'text-emerald-400', bg: 'bg-emerald-400/10' },
+  { code: 'FW', label: 'Delanteros', icon: ZapIcon, color: 'text-red-400', bg: 'bg-red-400/10' },
+  { code: 'ANY', label: 'Cualquiera', icon: Star, color: 'text-primary', bg: 'bg-primary/10' },
+];
 
 function TutorialModal({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) {
   const steps = [
@@ -63,66 +76,57 @@ function TutorialModal({ isOpen, onClose }: { isOpen: boolean; onClose: () => vo
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            onClick={() => {
-              console.log('Backdrop clicked');
-              onClose();
-            }}
-            className="absolute inset-0 bg-background/90 backdrop-blur-2xl cursor-pointer"
+            onClick={onClose}
+            className="absolute inset-0 bg-black/95 backdrop-blur-3xl cursor-pointer"
           />
           <motion.div
             initial={{ opacity: 0, scale: 0.9, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.9, y: 20 }}
             onClick={(e) => e.stopPropagation()}
-            className="relative w-full max-w-xl glass-premium rounded-[3rem] border border-primary/20 overflow-hidden shadow-[0_0_80px_rgba(44,252,125,0.2)] z-10"
+            className="relative w-full max-w-xl glass-premium rounded-[4rem] border border-primary/20 overflow-hidden shadow-2xl z-10"
           >
-            <div className="p-8 md:p-12 space-y-10">
+            <div className="p-10 md:p-14 space-y-12">
               <div className="flex items-center justify-between">
                 <div>
                   <h2 className="text-4xl font-black italic uppercase font-kanit tracking-tighter leading-none mb-1">GUÍA <span className="text-primary text-glow-primary">TÁCTICA</span></h2>
                   <p className="text-[10px] font-black text-foreground/40 uppercase tracking-[0.4em]">¿Cómo dominar el mercado?</p>
                 </div>
                 <button 
-                  onClick={() => {
-                    console.log('X clicked');
-                    onClose();
-                  }} 
+                  onClick={onClose} 
                   className="w-12 h-12 rounded-2xl bg-white/5 flex items-center justify-center hover:bg-white/10 active:scale-90 transition-all border border-white/10"
                 >
                   <X size={24} className="text-foreground/40" />
                 </button>
               </div>
 
-              <div className="space-y-8">
+              <div className="space-y-10">
                 {steps.map((step, i) => (
                   <motion.div 
                     key={i}
                     initial={{ opacity: 0, x: -20 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: i * 0.1 }}
-                    className="flex gap-6"
+                    className="flex gap-8 group"
                   >
-                    <div className="flex-shrink-0 w-16 h-16 rounded-[1.5rem] bg-primary/10 border border-primary/10 flex items-center justify-center shadow-glow-primary overflow-hidden">
+                    <div className="flex-shrink-0 w-20 h-20 rounded-[2rem] bg-primary/10 border border-primary/10 flex items-center justify-center shadow-glow-primary overflow-hidden transition-transform group-hover:scale-110">
                        <div className="absolute inset-0 bg-primary/5 animate-pulse" />
                        {step.icon}
                     </div>
                     <div>
-                      <h4 className="text-xs font-black italic uppercase text-primary mb-1 tracking-widest">{step.title}</h4>
-                      <p className="text-foreground/50 text-sm font-medium leading-relaxed italic">{step.desc}</p>
+                      <h4 className="text-sm font-black italic uppercase text-primary mb-2 tracking-widest leading-none">{step.title}</h4>
+                      <p className="text-foreground/60 text-base font-medium leading-relaxed italic">{step.desc}</p>
                     </div>
                   </motion.div>
                 ))}
               </div>
 
               <button 
-                onClick={() => {
-                  console.log('Understand clicked');
-                  onClose();
-                }}
-                className="w-full py-6 rounded-[2rem] bg-primary text-black font-black text-xl font-kanit italic uppercase shadow-glow-primary hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-4 relative z-20"
+                onClick={onClose}
+                className="group w-full py-8 rounded-[2.5rem] bg-primary text-black font-black text-2xl font-kanit italic uppercase shadow-glow-primary hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-6 relative z-20"
               >
                 ENTENDIDO, SOY UN CRACK
-                <ChevronRight size={24} className="stroke-[3]" />
+                <ChevronRight size={32} className="stroke-[3] group-hover:translate-x-2 transition-transform" />
               </button>
             </div>
           </motion.div>
@@ -142,21 +146,14 @@ export default function RecruitmentMarketplace() {
   const [showTutorial, setShowTutorial] = useState(false);
 
   useEffect(() => {
-    const hasSeenTutorial = localStorage.getItem('recruitment_tutorial_seen_v2');
+    const hasSeenTutorial = localStorage.getItem('recruitment_tutorial_seen_v3');
     if (!hasSeenTutorial) {
       const timer = setTimeout(() => setShowTutorial(true), 1500);
-      localStorage.setItem('recruitment_tutorial_seen_v2', 'true');
+      localStorage.setItem('recruitment_tutorial_seen_v3', 'true');
       return () => clearTimeout(timer);
     }
   }, []);
   
-  const positions = [
-    { code: 'GK', label: 'Arqueros', icon: '🧤' },
-    { code: 'DEF', label: 'Defensores', icon: '🛡️' },
-    { code: 'MID', label: 'Volantes', icon: '🎯' },
-    { code: 'FW', label: 'Delanteros', icon: '⚽' },
-  ];
-
   const handleJoinSlot = async (slotId: string) => {
     if (!user) {
       alert('Debes iniciar sesión para postularte.');
@@ -174,262 +171,293 @@ export default function RecruitmentMarketplace() {
   const handleDeletePosting = async (e: React.MouseEvent, id: string) => {
     e.preventDefault();
     e.stopPropagation();
-    console.log('Tentativa de eliminar búsqueda ID:', id);
     if (!confirm('¿Estás seguro de que querés eliminar esta búsqueda?')) return;
     try {
       await deleteMutation.mutateAsync(id);
-      console.log('Búsqueda eliminada con éxito');
     } catch (err) {
       console.error('Error al eliminar:', err);
       alert('Error al eliminar la búsqueda.');
     }
   };
 
+  const filteredMatches = matches?.filter(m => {
+    if (!filterPos) return true;
+    return m.slots?.some(s => s.position === filterPos && s.status === 'open');
+  });
+
   return (
     <div className="min-h-screen bg-background text-foreground pb-32 font-outfit">
       <TutorialModal isOpen={showTutorial} onClose={() => setShowTutorial(false)} />
-      {/* Hero Section - Cinematic Glassmorphism */}
-      <div className="relative overflow-hidden pt-24 pb-16 px-6">
-        {/* Animated background glows */}
-        <div className="absolute top-[-20%] left-[-10%] w-[50%] h-[60%] bg-primary/10 blur-[120px] rounded-full pointer-events-none animate-pulse-slow" />
-        <div className="absolute bottom-[-10%] right-[-5%] w-[40%] h-[50%] bg-blue-500/5 blur-[100px] rounded-full pointer-events-none" />
-        
-        <div className="max-w-6xl mx-auto relative z-10">
+      
+      {/* Background Decorative elements */}
+      <div className="fixed inset-0 pointer-events-none overflow-hidden overflow-x-hidden">
+        <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[60%] bg-primary/5 blur-[150px] rounded-full opacity-40 animate-pulse-slow" />
+        <div className="absolute bottom-[-10%] right-[-5%] w-[40%] h-[50%] bg-blue-500/5 blur-[120px] rounded-full opacity-30" />
+      </div>
+
+      {/* Hero Section */}
+      <div className="relative pt-24 pb-16 px-6">
+        <div className="max-w-7xl mx-auto">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, ease: "easeOut" }}
+            className="flex flex-col md:flex-row md:items-end justify-between gap-12"
           >
-            <div className="flex items-center gap-4 mb-4">
-              <button 
-                onClick={() => setShowTutorial(true)}
-                className="w-10 h-10 rounded-full bg-surface-elevated border border-white/5 flex items-center justify-center hover:bg-primary/10 hover:text-primary transition-all text-foreground/40 group"
-              >
-                <Info size={20} className="stroke-[2.5]" />
-              </button>
-              <h1 className="text-5xl md:text-8xl font-black italic tracking-tighter font-kanit uppercase leading-[0.9]">
+            <div className="space-y-6">
+              <div className="flex items-center gap-4">
+                <button 
+                  onClick={() => setShowTutorial(true)}
+                  className="w-12 h-12 rounded-2xl bg-surface-elevated border border-white/5 flex items-center justify-center hover:bg-primary/20 hover:text-primary transition-all text-foreground/40 group relative overflow-hidden"
+                >
+                  <div className="absolute inset-0 bg-primary/5 group-hover:animate-pulse" />
+                  <Info size={24} className="stroke-[2.5]" />
+                </button>
+                <div className="h-0.5 w-12 bg-primary/20 rounded-full" />
+                <span className="text-[10px] font-black uppercase tracking-[0.5em] text-primary">Inteligencia v.03</span>
+              </div>
+              <h1 className="text-6xl md:text-9xl font-black italic tracking-tighter font-kanit uppercase leading-[0.85] select-none">
                 MERCADO DE <br/>
                 <span className="text-primary text-glow-primary">FICHAJES</span>
               </h1>
+              <p className="text-foreground/40 text-lg md:text-2xl max-w-2xl font-medium italic leading-relaxed">
+                El lugar donde los cracks encuentran su destino. Buscamos refuerzos para completar la gloria.
+              </p>
             </div>
-            <p className="text-foreground/50 text-lg md:text-2xl max-w-2xl font-medium italic">
-              Conectamos la pasión con el juego. Encontrá tu lugar en la cancha o fichá a los mejores para tu equipo.
-            </p>
+
+            <Link href="/recruitment/create">
+               <motion.button 
+                 whileHover={{ scale: 1.05, y: -4 }}
+                 whileTap={{ scale: 0.95 }}
+                 className="group relative bg-foreground text-background px-12 py-6 rounded-[2rem] font-black text-lg uppercase tracking-tight italic flex items-center gap-6 shadow-2xl transition-all overflow-hidden"
+               >
+                 <div className="absolute inset-0 bg-primary translate-y-full group-hover:translate-y-0 transition-transform duration-500" />
+                 <span className="relative z-10 transition-colors duration-500 group-hover:text-black">BUSCAR REFUERZOS</span>
+                 <Plus size={28} className="relative z-10 stroke-[3] transition-colors duration-500 group-hover:text-black" />
+               </motion.button>
+            </Link>
           </motion.div>
         </div>
       </div>
 
       {/* Modern Filter Dock */}
-      <div className="sticky top-0 z-40 backdrop-blur-2xl bg-background/60 border-y border-white/5 py-6">
-        <div className="max-w-6xl mx-auto px-6 flex flex-wrap items-center gap-4">
-          <div className="flex bg-surface-elevated p-1.5 rounded-2xl border border-white/5 shadow-2xl overflow-x-auto no-scrollbar max-w-full">
-            <button 
-              onClick={() => setFilterPos(null)}
-              className={cn(
-                "px-6 py-2.5 rounded-xl text-[11px] font-black uppercase italic tracking-widest transition-all whitespace-nowrap",
-                !filterPos ? "bg-primary text-black shadow-glow-primary" : "text-foreground/40 hover:text-foreground/70"
-              )}
-            >
-              Todos
-            </button>
-            {positions.map((pos) => (
-              <button
-                key={pos.code}
-                onClick={() => setFilterPos(pos.code)}
+      <div className="sticky top-0 z-40 backdrop-blur-3xl bg-background/60 border-y border-white/5 py-8">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="flex flex-wrap items-center gap-6">
+            <h4 className="text-[10px] font-black uppercase tracking-[0.3em] text-foreground/30 mr-2">FILTRAR POR PUESTO</h4>
+            <div className="flex bg-surface-elevated/50 p-2 rounded-3xl border border-white/5 shadow-2xl overflow-x-auto no-scrollbar max-w-full">
+              <button 
+                onClick={() => setFilterPos(null)}
                 className={cn(
-                  "px-5 py-2.5 rounded-xl text-[11px] font-black uppercase italic tracking-widest flex items-center gap-2 transition-all whitespace-nowrap",
-                  filterPos === pos.code ? "bg-primary text-black shadow-glow-primary" : "text-foreground/40 hover:text-foreground/70"
+                  "px-8 py-3 rounded-2xl text-[12px] font-black uppercase italic tracking-widest transition-all whitespace-nowrap",
+                  !filterPos ? "bg-primary text-black shadow-glow-primary" : "text-foreground/40 hover:text-foreground/70"
                 )}
               >
-                <span className="text-lg grayscale-0">{pos.icon}</span>
-                {pos.label}
+                Todos
               </button>
-            ))}
-          </div>
-          
-          <div className="ml-auto flex items-center">
-             <Link href="/recruitment/create">
-               <motion.button 
-                 whileHover={{ scale: 1.05, y: -2 }}
-                 whileTap={{ scale: 0.95 }}
-                 className="bg-foreground text-background px-8 py-3.5 rounded-2xl font-black text-[12px] uppercase tracking-[0.2em] italic flex items-center gap-3 shadow-2xl transition-all"
-               >
-                 <Plus size={18} className="stroke-[3]" />
-                 BUSCAR CRACKS
-               </motion.button>
-             </Link>
+              {POSITIONS.map((pos) => (
+                <button
+                  key={pos.code}
+                  onClick={() => setFilterPos(pos.code)}
+                  className={cn(
+                    "px-6 py-3 rounded-2xl text-[12px] font-black uppercase italic tracking-widest flex items-center gap-3 transition-all whitespace-nowrap",
+                    filterPos === pos.code ? "bg-primary text-black shadow-glow-primary" : "text-foreground/40 hover:text-foreground"
+                  )}
+                >
+                  <pos.icon size={18} className={cn("transition-colors", filterPos === pos.code ? "text-black" : pos.color)} />
+                  {pos.label}
+                </button>
+              ))}
+            </div>
+
+            <div className="ml-auto hidden xl:flex items-center gap-4 text-[11px] font-bold text-foreground/30 italic">
+               <span className="flex items-center gap-2">
+                 <div className="w-2 h-2 rounded-full bg-primary animate-pulse" />
+                 {filteredMatches?.length || 0} BÚSQUEDAS ACTIVAS
+               </span>
+            </div>
           </div>
         </div>
       </div>
 
-      {/* Marketplace Grid */}
-      <div className="max-w-6xl mx-auto px-6 mt-12">
+      {/* Mercado Grid */}
+      <div className="max-w-7xl mx-auto px-6 mt-16">
         {isLoading ? (
-          <div className="grid gap-8">
-            {[1, 2, 3].map((i) => (
-              <div key={i} className="h-72 bg-surface-elevated rounded-[2.5rem] animate-pulse border border-white/5" />
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+            {[1, 2, 3, 4].map((i) => (
+              <div key={i} className="h-[400px] bg-surface-elevated rounded-[4rem] animate-pulse border border-white/5" />
             ))}
           </div>
         ) : (
-          <div className="grid gap-10">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
             <AnimatePresence mode="popLayout">
-              {matches?.filter(m => !filterPos || m.slots.some(s => s.position === filterPos)).map((match) => (
+              {filteredMatches?.map((match) => (
                 <motion.div
                   key={match.id}
                   layout
-                  initial={{ opacity: 0, y: 40 }}
-                  animate={{ opacity: 1, y: 0 }}
+                  initial={{ opacity: 0, scale: 0.95, y: 30 }}
+                  animate={{ opacity: 1, scale: 1, y: 0 }}
                   exit={{ opacity: 0, scale: 0.9 }}
-                  className="group relative glass-premium rounded-[3rem] border border-white/10 overflow-hidden hover:border-primary/30 transition-all duration-500"
+                  className="group relative glass-premium rounded-[4rem] border border-white/10 overflow-hidden hover:border-primary/40 transition-all duration-700 hover:shadow-[0_0_60px_rgba(44,252,125,0.05)]"
                 >
-                  {/* Subtle Background Badge */}
-                  <div className="absolute -top-12 -right-12 w-48 h-48 bg-primary/5 blur-[80px] rounded-full group-hover:bg-primary/10 transition-all" />
+                  {/* Skill Badge Floating */}
+                  <div className="absolute top-8 right-8 z-10 flex items-center gap-4">
+                    <span className="bg-white/5 backdrop-blur-md text-foreground/60 px-5 py-2 rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] border border-white/5">
+                      {match.required_skill_level?.replace('-', ' ') || 'PRO VIBE'}
+                    </span>
+                    {user && match.creator_id === user.id && (
+                      <button
+                        onClick={(e) => handleDeletePosting(e, match.id)}
+                        className="w-10 h-10 rounded-xl bg-red-500/10 text-red-500 flex items-center justify-center border border-red-500/20 hover:bg-red-500 hover:text-white transition-all active:scale-90"
+                      >
+                        <Trash2 size={18} />
+                      </button>
+                    )}
+                  </div>
 
-                  <div className="p-10 flex flex-col lg:flex-row gap-12">
-                    {/* Left: Tactical Info */}
-                    <div className="flex-1 space-y-8">
-                      <div className="flex items-start justify-between">
-                        <div>
-                          <div className="flex items-center gap-3 mb-4">
-                            <span className="bg-primary/10 text-primary px-4 py-1 rounded-lg text-[10px] font-black uppercase tracking-[0.25em] border border-primary/20">
-                              {match.skill_level || 'Elite Pro'}
-                            </span>
-                          </div>
-                          <h3 className="text-4xl md:text-5xl font-black italic font-kanit uppercase leading-tight group-hover:text-primary transition-colors">
-                            REFUERZO <span className="text-primary/40 group-hover:text-primary/60 transition-colors">SOLICITADO</span>
-                          </h3>
-                        </div>
-                        {user && match.creator_id === user.id && (
-                          <button
-                            type="button"
-                            onClick={(e) => handleDeletePosting(e, match.id)}
-                            disabled={deleteMutation.isPending}
-                            className="p-3 bg-red-500/10 text-red-500 rounded-2xl border border-red-500/20 hover:bg-red-500 hover:text-white transition-all disabled:opacity-50 relative z-50 pointer-events-auto"
-                          >
-                            <Trash2 size={20} />
-                          </button>
-                        )}
+                  <div className="p-10 md:p-14 space-y-12 h-full flex flex-col">
+                    {/* Top Info */}
+                    <div className="space-y-6">
+                      <div className="flex items-center gap-4">
+                        <div className="w-1.5 h-10 bg-primary rounded-full shadow-glow-primary" />
+                        <h3 className="text-4xl md:text-5xl font-black italic font-kanit uppercase leading-[0.9] tracking-tighter">
+                          RECLUTAMIENTO <br/>
+                          <span className="text-primary/40 group-hover:text-primary transition-colors duration-500">TACTICO</span>
+                        </h3>
                       </div>
-
-                      <p className="text-foreground/40 text-lg font-medium italic border-l-2 border-primary/20 pl-6 py-2 leading-relaxed max-w-xl">
-                        "{match.description || 'Se busca completar el partido con gente de buena onda y nivel competitivo.'}"
+                      
+                      <p className="text-foreground/50 text-xl font-medium italic border-l-2 border-white/10 pl-8 py-2 leading-relaxed">
+                        "{match.description || 'Se busca completar el partido con cracks de buen nivel.'}"
                       </p>
-
-                      <div className="flex flex-wrap gap-6">
-                        <div className="flex items-center gap-4 bg-white/5 px-6 py-4 rounded-[1.5rem] border border-white/5 backdrop-blur-md">
-                          <Calendar className="text-primary w-5 h-5" />
-                          <div>
-                            <p className="text-[9px] uppercase font-black text-foreground/30 tracking-[0.2em] mb-0.5">Fecha</p>
-                            <p className="font-bold text-sm uppercase italic">
-                              {formatDate(match.date)}
-                            </p>
-                          </div>
-                        </div>
-                        <div className="flex items-center gap-4 bg-white/5 px-6 py-4 rounded-[1.5rem] border border-white/5 backdrop-blur-md">
-                          <Clock className="text-primary w-5 h-5" />
-                          <div>
-                            <p className="text-[9px] uppercase font-black text-foreground/30 tracking-[0.2em] mb-0.5">Hora</p>
-                            <p className="font-bold text-sm uppercase italic">
-                                {match.time || '20:00'} HS
-                            </p>
-                          </div>
-                        </div>
-                        {match.venue && (
-                          <div className="flex items-center gap-4 bg-white/5 px-6 py-4 rounded-[1.5rem] border border-white/5 backdrop-blur-md">
-                            <MapPin className="text-primary w-5 h-5" />
-                            <div>
-                              <p className="text-[9px] uppercase font-black text-foreground/30 tracking-[0.2em] mb-0.5">Sede</p>
-                              <p className="font-bold text-sm uppercase italic truncate max-w-[120px]">
-                                {match.venue.name}
-                              </p>
-                            </div>
-                          </div>
-                        )}
-                      </div>
                     </div>
 
-                    {/* Right: Tactical Lineup Slots */}
-                    <div className="w-full lg:w-[350px] bg-surface-elevated/40 rounded-[2.5rem] p-8 border border-white/5 relative overflow-hidden">
-                      <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent pointer-events-none" />
-                      
-                      <div className="relative z-10">
-                        <div className="flex items-center justify-between mb-8">
-                          <h4 className="text-[11px] uppercase font-black text-foreground tracking-[0.3em] font-kanit italic">
-                            POSICIONES LIBRES
-                          </h4>
-                          <span className="text-primary font-black text-sm">
-                            {match.slots.filter(s => s.status === 'open').length} VACANTES
-                          </span>
+                    {/* Logistics Row */}
+                    <div className="flex flex-wrap gap-4">
+                      <div className="flex-1 min-w-[140px] bg-white/5 p-5 rounded-[2.5rem] border border-white/5 flex flex-col gap-2">
+                        <Calendar className="text-primary opacity-50" size={20} />
+                        <div>
+                          <p className="text-[9px] font-black uppercase tracking-widest text-foreground/20">FECHA</p>
+                          <p className="text-lg font-black italic font-kanit uppercase">{formatDate(match.date)}</p>
                         </div>
+                      </div>
+                      <div className="flex-1 min-w-[140px] bg-white/5 p-5 rounded-[2.5rem] border border-white/5 flex flex-col gap-2">
+                        <Clock className="text-primary opacity-50" size={20} />
+                        <div>
+                          <p className="text-[9px] font-black uppercase tracking-widest text-foreground/20">HORA</p>
+                          <p className="text-lg font-black italic font-kanit uppercase">{match.time} HS</p>
+                        </div>
+                      </div>
+                      {match.venue && (
+                        <div className="flex-[1.5] min-w-[200px] bg-white/5 p-5 rounded-[2.5rem] border border-white/5 flex flex-col gap-2">
+                          <MapPin className="text-primary opacity-50" size={20} />
+                          <div>
+                            <p className="text-[9px] font-black uppercase tracking-widest text-foreground/20">CANCHA</p>
+                            <p className="text-lg font-black italic font-kanit uppercase truncate">{match.venue.name}</p>
+                          </div>
+                        </div>
+                      )}
+                    </div>
 
-                        <div className="space-y-4">
-                          {match.slots.map((slot) => (
+                    {/* Slots Area */}
+                    <div className="flex-1">
+                      <div className="flex items-center justify-between mb-6">
+                        <h4 className="text-[10px] font-black uppercase tracking-[0.4em] text-foreground/30">PUESTOS DISPONIBLES</h4>
+                        <span className="text-[10px] font-bold text-primary italic uppercase tracking-widest">
+                           {match.slots.filter(s => s.status === 'open').length} VACANTES
+                        </span>
+                      </div>
+
+                      <div className="space-y-4">
+                        {match.slots.map((slot) => {
+                          const posConfig = POSITIONS.find(p => p.code === slot.position) || POSITIONS[4];
+                          const isOpen = slot.status === 'open';
+                          return (
                             <motion.div 
                               key={slot.id}
-                              whileHover={{ scale: 1.02, x: 5 }}
+                              whileHover={isOpen ? { x: 10 } : {}}
                               className={cn(
-                                "flex items-center justify-between p-4 rounded-2xl transition-all border",
-                                slot.status === 'open' 
-                                  ? "bg-foreground/[0.03] border-white/5 hover:border-primary/40 hover:bg-primary/5" 
-                                  : "bg-primary/10 border-primary/20 opacity-80"
+                                "flex items-center justify-between p-4 rounded-[2rem] border transition-all duration-300",
+                                isOpen 
+                                  ? "bg-white/5 border-white/10 hover:border-primary/50 hover:bg-primary/5" 
+                                  : "bg-surface-elevated border-transparent opacity-40 grayscale"
                               )}
                             >
-                              <div className="flex items-center gap-4">
+                              <div className="flex items-center gap-6">
                                 <div className={cn(
-                                  "w-12 h-12 rounded-xl flex items-center justify-center text-xs font-black transition-all",
-                                  slot.status === 'open' 
-                                    ? "bg-surface-bright text-foreground/40 border border-white/5" 
-                                    : "bg-primary text-black shadow-glow-primary"
+                                  "w-12 h-12 rounded-[1.2rem] flex items-center justify-center border transition-all",
+                                  isOpen ? "bg-black/40 border-white/5" : "bg-white/5 border-white/5"
                                 )}>
-                                  {slot.position}
+                                  <posConfig.icon size={20} className={isOpen ? posConfig.color : "text-foreground/40"} />
                                 </div>
                                 <div>
-                                  <p className="text-[9px] uppercase font-black text-foreground/30 tracking-widest mb-0.5">VACANTE</p>
-                                  <p className="text-sm font-black italic uppercase tracking-tighter">
-                                    {slot.position === 'GK' ? 'Arquero' : 
-                                     slot.position === 'DEF' ? 'Defensor' :
-                                     slot.position === 'MID' ? 'Volante' : 
-                                     slot.position === 'FW' ? 'Delantero' : 'Cualquiera'}
+                                  <p className="text-[9px] font-black text-foreground/20 tracking-widest uppercase leading-none mb-1">
+                                    {isOpen ? 'RECLUTANDO' : 'FICHAJE CERRADO'}
+                                  </p>
+                                  <p className="text-base font-black italic uppercase font-kanit">
+                                    {posConfig.label}
                                   </p>
                                 </div>
                               </div>
 
-                              {slot.status === 'open' ? (
+                              {isOpen ? (
                                 <button
                                   onClick={() => handleJoinSlot(slot.id)}
                                   disabled={joinSlotMutation.isPending}
-                                  className="w-10 h-10 bg-primary text-black rounded-xl flex items-center justify-center hover:scale-110 active:scale-95 transition-all shadow-glow-primary"
+                                  className="group w-14 h-14 bg-primary text-black rounded-[1.5rem] flex items-center justify-center hover:scale-110 active:scale-95 transition-all shadow-glow-primary relative overflow-hidden"
                                 >
-                                  <Plus size={20} className="stroke-[3]" />
+                                  <div className="absolute inset-0 bg-white/20 -translate-y-full group-hover:translate-y-0 transition-transform" />
+                                  <Plus size={28} className="relative z-10 stroke-[3]" />
                                 </button>
                               ) : (
-                                <div className="w-10 h-10 rounded-xl bg-primary/20 flex items-center justify-center text-primary">
-                                  <CheckCircle2 size={18} />
+                                <div className="w-14 h-14 rounded-[1.5rem] bg-white/5 flex items-center justify-center text-foreground/20 border border-white/5">
+                                  <CheckCircle2 size={24} />
                                 </div>
                               )}
                             </motion.div>
-                          ))}
-                        </div>
+                          );
+                        })}
                       </div>
+                    </div>
+                    
+                    {/* CTA Footer inside card */}
+                    <div className="pt-6 border-t border-white/5 flex items-center justify-between">
+                       <div className="flex -space-x-2">
+                          {[1,2,3].map(i => (
+                            <div key={i} className="w-8 h-8 rounded-full bg-surface-bright border-2 border-background flex items-center justify-center overflow-hidden">
+                               <Users2 size={14} className="text-foreground/20" />
+                            </div>
+                          ))}
+                          <div className="w-8 h-8 rounded-full bg-primary/10 border-2 border-background flex items-center justify-center">
+                             <span className="text-[8px] font-black text-primary">+</span>
+                          </div>
+                       </div>
+                       <p className="text-[10px] font-black text-foreground/20 uppercase tracking-[0.2em] italic">Postulate ahora y jugá hoy</p>
                     </div>
                   </div>
                 </motion.div>
               ))}
             </AnimatePresence>
             
-            {matches?.length === 0 && (
-              <div className="text-center py-32 glass-premium rounded-[4rem] border-dashed border-2 border-white/10">
-                <div className="w-24 h-24 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-8 border border-primary/20 animate-pulse">
-                  <AlertCircle className="text-primary" size={40} />
+            {filteredMatches?.length === 0 && (
+              <motion.div 
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                className="col-span-full py-32 text-center glass-premium rounded-[4rem] border-dashed border-2 border-white/10"
+              >
+                <div className="relative w-32 h-32 mx-auto mb-12">
+                   <div className="absolute inset-0 bg-primary/20 blur-3xl rounded-full animate-pulse" />
+                   <div className="relative w-full h-full bg-surface-elevated rounded-full flex items-center justify-center border border-primary/20">
+                      <Skull className="text-primary" size={60} />
+                   </div>
                 </div>
-                <h3 className="text-3xl font-black italic uppercase mb-2 font-kanit">Silencio en el vestuario</h3>
-                <p className="text-foreground/40 font-medium italic text-lg mb-10">No hay búsquedas activas en este momento.</p>
+                <h3 className="text-5xl font-black italic uppercase font-kanit mb-4 tracking-tighter">Silencio en el vestuario</h3>
+                <p className="text-foreground/40 font-medium italic text-xl mb-12 max-w-md mx-auto">No hay búsquedas activas para estos puestos. ¿Por qué no armas una vos?</p>
                 <Link href="/recruitment/create">
-                  <button className="bg-primary text-black px-12 py-4 rounded-2xl font-black uppercase tracking-widest italic shadow-glow-primary hover:scale-105 transition-all">
+                  <button className="bg-primary text-black px-12 py-6 rounded-[2rem] font-black text-xl uppercase tracking-tight italic shadow-glow-primary hover:scale-105 active:scale-95 transition-all">
                     INICIAR UNA BÚSQUEDA
                   </button>
                 </Link>
-              </div>
+              </motion.div>
             )}
           </div>
         )}
