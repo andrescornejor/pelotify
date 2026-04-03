@@ -215,6 +215,9 @@ export default function CreateRecruitmentPage() {
               <h3 className="text-2xl font-black italic uppercase font-kanit">DATOS DEL ENCUENTRO</h3>
             </div>
 
+
+
+
             {/* Date Selection - Horizontal Scroll experience */}
             <div className="space-y-6">
               <div className="flex items-center justify-between">
