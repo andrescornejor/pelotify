@@ -21,7 +21,9 @@ import {
   Star,
   Users2,
   ArrowRight,
-  Skull
+  Skull,
+  MessageSquare,
+  ExternalLink
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useRecruitmentMatches, useJoinRecruitmentSlot, useDeleteRecruitmentPosting } from '@/hooks/useRecruitmentQueries';
@@ -310,20 +312,41 @@ export default function RecruitmentMarketplace() {
                   exit={{ opacity: 0, scale: 0.9 }}
                   className="group relative glass-premium rounded-[4rem] border border-white/10 overflow-hidden hover:border-primary/40 transition-all duration-700 hover:shadow-[0_0_60px_rgba(44,252,125,0.05)]"
                 >
-                  {/* Skill Badge Floating */}
-                  <div className="absolute top-8 right-8 z-10 flex items-center gap-4">
-                    <span className="bg-white/5 backdrop-blur-md text-foreground/60 px-5 py-2 rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] border border-white/5">
-                      {match.required_skill_level?.replace('-', ' ') || 'PRO VIBE'}
-                    </span>
-                    {user && match.creator_id === user.id && (
-                      <button
-                        onClick={(e) => handleDeletePosting(e, match.id)}
-                        className="w-10 h-10 rounded-xl bg-red-500/10 text-red-500 flex items-center justify-center border border-red-500/20 hover:bg-red-500 hover:text-white transition-all active:scale-90"
-                      >
-                        <Trash2 size={18} />
-                      </button>
-                    )}
-                  </div>
+                {/* Skill Badge Floating */}
+                <div className="absolute top-8 right-8 z-10 flex items-center gap-4">
+                  {/* Coordination Actions */}
+                  {(user?.id === match.creator_id || match.slots?.some(s => s.user_id === user?.id)) && (
+                    <div className="flex items-center gap-2">
+                       <Link 
+                         href={`/match?id=${match.id}`}
+                         className="px-4 h-10 rounded-xl bg-primary text-black flex items-center justify-center gap-2 hover:scale-105 active:scale-95 transition-all text-[10px] font-black uppercase tracking-widest group/lobby shadow-glow-primary/20"
+                       >
+                         <ExternalLink size={14} /> LOBBY
+                       </Link>
+                       {user?.id !== match.creator_id && (
+                         <Link 
+                           href={`/messages?user=${match.creator_id}`}
+                           className="w-10 h-10 rounded-xl bg-white/5 border border-white/10 text-primary flex items-center justify-center hover:bg-white/10 transition-all active:scale-90"
+                         >
+                           <MessageSquare size={16} />
+                         </Link>
+                       )}
+                    </div>
+                  )}
+
+                  <span className="bg-white/5 backdrop-blur-md text-foreground/60 px-5 py-2 rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] border border-white/5">
+                    {match.required_skill_level?.replace('-', ' ') || 'PRO VIBE'}
+                  </span>
+                  
+                  {user && match.creator_id === user.id && (
+                    <button
+                      onClick={(e) => handleDeletePosting(e, match.id)}
+                      className="w-10 h-10 rounded-xl bg-red-500/10 text-red-500 flex items-center justify-center border border-red-500/20 hover:bg-red-500 hover:text-white transition-all active:scale-90"
+                    >
+                      <Trash2 size={18} />
+                    </button>
+                  )}
+                </div>
 
                   <div className="p-10 md:p-14 space-y-12 h-full flex flex-col">
                     {/* Top Info */}
