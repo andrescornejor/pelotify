@@ -28,6 +28,10 @@ export interface RecruitmentPosting {
     address: string;
   };
   slots: RecruitmentSlot[];
+  creator?: {
+    name: string;
+    avatar_url: string | null;
+  };
 }
 
 export async function getRecruitmentMatches() {
