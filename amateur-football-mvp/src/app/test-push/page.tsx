@@ -5,7 +5,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/lib/supabase';
 import { initializePushNotifications, sendNotificationToUser } from '@/lib/notifications';
 import { Bell, ShieldCheck, Send, Database, AlertCircle, RefreshCw } from 'lucide-react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 
 export default function PushTestPage() {
   const { user } = useAuth();
