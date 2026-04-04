@@ -10,12 +10,12 @@ export async function registerFCMServiceWorker(): Promise<ServiceWorkerRegistrat
   if (typeof window === 'undefined' || !('serviceWorker' in navigator)) return null;
 
   try {
-    // Register the dedicated Firebase messaging SW
+    // 1. Register the dedicated Firebase messaging SW
     const registration = await navigator.serviceWorker.register('/firebase-messaging-sw.js', {
       scope: '/',
     });
 
-    // Inject Firebase config into the service worker via postMessage
+    // 2. Prepare Firebase config (client keys)
     const firebaseConfig = {
       apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
       authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
@@ -25,10 +25,10 @@ export async function registerFCMServiceWorker(): Promise<ServiceWorkerRegistrat
       appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
     };
 
-    // Wait for the SW to be ready
-    const registration = await navigator.serviceWorker.ready;
+    // 3. Wait for the SW to be ready and fully active
+    await navigator.serviceWorker.ready;
 
-    // Helper to send config
+    // Helper to send config via postMessage
     const sendConfig = () => {
       if (registration.active) {
         registration.active.postMessage({
@@ -38,10 +38,10 @@ export async function registerFCMServiceWorker(): Promise<ServiceWorkerRegistrat
       }
     };
 
-    // Send immediately
+    // Send config immediately
     sendConfig();
 
-    // Also send when the worker becomes active if it wasn't yet
+    // Also send config when the worker becomes active (if it was installing)
     registration.addEventListener('updatefound', () => {
       const newWorker = registration.installing;
       if (newWorker) {
@@ -94,6 +94,7 @@ export async function saveFCMToken(userId: string, token: string): Promise<void>
  */
 export async function removeFCMToken(token: string): Promise<void> {
   try {
+    await navigator.serviceWorker.ready;
     await supabase.from('fcm_tokens').delete().eq('token', token);
   } catch (err) {
     console.error('Failed to remove FCM token:', err);
