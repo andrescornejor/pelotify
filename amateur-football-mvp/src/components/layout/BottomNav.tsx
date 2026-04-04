@@ -94,7 +94,7 @@ export function BottomNav() {
 
         <nav
           className={cn(
-            'relative overflow-hidden p-1.5 rounded-[2.5rem] border transition-all duration-700 flex items-center shadow-[0_25px_60px_-15px_rgba(0,0,0,0.5)]',
+            'relative p-1.5 rounded-[2.5rem] border transition-all duration-700 flex items-center shadow-[0_25px_60px_-15px_rgba(0,0,0,0.5)]',
             performanceMode 
               ? 'bg-surface border-border' 
               : 'bg-background/40 backdrop-blur-[35px] border-white/10 dark:border-white/5'
