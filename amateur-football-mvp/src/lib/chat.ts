@@ -228,7 +228,8 @@ export async function getRecentChats(userId: string) {
   const conversations = new Map<string, any>();
   data.forEach((msg) => {
     const otherId = msg.sender_id === userId ? msg.recipient_id : msg.sender_id;
-    const isUnreadForMe = msg.recipient_id === userId && !msg.is_read;
+    // A message is unread for me if I am the recipient AND is_read is strictly false or null
+    const isUnreadForMe = msg.recipient_id === userId && (msg.is_read === false || msg.is_read === null);
 
     if (!conversations.has(otherId)) {
       const isSender = msg.sender_id === userId;
@@ -272,8 +273,7 @@ export async function markDirectMessagesAsRead(senderId: string, recipientId: st
     .from('direct_messages')
     .update({ is_read: true })
     .eq('sender_id', senderId)
-    .eq('recipient_id', recipientId)
-    .eq('is_read', false);
+    .eq('recipient_id', recipientId);
 
   if (error) {
     console.error('Error marking as read:', error);

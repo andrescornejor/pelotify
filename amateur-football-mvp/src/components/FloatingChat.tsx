@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { getRecentChats, subscribeToDirectMessages } from '@/lib/chat';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -35,7 +35,7 @@ export function FloatingChat() {
     if (!user) return;
     try {
       const recent = await getRecentChats(user.id);
-      setChats(recent.slice(0, 10)); // Show more in rail
+      setChats(recent.slice(0, 10));
     } catch (err) {
       console.error(err);
     }
@@ -49,6 +49,14 @@ export function FloatingChat() {
       supabase.removeChannel(channel);
     };
   }, [user]);
+
+  // Derived processed chats list
+  const processedChats = useMemo(() => {
+    return chats.map(chat => {
+      const isActive = activeChats.some(ac => ac.userId === chat.userId && !minimizedChats.includes(chat.userId));
+      return isActive ? { ...chat, isUnread: false } : chat;
+    });
+  }, [chats, activeChats, minimizedChats]);
 
   const openChat = (chat: any) => {
     if (!activeChats.find(c => c.userId === chat.userId)) {
@@ -190,7 +198,7 @@ export function FloatingChat() {
                  exit={{ opacity: 0, y: 20 }}
                  className="flex flex-col gap-3.5 pt-2"
                >
-                 {chats.map((chat) => (
+                 {processedChats.map((chat) => (
                    <motion.button
                      key={chat.userId}
                      whileHover={{ scale: 1.15, x: -10 }}
