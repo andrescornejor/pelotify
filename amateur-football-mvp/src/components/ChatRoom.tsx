@@ -256,16 +256,6 @@ export default function ChatRoom({ matchId, recipientId, className, title }: Cha
         await sendMatchMessage(matchId, user.id, content, imageUrl);
       } else if (recipientId) {
         await sendDirectMessage(user.id, recipientId, content, imageUrl);
-        const tempMsg: ChatMessage = {
-          id: Math.random().toString(),
-          sender_id: user.id,
-          recipient_id: recipientId,
-          content,
-          image_url: imageUrl,
-          created_at: new Date().toISOString(),
-          profiles: { name: user.name || 'Yo', avatar_url: user.avatar_url },
-        };
-        setMessages((prev) => [...prev, tempMsg]);
       }
     } catch (err) {
       console.error('Error sending message:', err);
@@ -276,6 +266,13 @@ export default function ChatRoom({ matchId, recipientId, className, title }: Cha
       setUploadingImage(false);
     }
   };
+
+  // Mark messages as read when opening a direct chat
+  useEffect(() => {
+    if (user && recipientId) {
+      markDirectMessagesAsRead(recipientId, user.id);
+    }
+  }, [user?.id, recipientId]);
 
   if (!user) return null;
 

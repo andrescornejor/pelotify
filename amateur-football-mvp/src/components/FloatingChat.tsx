@@ -56,6 +56,13 @@ export function FloatingChat() {
     }
     // Remove from minimized if present
     setMinimizedChats(prev => prev.filter(id => id !== chat.userId));
+    
+    // Optimistically mark as read in UI to remove !
+    setChats(prev => prev.map(c => c.userId === chat.userId ? { ...c, isUnread: false } : c));
+    
+    // Actual mark as read is handled in ChatRoom component, 
+    // but we can also trigger a fetch shortly after
+    setTimeout(fetchChats, 1000);
   };
 
   const closeChat = (userId: string) => {
