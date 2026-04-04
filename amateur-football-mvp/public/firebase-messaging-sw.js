@@ -5,64 +5,45 @@
 importScripts('https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js');
 importScripts('https://www.gstatic.com/firebasejs/10.12.0/firebase-messaging-compat.js');
 
-// Firebase config will be set via postMessage from the main app
-let firebaseConfig = null;
-let messagingInitialized = false;
+// 💡 HARDCODED CONFIG (Fixed for production reliability)
+const firebaseConfig = {
+  apiKey: "AIzaSyCGudm4C7dvjTCT09TcUTGQTBWHuMbPCTQ",
+  authDomain: "pelotifyapp.firebaseapp.com",
+  projectId: "pelotifyapp",
+  storageBucket: "pelotifyapp.firebasestorage.app",
+  messagingSenderId: "55967873467",
+  appId: "1:55967873467:web:c5b21db754a342f9c5ac9e"
+};
 
-// Listen for config from the main thread
-self.addEventListener('message', (event) => {
-  if (event.data && event.data.type === 'FIREBASE_CONFIG') {
-    firebaseConfig = event.data.config;
-    initializeFirebase();
-  }
+// Initialize Firebase in the service worker context
+firebase.initializeApp(firebaseConfig);
+const messaging = firebase.messaging();
+
+// Handle background messages
+messaging.onBackgroundMessage((payload) => {
+  console.log('[FCM SW] Background message received:', payload);
+
+  const notificationTitle = payload.notification?.title || 'Pelotify ⚽';
+  const notificationOptions = {
+    body: payload.notification?.body || '¡Tenés una nueva notificación!',
+    icon: '/logo_pelotify.png',
+    badge: '/logo_pelotify.png',
+    tag: payload.data?.tag || 'pelotify-msg-' + Date.now(),
+    requireInteraction: true,
+    data: {
+      click_action: payload.fcmOptions?.link || payload.data?.click_action || '/',
+    },
+    vibrate: [200, 100, 200],
+  };
+
+  return self.registration.showNotification(notificationTitle, notificationOptions);
 });
-
-function initializeFirebase() {
-  if (messagingInitialized || !firebaseConfig || !firebaseConfig.apiKey) return;
-
-  try {
-    firebase.initializeApp(firebaseConfig);
-    const messaging = firebase.messaging();
-
-    // Handle background messages (when the app is NOT in the foreground)
-    messaging.onBackgroundMessage((payload) => {
-      console.log('[FCM SW] Background message received:', payload);
-
-      const notificationTitle = payload.notification?.title || 'Pelotify';
-      const notificationOptions = {
-        body: payload.notification?.body || 'Tenés una nueva notificación',
-        icon: payload.notification?.icon || '/logo_pelotify.png',
-        badge: '/logo_pelotify.png',
-        tag: payload.data?.tag || 'pelotify-notification-' + Date.now(),
-        requireInteraction: true,
-        data: {
-          click_action: payload.fcmOptions?.link || payload.data?.click_action || '/',
-          ...payload.data,
-        },
-        vibrate: [200, 100, 200],
-        actions: [
-          { action: 'open', title: 'Abrir' },
-          { action: 'dismiss', title: 'Cerrar' },
-        ],
-      };
-
-      self.registration.showNotification(notificationTitle, notificationOptions);
-    });
-
-    messagingInitialized = true;
-    console.log('[FCM SW] Firebase Messaging initialized successfully');
-  } catch (error) {
-    console.error('[FCM SW] Error initializing Firebase:', error);
-  }
-}
 
 // Handle notification click — open the app to the right page
 self.addEventListener('notificationclick', (event) => {
-  console.log('[FCM SW] Notification clicked:', event.action);
+  console.log('[FCM SW] Notification clicked');
 
   event.notification.close();
-
-  if (event.action === 'dismiss') return;
 
   const clickAction = event.notification.data?.click_action || '/';
 
