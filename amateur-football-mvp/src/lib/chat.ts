@@ -7,6 +7,7 @@ export interface ChatMessage {
   sender_id: string;
   recipient_id?: string;
   content: string;
+  image_url?: string;
   is_read?: boolean;
   created_at: string;
   profiles?: {
@@ -25,6 +26,7 @@ export async function getMatchMessages(matchId: string): Promise<ChatMessage[]> 
             match_id,
             sender_id:user_id,
             content,
+            image_url,
             created_at,
             profiles:user_id (
                 name,
@@ -43,11 +45,17 @@ export async function getMatchMessages(matchId: string): Promise<ChatMessage[]> 
 export async function sendMatchMessage(
   matchId: string,
   userId: string,
-  content: string
+  content: string,
+  imageUrl?: string
 ): Promise<void> {
   const { error } = await supabase
     .from('match_messages')
-    .insert({ match_id: matchId, user_id: userId, content: content.trim() });
+    .insert({
+      match_id: matchId,
+      user_id: userId,
+      content: content.trim() || (imageUrl ? '📷 Imagen' : ''),
+      image_url: imageUrl,
+    });
 
   if (error) throw error;
 
@@ -63,7 +71,9 @@ export async function sendMatchMessage(
       matchId,
       userId,
       `💬 Mensaje en partido`,
-      `${profile?.name || 'Alguien'}: ${content.slice(0, 50)}${content.length > 50 ? '...' : ''}`,
+      imageUrl
+        ? `${profile?.name || 'Alguien'} envió una imagen`
+        : `${profile?.name || 'Alguien'}: ${content.slice(0, 50)}${content.length > 50 ? '...' : ''}`,
       `/match?id=${matchId}`
     ).catch(() => {});
   } catch (e) {
@@ -81,6 +91,7 @@ export async function getDirectMessages(userId1: string, userId2: string): Promi
             sender_id,
             recipient_id,
             content,
+            image_url,
             created_at,
             profiles:sender_id (
                 name,
@@ -100,11 +111,17 @@ export async function getDirectMessages(userId1: string, userId2: string): Promi
 export async function sendDirectMessage(
   senderId: string,
   recipientId: string,
-  content: string
+  content: string,
+  imageUrl?: string
 ): Promise<void> {
   const { error } = await supabase
     .from('direct_messages')
-    .insert({ sender_id: senderId, recipient_id: recipientId, content: content.trim() });
+    .insert({
+      sender_id: senderId,
+      recipient_id: recipientId,
+      content: content.trim() || (imageUrl ? '📷 Imagen' : ''),
+      image_url: imageUrl,
+    });
 
   if (error) throw error;
 
@@ -119,8 +136,8 @@ export async function sendDirectMessage(
     sendNotificationToUser(
       recipientId,
       `💬 Nuevo mensaje de ${sender?.name || 'Alguien'}`,
-      `${content.slice(0, 50)}${content.length > 50 ? '...' : ''}`,
-      { clickAction: `/messages?id=${senderId}` }
+      imageUrl ? '📷 Envió una imagen' : `${content.slice(0, 50)}${content.length > 50 ? '...' : ''}`,
+      { clickAction: `/messages?user=${senderId}` }
     ).catch(() => {});
   } catch (e) {
     // Non-blocking
@@ -143,7 +160,7 @@ export function subscribeToMatchMessages(matchId: string, onMessage: (msg: ChatM
           .from('match_messages')
           .select(
             `
-                        id, match_id, sender_id:user_id, content, created_at,
+                        id, match_id, sender_id:user_id, content, image_url, created_at,
                         profiles:user_id ( name, avatar_url )
                     `
           )
@@ -162,17 +179,16 @@ export function subscribeToDirectMessages(userId: string, onMessage: (msg: ChatM
     .on(
       'postgres_changes',
       {
-        event: 'INSERT',
+        event: '*',
         schema: 'public',
         table: 'direct_messages',
-        filter: `recipient_id=eq.${userId}`,
       },
       async (payload) => {
         const { data } = await supabase
           .from('direct_messages')
           .select(
             `
-                        id, sender_id, recipient_id, content, created_at,
+                        id, sender_id, recipient_id, content, image_url, created_at,
                         profiles:sender_id ( name, avatar_url )
                     `
           )

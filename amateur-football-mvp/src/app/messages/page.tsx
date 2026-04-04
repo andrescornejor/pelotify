@@ -18,6 +18,8 @@ import {
   UserPlus,
   X,
   Plus,
+  Settings,
+  PlusCircle,
 } from 'lucide-react';
 import ChatRoom from '@/components/ChatRoom';
 import { cn, safeFormatTime } from '@/lib/utils';
@@ -484,6 +486,48 @@ export default function MessagesPage() {
               </>
             )}
           </motion.div>
+
+          {/* New: Quick Actions Menu below recent messages */}
+          <div className="mt-4 pt-6 border-t border-foreground/5 space-y-4 px-2 hidden lg:block">
+            <h4 className="text-[10px] font-black uppercase tracking-[0.4em] text-foreground/30 px-3">
+              Acciones Rápidas
+            </h4>
+            <div className="grid grid-cols-2 gap-3">
+              {[
+                { label: 'Amigos', icon: UserPlus, href: '/friends', color: 'bg-primary/10 text-primary' },
+                { label: 'Equipos', icon: Shield, href: '/teams', color: 'bg-blue-500/10 text-blue-500' },
+                { label: 'Buscar', icon: Search, href: '/search', color: 'bg-amber-500/10 text-amber-500' },
+                { label: 'Ajustes', icon: Settings, href: '/settings', color: 'bg-purple-500/10 text-purple-500' },
+              ].map((action, i) => (
+                <motion.a
+                  key={i}
+                  href={action.href}
+                  whileHover={{ scale: 1.05, y: -2 }}
+                  whileTap={{ scale: 0.95 }}
+                  className={cn(
+                    "flex flex-col items-center justify-center p-4 rounded-3xl border border-foreground/5 bg-foreground/[0.02] hover:bg-foreground/[0.04] transition-all gap-2 group"
+                  )}
+                >
+                  <div className={cn("w-10 h-10 rounded-2xl flex items-center justify-center transition-transform group-hover:scale-110", action.color)}>
+                    <action.icon className="w-5 h-5" />
+                  </div>
+                  <span className="text-[9px] font-black uppercase tracking-widest text-foreground/60 transition-colors group-hover:text-foreground">
+                    {action.label}
+                  </span>
+                </motion.a>
+              ))}
+            </div>
+            
+            <div className="p-4 rounded-[1.5rem] bg-primary/5 border border-primary/10 flex items-center gap-3 group cursor-pointer hover:bg-primary/10 transition-colors">
+              <div className="w-8 h-8 rounded-xl bg-primary text-black flex items-center justify-center">
+                <PlusCircle className="w-4 h-4" />
+              </div>
+              <div className="flex flex-col">
+                <span className="text-[9px] font-black uppercase tracking-tighter text-foreground">Crear Partido</span>
+                <span className="text-[7px] font-bold text-primary uppercase tracking-[0.2em]">Invita a tus contactos</span>
+              </div>
+            </div>
+          </div>
         </div>
 
         {/* Chat Area */}

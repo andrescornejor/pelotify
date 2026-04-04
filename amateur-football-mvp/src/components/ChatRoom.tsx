@@ -13,7 +13,7 @@ import {
   markDirectMessagesAsRead,
 } from '@/lib/chat';
 import { supabase } from '@/lib/supabase';
-import { Send, User as UserIcon, Loader2, ChevronRight, Clock } from 'lucide-react';
+import { Send, User as UserIcon, Loader2, ChevronRight, Clock, Image as ImageIcon, X } from 'lucide-react';
 import { cn, safeFormatTime } from '@/lib/utils';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -81,7 +81,7 @@ const MessageItem = memo(
           <motion.div
             layout
             className={cn(
-              'px-6 py-4 text-[14px] font-bold relative transition-all duration-300 group/bubble',
+              'p-1 text-[14px] font-bold relative transition-all duration-300 group/bubble overflow-hidden',
               isMine
                 ? 'bg-gradient-to-br from-primary via-primary to-primary-dark text-black rounded-[2rem] rounded-tr-[0.5rem] shadow-[0_10px_30px_rgba(85,250,134,0.15)] hover:shadow-primary/30'
                 : 'bg-white/90 dark:bg-foreground/[0.08] border border-foreground/10 text-foreground rounded-[2rem] rounded-tl-[0.5rem] shadow-sm hover:bg-foreground/[0.1] backdrop-blur-md',
@@ -89,15 +89,32 @@ const MessageItem = memo(
               sameAuthorAsNext && (isMine ? 'rounded-br-[0.5rem]' : 'rounded-bl-[0.5rem]')
             )}
           >
-            <div className="leading-relaxed tracking-tight">{msg.content}</div>
+            {msg.image_url && (
+              <div className="mb-2 rounded-[1.5rem] overflow-hidden border border-black/5 dark:border-white/5">
+                <img
+                  src={msg.image_url}
+                  alt="Imagen enviada"
+                  className="max-h-[300px] w-full object-cover cursor-pointer hover:scale-105 transition-transform duration-500"
+                  onClick={() => window.open(msg.image_url, '_blank')}
+                />
+              </div>
+            )}
+            <div className={cn('px-5 py-3 leading-relaxed tracking-tight', !msg.content && 'hidden')}>
+              {msg.content}
+            </div>
             <div
               className={cn(
-                'text-[8px] font-black opacity-40 mt-2 flex items-center gap-1.5 transition-opacity group-hover/bubble:opacity-100',
+                'px-5 pb-3 text-[8px] font-black opacity-40 flex items-center gap-1.5 transition-opacity group-hover/bubble:opacity-100',
                 isMine ? 'text-black justify-end' : 'text-foreground justify-start'
               )}
             >
               <Clock className="w-2.5 h-2.5" />
               {safeFormatTime(msg.created_at)}
+              {isMine && (
+                <span className={cn('ml-1 transition-colors', msg.is_read ? 'text-blue-400' : 'opacity-40')}>
+                  {msg.is_read ? '✓✓' : '✓'}
+                </span>
+              )}
             </div>
           </motion.div>
         </div>
@@ -115,7 +132,36 @@ export default function ChatRoom({ matchId, recipientId, className, title }: Cha
   const [isLoading, setIsLoading] = useState(true);
   const [isSending, setIsSending] = useState(false);
   const [showScrollBottom, setShowScrollBottom] = useState(false);
+  const [uploadingImage, setUploadingImage] = useState(false);
+  const [selectedImage, setSelectedImage] = useState<{ file: File; preview: string } | null>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const preview = URL.createObjectURL(file);
+      setSelectedImage({ file, preview });
+    }
+  };
+
+  const uploadImageToChat = async (file: File) => {
+    const fileExt = file.name.split('.').pop();
+    const fileName = `${Math.random().toString(36).substring(2)}.${fileExt}`;
+    const filePath = `chat_images/${fileName}`;
+
+    const { error: uploadError, data } = await supabase.storage
+      .from('uploads')
+      .upload(filePath, file);
+
+    if (uploadError) throw uploadError;
+
+    const { data: { publicUrl } } = supabase.storage
+      .from('uploads')
+      .getPublicUrl(filePath);
+
+    return publicUrl;
+  };
 
   useEffect(() => {
     if (!user) return;
@@ -151,7 +197,10 @@ export default function ChatRoom({ matchId, recipientId, className, title }: Cha
       });
     } else if (recipientId) {
       subscription = subscribeToDirectMessages(user.id, (msg) => {
-        if (msg.sender_id === recipientId || msg.recipient_id === user.id) {
+        if (
+          (msg.sender_id === recipientId && msg.recipient_id === user.id) ||
+          (msg.sender_id === user.id && msg.recipient_id === recipientId)
+        ) {
           setMessages((prev) => [...prev.filter((m) => m.id !== msg.id), msg]);
           
           // If we are recipient, mark as read immediately
@@ -188,22 +237,31 @@ export default function ChatRoom({ matchId, recipientId, className, title }: Cha
 
   const handleSend = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!user || !newMessage.trim() || isSending) return;
+    if (!user || (!newMessage.trim() && !selectedImage) || isSending) return;
 
     const content = newMessage.trim();
     setIsSending(true);
     setNewMessage('');
 
     try {
+      let imageUrl;
+      if (selectedImage) {
+        setUploadingImage(true);
+        imageUrl = await uploadImageToChat(selectedImage.file);
+        setSelectedImage(null);
+        setUploadingImage(false);
+      }
+
       if (matchId) {
-        await sendMatchMessage(matchId, user.id, content);
+        await sendMatchMessage(matchId, user.id, content, imageUrl);
       } else if (recipientId) {
-        await sendDirectMessage(user.id, recipientId, content);
+        await sendDirectMessage(user.id, recipientId, content, imageUrl);
         const tempMsg: ChatMessage = {
           id: Math.random().toString(),
           sender_id: user.id,
           recipient_id: recipientId,
           content,
+          image_url: imageUrl,
           created_at: new Date().toISOString(),
           profiles: { name: user.name || 'Yo', avatar_url: user.avatar_url },
         };
@@ -211,8 +269,11 @@ export default function ChatRoom({ matchId, recipientId, className, title }: Cha
       }
     } catch (err) {
       console.error('Error sending message:', err);
+      // If error uploading, restore content
+      setNewMessage(content);
     } finally {
       setIsSending(false);
+      setUploadingImage(false);
     }
   };
 
@@ -345,42 +406,89 @@ export default function ChatRoom({ matchId, recipientId, className, title }: Cha
       <div className="p-8 pt-0 relative z-20">
         <form
           onSubmit={handleSend}
-          className="p-1.5 pr-1.5 bg-foreground/[0.04] backdrop-blur-3xl border border-foreground/10 rounded-[2.5rem] flex gap-3 items-center focus-within:border-primary/40 focus-within:shadow-[0_0_30px_rgba(85,250,134,0.1)] transition-all shadow-inner relative group/form"
+          className="p-1.5 bg-foreground/[0.04] backdrop-blur-3xl border border-foreground/10 rounded-[2.5rem] flex flex-col gap-2 transition-all shadow-inner relative group/form"
         >
-          <input
-            type="text"
-            value={newMessage}
-            onChange={(e) => setNewMessage(e.target.value)}
-            placeholder={matchId ? 'Escribe al equipo...' : 'Mensaje Privado...'}
-            className="flex-1 h-14 sm:h-16 px-8 bg-transparent outline-none text-[15px] font-bold text-foreground placeholder:text-foreground/20 transition-all uppercase tracking-tight"
-          />
-          <motion.button
-            type="submit"
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            disabled={!newMessage.trim() || isSending}
-            className={cn(
-              'w-14 h-14 sm:w-16 sm:h-16 rounded-[1.8rem] flex items-center justify-center transition-all shadow-2xl overflow-hidden relative group/send',
-              newMessage.trim()
-                ? 'bg-primary text-black shadow-primary/30'
-                : 'bg-foreground/5 text-foreground/20'
+          {/* Image Preview */}
+          <AnimatePresence>
+            {selectedImage && (
+              <motion.div
+                initial={{ opacity: 0, y: 10, height: 0 }}
+                animate={{ opacity: 1, y: 0, height: 'auto' }}
+                exit={{ opacity: 0, y: 10, height: 0 }}
+                className="px-4 pt-4"
+              >
+                <div className="relative inline-block">
+                  <img
+                    src={selectedImage.preview}
+                    alt="Preview"
+                    className="w-32 h-32 object-cover rounded-2xl border-2 border-primary/20"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setSelectedImage(null)}
+                    className="absolute -top-2 -right-2 w-6 h-6 bg-red-500 text-white rounded-full flex items-center justify-center shadow-lg"
+                  >
+                    <X className="w-4 h-4" />
+                  </button>
+                </div>
+              </motion.div>
             )}
-          >
-            {isSending ? (
-              <Loader2 className="w-6 h-6 animate-spin" />
-            ) : (
-              <div className="relative z-10 flex items-center justify-center">
-                <Send
-                  className={cn(
-                    'w-6 h-6 transition-all duration-500',
-                    newMessage.trim() &&
-                      'group-hover/send:-rotate-12 group-hover/send:translate-x-1 group-hover/send:-translate-y-1'
-                  )}
-                />
-              </div>
-            )}
-            <div className="absolute inset-0 bg-white/20 opacity-0 group-hover/send:opacity-100 transition-opacity" />
-          </motion.button>
+          </AnimatePresence>
+
+          <div className="flex gap-3 items-center">
+            <input
+              type="file"
+              ref={fileInputRef}
+              onChange={handleImageSelect}
+              accept="image/*"
+              className="hidden"
+            />
+            <motion.button
+              type="button"
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.9 }}
+              onClick={() => fileInputRef.current?.click()}
+              className="w-14 h-14 sm:w-16 sm:h-16 rounded-[1.8rem] flex items-center justify-center bg-foreground/5 text-foreground/40 hover:text-primary transition-colors"
+            >
+              <ImageIcon className="w-6 h-6" />
+            </motion.button>
+
+            <input
+              type="text"
+              value={newMessage}
+              onChange={(e) => setNewMessage(e.target.value)}
+              placeholder={matchId ? 'Escribe al equipo...' : 'Mensaje Privado...'}
+              className="flex-1 h-14 sm:h-16 px-4 bg-transparent outline-none text-[15px] font-bold text-foreground placeholder:text-foreground/20 transition-all uppercase tracking-tight"
+            />
+
+            <motion.button
+              type="submit"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              disabled={(!newMessage.trim() && !selectedImage) || isSending}
+              className={cn(
+                'w-14 h-14 sm:w-16 sm:h-16 rounded-[1.8rem] flex items-center justify-center transition-all shadow-2xl overflow-hidden relative group/send',
+                newMessage.trim() || selectedImage
+                  ? 'bg-primary text-black shadow-primary/30'
+                  : 'bg-foreground/5 text-foreground/20'
+              )}
+            >
+              {isSending || uploadingImage ? (
+                <Loader2 className="w-6 h-6 animate-spin" />
+              ) : (
+                <div className="relative z-10 flex items-center justify-center">
+                  <Send
+                    className={cn(
+                      'w-6 h-6 transition-all duration-500',
+                      (newMessage.trim() || selectedImage) &&
+                        'group-hover/send:-rotate-12 group-hover/send:translate-x-1 group-hover/send:-translate-y-1'
+                    )}
+                  />
+                </div>
+              )}
+              <div className="absolute inset-0 bg-white/20 opacity-0 group-hover/send:opacity-100 transition-opacity" />
+            </motion.button>
+          </div>
         </form>
       </div>
     </div>
