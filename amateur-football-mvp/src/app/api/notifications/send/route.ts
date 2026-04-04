@@ -24,7 +24,11 @@ export async function POST(request: NextRequest) {
       icon: '/logo_pelotify.png',
       badge: '/logo_pelotify.png',
       click_action: clickAction || '/',
-      data: data || {},
+      data: {
+        ...(data || {}),
+        click_action: clickAction || '/', // Ensure it's in data for the SW fallback
+        timestamp: new Date().toISOString(),
+      },
     };
 
     // Mode 1: Send to a specific user

@@ -5,19 +5,32 @@
 importScripts('https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js');
 importScripts('https://www.gstatic.com/firebasejs/10.12.0/firebase-messaging-compat.js');
 
-// 💡 HARDCODED CONFIG (Fixed for production reliability)
-const firebaseConfig = {
-  apiKey: "AIzaSyCGudm4C7dvjTCT09TcUTGQTBWHuMbPCTQ",
+// 💡 CLOUD CONFIG (Can be updated via postMessage from client)
+let firebaseConfig = {
+  apiKey: "AIzaSyCGudm4C7dvjTCT09TcUTGQTBWBuMbPCTQ",
   authDomain: "pelotifyapp.firebaseapp.com",
   projectId: "pelotifyapp",
   storageBucket: "pelotifyapp.firebasestorage.app",
   messagingSenderId: "55967873467",
-  appId: "1:55967873467:web:c5b21db754a342f9c5ac9e"
+  appId: "1:55967873467:web:db7a136a0e55aff7c5ac9e"
 };
 
 // Initialize Firebase in the service worker context
-firebase.initializeApp(firebaseConfig);
+function initFirebase(config) {
+  if (firebase.apps.length > 0) return;
+  firebase.initializeApp(config);
+}
+
+// Initial init
+initFirebase(firebaseConfig);
 const messaging = firebase.messaging();
+
+// Handle dynamic config updates from the client
+self.addEventListener('message', (event) => {
+  if (event.data?.type === 'FIREBASE_CONFIG') {
+    initFirebase(event.data.config);
+  }
+});
 
 // Handle background messages
 messaging.onBackgroundMessage((payload) => {
