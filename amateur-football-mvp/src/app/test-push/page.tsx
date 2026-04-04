@@ -15,13 +15,19 @@ export default function PushTestPage() {
     tokens: [],
     loading: true,
     error: null,
+    debug: [],
   });
   const [sending, setSending] = useState(false);
   const [result, setResult] = useState<any>(null);
 
+  const addDebug = (msg: string) => {
+    setStatus((prev: any) => ({ ...prev, debug: [...prev.debug, `${new Date().toLocaleTimeString()}: ${msg}`] }));
+  };
+
   const checkStatus = async () => {
     if (!user) return;
     setStatus((prev: any) => ({ ...prev, loading: true }));
+    addDebug('Revisando estado en base de datos...');
     
     try {
       const permission = Notification.permission;
@@ -30,15 +36,22 @@ export default function PushTestPage() {
         .select('*')
         .eq('user_id', user.id);
 
-      if (error) throw error;
+      if (error) {
+        addDebug(`Error de Supabase: ${error.message}`);
+        throw error;
+      }
 
-      setStatus({
+      const exists = (tokens?.length || 0) > 0;
+      addDebug(exists ? `Tokens encontrados: ${tokens?.length}` : 'No hay tokens para este usuario');
+
+      setStatus((prev: any) => ({
+        ...prev,
         permission,
-        tokenExists: (tokens?.length || 0) > 0,
+        tokenExists: exists,
         tokens: tokens || [],
         loading: false,
         error: null,
-      });
+      }));
     } catch (err: any) {
       setStatus((prev: any) => ({ ...prev, loading: false, error: err.message }));
     }
@@ -50,15 +63,23 @@ export default function PushTestPage() {
 
   const handleInit = async () => {
     if (!user) return;
-    setStatus((prev: any) => ({ ...prev, loading: true }));
+    setStatus((prev: any) => ({ ...prev, loading: true, error: null }));
+    addDebug('Iniciando registro completo...');
+    
     try {
+      addDebug('Llamando a initializePushNotifications...');
       const token = await initializePushNotifications(user.id);
+      
       if (token) {
+        addDebug('Token obtenido y guardado con éxito');
         await checkStatus();
       } else {
-        setStatus((prev: any) => ({ ...prev, loading: false, error: 'Failed to get token (Check console)' }));
+        const msg = 'No se pudo obtener el token. Revisa si aceptaste el permiso o si falta NEXT_PUBLIC_FIREBASE_VAPID_KEY.';
+        addDebug(`FALLO: ${msg}`);
+        setStatus((prev: any) => ({ ...prev, loading: false, error: msg }));
       }
     } catch (err: any) {
+      addDebug(`ERROR FATAL: ${err.message}`);
       setStatus((prev: any) => ({ ...prev, loading: false, error: err.message }));
     }
   };
@@ -156,6 +177,21 @@ export default function PushTestPage() {
             >
               {status.loading ? '...' : <><RefreshCw className="w-3 h-3" /> Registrar / Actualizar Token</>}
             </button>
+          </div>
+        </section>
+
+        {/* Debug Log */}
+        <section className="bg-black/20 border border-foreground/10 rounded-3xl p-6 font-mono">
+          <h2 className="text-[10px] font-black uppercase tracking-widest text-foreground/40 mb-4">
+            Debug Log:
+          </h2>
+          <div className="space-y-1 max-h-40 overflow-y-auto no-scrollbar">
+            {status.debug.map((log: string, i: number) => (
+              <div key={i} className="text-[10px] text-primary/80">
+                {log}
+              </div>
+            ))}
+            {status.debug.length === 0 && <div className="text-[10px] text-foreground/20 italic">Esperando acciones...</div>}
           </div>
         </section>
 
