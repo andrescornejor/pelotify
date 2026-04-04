@@ -5,14 +5,12 @@ import { usePathname } from 'next/navigation';
 import { 
   Home, 
   Plus, 
-  User2, 
-  Flame, 
-  MapPin, 
+  UserPlus, 
+  MessageSquare,
   Search,
-  Trophy,
+  Flame,
   LayoutGrid,
-  UserPlus,
-  MessageSquare
+  Users
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -20,178 +18,191 @@ import { useMemo } from 'react';
 import { useSettings } from '@/contexts/SettingsContext';
 
 /**
- * REDESIGNED BOTTOM NAV
- * Aesthetics: Floating Island Dock with Glassmorphism and Cinematic Glow
- * Layout: 5 Core Utilities
+ * PREMIUM REDESIGNED BOTTOM NAV
+ * Aesthetics: Floating Cinematic Island with adaptive glow and haptic-feel animations.
  */
 
 export function BottomNav() {
   const pathname = usePathname();
   const { performanceMode } = useSettings();
 
-  // Define the core navigation architecture
   const navItems = useMemo(() => [
     { 
-      label: 'INICIO', 
+      label: 'Home', 
       href: '/', 
       icon: Home,
-      activeColor: '#2cfc7d'
+      color: 'from-[#2cfc7d] to-[#10b981]'
     },
     { 
-      label: 'EXPLORAR', 
+      label: 'Buscar', 
       href: '/search', 
       icon: Search,
-      activeColor: '#60a5fa' 
+      color: 'from-blue-400 to-blue-600'
     },
     { 
-      label: 'ARMAR', 
+      label: 'Crear', 
       href: '/create', 
       icon: Plus, 
       isPrimary: true,
-      activeColor: '#2cfc7d'
+      color: 'from-primary via-[#3dfc8d] to-primary-dark'
     },
     { 
-      label: 'FICHAJES', 
-      href: '/recruitment', 
-      icon: UserPlus,
-      activeColor: '#10b981'
+      label: 'Social', 
+      href: '/friends', 
+      icon: Users,
+      color: 'from-amber-400 to-orange-500'
     },
     { 
-      label: 'CHATS', 
+      label: 'Chats', 
       href: '/messages', 
       icon: MessageSquare,
-      activeColor: '#a855f7',
-      isChat: true
+      color: 'from-purple-400 to-pink-500'
     }
   ], []);
 
-  if (['/login', '/register', '/update-password'].includes(pathname)) {
+  if (['/login', '/register', '/update-password', '/onboarding'].includes(pathname)) {
     return null;
   }
 
   return (
-    <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 w-[92%] max-w-[420px] lg:hidden">
-      <nav
-        className={cn(
-          'relative px-1 rounded-[2.5rem] border transition-all duration-700 h-[80px] flex items-center shadow-[0_20px_50px_rgba(0,0,0,0.3)]',
-          performanceMode 
-            ? 'bg-surface border-border' 
-            : 'glass-premium border-white/10 backdrop-blur-[30px]'
-        )}
-      >
-        {/* Cinematic glow effects */}
+    <div className="fixed bottom-0 left-0 right-0 z-[100] lg:hidden pb-6 px-6 pointer-events-none">
+      <div className="max-w-[440px] mx-auto pointer-events-auto relative">
+        {/* Dynamic Background Glow based on active item */}
         {!performanceMode && (
-          <div className="absolute inset-x-12 -top-2 h-4 bg-primary/20 blur-[30px] rounded-full animate-pulse-slow opacity-60 pointer-events-none" />
+           <AnimatePresence mode="wait">
+             {navItems.map((item) => {
+               const isActive = item.href === '/' ? pathname === '/' : pathname.startsWith(item.href);
+               if (!isActive) return null;
+               return (
+                 <motion.div
+                   key={item.href}
+                   initial={{ opacity: 0, scale: 0.8 }}
+                   animate={{ opacity: 0.5, scale: 1 }}
+                   exit={{ opacity: 0, scale: 0.8 }}
+                   className={cn(
+                     "absolute -top-12 left-1/2 -translate-x-1/2 w-48 h-24 blur-[60px] rounded-full pointer-events-none z-0",
+                     item.href === '/' ? "bg-[#2cfc7d]" : 
+                     item.href === '/search' ? "bg-blue-500" :
+                     item.href === '/create' ? "bg-primary" :
+                     item.href === '/friends' ? "bg-amber-500" : "bg-purple-500"
+                   )}
+                 />
+               );
+             })}
+           </AnimatePresence>
         )}
 
-        <div className="relative z-10 grid grid-cols-5 w-full h-full items-center">
-          {navItems.map((item) => {
-            const isActive = item.href === '/' 
-              ? pathname === '/' 
-              : pathname.startsWith(item.href) || (item.href === '/profile/me' && pathname.startsWith('/profile'));
-            
-            const Icon = item.icon;
+        <nav
+          className={cn(
+            'relative overflow-hidden p-1.5 rounded-[2.5rem] border transition-all duration-700 flex items-center shadow-[0_25px_60px_-15px_rgba(0,0,0,0.5)]',
+            performanceMode 
+              ? 'bg-surface border-border' 
+              : 'bg-background/40 backdrop-blur-[35px] border-white/10 dark:border-white/5'
+          )}
+        >
+          <div className="relative z-10 flex w-full h-[70px] items-center justify-around">
+            {navItems.map((item) => {
+              const isActive = item.href === '/' 
+                ? pathname === '/' 
+                : pathname.startsWith(item.href);
+              
+              const Icon = item.icon;
 
-            if (item.isPrimary) {
+              if (item.isPrimary) {
+                return (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    className="relative flex items-center justify-center -mt-8"
+                  >
+                    <motion.div
+                      whileHover={{ scale: 1.1, rotate: 90 }}
+                      whileTap={{ scale: 0.9, rotate: 180 }}
+                      transition={{ type: "spring", stiffness: 400, damping: 15 }}
+                      className={cn(
+                        "w-16 h-16 rounded-[2rem] flex items-center justify-center shadow-[0_15px_30px_rgba(44,252,125,0.3)] relative z-20 group overflow-hidden border-2 border-white/20",
+                        "bg-gradient-to-br", item.color
+                      )}
+                    >
+                      <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-500" />
+                      <Icon className="w-9 h-9 text-black stroke-[3] relative z-10" />
+                      
+                      {/* Inner Shine */}
+                      <div className="absolute top-0 left-0 right-0 h-1/2 bg-gradient-to-b from-white/30 to-transparent pointer-events-none" />
+                    </motion.div>
+                    
+                    {/* Pulsing Aura */}
+                    {!performanceMode && (
+                      <motion.div 
+                        animate={{ scale: [1, 1.2, 1], opacity: [0.3, 0.1, 0.3] }}
+                        transition={{ duration: 3, repeat: Infinity }}
+                        className="absolute inset-0 bg-primary/20 blur-2xl rounded-full -z-10"
+                      />
+                    )}
+                  </Link>
+                );
+              }
+
               return (
                 <Link
                   key={item.href}
                   href={item.href}
-                  className="flex items-center justify-center h-full relative"
+                  className="relative flex flex-col items-center justify-center h-full px-4 group"
                 >
                   <motion.div
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.85, rotate: -5 }}
-                    transition={{ type: "spring", stiffness: 400, damping: 15 }}
-                    className={cn(
-                      "w-14 h-14 rounded-2xl flex items-center justify-center transition-all duration-500 shadow-xl relative z-20 group overflow-hidden",
-                      "bg-gradient-to-br from-primary via-[#3dfc8d] to-primary-dark"
-                    )}
+                    className="relative flex flex-col items-center gap-1"
+                    whileTap={{ scale: 0.85 }}
                   >
-                    {/* Inner highlight */}
-                    <div className="absolute inset-0 bg-gradient-to-b from-white/30 to-transparent opacity-50" />
-                    
-                    <Icon className="w-8 h-8 text-black stroke-[3] relative z-10" />
-                    
-                    {/* Ring animation */}
-                    {!performanceMode && (
-                      <div className="absolute inset-0 rounded-2xl border border-white/40 opacity-50" />
-                    )}
-                  </motion.div>
-                  
-                  {/* Outer glow for primary */}
-                  <div className="absolute inset-0 bg-primary/10 blur-xl rounded-full opacity-0 group-hover:opacity-100 transition-opacity" />
-                </Link>
-              );
-            }
-
-            return (
-              <Link
-                key={item.href}
-                href={item.href}
-                className="relative flex flex-col items-center justify-center h-full group"
-              >
-                <motion.div
-                  className="flex flex-col items-center justify-center pt-1"
-                  whileTap={{ scale: 0.8 }}
-                  transition={{ type: "spring", stiffness: 500, damping: 25 }}
-                >
-                  <div className="relative flex items-center justify-center mb-1">
-                    <motion.div
-                      animate={isActive ? { y: -2, scale: 1.1 } : { y: 0, scale: 1 }}
-                      transition={{ type: "spring", stiffness: 500, damping: 20 }}
-                    >
-                        <Icon 
-                          className={cn(
-                            "w-5 h-5 transition-all duration-500",
-                            isActive 
-                              ? "text-primary drop-shadow-[0_0_8px_rgba(44,252,125,0.4)]" 
-                              : "text-foreground/40 group-hover:text-foreground/70"
-                          )}
-                          strokeWidth={isActive ? 2.5 : 2}
-                        />
-                      </motion.div>
-    
-                    {/* Active Background Pill (Subtle) */}
-                    {isActive && (
-                      <motion.div
-                        layoutId="active-pill"
-                        className="absolute inset-0 -m-2 bg-primary/5 rounded-full blur-md"
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        transition={{ duration: 0.3 }}
+                    <div className="relative">
+                       {isActive && (
+                         <motion.div
+                           layoutId="nav-bg"
+                           className="absolute -inset-3 bg-foreground/[0.03] dark:bg-white/[0.04] rounded-2xl blur-sm"
+                           transition={{ type: 'spring', bounce: 0.2, duration: 0.6 }}
+                         />
+                       )}
+                       
+                       <Icon 
+                        className={cn(
+                          "w-6 h-6 transition-all duration-300 relative z-10",
+                          isActive 
+                            ? "text-primary drop-shadow-[0_0_12px_rgba(44,252,125,0.5)] scale-110" 
+                            : "text-foreground/30 group-hover:text-foreground/60"
+                        )}
+                        strokeWidth={isActive ? 2.5 : 2}
                       />
-                    )}
-                  </div>
+                    </div>
 
-                  <span
-                    className={cn(
-                      "text-[9px] font-bold tracking-[0.05em] transition-all duration-500 font-outfit uppercase",
-                      isActive ? "text-primary/90 opacity-100" : "text-foreground/30 opacity-60 group-hover:opacity-100"
-                    )}
-                  >
-                    {item.label}
-                  </span>
-                </motion.div>
+                    <span
+                      className={cn(
+                        "text-[8px] font-black tracking-[0.1em] transition-all duration-300 uppercase italic",
+                        isActive ? "text-primary opacity-100" : "text-foreground/20 opacity-0 group-hover:opacity-100 scale-90"
+                      )}
+                    >
+                      {item.label}
+                    </span>
+                  </motion.div>
 
-                {/* Active Indicator (Bottom Dot) */}
-                <AnimatePresence>
+                  {/* Active Indicator Slide */}
                   {isActive && (
                     <motion.div
-                      layoutId="active-nav-dot"
-                      className="absolute bottom-2 w-1 h-1 rounded-full bg-primary"
-                      initial={{ scale: 0, opacity: 0 }}
-                      animate={{ scale: 1, opacity: 1 }}
-                      exit={{ scale: 0, opacity: 0 }}
-                      style={{ boxShadow: `0 0 10px ${item.activeColor}` }}
+                      layoutId="nav-indicator"
+                      className="absolute -bottom-1 w-1 h-1 rounded-full bg-primary"
+                      transition={{ type: 'spring', bounce: 0.2, duration: 0.6 }}
+                      style={{ boxShadow: '0 0 10px rgba(44,252,125,1)' }}
                     />
                   )}
-                </AnimatePresence>
-              </Link>
-            );
-          })}
-        </div>
-      </nav>
+                </Link>
+              );
+            })}
+          </div>
+
+          {/* Bottom Edge Reflection */}
+          {!performanceMode && (
+            <div className="absolute bottom-0 inset-x-0 h-[1px] bg-gradient-to-r from-transparent via-white/10 to-transparent pointer-events-none" />
+          )}
+        </nav>
+      </div>
     </div>
   );
 }
