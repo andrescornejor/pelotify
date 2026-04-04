@@ -86,20 +86,26 @@ export default function PushTestPage() {
 
   const testSelfPush = async () => {
     if (!user) return;
+    console.log('--- Iniciando prueba de envío ---');
+    console.log('ID del usuario:', user.id);
     setSending(true);
     setResult(null);
     try {
+      console.log('Llamando a sendNotificationToUser...');
       const success = await sendNotificationToUser(
         user.id,
         "⚽ Prueba de Pelotify",
         "Esta es una notificación de prueba. ¡Si ves esto, funciona!",
         { clickAction: '/test-push' }
       );
-      setResult(success ? { success: true } : { success: false, error: 'Failed to send' });
+      console.log('Resultado del envío:', success ? 'ÉXITO' : 'FALLO');
+      setResult(success ? { success: true } : { success: false, error: 'Failed to send (Check server logs)' });
     } catch (err: any) {
+      console.error('Error capturado en testSelfPush:', err);
       setResult({ success: false, error: err.message });
     } finally {
       setSending(false);
+      console.log('--- Fin de la prueba ---');
     }
   };
 
