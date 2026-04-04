@@ -155,7 +155,8 @@ export function subscribeToMatchMessages(matchId: string, onMessage: (msg: ChatM
         table: 'match_messages',
         filter: `match_id=eq.${matchId}`,
       },
-      async (payload) => {
+      async (payload: any) => {
+        if (!payload.new?.id) return;
         const { data } = await supabase
           .from('match_messages')
           .select(
@@ -183,7 +184,8 @@ export function subscribeToDirectMessages(userId: string, onMessage: (msg: ChatM
         schema: 'public',
         table: 'direct_messages',
       },
-      async (payload) => {
+      async (payload: any) => {
+        if (!payload.new?.id) return;
         const { data } = await supabase
           .from('direct_messages')
           .select(
