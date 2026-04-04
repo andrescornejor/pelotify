@@ -26,17 +26,34 @@ export async function registerFCMServiceWorker(): Promise<ServiceWorkerRegistrat
     };
 
     // Wait for the SW to be ready
-    await navigator.serviceWorker.ready;
+    const registration = await navigator.serviceWorker.ready;
 
-    // Set config on the SW global scope (for the importScripts init)
-    if (registration.active) {
-      registration.active.postMessage({
-        type: 'FIREBASE_CONFIG',
-        config: firebaseConfig,
-      });
-    }
+    // Helper to send config
+    const sendConfig = () => {
+      if (registration.active) {
+        registration.active.postMessage({
+          type: 'FIREBASE_CONFIG',
+          config: firebaseConfig,
+        });
+      }
+    };
 
-    console.log('Firebase Messaging SW registered');
+    // Send immediately
+    sendConfig();
+
+    // Also send when the worker becomes active if it wasn't yet
+    registration.addEventListener('updatefound', () => {
+      const newWorker = registration.installing;
+      if (newWorker) {
+        newWorker.addEventListener('statechange', () => {
+          if (newWorker.state === 'activated') {
+            sendConfig();
+          }
+        });
+      }
+    });
+
+    console.log('Firebase Messaging SW registered and configured');
     return registration;
   } catch (error) {
     console.error('Failed to register Firebase Messaging SW:', error);
