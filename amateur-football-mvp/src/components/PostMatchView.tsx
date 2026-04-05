@@ -142,7 +142,7 @@ export default function PostMatchView({ match, participants, stats }: PostMatchV
               </div>
               <div className="relative">
                 <div className="absolute inset-0 bg-primary/20 blur-xl rounded-full" />
-                <div className="relative px-10 py-3 bg-zinc-900/80 backdrop-blur-xl border border-primary/30 rounded-[2rem] shadow-2xl">
+                <div className="relative px-10 py-3 bg-zinc-900/80 md: border border-primary/30 rounded-[2rem] shadow-2xl">
                   <span className="text-[12px] font-black uppercase tracking-[0.5em] text-primary italic">
                     FIN DEL ENCUENTRO
                   </span>

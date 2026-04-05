@@ -95,7 +95,7 @@ export default function SearchPage() {
       <div
         className={cn(
           'sticky top-0 z-30 pt-4 pb-6 -mx-4 px-4 lg:-mx-12 lg:px-12 border-b border-foreground/5 shadow-2xl shadow-black/5',
-          isPerfMode ? 'bg-background' : 'bg-background/80 backdrop-blur-xl'
+          isPerfMode ? 'bg-background' : 'bg-background/80 md:'
         )}
       >
         <div className="flex flex-col gap-8 relative z-10 text-center lg:text-left max-w-screen-2xl mx-auto">
@@ -591,7 +591,7 @@ export default function SearchPage() {
           <div className="w-full h-full min-h-[600px] relative overflow-hidden rounded-[4rem] border border-foreground/10 shadow-[0_50px_100px_rgba(0,0,0,0.5)] bg-surface">
             <MapSearch matches={mapMatches} userLocation={userLocation} radius={radiusFilter} />
             <div className="absolute top-8 right-8 z-20 flex flex-col gap-3">
-              <div className="px-5 py-2.5 bg-background/60 backdrop-blur-xl border border-foreground/10 rounded-2xl flex items-center gap-3">
+              <div className="px-5 py-2.5 bg-background/60 md: border border-foreground/10 rounded-2xl flex items-center gap-3">
                 <div className={cn(
                   "w-2 h-2 rounded-full",
                   userLocation ? "bg-primary animate-pulse shadow-[0_0_10px_rgba(16,185,129,1)]" : "bg-foreground/20"

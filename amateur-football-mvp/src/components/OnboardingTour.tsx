@@ -255,7 +255,7 @@ export function OnboardingTour() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className="absolute inset-0 bg-black/90 pointer-events-auto backdrop-blur-md"
+          className="absolute inset-0 bg-black/90 pointer-events-auto md:"
           style={{
             maskImage: (targetRect && step.position !== 'center')
               ? `radial-gradient(circle ${Math.max(targetRect.width, targetRect.height) / 1.5 + 60}px at ${targetRect.left + targetRect.width / 2}px ${targetRect.top + targetRect.height / 2}px, transparent 100%, black 100%)`

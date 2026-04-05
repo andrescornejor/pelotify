@@ -1072,7 +1072,7 @@ function MatchLobbyContent() {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={() => setManagedParticipant(null)}
-              className="absolute inset-0 bg-background/80 backdrop-blur-sm"
+              className="absolute inset-0 bg-background/80 md:"
             />
             <motion.div
               initial={{ scale: 0.9, opacity: 0, y: 20 }}
@@ -1151,7 +1151,7 @@ function MatchLobbyContent() {
       {/* Tactical Mode Modal (The Unified Pitch) */}
       <AnimatePresence>
         {isTacticalMode && (
-          <div className="fixed inset-0 z-[110] flex flex-col bg-background/95 backdrop-blur-xl">
+          <div className="fixed inset-0 z-[110] flex flex-col bg-background/95 md:">
             <motion.div 
               initial={{ opacity: 0, scale: 1.1 }}
               animate={{ opacity: 1, scale: 1 }}

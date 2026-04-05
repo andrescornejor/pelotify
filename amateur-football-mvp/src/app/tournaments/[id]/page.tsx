@@ -193,7 +193,7 @@ export default function TournamentDetailPage() {
            <div className="space-y-4">
               <div className="flex items-center gap-4">
                 <Link href="/tournaments">
-                   <button className="w-12 h-12 rounded-2xl bg-white/5 hover:bg-primary hover:text-black flex items-center justify-center backdrop-blur-3xl transition-all border border-white/5 group">
+                   <button className="w-12 h-12 rounded-2xl bg-white/5 hover:bg-primary hover:text-black flex items-center justify-center md: transition-all border border-white/5 group">
                       <ArrowLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
                    </button>
                 </Link>
@@ -240,7 +240,7 @@ export default function TournamentDetailPage() {
       </div>
 
       <div className="max-w-screen-2xl mx-auto p-6 lg:px-14 mt-12 space-y-16 relative z-10">
-        <div className="flex items-center gap-2 p-1.5 bg-white/[0.03] rounded-2xl border border-white/5 w-fit backdrop-blur-xl">
+        <div className="flex items-center gap-2 p-1.5 bg-white/[0.03] rounded-2xl border border-white/5 w-fit md:">
            {(['info', 'bracket', 'teams'] as const).map(tab => (
               <button
                 key={tab}
@@ -403,7 +403,7 @@ export default function TournamentDetailPage() {
       {/* ── DRAW ANIMATION ── */}
       <AnimatePresence>
          {isDrawing && (
-            <div className="fixed inset-0 z-[200] bg-black/95 backdrop-blur-3xl flex flex-col items-center justify-center p-10 overflow-hidden text-white">
+            <div className="fixed inset-0 z-[200] bg-black/95 md: flex flex-col items-center justify-center p-10 overflow-hidden text-white">
                {/* Drawing UI */}
                <motion.div initial={{ scale: 0.8, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="relative mb-20">
                   <div className="w-40 h-40 rounded-full border-[3px] border-primary/20 border-t-primary animate-spin" style={{ animationDuration: '0.6s' }} />
@@ -441,7 +441,7 @@ export default function TournamentDetailPage() {
       {/* ── JOIN MODAL ── */}
       <AnimatePresence>
         {showJoinModal && (
-          <div className="fixed inset-0 z-[100] flex items-center justify-center p-6 bg-black/80 backdrop-blur-sm">
+          <div className="fixed inset-0 z-[100] flex items-center justify-center p-6 bg-black/80 md:">
             <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.9, opacity: 0 }} className="w-full max-w-md glass-premium rounded-[3rem] border border-white/10 p-10 space-y-8 shadow-2xl">
                 <div className="flex items-center justify-between">
                     <h3 className="text-3xl font-black italic uppercase text-white tracking-tighter">UNIRSE</h3>

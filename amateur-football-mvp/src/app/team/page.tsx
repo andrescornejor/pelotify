@@ -449,7 +449,7 @@ function TeamProfileContent() {
               'w-12 h-12 flex items-center justify-center rounded-2xl border transition-all active:scale-90',
               isPerfMode
                 ? 'bg-foreground/10 border-foreground/20 text-foreground'
-                : 'bg-foreground/5 backdrop-blur-2xl border-foreground/10 text-foreground hover:bg-foreground/10 hover:border-primary/50'
+                : 'bg-foreground/5 md: border-foreground/10 text-foreground hover:bg-foreground/10 hover:border-primary/50'
             )}
           >
             <ArrowLeft className="w-5 h-5" />
@@ -465,7 +465,7 @@ function TeamProfileContent() {
                     ? 'bg-primary text-background border-primary'
                     : isPerfMode
                       ? 'bg-foreground/10 border-foreground/20 text-foreground'
-                      : 'bg-foreground/5 backdrop-blur-2xl border-foreground/10 text-foreground hover:bg-foreground/10 hover:border-primary/50'
+                      : 'bg-foreground/5 md: border-foreground/10 text-foreground hover:bg-foreground/10 hover:border-primary/50'
                 )}
               >
                 <Settings className="w-5 h-5 lg:w-6 lg:h-6" />
@@ -474,7 +474,7 @@ function TeamProfileContent() {
             {!isCaptain && members.some((m) => m.user_id === user?.id) && (
               <button
                 onClick={handleLevelTeamAction}
-                className="w-12 h-12 flex items-center justify-center bg-red-500/10 backdrop-blur-2xl rounded-2xl border border-red-500/20 text-red-500 hover:bg-red-500/20 transition-all active:scale-90 shadow-lg shadow-red-500/5"
+                className="w-12 h-12 flex items-center justify-center bg-red-500/10 md: rounded-2xl border border-red-500/20 text-red-500 hover:bg-red-500/20 transition-all active:scale-90 shadow-lg shadow-red-500/5"
               >
                 <LogOut className="w-5 h-5" />
               </button>
@@ -507,7 +507,7 @@ function TeamProfileContent() {
               )}
 
               {isEditing && (
-                <label className="absolute inset-0 z-30 flex flex-col items-center justify-center bg-background/60 backdrop-blur-sm cursor-pointer hover:bg-background/40 transition-all text-foreground border-4 border-dashed border-primary/20 rounded-[2rem] m-2">
+                <label className="absolute inset-0 z-30 flex flex-col items-center justify-center bg-background/60 md: cursor-pointer hover:bg-background/40 transition-all text-foreground border-4 border-dashed border-primary/20 rounded-[2rem] m-2">
                   <Camera className="w-8 h-8 mb-2 text-primary" />
                   <span className="text-[10px] font-black uppercase tracking-widest leading-none">
                     Actualizar
@@ -1565,7 +1565,7 @@ function TeamProfileContent() {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={() => setInviteModalOpen(false)}
-              className="absolute inset-0 bg-black/95 backdrop-blur-2xl"
+              className="absolute inset-0 bg-black/95 md:"
             />
             <motion.div
               initial={{ opacity: 0, scale: 0.95, y: 30 }}

@@ -91,7 +91,7 @@ export default function VideoFeed() {
       {/* Global Navigation Controls */}
       <div className="fixed top-0 left-0 right-0 z-[100] px-6 pt-6 sm:pt-8 pb-4 bg-gradient-to-b from-black/80 via-black/40 to-transparent pointer-events-none flex items-center justify-between">
         <div className="flex items-center gap-4 pointer-events-auto">
-          <Link href="/" className="p-3 bg-black/40 backdrop-blur-xl rounded-2xl border border-white/10 text-white hover:bg-black/60 hover:scale-105 active:scale-95 transition-all shadow-xl">
+          <Link href="/" className="p-3 bg-black/40 md: rounded-2xl border border-white/10 text-white hover:bg-black/60 hover:scale-105 active:scale-95 transition-all shadow-xl">
             <ArrowLeft className="w-5 h-5 sm:w-6 sm:h-6" />
           </Link>
         </div>

@@ -183,11 +183,11 @@ export default function ScoutingPage() {
                         {currentProfile.name || 'Agente Libre'}
                     </h2>
                     <div className="flex items-center gap-4 mt-4">
-                        <div className="px-4 py-1.5 rounded-2xl bg-primary/15 border border-primary/20 backdrop-blur-md flex items-center gap-2 shadow-inner">
+                        <div className="px-4 py-1.5 rounded-2xl bg-primary/15 border border-primary/20 md: flex items-center gap-2 shadow-inner">
                            <Trophy className="w-4 h-4 text-primary" />
                            <span className="text-[12px] font-black text-primary uppercase tracking-[0.1em]">{currentProfile.elo || 0} PTS</span>
                         </div>
-                        <div className="px-4 py-1.5 rounded-2xl bg-white/5 border border-white/5 backdrop-blur-md flex items-center gap-2">
+                        <div className="px-4 py-1.5 rounded-2xl bg-white/5 border border-white/5 md: flex items-center gap-2">
                            <Target className="w-4 h-4 text-white/40" />
                            <span className="text-[12px] font-black text-white/60 uppercase tracking-[0.1em]">{getRankByElo(currentProfile.elo || 0).name}</span>
                         </div>
@@ -196,13 +196,13 @@ export default function ScoutingPage() {
 
                 <motion.div 
                   style={{ opacity: dragOpacityLeft }}
-                  className="absolute top-10 right-10 z-30 px-6 py-3 rounded-[2rem] bg-red-600/90 backdrop-blur-xl border border-red-400/20 shadow-2xl pointer-events-none"
+                  className="absolute top-10 right-10 z-30 px-6 py-3 rounded-[2rem] bg-red-600/90 md: border border-red-400/20 shadow-2xl pointer-events-none"
                 >
                   <span className="text-2xl font-black text-white italic uppercase tracking-widest">DESCARTAR</span>
                 </motion.div>
                 <motion.div 
                   style={{ opacity: dragOpacityRight }}
-                  className="absolute top-10 left-10 z-30 px-6 py-3 rounded-[2rem] bg-primary/90 backdrop-blur-xl border border-emerald-400/20 shadow-2xl pointer-events-none"
+                  className="absolute top-10 left-10 z-30 px-6 py-3 rounded-[2rem] bg-primary/90 md: border border-emerald-400/20 shadow-2xl pointer-events-none"
                 >
                   <span className="text-2xl font-black text-black italic uppercase tracking-widest leading-none">FICHAR</span>
                 </motion.div>

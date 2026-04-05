@@ -69,7 +69,7 @@ const ConversationItem = memo(
         'w-full p-4 sm:p-5 rounded-[2rem] border transition-all duration-500 flex items-center gap-4 group text-left relative overflow-hidden',
         isSelected
           ? 'bg-primary text-black border-primary shadow-[0_20px_50px_rgba(85,250,134,0.3)]'
-          : 'bg-surface/40 backdrop-blur-md border-foreground/5 hover:border-primary/30 hover:bg-foreground/[0.04] shadow-sm'
+          : 'bg-surface/40 md: border-foreground/5 hover:border-primary/30 hover:bg-foreground/[0.04] shadow-sm'
       )}
     >
       {isSelected && (
@@ -541,10 +541,10 @@ export default function MessagesPage() {
             <motion.div
               initial={{ opacity: 0, y: 10, scale: 0.99 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
-              className="flex flex-col h-full bg-surface/30 dark:bg-foreground/[0.02] backdrop-blur-3xl border border-foreground/10 rounded-[3.5rem] overflow-hidden relative shadow-[0_40px_100px_-20px_rgba(0,0,0,0.1)] dark:shadow-[0_50px_120px_rgba(0,0,0,0.6)]"
+              className="flex flex-col h-full bg-surface/30 dark:bg-foreground/[0.02] md: border border-foreground/10 rounded-[3.5rem] overflow-hidden relative shadow-[0_40px_100px_-20px_rgba(0,0,0,0.1)] dark:shadow-[0_50px_120px_rgba(0,0,0,0.6)]"
             >
               {/* Chat Header */}
-              <div className="px-6 sm:px-10 py-3 bg-foreground/[0.03] backdrop-blur-2xl border-b border-foreground/5 flex items-center justify-between relative z-20">
+              <div className="px-6 sm:px-10 py-3 bg-foreground/[0.03] md: border-b border-foreground/5 flex items-center justify-between relative z-20">
                 <div className="flex items-center gap-4">
                   <button
                     onClick={() => setSelectedChat(null)}
@@ -620,7 +620,7 @@ export default function MessagesPage() {
                     rotate: [0, 5, -5, 0],
                   }}
                   transition={{ duration: 10, repeat: Infinity, ease: 'easeInOut' }}
-                  className="w-48 h-48 rounded-[4rem] bg-foreground/[0.02] border border-foreground/5 flex items-center justify-center relative shadow-2xl backdrop-blur-sm"
+                  className="w-48 h-48 rounded-[4rem] bg-foreground/[0.02] border border-foreground/5 flex items-center justify-center relative shadow-2xl md:"
                 >
                   <MessageSquare className="w-20 h-20 text-primary drop-shadow-[0_0_20px_rgba(85,250,134,0.4)]" />
                   <motion.div
@@ -664,7 +664,7 @@ export default function MessagesPage() {
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
                 onClick={() => setIsSearchOpen(false)}
-                className="absolute inset-0 bg-background/60 backdrop-blur-3xl"
+                className="absolute inset-0 bg-background/60 md:"
               />
               {/* Ambient background glow for modal */}
               <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
@@ -675,7 +675,7 @@ export default function MessagesPage() {
                 initial={{ opacity: 0, y: 100, scale: 0.95 }}
                 animate={{ opacity: 1, y: 0, scale: 1 }}
                 exit={{ opacity: 0, y: 100, scale: 0.95 }}
-                className="relative w-full max-w-lg bg-surface/40 backdrop-blur-2xl border border-foreground/10 rounded-[3rem] p-8 sm:p-12 shadow-[0_32px_64px_rgba(0,0,0,0.4)] overflow-hidden z-10"
+                className="relative w-full max-w-lg bg-surface/40 md: border border-foreground/10 rounded-[3rem] p-8 sm:p-12 shadow-[0_32px_64px_rgba(0,0,0,0.4)] overflow-hidden z-10"
               >
                 <div className="absolute top-0 right-0 p-12 opacity-[0.03] pointer-events-none">
                   <MessageSquare className="w-48 h-48" />

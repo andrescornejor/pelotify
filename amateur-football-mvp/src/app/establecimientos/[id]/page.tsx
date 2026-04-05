@@ -582,7 +582,7 @@ const handleBooking = async () => {
                  initial={{ opacity: 0 }}
                  animate={{ opacity: 1 }}
                  exit={{ opacity: 0 }}
-                 className="absolute inset-0 bg-background/95 backdrop-blur-xl"
+                 className="absolute inset-0 bg-background/95 md:"
                  onClick={() => setShowBookingConfirm(false)}
                />
                <motion.div
@@ -641,7 +641,7 @@ const handleBooking = async () => {
       {/* SUCCESS MODAL */}
       <AnimatePresence>
          {showSuccessModal && (
-            <div className="fixed inset-0 z-[110] flex items-center justify-center p-6 bg-background/90 backdrop-blur-2xl">
+            <div className="fixed inset-0 z-[110] flex items-center justify-center p-6 bg-background/90 md:">
                <motion.div
                  initial={{ scale: 0.8, opacity: 0 }}
                  animate={{ scale: 1, opacity: 1 }}

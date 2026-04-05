@@ -83,7 +83,7 @@ function TutorialModal({ isOpen, onClose }: { isOpen: boolean; onClose: () => vo
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={onClose}
-            className="absolute inset-0 bg-black/95 backdrop-blur-3xl cursor-pointer"
+            className="absolute inset-0 bg-black/95 md: cursor-pointer"
           />
           <motion.div
             initial={{ opacity: 0, scale: 0.9, y: 20 }}
@@ -302,7 +302,7 @@ export default function RecruitmentMarketplace() {
       </div>
 
       {/* Modern Filter Dock */}
-      <div className="sticky top-0 z-40 backdrop-blur-3xl bg-background/60 border-y border-white/5 py-4">
+      <div className="sticky top-0 z-40 md: bg-background/60 border-y border-white/5 py-4">
         <div className="max-w-7xl mx-auto px-6">
           <div className="flex flex-wrap items-center gap-4">
             <h4 className="text-[10px] font-black uppercase tracking-[0.3em] text-foreground/30 mr-2">FILTRAR POR PUESTO</h4>
@@ -400,7 +400,7 @@ export default function RecruitmentMarketplace() {
                     </div>
                   )}
 
-                  <span className="bg-white/5 backdrop-blur-md text-foreground/60 px-5 py-2 rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] border border-white/5">
+                  <span className="bg-white/5 md: text-foreground/60 px-5 py-2 rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] border border-white/5">
                     {match.required_skill_level?.replace('-', ' ') || 'PRO VIBE'}
                   </span>
                   

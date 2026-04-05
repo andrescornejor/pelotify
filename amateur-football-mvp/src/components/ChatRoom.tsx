@@ -84,7 +84,7 @@ const MessageItem = memo(
               'p-1 text-[14px] font-bold relative transition-all duration-300 group/bubble overflow-hidden',
               isMine
                 ? 'bg-gradient-to-br from-primary via-primary to-primary-dark text-black rounded-[2rem] rounded-tr-[0.5rem] shadow-[0_10px_30px_rgba(85,250,134,0.15)] hover:shadow-primary/30'
-                : 'bg-white/90 dark:bg-foreground/[0.08] border border-foreground/10 text-foreground rounded-[2rem] rounded-tl-[0.5rem] shadow-sm hover:bg-foreground/[0.1] backdrop-blur-md',
+                : 'bg-white/90 dark:bg-foreground/[0.08] border border-foreground/10 text-foreground rounded-[2rem] rounded-tl-[0.5rem] shadow-sm hover:bg-foreground/[0.1] md:',
               sameAuthorAsPrev && (isMine ? 'rounded-tr-[2rem]' : 'rounded-tl-[2rem]'),
               sameAuthorAsNext && (isMine ? 'rounded-br-[0.5rem]' : 'rounded-bl-[0.5rem]')
             )}
@@ -279,7 +279,7 @@ export default function ChatRoom({ matchId, recipientId, className, title }: Cha
   return (
     <div
       className={cn(
-        'flex flex-col h-full bg-surface/20 backdrop-blur-3xl border border-foreground/5 rounded-[2.5rem] overflow-hidden shadow-2xl relative group',
+        'flex flex-col h-full bg-surface/20 md: border border-foreground/5 rounded-[2.5rem] overflow-hidden shadow-2xl relative group',
         className
       )}
     >
@@ -294,7 +294,7 @@ export default function ChatRoom({ matchId, recipientId, className, title }: Cha
       />
 
       {title && (
-        <div className="px-8 py-6 border-b border-foreground/5 bg-foreground/[0.02] backdrop-blur-2xl relative z-20">
+        <div className="px-8 py-6 border-b border-foreground/5 bg-foreground/[0.02] md: relative z-20">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <div className="w-2 h-2 rounded-full bg-primary animate-pulse shadow-[0_0_15px_rgba(85,250,134,0.6)]" />
@@ -403,7 +403,7 @@ export default function ChatRoom({ matchId, recipientId, className, title }: Cha
       <div className="p-8 pt-0 relative z-20">
         <form
           onSubmit={handleSend}
-          className="p-1.5 bg-foreground/[0.04] backdrop-blur-3xl border border-foreground/10 rounded-[2.5rem] flex flex-col gap-2 transition-all shadow-inner relative group/form"
+          className="p-1.5 bg-foreground/[0.04] md: border border-foreground/10 rounded-[2.5rem] flex flex-col gap-2 transition-all shadow-inner relative group/form"
         >
           {/* Image Preview */}
           <AnimatePresence>

@@ -46,7 +46,7 @@ export function QuickChatsSidebar() {
     <>
       <div className="hidden xl:block fixed right-6 top-[120px] w-80 h-[calc(100vh-200px)] z-40">
         <div className="h-full flex flex-col">
-          <div className="glass-premium p-6 rounded-[2.5rem] border-white/10 shadow-2xl flex flex-col h-full relative overflow-hidden group/sidebar bg-background/40 backdrop-blur-3xl">
+          <div className="glass-premium p-6 rounded-[2.5rem] border-white/10 shadow-2xl flex flex-col h-full relative overflow-hidden group/sidebar bg-background/40 md:">
             {/* Animated Glow Backdrop */}
             <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 blur-[50px] opacity-0 group-hover/sidebar:opacity-100 transition-opacity duration-1000" />
             

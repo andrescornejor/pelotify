@@ -895,7 +895,7 @@ export default function CreateMatchPage() {
                       {/* Decorative background glow */}
                       <div className="absolute -inset-0.5 bg-gradient-to-r from-primary/20 via-emerald-400/20 to-teal-300/20 rounded-[2.5rem] blur opacity-50 transition duration-1000 group-hover:opacity-100" />
                       
-                      <div className="relative p-6 sm:p-8 rounded-[2.5rem] bg-background/80 backdrop-blur-xl border border-primary/20 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 overflow-hidden">
+                      <div className="relative p-6 sm:p-8 rounded-[2.5rem] bg-background/80 md: border border-primary/20 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 overflow-hidden">
                         <div className="space-y-2 relative z-10">
                           <div className="flex items-center gap-2">
                             <Zap className="w-4 h-4 text-primary animate-pulse" />
@@ -1314,7 +1314,7 @@ export default function CreateMatchPage() {
                     </div>
                     <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-background/60" />
                     {/* Format badge */}
-                    <div className="relative z-10 px-6 py-2 rounded-full bg-primary/20 border border-primary/30 backdrop-blur-sm">
+                    <div className="relative z-10 px-6 py-2 rounded-full bg-primary/20 border border-primary/30 md:">
                       <span className="text-primary font-black text-sm uppercase tracking-widest italic">
                         {FORMAT_DATA[formData.type].label}
                       </span>

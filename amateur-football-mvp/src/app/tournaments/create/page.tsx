@@ -190,7 +190,7 @@ export default function CreateTournamentPage() {
            ))}
         </div>
 
-        <div className="glass-premium rounded-[3rem] border border-white/5 p-8 lg:p-14 min-h-[500px] shadow-2xl backdrop-blur-2xl">
+        <div className="glass-premium rounded-[3rem] border border-white/5 p-8 lg:p-14 min-h-[500px] shadow-2xl md:">
            <AnimatePresence mode="wait">
               {step === 0 && (
                  <motion.div key="step0" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="space-y-8">

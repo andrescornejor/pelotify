@@ -173,7 +173,7 @@ export default function TeamsPage() {
       <div
         className={cn(
           'sticky top-0 z-30 pt-4 pb-6 -mx-4 px-4 lg:-mx-16 lg:px-16 border-b border-foreground/5 shadow-2xl shadow-black/5',
-          isPerfMode ? 'bg-background' : 'bg-background/80 backdrop-blur-xl'
+          isPerfMode ? 'bg-background' : 'bg-background/80 md:'
         )}
       >
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 relative z-10 max-w-screen-2xl mx-auto">
@@ -413,7 +413,7 @@ export default function TeamsPage() {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={() => setChallengeModalOpen(false)}
-              className="absolute inset-0 bg-background/60 backdrop-blur-xl"
+              className="absolute inset-0 bg-background/60 md:"
             />
             <motion.div
               initial={{ opacity: 0, scale: 0.95, y: 30 }}

@@ -185,7 +185,7 @@ export default function CanchasDashboard() {
         <motion.div
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
-          className="max-w-lg w-full bg-surface-elevated/80 backdrop-blur-3xl rounded-[2.5rem] p-10 text-center space-y-8 relative z-10 border border-border/50 shadow-2xl"
+          className="max-w-lg w-full bg-surface-elevated/80 md: rounded-[2.5rem] p-10 text-center space-y-8 relative z-10 border border-border/50 shadow-2xl"
         >
           <div className="relative mx-auto w-24 h-24">
             <div className="absolute inset-0 bg-primary/20 blur-2xl rounded-full animate-pulse" />
@@ -356,7 +356,7 @@ export default function CanchasDashboard() {
       <div className="pt-24 max-w-[1600px] mx-auto px-4 sm:px-8 flex flex-col md:flex-row gap-8 min-h-screen relative z-10">
 
         {/* DESKTOP SIDEBAR */}
-        <aside className="hidden md:flex flex-col w-64 shrink-0 gap-3 sticky top-28 h-[calc(100vh-8rem)] bg-surface-elevated/40 backdrop-blur-3xl rounded-[2.5rem] p-5 border border-white/10 dark:border-white/5 shadow-[0_32px_64px_-16px_rgba(0,0,0,0.5)]">
+        <aside className="hidden md:flex flex-col w-64 shrink-0 gap-3 sticky top-28 h-[calc(100vh-8rem)] bg-surface-elevated/40 md: rounded-[2.5rem] p-5 border border-white/10 dark:border-white/5 shadow-[0_32px_64px_-16px_rgba(0,0,0,0.5)]">
           <div className="px-4 pb-4 border-b border-border/40 mb-3">
             <p className="text-[10px] font-black uppercase tracking-[0.4em] text-muted-foreground/70">Control Tower</p>
           </div>
@@ -893,7 +893,7 @@ function CalendarTab({ bookings, fields, selectedDate, setSelectedDate, onSlotCl
       </div>
 
       {/* ── WEEKLY GRID ── */}
-      <div className="rounded-[2.5rem] border border-white/10 dark:border-white/5 overflow-hidden shadow-2xl bg-surface-elevated/30 backdrop-blur-3xl">
+      <div className="rounded-[2.5rem] border border-white/10 dark:border-white/5 overflow-hidden shadow-2xl bg-surface-elevated/30 md:">
         <div className="overflow-x-auto no-scrollbar">
           <div className="min-w-[800px]">
             {/* Column headers: days */}
@@ -1032,7 +1032,7 @@ function FinancesTab({ business, bookings, hasMP, user }: any) {
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Main Balance */}
-        <div className="lg:col-span-2 bg-slate-950/40 backdrop-blur-3xl rounded-[3.5rem] p-12 border border-white/10 relative overflow-hidden group shadow-[0_48px_80px_-16px_rgba(0,0,0,0.6)]">
+        <div className="lg:col-span-2 bg-slate-950/40 md: rounded-[3.5rem] p-12 border border-white/10 relative overflow-hidden group shadow-[0_48px_80px_-16px_rgba(0,0,0,0.6)]">
           <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-primary/10 rounded-full blur-[120px] -z-10 group-hover:bg-primary/20 transition-all duration-700 animate-pulse"></div>
           <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-blue-600/5 rounded-full blur-[100px] -z-10"></div>
 
@@ -1745,7 +1745,7 @@ function NewBookingModal({ onClose, fields, selectedSlot, onBooked, selectedDate
   };
 
   return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-background/80 backdrop-blur-sm animate-in fade-in duration-200">
+    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-background/80 md: animate-in fade-in duration-200">
       <motion.div
         initial={{ scale: 0.95, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
@@ -1859,7 +1859,7 @@ function EditBookingModal({ booking, onClose, onUpdate, onDelete }: any) {
   };
 
   return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-background/80 backdrop-blur-sm animate-in fade-in duration-200">
+    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-background/80 md: animate-in fade-in duration-200">
       <motion.div
         initial={{ scale: 0.95, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}

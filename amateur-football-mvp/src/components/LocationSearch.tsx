@@ -251,7 +251,7 @@ export default function LocationSearch({ value, onChange, placeholder }: Locatio
             initial={{ opacity: 0, y: 10, scale: 0.98 }}
             animate={{ opacity: 1, y: 5, scale: 1 }}
             exit={{ opacity: 0, y: 10, scale: 0.98 }}
-            className="absolute top-full left-0 right-0 z-[100] border border-foreground/10 rounded-[2rem] overflow-hidden mt-3 p-1.5 shadow-2xl bg-background/98 backdrop-blur-3xl ring-1 ring-white/5"
+            className="absolute top-full left-0 right-0 z-[100] border border-foreground/10 rounded-[2rem] overflow-hidden mt-3 p-1.5 shadow-2xl bg-background/98 md: ring-1 ring-white/5"
           >
             <div className="max-h-[350px] overflow-y-auto no-scrollbar py-1">
               {results.map((result, idx) => (

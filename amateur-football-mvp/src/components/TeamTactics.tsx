@@ -236,7 +236,7 @@ export default function TeamTactics({ teamId, isCaptain, members }: TeamTacticsP
         </div>
 
         {isCaptain && (
-          <div className="flex flex-wrap items-center gap-4 bg-foreground/[0.03] p-2 rounded-[2.5rem] border border-foreground/5 backdrop-blur-3xl shadow-2xl">
+          <div className="flex flex-wrap items-center gap-4 bg-foreground/[0.03] p-2 rounded-[2.5rem] border border-foreground/5 md: shadow-2xl">
             {/* Match Type Select */}
             <div className="flex p-1 bg-background/50 rounded-2xl border border-foreground/5 gap-1 shadow-inner">
               {(['F5', 'F7', 'F11'] as MatchType[]).map((type) => (
@@ -374,7 +374,7 @@ export default function TeamTactics({ teamId, isCaptain, members }: TeamTacticsP
 
                         <div
                           className={cn(
-                            'flex flex-col items-center px-4 py-1.5 backdrop-blur-2xl border rounded-[1rem] shadow-2xl transition-all',
+                            'flex flex-col items-center px-4 py-1.5 md: border rounded-[1rem] shadow-2xl transition-all',
                             player
                               ? 'bg-background/90 border-white/10'
                               : 'bg-black/60 border-white/5 animate-pulse'

@@ -206,7 +206,7 @@ export const TopHeader = memo(function TopHeader() {
               </div>
 
               {/* Middle: Desktop Nav */}
-              <nav className="hidden lg:flex items-center gap-1.5 bg-foreground/[0.03] p-1.5 rounded-[1.25rem] border border-foreground/[0.05] backdrop-blur-md">
+              <nav className="hidden lg:flex items-center gap-1.5 bg-foreground/[0.03] p-1.5 rounded-[1.25rem] border border-foreground/[0.05] md:">
                 {DESKTOP_NAV.map((item) => {
                   const cleanPath = pathname.replace(/\/$/, '') || '/';
                   const cleanHref = item.href.replace(/\/$/, '') || '/';

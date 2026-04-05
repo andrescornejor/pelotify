@@ -218,7 +218,7 @@ function TournamentCard({
             </button>
          )}
          {tournament.is_official && (
-            <div className="w-10 h-10 rounded-xl bg-yellow-500/20 border border-yellow-500/40 flex items-center justify-center backdrop-blur-md">
+            <div className="w-10 h-10 rounded-xl bg-yellow-500/20 border border-yellow-500/40 flex items-center justify-center md:">
                <Star className="w-4 h-4 text-yellow-500 fill-current" />
             </div>
          )}

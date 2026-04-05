@@ -194,7 +194,7 @@ export default function CheckinScannerPage() {
             animate={{ scale: 1, opacity: 1 }} 
             className="flex-1 flex flex-col mt-10"
           >
-            <div className="rounded-[2.5rem] bg-surface-elevated/40 border border-primary/30 p-8 shadow-2xl relative overflow-hidden backdrop-blur-md">
+            <div className="rounded-[2.5rem] bg-surface-elevated/40 border border-primary/30 p-8 shadow-2xl relative overflow-hidden md:">
               {/* Decorative backgrounds */}
               <div className="absolute top-0 right-0 w-32 h-32 bg-primary/10 blur-3xl -translate-y-1/2 translate-x-1/2"></div>
               

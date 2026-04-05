@@ -581,7 +581,7 @@ export default function HomePage() {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
           <div className="lg:col-span-8 xl:col-span-8 space-y-6 order-2 lg:order-1">
             {/* --- DASHBOARD TAB CONTROLLER --- */}
-            <section className="sticky top-20 lg:top-4 z-40 bg-background/80 backdrop-blur-xl py-2 -mx-2 px-2 lg:bg-transparent lg:static lg:pb-6">
+            <section className="sticky top-20 lg:top-4 z-40 bg-background/80 md: py-2 -mx-2 px-2 lg:bg-transparent lg:static lg:pb-6">
               <div className="w-full p-1.5 rounded-[2rem] glass-premium border-foreground/20 flex items-center gap-1 shadow-2xl relative overflow-hidden">
                 {!performanceMode && (
                   <div className="absolute inset-0 bg-gradient-to-r from-primary/5 via-transparent to-primary/5 pointer-events-none" />
@@ -985,7 +985,7 @@ export default function HomePage() {
                         date={nextMatch.date}
                         time={nextMatch.time}
                       />
-                      <div className="px-4 py-2 rounded-2xl bg-foreground/[0.05] border border-foreground/20 backdrop-blur-md">
+                      <div className="px-4 py-2 rounded-2xl bg-foreground/[0.05] border border-foreground/20 md:">
                         <span className="text-[10px] font-black text-foreground/60 uppercase tracking-widest">{nextMatch.type || 'F5'}</span>
                       </div>
                     </div>

@@ -107,7 +107,7 @@ export function WeatherWidget({ lat, lng, location, date, time, className }: Wea
   if (!weather) return null;
 
   return (
-    <div className={cn("flex items-center gap-4 px-4 py-2 rounded-2xl bg-foreground/[0.03] border border-foreground/10 backdrop-blur-sm", className)}>
+    <div className={cn("flex items-center gap-4 px-4 py-2 rounded-2xl bg-foreground/[0.03] border border-foreground/10 md:", className)}>
       {getWeatherIcon(weather.code, "w-12 h-12")}
       <div className="flex items-center">
         <span className="text-4xl font-black italic tracking-tighter text-foreground leading-none">{weather.temp}°</span>

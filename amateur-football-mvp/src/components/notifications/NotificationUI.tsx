@@ -33,7 +33,7 @@ export function NotificationToast() {
             }}
             className="w-full text-left"
           >
-            <div className="relative overflow-hidden rounded-2xl border border-primary/30 bg-background/95 backdrop-blur-2xl shadow-[0_20px_60px_rgba(44,252,125,0.15),0_0_0_1px_rgba(44,252,125,0.1)] p-4">
+            <div className="relative overflow-hidden rounded-2xl border border-primary/30 bg-background/95 md: shadow-[0_20px_60px_rgba(44,252,125,0.15),0_0_0_1px_rgba(44,252,125,0.1)] p-4">
               {/* Glow effect */}
               <div className="absolute -top-10 -right-10 w-32 h-32 bg-primary/10 rounded-full blur-3xl pointer-events-none" />
               
@@ -203,7 +203,7 @@ export function NotificationBell({ className }: { className?: string }) {
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: -10, scale: 0.95 }}
               transition={{ type: 'spring', stiffness: 400, damping: 30 }}
-              className="absolute right-0 top-full mt-2 w-80 max-h-96 overflow-auto rounded-2xl border border-foreground/10 bg-background/95 backdrop-blur-2xl shadow-2xl z-50"
+              className="absolute right-0 top-full mt-2 w-80 max-h-96 overflow-auto rounded-2xl border border-foreground/10 bg-background/95 md: shadow-2xl z-50"
             >
               {/* Header */}
               <div className="flex items-center justify-between px-4 py-3 border-b border-foreground/5">

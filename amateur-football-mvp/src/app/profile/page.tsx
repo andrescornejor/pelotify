@@ -541,7 +541,7 @@ function ProfileContent() {
           <div className="absolute top-34 sm:top-32 left-1/2 -translate-x-1/2 sm:left-auto sm:translate-x-0 sm:right-12 z-30 flex gap-3 w-fit">
              <button 
               onClick={() => setIsEditing(!isEditing)}
-              className="px-6 h-12 rounded-2xl glass-premium border-white/10 hover:border-primary/40 text-[10px] font-black uppercase tracking-[0.2em] transition-all flex items-center gap-2 group/btn backdrop-blur-md"
+              className="px-6 h-12 rounded-2xl glass-premium border-white/10 hover:border-primary/40 text-[10px] font-black uppercase tracking-[0.2em] transition-all flex items-center gap-2 group/btn md:"
              >
                 <Edit2 className="w-4 h-4 text-primary group-hover/btn:rotate-12 transition-transform" />
                 <span>{isEditing ? 'Cerrar Editor' : 'Personalizar'}</span>
@@ -591,7 +591,7 @@ function ProfileContent() {
                   }}
                 />
                 {isEditing && (
-                  <label className="absolute inset-0 z-30 flex flex-col items-center justify-center bg-black/60 backdrop-blur-md cursor-pointer rounded-[2rem] border-2 border-dashed border-primary/40 m-2 transition-all hover:bg-black/40">
+                  <label className="absolute inset-0 z-30 flex flex-col items-center justify-center bg-black/60 md: cursor-pointer rounded-[2rem] border-2 border-dashed border-primary/40 m-2 transition-all hover:bg-black/40">
                     <Camera className="w-10 h-10 text-primary mb-2" />
                     <span className="text-[10px] font-black uppercase tracking-widest">Cambiar Foto</span>
                     <input type="file" className="hidden" onChange={handleAvatarChange} />
@@ -707,7 +707,7 @@ function ProfileContent() {
         </div>
 
         {/* Navigation Tabs (Social Style) */}
-        <div className="sticky top-0 z-40 bg-background/80 backdrop-blur-xl border-y border-foreground/10 mb-10 -mx-4 px-4 sm:mx-0">
+        <div className="sticky top-0 z-40 bg-background/80 md: border-y border-foreground/10 mb-10 -mx-4 px-4 sm:mx-0">
            <div className="flex items-center justify-center sm:justify-start gap-10 py-5 overflow-x-auto no-scrollbar max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-10 xl:px-14 2xl:px-16">
               {[
                 { id: 'overview', icon: Info, label: 'Bio & Stats' },
@@ -750,7 +750,7 @@ function ProfileContent() {
                     <div
                       className={cn(
                         'p-10 lg:p-12 rounded-[3.5rem] border border-foreground/10 space-y-10 relative overflow-hidden group transition-all duration-700',
-                        'bg-surface/50 dark:bg-foreground/5 backdrop-blur-xl',
+                        'bg-surface/50 dark:bg-foreground/5 md:',
                         'shadow-[0_20px_60px_-15px_rgba(0,0,0,0.05)] dark:shadow-[0_30px_70px_rgba(0,0,0,0.4)]',
                         isEditing
                           ? 'z-50 ring-4 ring-primary/30 shadow-[0_0_100px_rgba(16,185,129,0.2)] bg-background/80 scale-[1.02]'
@@ -781,7 +781,7 @@ function ProfileContent() {
 
                       <div className="space-y-6 relative z-10">
                         {isEditing ? (
-                          <div className="grid grid-cols-2 gap-6 bg-background/40 p-6 rounded-[2rem] border border-foreground/5 backdrop-blur-md">
+                          <div className="grid grid-cols-2 gap-6 bg-background/40 p-6 rounded-[2rem] border border-foreground/5 md:">
                             <div className="space-y-3">
                               <div className="flex items-center gap-2 ml-2">
                                 <div className="w-1.5 h-1.5 rounded-full bg-primary" />
@@ -898,7 +898,7 @@ function ProfileContent() {
                     <div
                         className={cn(
                           'p-10 lg:p-12 rounded-[3.5rem] border border-foreground/10 space-y-10 relative overflow-hidden group transition-all duration-700 h-full',
-                          'bg-surface/50 dark:bg-foreground/5 backdrop-blur-xl',
+                          'bg-surface/50 dark:bg-foreground/5 md:',
                           'shadow-[0_20px_60px_-15px_rgba(0,0,0,0.05)] dark:shadow-[0_30px_70px_rgba(0,0,0,0.4)]',
                           isEditing
                             ? 'z-50 ring-4 ring-primary/30 shadow-[0_0_100px_rgba(16,185,129,0.2)] bg-background/80 scale-[1.02]'
@@ -1050,7 +1050,7 @@ function ProfileContent() {
                         {/* Team Crest/Logo */}
                         <div className="relative shrink-0 perspective-1000">
                           <div className="absolute inset-0 bg-primary/20 blur-[40px] rounded-full scale-110 group-hover/team:scale-150 transition-transform duration-1000" />
-                          <div className="w-36 h-36 md:w-48 md:h-48 rounded-[3rem] bg-background/80 border border-foreground/10 flex items-center justify-center overflow-hidden relative shadow-2xl group-hover/team:border-primary/50 transition-all duration-700 backdrop-blur-xl group-hover/team:-translate-y-2 group-hover/team:rotate-y-12">
+                          <div className="w-36 h-36 md:w-48 md:h-48 rounded-[3rem] bg-background/80 border border-foreground/10 flex items-center justify-center overflow-hidden relative shadow-2xl group-hover/team:border-primary/50 transition-all duration-700 md: group-hover/team:-translate-y-2 group-hover/team:rotate-y-12">
                             <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent opacity-0 group-hover/team:opacity-100 transition-opacity" />
                             {userTeam.logo_url ? (
                               <img
@@ -1441,7 +1441,7 @@ function ProfileContent() {
                           />
                           
                           <div className="absolute top-3 left-3 z-20 flex gap-2">
-                            <div className="px-2 py-0.5 rounded-full bg-black/50 backdrop-blur-md border border-white/10 flex items-center gap-1.5">
+                            <div className="px-2 py-0.5 rounded-full bg-black/50 md: border border-white/10 flex items-center gap-1.5">
                               <Play className="w-2.5 h-2.5 text-white" />
                               <span className="text-[8px] font-black italic text-white">{h.views_count || 0}</span>
                             </div>
@@ -1815,7 +1815,7 @@ function ProfileContent() {
       {/* PASSWORD MODAL */}
       <AnimatePresence>
         {showPasswordModal && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-background/80 backdrop-blur-md">
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-background/80 md:">
             <motion.div
               initial={{ opacity: 0, scale: 0.95, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}

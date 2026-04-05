@@ -236,7 +236,7 @@ export function FloatingChat() {
                       <div className="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 rounded-full bg-primary border-[3px] border-background shadow-lg" />
 
                       {/* Premium Tooltip */}
-                      <div className="absolute right-full mr-6 top-1/2 -translate-y-1/2 px-4 py-2 rounded-[1.25rem] bg-foreground text-background text-[11px] font-black uppercase tracking-widest opacity-0 group-hover:opacity-100 pointer-events-none transition-all translate-x-5 group-hover:translate-x-0 whitespace-nowrap shadow-2xl backdrop-blur-3xl overflow-hidden">
+                      <div className="absolute right-full mr-6 top-1/2 -translate-y-1/2 px-4 py-2 rounded-[1.25rem] bg-foreground text-background text-[11px] font-black uppercase tracking-widest opacity-0 group-hover:opacity-100 pointer-events-none transition-all translate-x-5 group-hover:translate-x-0 whitespace-nowrap shadow-2xl md: overflow-hidden">
                           <div className="absolute inset-0 bg-gradient-to-r from-background/5 to-transparent pointer-events-none" />
                           <span className="relative z-10 italic">{chat.name}</span>
                           <div className="absolute left-full top-1/2 -translate-y-1/2 w-3 h-3 bg-foreground rotate-45 -ml-1.5" />

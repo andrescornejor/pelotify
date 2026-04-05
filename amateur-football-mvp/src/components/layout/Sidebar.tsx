@@ -279,7 +279,7 @@ export const SidebarContent = memo(function SidebarContent({
           <Link href="/profile/me" onClick={() => isMobile && onClose && onClose()}>
             <div className="relative overflow-hidden rounded-3xl p-4 border border-foreground/10 shadow-xl transition-all duration-500 hover:scale-[1.02] active:scale-[0.98]">
               {/* Card Surface */}
-              <div className="absolute inset-0 bg-gradient-to-br from-foreground/[0.05] to-transparent backdrop-blur-xl" />
+              <div className="absolute inset-0 bg-gradient-to-br from-foreground/[0.05] to-transparent md:" />
 
               {/* Dynamic Glow */}
               <div className="absolute -top-12 -right-12 w-32 h-32 bg-primary/10 blur-[40px] rounded-full group-hover:bg-primary/20 transition-all duration-700" />
@@ -423,7 +423,7 @@ export function Sidebar() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="absolute inset-0 backdrop-blur-sm"
+            className="absolute inset-0 md:"
             style={{
               background: 'radial-gradient(circle at center, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0.7) 100%)'
             }}

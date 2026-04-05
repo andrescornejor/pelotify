@@ -137,7 +137,7 @@ export default function PostMatchModal({
 
   return (
     <AnimatePresence>
-      <div className="fixed inset-0 z-[100] flex justify-center p-4 sm:p-6 lg:p-10 pt-16 sm:pt-20 bg-background/90 backdrop-blur-xl overflow-hidden touch-none">
+      <div className="fixed inset-0 z-[100] flex justify-center p-4 sm:p-6 lg:p-10 pt-16 sm:pt-20 bg-background/90 md: overflow-hidden touch-none">
         <div className="absolute inset-0 bg-[url('/noise.png')] opacity-[0.03] mix-blend-overlay pointer-events-none" />
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[80vw] h-[80vw] bg-primary/10 blur-[150px] rounded-full pointer-events-none" />
 
@@ -435,7 +435,7 @@ export default function PostMatchModal({
                       return (
                         <motion.div
                           key={player.user_id}
-                          className="absolute inset-0 bg-background/80 backdrop-blur-3xl rounded-[3rem] border-2 border-accent/20 shadow-[0_30px_60px_rgba(245,158,11,0.15)] flex flex-col items-center justify-center p-6 overflow-hidden"
+                          className="absolute inset-0 bg-background/80 md: rounded-[3rem] border-2 border-accent/20 shadow-[0_30px_60px_rgba(245,158,11,0.15)] flex flex-col items-center justify-center p-6 overflow-hidden"
                           style={{ zIndex: participants.length - idx }}
                           drag={isFront && !selectedMvp ? 'x' : false}
                           dragConstraints={{ left: 0, right: 0 }}
@@ -558,7 +558,7 @@ export default function PostMatchModal({
                     animate={{ opacity: 1, y: 0 }}
                     className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-background via-background/90 to-transparent pt-12 pb-6 px-6 z-30"
                   >
-                    <div className="glass-premium p-4 rounded-[2rem] border-2 border-accent bg-accent/10 backdrop-blur-2xl shadow-[0_0_50px_rgba(245,158,11,0.2)] mb-6">
+                    <div className="glass-premium p-4 rounded-[2rem] border-2 border-accent bg-accent/10 md: shadow-[0_0_50px_rgba(245,158,11,0.2)] mb-6">
                       <p className="text-center text-accent font-black uppercase text-sm tracking-widest italic flex items-center justify-center gap-3">
                         <Medal className="w-6 h-6 fill-accent" />
                         ¡VOTASTE A{' '}

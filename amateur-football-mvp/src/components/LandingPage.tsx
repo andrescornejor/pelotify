@@ -75,7 +75,7 @@ export default function LandingPage() {
       <div className="min-h-screen bg-[#050505] text-white selection:bg-primary selection:text-black font-sans scroll-smooth overflow-x-hidden">
 
          {/* 🟢 TOP NAVIGATION */}
-         <nav className="fixed top-0 inset-x-0 h-20 sm:h-28 z-[100] px-4 sm:px-6 lg:px-12 flex items-center justify-between border-b border-primary/10 bg-[#050505]/80 backdrop-blur-3xl transition-all shadow-2xl">
+         <nav className="fixed top-0 inset-x-0 h-20 sm:h-28 z-[100] px-4 sm:px-6 lg:px-12 flex items-center justify-between border-b border-primary/10 bg-[#050505]/80 md: transition-all shadow-2xl">
             <motion.div
                initial={{ opacity: 0, x: -20 }}
                animate={{ opacity: 1, x: 0 }}
@@ -138,7 +138,7 @@ export default function LandingPage() {
                className="relative group perspective-1000 z-[110] mt-16 md:mt-24 flex flex-col items-center"
             >
                <div className="absolute -inset-10 bg-primary/30 blur-[60px] rounded-full group-hover:bg-primary/50 transition-all duration-700 animate-pulse" />
-               <div className="w-36 h-36 md:w-56 md:h-56 relative rounded-[3rem] bg-gradient-to-br from-[#0A0A0A] to-black flex items-center justify-center border-2 border-primary/30 shadow-[0_40px_80px_rgba(0,0,0,0.8),inset_0_0_40px_rgba(44,252,125,0.2)] backdrop-blur-3xl group-hover:scale-110 group-hover:border-primary/60 transition-all duration-700 z-10 preserve-3d">
+               <div className="w-36 h-36 md:w-56 md:h-56 relative rounded-[3rem] bg-gradient-to-br from-[#0A0A0A] to-black flex items-center justify-center border-2 border-primary/30 shadow-[0_40px_80px_rgba(0,0,0,0.8),inset_0_0_40px_rgba(44,252,125,0.2)] md: group-hover:scale-110 group-hover:border-primary/60 transition-all duration-700 z-10 preserve-3d">
                   <img src="/logo_pelotify.png" className="w-24 h-24 md:w-40 md:h-40 object-contain drop-shadow-[0_0_25px_rgba(44,252,125,1)] animate-float" alt="Pelotify Main Logo" />
                </div>
             </motion.div>
@@ -170,7 +170,7 @@ export default function LandingPage() {
                            <motion.div
                               animate={{ y: [0, 8, 0] }}
                               transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' }}
-                              className="w-8 h-12 rounded-full border-2 border-primary/30 flex items-start justify-center p-2 group-hover:border-primary transition-colors duration-300 bg-black/50 backdrop-blur-sm shadow-[0_0_15px_rgba(44,252,125,0.05)]"
+                              className="w-8 h-12 rounded-full border-2 border-primary/30 flex items-start justify-center p-2 group-hover:border-primary transition-colors duration-300 bg-black/50 md: shadow-[0_0_15px_rgba(44,252,125,0.05)]"
                            >
                               <motion.div
                                  animate={{ y: [0, 12, 0], opacity: [1, 0, 1] }}
@@ -333,7 +333,7 @@ export default function LandingPage() {
                               <div className="w-full aspect-square md:aspect-[4/3] rounded-[3.5rem] bg-[#0A0A0A] border-4 border-white/5 overflow-hidden relative shadow-[0_60px_100px_rgba(0,0,0,1)] group">
                                  <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-[0.1]" />
 
-                                 <div className="absolute inset-4 rounded-[2.5rem] border border-white/5 bg-zinc-900/50 backdrop-blur-sm overflow-hidden">
+                                 <div className="absolute inset-4 rounded-[2.5rem] border border-white/5 bg-zinc-900/50 md: overflow-hidden">
                                     <div className="absolute inset-0 opacity-20">
                                        {Array.from({ length: 10 }).map((_, i) => (
                                           <div key={i} className="absolute w-px h-full bg-primary/20" style={{ left: `${(i + 1) * 10}%` }} />
@@ -367,7 +367,7 @@ export default function LandingPage() {
                                                 match.full ? "bg-zinc-600" : "bg-primary shadow-[0_0_20px_rgba(44,252,125,0.8)]"
                                              )} />
 
-                                             <div className="absolute bottom-full mb-4 left-1/2 -translate-x-1/2 opacity-0 group-hover/pin:opacity-100 transition-all scale-90 group-hover/pin:scale-100 bg-black border border-primary/30 p-4 rounded-2xl backdrop-blur-md min-w-[180px] z-30 pointer-events-none shadow-2xl">
+                                             <div className="absolute bottom-full mb-4 left-1/2 -translate-x-1/2 opacity-0 group-hover/pin:opacity-100 transition-all scale-90 group-hover/pin:scale-100 bg-black border border-primary/30 p-4 rounded-2xl md: min-w-[180px] z-30 pointer-events-none shadow-2xl">
                                                 <div className="flex justify-between items-start mb-2">
                                                    <p className="text-[10px] font-black uppercase tracking-widest text-primary leading-none">{match.name}</p>
                                                    <span className="text-[8px] font-black text-zinc-500">{match.time}</span>
@@ -384,7 +384,7 @@ export default function LandingPage() {
                                     ))}
 
                                     <div className="absolute bottom-8 left-8 right-8 flex items-center justify-center">
-                                       <div className="bg-black/80 backdrop-blur-xl border border-white/10 px-6 py-3 rounded-2xl flex items-center gap-4 shadow-2xl">
+                                       <div className="bg-black/80 md: border border-white/10 px-6 py-3 rounded-2xl flex items-center gap-4 shadow-2xl">
                                           <div className="flex gap-2">
                                              <div className="w-2 h-2 rounded-full bg-primary animate-ping" />
                                              <div className="w-2 h-2 rounded-full bg-zinc-700" />
@@ -485,7 +485,7 @@ export default function LandingPage() {
                               initial={{ opacity: 0, scale: 0.8 }}
                               whileInView={{ opacity: 1, scale: 1 }}
                               viewport={{ once: true }}
-                              className="inline-flex items-center gap-4 px-6 py-3 rounded-xl bg-primary/10 border border-primary/20 backdrop-blur-md"
+                              className="inline-flex items-center gap-4 px-6 py-3 rounded-xl bg-primary/10 border border-primary/20 md:"
                            >
                               <Trophy className="w-5 h-5 text-primary" />
                               <span className="text-[10px] font-black uppercase tracking-[0.4em] text-primary">EL CAMINO A LA CIMA</span>
@@ -528,7 +528,7 @@ export default function LandingPage() {
 
                                     <div className="space-y-8 flex-1 flex flex-col items-center w-full">
                                        {/* Icon Container */}
-                                       <div className="w-16 h-16 rounded-full bg-black/40 backdrop-blur-md flex items-center justify-center border border-white/10 shadow-inner group-hover:scale-110 transition-transform duration-500">
+                                       <div className="w-16 h-16 rounded-full bg-black/40 md: flex items-center justify-center border border-white/10 shadow-inner group-hover:scale-110 transition-transform duration-500">
                                           <rank.icon className={cn(
                                              "w-8 h-8",
                                              i === 0 && "text-zinc-400",
@@ -662,13 +662,13 @@ export default function LandingPage() {
 
                                  <div className="absolute right-6 top-1/2 -translate-y-1/2 flex flex-col gap-10 text-white z-20">
                                     <div className="flex flex-col items-center gap-2">
-                                       <div className="w-14 h-14 rounded-2xl bg-white/5 backdrop-blur-xl border border-white/10 flex items-center justify-center shadow-2xl group-hover:bg-primary group-hover:text-black transition-all">
+                                       <div className="w-14 h-14 rounded-2xl bg-white/5 md: border border-white/10 flex items-center justify-center shadow-2xl group-hover:bg-primary group-hover:text-black transition-all">
                                           <CheckCircle2 className="w-7 h-7" />
                                        </div>
                                        <span className="text-[10px] font-black uppercase tracking-widest">14.2K</span>
                                     </div>
                                     <div className="flex flex-col items-center gap-2">
-                                       <div className="w-14 h-14 rounded-2xl bg-white/5 backdrop-blur-xl border border-white/10 flex items-center justify-center shadow-2xl">
+                                       <div className="w-14 h-14 rounded-2xl bg-white/5 md: border border-white/10 flex items-center justify-center shadow-2xl">
                                           <Zap className="w-7 h-7 text-primary" />
                                        </div>
                                        <span className="text-[10px] font-black uppercase tracking-widest">4.8K</span>
@@ -884,7 +884,7 @@ export default function LandingPage() {
                                     </div>
 
                                     <div className="space-y-8 flex-1 relative z-10">
-                                       <div className="p-8 rounded-[2rem] bg-black/50 border border-primary/10 space-y-4 backdrop-blur-md">
+                                       <div className="p-8 rounded-[2rem] bg-black/50 border border-primary/10 space-y-4 md:">
                                           <p className="text-xs uppercase font-black tracking-widest text-zinc-500">Recaudación (Hoy)</p>
                                           <p className="text-5xl font-black italic font-kanit text-white">$450.000</p>
                                           <div className="flex items-center gap-3">
@@ -1000,7 +1000,7 @@ export default function LandingPage() {
                                     <div className="absolute inset-0 bg-gradient-to-t from-[#0A0A0A] to-transparent" />
                                     <div className="absolute bottom-4 left-6 flex items-center gap-2">
                                        <ShieldCheck className="w-5 h-5 text-primary drop-shadow-[0_0_5px_rgba(44,252,125,1)]" />
-                                       <span className="text-white font-black text-xs uppercase tracking-widest bg-black/60 px-2 py-1 rounded-md backdrop-blur-sm">Sede Verificada</span>
+                                       <span className="text-white font-black text-xs uppercase tracking-widest bg-black/60 px-2 py-1 rounded-md md:">Sede Verificada</span>
                                     </div>
                                  </div>
 

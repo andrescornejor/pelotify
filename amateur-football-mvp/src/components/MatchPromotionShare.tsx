@@ -148,7 +148,7 @@ export function MatchPromotionShare({ match, teamALogo, teamBLogo, className }: 
             <h1 className="text-6xl font-black italic uppercase tracking-tighter text-white drop-shadow-xl">
               PELOTI<span className="text-primary">FY</span>
             </h1>
-            <div className="px-10 py-5 bg-black/60 backdrop-blur-md border-4 border-primary text-primary font-black text-4xl uppercase tracking-[0.3em] rounded-3xl">
+            <div className="px-10 py-5 bg-black/60 md: border-4 border-primary text-primary font-black text-4xl uppercase tracking-[0.3em] rounded-3xl">
               {match.type}
             </div>
           </div>
@@ -184,7 +184,7 @@ export function MatchPromotionShare({ match, teamALogo, teamBLogo, className }: 
           </div>
 
           {/* Footer Card */}
-          <div className="w-full bg-black/95 backdrop-blur-3xl p-16 pb-24 relative z-30 border-t-8 border-primary flex flex-col items-center">
+          <div className="w-full bg-black/95 md: p-16 pb-24 relative z-30 border-t-8 border-primary flex flex-col items-center">
             <h3 className="text-6xl font-black uppercase text-primary tracking-[0.5em] mb-12 text-center italic drop-shadow-[0_0_20px_rgba(44,252,125,0.4)]">
               MATCH DAY
             </h3>

@@ -282,7 +282,7 @@ export default function VideoPlayer({
               whileHover={{ scale: 1.15 }}
               whileTap={{ scale: 0.9 }}
               onClick={handleLike}
-              className={`p-3.5 backdrop-blur-3xl rounded-full border transition-all duration-300 cursor-pointer ${
+              className={`p-3.5 md: rounded-full border transition-all duration-300 cursor-pointer ${
                 isLiked 
                   ? 'bg-rose-500 border-rose-400 shadow-[0_0_20px_rgba(244,63,94,0.4)]' 
                   : 'bg-white/10 border-white/20 group-hover/action:border-rose-500/50 shadow-lg'
@@ -298,7 +298,7 @@ export default function VideoPlayer({
               whileHover={{ scale: 1.15 }}
               whileTap={{ scale: 0.9 }}
               onClick={(e) => { e.stopPropagation(); setShowComments(true); }}
-              className="p-3.5 bg-white/10 backdrop-blur-3xl rounded-full border border-white/20 shadow-lg cursor-pointer group-hover/action:bg-primary/20 group-hover/action:border-primary/40 transition-all duration-300"
+              className="p-3.5 bg-white/10 md: rounded-full border border-white/20 shadow-lg cursor-pointer group-hover/action:bg-primary/20 group-hover/action:border-primary/40 transition-all duration-300"
             >
               <MessageCircle className="w-6 h-6 text-white group-hover/action:text-primary transition-colors" />
             </motion.div>
@@ -309,7 +309,7 @@ export default function VideoPlayer({
             whileHover={{ scale: 1.15 }}
             whileTap={{ scale: 0.9 }}
             onClick={handleShare}
-            className={`p-3.5 backdrop-blur-3xl rounded-full border shadow-lg cursor-pointer transition-all duration-300 ${
+            className={`p-3.5 md: rounded-full border shadow-lg cursor-pointer transition-all duration-300 ${
               showCopied ? 'bg-emerald-500 border-emerald-400' : 'bg-white/10 border-white/20 hover:bg-white/20'
             }`}
           >
@@ -339,7 +339,7 @@ export default function VideoPlayer({
               whileTap={{ scale: 0.9 }}
               onClick={handleDelete}
               disabled={isDeleting}
-              className="p-3.5 bg-rose-500/10 backdrop-blur-3xl rounded-full border border-rose-500/20 shadow-lg cursor-pointer hover:bg-rose-500 text-rose-500 hover:text-white transition-all duration-300 group/delete"
+              className="p-3.5 bg-rose-500/10 md: rounded-full border border-rose-500/20 shadow-lg cursor-pointer hover:bg-rose-500 text-rose-500 hover:text-white transition-all duration-300 group/delete"
             >
               <Trash2 className="w-6 h-6" />
             </motion.button>
@@ -401,7 +401,7 @@ export default function VideoPlayer({
           onClick={toggleMute}
           whileHover={{ scale: 1.1 }}
           whileTap={{ scale: 0.9 }}
-          className="absolute left-6 bottom-36 z-30 p-2.5 bg-black/20 backdrop-blur-md rounded-full border border-white/10 shadow-lg cursor-pointer hover:bg-black/40 transition-colors"
+          className="absolute left-6 bottom-36 z-30 p-2.5 bg-black/20 md: rounded-full border border-white/10 shadow-lg cursor-pointer hover:bg-black/40 transition-colors"
         >
           {isMuted ? (
             <VolumeX className="w-5 h-5 text-white/80" />

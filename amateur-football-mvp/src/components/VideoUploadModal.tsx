@@ -109,7 +109,7 @@ export default function VideoUploadModal({ onClose, onSuccess }: VideoUploadModa
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
         onClick={onClose}
-        className="absolute inset-0 bg-black/80 backdrop-blur-sm"
+        className="absolute inset-0 bg-black/80 md:"
       />
 
       <motion.div 
@@ -149,7 +149,7 @@ export default function VideoUploadModal({ onClose, onSuccess }: VideoUploadModa
                 />
                 <button 
                   onClick={() => { setFile(null); setPreviewUrl(null); }}
-                  className="absolute top-4 right-4 p-2 bg-black/60 backdrop-blur-md rounded-full text-white/80 hover:text-white transition-colors"
+                  className="absolute top-4 right-4 p-2 bg-black/60 md: rounded-full text-white/80 hover:text-white transition-colors"
                 >
                   <X className="w-4 h-4" />
                 </button>

@@ -86,7 +86,7 @@ const PlayerCard = ({
             {p.name?.charAt(0)}
           </div>
         )}
-        <div className="absolute top-3 right-3 w-8 h-8 rounded-xl bg-primary/80 backdrop-blur flex items-center justify-center shadow-lg border border-white/10 group-hover:scale-110 transition-transform">
+        <div className="absolute top-3 right-3 w-8 h-8 rounded-xl bg-primary/80 md: flex items-center justify-center shadow-lg border border-white/10 group-hover:scale-110 transition-transform">
           <Zap className="w-4 h-4 text-background" />
         </div>
       </div>
@@ -390,7 +390,7 @@ export default function FriendsPage() {
 
       {/* ── TABS ── */}
       <div className="relative z-20 px-4 w-full max-w-7xl mx-auto">
-        <div className="flex p-2 bg-foreground/[0.02] backdrop-blur-3xl rounded-[2.5rem] border border-foreground/[0.05] relative shadow-2xl">
+        <div className="flex p-2 bg-foreground/[0.02] md: rounded-[2.5rem] border border-foreground/[0.05] relative shadow-2xl">
           <button
             onClick={() => setActiveTab('friends')}
             className={cn(
@@ -521,7 +521,7 @@ export default function FriendsPage() {
                                 {f.profiles?.name?.charAt(0)}
                               </div>
                             )}
-                            <div className="absolute top-0 right-0 w-6 h-6 bg-primary/80 backdrop-blur flex items-center justify-center rounded-bl-xl shadow-lg">
+                            <div className="absolute top-0 right-0 w-6 h-6 bg-primary/80 md: flex items-center justify-center rounded-bl-xl shadow-lg">
                               <Zap className="w-3.5 h-3.5 text-background" />
                             </div>
                           </div>
@@ -1045,7 +1045,7 @@ export default function FriendsPage() {
             exit={{ opacity: 0, scale: 0.8, filter: 'blur(10px)' }}
             className="fixed bottom-32 left-1/2 -translate-x-1/2 z-[100] w-[90%] max-w-md"
           >
-            <div className="glass-premium p-6 rounded-[2rem] border border-primary/30 bg-primary/5 backdrop-blur-2xl shadow-[0_20px_50px_rgba(16,185,129,0.3)] flex items-center gap-5 relative overflow-hidden">
+            <div className="glass-premium p-6 rounded-[2rem] border border-primary/30 bg-primary/5 md: shadow-[0_20px_50px_rgba(16,185,129,0.3)] flex items-center gap-5 relative overflow-hidden">
               <div className="absolute top-0 right-0 w-full h-full bg-gradient-to-r from-transparent via-primary/5 to-transparent -translate-x-full animate-progress-glow" />
               
               <div className="w-14 h-14 rounded-2xl bg-primary flex items-center justify-center shrink-0 shadow-lg shadow-primary/20">
