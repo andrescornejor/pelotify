@@ -18,8 +18,8 @@ const RankCard = memo(
       initial="hidden"
       animate="visible"
       variants={fadeUp}
-      whileHover={{ y: -10 }}
-      className="group relative overflow-hidden rounded-[3rem] p-10 glass-premium border border-foreground/5 flex flex-col items-center text-center gap-8 transition-all duration-500 hover:shadow-2xl hover:shadow-primary/5"
+      whileHover={{ y: -6 }}
+      className="group relative overflow-hidden rounded-2xl p-4 glass-premium border border-foreground/5 flex flex-col items-center text-center gap-3 transition-all duration-500 hover:shadow-xl hover:shadow-primary/5 min-w-[130px]"
     >
       {/* Background Glow */}
       <div
@@ -31,37 +31,37 @@ const RankCard = memo(
 
       {/* Badge */}
       <div className="relative z-10">
-        <RankBadge rankName={rank.name} size="lg" />
+        <RankBadge rankName={rank.name} size="sm" />
       </div>
 
       {/* Rank Name & ELO */}
-      <div className="space-y-3 relative z-10 w-full">
+      <div className="space-y-1.5 relative z-10 w-full">
         <h3
-          className="text-3xl font-black italic uppercase tracking-tighter"
+          className="text-sm font-black italic uppercase tracking-tighter"
           style={{ color: rank.color }}
         >
           {rank.name}
         </h3>
-        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-foreground/[0.03] border border-foreground/5 shadow-inner">
-          <span className="text-[9px] font-black uppercase tracking-widest text-foreground/30">
-            MÍNIMO
+        <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-foreground/[0.03] border border-foreground/5 shadow-inner">
+          <span className="text-[7px] font-black uppercase tracking-widest text-foreground/30">
+            MÍN
           </span>
-          <span className="text-sm font-black text-foreground">
-            {rank.minElo.toLocaleString()} XP
+          <span className="text-[10px] font-black text-foreground">
+            {rank.minElo.toLocaleString()}
           </span>
         </div>
       </div>
 
       {/* Description */}
       <div className="relative z-10 flex-1 flex flex-col justify-center">
-        <p className="text-xs font-black uppercase tracking-[0.1em] text-foreground/50 leading-relaxed italic">
+        <p className="text-[8px] font-bold uppercase tracking-wide text-foreground/40 leading-snug italic line-clamp-3">
           "{desc}"
         </p>
       </div>
 
-      {/* Footer Progress Simulation */}
-      <div className="w-full space-y-3 relative z-10 pt-4">
-        <div className="w-full h-1 bg-foreground/5 rounded-full overflow-hidden relative">
+      {/* Footer Progress */}
+      <div className="w-full space-y-1.5 relative z-10 pt-2">
+        <div className="w-full h-0.5 bg-foreground/5 rounded-full overflow-hidden relative">
           <motion.div
             initial={{ width: 0 }}
             animate={{ width: '100%' }}
@@ -72,9 +72,6 @@ const RankCard = memo(
             }}
           />
         </div>
-        <p className="text-[8px] font-black uppercase tracking-[0.4em] text-foreground/20">
-          ESTATUS REGISTRADO
-        </p>
       </div>
     </motion.div>
   )
@@ -306,7 +303,7 @@ export default function RanksPage() {
             </h2>
             <div className="h-px flex-1 bg-foreground/5" />
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="flex gap-3 overflow-x-auto no-scrollbar pb-2 -mx-1 px-1">
             {RANKS.map((rank, i) => (
               <RankCard
                 key={rank.name}
