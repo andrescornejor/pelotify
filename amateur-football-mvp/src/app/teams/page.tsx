@@ -228,70 +228,77 @@ export default function TeamsPage() {
         <AnimatePresence>
           {myTeam && (
             <motion.div
-              initial={{ opacity: 0, height: 0, marginBottom: 0 }}
-              animate={{ opacity: 1, height: 'auto', marginBottom: 32 }}
+              initial={{ opacity: 0, y: -20, height: 0, marginBottom: 0 }}
+              animate={{ opacity: 1, y: 0, height: 'auto', marginBottom: 32 }}
               exit={{ opacity: 0, height: 0, marginBottom: 0 }}
-              className="relative group overflow-hidden"
+              className="group overflow-hidden"
             >
-              <div className="absolute inset-0 bg-gradient-to-r from-primary/20 via-primary/5 to-transparent rounded-[2.5rem] blur-xl opacity-50 group-hover:opacity-100 transition-opacity" />
               <Link
                 href={`/team?id=${myTeam.id}`}
-                className="relative flex items-center justify-between p-6 bg-surface border border-primary/20 rounded-[2.5rem] hover:border-primary/50 transition-all shadow-xl shadow-primary/5 group/link overflow-hidden"
+                className="relative flex flex-col md:flex-row items-center p-8 bg-surface-elevated border border-primary/20 rounded-[3rem] hover:border-primary/50 transition-all shadow-2xl shadow-primary/10 overflow-hidden"
               >
-                <div className="absolute inset-y-0 right-0 w-64 bg-gradient-to-l from-primary/5 to-transparent pointer-events-none" />
+                {/* Background effects */}
+                <div className="absolute inset-0 bg-gradient-to-r from-primary/10 via-transparent to-primary/5 opacity-50 group-hover:opacity-100 transition-opacity" />
+                <div className="absolute -top-32 -left-32 w-64 h-64 bg-primary/20 blur-[100px] rounded-full pointer-events-none group-hover:bg-primary/30 transition-colors" />
+                <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-[0.03] mix-blend-overlay" />
 
-                <div className="flex items-center gap-6 relative z-10">
-                  <div className="relative">
-                    <div className="absolute inset-0 bg-primary blur-lg rounded-full opacity-20 group-hover/link:opacity-40 transition-opacity" />
-                    <div className="w-16 h-16 rounded-2xl bg-surface-elevated border-2 border-primary/20 flex items-center justify-center overflow-hidden relative">
-                      {myTeam.logo_url ? (
-                        <div className="relative w-full h-full">
+                <div className="w-full relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-8 md:gap-6">
+                  {/* Left Side: Logo + Info */}
+                  <div className="flex items-center gap-6 md:gap-8">
+                    <div className="relative shrink-0">
+                      <div className="absolute inset-0 bg-primary blur-2xl rounded-full opacity-20 group-hover:opacity-50 transition-opacity duration-500" />
+                      <div className="w-24 h-24 md:w-28 md:h-28 rounded-[2rem] bg-background border-4 border-primary/20 flex items-center justify-center overflow-hidden relative shadow-xl transform group-hover:scale-105 transition-transform duration-500">
+                        {myTeam.logo_url ? (
                           <img
                             src={myTeam.logo_url}
                             alt={myTeam.name}
                             className="w-full h-full object-cover relative z-10"
                           />
-                          <div className="absolute inset-0 bg-surface-elevated flex items-center justify-center opacity-20">
-                            <JerseyVisualizer 
-                              primaryColor={myTeam.primary_color || '#18181b'} 
-                              secondaryColor={myTeam.secondary_color || '#10b981'} 
-                              pattern={(myTeam.jersey_pattern as any) || 'solid'}
-                              className="w-8 h-8 opacity-40"
-                            />
-                          </div>
-                        </div>
-                      ) : (
-                        <JerseyVisualizer 
-                          primaryColor={myTeam.primary_color || '#18181b'} 
-                          secondaryColor={myTeam.secondary_color || '#10b981'} 
-                          pattern={(myTeam.jersey_pattern as any) || 'solid'}
-                          className="w-10 h-10"
-                        />
-                      )}
+                        ) : (
+                          <JerseyVisualizer 
+                            primaryColor={myTeam.primary_color || '#18181b'} 
+                            secondaryColor={myTeam.secondary_color || '#10b981'} 
+                            pattern={(myTeam.jersey_pattern as any) || 'solid'}
+                            className="w-16 h-16"
+                          />
+                        )}
+                      </div>
+                    </div>
+
+                    <div className="flex flex-col">
+                      <div className="flex items-center gap-3 mb-2">
+                        <span className="flex items-center gap-1.5 px-3 py-1 bg-primary/10 text-primary rounded-full text-[9px] font-black uppercase tracking-widest border border-primary/20">
+                           <Shield className="w-3 h-3" /> TU SEDE OFICIAL
+                        </span>
+                        {isCaptain && (
+                          <span className="px-3 py-1 bg-accent/10 text-accent rounded-full text-[9px] font-black uppercase tracking-widest border border-accent/20">
+                            CAPITÁN
+                          </span>
+                        )}
+                      </div>
+                      <h3 className="text-3xl md:text-5xl font-black italic text-foreground uppercase tracking-tighter leading-none group-hover:text-primary transition-colors text-surface-foreground drop-shadow-md">
+                        {myTeam.name}
+                      </h3>
+                      <p className="text-[11px] font-black uppercase tracking-[0.3em] text-foreground/40 mt-3 md:mt-4 flex items-center gap-2">
+                        <Users className="w-4 h-4 text-primary opacity-70" /> {myTeam.members_count} JUGADORES EN PLANTEL
+                      </p>
                     </div>
                   </div>
 
-                  <div className="flex flex-col">
-                    <span className="text-[10px] font-black text-primary uppercase tracking-[0.4em] italic leading-none mb-2">
-                      Tu Sede Oficial
-                    </span>
-                    <h3 className="text-2xl font-black italic text-foreground uppercase tracking-tighter leading-none group-hover/link:text-primary transition-colors text-surface-foreground">
-                      {myTeam.name}
-                    </h3>
-                  </div>
-                </div>
-
-                <div className="flex items-center gap-4 relative z-10">
-                  <div className="hidden sm:flex flex-col items-end">
-                    <span className="text-[10px] font-black text-foreground/40 uppercase tracking-widest leading-none mb-1">
-                      Puntos ELO
-                    </span>
-                    <span className="text-xl font-black text-foreground italic leading-none">
-                      {myTeam.elo}
-                    </span>
-                  </div>
-                  <div className="w-12 h-12 bg-primary text-background rounded-2xl flex items-center justify-center group-hover/link:scale-110 transition-transform shadow-lg shadow-primary/30">
-                    <ArrowRight className="w-6 h-6" />
+                  {/* Right Side: Stats + Action */}
+                  <div className="flex items-center gap-8 bg-background/40 backdrop-blur-sm p-4 md:p-6 rounded-[2rem] border border-foreground/5 w-full md:w-auto">
+                    <div className="flex flex-col items-center justify-center md:items-end flex-1 md:flex-none py-2 md:py-0 border-r md:border-r-0 border-foreground/10 md:pr-0">
+                      <span className="text-[10px] font-black text-foreground/40 uppercase tracking-widest leading-none mb-2 md:mb-1">
+                        Puntos ELO
+                      </span>
+                      <span className="text-3xl md:text-4xl font-black text-foreground italic leading-none drop-shadow-lg">
+                        {myTeam.elo}
+                      </span>
+                    </div>
+                    
+                    <div className="w-14 h-14 md:w-16 md:h-16 bg-primary text-background rounded-[1.5rem] flex items-center justify-center group-hover:scale-110 transition-transform shadow-xl shadow-primary/30 shrink-0">
+                      <ArrowRight className="w-6 h-6 md:w-8 md:h-8" />
+                    </div>
                   </div>
                 </div>
               </Link>
@@ -302,81 +309,93 @@ export default function TeamsPage() {
         {/* Se movió la barra de búsqueda al header alineada con el título */}
 
         {/* Teams Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          {teams.map((team) => (
-            <motion.div key={team.id} whileHover={{ y: -5 }} className="group relative">
-              <div className="absolute inset-0 bg-gradient-to-b from-primary/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity rounded-[3rem] blur-xl" />
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+          {teams.map((team, index) => (
+            <motion.div 
+              key={team.id} 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: index * 0.05 }}
+              className="group relative"
+            >
+              <div className="absolute -inset-0.5 bg-gradient-to-b from-primary/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity rounded-[3rem] blur-md" />
 
-              <div className="glass-premium p-8 border border-foreground/5 space-y-8 relative overflow-hidden group-hover:border-primary/30 transition-all rounded-[3rem] bg-surface">
-                <div className="flex justify-between items-start">
-                  <div className="w-20 h-20 bg-surface-elevated rounded-[1.5rem] border border-foreground/5 flex items-center justify-center overflow-hidden group-hover:scale-110 shadow-2xl transition-transform duration-700 relative">
-                    <div className="absolute inset-0 bg-gradient-to-tr from-foreground/10 to-transparent z-10" />
+              <div className="glass-premium border border-foreground/5 relative overflow-hidden group-hover:border-primary/30 transition-all rounded-[2.5rem] bg-surface flex flex-col h-full shadow-2xl">
+                {/* Banner Header */}
+                <div className="relative h-28 w-full bg-surface-elevated flex justify-between items-start p-6">
+                   <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-transparent to-transparent opacity-50 group-hover:opacity-100 transition-opacity z-0" />
+                   {/* Badge ELO */}
+                   <div className="relative z-10 bg-background/80 backdrop-blur-md border border-foreground/10 rounded-2xl px-4 py-2 flex flex-col items-center shadow-lg">
+                      <span className="text-xl font-black text-primary italic uppercase tracking-tighter leading-none">
+                        {team.elo}
+                      </span>
+                      <span className="text-[8px] font-black text-foreground/60 uppercase tracking-widest mt-0.5">
+                        PUNTOS
+                      </span>
+                   </div>
+                   
+                   {/* Decorative Badge */}
+                   <div className="relative z-10 w-10 h-10 rounded-full bg-foreground/5 flex items-center justify-center border border-foreground/10">
+                      <Trophy className="w-4 h-4 text-foreground/40 group-hover:text-primary transition-colors" />
+                   </div>
+                </div>
+
+                {/* Team Info */}
+                <div className="relative px-6 pb-6 pt-0 flex-1 flex flex-col">
+                  {/* Logo overlapping the banner */}
+                  <div className="absolute -top-12 left-6 w-24 h-24 bg-surface rounded-[1.5rem] border-4 border-surface shadow-xl flex items-center justify-center overflow-hidden group-hover:-translate-y-2 group-hover:scale-105 transition-transform duration-500 z-20">
                     {team.logo_url ? (
                       <div className="relative w-full h-full">
-                        <img
-                          src={team.logo_url}
-                          alt={team.name}
-                          className="w-full h-full object-cover relative z-10"
-                        />
-                        <div className="absolute inset-0 flex items-center justify-center">
-                          <JerseyVisualizer 
-                            primaryColor={team.primary_color || '#18181b'} 
-                            secondaryColor={team.secondary_color || '#10b981'} 
-                            pattern={(team.jersey_pattern as any) || 'solid'}
-                            className="w-12 h-12 opacity-20"
-                          />
-                        </div>
+                         <div className="absolute inset-0 bg-gradient-to-tr from-foreground/10 to-transparent z-10" />
+                         <img
+                           src={team.logo_url}
+                           alt={team.name}
+                           className="w-full h-full object-cover relative z-0"
+                         />
                       </div>
                     ) : (
                       <JerseyVisualizer 
                         primaryColor={team.primary_color || '#18181b'} 
                         secondaryColor={team.secondary_color || '#10b981'} 
                         pattern={(team.jersey_pattern as any) || 'solid'}
-                        className="w-12 h-12"
+                        className="w-14 h-14"
                       />
                     )}
                   </div>
-                  <div className="bg-surface-elevated border border-foreground/5 rounded-2xl px-4 py-2 flex flex-col items-center">
-                    <span className="text-xl font-black text-primary italic uppercase tracking-tighter leading-none">
-                      {team.elo}
-                    </span>
-                    <span className="text-[8px] font-black text-foreground/60 uppercase tracking-widest mt-0.5">
-                      NIVEL
-                    </span>
+
+                  <div className="mt-14 space-y-2 flex-1">
+                    <h3 className="text-2xl font-black italic text-foreground uppercase tracking-tighter truncate leading-none">
+                      {team.name}
+                    </h3>
+                    <div className="flex flex-wrap items-center gap-3 text-[9px] font-black text-foreground/50 uppercase tracking-widest py-1">
+                      <span className="flex items-center gap-1.5 bg-foreground/5 px-2.5 py-1 rounded-full">
+                        <Users className="w-3 h-3 text-foreground/70" /> {team.members_count} Jugadores
+                      </span>
+                      {team.members_count > 4 && (
+                        <span className="flex items-center gap-1.5 bg-primary/10 text-primary px-2.5 py-1 rounded-full">
+                          <Shield className="w-3 h-3" /> CLUB ACTIVO
+                        </span>
+                      )}
+                    </div>
                   </div>
-                </div>
 
-                <div className="space-y-1">
-                  <h3 className="text-2xl font-black italic text-foreground uppercase tracking-tighter truncate leading-none">
-                    {team.name}
-                  </h3>
-                  <div className="flex items-center gap-3 text-[9px] font-black text-foreground/50 uppercase tracking-widest py-1">
-                    <span className="flex items-center gap-1">
-                      <Users className="w-3 h-3 text-foreground" /> {team.members_count}/
-                    </span>
-                    <div className="w-1 h-1 rounded-full bg-foreground/30" />
-                    <span className="flex items-center gap-1">
-                      <Trophy className="w-3 h-3 text-primary" /> CLUB PRO
-                    </span>
-                  </div>
-                </div>
-
-                <div className="flex gap-3">
-                  <Link
-                    href={`/team?id=${team.id}`}
-                    className="flex-[2] h-12 bg-foreground/[0.03] border border-foreground/5 rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] text-foreground hover:bg-foreground/[0.06] transition-all flex items-center justify-center"
-                  >
-                    Ver Detalles
-                  </Link>
-
-                  {isCaptain && (
-                    <button
-                      onClick={() => openChallengeModal(team)}
-                      className="flex-[3] h-12 bg-accent text-white rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] hover:bg-accent/80 transition-all flex items-center justify-center gap-2 shadow-lg shadow-accent/20"
+                  <div className="flex gap-2.5 mt-6 relative z-10">
+                    <Link
+                      href={`/team?id=${team.id}`}
+                      className="flex-1 h-14 bg-foreground/[0.03] border border-foreground/5 rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] text-foreground hover:bg-foreground/[0.06] transition-all flex items-center justify-center"
                     >
-                      <Swords className="w-4 h-4" /> Lanzar Reto
-                    </button>
-                  )}
+                      Ver Club
+                    </Link>
+
+                    {isCaptain && (
+                      <button
+                        onClick={() => openChallengeModal(team)}
+                        className="flex-1 h-14 bg-accent text-white rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] hover:bg-accent/80 transition-all flex items-center justify-center gap-2 shadow-lg shadow-accent/20"
+                      >
+                        <Swords className="w-4 h-4" /> RETAR
+                      </button>
+                    )}
+                  </div>
                 </div>
               </div>
             </motion.div>
