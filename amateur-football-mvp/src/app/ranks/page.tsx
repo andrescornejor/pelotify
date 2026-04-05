@@ -156,6 +156,56 @@ export default function RanksPage() {
                   </svg>
                 </div>
 
+                {/* ── CINEMATIC INTRO: THE STARTING LINE ── */}
+                <motion.div 
+                  initial={{ opacity: 0, y: 50 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  className="pt-20 pb-40 text-center relative"
+                >
+                  {/* Atmospheric Glow */}
+                  <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-primary/10 blur-[100px] rounded-full pointer-events-none" />
+                  
+                  <div className="relative z-10 flex flex-col items-center gap-10">
+                     <motion.div 
+                        animate={{ y: [0, -15, 0], rotate: [0, 5, -5, 0] }}
+                        transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
+                        className="p-8 rounded-[3rem] bg-foreground/[0.03] border border-foreground/10 backdrop-blur-xl relative group"
+                     >
+                        <Shield className="w-32 h-32 text-primary/80 drop-shadow-[0_0_30px_rgba(var(--primary-rgb),0.3)]" />
+                        <div className="absolute -inset-4 border-2 border-dashed border-primary/20 rounded-[3.5rem] animate-spin-slow pointer-events-none" />
+                     </motion.div>
+
+                     <div className="space-y-6 max-w-3xl mx-auto px-4">
+                        <h2 className="text-4xl sm:text-6xl font-black italic uppercase tracking-tighter text-glow-primary">
+                          Comienza tu <br /> <span className="text-primary-light">Ascenso</span>
+                        </h2>
+                        
+                        {/* Interactive Guide Cards */}
+                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-12">
+                           {[
+                             { icon: Target, title: 'Ganar', desc: 'Cada victoria suma puntos directos a tu ELO.' },
+                             { icon: Zap, title: 'Golear', desc: 'Tu desempeño individual acelera el progreso.' },
+                             { icon: Star, title: 'Votos MVP', desc: 'El respeto de tus rivales es el mayor impulso.' }
+                           ].map((item, i) => (
+                             <motion.div 
+                                key={i}
+                                whileHover={{ y: -5, scale: 1.02 }}
+                                className="p-6 rounded-[2rem] bg-foreground/[0.03] border border-foreground/5 text-left space-y-3"
+                             >
+                                <item.icon className="w-6 h-6 text-primary" />
+                                <h4 className="text-sm font-black italic uppercase text-foreground">{item.title}</h4>
+                                <p className="text-[10px] font-medium text-foreground/40 leading-relaxed">{item.desc}</p>
+                             </motion.div>
+                           ))}
+                        </div>
+                     </div>
+                  </div>
+
+                  {/* Connecting Line Down */}
+                  <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-px h-20 bg-gradient-to-b from-primary/50 to-transparent" />
+                </motion.div>
+
                 {/* Rank Items along the Zig-Zag */}
                 <div className="relative z-10 space-y-[-40px]">
                   {RANKS.map((rank, i) => {
