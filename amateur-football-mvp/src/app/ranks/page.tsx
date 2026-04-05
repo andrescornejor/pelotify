@@ -213,6 +213,81 @@ export default function RanksPage() {
                     );
                   })}
                 </div>
+
+                {/* ── FINAL GRAND FINALE: THE PORTAL TO IMMORTALITY ── */}
+                <motion.div 
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  whileInView={{ opacity: 1, scale: 1 }}
+                  viewport={{ once: false, margin: "-100px" }}
+                  className="mt-60 pb-40 text-center relative"
+                >
+                  {/* Intense Radial Glows */}
+                  <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-primary/20 blur-[120px] rounded-full pointer-events-none" />
+                  <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] h-[300px] bg-accent/10 blur-[80px] rounded-full pointer-events-none animate-pulse" />
+
+                  {/* The Trophy Portal */}
+                  <div className="relative z-10 flex flex-col items-center gap-12">
+                     <motion.div 
+                        animate={{ 
+                          y: [0, -20, 0],
+                          rotateY: [0, 360],
+                          scale: [1, 1.1, 1]
+                        }}
+                        transition={{ 
+                          duration: 8, 
+                          repeat: Infinity, 
+                          ease: "easeInOut" 
+                        }}
+                        className="relative"
+                     >
+                        <Trophy className="w-40 h-40 sm:w-64 sm:h-64 text-primary drop-shadow-[0_0_60px_rgba(var(--primary-rgb),0.5)]" />
+                        {/* Orbiting particles */}
+                        <div className="absolute inset-0">
+                           {[...Array(8)].map((_, i) => (
+                             <motion.div 
+                                key={i}
+                                animate={{ rotate: 360 }}
+                                transition={{ duration: 3 + i, repeat: Infinity, ease: "linear" }}
+                                className="absolute inset-[-20%] flex items-center justify-start pointer-events-none"
+                             >
+                                <div className="w-2 h-2 bg-accent rounded-full blur-[2px] shadow-[0_0_10px_#f59e0b]" />
+                             </motion.div>
+                           ))}
+                        </div>
+                     </motion.div>
+
+                     <div className="space-y-4 max-w-2xl mx-auto px-4">
+                        <h2 className="text-5xl sm:text-7xl font-black italic uppercase tracking-tighter text-glow-primary">
+                          Inmortalidad <br /> <span className="text-primary-light">Confirmada</span>
+                        </h2>
+                        <p className="text-foreground/40 text-sm sm:text-base font-semibold leading-relaxed">
+                          Has llegado al final de la escala, pero el viaje de una Leyenda recién comienza. 
+                          Solo los inmortales dominan el ranking mundial de Pelotify.
+                        </p>
+                     </div>
+
+                     <motion.button
+                        whileHover={{ scale: 1.05, boxShadow: "0 20px 40px rgba(var(--primary-rgb), 0.3)" }}
+                        whileTap={{ scale: 0.95 }}
+                        className="bg-primary text-background px-12 py-5 rounded-full font-black uppercase tracking-[0.2em] italic shadow-xl shadow-primary/20 transition-all group overflow-hidden relative"
+                     >
+                        <span className="relative z-10 flex items-center gap-3">
+                           Construí tu Legado <ArrowLeft className="rotate-180 w-5 h-5 group-hover:translate-x-2 transition-transform" />
+                        </span>
+                        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />
+                     </motion.button>
+
+                     <div className="pt-20">
+                        <div className="flex items-center gap-4 justify-center opacity-20">
+                           <div className="h-px w-20 bg-foreground" />
+                           <Star className="w-4 h-4 fill-foreground" />
+                           <Star className="w-6 h-6 fill-foreground" />
+                           <Star className="w-4 h-4 fill-foreground" />
+                           <div className="h-px w-20 bg-foreground" />
+                        </div>
+                     </div>
+                  </div>
+                </motion.div>
               </div>
             </motion.div>
           )}
