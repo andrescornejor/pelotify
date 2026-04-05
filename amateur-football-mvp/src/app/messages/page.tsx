@@ -343,7 +343,7 @@ export default function MessagesPage() {
   if (!user) return null;
 
   return (
-    <div className="min-h-screen bg-background pt-22 lg:pt-28 pb-32 px-4 sm:px-6 lg:px-10 xl:px-14 2xl:px-16 relative">
+    <div className="min-h-screen bg-background pt-22 lg:pt-28 pb-32 px-3 sm:px-5 lg:px-10 xl:px-16 relative">
       {/* Animated Background Blobs */}
       <div className="absolute inset-0 overflow-x-hidden pointer-events-none">
         {/* Superior blending glow */}
@@ -369,7 +369,7 @@ export default function MessagesPage() {
         />
       </div>
 
-      <div className="max-w-screen-2xl mx-auto h-[80vh] grid grid-cols-1 lg:grid-cols-12 gap-8 relative z-10 w-full">
+      <div className="max-w-full mx-auto h-[80vh] grid grid-cols-1 lg:grid-cols-12 gap-8 relative z-10 w-full">
         {/* Conversations List */}
         <div
           className={cn(
