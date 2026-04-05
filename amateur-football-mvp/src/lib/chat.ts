@@ -243,10 +243,9 @@ export async function getRecentChats(userId: string) {
         timestamp: msg.created_at,
         isUnread: isUnreadForMe,
       });
-    } else if (isUnreadForMe) {
-      // If we already have the conversation entry but find an unread message further down the list
-      conversations.get(otherId).isUnread = true;
     }
+    // We intentionally do not check older messages. 
+    // If the latest message is from the user or is read, we treat the conversation as read.
   });
 
   return Array.from(conversations.values());
