@@ -430,51 +430,53 @@ export default function TeamsPage() {
       {/* ── CHALLENGE MODAL ── */}
       <AnimatePresence>
         {challengeModalOpen && targetTeam && (
-          <div className="fixed inset-0 z-[200] flex items-center justify-center p-6">
+          <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 sm:p-6">
+            {/* Backdrop */}
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={() => setChallengeModalOpen(false)}
-              className="absolute inset-0 bg-background/60 md:"
+              className="absolute inset-0 bg-black/80 backdrop-blur-sm"
             />
+            {/* Modal */}
             <motion.div
               initial={{ opacity: 0, scale: 0.95, y: 30 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 30 }}
-              className="w-full max-w-xl glass-premium border border-foreground/10 rounded-[3rem] p-8 md:p-12 shadow-2xl relative z-10 overflow-hidden bg-surface"
+              className="w-full max-w-2xl bg-background border-2 border-foreground/10 rounded-[2.5rem] md:rounded-[3.5rem] p-6 sm:p-8 md:p-12 relative z-10 overflow-hidden shadow-2xl flex flex-col max-h-[90vh]"
             >
-              {/* Decorative Background Glows */}
-              <div className="absolute top-0 right-0 w-64 h-64 bg-accent/10 rounded-full blur-[80px] pointer-events-none" />
-              <div className="absolute bottom-0 left-0 w-64 h-64 bg-primary/10 rounded-full blur-[80px] pointer-events-none" />
+              <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-[0.02] mix-blend-overlay pointer-events-none" />
+              <div className="absolute top-0 right-0 w-80 h-80 bg-accent/20 rounded-full blur-[100px] pointer-events-none -translate-y-1/2 translate-x-1/4" />
+              <div className="absolute bottom-0 left-0 w-80 h-80 bg-primary/10 rounded-full blur-[100px] pointer-events-none translate-y-1/2 -translate-x-1/4" />
 
-              <div className="flex items-start justify-between mb-8 relative z-10">
-                <div className="flex items-center gap-4">
-                  <div className="w-16 h-16 rounded-2xl bg-accent/10 flex items-center justify-center border border-accent/20">
+              <div className="flex items-start justify-between mb-8 relative z-10 shrink-0">
+                <div className="flex items-center gap-5">
+                  <div className="w-16 h-16 rounded-2xl bg-gradient-to-tr from-accent/20 to-accent/5 flex items-center justify-center border border-accent/30 shadow-inner">
                     <Swords className="w-8 h-8 text-accent" />
                   </div>
                   <div>
-                    <h3 className="text-3xl font-black italic text-foreground uppercase tracking-tighter leading-none">
+                    <h3 className="text-3xl md:text-4xl font-black italic text-foreground uppercase tracking-tighter leading-none drop-shadow-md">
                       Lanzar Reto
                     </h3>
-                    <p className="text-[10px] font-black uppercase tracking-[0.3em] text-accent mt-2">
-                      Vs. {targetTeam.name}
+                    <p className="text-[11px] font-black uppercase tracking-[0.3em] text-accent mt-2 flex items-center gap-2">
+                       Vs. <span className="text-foreground">{targetTeam.name}</span>
                     </p>
                   </div>
                 </div>
                 <button
                   onClick={() => setChallengeModalOpen(false)}
-                  className="w-12 h-12 bg-foreground/[0.03] border border-foreground/5 rounded-2xl flex items-center justify-center text-foreground/50 hover:text-foreground transition-all active:scale-90"
+                  className="w-12 h-12 bg-foreground/5 border border-foreground/10 rounded-2xl flex items-center justify-center text-foreground/50 hover:bg-foreground/10 hover:text-foreground transition-all active:scale-90 shadow-sm"
                 >
-                  <X className="w-5 h-5" />
+                  <X className="w-6 h-6" />
                 </button>
               </div>
 
-              <form onSubmit={handleSendChallenge} className="space-y-6 relative z-10">
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <label className="text-[9px] font-black text-foreground/50 uppercase tracking-[0.2em] flex items-center gap-2 pl-2">
-                      <CalendarDays className="w-3 h-3 text-primary" /> Fecha
+              <form onSubmit={handleSendChallenge} className="space-y-6 relative z-10 overflow-y-auto no-scrollbar pr-2 flex-col flex h-full pb-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-4 shrink-0">
+                  <div className="space-y-3">
+                    <label className="text-[10px] font-black text-foreground/60 uppercase tracking-[0.2em] flex items-center gap-2 pl-1">
+                      <CalendarDays className="w-4 h-4 text-primary" /> Fecha del Partido
                     </label>
                     <div className="flex gap-2 overflow-x-auto no-scrollbar pb-2 scroll-smooth">
                       {Array.from({ length: 14 }).map((_, i) => {
@@ -493,16 +495,16 @@ export default function TeamsPage() {
                             key={dateStr}
                             type="button"
                             onClick={() => setChallengeDate(dateStr)}
-                            className={`flex-shrink-0 w-14 h-16 rounded-xl border transition-all duration-300 flex flex-col items-center justify-center ${
+                            className={`flex-shrink-0 w-16 h-20 rounded-2xl border transition-all duration-300 flex flex-col items-center justify-center ${
                               isSelected
-                                ? 'bg-primary border-primary text-black'
-                                : 'bg-foreground/[0.02] border-foreground/5 text-foreground/40 hover:border-foreground/20'
+                                ? 'bg-primary border-primary text-black shadow-[0_0_20px_rgba(var(--primary-rgb),0.4)] scale-105'
+                                : 'bg-surface border-foreground/10 text-foreground/50 hover:border-foreground/30 hover:bg-surface-elevated'
                             }`}
                           >
-                            <span className="text-lg font-black italic leading-none">
+                            <span className="text-2xl font-black italic leading-none mb-1">
                               {dayNumber}
                             </span>
-                            <span className="text-[7px] font-black uppercase tracking-widest">
+                            <span className="text-[8px] font-black uppercase tracking-widest leading-none">
                               {dayName}
                             </span>
                           </button>
@@ -516,38 +518,38 @@ export default function TeamsPage() {
                           className="absolute inset-0 opacity-0 cursor-pointer z-10 w-full"
                         />
                         <div
-                          className={`w-14 h-16 rounded-xl border transition-all duration-300 flex flex-col items-center justify-center ${
+                          className={`w-16 h-20 rounded-2xl border transition-all duration-300 flex flex-col items-center justify-center ${
                             challengeDate &&
                             !Array.from({ length: 14 }).some((_, i) => {
                               const d = new Date();
                               d.setDate(d.getDate() + i);
                               return d.toISOString().split('T')[0] === challengeDate;
                             })
-                              ? 'bg-primary border-primary text-black'
-                              : 'bg-foreground/[0.02] border-foreground/5 text-foreground/40'
+                              ? 'bg-primary border-primary text-black shadow-lg scale-105'
+                              : 'bg-surface border-foreground/10 text-foreground/50 hover:bg-surface-elevated'
                           }`}
                         >
-                          <CalendarDays className="w-4 h-4" />
-                          <span className="text-[7px] font-black uppercase tracking-widest">
+                          <CalendarDays className="w-5 h-5 mb-1" />
+                          <span className="text-[8px] font-black uppercase tracking-widest leading-none">
                             OTRO
                           </span>
                         </div>
                       </div>
                     </div>
                   </div>
-                  <div className="space-y-2">
-                    <label className="text-[9px] font-black text-foreground/50 uppercase tracking-[0.2em] flex items-center gap-2 pl-2">
-                      <Clock className="w-3 h-3 text-primary" /> Hora
+                  <div className="space-y-3">
+                    <label className="text-[10px] font-black text-foreground/60 uppercase tracking-[0.2em] flex items-center gap-2 pl-1">
+                      <Clock className="w-4 h-4 text-primary" /> Hora Estimada
                     </label>
                     <div className="relative group">
                       <select
                         required
                         value={challengeTime}
                         onChange={(e) => setChallengeTime(e.target.value)}
-                        className="w-full h-14 bg-foreground/[0.02] border border-foreground/5 rounded-2xl px-4 text-xs font-bold uppercase text-foreground outline-none focus:border-primary/50 transition-colors appearance-none cursor-pointer"
+                        className="w-full h-[80px] md:h-[88px] bg-surface border border-foreground/10 rounded-2xl px-6 text-sm md:text-base font-bold uppercase text-foreground outline-none focus:border-primary/50 focus:bg-surface-elevated transition-all appearance-none cursor-pointer shadow-inner"
                       >
                         <option value="" disabled className="bg-background">
-                          ¿A qué hora?
+                          Selecciona una hora
                         </option>
                         {AVAILABLE_TIMES.map((t) => {
                           const [h, m] = t.split(':');
@@ -561,42 +563,31 @@ export default function TeamsPage() {
                           );
                         })}
                       </select>
-                      <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-foreground/20 group-focus-within:text-primary">
-                        <svg
-                          width="10"
-                          height="6"
-                          viewBox="0 0 12 8"
-                          fill="none"
-                          xmlns="http://www.w3.org/2000/svg"
-                        >
-                          <path
-                            d="M1 1L6 6L11 1"
-                            stroke="currentColor"
-                            strokeWidth="2"
-                            strokeLinecap="round"
-                          />
+                      <div className="absolute right-5 top-1/2 -translate-y-1/2 pointer-events-none text-primary bg-primary/10 w-10 h-10 rounded-xl flex items-center justify-center">
+                        <svg width="12" height="8" viewBox="0 0 12 8" fill="none" xmlns="http://www.w3.org/2000/svg">
+                          <path d="M1 1L6 6L11 1" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                         </svg>
                       </div>
                     </div>
                   </div>
                 </div>
 
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <label className="text-[9px] font-black text-foreground/50 uppercase tracking-[0.2em] flex items-center gap-2 pl-2">
-                      <DollarSign className="w-3 h-3 text-primary" /> Pesos (x Jugador)
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-4 shrink-0">
+                  <div className="space-y-3">
+                    <label className="text-[10px] font-black text-foreground/60 uppercase tracking-[0.2em] flex items-center gap-2 pl-1">
+                      <DollarSign className="w-4 h-4 text-primary" /> Pesos (x Jugador)
                     </label>
                     <input
                       type="number"
                       value={challengePrice}
                       onChange={(e) => setChallengePrice(e.target.value)}
-                      className="w-full h-14 bg-foreground/[0.02] border border-foreground/5 rounded-2xl px-5 text-xs font-bold text-foreground outline-none focus:border-primary/50 transition-colors"
-                      placeholder="0"
+                      className="w-full h-16 bg-surface border border-foreground/10 rounded-2xl px-6 text-sm font-bold text-foreground outline-none focus:border-primary/50 focus:bg-surface-elevated transition-all shadow-inner"
+                      placeholder="Ej: 5000"
                     />
                   </div>
-                  <div className="space-y-2">
-                    <label className="text-[9px] font-black text-foreground/50 uppercase tracking-[0.2em] flex items-center gap-2 pl-2">
-                      <MapPin className="w-3 h-3 text-primary" /> Predio específico
+                  <div className="space-y-3">
+                    <label className="text-[10px] font-black text-foreground/60 uppercase tracking-[0.2em] flex items-center gap-2 pl-1">
+                      <MapPin className="w-4 h-4 text-primary" /> Predio o Locación
                     </label>
                     <input
                       type="text"
@@ -604,25 +595,24 @@ export default function TeamsPage() {
                       value={challengeLocation}
                       onChange={(e) => {
                         setChallengeLocation(e.target.value);
-                        if (e.target.value) setChallengeVenues([]); // Clear candidates if specific is set
+                        if (e.target.value) setChallengeVenues([]); 
                       }}
-                      className="w-full h-14 bg-foreground/[0.02] border border-foreground/5 rounded-2xl px-5 text-xs font-bold uppercase tracking-wide text-foreground outline-none focus:border-primary/50 transition-colors"
+                      className="w-full h-16 bg-surface border border-foreground/10 rounded-2xl px-6 text-[11px] font-black uppercase tracking-wide text-foreground outline-none focus:border-primary/50 focus:bg-surface-elevated transition-all shadow-inner"
                     />
                   </div>
                 </div>
 
-                <div className="space-y-3">
-                  <label className="text-[9px] font-black text-foreground/50 uppercase tracking-[0.2em] flex items-center gap-2 pl-2">
-                    <Swords className="w-3 h-3 text-primary" /> O proponer candidatos para votar
-                    (máx 3)
+                <div className="space-y-3 shrink-0 pt-2">
+                  <label className="text-[10px] font-black text-foreground/60 uppercase tracking-[0.2em] flex items-center gap-2 pl-1">
+                    <Swords className="w-4 h-4 text-primary" /> O propón canchas para votar (máx 3)
                   </label>
-                  <div className="grid grid-cols-2 gap-2 max-h-[150px] overflow-y-auto no-scrollbar p-1">
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-3 bg-surface border border-foreground/5 p-3 rounded-[2rem] shadow-inner max-h-[160px] overflow-y-auto no-scrollbar">
                     {ROSARIO_VENUES.map((v) => (
                       <button
                         key={v.id}
                         type="button"
                         onClick={() => {
-                          setChallengeLocation(''); // Clear specific if voting
+                          setChallengeLocation(''); 
                           if (challengeVenues.includes(v.displayName || v.name)) {
                             setChallengeVenues((prev) =>
                               prev.filter((cv) => cv !== (v.displayName || v.name))
@@ -631,43 +621,46 @@ export default function TeamsPage() {
                             setChallengeVenues((prev) => [...prev, v.displayName || v.name]);
                           }
                         }}
-                        className={`px-4 py-3 rounded-xl border text-[10px] font-black uppercase tracking-tight transition-all text-left ${
+                        className={`px-4 py-3.5 rounded-[1rem] border-2 transition-all flex items-center justify-center text-center ${
                           challengeVenues.includes(v.displayName || v.name)
-                            ? 'bg-primary border-primary text-black'
-                            : 'bg-foreground/[0.02] border-foreground/5 text-foreground/40 hover:border-foreground/20'
+                            ? 'bg-primary/10 border-primary text-primary font-black scale-[0.98]'
+                            : 'bg-background border-foreground/5 text-foreground/60 hover:bg-foreground/5 hover:border-foreground/10 font-bold'
                         }`}
                       >
-                        {v.displayName || v.name}
+                        <span className="text-[9px] uppercase tracking-wider leading-tight">
+                            {v.displayName || v.name}
+                        </span>
                       </button>
                     ))}
                   </div>
                 </div>
 
-                <div className="space-y-2">
-                  <label className="text-[9px] font-black text-foreground/50 uppercase tracking-[0.2em] pl-2">
-                    Mensajito para el rival (Opcional)
+                <div className="space-y-3 shrink-0 pt-2">
+                  <label className="text-[10px] font-black text-foreground/60 uppercase tracking-[0.2em] pl-1 flex items-center gap-2">
+                    <span className="w-1.5 h-1.5 rounded-full bg-accent animate-pulse" /> Mensaje Incendiario (Opcional)
                   </label>
                   <textarea
-                    placeholder="Preparen las canilleras..."
+                    placeholder="Escribí acá un mensajito picante para el rival..."
                     value={challengeMessage}
                     onChange={(e) => setChallengeMessage(e.target.value)}
-                    className="w-full h-20 bg-foreground/[0.02] border border-foreground/5 rounded-2xl p-5 text-xs text-foreground/80 font-bold uppercase tracking-wide outline-none focus:border-primary/50 transition-colors resize-none"
+                    className="w-full h-24 bg-surface border border-foreground/10 rounded-[1.5rem] p-5 text-xs text-foreground/90 font-black uppercase tracking-wide outline-none focus:border-accent/50 focus:bg-surface-elevated transition-all resize-none shadow-inner"
                   />
                 </div>
 
-                <div className="pt-4">
+                <div className="pt-6 shrink-0 mt-auto">
                   <button
                     type="submit"
                     disabled={isSendingChallenge}
-                    className="w-full h-16 bg-accent text-foreground font-black italic text-xs uppercase tracking-[0.3em] rounded-2xl shadow-xl shadow-accent/20 hover:bg-foreground hover:text-background transition-all active:scale-95 disabled:opacity-50 flex items-center justify-center gap-3"
+                    className="w-full h-16 md:h-20 bg-accent text-white font-black italic text-sm uppercase tracking-[0.3em] rounded-2xl shadow-xl shadow-accent/20 hover:bg-foreground hover:text-background hover:shadow-2xl transition-all active:scale-95 disabled:opacity-50 flex items-center justify-center gap-3 overflow-hidden relative group/btn"
                   >
+                    <div className="absolute inset-0 bg-white/20 translate-y-full group-hover/btn:translate-y-0 transition-transform duration-300" />
                     {isSendingChallenge ? (
                       <>
-                        <Loader2 className="w-5 h-5 animate-spin" /> PROCESANDO RETO...
+                        <Loader2 className="w-6 h-6 animate-spin relative z-10" /> <span className="relative z-10">PROCESANDO...</span>
                       </>
                     ) : (
                       <>
-                        <Swords className="w-5 h-5" /> ENVIAR DESAFÍO OFICIAL
+                        <Swords className="w-7 h-7 relative z-10" /> <span className="relative z-10">CONFIRMAR RETO OFICIAL</span>
                       </>
                     )}
                   </button>
