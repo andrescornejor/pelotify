@@ -2,7 +2,7 @@
 
 import { memo, useMemo, useState, useEffect, useCallback, useRef } from 'react';
 import { motion, AnimatePresence, useScroll, useTransform, useMotionValue, useSpring } from 'framer-motion';
-import { Trophy, ArrowLeft, ChevronDown, Crown, Shield, Target, Sparkles, Activity, Info, Star, Flame } from 'lucide-react';
+import { Trophy, ArrowLeft, ChevronDown, Crown, Shield, Target, Sparkles, Activity, Info, Star, Flame, Zap } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { RANKS, getRankByElo } from '@/lib/ranks';
 import { cn } from '@/lib/utils';
