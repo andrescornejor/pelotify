@@ -57,7 +57,7 @@ export default function EstablecimientosList() {
     <div className="min-h-screen bg-background text-foreground font-kanit pb-20">
       
       {/* HEADER SECTION */}
-      <div className="relative pt-32 pb-20 px-6 lg:px-20 overflow-hidden">
+      <div className="relative pt-32 pb-20 px-3 sm:px-5 lg:px-10 xl:px-16 overflow-hidden">
          {!performanceMode && (
            <>
              <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-primary/5 rounded-full blur-[120px] -z-10 animate-pulse" />
@@ -65,7 +65,7 @@ export default function EstablecimientosList() {
            </>
          )}
          
-         <div className="max-w-7xl mx-auto space-y-12">
+         <div className="max-w-full mx-auto space-y-12">
             <motion.div
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
@@ -104,7 +104,7 @@ export default function EstablecimientosList() {
       </div>
 
       {/* VENUES GRID */}
-      <div className="max-w-7xl mx-auto px-6 lg:px-20">
+      <div className="max-w-full mx-auto px-3 sm:px-5 lg:px-10 xl:px-16">
          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             <AnimatePresence mode="popLayout">
                {loading ? (

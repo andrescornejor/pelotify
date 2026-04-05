@@ -64,7 +64,7 @@ export default function TournamentsPage() {
 
   return (
     <div className={cn(
-      "min-h-screen bg-background relative overflow-hidden p-4 sm:p-6 lg:px-10 lg:pt-4 xl:px-14 2xl:px-16 pb-32",
+      "min-h-screen bg-background relative overflow-hidden p-3 sm:p-5 lg:px-10 lg:pt-4 xl:px-16 pb-32",
       isPerfMode && "perf-mode"
     )}>
       {/* ── AMBIENT DECORATION ── */}
@@ -77,7 +77,7 @@ export default function TournamentsPage() {
       )}
 
       {/* ── HEADER ── */}
-      <div className="relative z-10 max-w-screen-2xl mx-auto space-y-12">
+      <div className="relative z-10 max-w-full mx-auto space-y-12">
         <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-8 relative">
           <div className="space-y-4">
             <div className="flex items-center gap-3">
