@@ -1397,6 +1397,23 @@ export default function CreateMatchPage() {
                       Serás el organizador con control total sobre los jugadores
                     </p>
                   </div>
+
+                  {formData.business_id && formData.payment_method === 'mercado_pago' && (
+                    <div className="mx-6 mb-6 p-4 rounded-[1.5rem] bg-primary/10 border border-primary/20 flex flex-col sm:flex-row items-start sm:items-center gap-3 relative overflow-hidden">
+                      <div className="absolute top-0 right-0 p-4 opacity-10">
+                        <DollarSign className="w-16 h-16 text-primary" />
+                      </div>
+                      <div className="w-8 h-8 rounded-xl bg-primary/20 flex items-center justify-center flex-shrink-0 text-primary z-10">
+                        <AlertTriangle className="w-4 h-4" />
+                      </div>
+                      <div className="flex flex-col z-10">
+                        <span className="text-[10px] font-black text-primary uppercase tracking-widest block mb-0.5">Atención</span>
+                        <p className="text-[11px] text-primary/80 font-bold leading-relaxed flex-1">
+                          Al ser una sede socia, debes abonar la seña para confirmar y crear el partido. Serás redirigido a Mercado Pago para completar el pago.
+                        </p>
+                      </div>
+                    </div>
+                  )}
                 </motion.div>
               </motion.div>
             )}
