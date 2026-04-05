@@ -57,7 +57,7 @@ export default function EstablecimientosList() {
     <div className="min-h-screen bg-background text-foreground font-kanit pb-20">
       
       {/* HEADER SECTION */}
-      <div className="relative pt-24 pb-20 px-3 sm:px-5 lg:px-10 xl:px-16 overflow-hidden">
+      <div className="relative pt-20 pb-20 px-3 sm:px-5 lg:px-10 xl:px-16 overflow-hidden">
          {!performanceMode && (
            <>
              <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-primary/5 rounded-full blur-[120px] -z-10 animate-pulse" />
