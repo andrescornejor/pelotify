@@ -164,8 +164,9 @@ export default function TeamsPage() {
       {/* Ambient Effects */}
       {!isPerfMode && (
         <>
-          <div className="absolute top-0 right-[-10%] w-[40%] h-[40%] bg-primary/5 blur-[120px] rounded-full pointer-events-none" />
-          <div className="absolute bottom-[-10%] left-[-10%] w-[50%] h-[50%] bg-accent/3 blur-[120px] rounded-full pointer-events-none" />
+          <div className="absolute top-0 right-[-10%] w-[50%] h-[50%] bg-primary/10 blur-[150px] rounded-full pointer-events-none animate-pulse" />
+          <div className="absolute bottom-[-10%] left-[-10%] w-[60%] h-[60%] bg-accent/5 blur-[150px] rounded-full pointer-events-none" />
+          <div className="absolute top-[40%] left-[20%] w-[30%] h-[30%] bg-primary/5 blur-[120px] rounded-full pointer-events-none" />
         </>
       )}
 
@@ -173,16 +174,18 @@ export default function TeamsPage() {
       <div
         className={cn(
           'sticky top-0 z-30 pt-4 pb-6 -mx-4 px-4 lg:-mx-16 lg:px-16 border-b border-foreground/5 shadow-2xl shadow-black/5',
-          isPerfMode ? 'bg-background' : 'bg-background/80 md:'
+          isPerfMode ? 'bg-background' : 'bg-background/70 backdrop-blur-xl supports-[backdrop-filter]:bg-background/40'
         )}
       >
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 relative z-10 max-w-screen-2xl mx-auto">
           <div className="flex flex-col">
-            <h1 className="text-4xl md:text-5xl font-black italic text-foreground uppercase tracking-tighter leading-none">
-              Asociación <span className="text-foreground/40">de Clubes</span>
+            <h1 className="text-4xl md:text-5xl font-black italic uppercase tracking-tighter leading-none flex flex-col md:flex-row md:items-center md:gap-2">
+              <span className="text-transparent bg-clip-text bg-gradient-to-br from-foreground to-foreground/60 drop-shadow-sm">Asociación</span>
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary-light via-primary to-primary-dark glow-primary drop-shadow-[0_0_15px_rgba(var(--primary-rgb),0.5)]">de Clubes</span>
             </h1>
-            <p className="text-[10px] font-black uppercase tracking-[0.3em] text-primary mt-2">
-              Gestioná, Explorá, Desafiá
+            <p className="text-[10px] font-black uppercase tracking-[0.3em] mt-2 flex items-center gap-2">
+              <span className="text-primary animate-pulse">●</span>
+              <span className="text-foreground/60">Gestioná, Explorá, Desafiá</span>
             </p>
           </div>
 
@@ -285,15 +288,16 @@ export default function TeamsPage() {
         {/* Search & Filter Bar */}
         <div className="flex gap-4 relative z-10">
           <div className="flex-1 relative group">
-            <Search className="absolute left-6 top-1/2 -translate-y-1/2 w-5 h-5 text-foreground/50 group-focus-within:text-primary transition-colors" />
+            <Search className="absolute left-6 top-1/2 -translate-y-1/2 w-5 h-5 text-foreground/40 group-focus-within:text-primary transition-colors duration-300" />
             <input
               type="text"
               placeholder="BUSCÁ TU PRÓXIMO RIVAL..."
-              className="w-full h-16 bg-foreground/[0.02] border border-foreground/5 rounded-[2rem] pl-14 pr-6 text-[11px] font-black uppercase tracking-[0.3em] text-foreground outline-none focus:border-primary/40 focus:bg-foreground/[0.04] transition-all shadow-inner"
+              className="w-full h-16 glass-premium rounded-[2rem] pl-14 pr-6 text-[11px] font-black uppercase tracking-[0.3em] text-foreground outline-none focus:border-primary/50 focus:bg-surface-elevated/80 transition-all shadow-lg shadow-black/5 hover:border-primary/30"
             />
+            <div className="absolute inset-0 rounded-[2rem] border border-primary/0 group-focus-within:border-primary/20 group-focus-within:shadow-[0_0_20px_rgba(var(--primary-rgb),0.15)] pointer-events-none transition-all duration-500" />
           </div>
-          <button className="w-16 h-16 bg-foreground/[0.02] border border-foreground/5 rounded-[2rem] flex items-center justify-center text-foreground/50 hover:text-foreground transition-all shadow-inner">
-            <Filter className="w-6 h-6" />
+          <button className="w-16 h-16 glass-premium rounded-[2rem] flex items-center justify-center text-foreground/50 hover:text-primary hover:border-primary/50 transition-all shadow-lg hover:shadow-[0_0_20px_rgba(var(--primary-rgb),0.15)] group">
+            <Filter className="w-6 h-6 group-hover:scale-110 transition-transform duration-300" />
           </button>
         </div>
 
@@ -380,24 +384,31 @@ export default function TeamsPage() {
         </div>
 
         {teams.length === 0 && (
-          <div className="flex flex-col items-center justify-center py-24 text-center gap-6">
-            <div className="w-24 h-24 bg-foreground/[0.02] rounded-[3rem] flex items-center justify-center border border-dashed border-foreground/10">
-              <Search className="w-8 h-8 text-foreground/50" />
+          <div className="flex flex-col items-center justify-center py-32 text-center gap-8 relative">
+            <div className="absolute inset-0 bg-primary/5 blur-[100px] rounded-full pointer-events-none max-w-lg mx-auto" />
+            <div className="relative w-40 h-40 flex items-center justify-center">
+              <div className="absolute inset-0 bg-primary/20 rounded-full blur-3xl animate-pulse" />
+              <div className="absolute inset-2 border border-primary/20 rounded-full animate-ping" style={{ animationDuration: '3s' }} />
+              <div className="relative w-24 h-24 glass-premium rounded-[2.5rem] flex items-center justify-center border border-primary/40 shadow-[0_0_40px_rgba(var(--primary-rgb),0.2)] animate-float ring-4 ring-primary/10">
+                <Search className="w-10 h-10 text-primary drop-shadow-[0_0_15px_rgba(var(--primary-rgb),0.8)] animate-pulse" />
+              </div>
             </div>
-            <div className="space-y-2">
-              <p className="text-2xl font-black text-foreground italic uppercase tracking-tighter">
+            <div className="space-y-4 relative z-10 max-w-md mx-auto">
+              <p className="text-3xl md:text-4xl font-black italic uppercase tracking-tighter text-transparent bg-clip-text bg-gradient-to-b from-foreground to-foreground/50 text-glow-primary">
                 Sin Oponentes en la Mira
               </p>
-              <p className="text-[10px] text-foreground/60 font-bold uppercase tracking-[0.2em] max-w-xs mx-auto">
-                El ecosistema está vacío. Sé el pionero fundando tu club.
+              <p className="text-[11px] text-foreground/60 font-bold uppercase tracking-[0.3em] leading-relaxed">
+                El ecosistema está vacío. Sé el pionero fundando tu club de élite.
               </p>
             </div>
             {!myTeam && (
               <Link
                 href="/team-builder"
-                className="h-14 px-10 bg-primary text-background rounded-2xl flex items-center justify-center gap-3 text-[10px] font-black uppercase tracking-[0.3em] shadow-lg shadow-primary/20 hover:bg-foreground hover:text-background transition-all active:scale-95"
+                className="relative mt-4 h-16 px-12 glass-premium border-primary/50 text-primary rounded-2xl flex items-center justify-center gap-3 text-[12px] font-black uppercase tracking-[0.3em] shadow-[0_0_30px_rgba(var(--primary-rgb),0.3)] hover:bg-primary hover:text-background transition-all duration-300 hover:scale-105 active:scale-95 group overflow-hidden"
               >
-                <Shield className="w-4 h-4" /> Fundar Club
+                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-[200%] group-hover:translate-x-[200%] transition-transform duration-1000" />
+                <Shield className="w-5 h-5 group-hover:animate-bounce relative z-10" /> 
+                <span className="relative z-10">Fundar Club</span>
               </Link>
             )}
           </div>
