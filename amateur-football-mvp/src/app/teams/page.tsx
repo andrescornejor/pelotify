@@ -172,17 +172,17 @@ export default function TeamsPage() {
       {/* Header & Tabs */}
       <div
         className={cn(
-          'sticky top-0 z-30 pt-4 pb-6 -mx-4 px-4 lg:-mx-16 lg:px-16 border-b border-foreground/5 shadow-2xl shadow-black/5',
-          isPerfMode ? 'bg-background' : 'bg-background/80 md:'
+          'sticky top-0 z-30 pt-4 pb-6 -mx-4 sm:-mx-6 lg:-mx-10 xl:-mx-14 2xl:-mx-16 px-4 sm:px-6 lg:px-10 xl:px-14 2xl:px-16 border-b border-foreground/5 shadow-2xl shadow-black/5',
+          isPerfMode ? 'bg-background' : 'bg-background/80 md:backdrop-blur-xl'
         )}
       >
-        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 relative z-10 max-w-screen-2xl mx-auto py-2">
+        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 relative z-10 w-full py-2">
           {/* Title Area */}
           <div className="flex flex-col shrink-0">
-            <h1 className="text-4xl md:text-5xl font-black italic text-foreground uppercase tracking-tighter leading-none">
+            <h1 className="text-5xl md:text-6xl lg:text-7xl font-black italic text-foreground uppercase tracking-tighter leading-none drop-shadow-md">
               Asociación <span className="text-foreground/40">de Clubes</span>
             </h1>
-            <p className="text-[10px] font-black uppercase tracking-[0.3em] text-primary mt-2">
+            <p className="text-xs md:text-sm font-black uppercase tracking-[0.3em] text-primary mt-3 drop-shadow-sm">
               Gestioná, Explorá, Desafiá
             </p>
           </div>
