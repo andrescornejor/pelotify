@@ -534,12 +534,12 @@ export default function HomePage() {
                   <motion.button
                     whileHover={{ scale: 1.015, y: -4 }}
                     whileTap={{ scale: 0.98 }}
-                    className="w-full h-16 rounded-[2rem] bg-gradient-to-r from-primary to-primary-dark text-background font-black uppercase text-[12px] tracking-[0.4em] shadow-[0_20px_40px_rgba(44,252,125,0.25)] flex items-center justify-center gap-3 relative overflow-hidden group border border-foreground/20"
+                    className="w-full h-16 rounded-[2rem] bg-gradient-to-r from-primary to-primary-dark text-background text-[11px] font-black uppercase tracking-widest italic shadow-[0_20px_40px_rgba(44,252,125,0.25)] flex items-center justify-center gap-3 relative overflow-hidden group border border-foreground/20 leading-none"
                   >
                     <div className="absolute inset-x-0 top-0 h-1/2 bg-foreground/10 group-hover:h-full transition-all duration-700" />
                     <div className="absolute inset-0 bg-gradient-to-b from-white/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
                     <PlusCircle className="w-6 h-6 relative z-10 group-hover:rotate-180 transition-transform duration-700" />
-                    <span className="relative z-10 font-bold italic drop-shadow-sm">ARMAR PARTIDO</span>
+                    <span className="relative z-10 drop-shadow-sm">ARMAR PARTIDO</span>
                   </motion.button>
                 </Link>
 
@@ -547,13 +547,13 @@ export default function HomePage() {
                   <motion.button
                     whileHover={{ scale: 1.015, y: -4 }}
                     whileTap={{ scale: 0.98 }}
-                    className="w-full h-16 rounded-[2rem] glass-premium border-foreground/15 text-foreground font-black uppercase text-[11px] tracking-[0.3em] flex items-center justify-center gap-3 relative overflow-hidden group shadow-xl transition-all duration-500"
+                    className="w-full h-16 rounded-[2rem] glass-premium border-foreground/15 text-foreground text-[11px] font-black uppercase tracking-widest italic flex items-center justify-center gap-3 relative overflow-hidden group shadow-xl transition-all duration-500 leading-none"
                   >
                     {!performanceMode && (
                       <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                     )}
                     <Search className="w-5 h-5 relative z-10 text-primary group-hover:scale-110 transition-transform duration-500" />
-                    <span className="relative z-10 italic font-bold tracking-[0.2em] group-hover:text-primary transition-colors">BUSCAR PARTIDO</span>
+                    <span className="relative z-10 group-hover:text-primary transition-colors">BUSCAR PARTIDO</span>
 
                     <div className="absolute top-2.5 right-4 flex items-center gap-1.5 z-20">
                       <div className="w-1.5 h-1.5 bg-primary/40 rounded-full animate-pulse" />
