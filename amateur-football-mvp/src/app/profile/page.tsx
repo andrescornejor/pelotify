@@ -570,7 +570,7 @@ function ProfileContent() {
       </div>
 
       {/* Main Content Container */}
-      <div className="max-w-screen-2xl mx-auto w-full px-4 sm:px-6 lg:px-10 xl:px-14 2xl:px-16 -mt-14 sm:-mt-48 lg:-mt-64 relative z-20 pb-20">
+      <div className="max-w-full mx-auto w-full px-3 sm:px-5 lg:px-10 xl:px-16 -mt-14 sm:-mt-48 lg:-mt-64 relative z-20 pb-20">
         
         {/* Profile Header Block */}
         <div className="flex flex-col lg:flex-row items-center gap-8 mb-12">
@@ -708,7 +708,7 @@ function ProfileContent() {
 
         {/* Navigation Tabs (Social Style) */}
         <div className="sticky top-0 z-40 bg-background/80 md: border-y border-foreground/10 mb-10 -mx-4 px-4 sm:mx-0">
-           <div className="flex items-center justify-center sm:justify-start gap-10 py-5 overflow-x-auto no-scrollbar max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-10 xl:px-14 2xl:px-16">
+           <div className="flex items-center justify-center sm:justify-start gap-10 py-5 overflow-x-auto no-scrollbar max-w-full mx-auto px-3 sm:px-5 lg:px-10 xl:px-16">
               {[
                 { id: 'overview', icon: Info, label: 'Bio & Stats' },
                 { id: 'history', icon: History, label: 'Historial' },

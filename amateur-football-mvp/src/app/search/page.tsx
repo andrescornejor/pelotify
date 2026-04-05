@@ -79,7 +79,7 @@ export default function SearchPage() {
   return (
     <div
       className={cn(
-        'flex flex-col gap-8 p-4 sm:p-6 lg:px-10 lg:pt-4 xl:px-14 2xl:px-16 max-w-screen-2xl mx-auto h-full bg-background relative overflow-hidden min-h-screen snap-y snap-proximity overflow-y-auto',
+        'flex flex-col gap-8 p-3 sm:p-5 lg:px-10 lg:pt-4 xl:px-16 max-w-full mx-auto h-full bg-background relative overflow-hidden min-h-screen snap-y snap-proximity overflow-y-auto',
         isPerfMode && 'perf-mode'
       )}
     >
@@ -94,11 +94,11 @@ export default function SearchPage() {
       {/* ── HEADER & RADAR SCANNER ── */}
       <div
         className={cn(
-          'sticky top-0 z-30 pt-4 pb-6 -mx-4 px-4 lg:-mx-12 lg:px-12 border-b border-foreground/5 shadow-2xl shadow-black/5',
+          'sticky top-0 z-30 pt-4 pb-6 -mx-3 px-3 sm:-mx-5 sm:px-5 lg:-mx-10 lg:px-10 xl:-mx-16 xl:px-16 border-b border-foreground/5 shadow-2xl shadow-black/5',
           isPerfMode ? 'bg-background' : 'bg-background/80 md:'
         )}
       >
-        <div className="flex flex-col gap-8 relative z-10 text-center lg:text-left max-w-screen-2xl mx-auto">
+        <div className="flex flex-col gap-8 relative z-10 text-center lg:text-left max-w-full mx-auto">
           <div className="flex flex-col gap-2 relative">
             {/* Radar Sweep Animation behind title */}
             {!isPerfMode && (
