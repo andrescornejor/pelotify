@@ -120,7 +120,7 @@ export default function EstablecimientoProfile() {
       // Fetch Reviews
       const { data: revData } = await supabase
         .from('canchas_reviews')
-        .select('*, profiles(full_name)')
+        .select('*, profiles(name)')
         .eq('business_id', params.id)
         .order('created_at', { ascending: false });
       if (revData) setReviews(revData);
@@ -153,7 +153,7 @@ export default function EstablecimientoProfile() {
           user_id: user.id,
           rating: newReview.rating,
           comment: newReview.comment
-       }).select('*, profiles(full_name)').single();
+       }).select('*, profiles(name)').single();
 
        if (error) throw error;
        setReviews([data, ...reviews]);
@@ -561,7 +561,7 @@ const handleBooking = async () => {
                               <span className="text-[7px] text-muted-foreground uppercase font-black">{new Date(rev.created_at).toLocaleDateString()}</span>
                            </div>
                            <p className="text-[11px] text-foreground font-medium italic">"{rev.comment}"</p>
-                           <p className="text-[8px] font-bold text-muted-foreground uppercase tracking-widest">— {rev.profiles?.full_name || 'Jugador Pelotify'}</p>
+                           <p className="text-[8px] font-bold text-muted-foreground uppercase tracking-widest">— {rev.profiles?.name || 'Jugador Pelotify'}</p>
                         </div>
                      )) : (
                         <div className="text-center py-4">

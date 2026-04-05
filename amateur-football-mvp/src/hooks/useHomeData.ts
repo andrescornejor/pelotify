@@ -34,7 +34,7 @@ async function fetchHomeData(userId: string): Promise<HomeData> {
         .select('id', { count: 'exact', head: true }),
       supabase
         .from('profiles')
-        .select('full_name, created_at, elo')
+        .select('name, created_at, elo')
         .order('created_at', { ascending: false })
         .limit(5),
       supabase
@@ -60,7 +60,7 @@ async function fetchHomeData(userId: string): Promise<HomeData> {
   const activities = recentProfilesRes.data
     ? recentProfilesRes.data.map((p: any) => ({
         type: 'RANK_UP',
-        user: p.full_name || 'Nuevo Jugador',
+        user: p.name || 'Nuevo Jugador',
         detail: `se ha unido a la liga`,
         time: 'Reciente',
       }))
