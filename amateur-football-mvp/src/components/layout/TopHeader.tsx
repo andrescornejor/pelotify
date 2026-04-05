@@ -121,12 +121,18 @@ export const TopHeader = memo(function TopHeader() {
             initial={{ y: -24, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ type: 'spring', stiffness: 300, damping: 26, delay: 0.05 }}
-            className={cn(
-              "overflow-hidden rounded-[1.25rem] lg:rounded-[1.75rem] transition-all duration-700 border shadow-lg",
-              performanceMode 
-                ? "bg-surface border-border" 
-                : "bg-background/40 backdrop-blur-[35px] border-white/10 dark:border-white/5"
-            )}
+            className="overflow-hidden rounded-[1.25rem] lg:rounded-[1.75rem]"
+            style={{
+              background: performanceMode
+                ? 'var(--surface-elevated)'
+                : 'rgba(var(--foreground-rgb), 0.09)',
+              backdropFilter: performanceMode ? 'none' : 'blur(16px) saturate(200%)',
+              WebkitBackdropFilter: performanceMode ? 'none' : 'blur(16px) saturate(200%)',
+              border: '1px solid rgba(var(--foreground-rgb), 0.12)',
+              boxShadow: performanceMode
+                ? '0 10px 30px rgba(0,0,0,0.2)'
+                : '0 4px 32px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.08)',
+            }}
           >
             {/* Background subtle light beam */}
             <div className="absolute top-0 left-[-10%] w-[40%] h-full bg-gradient-to-r from-primary/5 via-transparent to-transparent -skew-x-12 pointer-events-none" />
