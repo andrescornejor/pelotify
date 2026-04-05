@@ -437,7 +437,7 @@ const PodiumSpot = ({ player, position, rank, color, isMain = false }: any) => (
 const LeaderboardRow = memo(({ player, idx }: any) => {
   const rank = getRankByElo(player.elo);
   return (
-    <motion.div whileHover={{ bg: 'foreground/[0.02]' }} className="grid grid-cols-[3rem_3.5rem_1fr_4rem_5rem] sm:grid-cols-[4rem_5rem_1fr_6rem_8rem] items-center px-4 sm:px-10 py-4 group cursor-pointer">
+    <motion.div className="grid grid-cols-[3rem_3.5rem_1fr_4rem_5rem] sm:grid-cols-[4rem_5rem_1fr_6rem_8rem] items-center px-4 sm:px-10 py-4 hover:bg-foreground/[0.02] transition-colors group cursor-pointer">
       <span className="text-xs font-black italic text-foreground/20 text-center">#{idx + 1}</span>
       <div className="w-10 h-10 sm:w-14 sm:h-14 rounded-2xl overflow-hidden bg-foreground/5 border border-foreground/10 group-hover:border-primary/40 transition-all">
         <img src={player.avatar_url || `https://api.dicebear.com/7.x/notionists/svg?seed=${player.name}`} className="w-full h-full object-cover" />
