@@ -158,7 +158,7 @@ export default function RanksPage() {
 
                 {/* Rank Items along the Zig-Zag */}
                 <div className="relative z-10 space-y-[-40px]">
-                  {RANKS.slice().reverse().map((rank, i) => {
+                  {RANKS.map((rank, i) => {
                     const detail = RANK_DETAILS[rank.name];
                     const isLeft = i % 2 !== 0;
                     return (
