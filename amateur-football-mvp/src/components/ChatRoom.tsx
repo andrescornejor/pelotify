@@ -13,7 +13,7 @@ import {
   markDirectMessagesAsRead,
 } from '@/lib/chat';
 import { supabase } from '@/lib/supabase';
-import { Send, User as UserIcon, Loader2, ChevronRight, Clock, Image as ImageIcon, X } from 'lucide-react';
+import { Send, User as UserIcon, Loader2, ChevronDown, Clock, Image as ImageIcon, X, ImagePlus, Check, CheckCheck } from 'lucide-react';
 import { cn, safeFormatTime } from '@/lib/utils';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -42,26 +42,26 @@ const MessageItem = memo(
 
     return (
       <motion.div
-        initial={{ opacity: 0, x: isMine ? 20 : -20, scale: 0.9 }}
-        animate={{ opacity: 1, x: 0, scale: 1 }}
-        transition={{ type: 'spring', stiffness: 200, damping: 20 }}
+        initial={{ opacity: 0, y: 10, scale: 0.98 }}
+        animate={{ opacity: 1, y: 0, scale: 1 }}
+        transition={{ type: 'spring', stiffness: 260, damping: 25 }}
         layout
         className={cn(
-          'flex gap-3',
+          'flex gap-3 px-4 sm:px-6 w-full',
           isMine ? 'flex-row-reverse' : 'flex-row',
-          sameAuthorAsPrev ? 'mt-1' : 'mt-8'
+          sameAuthorAsPrev ? 'mt-1' : 'mt-6'
         )}
       >
-        <div className="w-10 shrink-0 flex items-end">
+        <div className="w-8 shrink-0 flex items-end justify-center pb-1">
           {!isMine && !sameAuthorAsNext && (
             <motion.div
-              whileHover={{ scale: 1.1, rotate: 5 }}
-              className="w-10 h-10 rounded-2xl border-2 border-primary/20 bg-surface shadow-2xl overflow-hidden flex items-center justify-center relative group/avatar"
+              whileHover={{ scale: 1.05 }}
+              className="w-8 h-8 rounded-full border border-white/10 bg-[#121212] overflow-hidden flex items-center justify-center relative group/avatar shadow-lg z-10"
             >
               {msg.profiles?.avatar_url ? (
                 <img src={msg.profiles.avatar_url} alt="" className="w-full h-full object-cover" />
               ) : (
-                <UserIcon className="w-5 h-5 text-primary/40" />
+                <UserIcon className="w-4 h-4 text-white/40" />
               )}
             </motion.div>
           )}
@@ -69,50 +69,51 @@ const MessageItem = memo(
 
         <div
           className={cn(
-            'flex flex-col max-w-[85%] sm:max-w-[75%]',
+            'flex flex-col max-w-[80%] sm:max-w-[70%]',
             isMine ? 'items-end' : 'items-start'
           )}
         >
           {!isMine && !sameAuthorAsPrev && (
-            <span className="text-[10px] font-black uppercase tracking-widest text-primary/60 mb-2 ml-1 italic drop-shadow-sm">
-              {msg.profiles?.name}
+            <span className="text-[11px] font-semibold tracking-wide text-white/50 mb-1 ml-1 opacity-80">
+              {msg.profiles?.name || 'Usuario'}
             </span>
           )}
           <motion.div
             layout
             className={cn(
-              'p-1 text-[14px] font-bold relative transition-all duration-300 group/bubble overflow-hidden',
+              'relative transition-all duration-300 group/bubble overflow-hidden flex flex-col',
               isMine
-                ? 'bg-gradient-to-br from-primary via-primary to-primary-dark text-black rounded-[2rem] rounded-tr-[0.5rem] shadow-[0_10px_30px_rgba(85,250,134,0.15)] hover:shadow-primary/30'
-                : 'bg-white/90 dark:bg-foreground/[0.08] border border-foreground/10 text-foreground rounded-[2rem] rounded-tl-[0.5rem] shadow-sm hover:bg-foreground/[0.1] md:',
-              sameAuthorAsPrev && (isMine ? 'rounded-tr-[2rem]' : 'rounded-tl-[2rem]'),
-              sameAuthorAsNext && (isMine ? 'rounded-br-[0.5rem]' : 'rounded-bl-[0.5rem]')
+                ? 'bg-gradient-to-br from-[#2CFC7D] directly to-[#1bba58] text-black rounded-[1.3rem] rounded-br-[0.3rem] shadow-[0_5px_20px_rgba(44,252,125,0.15)]'
+                : 'bg-[#1C1C1E] border border-white/5 text-white/90 rounded-[1.3rem] rounded-bl-[0.3rem] shadow-md',
+              sameAuthorAsPrev && (isMine ? 'rounded-tr-[1.3rem]' : 'rounded-tl-[1.3rem]'),
+              sameAuthorAsNext && (isMine ? 'rounded-br-[1.3rem]' : 'rounded-bl-[1.3rem]')
             )}
           >
             {msg.image_url && (
-              <div className="mb-2 rounded-[1.5rem] overflow-hidden border border-black/5 dark:border-white/5">
+              <div className={cn("overflow-hidden max-w-sm", msg.content ? "p-1 pb-0 rounded-t-[1.3rem]" : "p-1 rounded-[1.3rem]")}>
                 <img
                   src={msg.image_url}
-                  alt="Imagen enviada"
-                  className="max-h-[300px] w-full object-cover cursor-pointer hover:scale-105 transition-transform duration-500"
+                  alt="Attachment"
+                  className="w-full max-h-[260px] object-cover rounded-[1.1rem] cursor-pointer hover:opacity-90 transition-opacity"
                   onClick={() => window.open(msg.image_url, '_blank')}
                 />
               </div>
             )}
-            <div className={cn('px-5 py-3 leading-relaxed tracking-tight', !msg.content && 'hidden')}>
+            <div className={cn('px-4 py-2.5 text-[15px] leading-[1.4] whitespace-pre-wrap word-break', !msg.content && 'hidden')}>
               {msg.content}
             </div>
+            
             <div
               className={cn(
-                'px-5 pb-3 text-[8px] font-black opacity-40 flex items-center gap-1.5 transition-opacity group-hover/bubble:opacity-100',
-                isMine ? 'text-black justify-end' : 'text-foreground justify-start'
+                'px-4 pb-2 pt-0.5 text-[10px] font-medium flex items-center gap-1 opacity-0 group-hover/bubble:opacity-100 transition-opacity absolute bottom-0 right-0 left-0 bg-gradient-to-t via-current/10 to-transparent',
+                isMine ? 'text-black/60 justify-end from-[#1bba58]' : 'text-white/40 justify-start from-[#1C1C1E]'
               )}
             >
-              <Clock className="w-2.5 h-2.5" />
+              <Clock className="w-3 h-3" />
               {safeFormatTime(msg.created_at)}
               {isMine && (
-                <span className={cn('ml-1 transition-colors', msg.is_read ? 'text-blue-400' : 'opacity-40')}>
-                  {msg.is_read ? '✓✓' : '✓'}
+                <span className={cn('ml-1 transition-colors flex items-center', msg.is_read ? 'text-[#104e28]' : 'opacity-40')}>
+                  {msg.is_read ? <CheckCheck className="w-3.5 h-3.5" /> : <Check className="w-3.5 h-3.5" />}
                 </span>
               )}
             </div>
@@ -150,7 +151,7 @@ export default function ChatRoom({ matchId, recipientId, className, title }: Cha
     const fileName = `${Math.random().toString(36).substring(2)}.${fileExt}`;
     const filePath = `chat_images/${fileName}`;
 
-    const { error: uploadError, data } = await supabase.storage
+    const { error: uploadError } = await supabase.storage
       .from('uploads')
       .upload(filePath, file);
 
@@ -193,7 +194,10 @@ export default function ChatRoom({ matchId, recipientId, className, title }: Cha
     let subscription: any;
     if (matchId) {
       subscription = subscribeToMatchMessages(matchId, (msg) => {
-        setMessages((prev) => [...prev.filter((m) => m.id !== msg.id), msg]);
+        setMessages((prev) => {
+          if (prev.find(m => m.id === msg.id)) return prev;
+          return [...prev, msg];
+        });
       });
     } else if (recipientId) {
       subscription = subscribeToDirectMessages(user.id, (msg) => {
@@ -201,9 +205,11 @@ export default function ChatRoom({ matchId, recipientId, className, title }: Cha
           (msg.sender_id === recipientId && msg.recipient_id === user.id) ||
           (msg.sender_id === user.id && msg.recipient_id === recipientId)
         ) {
-          setMessages((prev) => [...prev.filter((m) => m.id !== msg.id), msg]);
+          setMessages((prev) => {
+             if (prev.find(m => m.id === msg.id)) return prev;
+             return [...prev, msg];
+          });
           
-          // If we are recipient, mark as read immediately
           if (msg.sender_id === recipientId) {
             markDirectMessagesAsRead(recipientId, user.id);
           }
@@ -218,25 +224,28 @@ export default function ChatRoom({ matchId, recipientId, className, title }: Cha
 
   const scrollToBottom = (behavior: ScrollBehavior = 'smooth') => {
     if (scrollRef.current) {
+      const scrollHeight = scrollRef.current.scrollHeight;
+      const height = scrollRef.current.clientHeight;
+      const maxScrollTop = scrollHeight - height;
       scrollRef.current.scrollTo({
-        top: scrollRef.current.scrollHeight,
+        top: maxScrollTop > 0 ? maxScrollTop : 0,
         behavior,
       });
     }
   };
 
   useEffect(() => {
-    scrollToBottom('smooth');
-  }, [messages]);
+    setTimeout(() => scrollToBottom('smooth'), 100);
+  }, [messages, selectedImage]);
 
   const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
     const target = e.currentTarget;
-    const isAtBottom = target.scrollHeight - target.scrollTop <= target.clientHeight + 100;
+    const isAtBottom = target.scrollHeight - target.scrollTop <= target.clientHeight + 80;
     setShowScrollBottom(!isAtBottom);
   };
 
-  const handleSend = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSend = async (e?: React.FormEvent) => {
+    e?.preventDefault();
     if (!user || (!newMessage.trim() && !selectedImage) || isSending) return;
 
     const content = newMessage.trim();
@@ -249,7 +258,6 @@ export default function ChatRoom({ matchId, recipientId, className, title }: Cha
         setUploadingImage(true);
         imageUrl = await uploadImageToChat(selectedImage.file);
         setSelectedImage(null);
-        setUploadingImage(false);
       }
 
       if (matchId) {
@@ -259,113 +267,95 @@ export default function ChatRoom({ matchId, recipientId, className, title }: Cha
       }
     } catch (err) {
       console.error('Error sending message:', err);
-      // If error uploading, restore content
       setNewMessage(content);
     } finally {
       setIsSending(false);
       setUploadingImage(false);
+      setTimeout(() => scrollToBottom('smooth'), 100);
     }
   };
 
-  // Mark messages as read when opening a direct chat
-  useEffect(() => {
-    if (user && recipientId) {
-      markDirectMessagesAsRead(recipientId, user.id);
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      handleSend();
     }
-  }, [user?.id, recipientId]);
+  };
 
   if (!user) return null;
 
   return (
     <div
       className={cn(
-        'flex flex-col h-full bg-surface/20 md: border border-foreground/5 rounded-[2.5rem] overflow-hidden shadow-2xl relative group',
+        'flex flex-col h-full bg-[#0A0A0A] overflow-hidden relative group font-sans',
         className
       )}
     >
-      {/* Ambient Background Light - More dynamic */}
-      <motion.div
-        animate={{
-          opacity: [0.3, 0.6, 0.3],
-          scale: [1, 1.2, 1],
-        }}
-        transition={{ duration: 10, repeat: Infinity }}
-        className="absolute top-0 left-[-20%] w-[60%] h-[40%] bg-primary/10 blur-[120px] rounded-full pointer-events-none"
-      />
+      {/* Premium Gradient Background Layer */}
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-[#2CFC7D]/5 via-transparent to-transparent pointer-events-none" />
 
       {title && (
-        <div className="px-8 py-6 border-b border-foreground/5 bg-foreground/[0.02] md: relative z-20">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="w-2 h-2 rounded-full bg-primary animate-pulse shadow-[0_0_15px_rgba(85,250,134,0.6)]" />
-              <h3 className="text-[11px] font-black uppercase tracking-[0.5em] text-foreground/70 italic">
-                {title}
-              </h3>
-            </div>
+        <div className="px-6 py-4 backdrop-blur-md bg-white/[0.02] border-b border-white/5 relative z-20 flex items-center justify-between shadow-sm">
+          <div className="flex items-center gap-3">
+             <div className="w-8 h-8 rounded-full bg-[#1C1C1E] border border-white/10 flex items-center justify-center">
+                 <UserIcon className="w-4 h-4 text-white/60" />
+             </div>
+             <div className="flex flex-col">
+                <h3 className="text-[14px] font-semibold text-white/90 leading-tight">
+                  {title}
+                </h3>
+             </div>
           </div>
         </div>
       )}
 
+      {/* Messages Area */}
       <div
         ref={scrollRef}
         onScroll={handleScroll}
-        className="flex-1 overflow-y-auto p-6 sm:px-10 py-10 space-y-10 no-scrollbar relative z-10"
+        className="flex-1 overflow-y-auto overflow-x-hidden scroll-smooth relative z-10 
+                   [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-track]:bg-transparent 
+                   [&::-webkit-scrollbar-thumb]:bg-white/10 [&::-webkit-scrollbar-thumb]:rounded-full hover:[&::-webkit-scrollbar-thumb]:bg-white/20
+                   pb-6"
       >
         {isLoading ? (
-          <div className="flex flex-col gap-8 pb-4">
-            {[1, 2, 3, 4].map((i) => (
+          <div className="flex flex-col gap-6 p-6 opacity-60">
+            {[1, 2, 3].map((i) => (
               <div
                 key={`msg-skeleton-${i}`}
                 className={cn(
-                  'flex gap-3 animate-pulse',
-                  i % 2 === 0 ? 'flex-row-reverse' : 'flex-row'
+                  'flex gap-3 animate-pulse w-full max-w-[80%]',
+                  i % 2 === 0 ? 'ml-auto flex-row-reverse' : 'mr-auto flex-row'
                 )}
               >
-                <div className="w-10 h-10 rounded-2xl bg-foreground/10 shrink-0 self-end" />
-                <div
-                  className={cn(
-                    'flex flex-col gap-2 max-w-[70%]',
-                    i % 2 === 0 ? 'items-end' : 'items-start'
-                  )}
-                >
-                  <div className="w-16 h-2 bg-foreground/5 rounded-full" />
-                  <div
-                    className={cn(
-                      'px-10 py-6 rounded-[2rem] bg-foreground/5',
-                      i % 2 === 0 ? 'rounded-tr-[0.5rem]' : 'rounded-tl-[0.5rem]'
-                    )}
-                  >
-                    <div className={cn('h-3 bg-foreground/10 rounded-full', i % 2 === 0 ? 'w-32' : 'w-48')} />
-                  </div>
-                </div>
+                <div className="w-8 h-8 rounded-full bg-white/5 shrink-0" />
+                <div className={cn('h-12 bg-white/5 rounded-[1.2rem]', i % 2 === 0 ? 'w-48' : 'w-64')} />
               </div>
             ))}
           </div>
         ) : messages.length === 0 ? (
-          <div className="flex flex-col items-center justify-center h-full text-center space-y-10 opacity-30">
+          <div className="flex flex-col items-center justify-center h-full min-h-[300px] text-center px-8">
             <motion.div
               initial={{ scale: 0.9, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
-              className="w-28 h-28 bg-foreground/[0.03] rounded-[3rem] border border-foreground/5 flex items-center justify-center shadow-inner relative overflow-hidden group/empty"
+              transition={{ delay: 0.2 }}
+              className="w-20 h-20 bg-gradient-to-br from-[#1C1C1E] to-[#121212] rounded-full border border-white/5 flex items-center justify-center shadow-lg mb-6 relative group/empty cursor-default"
             >
+              <div className="absolute inset-0 bg-[#2CFC7D]/5 rounded-full opacity-0 group-hover/empty:opacity-100 transition-opacity duration-700" />
               <motion.div
-                animate={{ rotate: [0, -15, 15, 0], y: [0, -5, 5, 0] }}
-                transition={{ duration: 6, repeat: Infinity }}
+                animate={{ y: [0, -3, 0] }}
+                transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
               >
-                <Send className="w-12 h-12 -rotate-12 text-primary drop-shadow-[0_0_15px_rgba(85,250,134,0.4)]" />
+                <Send className="w-8 h-8 text-white/20 ml-1 mt-1" />
               </motion.div>
             </motion.div>
-            <div className="space-y-4">
-              <p className="text-xl font-black uppercase italic tracking-tighter text-foreground">
-                Canal Abierto
-              </p>
-              <p className="text-[11px] font-bold uppercase tracking-[0.4em] text-foreground/50 max-w-[260px] leading-relaxed mx-auto">
-                Conecta con los demás para definir los detalles del partido
-              </p>
-            </div>
+            <h4 className="text-white/80 font-medium text-[16px] mb-2 font-display">Inicia la conversación</h4>
+            <p className="text-[13px] text-white/40 max-w-[240px] leading-relaxed">
+              Los mensajes están encriptados y se envían en tiempo real.
+            </p>
           </div>
         ) : (
-          <div className="flex flex-col gap-2 pb-4">
+          <div className="flex flex-col py-6">
             <AnimatePresence initial={false}>
               {messages.map((msg, i) => (
                 <MessageItem
@@ -381,58 +371,62 @@ export default function ChatRoom({ matchId, recipientId, className, title }: Cha
         )}
       </div>
 
-      {/* Scroll to Bottom Button - Premium Style */}
+      {/* Scroll Down FAB */}
       <AnimatePresence>
         {showScrollBottom && (
           <motion.button
-            initial={{ opacity: 0, y: 20, scale: 0.8 }}
+            initial={{ opacity: 0, y: 10, scale: 0.8 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: 20, scale: 0.8 }}
-            whileHover={{ scale: 1.1, y: -4 }}
-            whileTap={{ scale: 0.9 }}
+            exit={{ opacity: 0, y: 10, scale: 0.8 }}
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
             onClick={() => scrollToBottom()}
-            className="absolute bottom-36 right-10 w-14 h-14 rounded-2xl bg-primary text-black flex items-center justify-center shadow-[0_0_30px_rgba(85,250,134,0.4)] z-30 transition-all border-4 border-background"
+            className="absolute bottom-[90px] right-6 w-9 h-9 rounded-full bg-[#1C1C1E]/90 backdrop-blur-md border border-white/10 text-white flex items-center justify-center shadow-xl z-30 transition-all hover:bg-[#2CFC7D] hover:text-black hover:border-transparent"
           >
-            <motion.div animate={{ y: [0, 4, 0] }} transition={{ repeat: Infinity, duration: 1.5 }}>
-              <ChevronRight className="w-8 h-8 rotate-90" />
-            </motion.div>
+             <ChevronDown className="w-5 h-5" />
           </motion.button>
         )}
       </AnimatePresence>
 
-      <div className="p-8 pt-0 relative z-20">
+      {/* Input Area */}
+      <div className="p-4 pt-2 relative z-20 bg-gradient-to-t from-[#0A0A0A] via-[#0A0A0A]/95 to-transparent">
         <form
           onSubmit={handleSend}
-          className="p-1.5 bg-foreground/[0.04] md: border border-foreground/10 rounded-[2.5rem] flex flex-col gap-2 transition-all shadow-inner relative group/form"
+          className="flex flex-col gap-2 relative bg-[#1C1C1E] border border-white/10 rounded-[1.5rem] p-1.5 shadow-inner transition-all focus-within:border-white/20 focus-within:bg-[#202022]"
         >
           {/* Image Preview */}
           <AnimatePresence>
             {selectedImage && (
               <motion.div
-                initial={{ opacity: 0, y: 10, height: 0 }}
-                animate={{ opacity: 1, y: 0, height: 'auto' }}
-                exit={{ opacity: 0, y: 10, height: 0 }}
-                className="px-4 pt-4"
+                initial={{ opacity: 0, height: 0, scale: 0.9 }}
+                animate={{ opacity: 1, height: 'auto', scale: 1 }}
+                exit={{ opacity: 0, height: 0, scale: 0.9 }}
+                className="px-3 pt-3"
               >
-                <div className="relative inline-block">
+                <div className="relative inline-block group/preview">
                   <img
                     src={selectedImage.preview}
                     alt="Preview"
-                    className="w-32 h-32 object-cover rounded-2xl border-2 border-primary/20"
+                    className="h-24 w-auto object-cover rounded-xl border border-white/10 shadow-lg"
                   />
                   <button
                     type="button"
                     onClick={() => setSelectedImage(null)}
-                    className="absolute -top-2 -right-2 w-6 h-6 bg-red-500 text-white rounded-full flex items-center justify-center shadow-lg"
+                    className="absolute -top-2 -right-2 w-6 h-6 bg-red-500 text-white rounded-full flex items-center justify-center shadow-lg hover:scale-110 transition-transform"
                   >
-                    <X className="w-4 h-4" />
+                    <X className="w-3.5 h-3.5" />
                   </button>
+                  {uploadingImage && (
+                    <div className="absolute inset-0 bg-black/50 rounded-xl flex items-center justify-center backdrop-blur-sm">
+                      <Loader2 className="w-5 h-5 text-white animate-spin" />
+                    </div>
+                  )}
                 </div>
               </motion.div>
             )}
           </AnimatePresence>
 
-          <div className="flex gap-3 items-center">
+          <div className="flex items-end gap-2 px-2 pb-1 pt-1">
             <input
               type="file"
               ref={fileInputRef}
@@ -440,51 +434,42 @@ export default function ChatRoom({ matchId, recipientId, className, title }: Cha
               accept="image/*"
               className="hidden"
             />
-            <motion.button
+            
+            <button
               type="button"
-              whileHover={{ scale: 1.1 }}
-              whileTap={{ scale: 0.9 }}
+              disabled={isSending || uploadingImage}
               onClick={() => fileInputRef.current?.click()}
-              className="w-14 h-14 sm:w-16 sm:h-16 rounded-[1.8rem] flex items-center justify-center bg-foreground/5 text-foreground/40 hover:text-primary transition-colors"
+              className="p-2.5 rounded-full text-white/40 hover:text-white hover:bg-white/5 transition-colors shrink-0 mb-0.5"
             >
-              <ImageIcon className="w-6 h-6" />
-            </motion.button>
+              <ImagePlus className="w-5 h-5" />
+            </button>
 
-            <input
-              type="text"
+            <textarea
               value={newMessage}
               onChange={(e) => setNewMessage(e.target.value)}
-              placeholder={matchId ? 'Escribe al equipo...' : 'Mensaje Privado...'}
-              className="flex-1 h-14 sm:h-16 px-4 bg-transparent outline-none text-[15px] font-bold text-foreground placeholder:text-foreground/20 transition-all uppercase tracking-tight"
+              onKeyDown={handleKeyDown}
+              placeholder="Mensaje..."
+              rows={1}
+              style={{ minHeight: '40px', maxHeight: '120px' }}
+              className="flex-1 bg-transparent outline-none text-[15px] text-white placeholder:text-white/30 resize-none py-2.5 scrollbar-hide"
             />
 
-            <motion.button
+            <button
               type="submit"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
               disabled={(!newMessage.trim() && !selectedImage) || isSending}
               className={cn(
-                'w-14 h-14 sm:w-16 sm:h-16 rounded-[1.8rem] flex items-center justify-center transition-all shadow-2xl overflow-hidden relative group/send',
+                'p-2.5 rounded-full transition-all shrink-0 mb-0.5 flex items-center justify-center',
                 newMessage.trim() || selectedImage
-                  ? 'bg-primary text-black shadow-primary/30'
-                  : 'bg-foreground/5 text-foreground/20'
+                  ? 'bg-[#2CFC7D] text-black shadow-lg shadow-[#2CFC7D]/20 hover:scale-105 active:scale-95'
+                  : 'bg-white/5 text-white/20 cursor-not-allowed'
               )}
             >
               {isSending || uploadingImage ? (
-                <Loader2 className="w-6 h-6 animate-spin" />
+                <Loader2 className="w-4 h-4 animate-spin" />
               ) : (
-                <div className="relative z-10 flex items-center justify-center">
-                  <Send
-                    className={cn(
-                      'w-6 h-6 transition-all duration-500',
-                      (newMessage.trim() || selectedImage) &&
-                        'group-hover/send:-rotate-12 group-hover/send:translate-x-1 group-hover/send:-translate-y-1'
-                    )}
-                  />
-                </div>
+                <Send className="w-4 h-4 ml-0.5" />
               )}
-              <div className="absolute inset-0 bg-white/20 opacity-0 group-hover/send:opacity-100 transition-opacity" />
-            </motion.button>
+            </button>
           </div>
         </form>
       </div>

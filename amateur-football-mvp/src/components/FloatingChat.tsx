@@ -235,9 +235,7 @@ export function FloatingChat() {
 
                         {/* Unread Alert Dot/Number */}
                         {chat.isUnread && (
-                          <div className="absolute -top-1 -right-1 w-5 h-5 bg-[#2CFC7D] text-black rounded-full flex items-center justify-center border-2 border-[#121212] shadow-lg font-bold text-[10px] animate-bounce">
-                            !
-                          </div>
+                          <div className="absolute -top-1 -right-1 w-3.5 h-3.5 bg-[#2CFC7D] rounded-full flex items-center justify-center border-2 border-[#121212] shadow-lg animate-pulse" />
                         )}
 
                         {/* Presence Dot */}
