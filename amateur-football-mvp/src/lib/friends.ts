@@ -7,6 +7,7 @@ export interface Profile {
   avatar_url?: string;
   position?: string;
   elo?: number;
+  is_pro?: boolean;
 }
 
 export interface SearchResult extends Profile {
@@ -124,7 +125,7 @@ export async function searchUsers(userId: string, query: string) {
   // 1. Find users matching the query
   const { data: users, error } = await supabase
     .from('profiles')
-    .select('id, name, avatar_url, position, elo')
+    .select('id, name, avatar_url, position, elo, is_pro')
     .ilike('name', `%${query}%`)
     .neq('id', userId)
     .limit(10);
@@ -177,7 +178,7 @@ export async function getRecommendedPlayers(userId: string) {
   // 1. Fetch top or recent users (excluding current user)
   const { data: users, error } = await supabase
     .from('profiles')
-    .select('id, name, avatar_url, position, elo')
+    .select('id, name, avatar_url, position, elo, is_pro')
     .neq('id', userId)
     .order('elo', { ascending: false })
     .limit(20);

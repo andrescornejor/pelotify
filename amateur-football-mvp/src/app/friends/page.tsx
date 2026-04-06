@@ -66,9 +66,12 @@ const PlayerCard = ({
       damping: 20,
       delay: i * 0.05,
     }}
-    className="glass-premium-hover p-10 rounded-[4rem] flex flex-col items-center text-center gap-8 border border-foreground/5 bg-surface group relative overflow-hidden shadow-2xl transition-all duration-500 hover:border-primary/20 hover:bg-foreground/[0.02]"
+    className={cn(
+      "glass-premium-hover p-10 rounded-[4rem] flex flex-col items-center text-center gap-8 border bg-surface group relative overflow-hidden shadow-2xl transition-all duration-500 hover:bg-foreground/[0.02]",
+      p.is_pro ? "border-yellow-500/20 hover:border-yellow-500/40" : "border-foreground/5 hover:border-primary/20"
+    )}
   >
-    <div className="absolute top-0 right-0 w-48 h-48 bg-primary/5 blur-[80px] rounded-full group-hover:bg-primary/10 transition-all pointer-events-none" />
+    <div className={cn("absolute top-0 right-0 w-48 h-48 blur-[80px] rounded-full transition-all pointer-events-none", p.is_pro ? "bg-yellow-500/10 group-hover:bg-yellow-500/20" : "bg-primary/5 group-hover:bg-primary/10")} />
 
     <Link
       href={`/profile?id=${p.id}`}
@@ -86,7 +89,7 @@ const PlayerCard = ({
             {p.name?.charAt(0)}
           </div>
         )}
-        <div className="absolute top-3 right-3 w-8 h-8 rounded-xl bg-primary/80 md: flex items-center justify-center shadow-lg border border-white/10 group-hover:scale-110 transition-transform">
+        <div className={cn("absolute top-3 right-3 w-8 h-8 rounded-xl flex items-center justify-center shadow-lg border border-white/10 group-hover:scale-110 transition-transform", p.is_pro ? "bg-gradient-to-tr from-yellow-400 to-yellow-600" : "bg-primary/80 md:")}>
           <Zap className="w-4 h-4 text-background" />
         </div>
       </div>
@@ -501,9 +504,9 @@ export default function FriendsPage() {
                         animate={{ opacity: 1, scale: 1, y: 0 }}
                         exit={{ opacity: 0, scale: 0.9 }}
                         transition={{ delay: i * 0.05 }}
-                        className="glass-premium p-8 rounded-[3rem] flex flex-col gap-6 border border-foreground/5 hover:border-primary/20 group transition-all relative overflow-hidden bg-surface"
+                        className={cn("glass-premium p-8 rounded-[3rem] flex flex-col gap-6 border group transition-all relative overflow-hidden bg-surface", f.profiles?.is_pro ? "border-yellow-500/20 hover:border-yellow-500/40" : "border-foreground/5 hover:border-primary/20")}
                       >
-                        <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 blur-[50px] -translate-y-1/2 translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity" />
+                        <div className={cn("absolute top-0 right-0 w-32 h-32 blur-[50px] -translate-y-1/2 translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity", f.profiles?.is_pro ? "bg-yellow-500/10" : "bg-primary/5")} />
 
                         <Link
                           href={`/profile?id=${f.profiles?.id}`}
@@ -521,7 +524,7 @@ export default function FriendsPage() {
                                 {f.profiles?.name?.charAt(0)}
                               </div>
                             )}
-                            <div className="absolute top-0 right-0 w-6 h-6 bg-primary/80 md: flex items-center justify-center rounded-bl-xl shadow-lg">
+                            <div className={cn("absolute top-0 right-0 w-6 h-6 flex items-center justify-center rounded-bl-xl shadow-lg", f.profiles?.is_pro ? "bg-gradient-to-tr from-yellow-400 to-yellow-600" : "bg-primary/80 md:")}>
                               <Zap className="w-3.5 h-3.5 text-background" />
                             </div>
                           </div>
@@ -633,7 +636,7 @@ export default function FriendsPage() {
                           initial={{ opacity: 0, x: -20 }}
                           animate={{ opacity: 1, x: 0 }}
                           transition={{ delay: i * 0.05 }}
-                          className="glass-premium p-6 rounded-[2.5rem] flex items-center gap-6 border border-primary/20 bg-primary/[0.01] hover:bg-primary/[0.03] transition-all group shadow-none"
+                          className={cn("glass-premium p-6 rounded-[2.5rem] flex items-center gap-6 border transition-all group shadow-none", r.profiles?.is_pro ? "border-yellow-500/20 bg-yellow-500/[0.01] hover:bg-yellow-500/[0.03]" : "border-primary/20 bg-primary/[0.01] hover:bg-primary/[0.03]")}
                         >
                           <Link
                             href={`/profile?id=${r.profiles?.id}`}
