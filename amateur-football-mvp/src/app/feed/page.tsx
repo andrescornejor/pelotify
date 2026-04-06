@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/lib/supabase';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -14,7 +14,10 @@ import {
   Loader2,
   Trash2,
   Share2,
-  Zap
+  Zap,
+  X,
+  Trophy,
+  Users
 } from 'lucide-react';
 import Link from 'next/link';
 
@@ -68,6 +71,8 @@ export default function FeedPage() {
   const [posts, setPosts] = useState<Post[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [newPostContent, setNewPostContent] = useState('');
+  const [selectedImage, setSelectedImage] = useState<File | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const [isPosting, setIsPosting] = useState(false);
   const [expandedPostId, setExpandedPostId] = useState<string | null>(null);
   const [comments, setComments] = useState<Record<string, Comment[]>>({});
@@ -135,20 +140,32 @@ export default function FeedPage() {
   };
 
   const handlePost = async () => {
-    if (!newPostContent.trim() || !user) return;
+    if ((!newPostContent.trim() && !selectedImage) || !user) return;
     
     setIsPosting(true);
     try {
+      let imageUrl = null;
+      if (selectedImage) {
+        const fileExt = selectedImage.name.split('.').pop();
+        const filePath = `feed/${user.id}-${Date.now()}.${fileExt}`;
+        const { error: uploadError } = await supabase.storage.from('uploads').upload(filePath, selectedImage);
+        if (uploadError) throw uploadError;
+        const { data } = supabase.storage.from('uploads').getPublicUrl(filePath);
+        imageUrl = data.publicUrl;
+      }
+
       const { error } = await supabase
         .from('posts')
         .insert({
           author_id: user.id,
-          content: newPostContent.trim()
+          content: newPostContent.trim(),
+          image_url: imageUrl
         });
 
       if (error) throw error;
       
       setNewPostContent('');
+      setSelectedImage(null);
       await fetchPosts();
     } catch (error) {
       console.error('Error creating post:', error);
@@ -241,14 +258,48 @@ export default function FeedPage() {
   }
 
   return (
-    <div className="flex flex-col min-h-screen bg-background">
-       <div className="w-full max-w-2xl mx-auto border-x border-foreground/10 min-h-screen flex flex-col relative z-10 bg-background/50 backdrop-blur-sm">
-          {/* STICKY HEADER */}
-          <div className="sticky top-0 z-50 backdrop-blur-xl bg-background/80 border-b border-foreground/10 px-4 py-3 flex items-center justify-between cursor-pointer">
-             <h1 className="text-xl font-bold text-foreground">Inicio</h1>
-             <Zap className="w-5 h-5 text-blue-500" />
+    <div className="flex flex-col min-h-screen bg-background sm:pb-0">
+       <div className="w-full max-w-6xl mx-auto flex xl:gap-8">
+          {/* LEFT SIDEBAR (EXPLORAR) */}
+          <div className="hidden lg:block w-64 shrink-0 px-4 py-6 sticky top-0 h-screen overflow-y-auto">
+             <div className="flex flex-col gap-6">
+                <Link href="/" className="px-2 mb-2">
+                   <h2 className="text-3xl font-black italic tracking-tighter uppercase text-foreground">
+                      Pelo<span className="text-primary">tify</span>
+                   </h2>
+                </Link>
+                {/* Links Interesantes */}
+                <div className="space-y-3">
+                   <Link href="/tournaments" className="flex items-center gap-4 px-4 py-3 rounded-full hover:bg-foreground/[0.05] transition-colors group">
+                      <Trophy className="w-6 h-6 text-foreground group-hover:text-primary transition-colors" />
+                      <span className="text-lg font-black italic uppercase tracking-tighter group-hover:text-primary transition-colors">Torneos</span>
+                   </Link>
+                   <Link href="/ranks" className="flex items-center gap-4 px-4 py-3 rounded-full hover:bg-foreground/[0.05] transition-colors group">
+                      <Zap className="w-6 h-6 text-foreground group-hover:text-primary transition-colors" />
+                      <span className="text-lg font-black italic uppercase tracking-tighter group-hover:text-primary transition-colors">Ligas</span>
+                   </Link>
+                   <Link href="/teams" className="flex items-center gap-4 px-4 py-3 rounded-full hover:bg-foreground/[0.05] transition-colors group">
+                      <Users className="w-6 h-6 text-foreground group-hover:text-primary transition-colors" />
+                      <span className="text-lg font-black italic uppercase tracking-tighter group-hover:text-primary transition-colors">Equipos</span>
+                   </Link>
+                </div>
+                {/* CTA Pelotify Pro */}
+                <div className="mt-8 p-5 rounded-3xl border border-yellow-500/20 bg-gradient-to-br from-yellow-500/10 to-transparent relative overflow-hidden group">
+                   <div className="absolute top-0 right-0 w-24 h-24 bg-yellow-500/20 blur-3xl rounded-full" />
+                   <p className="text-xs text-yellow-500 font-black uppercase tracking-[0.2em] mb-2 flex items-center gap-1.5"><Zap className="w-3.5 h-3.5 fill-yellow-500"/> Pro</p>
+                   <p className="text-[13px] text-foreground/80 mb-4 font-medium leading-relaxed">Verifica tu cuenta y desbloquea el marco dorado exclusivo para tus posteos.</p>
+                   <Link href="/pro"><button className="w-full py-2.5 bg-yellow-500 text-black font-black text-[11px] uppercase tracking-widest rounded-xl hover:bg-yellow-400 active:scale-95 transition-all shadow-[0_0_15px_rgba(234,179,8,0.2)]">Hazte PRO</button></Link>
+                </div>
+             </div>
           </div>
-       
+
+          {/* MAIN CENTRO FEED */}
+          <div className="flex-1 w-full max-w-2xl border-x border-foreground/10 min-h-screen flex flex-col relative z-10 bg-background/50 backdrop-blur-sm">
+          {/* STICKY HEADER */}
+          <div className="sticky top-0 z-50 backdrop-blur-xl bg-background/80 border-b border-foreground/10 px-4 py-3 pb-3 pt-4 flex items-center justify-between cursor-pointer">
+             <h1 className="text-xl font-bold text-foreground">Inicio</h1>
+             <Zap className="w-5 h-5 text-blue-500 fill-blue-500/20" />
+          </div>
 
           {/* CREATE POST BOX */}
           <div className="p-4 border-b border-foreground/10 flex gap-4 hidden sm:flex">
@@ -261,7 +312,7 @@ export default function FeedPage() {
                      </div>
                   )}
                </div>
-               <div className="flex-1 flex flex-col">
+               <div className="flex-1 flex flex-col pt-1">
                  <textarea
                    value={newPostContent}
                    onChange={(e) => setNewPostContent(e.target.value)}
@@ -269,18 +320,32 @@ export default function FeedPage() {
                    className="w-full bg-transparent border-none resize-none focus:outline-none text-foreground text-lg placeholder:text-foreground/50 min-h-[50px] font-medium"
                    maxLength={500}
                  />
-                 <div className="flex items-center justify-between mt-2 pt-2">
+
+                 <AnimatePresence>
+                   {selectedImage && (
+                     <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} exit={{ opacity: 0, height: 0 }} className="relative mt-2 mb-4 w-fit">
+                        <img src={URL.createObjectURL(selectedImage)} className="h-48 md:h-64 rounded-2xl object-cover border border-foreground/10" alt="Preview" />
+                        <button onClick={() => setSelectedImage(null)} className="absolute top-2 right-2 p-1.5 bg-background/80 hover:bg-background text-foreground backdrop-blur-md rounded-full shadow-lg transition-colors">
+                           <X className="w-4 h-4" />
+                        </button>
+                     </motion.div>
+                   )}
+                 </AnimatePresence>
+
+                 <div className="flex items-center justify-between mt-2 pt-2 border-t border-foreground/5">
                     <div className="flex items-center gap-1">
-                        <button className="p-2 text-blue-500 hover:bg-blue-500/10 rounded-full transition-colors flex items-center justify-center">
+                        <input type="file" accept="image/*" className="hidden" ref={fileInputRef} onChange={(e) => { if(e.target.files && e.target.files[0]) setSelectedImage(e.target.files[0]) }} />
+                        <button onClick={() => fileInputRef.current?.click()} className="p-2 text-blue-500 hover:bg-blue-500/10 rounded-full transition-colors flex items-center justify-center group relative">
                            <ImageIcon className="w-5 h-5" />
+                           <span className="absolute -top-8 left-1/2 -translate-x-1/2 px-2 py-1 bg-foreground text-background text-[10px] font-bold rounded-lg opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap z-50">Subir foto</span>
                         </button>
                     </div>
-                    <div className="flex items-center gap-3">
-                        <span className="text-xs font-medium text-foreground/40">{newPostContent.length}/500</span>
+                    <div className="flex items-center gap-4">
+                        <span className="text-xs font-bold text-foreground/30">{newPostContent.length}/500</span>
                         <button
                           onClick={handlePost}
-                          disabled={isPosting || !newPostContent.trim()}
-                          className="px-5 py-1.5 rounded-full bg-blue-500 text-white font-bold text-[15px] tracking-wide disabled:opacity-50 disabled:cursor-not-allowed hover:bg-blue-600 active:scale-95 transition-all shadow-sm"
+                          disabled={isPosting || (!newPostContent.trim() && !selectedImage)}
+                          className="px-5 py-2 rounded-full bg-blue-500 text-white font-black uppercase tracking-widest text-[11px] disabled:opacity-50 disabled:cursor-not-allowed hover:bg-blue-600 active:scale-95 transition-all shadow-sm flex items-center gap-2"
                         >
                           {isPosting ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Postear'}
                         </button>
@@ -351,10 +416,17 @@ export default function FeedPage() {
                         </div>
 
                         {/* Content */}
-                        <div className="mt-1 mb-3">
-                           <p className="text-foreground text-[15px] leading-relaxed whitespace-pre-wrap">
-                              {post.content}
-                           </p>
+                        <div className="mt-1 mb-3 pr-2">
+                           {post.content && (
+                             <p className="text-foreground text-[15px] leading-relaxed whitespace-pre-wrap mb-3">
+                                {post.content}
+                             </p>
+                           )}
+                           {post.image_url && (
+                             <div className="rounded-2xl border border-foreground/10 overflow-hidden mb-2 mt-2">
+                               <img src={post.image_url} className="w-full max-h-[500px] object-cover" alt="Post adjunto" />
+                             </div>
+                           )}
                         </div>
 
                         {/* Actions */}
@@ -483,6 +555,55 @@ export default function FeedPage() {
                    </div>
                 )}
              </AnimatePresence>
+          </div>
+          </div>
+
+          {/* RIGHT SIDEBAR (SUGERENCIAS / TENDENCIAS) */}
+          <div className="hidden xl:block w-80 shrink-0 px-6 py-6 sticky top-0 h-screen overflow-y-auto">
+             {/* Caja de Búsqueda Falsa o Real */}
+             <div className="w-full h-11 rounded-full bg-foreground/[0.03] border border-foreground/10 flex items-center px-4 mb-6 focus-within:ring-1 focus-within:ring-primary focus-within:border-primary transition-all">
+                <Users className="w-4 h-4 text-foreground/40 mr-3" />
+                <input type="text" placeholder="Buscar jugadores..." className="bg-transparent border-none outline-none text-sm w-full font-medium" />
+             </div>
+
+             <div className="bg-foreground/[0.02] border border-foreground/10 rounded-2xl p-4 overflow-hidden relative">
+                <h3 className="font-black text-lg italic uppercase tracking-tighter mb-4 z-10 relative">Sugerencias <span className="text-primary">PRO</span></h3>
+                <div className="absolute -top-10 -right-10 w-32 h-32 bg-primary/5 blur-2xl rounded-full" />
+                
+                <div className="space-y-5 relative z-10">
+                   <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-3">
+                         <div className="w-10 h-10 rounded-full bg-foreground/10 overflow-hidden border border-primary/20"><img src="https://i.pravatar.cc/150?u=4" className="w-full h-full object-cover"/></div>
+                         <div className="flex flex-col">
+                            <span className="text-sm font-bold flex items-center gap-1">Martín L. <Zap className="w-3 h-3 text-primary fill-primary"/></span>
+                            <span className="text-xs text-foreground/50">@martin_gol</span>
+                         </div>
+                      </div>
+                      <button className="px-4 py-1.5 bg-foreground text-background font-black text-[10px] uppercase tracking-widest rounded-full hover:bg-foreground/90 transition-colors">Seguir</button>
+                   </div>
+                   
+                   <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-3">
+                         <div className="w-10 h-10 rounded-full bg-foreground/10 overflow-hidden border border-foreground/5"><img src="https://i.pravatar.cc/150?u=2" className="w-full h-full object-cover"/></div>
+                         <div className="flex flex-col">
+                            <span className="text-sm font-bold flex items-center gap-1">Diego R.</span>
+                            <span className="text-xs text-foreground/50">@diego_10</span>
+                         </div>
+                      </div>
+                      <button className="px-4 py-1.5 bg-foreground text-background font-black text-[10px] uppercase tracking-widest rounded-full hover:bg-foreground/90 transition-colors">Seguir</button>
+                   </div>
+                </div>
+
+                <Link href="/search"><button className="mt-5 text-sm text-primary hover:underline font-bold transition-all">Ver más jugadores</button></Link>
+             </div>
+
+             <div className="mt-4 text-[11px] text-foreground/40 font-medium px-4 flex flex-wrap gap-x-3 gap-y-1">
+                <span className="hover:underline cursor-pointer">Términos</span>
+                <span className="hover:underline cursor-pointer">Privacidad</span>
+                <span className="hover:underline cursor-pointer">Cookies</span>
+                <span className="hover:underline cursor-pointer">Accesibilidad</span>
+                <span>© 2026 Pelotify</span>
+             </div>
           </div>
        </div>
     </div>
