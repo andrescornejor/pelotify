@@ -17,8 +17,21 @@ import {
   Zap
 } from 'lucide-react';
 import Link from 'next/link';
-import { formatDistanceToNow } from 'date-fns';
-import { es } from 'date-fns/locale';
+
+function timeAgo(dateString: string) {
+  const date = new Date(dateString);
+  const seconds = Math.floor((new Date().getTime() - date.getTime()) / 1000);
+  if (seconds < 60) return 'hace un momento';
+  const minutes = Math.floor(seconds / 60);
+  if (minutes < 60) return `hace ${minutes}m`;
+  const hours = Math.floor(minutes / 60);
+  if (hours < 24) return `hace ${hours}h`;
+  const days = Math.floor(hours / 24);
+  if (days < 30) return `hace ${days}d`;
+  const months = Math.floor(days / 30);
+  if (months < 12) return `hace ${months} meses`;
+  return `hace ${Math.floor(months / 12)} años`;
+}
 
 interface Post {
   id: string;
@@ -321,7 +334,7 @@ export default function FeedPage() {
                                </p>
                                <span className="text-foreground/30 text-[10px] font-bold">·</span>
                                <span className="text-foreground/40 text-[10px] font-bold uppercase tracking-wider">
-                                  {formatDistanceToNow(new Date(post.created_at), { addSuffix: true, locale: es })}
+                                  {timeAgo(post.created_at)}
                                </span>
                              </div>
                              <p className="text-[9px] font-black uppercase tracking-widest text-foreground/40">
@@ -441,7 +454,7 @@ export default function FeedPage() {
                                             {comment.author.name}
                                          </Link>
                                          <span className="text-[9px] text-foreground/40 font-bold tracking-widest uppercase">
-                                            {formatDistanceToNow(new Date(comment.created_at), { addSuffix: true, locale: es })}
+                                            {timeAgo(comment.created_at)}
                                          </span>
                                       </div>
                                       <p className="text-sm text-foreground/80">{comment.content}</p>
