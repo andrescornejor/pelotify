@@ -50,6 +50,7 @@ import { RankBadge } from '@/components/RankBadge';
 import { getRankByElo } from '@/lib/ranks';
 import { ShareStory } from '@/components/ShareStory';
 import { getUserHighlights, Highlight } from '@/lib/highlights';
+import { RadarChart } from '@/components/RadarChart';
 
 interface PlayerStats {
   pac: number;
@@ -1080,6 +1081,59 @@ function ProfileContent() {
                         )}
                       </div>
                   </div>
+
+                  {/* Advanced Stats (Pro Feature) */}
+                  {!isEditing && (
+                    <motion.div
+                      initial={{ opacity: 0, scale: 0.95 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      className={cn(
+                        'glass-premium p-10 lg:p-12 rounded-[3.5rem] border relative overflow-hidden group/pro transition-all duration-700 z-10',
+                        getField('is_pro', false) ? 'border-yellow-500/20 shadow-[0_0_50px_rgba(250,204,21,0.05)]' : 'border-foreground/5 opacity-60 grayscale'
+                      )}
+                    >
+                      {/* Ambient */}
+                      {getField('is_pro', false) && (
+                        <div className="absolute top-0 right-0 w-[150%] h-[150%] bg-gradient-radial from-yellow-500/10 via-transparent to-transparent -translate-y-1/2 translate-x-1/4 opacity-0 group-hover/pro:opacity-100 transition-opacity duration-1000 blur-3xl" />
+                      )}
+
+                      <div className="flex flex-col lg:flex-row items-center gap-12 relative z-10 w-full justify-between">
+                         <div className="flex-1 space-y-4">
+                           <div className="flex items-center gap-3">
+                             <Star className={cn("w-6 h-6", getField('is_pro', false) ? "text-yellow-400" : "text-foreground/40")} fill="currentColor" />
+                             <h3 className="text-3xl lg:text-4xl font-black italic uppercase tracking-tighter">Radiografía PRO</h3>
+                           </div>
+                           <p className="text-sm font-medium text-foreground/40">Análisis vectorial del jugador basado en sus últimos encuentros y desempeño general de la red neuronal.</p>
+
+                           {!getField('is_pro', false) && (
+                             <div className="mt-6 flex flex-col items-start gap-4">
+                                <div className="p-4 bg-background/50 border border-foreground/10 rounded-2xl flex items-center justify-center gap-3">
+                                  <Lock className="w-5 h-5 text-foreground/40" />
+                                  <span className="text-xs font-black uppercase tracking-widest text-foreground/40">Análisis Bloqueado</span>
+                                </div>
+                                <button 
+                                  onClick={() => router.push('/pro')}
+                                  className="text-[10px] font-black uppercase text-yellow-400 tracking-widest underline decoration-yellow-400/30 underline-offset-4 hover:decoration-yellow-400 transition-colors"
+                                >
+                                  Suscríbete a Pelotify Pro
+                                </button>
+                             </div>
+                           )}
+                         </div>
+
+                         <div className="relative">
+                            <RadarChart 
+                              stats={playerStats} 
+                              size={260} 
+                              color={getField('is_pro', false) ? "#facc15" : "#64748b"} 
+                            />
+                            {!getField('is_pro', false) && (
+                              <div className="absolute inset-0 backdrop-blur-sm rounded-full bg-background/30" />
+                            )}
+                         </div>
+                      </div>
+                    </motion.div>
+                  )}
 
                   {/* Team Section */}
                   {userTeam && (

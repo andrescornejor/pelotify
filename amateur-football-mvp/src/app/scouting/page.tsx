@@ -32,6 +32,7 @@ export default function ScoutingPage() {
         .from('profiles')
         .select('*')
         .neq('id', user.id)
+        .order('is_pro', { ascending: false })
         .order('elo', { ascending: false })
         .limit(20);
       
@@ -179,9 +180,19 @@ export default function ScoutingPage() {
                 </div>
 
                 <div className="absolute bottom-0 inset-x-0 p-10 bg-gradient-to-t from-black via-black/80 to-transparent flex flex-col items-center pt-32 z-20">
-                    <h2 className="text-3xl sm:text-4xl font-black italic uppercase text-white tracking-[-0.03em] drop-shadow-2xl text-center font-kanit">
-                        {currentProfile.name || 'Agente Libre'}
-                    </h2>
+                    <div className="flex items-center gap-3">
+                      <h2 className="text-3xl sm:text-4xl font-black italic uppercase text-white tracking-[-0.03em] drop-shadow-2xl text-center font-kanit">
+                          {currentProfile.name || 'Agente Libre'}
+                      </h2>
+                      {currentProfile.is_pro && (
+                        <div className="bg-yellow-500 rounded-full p-1.5 shadow-[0_0_15px_rgba(250,204,21,0.5)]">
+                          <CheckCircle2 className="w-4 h-4 text-black" />
+                        </div>
+                      )}
+                    </div>
+                    {currentProfile.is_pro && (
+                      <span className="text-[9px] font-black uppercase text-yellow-400 tracking-widest mt-1">Jugador PRO</span>
+                    )}
                     <div className="flex items-center gap-4 mt-4">
                         <div className="px-4 py-1.5 rounded-2xl bg-primary/15 border border-primary/20 md: flex items-center gap-2 shadow-inner">
                            <Trophy className="w-4 h-4 text-primary" />

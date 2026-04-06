@@ -48,6 +48,15 @@ export default function EstablecimientoProfile() {
   const [newReview, setNewReview] = useState({ rating: 5, comment: '' });
   const searchParams = useSearchParams();
   const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [isPro, setIsPro] = useState(false);
+
+  useEffect(() => {
+    if (user) {
+      supabase.from('profiles').select('is_pro').eq('id', user.id).single().then(({ data }) => {
+        if (data) setIsPro(data.is_pro);
+      });
+    }
+  }, [user]);
 
   const averageRating = React.useMemo(() => {
     if (reviews.length === 0) return null;
@@ -183,8 +192,8 @@ const handleBooking = async () => {
           date: selectedDate,
           time: selectedSlot,
           userId: user.id,
-          totalPrice: selectedField.price_per_match,
-          downPayment: Math.round(selectedField.price_per_match * (selectedField.down_payment_percentage || 30) / 100)
+          totalPrice: isPro ? selectedField.price_per_match * 0.9 : selectedField.price_per_match,
+          downPayment: Math.round((isPro ? selectedField.price_per_match * 0.9 : selectedField.price_per_match) * (selectedField.down_payment_percentage || 30) / 100)
         }),
       });
 
@@ -349,7 +358,9 @@ const handleBooking = async () => {
                         <div className="text-left pr-8">
                            <p className={`text-base font-black uppercase tracking-tighter transition-colors ${selectedField?.id === field.id ? 'text-black' : 'text-foreground'}`}>{field.name}</p>
                            <p className={`text-xs font-bold transition-colors ${selectedField?.id === field.id ? 'text-black/60' : 'text-muted-foreground'}`}>
-                              ${new Intl.NumberFormat('es-AR').format(field.price_per_match)} <span className="text-[10px] opacity-70"> /HS</span>
+                             {isPro && <span className="line-through opacity-50 mr-2">${new Intl.NumberFormat('es-AR').format(field.price_per_match)}</span>}
+                             ${new Intl.NumberFormat('es-AR').format(isPro ? field.price_per_match * 0.9 : field.price_per_match)} <span className="text-[10px] opacity-70"> /HS</span>
+                             {isPro && <span className="ml-2 text-[8px] font-black uppercase tracking-widest text-[#d97706] bg-yellow-500/20 px-1.5 py-0.5 rounded-full inline-flex border border-yellow-500/30 shadow-[0_0_10px_rgba(250,204,21,0.2)]">PRO</span>}
                            </p>
                         </div>
                         {selectedField?.id === field.id && (
@@ -488,7 +499,7 @@ const handleBooking = async () => {
                               <p className="text-[8px] font-bold text-muted-foreground uppercase tracking-widest">({selectedField?.down_payment_percentage || 30}% del valor total)</p>
                            </div>
                            <p className="text-4xl font-black font-kanit italic tracking-tighter text-white">
-                              ${selectedField ? new Intl.NumberFormat('es-AR').format(Math.round(selectedField.price_per_match * (selectedField.down_payment_percentage || 30) / 100)) : "0"}
+                              ${selectedField ? new Intl.NumberFormat('es-AR').format(Math.round((isPro ? selectedField.price_per_match * 0.9 : selectedField.price_per_match) * (selectedField.down_payment_percentage || 30) / 100)) : "0"}
                            </p>
                         </div>
                      </div>
