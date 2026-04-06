@@ -642,7 +642,7 @@ const OverviewTab = React.memo(function OverviewTab({ business, bookings, fields
       </div>
     </div>
   );
-}
+});
 
 
 function UpcomingMatch({ time, field, team, status, price, isPending = false, isApp = false, onClick }: any) {
@@ -1013,7 +1013,7 @@ const CalendarTab = React.memo(function CalendarTab({ bookings, fields, selected
       </div>
     </div>
   );
-}
+});
 
 /* =========================================
    FINANCES TAB
@@ -1148,7 +1148,7 @@ const FinancesTab = React.memo(function FinancesTab({ business, bookings, hasMP,
       </div>
     </div>
   );
-}
+});
 
 function TransactionRow({ date, concept, amount, type, status }: any) {
   const isIncome = type === 'income';
@@ -1675,7 +1675,7 @@ const SettingsTab = React.memo(function SettingsTab({ business, fields, setField
       </div>
     </div>
   );
-}
+});
 
 
 /* =========================================
@@ -2051,7 +2051,7 @@ const CustomersTab = React.memo(function CustomersTab({ bookings }: any) {
       </div>
     </div>
   );
-}
+});
 
 /* =========================================
    ANALYTICS TAB (MÉTRICAS)
@@ -2178,4 +2178,4 @@ const AnalyticsTab = React.memo(function AnalyticsTab({ bookings, stats }: any) 
       </div>
     </div>
   );
-}
+});
