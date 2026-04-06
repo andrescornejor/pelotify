@@ -31,3 +31,19 @@ export async function uploadUserAvatar(file: File, userId: string) {
 
   return data.publicUrl;
 }
+
+export async function uploadPostImage(file: File, userId: string) {
+  const fileExt = file.name.split('.').pop();
+  const fileName = `post-${userId}-${Math.random().toString(36).substring(2)}.${fileExt}`;
+  const filePath = `posts/${fileName}`;
+
+  // 1. Upload file
+  const { error: uploadError } = await supabase.storage.from('avatars').upload(filePath, file);
+
+  if (uploadError) throw uploadError;
+
+  // 2. Get public URL
+  const { data } = supabase.storage.from('avatars').getPublicUrl(filePath);
+
+  return data.publicUrl;
+}
