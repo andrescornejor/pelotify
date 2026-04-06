@@ -38,7 +38,8 @@ import {
   Download,
   Trophy,
   Loader2,
-  CheckCircle2
+  CheckCircle2,
+  Calendar
 } from 'lucide-react';
 
 import { useAuth } from '@/contexts/AuthContext';
