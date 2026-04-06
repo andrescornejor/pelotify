@@ -368,8 +368,18 @@ export default function CreateMatchPage() {
     if (!user) return;
     setIsCreating(true);
     try {
+      let finalDate = formData.date;
+      // Si el horario seleccionado es la medianoche (00:00) 
+      // del día de "hoy" (noche de fútbol), lógicamente pertenece al día siguiente. 
+      if (formData.time.startsWith('00:')) {
+        const d = new Date(`${formData.date}T12:00:00`); 
+        d.setDate(d.getDate() + 1);
+        finalDate = `${d.getFullYear()}-${(d.getMonth() + 1).toString().padStart(2, '0')}-${d.getDate().toString().padStart(2, '0')}`;
+      }
+
       const match = await createMatch({
         ...formData,
+        date: finalDate, // updated date
         creator_id: user.id,
       });
 
@@ -398,7 +408,7 @@ export default function CreateMatchPage() {
                body: JSON.stringify({
                   businessId: formData.business_id,
                   fieldId: formData.field_id,
-                  date: formData.date,
+                  date: finalDate, // Update checkout to use the correct final day
                   time: formData.time,
                   userId: user.id,
                   totalPrice: booking.total_price,

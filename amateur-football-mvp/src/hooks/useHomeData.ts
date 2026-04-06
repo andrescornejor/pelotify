@@ -26,7 +26,10 @@ async function fetchHomeData(userId: string): Promise<HomeData> {
         .from('match_participants')
         .select('matches:matches!inner(*)')
         .eq('user_id', userId)
-        .gte('matches.date', new Date().toISOString().split('T')[0])
+        .gte('matches.date', (() => { 
+            const d = new Date(); 
+            return `${d.getFullYear()}-${(d.getMonth() + 1).toString().padStart(2, '0')}-${d.getDate().toString().padStart(2, '0')}`;
+        })())
         .order('date', { foreignTable: 'matches', ascending: true })
         .limit(1),
       supabase
