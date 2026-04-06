@@ -95,6 +95,7 @@ function ProfileContent() {
     position: 'DC',
     bio: '',
     cover_url: '',
+    instagram: '',
   });
   const [skillPoints, setSkillPoints] = useState(0);
   const [editedStats, setEditedStats] = useState<PlayerStats>(DEFAULT_PLAYER.stats);
@@ -142,6 +143,7 @@ function ProfileContent() {
         position: (metadata.position || user.user_metadata?.position || 'DC').toUpperCase(),
         bio: metadata.bio || '',
         cover_url: metadata.cover_url || '',
+        instagram: metadata.instagram || '',
       });
     }
   }, [isMe, user]);
@@ -415,6 +417,7 @@ function ProfileContent() {
         avatar_url: newAvatarUrl,
         cover_url: editedData.cover_url,
         bio: editedData.bio,
+        instagram: editedData.instagram,
         stats: editedStats,
         skill_points: skillPoints,
         updated_at: new Date().toISOString(),
@@ -446,6 +449,7 @@ function ProfileContent() {
           avatar_url: newAvatarUrl,
           cover_url: editedData.cover_url,
           bio: editedData.bio,
+          instagram: editedData.instagram,
           stats: editedStats,
           skill_points: skillPoints,
         },
@@ -618,10 +622,10 @@ function ProfileContent() {
                           />
                         ) : (displayPlayer.name)}
                       </h1>
-                      {!isEditing && (
-                        <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center border border-primary/40">
+                      {!isEditing && getField('instagram', '') && (
+                        <a href={`https://instagram.com/${getField('instagram', '').replace('@', '')}`} target="_blank" rel="noreferrer" className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center border border-primary/40 hover:scale-110 transition-transform">
                            <BadgeCheck className="w-4 h-4 text-primary" />
-                        </div>
+                        </a>
                       )}
                     </motion.div>
                     <div className="flex items-center justify-center lg:justify-start gap-3">
@@ -678,6 +682,19 @@ function ProfileContent() {
                           placeholder="https://images.unsplash.com/..."
                           className="w-full bg-foreground/5 border border-foreground/10 rounded-2xl px-5 h-12 text-xs text-foreground/70 outline-none focus:border-primary/50 shadow-inner"
                         />
+                      </div>
+                      <div className="space-y-2">
+                        <label className="text-[10px] font-black uppercase text-white/40 tracking-widest flex items-center gap-2">
+                          Usuario de Instagram
+                          <BadgeCheck className="w-3 h-3 text-primary" />
+                        </label>
+                        <input 
+                          value={editedData.instagram}
+                          onChange={e => setEditedData({...editedData, instagram: e.target.value})}
+                          placeholder="@tu_usuario_instagram"
+                          className="w-full bg-foreground/5 border border-foreground/10 rounded-2xl px-5 h-12 text-xs text-foreground/70 outline-none focus:border-primary/50 shadow-inner"
+                        />
+                        <p className="text-[10px] text-foreground/40 italic">Añade tu Instagram para obtener el tick de verificado.</p>
                       </div>
                     </div>
                   ) : (
@@ -772,11 +789,13 @@ function ProfileContent() {
                             </span>
                           </div>
                         </div>
-                        <div className="hidden sm:flex px-4 py-2 rounded-full bg-primary/10 border border-primary/20">
-                          <span className="text-[9px] font-black text-primary uppercase tracking-widest">
-                            VERIFICADO
-                          </span>
-                        </div>
+                        {getField('instagram', '') && (
+                          <div className="hidden sm:flex px-4 py-2 rounded-full bg-primary/10 border border-primary/20">
+                            <span className="text-[9px] font-black text-primary uppercase tracking-widest">
+                              VERIFICADO
+                            </span>
+                          </div>
+                        )}
                       </div>
 
                       <div className="space-y-6 relative z-10">
