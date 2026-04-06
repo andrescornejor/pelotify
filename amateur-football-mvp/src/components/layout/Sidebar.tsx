@@ -73,7 +73,7 @@ const SidebarGroup = ({
       </div>
       <div className="space-y-1 px-3">
         {group.items.map((item, idx) => {
-          const isActive = pathname === item.href || (item.href !== '/' && pathname.startsWith(item.href));
+          const isActive = pathname === item.href || (item.href !== '/' && (pathname + '/').startsWith(item.href + '/'));
           return (
             <Link
               key={item.href + idx}

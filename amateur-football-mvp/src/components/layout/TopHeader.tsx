@@ -214,7 +214,7 @@ export const TopHeader = memo(function TopHeader() {
                   const cleanHref = item.href.replace(/\/$/, '') || '/';
                   const isActive =
                     cleanPath === cleanHref ||
-                    (cleanHref !== '/' && cleanPath.startsWith(cleanHref));
+                    (cleanHref !== '/' && (cleanPath + '/').startsWith(cleanHref + '/'));
                   const hasBadge =
                     (item.id === 'friends' && friendsCount > 0 && !isActive);
 

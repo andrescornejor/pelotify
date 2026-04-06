@@ -71,7 +71,7 @@ export function BottomNav() {
         {!performanceMode && (
            <AnimatePresence mode="wait">
              {navItems.map((item) => {
-               const isActive = item.href === '/' ? pathname === '/' : pathname.startsWith(item.href);
+               const isActive = item.href === '/' ? pathname === '/' : (pathname + '/').startsWith(item.href + '/');
                if (!isActive) return null;
                return (
                  <motion.div
@@ -104,7 +104,7 @@ export function BottomNav() {
             {navItems.map((item) => {
               const isActive = item.href === '/' 
                 ? pathname === '/' 
-                : pathname.startsWith(item.href);
+                : (pathname + '/').startsWith(item.href + '/');
               
               const Icon = item.icon;
 
