@@ -576,6 +576,33 @@ function ProfileContent() {
       {/* Main Content Container */}
       <div className="max-w-full mx-auto w-full px-3 sm:px-5 lg:px-10 xl:px-16 -mt-14 sm:-mt-48 lg:-mt-64 relative z-20 pb-20">
         
+        {/* Verification Banner */}
+        {isMe && !getField('instagram', '') && (
+          <div className="mb-8 w-full w-full mx-auto animate-in fade-in slide-in-from-bottom-4 duration-1000">
+            <div className="relative p-6 sm:p-8 rounded-[2rem] overflow-hidden group">
+              <div className="absolute inset-0 bg-gradient-to-r from-primary/10 via-primary/5 to-transparent border border-primary/20 rounded-[2rem]" />
+              <div className="relative z-10 flex flex-col sm:flex-row items-center gap-6 sm:justify-between">
+                <div className="flex items-center gap-4 text-center sm:text-left">
+                  <div className="w-12 h-12 rounded-full bg-primary/20 flex items-center justify-center shrink-0 border border-primary/40">
+                    <BadgeCheck className="w-6 h-6 text-primary" />
+                  </div>
+                  <div>
+                    <h3 className="text-lg font-black uppercase tracking-tighter italic text-white leading-none">Consigue el verificado</h3>
+                    <p className="text-xs text-foreground/60 font-medium mt-1">Conecta tu cuenta de Instagram oficial para obtener la insignia de jugador verificado.</p>
+                  </div>
+                </div>
+                <button 
+                  onClick={() => window.location.href = '/api/auth/instagram'}
+                  className="px-6 h-12 shrink-0 rounded-2xl bg-primary text-black text-[10px] font-black uppercase tracking-widest shadow-xl shadow-primary/20 hover:scale-105 active:scale-95 transition-all w-full sm:w-auto flex items-center justify-center gap-2"
+                >
+                  <ExternalLink className="w-4 h-4" />
+                  Vincular Cuenta
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* Profile Header Block */}
         <div className="flex flex-col lg:flex-row items-center gap-8 mb-12">
             {/* The FIFA Card (Avatar Replacement) */}
@@ -688,13 +715,20 @@ function ProfileContent() {
                           Usuario de Instagram
                           <BadgeCheck className="w-3 h-3 text-primary" />
                         </label>
-                        <input 
-                          value={editedData.instagram}
-                          onChange={e => setEditedData({...editedData, instagram: e.target.value})}
-                          placeholder="@tu_usuario_instagram"
-                          className="w-full bg-foreground/5 border border-foreground/10 rounded-2xl px-5 h-12 text-xs text-foreground/70 outline-none focus:border-primary/50 shadow-inner"
-                        />
-                        <p className="text-[10px] text-foreground/40 italic">Añade tu Instagram para obtener el tick de verificado.</p>
+                        <div className="flex items-center gap-3">
+                          <input 
+                            readOnly
+                            disabled
+                            value={editedData.instagram ? `@${editedData.instagram}` : 'No vinculado'}
+                            className="flex-1 bg-foreground/5 border border-foreground/10 rounded-2xl px-5 h-12 text-xs text-foreground/50 outline-none shadow-inner opacity-70 cursor-not-allowed font-medium"
+                          />
+                          {!editedData.instagram && (
+                             <button type="button" onClick={() => window.location.href = '/api/auth/instagram'} className="h-12 px-6 shrink-0 rounded-2xl bg-primary/10 border border-primary/20 text-primary hover:bg-primary/20 transition-all flex items-center gap-2 text-[10px] font-black uppercase tracking-widest">
+                                Vincular
+                             </button>
+                          )}
+                        </div>
+                        <p className="text-[10px] text-foreground/40 italic">La vinculación con Instagram es automática para garantizar autenticidad.</p>
                       </div>
                     </div>
                   ) : (
