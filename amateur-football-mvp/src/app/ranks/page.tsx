@@ -2,7 +2,7 @@
 
 import { memo, useMemo, useState, useEffect, useCallback, useRef } from 'react';
 import { motion, AnimatePresence, useScroll, useTransform, useMotionValue, useSpring } from 'framer-motion';
-import { Trophy, ArrowLeft, ChevronDown, Crown, Shield, Target, Sparkles, Activity, Info, Star, Flame, Zap } from 'lucide-react';
+import { Trophy, ArrowLeft, ChevronDown, Crown, Shield, Target, Sparkles, Activity, Info, Star, Flame, Zap, ChevronUp } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { RANKS, getRankByElo } from '@/lib/ranks';
 import { cn } from '@/lib/utils';
@@ -87,7 +87,32 @@ export default function RanksPage() {
       <MouseGlow />
       
       {/* ── Hero ── */}
-      <section className="relative pt-12 pb-16 px-4 text-center space-y-8 z-10">
+      <section className="relative pt-12 pb-16 px-4 text-center space-y-8 z-10 overflow-hidden">
+        {/* Background Side Decorations */}
+        <div className="absolute inset-0 pointer-events-none opacity-5 flex justify-between px-10 items-center">
+           <motion.div animate={{ rotate: 360 }} transition={{ duration: 40, repeat: Infinity, ease: 'linear' }} className="hidden xl:block">
+              <Shield className="w-64 h-64 -translate-x-1/2" />
+           </motion.div>
+           <motion.div animate={{ rotate: -360 }} transition={{ duration: 45, repeat: Infinity, ease: 'linear' }} className="hidden xl:block">
+              <Activity className="w-64 h-64 translate-x-1/2" />
+           </motion.div>
+        </div>
+        
+        {/* Abstract Tactics / Patterns on sides */}
+        <div className="absolute top-20 left-0 w-40 h-80 opacity-5 hidden lg:block">
+           <svg viewBox="0 0 100 200" width="100%" height="100%" className="text-foreground">
+             <path d="M 10 10 L 90 90 M 10 90 L 90 10" stroke="currentColor" strokeWidth="2" />
+             <circle cx="50" cy="150" r="20" fill="none" stroke="currentColor" strokeWidth="2" />
+             <path d="M 50 130 L 50 170" stroke="currentColor" strokeWidth="2" />
+           </svg>
+        </div>
+        <div className="absolute top-20 right-0 w-40 h-80 opacity-5 hidden lg:block">
+           <svg viewBox="0 0 100 200" width="100%" height="100%" className="text-foreground">
+             <path d="M 50 50 L 50 150 M 10 100 L 90 100" stroke="currentColor" strokeWidth="2" />
+             <rect x="20" y="20" width="60" height="40" fill="none" stroke="currentColor" strokeWidth="2" />
+           </svg>
+        </div>
+
         <motion.div initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} className="inline-flex items-center gap-3 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 backdrop-blur-sm">
           <Flame className="w-4 h-4 text-primary animate-pulse" />
           <span className="text-[10px] font-extrabold uppercase tracking-[0.3em] text-primary">Camino a la Gloria</span>
@@ -328,13 +353,16 @@ export default function RanksPage() {
                      </motion.button>
 
                      <div className="pt-20">
-                        <div className="flex items-center gap-4 justify-center opacity-20">
-                           <div className="h-px w-20 bg-foreground" />
-                           <Star className="w-4 h-4 fill-foreground" />
-                           <Star className="w-6 h-6 fill-foreground" />
-                           <Star className="w-4 h-4 fill-foreground" />
-                           <div className="h-px w-20 bg-foreground" />
-                        </div>
+                        <motion.button 
+                          onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+                          whileHover={{ y: -5 }}
+                          className="flex flex-col items-center gap-2 opacity-30 hover:opacity-100 transition-opacity"
+                        >
+                           <div className="w-12 h-12 rounded-full border border-foreground/20 flex items-center justify-center">
+                              <ChevronUp className="w-6 h-6" />
+                           </div>
+                           <span className="text-[10px] font-black uppercase tracking-[0.4em]">Volver al Inicio</span>
+                        </motion.button>
                      </div>
                   </div>
                 </motion.div>
