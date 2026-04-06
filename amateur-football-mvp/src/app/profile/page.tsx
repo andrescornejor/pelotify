@@ -707,14 +707,28 @@ function ProfileContent() {
                           className="w-full bg-foreground/5 border border-foreground/10 rounded-2xl p-5 text-sm text-foreground/70 outline-none focus:border-primary/50 h-28 resize-none shadow-inner"
                         />
                       </div>
-                      <div className="space-y-2">
-                        <label className="text-[10px] font-black uppercase text-white/40 tracking-widest">URL de Portada</label>
+                      <div className="space-y-2 relative group/cover-input">
+                        <div className="flex justify-between items-center">
+                          <label className="text-[10px] font-black uppercase text-white/40 tracking-widest">URL de Portada</label>
+                          {!getField('is_pro', false) && (
+                            <span className="text-[8px] font-black uppercase text-yellow-500 bg-yellow-500/10 px-2 py-0.5 rounded flex items-center gap-1">
+                              <Star className="w-2 h-2" fill="currentColor" /> Exclusivo PRO
+                            </span>
+                          )}
+                        </div>
                         <input 
                           value={editedData.cover_url}
                           onChange={e => setEditedData({...editedData, cover_url: e.target.value})}
                           placeholder="https://images.unsplash.com/..."
-                          className="w-full bg-foreground/5 border border-foreground/10 rounded-2xl px-5 h-12 text-xs text-foreground/70 outline-none focus:border-primary/50 shadow-inner"
+                          disabled={!getField('is_pro', false)}
+                          className={cn(
+                            "w-full bg-foreground/5 border border-foreground/10 rounded-2xl px-5 h-12 text-xs text-foreground/70 outline-none focus:border-primary/50 shadow-inner",
+                            !getField('is_pro', false) && "opacity-50 cursor-not-allowed group-hover/cover-input:border-yellow-500/30 transition-colors"
+                          )}
                         />
+                        {!getField('is_pro', false) && (
+                           <div className="absolute inset-0 top-6 z-10" onClick={() => router.push('/pro')} title="Hazte PRO para editar tu portada" style={{ cursor: "pointer" }}></div>
+                         )}
                       </div>
                       {getField('is_pro', false) && (
                         <div className="space-y-2">
