@@ -32,6 +32,10 @@ import {
   Play,
   BadgeCheck,
   Wallet,
+  Image as ImageIcon,
+  Heart,
+  Share2,
+  MoreHorizontal,
 } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useSearchParams, useRouter } from 'next/navigation';
