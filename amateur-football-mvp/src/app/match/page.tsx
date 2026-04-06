@@ -21,6 +21,7 @@ import {
   Trash2,
   ShieldAlert,
   AlertTriangle,
+  QrCode,
 } from 'lucide-react';
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
@@ -52,6 +53,7 @@ import { MatchSkeleton } from '@/components/Skeletons';
 import dynamic from 'next/dynamic';
 import ChatRoom from '@/components/ChatRoom';
 import MercadoPagoButton from '@/components/payments/MercadoPagoButton';
+import EntryQRModal from '@/components/EntryQRModal';
 import JoinQRModal from '@/components/JoinQRModal';
 import { WeatherWidget, CalendarButton } from '@/components/home';
 
@@ -216,6 +218,7 @@ function MatchLobbyContent() {
   const [isPostMatchModalOpen, setIsPostMatchModalOpen] = useState(false);
   const [venueInfo, setVenueInfo] = useState<any>(null);
   const [isQRModalOpen, setIsQRModalOpen] = useState(false);
+  const [isEntryQRModalOpen, setIsEntryQRModalOpen] = useState(false);
   const [managedParticipant, setManagedParticipant] = useState<MatchParticipant | null>(null);
   const [isAdminMode, setIsAdminMode] = useState(false);
   const [isTacticalMode, setIsTacticalMode] = useState(false);
@@ -672,8 +675,19 @@ function MatchLobbyContent() {
             </div>
 
             <div className="flex items-center gap-4">
-               {!isCompleted && (
-                 <div className="flex items-center gap-3">
+                {!isCompleted && (
+                  <div className="flex items-center gap-3">
+                    {/* Entry QR Button for participants in partner venues */}
+                    {isConfirmed && match.business_id && (
+                      <button
+                        onClick={() => setIsEntryQRModalOpen(true)}
+                        className="h-14 px-8 rounded-2xl bg-primary text-black font-black italic uppercase text-xs flex items-center gap-3 hover:scale-105 active:scale-95 transition-all shadow-xl shadow-primary/20"
+                        title="Mostrar Pase QR para ingresar"
+                      >
+                        <QrCode className="w-5 h-5" /> Pase QR
+                      </button>
+                    )}
+                    
                     <CalendarButton match={match} className="h-14 !px-6 rounded-2xl glass-premium" />
                     <button
                       onClick={() => setIsQRModalOpen(true)}
@@ -681,8 +695,8 @@ function MatchLobbyContent() {
                     >
                       <Users className="w-5 h-5 text-primary" /> Invitar
                     </button>
-                 </div>
-               )}
+                  </div>
+                )}
             </div>
           </div>
         </div>
@@ -1046,6 +1060,16 @@ function MatchLobbyContent() {
           onClose={() => setIsQRModalOpen(false)}
           matchId={match.id}
           venueName={match.location}
+        />
+      )}
+
+      {isEntryQRModalOpen && user && myEntry && (
+        <EntryQRModal
+          isOpen={isEntryQRModalOpen}
+          onClose={() => setIsEntryQRModalOpen(false)}
+          participantId={myEntry.id}
+          playerName={user.name || "Jugador"}
+          matchTitle={`${match.type} @ ${match.location}`}
         />
       )}
 

@@ -13,6 +13,7 @@ export default function CheckinScannerPage() {
   const { user } = useAuth();
   
   const [scanResult, setScanResult] = useState<string | null>(null);
+  const [scanType, setScanType] = useState<'booking' | 'participant' | null>(null);
   const [bookingDb, setBookingDb] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
@@ -42,8 +43,15 @@ export default function CheckinScannerPage() {
       if (decodedText.startsWith('checkin:')) {
         const id = decodedText.split(':')[1];
         setScanResult(id);
+        setScanType('booking');
         scanner.clear(); // turn off camera
         fetchBooking(id);
+      } else if (decodedText.startsWith('checkin-player:')) {
+        const id = decodedText.split(':')[1];
+        setScanResult(id);
+        setScanType('participant');
+        scanner.clear(); // turn off camera
+        fetchParticipant(id);
       } else {
         // Not a pelotify checkin code
         setErrorMsg("Formato de código QR inválido o no reconocido.");
@@ -89,30 +97,59 @@ export default function CheckinScannerPage() {
     setIsLoading(false);
   };
 
-  const handleConfirmCheckin = async () => {
-    if (!bookingDb) return;
+  const fetchParticipant = async (id: string) => {
     setIsLoading(true);
+    setErrorMsg(null);
+    setSuccessMsg(null);
 
-    const { error } = await supabase
-      .from('canchas_bookings')
-      .update({
-        status: 'full_paid',
-        down_payment_paid: bookingDb.total_price
-      })
-      .eq('id', bookingDb.id);
+    const { data, error } = await supabase
+      .from('match_participants')
+      .select('*, profiles(name, avatar_url), matches(location, date, time, type, status)')
+      .eq('id', id)
+      .single();
 
-    if (error) {
-      setErrorMsg("Error al acreditar el pago en BD: " + error.message);
+    if (error || !data) {
+      setErrorMsg("No se encontró al jugador o el código es antiguo.");
       setIsLoading(false);
       return;
     }
 
-    setSuccessMsg("¡Ingreso Autorizado y acreditado correctamente!");
+    setBookingDb(data);
+    setIsLoading(false);
+  };
+
+  const handleConfirmCheckin = async () => {
+    if (!bookingDb) return;
+    setIsLoading(true);
+
+    if (scanType === 'booking') {
+      const { error } = await supabase
+        .from('canchas_bookings')
+        .update({
+          status: 'full_paid',
+          down_payment_paid: bookingDb.total_price
+        })
+        .eq('id', bookingDb.id);
+
+      if (error) {
+        setErrorMsg("Error al acreditar el pago en BD: " + error.message);
+        setIsLoading(false);
+        return;
+      }
+
+      setSuccessMsg("¡Ingreso Autorizado y acreditado correctamente!");
+    } else {
+      // Participant checkin - usually just for validation
+      // But we can update a metadata field if we want to track attendance
+      setSuccessMsg(`¡Jugador ${bookingDb.profiles?.name || 'Invitado'} autorizado!`);
+    }
+    
     setIsLoading(false);
   };
 
   const resetScanner = () => {
     setScanResult(null);
+    setScanType(null);
     setBookingDb(null);
     setErrorMsg(null);
     setSuccessMsg(null);
@@ -194,54 +231,80 @@ export default function CheckinScannerPage() {
             animate={{ scale: 1, opacity: 1 }} 
             className="flex-1 flex flex-col mt-10"
           >
-            <div className="rounded-[2.5rem] bg-surface-elevated/40 border border-primary/30 p-8 shadow-2xl relative overflow-hidden md:">
+            <div className="rounded-[2.5rem] bg-surface-elevated/40 border border-primary/30 p-8 shadow-2xl relative overflow-hidden">
               {/* Decorative backgrounds */}
               <div className="absolute top-0 right-0 w-32 h-32 bg-primary/10 blur-3xl -translate-y-1/2 translate-x-1/2"></div>
               
               <div className="flex justify-between items-start mb-6 border-b border-border/40 pb-6">
                 <div>
                   <div className="flex items-center gap-2 mb-1.5">
-                    <span className="px-2 py-0.5 rounded bg-primary/20 text-primary text-[8px] font-black uppercase tracking-widest border border-primary/30">PENDING</span>
-                    <p className="text-xs font-bold text-muted-foreground">{bookingDb.date}</p>
+                    <span className="px-2 py-0.5 rounded bg-primary/20 text-primary text-[8px] font-black uppercase tracking-widest border border-primary/30">
+                      {scanType === 'booking' ? 'RESERVA' : 'JUGADOR'}
+                    </span>
+                    <p className="text-xs font-bold text-muted-foreground">
+                      {scanType === 'booking' ? bookingDb.date : bookingDb.matches?.date}
+                    </p>
                   </div>
-                  <h3 className="text-2xl font-black uppercase tracking-tighter leading-none">{bookingDb.title || 'Jugador Invitado'}</h3>
+                  <h3 className="text-2xl font-black uppercase tracking-tighter leading-none">
+                    {scanType === 'booking' ? (bookingDb.title || 'Reserva Directa') : (bookingDb.profiles?.name || 'Jugador Invitado')}
+                  </h3>
                 </div>
                 <div className="text-right">
-                  <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest mb-1">Cancha</p>
-                  <p className="text-base font-black italic">{bookingDb.canchas_fields?.name}</p>
+                  <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest mb-1">
+                    {scanType === 'booking' ? 'Cancha' : 'Partido'}
+                  </p>
+                  <p className="text-base font-black italic">
+                    {scanType === 'booking' ? bookingDb.canchas_fields?.name : bookingDb.matches?.type}
+                  </p>
                 </div>
               </div>
 
               <div className="grid grid-cols-2 gap-4 mb-6">
                  <div>
                     <p className="text-[10px] font-bold uppercase text-muted-foreground tracking-widest mb-1">Horario</p>
-                    <p className="text-lg font-black italic leading-none">{bookingDb.start_time.substring(0,5)} a {bookingDb.end_time.substring(0,5)}</p>
+                    <p className="text-lg font-black italic leading-none">
+                      {scanType === 'booking' ? `${bookingDb.start_time?.substring(0,5)} a ${bookingDb.end_time?.substring(0,5)}` : (bookingDb.matches?.time)}
+                    </p>
                  </div>
                  <div className="text-right">
-                    <p className="text-[10px] font-bold uppercase text-muted-foreground tracking-widest mb-1">Monto Total</p>
-                    <p className="text-2xl font-black italic text-primary leading-none">${bookingDb.total_price}</p>
+                    <p className="text-[10px] font-bold uppercase text-muted-foreground tracking-widest mb-1">Ubicación</p>
+                    <p className="text-base font-black italic text-primary leading-none truncate max-w-[150px]">
+                      {scanType === 'booking' ? 'Esta Sede' : bookingDb.matches?.location}
+                    </p>
                  </div>
               </div>
 
-              <div className="p-4 rounded-xl bg-danger/5 border border-danger/20 mb-8 mt-2">
-                 <p className="text-[10px] font-bold text-danger uppercase tracking-widest mb-1 leading-tight text-center">Falta cobrar en puerta:</p>
-                 <p className="text-xl font-black italic text-danger text-center leading-none">
-                   ${Math.max(0, bookingDb.total_price - (bookingDb.down_payment_paid || 0))}
-                 </p>
-              </div>
+              {scanType === 'booking' ? (
+                <div className="p-4 rounded-xl bg-danger/5 border border-danger/20 mb-8 mt-2">
+                   <p className="text-[10px] font-bold text-danger uppercase tracking-widest mb-1 leading-tight text-center">Falta cobrar en puerta:</p>
+                   <p className="text-xl font-black italic text-danger text-center leading-none">
+                     ${Math.max(0, bookingDb.total_price - (bookingDb.down_payment_paid || 0))}
+                   </p>
+                </div>
+              ) : (
+                <div className="p-4 rounded-xl bg-primary/5 border border-primary/20 mb-8 mt-2 flex items-center justify-center gap-3">
+                   <div className="w-10 h-10 rounded-full overflow-hidden border border-primary/30">
+                      <img src={bookingDb.profiles?.avatar_url || 'https://via.placeholder.com/150'} alt="" className="w-full h-full object-cover" />
+                   </div>
+                   <div className="text-left">
+                     <p className="text-[10px] font-black text-primary uppercase tracking-widest leading-none">Jugador Confirmado</p>
+                     <p className="text-xs font-bold text-foreground/60">{bookingDb.profiles?.position || 'Nivel General'}</p>
+                   </div>
+                </div>
+              )}
 
               <div className="flex flex-col gap-3">
                  <button 
                    onClick={handleConfirmCheckin}
                    className="w-full py-5 rounded-2xl bg-primary text-black font-black uppercase tracking-widest text-xs hover:scale-[1.02] active:scale-95 transition-all shadow-[0_10px_30px_rgba(44,252,125,0.3)]"
                  >
-                   Confirmar Ingreso y Cobro Completo
+                   {scanType === 'booking' ? 'Confirmar Ingreso y Cobro' : `Autorizar Ingreso de ${bookingDb.profiles?.name?.split(' ')[0]}`}
                  </button>
                  <button 
                    onClick={resetScanner}
                    className="w-full py-4 rounded-2xl bg-foreground/5 text-muted-foreground hover:bg-foreground/10 hover:text-foreground font-bold uppercase tracking-widest text-[10px] transition-all"
                  >
-                   Cancelar / Volver a escanear
+                   Cancelar / Volver
                  </button>
               </div>
             </div>
