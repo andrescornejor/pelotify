@@ -760,7 +760,6 @@ function ProfileContent() {
                     { label: 'ELO RATING', value: displayElo, color: getField('is_pro', false) ? 'text-yellow-400' : 'text-primary' },
                     { label: 'Goles', value: displayGoals, color: 'text-foreground' },
                     { label: 'Badges', value: displayMvpCount, color: 'text-accent' },
-                    ...(getField('is_pro', false) ? [{ label: 'Visitas (PRO)', value: Math.floor(Math.random() * 50) + 120, color: 'text-yellow-500 drop-shadow-[0_0_10px_rgba(234,179,8,0.4)]' }] : [])
                   ].map((stat, i) => (
                     <div key={i} className="flex flex-col group/stat cursor-default">
                        <span className={cn("text-3xl font-black italic tracking-tighter leading-none group-hover/stat:scale-110 transition-transform origin-left", stat.color)}>{stat.value}</span>
