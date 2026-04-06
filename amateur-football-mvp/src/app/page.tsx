@@ -993,145 +993,161 @@ export default function HomePage() {
                 </div>
 
                 {nextMatch ? (
-                  <div className="space-y-10">
-                    {/* Matchup Visualization */}
-                    <div className="relative flex items-center justify-between gap-4 px-4">
-                      {/* Connecting Line */}
-                      <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[60%] h-[1px] bg-gradient-to-r from-transparent via-white/10 to-transparent" />
-
-                      {/* Team A */}
-                      <div className="flex flex-col items-center gap-4 relative z-10 flex-1">
-                        <motion.div
-                          whileHover={{ scale: 1.1, rotate: -5 }}
-                          className="w-20 h-20 rounded-[2.5rem] bg-gradient-to-br from-surface to-background border-2 border-foreground/15 flex items-center justify-center shadow-2xl group-hover/match:border-primary/30 transition-all duration-500 overflow-hidden p-3"
-                        >
-                          <JerseyVisualizer
-                            primaryColor="#18181b"
-                            secondaryColor="#2cfc7d"
-                            pattern="vertical"
-                            className="w-full h-full"
-                          />
-                        </motion.div>
-                        <div className="text-center space-y-1">
-                          <span className="text-[11px] font-black uppercase italic tracking-tighter text-foreground font-kanit block truncate max-w-[100px]">{(nextMatch.team_a_name && nextMatch.team_a_name !== 'Team A') ? nextMatch.team_a_name : 'LOCAL'}</span>
-                          <span className="text-[8px] font-black text-foreground/20 uppercase tracking-widest">LOCAL</span>
-                        </div>
-                      </div>
-
-                      {/* VS Center */}
-                      <div className="flex flex-col items-center gap-3 relative z-10 shrink-0">
-                        <div className="w-14 h-14 rounded-full bg-background border border-foreground/20 flex flex-col items-center justify-center shadow-inner group-hover/match:scale-110 transition-transform duration-500">
-                          <span className="text-2xl font-black italic text-primary font-kanit leading-none">VS</span>
-                        </div>
-                        {countdownText && (
-                          <div className="absolute -bottom-10 whitespace-nowrap px-3 py-1 rounded-lg bg-primary text-background text-[8px] font-black uppercase tracking-widest shadow-lg shadow-primary/20 animate-bounce">
-                            {countdownText}
-                          </div>
-                        )}
-                      </div>
-
-                      {/* Team B */}
-                      <div className="flex flex-col items-center gap-4 relative z-10 flex-1">
-                        <motion.div
-                          whileHover={{ scale: 1.1, rotate: 5 }}
-                          className="w-20 h-20 rounded-[2.5rem] bg-gradient-to-br from-surface to-background border-2 border-foreground/15 flex items-center justify-center shadow-2xl group-hover/match:border-emerald-500/30 transition-all duration-500 overflow-hidden p-3"
-                        >
-                          <JerseyVisualizer
-                            primaryColor="#10b981"
-                            secondaryColor="#ffffff"
-                            pattern="hoops"
-                            className="w-full h-full"
-                          />
-                        </motion.div>
-                        <div className="text-center space-y-1">
-                          <span className="text-[11px] font-black uppercase italic tracking-tighter text-foreground font-kanit block truncate max-w-[100px]">{(nextMatch.team_b_name && nextMatch.team_b_name !== 'Team B') ? nextMatch.team_b_name : 'VISITANTE'}</span>
-                          <span className="text-[8px] font-black text-foreground/20 uppercase tracking-widest">VISITA</span>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Info Grid */}
-                    <div className="grid grid-cols-2 gap-3 pt-4">
-                      <div className="flex items-center gap-3 p-4 rounded-3xl bg-foreground/[0.03] border border-foreground/15 group/info hover:bg-foreground/[0.05] transition-all">
-                        <div className="w-10 h-10 rounded-2xl bg-surface flex items-center justify-center border border-foreground/15 shadow-inner">
-                          <Calendar className="w-5 h-5 text-primary/40 group-hover/info:text-primary transition-colors" />
-                        </div>
-                        <div className="flex flex-col">
-                          <span className="text-[8px] font-black text-foreground/30 uppercase tracking-widest">FECHA</span>
-                          <span className="text-[10px] font-black text-foreground">{new Date(nextMatch.date).toLocaleDateString('es-ES', { weekday: 'short', day: 'numeric', month: 'short' }).toUpperCase()}</span>
-                        </div>
-                      </div>
-                      <div className="flex items-center gap-3 p-4 rounded-3xl bg-foreground/[0.03] border border-foreground/15 group/info hover:bg-foreground/[0.05] transition-all">
-                        <div className="w-10 h-10 rounded-2xl bg-surface flex items-center justify-center border border-foreground/15 shadow-inner">
-                          <Clock className="w-5 h-5 text-primary/40 group-hover/info:text-primary transition-colors" />
-                        </div>
-                        <div className="flex flex-col">
-                          <span className="text-[8px] font-black text-foreground/30 uppercase tracking-widest">HORA</span>
-                          <span className="text-[10px] font-black text-foreground">{nextMatch.time} HS</span>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="flex items-center gap-3 p-4 rounded-3xl bg-foreground/[0.03] border border-foreground/15 group/info hover:bg-primary/10 transition-all cursor-pointer">
-                      <div className="w-10 h-10 rounded-2xl bg-surface flex items-center justify-center border border-foreground/15 shadow-inner group-hover/info:bg-primary/20">
-                        <MapPin className="w-5 h-5 text-foreground/20 group-hover/info:text-primary transition-colors" />
-                      </div>
-                      <div className="flex flex-col min-w-0">
-                        <span className="text-[8px] font-black text-foreground/30 uppercase tracking-widest">UBICACIÓN</span>
-                        <span className="text-[10px] font-medium text-foreground/70 truncate group-hover/info:text-foreground transition-colors">{nextMatch.location || 'Sede por confirmar'}</span>
-                      </div>
-                    </div>
-
-                    <div className="flex flex-col gap-3 pt-2">
-                      <div className="flex gap-3">
-                        <Link href={`/match?id=${nextMatch.id}`} className="flex-1">
-                          <motion.button
-                            whileHover={{ scale: 1.02 }}
-                            whileTap={{ scale: 0.98 }}
-                            className="w-full h-14 rounded-2xl bg-foreground text-background font-black uppercase text-[10px] tracking-[0.3em] flex items-center justify-center gap-3 shadow-xl hover:bg-primary hover:text-background transition-all"
+                  <div className="space-y-8">
+                    {/* Matchup Visualization Next-Gen */}
+                    <div className="relative rounded-[2.5rem] bg-gradient-to-b from-surface to-background border border-foreground/10 p-6 md:p-8 shadow-2xl overflow-hidden group/matchup">
+                      {/* Inner Grid / Lines */}
+                      <div className="absolute inset-0 bg-[url('/grid.svg')] opacity-[0.03] mix-blend-overlay pointer-events-none" />
+                      <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-primary/20 to-transparent opacity-0 group-hover/matchup:opacity-100 transition-opacity duration-700" />
+                      
+                      <div className="relative flex items-center justify-between z-10 w-full max-w-sm mx-auto">
+                        {/* LOCAL */}
+                        <div className="flex flex-col items-center gap-4 flex-1">
+                          <motion.div
+                            whileHover={{ scale: 1.1, rotate: -5 }}
+                            className="relative w-20 h-20 md:w-24 md:h-24"
                           >
-                            ENTRAR AL MATCH <ArrowRight className="w-4 h-4" />
-                          </motion.button>
-                        </Link>
-                        <button className="w-14 h-14 rounded-2xl glass-premium border-foreground/20 flex items-center justify-center text-foreground/40 hover:text-primary hover:border-primary/40 transition-all">
-                          <PlusCircle className="w-6 h-6" />
-                        </button>
+                            <div className="absolute inset-0 bg-primary/20 blur-xl rounded-full opacity-0 group-hover/matchup:opacity-100 transition-opacity duration-500" />
+                            <div className="absolute inset-0 bg-surface border-2 border-foreground/15 rounded-[1.5rem] p-3 shadow-xl overflow-hidden z-10 flex items-center justify-center">
+                              <JerseyVisualizer primaryColor="#18181b" secondaryColor="#2cfc7d" pattern="vertical" className="w-full h-full object-contain" />
+                            </div>
+                            <div className="absolute -bottom-2 -right-2 w-8 h-8 rounded-full bg-background border border-foreground/10 flex items-center justify-center z-20 shadow-lg">
+                              <Shield className="w-4 h-4 text-primary" />
+                            </div>
+                          </motion.div>
+                          <div className="text-center space-y-1">
+                            <span className="text-sm md:text-base font-black uppercase italic tracking-tighter text-foreground font-kanit block px-2 line-clamp-1 max-w-[120px]">{(nextMatch.team_a_name && nextMatch.team_a_name !== 'Team A') ? nextMatch.team_a_name : 'LOCAL'}</span>
+                            <div className="inline-block px-2 py-0.5 rounded text-[8px] font-black bg-foreground/5 text-foreground/40 uppercase tracking-[0.2em] border border-foreground/10">LOCAL</div>
+                          </div>
+                        </div>
+
+                        {/* VS Center */}
+                        <div className="flex flex-col items-center justify-center shrink-0 w-20 relative z-20">
+                          {/* Animated connecting line */}
+                          <div className="absolute h-px w-64 bg-gradient-to-r from-transparent via-foreground/20 to-transparent top-1/2 -translate-y-1/2 -left-22 -z-10 group-hover/matchup:via-primary/40 transition-colors duration-500" />
+                          
+                          <motion.div 
+                            animate={{ rotate: [0, 5, -5, 0] }} 
+                            transition={{ repeat: Infinity, duration: 5 }}
+                            className="w-14 h-14 rounded-[1.2rem] bg-gradient-to-br from-surface to-background border border-foreground/20 flex items-center justify-center shadow-lg shadow-black/50 rotate-45"
+                          >
+                            <span className="text-xl font-black italic text-transparent bg-clip-text bg-gradient-to-b from-primary to-primary-dark font-kanit -rotate-45 leading-none mt-1">VS</span>
+                          </motion.div>
+                          
+                          {countdownText && (
+                            <div className="absolute -bottom-10 whitespace-nowrap px-3 py-1.5 rounded-full bg-background/80 backdrop-blur-sm border border-primary/30 text-primary text-[9px] font-black uppercase tracking-[0.2em] shadow-[0_0_15px_rgba(44,252,125,0.2)] animate-pulse">
+                              {countdownText}
+                            </div>
+                          )}
+                        </div>
+
+                        {/* VISITA */}
+                        <div className="flex flex-col items-center gap-4 flex-1">
+                          <motion.div
+                            whileHover={{ scale: 1.1, rotate: 5 }}
+                            className="relative w-20 h-20 md:w-24 md:h-24"
+                          >
+                            <div className="absolute inset-0 bg-emerald-500/20 blur-xl rounded-full opacity-0 group-hover/matchup:opacity-100 transition-opacity duration-500" />
+                            <div className="absolute inset-0 bg-surface border-2 border-foreground/15 rounded-[1.5rem] p-3 shadow-xl overflow-hidden z-10 flex items-center justify-center">
+                              <JerseyVisualizer primaryColor="#10b981" secondaryColor="#ffffff" pattern="hoops" className="w-full h-full object-contain" />
+                            </div>
+                          </motion.div>
+                          <div className="text-center space-y-1">
+                            <span className="text-sm md:text-base font-black uppercase italic tracking-tighter text-foreground font-kanit block px-2 line-clamp-1 max-w-[120px]">{(nextMatch.team_b_name && nextMatch.team_b_name !== 'Team B') ? nextMatch.team_b_name : 'VISITA'}</span>
+                            <div className="inline-block px-2 py-0.5 rounded text-[8px] font-black bg-foreground/5 text-foreground/40 uppercase tracking-[0.2em] border border-foreground/10">VISITA</div>
+                          </div>
+                        </div>
                       </div>
-                      <CalendarButton match={nextMatch} className="w-full h-12" />
+                    </div>
+
+                    {/* High-Contrast Info Grid */}
+                    <div className="grid grid-cols-2 gap-3">
+                      <div className="flex flex-col relative overflow-hidden p-4 rounded-[2rem] bg-surface/50 border border-foreground/10 group/info hover:border-primary/30 transition-all duration-300">
+                        <div className="absolute -top-2 -right-2 p-4 opacity-10 group-hover/info:opacity-20 group-hover/info:scale-110 transition-all">
+                          <Calendar className="w-16 h-16 text-primary" />
+                        </div>
+                        <span className="text-[9px] font-black text-foreground/40 uppercase tracking-[0.2em] mb-1 relative z-10 flex items-center gap-1.5"><Calendar className="w-3 h-3 text-primary" /> FECHA</span>
+                        <span className="text-sm font-black italic text-foreground tracking-tight font-kanit relative z-10 shadow-sm">{new Date(nextMatch.date).toLocaleDateString('es-ES', { weekday: 'short', day: 'numeric', month: 'short' }).toUpperCase()}</span>
+                      </div>
+                      
+                      <div className="flex flex-col relative overflow-hidden p-4 rounded-[2rem] bg-surface/50 border border-foreground/10 group/info hover:border-primary/30 transition-all duration-300">
+                        <div className="absolute -top-2 -right-2 p-4 opacity-10 group-hover/info:opacity-20 group-hover/info:scale-110 transition-all">
+                          <Clock className="w-16 h-16 text-primary" />
+                        </div>
+                        <span className="text-[9px] font-black text-foreground/40 uppercase tracking-[0.2em] mb-1 relative z-10 flex items-center gap-1.5"><Clock className="w-3 h-3 text-primary" /> HORA</span>
+                        <span className="text-sm font-black italic text-foreground tracking-tight font-kanit relative z-10 shadow-sm">{nextMatch.time} HS</span>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center gap-4 p-5 rounded-[2.5rem] bg-gradient-to-r from-surface/80 to-surface border border-foreground/10 group/loc cursor-pointer hover:border-primary/30 transition-all overflow-hidden relative">
+                       <div className="absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b from-primary to-primary-dark group-hover/loc:w-2 transition-all duration-300" />
+                       <div className="w-12 h-12 rounded-[1.2rem] bg-foreground/5 flex items-center justify-center border border-foreground/10 shrink-0 group-hover/loc:scale-110 group-hover/loc:bg-primary/10 transition-all duration-500">
+                         <MapPin className="w-6 h-6 text-foreground/40 group-hover/loc:text-primary transition-colors" />
+                       </div>
+                       <div className="flex flex-col min-w-0 flex-1">
+                         <span className="text-[9px] font-black text-foreground/40 uppercase tracking-[0.2em] mb-0.5">UBICACIÓN DEL ENCUENTRO</span>
+                         <span className="text-[12px] font-bold text-foreground/90 truncate group-hover/loc:text-foreground transition-colors">{nextMatch.location || 'Sede por confirmar, mantén contacto.'}</span>
+                       </div>
+                       <ChevronRight className="w-5 h-5 text-foreground/20 group-hover/loc:text-primary group-hover/loc:translate-x-1 transition-all shrink-0" />
+                    </div>
+
+                    {/* Action Panel */}
+                    <div className="flex flex-col sm:flex-row gap-3 pt-2">
+                      <Link href={`/match?id=${nextMatch.id}`} className="flex-1">
+                        <motion.button
+                          whileHover={{ scale: 1.02 }}
+                          whileTap={{ scale: 0.98 }}
+                          className="w-full h-14 rounded-[1.5rem] bg-foreground text-background hover:bg-primary hover:text-black font-black uppercase text-[11px] tracking-[0.2em] flex items-center justify-center gap-3 shadow-[0_10px_25px_rgba(0,0,0,0.5)] hover:shadow-[0_15px_30px_rgba(44,252,125,0.4)] transition-all duration-300 group/btn"
+                        >
+                          ENTRAR A CANCHA <ArrowRight className="w-4 h-4 group-hover/btn:translate-x-1 transition-transform" />
+                        </motion.button>
+                      </Link>
+                      <CalendarButton match={nextMatch} className="w-full h-14 sm:w-auto sm:flex-1 shrink-0 rounded-[1.5rem] bg-surface hover:bg-foreground/10 border border-foreground/15 text-foreground/60 hover:text-foreground transition-all" />
                     </div>
                   </div>
                 ) : (
-                  <div className="relative group/agenda overflow-hidden rounded-[2.5rem] p-10 flex flex-col items-center text-center gap-8 border border-foreground/15 bg-gradient-to-b from-surface/50 to-transparent">
-                    {/* Cinematic Spotlight */}
-                    <div className="absolute top-0 left-1/2 -translate-x-1/2 w-48 h-48 bg-primary/5 blur-[60px] rounded-full pointer-events-none opacity-0 group-hover/agenda:opacity-100 transition-opacity duration-700" />
+                  <div className="relative group/agenda overflow-hidden rounded-[2.5rem] p-10 flex flex-col items-center text-center gap-8 border border-dashed border-foreground/20 bg-surface/30 backdrop-blur-sm transition-colors duration-500 hover:border-primary/30 hover:bg-surface/50">
+                    {/* Minimalist Tech Background */}
+                    <div className="absolute inset-0 bg-[url('/grid.svg')] bg-center opacity-[0.02]" />
+                    
+                    <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[80%] h-32 bg-primary/5 blur-[80px] rounded-full pointer-events-none opacity-0 group-hover/agenda:opacity-100 transition-opacity duration-1000" />
 
-                    <div className="relative">
-                      <div className="absolute inset-0 bg-primary/20 blur-xl rounded-full scale-0 group-hover/agenda:scale-150 transition-transform duration-1000 opacity-20" />
-                      <Calendar className="w-16 h-16 text-foreground/10 group-hover/agenda:text-primary/30 transition-colors duration-500" />
+                    <div className="relative group-hover/agenda:-translate-y-2 transition-transform duration-500">
+                      <div className="absolute inset-0 bg-primary/20 blur-2xl rounded-full scale-0 group-hover/agenda:scale-150 transition-transform duration-1000 opacity-30" />
+                      <div className="w-20 h-20 rounded-3xl bg-foreground/[0.03] border border-foreground/10 flex items-center justify-center relative z-10 shadow-xl group-hover/agenda:border-primary/30 overflow-hidden">
+                        <div className="absolute inset-0 bg-gradient-to-br from-primary/10 to-transparent opacity-0 group-hover/agenda:opacity-100 transition-opacity" />
+                        <Calendar className="w-8 h-8 text-foreground/20 group-hover/agenda:text-primary transition-colors duration-500" />
+                      </div>
                     </div>
 
-                    <div className="space-y-2 relative z-10">
-                      <h4 className="text-2xl font-black italic uppercase tracking-tighter text-foreground font-kanit">Agenda Libre</h4>
-                      <p className="text-[11px] font-medium text-foreground/40 tracking-wide leading-relaxed max-w-[220px]">
-                        No tenés próximos partidos.<br />¡Salí a reclutar leyendas!
+                    <div className="space-y-3 relative z-10 group-hover/agenda:-translate-y-1 transition-transform duration-700">
+                      <h4 className="text-3xl font-black italic uppercase tracking-tighter text-foreground/80 font-kanit">Agenda Libre</h4>
+                      <p className="text-[11px] font-medium text-foreground/40 tracking-wide leading-relaxed max-w-[240px] mx-auto">
+                        No hay encuentros programados.<br />El potrero te está llamando.
                       </p>
                     </div>
 
                     <Link href="/search" className="w-full relative z-10">
                       <motion.button
-                        whileHover={{ scale: 1.02 }}
+                        whileHover={{ scale: 1.02, y: -2 }}
                         whileTap={{ scale: 0.98 }}
-                        className="w-full h-14 rounded-2xl bg-primary text-black font-black uppercase text-[11px] tracking-[0.3em] flex items-center justify-center gap-3 shadow-[0_15px_30px_rgba(44,252,125,0.2)] hover:shadow-[0_20px_40px_rgba(44,252,125,0.4)] transition-all"
+                        className="w-full h-14 rounded-[1.5rem] bg-foreground text-background font-black uppercase text-[11px] tracking-[0.3em] flex items-center justify-center gap-3 shadow-xl hover:bg-primary hover:text-black transition-colors duration-300 group/btn border border-transparent overflow-hidden relative"
                       >
-                        <Search className="w-4 h-4" />
-                        <span>RECLUTAR</span>
+                         <div className="absolute inset-0 bg-[url('/noise.png')] opacity-10 mix-blend-overlay" />
+                        <Search className="w-4 h-4 group-hover/btn:text-black transition-colors" />
+                        <span className="relative z-10">RECLUTAR RIVAL</span>
+                        <ArrowRight className="w-4 h-4 opacity-0 -ml-4 group-hover/btn:opacity-100 group-hover/btn:ml-0 transition-all duration-300" />
                       </motion.button>
                     </Link>
 
-                    <div className="flex flex-col gap-2 pt-4 border-t border-foreground/15 w-full opacity-60">
-                      <span className="text-[8px] font-semibold text-foreground/40 tracking-wide font-kanit">Sugerencia de hoy</span>
-                      <p className="text-[9px] font-medium text-foreground/40 italic leading-relaxed">
-                        "Un equipo unido vale más que 11 estrellas individuales."
+                    <div className="flex flex-col gap-2 pt-6 border-t border-foreground/10 w-full relative z-10">
+                      <div className="flex items-center justify-center gap-2 text-[8px] font-black text-foreground/30 uppercase tracking-[0.2em] mb-1">
+                        <Sparkles className="w-3 h-3 text-primary/50" />
+                        <span>Sugerencia del sistema</span>
+                        <Sparkles className="w-3 h-3 text-primary/50" />
+                      </div>
+                      <p className="text-[10px] font-medium text-foreground/50 italic leading-relaxed px-4">
+                        "La gloria le pertenece a quienes tienen el coraje de pisar la cancha."
                       </p>
                     </div>
                   </div>
