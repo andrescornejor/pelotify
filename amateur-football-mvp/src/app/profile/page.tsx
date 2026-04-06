@@ -588,15 +588,15 @@ function ProfileContent() {
                   </div>
                   <div>
                     <h3 className="text-lg font-black uppercase tracking-tighter italic text-white leading-none">Consigue el verificado</h3>
-                    <p className="text-xs text-foreground/60 font-medium mt-1">Conecta tu cuenta de Instagram oficial para obtener la insignia de jugador verificado.</p>
+                    <p className="text-xs text-foreground/60 font-medium mt-1">Escribe tu usuario de Instagram oficial en Editar Perfil para obtener el tick.</p>
                   </div>
                 </div>
                 <button 
-                  onClick={() => window.location.href = '/api/auth/instagram'}
+                  onClick={() => setIsEditing(true)}
                   className="px-6 h-12 shrink-0 rounded-2xl bg-primary text-black text-[10px] font-black uppercase tracking-widest shadow-xl shadow-primary/20 hover:scale-105 active:scale-95 transition-all w-full sm:w-auto flex items-center justify-center gap-2"
                 >
-                  <ExternalLink className="w-4 h-4" />
-                  Vincular Cuenta
+                  <Edit2 className="w-4 h-4" />
+                  Añadir Usuario
                 </button>
               </div>
             </div>
@@ -715,20 +715,13 @@ function ProfileContent() {
                           Usuario de Instagram
                           <BadgeCheck className="w-3 h-3 text-primary" />
                         </label>
-                        <div className="flex items-center gap-3">
-                          <input 
-                            readOnly
-                            disabled
-                            value={editedData.instagram ? `@${editedData.instagram}` : 'No vinculado'}
-                            className="flex-1 bg-foreground/5 border border-foreground/10 rounded-2xl px-5 h-12 text-xs text-foreground/50 outline-none shadow-inner opacity-70 cursor-not-allowed font-medium"
-                          />
-                          {!editedData.instagram && (
-                             <button type="button" onClick={() => window.location.href = '/api/auth/instagram'} className="h-12 px-6 shrink-0 rounded-2xl bg-primary/10 border border-primary/20 text-primary hover:bg-primary/20 transition-all flex items-center gap-2 text-[10px] font-black uppercase tracking-widest">
-                                Vincular
-                             </button>
-                          )}
-                        </div>
-                        <p className="text-[10px] text-foreground/40 italic">La vinculación con Instagram es automática para garantizar autenticidad.</p>
+                        <input 
+                          value={editedData.instagram}
+                          onChange={e => setEditedData({...editedData, instagram: e.target.value.replace('@', '')})}
+                          placeholder="tu_usuario_instagram"
+                          className="w-full bg-foreground/5 border border-foreground/10 rounded-2xl px-5 h-12 text-xs text-foreground/70 outline-none focus:border-primary/50 shadow-inner"
+                        />
+                        <p className="text-[10px] text-foreground/40 italic">Para el MVP: Añade tu nombre de usuario para obtener el tick de verificado.</p>
                       </div>
                     </div>
                   ) : (
