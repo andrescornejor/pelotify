@@ -954,84 +954,89 @@ export default function CreateMatchPage() {
                     Formato
                   </span>
                   <div className="grid grid-cols-3 gap-4">
-                    {(
-                      Object.entries(FORMAT_DATA) as [
+                    {dbFields.length === 0 && formData.business_id ? (
+                      <div className="col-span-3 py-10 flex flex-col items-center justify-center gap-4 bg-foreground/[0.02] rounded-3xl border border-foreground/[0.04]">
+                         <Loader2 className="w-8 h-8 text-primary animate-spin" />
+                         <span className="text-[10px] font-black uppercase tracking-widest text-foreground/40">Cargando formatos de la sede...</span>
+                      </div>
+                    ) : (
+                      (Object.entries(FORMAT_DATA) as [
                         keyof typeof FORMAT_DATA,
                         (typeof FORMAT_DATA)[keyof typeof FORMAT_DATA],
-                      ][]
-                    ).map(([key, data], i) => {
-                      let isAvailable = true;
-                      if (formData.business_id) {
-                        isAvailable = dbFields.some(f => f.business_id === formData.business_id && f.type === key);
-                      } else {
-                        const venue = findVenueByLocation(formData.location);
-                        isAvailable = !venue?.formats || venue.formats.some((f: any) => f.type === key);
-                      }
-                      
-                      if (!isAvailable) return null;
+                      ][]).map(([key, data]) => {
+                        let isAvailable = true;
+                        if (formData.business_id) {
+                          isAvailable = dbFields.some(f => f.business_id === formData.business_id && f.type === key);
+                        } else {
+                          const venue = findVenueByLocation(formData.location);
+                          isAvailable = !venue?.formats || venue.formats.some((f: any) => f.type === key);
+                        }
+                        
+                        if (!isAvailable) return null;
 
-                      const isSelected = formData.type === key;
-                      return (
-                        <motion.button
-                          key={key}
-                          initial={false}
-                          animate={{ opacity: 1, y: 0 }}
-                          type="button"
-                          onClick={() => handleTypeSelect(key)}
-                          className={`group relative p-4 sm:p-5 rounded-3xl border text-left transition-all duration-300 overflow-hidden flex flex-col gap-3 ${
-                            isSelected
-                              ? `border-primary bg-primary/[0.08] sm:shadow-2xl ${data.glow}`
-                              : 'border-foreground/[0.06] bg-foreground/[0.02] hover:border-foreground/15'
-                          }`}
-                        >
-                          {isSelected && (
-                            <div
-                              className={`absolute inset-0 bg-gradient-to-br ${data.color} opacity-5`}
-                            />
-                          )}
-                          {/* Pitch diagram */}
-                          <div
-                            className={`w-full aspect-video rounded-xl overflow-hidden flex items-center justify-center transition-colors ${
-                              isSelected ? 'text-primary' : 'text-foreground/10'
+                        const isSelected = formData.type === key;
+                        return (
+                          <motion.button
+                            key={key}
+                            initial={false}
+                            animate={{ opacity: 1, y: 0 }}
+                            type="button"
+                            onClick={() => handleTypeSelect(key)}
+                            className={`group relative p-4 sm:p-5 rounded-3xl border text-left transition-all duration-300 overflow-hidden flex flex-col gap-3 ${
+                              isSelected
+                                ? `border-primary bg-primary/[0.08] sm:shadow-2xl ${data.glow}`
+                                : 'border-foreground/[0.06] bg-foreground/[0.02] hover:border-foreground/15'
                             }`}
                           >
-                            <PitchSVG type={key} />
-                          </div>
-                          <div className="relative space-y-0.5">
-                            <span
-                              className={`block text-sm font-black italic uppercase tracking-tight transition-colors ${
-                                isSelected ? 'text-foreground' : 'text-foreground/30'
+                            {isSelected && (
+                              <div
+                                className={`absolute inset-0 bg-gradient-to-br ${data.color} opacity-5`}
+                              />
+                            )}
+                            {/* Pitch diagram */}
+                            <div
+                              className={`w-full aspect-video rounded-xl overflow-hidden flex items-center justify-center transition-colors ${
+                                isSelected ? 'text-primary' : 'text-foreground/10'
                               }`}
                             >
-                              {data.label}
-                            </span>
-                            <span
-                              className={`block text-[9px] font-bold uppercase tracking-widest transition-colors ${
-                                isSelected ? 'text-primary' : 'text-foreground/20'
-                              }`}
-                            >
-                              {data.players}
-                            </span>
-                            <span
-                              className={`block text-[9px] tracking-wide transition-colors ${
-                                isSelected ? 'text-foreground/50' : 'text-foreground/15'
-                              }`}
-                            >
-                              {data.desc}
-                            </span>
-                          </div>
-                          {isSelected && (
-                            <motion.div
-                              initial={{ scale: 0 }}
-                              animate={{ scale: 1 }}
-                              className="absolute top-3 right-3 w-5 h-5 rounded-full bg-primary flex items-center justify-center"
-                            >
-                              <CheckCircle2 className="w-3 h-3 text-black" />
-                            </motion.div>
-                          )}
-                        </motion.button>
-                      );
-                    })}
+                              <PitchSVG type={key} />
+                            </div>
+                            <div className="relative space-y-0.5">
+                              <span
+                                className={`block text-sm font-black italic uppercase tracking-tight transition-colors ${
+                                  isSelected ? 'text-foreground' : 'text-foreground/30'
+                                }`}
+                              >
+                                {data.label}
+                              </span>
+                              <span
+                                className={`block text-[9px] font-bold uppercase tracking-widest transition-colors ${
+                                  isSelected ? 'text-primary' : 'text-foreground/20'
+                                }`}
+                              >
+                                {data.players}
+                              </span>
+                              <span
+                                className={`block text-[9px] tracking-wide transition-colors ${
+                                  isSelected ? 'text-foreground/50' : 'text-foreground/15'
+                                }`}
+                              >
+                                {data.desc}
+                              </span>
+                            </div>
+                            {isSelected && (
+                              <motion.div
+                                initial={{ scale: 0 }}
+                                animate={{ scale: 1 }}
+                                className="absolute top-3 right-3 w-5 h-5 rounded-full bg-primary flex items-center justify-center"
+                              >
+                                <CheckCircle2 className="w-3 h-3 text-black" />
+                              </motion.div>
+                            )}
+                          </motion.button>
+                        );
+                      })
+                    )}
                   </div>
                 </div>
 
@@ -1287,7 +1292,7 @@ export default function CreateMatchPage() {
             {/* ── STEP 4: CONFIRMAR ── */}
             {step === 4 && (
               <motion.div
-                key="step-3"
+                key="step-4"
                 initial={{ opacity: 0, x: 40 }}
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: -40 }}
