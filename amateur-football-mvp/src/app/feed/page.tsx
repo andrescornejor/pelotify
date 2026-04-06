@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useMemo, useCallback } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/lib/supabase';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -23,10 +23,17 @@ import {
   Flame,
   Hash,
   UserPlus,
+  Bookmark,
+  BookmarkCheck,
+  Copy,
+  Check,
+  Globe,
+  LinkIcon,
 } from 'lucide-react';
 import Link from 'next/link';
 import { uploadPostImage } from '@/lib/storage';
 import { compressImage, blobToFile } from '@/lib/imageUtils';
+import { sendFriendRequest } from '@/lib/friends';
 
 function timeAgo(dateString: string) {
   const date = new Date(dateString);
@@ -41,6 +48,11 @@ function timeAgo(dateString: string) {
   const months = Math.floor(days / 30);
   if (months < 12) return `hace ${months} meses`;
   return `hace ${Math.floor(months / 12)} años`;
+}
+
+function extractHashtags(text: string): string[] {
+  const matches = text.match(/#[\w\u00C0-\u024FáéíóúñÁÉÍÓÚÑ]+/g);
+  return matches ? matches.map(t => t.slice(1)) : [];
 }
 
 interface Post {
@@ -94,10 +106,72 @@ export default function FeedPage() {
   const [topPlayers, setTopPlayers] = useState<any[]>([]);
   const [suggestedUsers, setSuggestedUsers] = useState<any[]>([]);
 
+  // Search state
+  const [searchQuery, setSearchQuery] = useState('');
+  const [isSearchFocused, setIsSearchFocused] = useState(false);
+
+  // Bookmark state
+  const [bookmarkedPosts, setBookmarkedPosts] = useState<Set<string>>(new Set());
+  
+  // Share state
+  const [copiedPostId, setCopiedPostId] = useState<string | null>(null);
+
+  // Friend request state
+  const [pendingFriendRequests, setPendingFriendRequests] = useState<Set<string>>(new Set());
+  const [sentFriendRequests, setSentFriendRequests] = useState<Set<string>>(new Set());
+  const [existingFriends, setExistingFriends] = useState<Set<string>>(new Set());
+
   useEffect(() => {
     fetchPosts();
     fetchSidebarData();
+    if (user) {
+      fetchBookmarks();
+      fetchFriendshipStatuses();
+    }
   }, [user]);
+
+  const fetchFriendshipStatuses = async () => {
+    if (!user) return;
+    try {
+      const { data } = await supabase
+        .from('friendships')
+        .select('id, user_id, friend_id, status')
+        .or(`user_id.eq.${user.id},friend_id.eq.${user.id}`);
+      
+      if (data) {
+        const friends = new Set<string>();
+        const pending = new Set<string>();
+        data.forEach(f => {
+          const otherId = f.user_id === user.id ? f.friend_id : f.user_id;
+          if (f.status === 'accepted') {
+            friends.add(otherId);
+          } else if (f.status === 'pending') {
+            pending.add(otherId);
+          }
+        });
+        setExistingFriends(friends);
+        setSentFriendRequests(pending);
+      }
+    } catch (err) {
+      console.error('Error fetching friendships:', err);
+    }
+  };
+
+  const fetchBookmarks = async () => {
+    if (!user) return;
+    try {
+      const { data } = await supabase
+        .from('post_bookmarks')
+        .select('post_id')
+        .eq('user_id', user.id);
+      if (data) {
+        setBookmarkedPosts(new Set(data.map(b => b.post_id)));
+      }
+    } catch (err) {
+      // Table might not exist yet, gracefully handle
+      console.error('Bookmarks not available:', err);
+    }
+  };
 
   const fetchSidebarData = async () => {
     try {
@@ -109,7 +183,7 @@ export default function FeedPage() {
         .limit(5);
       if (players) setTopPlayers(players);
 
-      // Suggested users (random recent users)
+      // Suggested users (random recent users, excluding current user)
       const { data: suggested } = await supabase
         .from('profiles')
         .select('id, name, avatar_url, position, is_pro')
@@ -156,6 +230,32 @@ export default function FeedPage() {
       setIsLoading(false);
     }
   };
+
+  // Real trending topics: extract hashtags from all posts
+  const trendingTopics = useMemo(() => {
+    const tagCount: Record<string, number> = {};
+    posts.forEach(post => {
+      const tags = extractHashtags(post.content);
+      tags.forEach(tag => {
+        const lower = tag.toLowerCase();
+        tagCount[lower] = (tagCount[lower] || 0) + 1;
+      });
+    });
+    return Object.entries(tagCount)
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 5)
+      .map(([tag, count]) => ({ tag, count }));
+  }, [posts]);
+
+  // Filtered posts based on search query
+  const filteredPosts = useMemo(() => {
+    if (!searchQuery.trim()) return posts;
+    const q = searchQuery.toLowerCase();
+    return posts.filter(post =>
+      post.content.toLowerCase().includes(q) ||
+      post.author.name.toLowerCase().includes(q)
+    );
+  }, [posts, searchQuery]);
 
   const loadComments = async (postId: string) => {
     try {
@@ -306,6 +406,93 @@ export default function FeedPage() {
     }
   };
 
+  const handleBookmark = async (postId: string) => {
+    if (!user) return;
+    const isBookmarked = bookmarkedPosts.has(postId);
+    
+    // Optimistic update
+    setBookmarkedPosts(prev => {
+      const next = new Set(prev);
+      if (isBookmarked) next.delete(postId);
+      else next.add(postId);
+      return next;
+    });
+
+    try {
+      if (isBookmarked) {
+        await supabase
+          .from('post_bookmarks')
+          .delete()
+          .eq('post_id', postId)
+          .eq('user_id', user.id);
+      } else {
+        await supabase
+          .from('post_bookmarks')
+          .insert({ post_id: postId, user_id: user.id });
+      }
+    } catch (err) {
+      // Revert on error
+      setBookmarkedPosts(prev => {
+        const next = new Set(prev);
+        if (isBookmarked) next.add(postId);
+        else next.delete(postId);
+        return next;
+      });
+      console.error('Bookmark error:', err);
+    }
+  };
+
+  const handleShare = async (post: Post) => {
+    const shareUrl = `${window.location.origin}/feed?post=${post.id}`;
+    const shareData = {
+      title: `Post de ${post.author.name} en Pelotify`,
+      text: post.content.slice(0, 100) + (post.content.length > 100 ? '...' : ''),
+      url: shareUrl,
+    };
+
+    try {
+      if (navigator.share && navigator.canShare?.(shareData)) {
+        await navigator.share(shareData);
+      } else {
+        await navigator.clipboard.writeText(shareUrl);
+        setCopiedPostId(post.id);
+        setTimeout(() => setCopiedPostId(null), 2000);
+      }
+    } catch (err) {
+      // User cancelled share or clipboard failed
+      try {
+        await navigator.clipboard.writeText(shareUrl);
+        setCopiedPostId(post.id);
+        setTimeout(() => setCopiedPostId(null), 2000);
+      } catch {
+        console.error('Share error:', err);
+      }
+    }
+  };
+
+  const handleSendFriendRequest = async (targetUserId: string) => {
+    if (!user || sentFriendRequests.has(targetUserId) || existingFriends.has(targetUserId)) return;
+    
+    // Optimistic
+    setSentFriendRequests(prev => new Set(prev).add(targetUserId));
+    
+    try {
+      await sendFriendRequest(user.id, targetUserId);
+    } catch (err) {
+      // Revert
+      setSentFriendRequests(prev => {
+        const next = new Set(prev);
+        next.delete(targetUserId);
+        return next;
+      });
+      console.error('Friend request error:', err);
+    }
+  };
+
+  const handleHashtagClick = (tag: string) => {
+    setSearchQuery(`#${tag}`);
+  };
+
   if (isLoading) {
     return (
       <div className="flex flex-col min-h-[90vh] bg-background items-center justify-center">
@@ -313,14 +500,6 @@ export default function FeedPage() {
       </div>
     );
   }
-
-  const TRENDING_TOPICS = [
-    { tag: 'FutbolAmateur', posts: '2.3K' },
-    { tag: 'PotreroArgentino', posts: '1.8K' },
-    { tag: 'GolDelDomingo', posts: '987' },
-    { tag: 'TorneoBarrial', posts: '756' },
-    { tag: 'PelotifyPro', posts: '432' },
-  ];
 
   return (
     <div className="flex flex-col min-h-screen bg-background">
@@ -333,8 +512,8 @@ export default function FeedPage() {
         onChange={handleImageSelect}
       />
 
-      {/* 3-column layout matching TopHeader padding */}
-      <div className="w-full mx-auto px-0 lg:px-4 xl:px-6">
+      {/* 3-column layout matching TopHeader padding exactly */}
+      <div className="w-full mx-auto px-3 sm:px-5 lg:px-10 xl:px-16">
         <div className="flex gap-0 lg:gap-6 xl:gap-8 justify-center">
 
           {/* ── LEFT SIDEBAR (desktop only) ── */}
@@ -396,7 +575,7 @@ export default function FeedPage() {
                    <textarea
                      value={newPostContent}
                      onChange={(e) => setNewPostContent(e.target.value)}
-                     placeholder="¡Habla, crack! ¿Qué está pasando?"
+                     placeholder="¡Habla, crack! ¿Qué está pasando? Usá #hashtags"
                      className="w-full bg-transparent border-none resize-none focus:outline-none text-foreground text-lg placeholder:text-foreground/50 min-h-[50px] font-medium"
                      maxLength={500}
                    />
@@ -446,7 +625,7 @@ export default function FeedPage() {
             {/* POSTS FEED */}
             <div className="flex flex-col pb-20">
               <AnimatePresence>
-                 {posts.map((post) => (
+                 {filteredPosts.map((post) => (
                    <motion.div
                      key={post.id}
                      initial={{ opacity: 0 }}
@@ -505,10 +684,23 @@ export default function FeedPage() {
                              )}
                           </div>
 
-                          {/* Content */}
+                          {/* Content with clickable hashtags */}
                           <div className="mt-1 mb-3">
                              <p className="text-foreground text-[15px] leading-relaxed whitespace-pre-wrap">
-                                {post.content}
+                                {post.content.split(/(#[\w\u00C0-\u024FáéíóúñÁÉÍÓÚÑ]+)/g).map((part, i) => {
+                                  if (part.startsWith('#')) {
+                                    return (
+                                      <button
+                                        key={i}
+                                        onClick={(e) => { e.stopPropagation(); handleHashtagClick(part.slice(1)); }}
+                                        className="text-blue-500 hover:underline font-medium"
+                                      >
+                                        {part}
+                                      </button>
+                                    );
+                                  }
+                                  return part;
+                                })}
                              </p>
                              {/* Post Image */}
                              {post.image_url && (
@@ -538,9 +730,18 @@ export default function FeedPage() {
                                 <span>{post.comments_count > 0 ? post.comments_count : ''}</span>
                              </button>
 
-                             <button className="flex items-center gap-1.5 text-[13px] group/btn hover:text-green-500 transition-colors" onClick={(e) => e.stopPropagation()}>
-                                <div className="p-2 rounded-full group-hover/btn:bg-green-500/10 transition-colors">
-                                   <Zap className="w-4 h-4" />
+                             {/* Bookmark */}
+                             <button
+                               onClick={(e) => { e.stopPropagation(); handleBookmark(post.id); }}
+                               className={cn("flex items-center gap-1.5 text-[13px] group/btn transition-colors", bookmarkedPosts.has(post.id) ? "text-green-500" : "hover:text-green-500")}
+                               title={bookmarkedPosts.has(post.id) ? 'Quitar de guardados' : 'Guardar'}
+                             >
+                                <div className={cn("p-2 rounded-full transition-colors", bookmarkedPosts.has(post.id) ? "bg-green-500/10" : "group-hover/btn:bg-green-500/10")}>
+                                   {bookmarkedPosts.has(post.id) ? (
+                                     <BookmarkCheck className="w-4 h-4 fill-green-500" />
+                                   ) : (
+                                     <Bookmark className="w-4 h-4" />
+                                   )}
                                 </div>
                              </button>
 
@@ -554,9 +755,18 @@ export default function FeedPage() {
                                 <span>{post.likes_count > 0 ? post.likes_count : ''}</span>
                              </button>
 
-                             <button className="flex items-center gap-1.5 text-[13px] group/btn hover:text-blue-500 transition-colors" onClick={(e) => e.stopPropagation()}>
-                                <div className="p-2 rounded-full group-hover/btn:bg-blue-500/10 transition-colors">
-                                   <Share2 className="w-4 h-4" />
+                             {/* Share - real Web Share API or copy link */}
+                             <button
+                               onClick={(e) => { e.stopPropagation(); handleShare(post); }}
+                               className={cn("flex items-center gap-1.5 text-[13px] group/btn transition-colors", copiedPostId === post.id ? "text-blue-500" : "hover:text-blue-500")}
+                               title="Compartir"
+                             >
+                                <div className={cn("p-2 rounded-full transition-colors", copiedPostId === post.id ? "bg-blue-500/10" : "group-hover/btn:bg-blue-500/10")}>
+                                   {copiedPostId === post.id ? (
+                                     <Check className="w-4 h-4" />
+                                   ) : (
+                                     <Share2 className="w-4 h-4" />
+                                   )}
                                 </div>
                              </button>
                           </div>
@@ -635,7 +845,19 @@ export default function FeedPage() {
                     </div>
                   </motion.div>
                  ))}
-                 {posts.length === 0 && (
+                 {filteredPosts.length === 0 && searchQuery && (
+                    <div className="text-center py-20 text-foreground/50 font-medium text-lg border-t border-foreground/10">
+                       <Search className="w-8 h-8 mx-auto mb-3 text-foreground/30" />
+                       No se encontraron resultados para &quot;{searchQuery}&quot;
+                       <button
+                         onClick={() => setSearchQuery('')}
+                         className="block mx-auto mt-3 text-blue-500 text-sm font-bold hover:underline"
+                       >
+                         Limpiar búsqueda
+                       </button>
+                    </div>
+                 )}
+                 {filteredPosts.length === 0 && !searchQuery && (
                     <div className="text-center py-20 text-foreground/50 font-medium text-lg border-t border-foreground/10">
                        Aún no hay publicaciones. ¡Sé el primero!
                     </div>
@@ -647,75 +869,110 @@ export default function FeedPage() {
           {/* ── RIGHT SIDEBAR (desktop only) ── */}
           <aside className="hidden lg:flex flex-col w-[280px] xl:w-[340px] shrink-0 sticky top-[100px] self-start gap-4 pb-8">
 
-            {/* Search Bar */}
+            {/* Search Bar - functional */}
             <div className="relative">
               <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-foreground/40" />
               <input
                 type="text"
-                placeholder="Buscar en Pelotify"
-                className="w-full h-11 bg-foreground/[0.04] border border-foreground/10 rounded-full pl-11 pr-4 text-[15px] text-foreground placeholder:text-foreground/40 focus:outline-none focus:border-blue-500/50 focus:ring-1 focus:ring-blue-500/50 focus:bg-background transition-all"
+                placeholder="Buscar posts o usuarios..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                onFocus={() => setIsSearchFocused(true)}
+                onBlur={() => setTimeout(() => setIsSearchFocused(false), 200)}
+                className="w-full h-11 bg-foreground/[0.04] border border-foreground/10 rounded-full pl-11 pr-10 text-[15px] text-foreground placeholder:text-foreground/40 focus:outline-none focus:border-blue-500/50 focus:ring-1 focus:ring-blue-500/50 focus:bg-background transition-all"
               />
+              {searchQuery && (
+                <button
+                  onClick={() => setSearchQuery('')}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 w-6 h-6 flex items-center justify-center rounded-full bg-blue-500 text-white hover:bg-blue-600 transition-colors"
+                >
+                  <X className="w-3 h-3" />
+                </button>
+              )}
             </div>
 
-            {/* Trending */}
-            <div className="rounded-2xl border border-foreground/10 bg-surface overflow-hidden">
-              <div className="p-4 border-b border-foreground/10">
-                <h3 className="font-bold text-foreground text-xl">Tendencias</h3>
+            {/* Trending - real hashtags from posts */}
+            {trendingTopics.length > 0 && (
+              <div className="rounded-2xl border border-foreground/10 bg-surface overflow-hidden">
+                <div className="p-4 border-b border-foreground/10">
+                  <h3 className="font-bold text-foreground text-xl">Tendencias</h3>
+                </div>
+                <div className="flex flex-col">
+                  {trendingTopics.map((topic, i) => (
+                    <button
+                      key={topic.tag}
+                      onClick={() => handleHashtagClick(topic.tag)}
+                      className="px-4 py-3 hover:bg-foreground/[0.03] transition-colors cursor-pointer text-left w-full"
+                    >
+                      <div className="text-[13px] text-foreground/40 font-medium">Tendencia #{i+1}</div>
+                      <div className="font-bold text-[15px] text-foreground flex items-center gap-1.5">
+                        <Hash className="w-3.5 h-3.5 text-blue-500" />
+                        {topic.tag}
+                      </div>
+                      <div className="text-[13px] text-foreground/40">{topic.count} {topic.count === 1 ? 'post' : 'posts'}</div>
+                    </button>
+                  ))}
+                </div>
               </div>
-              <div className="flex flex-col">
-                {TRENDING_TOPICS.map((topic, i) => (
-                  <div
-                    key={topic.tag}
-                    className="px-4 py-3 hover:bg-foreground/[0.03] transition-colors cursor-pointer"
-                  >
-                    <div className="text-[13px] text-foreground/40 font-medium">Tendencia #{i+1}</div>
-                    <div className="font-bold text-[15px] text-foreground flex items-center gap-1.5">
-                      <Hash className="w-3.5 h-3.5 text-blue-500" />
-                      {topic.tag}
-                    </div>
-                    <div className="text-[13px] text-foreground/40">{topic.posts} posts</div>
-                  </div>
-                ))}
-              </div>
-            </div>
+            )}
 
-            {/* Who to Follow */}
+            {/* Who to Follow - with real friend request */}
             <div className="rounded-2xl border border-foreground/10 bg-surface overflow-hidden">
               <div className="p-4 border-b border-foreground/10">
                 <h3 className="font-bold text-foreground text-xl">A quién seguir</h3>
               </div>
               <div className="flex flex-col">
-                {suggestedUsers.map(su => (
-                  <Link
-                    key={su.id}
-                    href={`/profile?id=${su.id}`}
-                    className="px-4 py-3 hover:bg-foreground/[0.03] transition-colors flex items-center gap-3"
-                  >
-                    <div className={cn("w-10 h-10 rounded-full overflow-hidden shrink-0 border", su.is_pro ? "border-yellow-500/50" : "border-foreground/10")}>
-                      {su.avatar_url ? (
-                        <img src={su.avatar_url} className="w-full h-full object-cover" alt="" />
-                      ) : (
-                        <div className="w-full h-full bg-primary/10 flex items-center justify-center font-bold text-primary text-sm">
-                          {su.name?.charAt(0)}
+                {suggestedUsers.map(su => {
+                  const isFriend = existingFriends.has(su.id);
+                  const isPending = sentFriendRequests.has(su.id);
+                  
+                  return (
+                    <div
+                      key={su.id}
+                      className="px-4 py-3 hover:bg-foreground/[0.03] transition-colors flex items-center gap-3"
+                    >
+                      <Link
+                        href={`/profile?id=${su.id}`}
+                        className={cn("w-10 h-10 rounded-full overflow-hidden shrink-0 border", su.is_pro ? "border-yellow-500/50" : "border-foreground/10")}
+                      >
+                        {su.avatar_url ? (
+                          <img src={su.avatar_url} className="w-full h-full object-cover" alt="" />
+                        ) : (
+                          <div className="w-full h-full bg-primary/10 flex items-center justify-center font-bold text-primary text-sm">
+                            {su.name?.charAt(0)}
+                          </div>
+                        )}
+                      </Link>
+                      <Link href={`/profile?id=${su.id}`} className="flex-1 min-w-0">
+                        <div className={cn("font-bold text-[15px] truncate", su.is_pro ? "text-yellow-500" : "text-foreground")}>
+                          {su.name}
+                          {su.is_pro && <Zap className="w-3 h-3 text-yellow-500 fill-yellow-500 inline ml-1" />}
                         </div>
-                      )}
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <div className={cn("font-bold text-[15px] truncate", su.is_pro ? "text-yellow-500" : "text-foreground")}>
-                        {su.name}
-                        {su.is_pro && <Zap className="w-3 h-3 text-yellow-500 fill-yellow-500 inline ml-1" />}
+                        <div className="text-[13px] text-foreground/40 truncate">
+                          {su.position || 'Jugador'} · @{su.name?.toLowerCase().replace(/\s+/g, '')}
+                        </div>
+                      </Link>
+                      <div className="shrink-0">
+                        {isFriend ? (
+                          <div className="px-4 py-1.5 rounded-full border border-foreground/20 text-foreground/50 text-[13px] font-bold">
+                            Amigos
+                          </div>
+                        ) : isPending ? (
+                          <div className="px-4 py-1.5 rounded-full border border-blue-500/30 text-blue-500 text-[13px] font-bold">
+                            Enviada
+                          </div>
+                        ) : (
+                          <button
+                            onClick={() => handleSendFriendRequest(su.id)}
+                            className="px-4 py-1.5 rounded-full bg-foreground text-background text-[13px] font-bold hover:bg-foreground/80 transition-colors active:scale-95"
+                          >
+                            Agregar
+                          </button>
+                        )}
                       </div>
-                      <div className="text-[13px] text-foreground/40 truncate">
-                        {su.position || 'Jugador'} · @{su.name?.toLowerCase().replace(/\s+/g, '')}
-                      </div>
                     </div>
-                    <div className="shrink-0">
-                      <div className="px-4 py-1.5 rounded-full bg-foreground text-background text-[13px] font-bold hover:bg-foreground/80 transition-colors">
-                        Seguir
-                      </div>
-                    </div>
-                  </Link>
-                ))}
+                  );
+                })}
               </div>
             </div>
 
