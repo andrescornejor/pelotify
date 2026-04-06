@@ -1501,7 +1501,7 @@ function ProfileContent() {
                   initial={{ opacity: 0, y: 30 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, scale: 0.95 }}
-                  className="max-w-7xl mx-auto pb-20"
+                  className="max-w-full w-full mx-auto pb-20"
                 >
                   <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12">
                     {/* Main Content: Comments List */}
@@ -1728,7 +1728,7 @@ function ProfileContent() {
                   initial={{ opacity: 0, y: 30 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, scale: 0.95 }}
-                  className="max-w-4xl mx-auto pb-20 mt-10"
+                  className="max-w-full w-full mx-auto pb-20 mt-10"
                 >
                   <div className="glass-premium p-8 sm:p-12 rounded-[3.5rem] border border-[#009EE3]/30 bg-gradient-to-br from-[#009EE3]/5 to-transparent relative overflow-hidden shadow-[0_20px_60px_rgba(0,158,227,0.1)] group/wallet">
                     <div className="absolute top-0 right-0 w-64 h-64 bg-[#009EE3]/10 blur-[80px] pointer-events-none group-hover/wallet:opacity-100 opacity-50 transition-opacity duration-1000" />
