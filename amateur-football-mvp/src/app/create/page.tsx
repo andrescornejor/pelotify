@@ -454,7 +454,9 @@ export default function CreateMatchPage() {
     return AVAILABLE_TIMES.filter((t) => {
       if (!isToday) return true;
       const h = parseInt(t.split(':')[0]);
-      if (h === 0) return true; // Midnight is end of day
+      // If today and hour is past or equal to current hour, filter it out
+      // (Except for 00:00 which is technically start of next day, but here usually end of day)
+      if (h === 0) return true;
       return h > currentHour;
     });
   };
@@ -715,7 +717,7 @@ export default function CreateMatchPage() {
                     {Array.from({ length: 14 }).map((_, i) => {
                       const d = new Date();
                       d.setDate(d.getDate() + i);
-                      const dateStr = d.toISOString().split('T')[0];
+                      const dateStr = `${d.getFullYear()}-${(d.getMonth() + 1).toString().padStart(2, '0')}-${d.getDate().toString().padStart(2, '0')}`;
                       const dayName = d
                         .toLocaleDateString('es-ES', { weekday: 'short' })
                         .replace('.', '')
@@ -776,7 +778,8 @@ export default function CreateMatchPage() {
                           !Array.from({ length: 14 }).some((_, i) => {
                             const d = new Date();
                             d.setDate(d.getDate() + i);
-                            return d.toISOString().split('T')[0] === formData.date;
+                            const ds = `${d.getFullYear()}-${(d.getMonth() + 1).toString().padStart(2, '0')}-${d.getDate().toString().padStart(2, '0')}`;
+                            return ds === formData.date;
                           })
                             ? 'border-primary bg-gradient-to-b from-primary to-emerald-400 text-black scale-105'
                             : 'border-foreground/[0.06] bg-foreground/[0.02] text-foreground/20 hover:border-foreground/20'
@@ -1066,7 +1069,7 @@ export default function CreateMatchPage() {
                       type="number"
                       min="0"
                       placeholder="0 · Partido libre"
-                      value={formData.price || ''}
+                      value={formData.price}
                       onChange={(e) => {
                         setPriceManuallyEdited(true);
                         setFormData({ ...formData, price: parseInt(e.target.value) || 0 });
