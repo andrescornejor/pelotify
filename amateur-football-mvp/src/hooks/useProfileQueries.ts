@@ -16,6 +16,9 @@ export interface Profile {
   matches?: number;
   matches_won?: number;
   mvp_count?: number;
+  instagram?: string;
+  is_pro?: boolean;
+  pro_since?: string;
   updated_at?: string;
 }
 

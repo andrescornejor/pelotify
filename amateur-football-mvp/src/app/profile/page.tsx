@@ -576,27 +576,27 @@ function ProfileContent() {
       {/* Main Content Container */}
       <div className="max-w-full mx-auto w-full px-3 sm:px-5 lg:px-10 xl:px-16 -mt-14 sm:-mt-48 lg:-mt-64 relative z-20 pb-20">
         
-        {/* Verification Banner */}
-        {isMe && !getField('instagram', '') && (
+        {/* Pelotify Pro Banner */}
+        {isMe && !getField('is_pro', false) && (
           <div className="mb-8 w-full w-full mx-auto animate-in fade-in slide-in-from-bottom-4 duration-1000">
             <div className="relative p-6 sm:p-8 rounded-[2rem] overflow-hidden group">
-              <div className="absolute inset-0 bg-gradient-to-r from-primary/10 via-primary/5 to-transparent border border-primary/20 rounded-[2rem]" />
+              <div className="absolute inset-0 bg-gradient-to-r from-yellow-500/20 via-yellow-400/10 to-transparent border border-yellow-500/30 rounded-[2rem]" />
               <div className="relative z-10 flex flex-col sm:flex-row items-center gap-6 sm:justify-between">
                 <div className="flex items-center gap-4 text-center sm:text-left">
-                  <div className="w-12 h-12 rounded-full bg-primary/20 flex items-center justify-center shrink-0 border border-primary/40">
-                    <BadgeCheck className="w-6 h-6 text-primary" />
+                  <div className="w-12 h-12 rounded-full bg-yellow-500/20 flex items-center justify-center shrink-0 border border-yellow-500/40">
+                    <Star className="w-6 h-6 text-yellow-400 drop-shadow-[0_0_10px_rgba(250,204,21,0.8)]" />
                   </div>
                   <div>
-                    <h3 className="text-lg font-black uppercase tracking-tighter italic text-white leading-none">Consigue el verificado</h3>
-                    <p className="text-xs text-foreground/60 font-medium mt-1">Escribe tu usuario de Instagram oficial en Editar Perfil para obtener el tick.</p>
+                    <h3 className="text-lg font-black uppercase tracking-tighter italic text-yellow-400 leading-none drop-shadow-md">Únete a Pelotify Pro</h3>
+                    <p className="text-xs text-foreground/80 font-medium mt-1">Verificado ✓ • Radares Avanzados • Descuentos en Canchas • Prioridad en Partidos.</p>
                   </div>
                 </div>
                 <button 
-                  onClick={() => setIsEditing(true)}
-                  className="px-6 h-12 shrink-0 rounded-2xl bg-primary text-black text-[10px] font-black uppercase tracking-widest shadow-xl shadow-primary/20 hover:scale-105 active:scale-95 transition-all w-full sm:w-auto flex items-center justify-center gap-2"
+                  onClick={() => router.push('/pro')}
+                  className="px-6 h-12 shrink-0 rounded-2xl bg-gradient-to-r from-yellow-400 to-yellow-600 text-black text-[10px] font-black uppercase tracking-widest shadow-xl shadow-yellow-500/30 hover:scale-105 active:scale-95 transition-all w-full sm:w-auto flex items-center justify-center gap-2"
                 >
-                  <Edit2 className="w-4 h-4" />
-                  Añadir Usuario
+                  <Star className="w-4 h-4" fill="currentColor" />
+                  Suscribirme
                 </button>
               </div>
             </div>
@@ -649,10 +649,15 @@ function ProfileContent() {
                           />
                         ) : (displayPlayer.name)}
                       </h1>
-                      {!isEditing && getField('instagram', '') && (
-                        <a href={`https://instagram.com/${getField('instagram', '').replace('@', '')}`} target="_blank" rel="noreferrer" className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center border border-primary/40 hover:scale-110 transition-transform">
-                           <BadgeCheck className="w-4 h-4 text-primary" />
-                        </a>
+                      {!isEditing && getField('is_pro', false) && (
+                        <div className="group/badge relative">
+                          <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-yellow-400 to-yellow-600 flex items-center justify-center border border-yellow-300 shadow-[0_0_15px_rgba(250,204,21,0.5)] cursor-default">
+                             <BadgeCheck className="w-4 h-4 text-black" />
+                          </div>
+                          <div className="absolute -top-10 left-1/2 -translate-x-1/2 opacity-0 group-hover/badge:opacity-100 transition-opacity bg-black text-yellow-400 text-[10px] font-black uppercase tracking-widest px-3 py-1 rounded-full whitespace-nowrap pointer-events-none">
+                            Pelotify PRO
+                          </div>
+                        </div>
                       )}
                     </motion.div>
                     <div className="flex items-center justify-center lg:justify-start gap-3">
@@ -710,19 +715,17 @@ function ProfileContent() {
                           className="w-full bg-foreground/5 border border-foreground/10 rounded-2xl px-5 h-12 text-xs text-foreground/70 outline-none focus:border-primary/50 shadow-inner"
                         />
                       </div>
-                      <div className="space-y-2">
-                        <label className="text-[10px] font-black uppercase text-white/40 tracking-widest flex items-center gap-2">
-                          Usuario de Instagram
-                          <BadgeCheck className="w-3 h-3 text-primary" />
-                        </label>
-                        <input 
-                          value={editedData.instagram}
-                          onChange={e => setEditedData({...editedData, instagram: e.target.value.replace('@', '')})}
-                          placeholder="tu_usuario_instagram"
-                          className="w-full bg-foreground/5 border border-foreground/10 rounded-2xl px-5 h-12 text-xs text-foreground/70 outline-none focus:border-primary/50 shadow-inner"
-                        />
-                        <p className="text-[10px] text-foreground/40 italic">Para el MVP: Añade tu nombre de usuario para obtener el tick de verificado.</p>
-                      </div>
+                      {getField('is_pro', false) && (
+                        <div className="space-y-2">
+                          <label className="text-[10px] font-black uppercase text-yellow-400 tracking-widest flex items-center gap-2">
+                            Suscripción
+                            <Star className="w-3 h-3" fill="currentColor" />
+                          </label>
+                          <div className="w-full bg-yellow-500/10 border border-yellow-500/20 rounded-2xl px-5 h-12 flex items-center text-xs text-yellow-400/90 shadow-inner">
+                            Suscripción a Pelotify Pro Activa
+                          </div>
+                        </div>
+                      )}
                     </div>
                   ) : (
                     getField('bio', '') && (
@@ -816,10 +819,11 @@ function ProfileContent() {
                             </span>
                           </div>
                         </div>
-                        {getField('instagram', '') && (
-                          <div className="hidden sm:flex px-4 py-2 rounded-full bg-primary/10 border border-primary/20">
-                            <span className="text-[9px] font-black text-primary uppercase tracking-widest">
-                              VERIFICADO
+                        {getField('is_pro', false) && (
+                          <div className="hidden sm:flex px-4 py-2 rounded-full bg-gradient-to-r from-yellow-400/20 to-yellow-600/20 border border-yellow-500/30">
+                            <span className="text-[9px] font-black text-yellow-400 uppercase tracking-widest flex items-center gap-1.5">
+                              <Star className="w-3 h-3" fill="currentColor" />
+                              PRO
                             </span>
                           </div>
                         )}

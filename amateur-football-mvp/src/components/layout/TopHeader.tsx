@@ -13,6 +13,7 @@ import {
   User2,
   MessageSquare,
   Play,
+  Star,
 } from 'lucide-react';
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
@@ -30,6 +31,7 @@ import { supabase } from '@/lib/supabase';
 import { useSettings } from '@/contexts/SettingsContext';
 
 const DESKTOP_NAV = [
+  { href: '/pro', icon: Star, label: 'Pro' },
   { href: '/highlights', icon: Play, label: 'FutTok' },
   { href: '/search', icon: Search, label: 'Buscar' },
   { href: '/friends', icon: Users, label: 'Amigos', id: 'friends' },
