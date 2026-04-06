@@ -502,7 +502,7 @@ export default function FeedPage() {
   }
 
   return (
-    <div className="flex flex-col min-h-screen bg-background">
+    <div className="flex flex-col min-h-screen bg-background pt-[110px] sm:pt-[120px] lg:pt-[110px]">
       {/* Hidden file input */}
       <input
         ref={fileInputRef}
@@ -513,8 +513,8 @@ export default function FeedPage() {
       />
 
       {/* 3-column layout matching TopHeader padding exactly */}
-      <div className="w-full mx-auto px-3 sm:px-5 lg:px-10 xl:px-16">
-        <div className="flex gap-0 lg:gap-6 xl:gap-8 justify-center">
+      <div className="w-full px-3 sm:px-5 lg:px-10 xl:px-16">
+        <div className="flex gap-0 lg:gap-6 xl:gap-8">
 
           {/* ── LEFT SIDEBAR (desktop only) ── */}
           <aside className="hidden lg:flex flex-col w-[280px] xl:w-[320px] shrink-0 sticky top-[100px] self-start gap-4 pb-8">
@@ -553,7 +553,7 @@ export default function FeedPage() {
           </aside>
 
           {/* ── MAIN FEED (center column) ── */}
-          <div className="w-full max-w-[600px] border-x border-foreground/10 min-h-screen flex flex-col relative z-10">
+          <div className="w-full lg:flex-1 border-x border-foreground/10 min-h-screen flex flex-col relative z-10">
             {/* STICKY HEADER */}
             <div className="sticky top-0 z-50 backdrop-blur-xl bg-background/80 border-b border-foreground/10 px-4 py-3 flex items-center justify-between cursor-pointer">
                <h1 className="text-xl font-bold text-foreground">Inicio</h1>
