@@ -35,7 +35,10 @@ import {
   Filter,
   AlertTriangle,
   XCircle,
-  Download
+  Download,
+  Trophy,
+  Loader2,
+  CheckCircle2
 } from 'lucide-react';
 
 import { useAuth } from '@/contexts/AuthContext';
@@ -44,6 +47,9 @@ import { supabase } from '@/lib/supabase';
 import { useRouter } from 'next/navigation';
 import { QRCodeSVG } from 'qrcode.react';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from 'recharts';
+import { createTournament, registerTeamForTournament } from '@/lib/tournaments';
+import { getUserTeams } from '@/lib/teams';
+import { AVAILABLE_TIMES } from '@/lib/constants';
 
 export default function CanchasDashboard() {
   const { user, logout } = useAuth();
@@ -55,6 +61,7 @@ export default function CanchasDashboard() {
   const [business, setBusiness] = useState<any>(null);
   const [fields, setFields] = useState<any[]>([]);
   const [bookings, setBookings] = useState<any[]>([]);
+  const [tournaments, setTournaments] = useState<any[]>([]);
   const [loadingDb, setLoadingDb] = useState(true);
 
   // Modals state
@@ -62,6 +69,7 @@ export default function CanchasDashboard() {
   const [selectedSlot, setSelectedSlot] = useState<{ time: string, fieldId: string } | null>(null);
   const [selectedBooking, setSelectedBooking] = useState<any>(null);
   const [showEditBookingModal, setShowEditBookingModal] = useState(false);
+  const [showTournamentModal, setShowTournamentModal] = useState(false);
   // Calendar Date
   const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0]);
   const [hasMP, setHasMP] = useState<boolean>(false);
@@ -83,6 +91,7 @@ export default function CanchasDashboard() {
     { id: 'finances', label: 'Finanzas', icon: Wallet },
     { id: 'customers', label: 'Clientes', icon: Users },
     { id: 'analytics', label: 'Métricas', icon: PieChart },
+    { id: 'tournaments', label: 'Torneos', icon: Trophy },
     { id: 'settings', label: 'Ajustes', icon: Settings },
   ];
 
@@ -133,6 +142,15 @@ export default function CanchasDashboard() {
             .order('start_time', { ascending: true });
 
           if (!bkError && bkData) setBookings(bkData);
+          
+          // 4. Fetch Tournaments
+          const { data: tData, error: tError } = await supabase
+            .from('tournaments')
+            .select('*')
+            .eq('business_id', bData.id)
+            .order('start_date', { ascending: true });
+          
+          if (!tError && tData) setTournaments(tData);
 
           // Calculate stats
           const today = new Date().toISOString().split('T')[0];
@@ -416,6 +434,7 @@ export default function CanchasDashboard() {
             {activeTab === 'finances' && <FinancesTab business={business} bookings={bookings} hasMP={hasMP} user={user} />}
             {activeTab === 'customers' && <CustomersTab bookings={bookings} />}
             {activeTab === 'analytics' && <AnalyticsTab bookings={bookings} stats={stats} />}
+            {activeTab === 'tournaments' && <TournamentsTab tournaments={tournaments} onCreateNew={() => setShowTournamentModal(true)} />}
             {activeTab === 'settings' && <SettingsTab business={business} fields={fields} setFields={setFields} hasMP={hasMP} setBusiness={setBusiness} logout={logout} router={router} />}
           </div>
       </div>
@@ -447,6 +466,14 @@ export default function CanchasDashboard() {
             onClose={() => { setShowEditBookingModal(false); setSelectedBooking(null); }}
             onUpdate={(updated: any) => setBookings(prev => prev.map(b => b.id === updated.id ? updated : b))}
             onDelete={(id: string) => setBookings(prev => prev.filter(b => b.id !== id))}
+          />
+        )}
+        {showTournamentModal && (
+          <NewTournamentModal
+            onClose={() => setShowTournamentModal(false)}
+            business={business}
+            fields={fields}
+            onCreated={(newTournament: any) => setTournaments(prev => [...prev, newTournament])}
           />
         )}
       </AnimatePresence>
@@ -2179,3 +2206,347 @@ const AnalyticsTab = React.memo(function AnalyticsTab({ bookings, stats }: any) 
     </div>
   );
 });
+
+/* =========================================
+   TOURNAMENTS TAB
+ ========================================= */
+const TournamentsTab = React.memo(function TournamentsTab({ tournaments, onCreateNew }: any) {
+  return (
+    <div className="space-y-8 animate-reveal-up pb-20">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-5">
+        <div className="space-y-1">
+          <h2 className="text-3xl sm:text-4xl font-black font-kanit italic uppercase tracking-tighter leading-none text-foreground">
+            Gestión de <span className="text-primary">Torneos</span>
+          </h2>
+          <p className="text-[10px] font-black uppercase tracking-[0.4em] text-muted-foreground flex items-center gap-2">
+            Organiza tus propias ligas y copas
+          </p>
+        </div>
+        <button 
+          onClick={onCreateNew} 
+          className="bg-primary text-black font-black uppercase text-[10px] tracking-widest py-4 px-8 rounded-2xl flex items-center gap-3 hover:bg-white transition-all shadow-xl shadow-primary/20 hover:scale-[1.02] active:scale-95"
+        >
+          <Zap className="w-4 h-4 fill-current" /> Crear Nuevo Torneo
+        </button>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        {tournaments.map((t: any) => (
+          <div key={t.id} className="glass-premium rounded-[2.5rem] overflow-hidden border border-white/5 bg-surface-elevated/40 hover:border-primary/30 transition-all group flex flex-col h-[420px]">
+            <div className="h-40 relative overflow-hidden">
+               <img 
+                 src={t.banner_url || "https://images.unsplash.com/photo-1574629810360-7efbbe195018?q=80&w=1200&auto=format&fit=crop"} 
+                 className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" 
+                 alt={t.name}
+               />
+               <div className="absolute inset-0 bg-gradient-to-t from-background to-transparent" />
+               <div className="absolute top-4 left-4">
+                 <span className="px-3 py-1 bg-primary text-black text-[9px] font-black uppercase rounded-lg shadow-xl">
+                   {t.type}
+                 </span>
+               </div>
+            </div>
+            <div className="p-8 flex flex-col flex-1 justify-between">
+              <div className="space-y-4">
+                <h3 className="text-2xl font-black italic uppercase text-foreground leading-tight tracking-tighter group-hover:text-primary transition-colors">
+                  {t.name}
+                </h3>
+                <div className="flex items-center gap-2 text-muted-foreground/60">
+                   <Calendar className="w-3.5 h-3.5" />
+                   <span className="text-[10px] font-bold uppercase tracking-widest leading-none">Inicia: {t.start_date}</span>
+                </div>
+              </div>
+
+              <div className="flex items-center justify-between pt-6 border-t border-white/5">
+                <div className="flex flex-col">
+                  <span className="text-[8px] font-black text-muted-foreground uppercase tracking-widest leading-none">Matrícula</span>
+                  <span className="text-xl font-black text-foreground italic tracking-tighter">
+                    ${t.entry_fee?.toLocaleString()}
+                  </span>
+                </div>
+                <div className="flex items-center gap-2">
+                   <span className={`text-[8px] font-black uppercase tracking-widest px-2.5 py-1 rounded-full border ${
+                     t.status === 'upcoming' ? 'bg-blue-500/10 text-blue-500 border-blue-500/30' : 'bg-primary/10 text-primary border-primary/30'
+                   }`}>
+                     {t.status === 'upcoming' ? 'Inscripciones' : 'Activo'}
+                   </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        ))}
+
+        {tournaments.length === 0 && (
+          <div className="col-span-full py-20 bg-foreground/[0.02] rounded-[3rem] border-dashed border-2 border-border/40 flex flex-col items-center justify-center text-center gap-4">
+            <Trophy className="w-12 h-12 text-muted-foreground/20" />
+            <p className="text-[10px] font-black text-muted-foreground/40 uppercase tracking-[0.2em]">Aún no has creado torneos.</p>
+            <button 
+              onClick={onCreateNew}
+              className="px-6 py-3 bg-white/5 hover:bg-white/10 text-foreground/60 hover:text-foreground text-[10px] font-black uppercase tracking-widest rounded-xl transition-all"
+            >
+              Comenzar a organizar
+            </button>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+});
+
+/* =========================================
+   NEW TOURNAMENT MODAL (BASED ON CREATE PAGE)
+ ========================================= */
+function NewTournamentModal({ onClose, business, fields, onCreated }: any) {
+  const { user } = useAuth();
+  const [loading, setLoading] = useState(false);
+  const [step, setStep] = useState(0);
+  const [userTeams, setUserTeams] = useState<any[]>([]);
+
+  const [formData, setFormData] = useState({
+    name: '',
+    description: '',
+    type: 'F5' as 'F5' | 'F7' | 'F11',
+    start_date: '',
+    start_time: '18:00',
+    location: business?.address || '',
+    max_teams: 8,
+    entry_fee: 10000,
+    match_fee: Math.round((fields?.[0]?.price_per_match || 15000) / 10),
+    prize_percentage: 100,
+    prize_description: '',
+    banner_url: 'https://images.unsplash.com/photo-1574629810360-7efbbe195018?q=80&w=1200&auto=format&fit=crop',
+    host_team_id: '',
+    field_id: fields?.[0]?.id || '',
+  });
+
+  useEffect(() => {
+    async function loadTeams() {
+      if (user) {
+        const teams = await getUserTeams(user.id);
+        const captainTeams = teams.filter((t: any) => t.role === 'captain' || t.is_captain);
+        setUserTeams(captainTeams);
+        if (captainTeams.length > 0) {
+          setFormData(prev => ({ ...prev, host_team_id: captainTeams[0].id }));
+        }
+      }
+    }
+    loadTeams();
+  }, [user]);
+
+  const totalIncome = formData.max_teams * formData.entry_fee;
+  const calculatedPrize = Math.round((totalIncome * formData.prize_percentage) / 100);
+
+  const handleCreate = async () => {
+    if (!user || !business) return;
+    setLoading(true);
+    try {
+      const dataToSave = {
+        name: formData.name,
+        description: formData.description || null,
+        type: formData.type,
+        start_date: formData.start_date,
+        location: formData.location,
+        max_teams: formData.max_teams,
+        entry_fee: formData.entry_fee,
+        match_fee: formData.match_fee,
+        banner_url: formData.banner_url,
+        creator_id: user.id,
+        is_official: false,
+        status: 'upcoming' as const,
+        prize_percentage: formData.prize_percentage,
+        prize_description: formData.prize_description || `Bolsa de premios estimada: $${calculatedPrize.toLocaleString()}`,
+        business_id: business.id,
+        field_id: formData.field_id || null
+      };
+
+      const tournament = await createTournament(dataToSave);
+      
+      if (formData.host_team_id) {
+        try {
+          await registerTeamForTournament(tournament.id, formData.host_team_id);
+        } catch (regErr) {
+          console.error('Failed to register host team:', regErr);
+        }
+      }
+
+      onCreated(tournament);
+      onClose();
+    } catch (err: any) {
+      alert(`Error: ${err.message}`);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const steps = ['Básico', 'Fecha', 'Costos', 'Equipo', 'Review'];
+
+  return (
+    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-background/90 backdrop-blur-sm animate-in fade-in duration-200 overflow-y-auto no-scrollbar">
+      <motion.div
+        initial={{ scale: 0.95, opacity: 0, y: 20 }}
+        animate={{ scale: 1, opacity: 1, y: 0 }}
+        exit={{ scale: 0.95, opacity: 0, y: 20 }}
+        className="glass-card w-full max-w-2xl p-8 lg:p-12 relative overflow-hidden my-8"
+      >
+        <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-primary/5 rounded-full blur-[100px] -translate-y-1/2 translate-x-1/2 pointer-events-none"></div>
+        
+        <div className="flex justify-between items-center mb-8 relative z-10">
+          <div className="flex flex-col gap-1">
+             <h3 className="text-3xl font-black font-kanit italic uppercase tracking-tighter text-foreground">Nueva Copa</h3>
+             <div className="flex gap-1">
+                {steps.map((_, i) => (
+                   <div key={i} className={`h-1 rounded-full transition-all duration-500 ${i <= step ? 'w-8 bg-primary shadow-[0_0_8px_rgba(44,252,125,0.4)]' : 'w-4 bg-white/10'}`} />
+                ))}
+             </div>
+          </div>
+          <button onClick={onClose} className="p-3 bg-white/5 hover:bg-white/10 rounded-xl transition-all text-muted-foreground hover:text-foreground">
+             <XCircle className="w-6 h-6" />
+          </button>
+        </div>
+
+        <AnimatePresence mode="wait">
+          {step === 0 && (
+            <motion.div key="s0" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="space-y-8 relative z-10">
+              <div className="space-y-4">
+                <label className="text-[10px] font-black uppercase text-muted-foreground tracking-widest px-1">Nombre de la Copa</label>
+                <input 
+                  type="text" 
+                  placeholder="Ej: Liga Amateur Verano" 
+                  className="w-full h-16 bg-surface-elevated border border-white/5 rounded-2xl px-6 text-xl font-black italic outline-none focus:border-primary/50 transition-all font-kanit" 
+                  value={formData.name} 
+                  onChange={e => setFormData({...formData, name: e.target.value})} 
+                />
+              </div>
+              <div className="grid grid-cols-3 gap-4">
+                {(['F5', 'F7', 'F11'] as const).map(type => (
+                  <button 
+                    key={type} 
+                    onClick={() => {
+                        const divider = type === 'F5' ? 10 : type === 'F7' ? 14 : 22;
+                        setFormData({...formData, type, match_fee: Math.round((fields?.[0]?.price_per_match || 15000) / divider)});
+                    }}
+                    className={`h-24 rounded-2xl border font-black text-[10px] uppercase flex flex-col items-center justify-center gap-2 transition-all ${formData.type === type ? 'bg-primary text-black border-primary shadow-lg shadow-primary/20' : 'bg-white/5 text-muted-foreground border-white/5 hover:border-white/10'}`}
+                  >
+                    <span className="text-xl">⚽</span> {type}
+                  </button>
+                ))}
+              </div>
+              <button disabled={!formData.name} onClick={() => setStep(1)} className="w-full h-16 bg-foreground text-background rounded-2xl font-black text-sm uppercase transition-all shadow-xl hover:bg-primary hover:text-black">Siguiente</button>
+            </motion.div>
+          )}
+
+          {step === 1 && (
+            <motion.div key="s1" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="space-y-8 relative z-10">
+              <div className="space-y-4">
+                 <label className="text-[10px] font-black uppercase text-muted-foreground tracking-widest px-1">Día de Inicio</label>
+                 <div className="flex gap-2 overflow-x-auto no-scrollbar pb-2">
+                    {Array.from({ length: 14 }).map((_, i) => {
+                       const d = new Date(); d.setDate(d.getDate() + i + 1);
+                       const dateStr = d.toISOString().split('T')[0];
+                       const isSelected = formData.start_date === dateStr;
+                       return (
+                          <button key={dateStr} onClick={() => setFormData({ ...formData, start_date: dateStr })} className={`flex-shrink-0 w-20 h-24 rounded-2xl border flex flex-col items-center justify-center transition-all ${isSelected ? 'bg-primary text-black border-primary shadow-lg' : 'bg-white/5 border-white/5'}`}>
+                             <span className="text-2xl font-black italic tracking-tighter leading-none">{d.getDate()}</span>
+                             <span className="text-[8px] font-black uppercase opacity-60 mt-1">{d.toLocaleDateString('es-ES', { month: 'short' })}</span>
+                          </button>
+                       );
+                    })}
+                 </div>
+              </div>
+              <div className="space-y-4">
+                 <label className="text-[10px] font-black uppercase text-muted-foreground tracking-widest px-1">Cancha para el Torneo</label>
+                 <select 
+                   value={formData.field_id} 
+                   onChange={e => {
+                       const field = fields.find((f: any) => f.id === e.target.value);
+                       const divider = formData.type === 'F5' ? 10 : formData.type === 'F7' ? 14 : 22;
+                       setFormData({ ...formData, field_id: e.target.value, match_fee: Math.round((field?.price_per_match || 15000) / divider) });
+                   }}
+                   className="w-full h-16 bg-surface-elevated border border-white/5 rounded-2xl px-6 outline-none appearance-none font-bold text-foreground"
+                 >
+                    {fields.map((f: any) => (
+                       <option key={f.id} value={f.id} className="bg-background">{f.name} ({f.type})</option>
+                    ))}
+                 </select>
+              </div>
+              <div className="flex gap-4">
+                <button onClick={() => setStep(0)} className="h-16 px-8 border border-white/10 rounded-2xl font-black text-xs uppercase tracking-widest text-muted-foreground">Atrás</button>
+                <button disabled={!formData.start_date} onClick={() => setStep(2)} className="flex-1 h-16 bg-foreground text-background rounded-2xl font-black text-sm uppercase transition-all hover:bg-primary hover:text-black">Continuar</button>
+              </div>
+            </motion.div>
+          )}
+
+          {step === 2 && (
+            <motion.div key="s2" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="space-y-8 relative z-10">
+              <div className="grid grid-cols-2 gap-6">
+                <div className="p-8 rounded-3xl bg-primary/5 border border-primary/20 space-y-4">
+                  <span className="text-[9px] font-black uppercase text-primary tracking-widest">Inscripción / Equipo</span>
+                  <div className="flex items-baseline gap-1">
+                    <span className="text-2xl font-black italic opacity-30">$</span>
+                    <input type="number" className="bg-transparent border-none outline-none text-4xl font-black italic w-full text-foreground" value={formData.entry_fee} onChange={e => setFormData({...formData, entry_fee: parseInt(e.target.value) || 0})} />
+                  </div>
+                </div>
+                <div className="p-8 rounded-3xl bg-surface-elevated border border-white/5 space-y-4">
+                  <span className="text-[9px] font-black uppercase text-muted-foreground tracking-widest">Cancha / Jugador</span>
+                  <div className="flex items-baseline gap-1">
+                    <span className="text-2xl font-black italic opacity-30">$</span>
+                    <input type="number" className="bg-transparent border-none outline-none text-4xl font-black italic w-full text-foreground" value={formData.match_fee} onChange={e => setFormData({...formData, match_fee: parseInt(e.target.value) || 0})} />
+                  </div>
+                </div>
+              </div>
+              <div className="p-8 rounded-3xl bg-white/[0.02] border border-white/5">
+                 <div className="flex justify-between items-center">
+                    <div>
+                       <span className="text-[9px] font-black text-primary uppercase italic">Bolsa de Premios ({formData.prize_percentage}%)</span>
+                       <p className="text-[10px] text-muted-foreground mt-1">Estimada según equipos completados</p>
+                    </div>
+                    <span className="text-4xl font-black italic text-primary tracking-tighter font-kanit">${calculatedPrize.toLocaleString()}</span>
+                 </div>
+                 <div className="flex gap-2 mt-6">
+                    {[25, 50, 75, 100].map(p => (
+                       <button key={p} onClick={() => setFormData({...formData, prize_percentage: p})} className={`flex-1 h-10 rounded-xl border text-[10px] font-black transition-all ${formData.prize_percentage === p ? 'bg-primary text-black border-primary' : 'bg-white/5 border-white/5 hover:border-white/10'}`}>{p}%</button>
+                    ))}
+                 </div>
+              </div>
+              <div className="flex gap-4">
+                <button onClick={() => setStep(1)} className="h-16 px-8 border border-white/10 rounded-2xl font-black text-xs uppercase tracking-widest text-muted-foreground">Atrás</button>
+                <button onClick={() => setStep(3)} className="flex-1 h-16 bg-foreground text-background rounded-2xl font-black text-sm uppercase transition-all hover:bg-primary hover:text-black">Finalizar</button>
+              </div>
+            </motion.div>
+          )}
+
+          {step === 3 && (
+            <motion.div key="s3" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="space-y-8 relative z-10">
+              <div className="p-10 rounded-[3rem] bg-foreground/5 border border-white/5 space-y-8">
+                <div className="space-y-2">
+                   <h4 className="text-4xl font-black font-kanit italic uppercase tracking-tighter leading-none text-foreground">{formData.name}</h4>
+                   <p className="text-[10px] font-black uppercase text-muted-foreground tracking-[0.3em]">{formData.start_date} • {formData.type}</p>
+                </div>
+                <div className="grid grid-cols-2 gap-4 border-t border-white/5 pt-8">
+                   <div>
+                      <span className="text-[9px] font-black uppercase text-muted-foreground mb-1 block">Inscripción</span>
+                      <span className="text-xl font-black italic text-foreground">${formData.entry_fee.toLocaleString()}</span>
+                   </div>
+                   <div>
+                      <span className="text-[9px] font-black uppercase text-muted-foreground mb-1 block">Cancha / Jugador</span>
+                      <span className="text-xl font-black italic text-foreground">${formData.match_fee.toLocaleString()}</span>
+                   </div>
+                </div>
+                <div className="p-6 rounded-2xl bg-primary/10 border border-primary/20 flex justify-between items-center">
+                   <span className="text-[10px] font-black uppercase text-primary italic">Premio Total</span>
+                   <span className="text-3xl font-black italic tracking-tighter text-primary">${calculatedPrize.toLocaleString()}</span>
+                </div>
+              </div>
+              <div className="flex gap-4">
+                <button onClick={() => setStep(2)} className="h-16 px-8 border border-white/10 rounded-2xl font-black text-xs uppercase tracking-widest text-muted-foreground">Atrás</button>
+                <button disabled={loading} onClick={handleCreate} className="flex-1 h-16 bg-primary text-black rounded-2xl font-black text-sm uppercase tracking-widest flex items-center justify-center gap-3 shadow-xl shadow-primary/20 hover:bg-white transition-all">
+                  {loading ? <Loader2 className="w-6 h-6 animate-spin" /> : <><CheckCircle2 className="w-6 h-6" /> PUBLICAR TORNEO</>}
+                </button>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </motion.div>
+    </div>
+  );
+}
