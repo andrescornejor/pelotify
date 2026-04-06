@@ -10,7 +10,8 @@ import {
   Search,
   Flame,
   LayoutGrid,
-  Users
+  Users,
+  Globe
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -45,6 +46,12 @@ export function BottomNav() {
       icon: Plus, 
       isPrimary: true,
       color: 'from-primary via-[#3dfc8d] to-primary-dark'
+    },
+    { 
+      label: 'Muro', 
+      href: '/feed', 
+      icon: Globe,
+      color: 'from-blue-400 to-indigo-500'
     },
     { 
       label: 'Social', 
@@ -84,6 +91,7 @@ export function BottomNav() {
                      item.href === '/' ? "bg-[#2cfc7d]" : 
                      item.href === '/search' ? "bg-blue-500" :
                      item.href === '/create' ? "bg-primary" :
+                     item.href === '/feed' ? "bg-indigo-500" :
                      item.href === '/friends' ? "bg-amber-500" : "bg-purple-500"
                    )}
                  />

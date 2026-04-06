@@ -14,6 +14,7 @@ import {
   MessageSquare,
   Play,
   Star,
+  Globe,
 } from 'lucide-react';
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
@@ -33,6 +34,7 @@ import { useSettings } from '@/contexts/SettingsContext';
 const DESKTOP_NAV = [
   { href: '/pro', icon: Star, label: 'Pro' },
   { href: '/highlights', icon: Play, label: 'FutTok' },
+  { href: '/feed', icon: Globe, label: 'Comunidad' },
   { href: '/search', icon: Search, label: 'Buscar' },
   { href: '/friends', icon: Users, label: 'Amigos', id: 'friends' },
   { href: '/messages', icon: MessageSquare, label: 'Mensajes' },

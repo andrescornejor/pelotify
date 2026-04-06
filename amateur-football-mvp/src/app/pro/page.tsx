@@ -22,24 +22,26 @@ export default function PelotifyProPage() {
     }
 
     setIsLoading(true);
-    // TODO: Initialize MercadoPago/Stripe checkout session here.
-    // For MVP demonstration, we will just give them PRO right away.
     try {
-      const { error } = await supabase.from('profiles').update({
-        is_pro: true,
-        pro_since: new Date().toISOString(),
-      }).eq('id', user.id);
+      const response = await fetch('/api/pro/checkout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          userId: user.id,
+          planType: selectedPlan,
+          price: selectedPlan === 'mensual' ? priceMensual : priceAnual
+        }),
+      });
 
-      if (error) throw error;
+      const data = await response.json();
       
-      // Update auth store (hack to force profile reload without hard refresh)
-      await supabase.auth.refreshSession();
-      
-      alert('¡Bienvenido a Pelotify Pro! MVP hack: Activado sin pagar por ahora.');
-      router.push('/profile?id=me');
+      if (data.init_point) {
+        window.location.href = data.init_point;
+      } else {
+        throw new Error(data.error || 'Error generando orden de pago');
+      }
     } catch (err: any) {
       alert('Error activando Pro: ' + err.message);
-    } finally {
       setIsLoading(false);
     }
   };
@@ -154,7 +156,7 @@ export default function PelotifyProPage() {
               Convertirme en Pro
             </button>
             <p className="text-xs text-white/40 font-medium mt-6">
-              Prueba MVP: Al hacer clic se activará temporalmente la insignia gratis. En producción se integrará con MercadoPago.
+              Serás redirigido a Mercado Pago de forma segura para completar tu suscripción. Cancela cuando quieras.
             </p>
           </div>
         </div>

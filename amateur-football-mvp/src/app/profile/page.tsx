@@ -50,6 +50,7 @@ import { RankBadge } from '@/components/RankBadge';
 import { getRankByElo } from '@/lib/ranks';
 import { ShareStory } from '@/components/ShareStory';
 import { getUserHighlights, Highlight } from '@/lib/highlights';
+import confetti from 'canvas-confetti';
 import { RadarChart } from '@/components/RadarChart';
 
 interface PlayerStats {
@@ -148,6 +149,19 @@ function ProfileContent() {
       });
     }
   }, [isMe, user]);
+
+  useEffect(() => {
+    if (searchParams.get('pro_success') === 'true') {
+      confetti({
+        particleCount: 200,
+        spread: 100,
+        origin: { y: 0.6 },
+        colors: ['#FBBF24', '#F59E0B', '#D97706', '#000000', '#ffffff'],
+      });
+      // Optionally remove it from URL
+      window.history.replaceState({}, '', '/profile?id=me');
+    }
+  }, [searchParams]);
 
   useEffect(() => {
     const fetchProfileData = async () => {
