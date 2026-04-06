@@ -53,6 +53,7 @@ const MouseGlow = () => {
 /* ─── MAIN PAGE ─── */
 export default function RanksPage() {
   const router = useRouter();
+  const topRef = useRef<HTMLDivElement>(null);
   const [topPlayers, setTopPlayers] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [activeTab, setActiveTab] = useState<'ranks' | 'leaderboard'>('ranks');
@@ -84,8 +85,42 @@ export default function RanksPage() {
 
   return (
     <div className="min-h-screen bg-background relative overflow-x-hidden selection:bg-primary/30" ref={containerRef}>
+      <div ref={topRef} className="absolute top-0 left-0 w-full h-px pointer-events-none" />
       <MouseGlow />
       
+      {/* ── BACKGROUND ORNAMENTS ── */}
+      <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
+        {/* Subtle Grid */}
+        <div className="absolute inset-0 opacity-[0.03]" 
+             style={{ backgroundImage: 'radial-gradient(circle, currentColor 1px, transparent 1px)', backgroundSize: '40px 40px' }} />
+             
+        {/* Floating Tactic Icons (Scattered) */}
+        {[...Array(12)].map((_, i) => (
+          <motion.div
+            key={i}
+            initial={{ opacity: 0 }}
+            animate={{ 
+              opacity: [0.02, 0.05, 0.02],
+              y: [0, -100, 0],
+              x: [0, i % 2 === 0 ? 50 : -50, 0]
+            }}
+            transition={{ duration: 15 + i * 2, repeat: Infinity, ease: 'linear', delay: i * 1 }}
+            className="absolute text-foreground font-black italic text-4xl select-none"
+            style={{ 
+              left: `${(i * 17) % 100}%`, 
+              top: `${(i * 23) % 100}%`,
+              filter: `blur(${i % 3 === 0 ? '4px' : '0px'})`
+            }}
+          >
+            {i % 3 === 0 ? 'X' : i % 3 === 1 ? 'O' : '→'}
+          </motion.div>
+        ))}
+
+        {/* Cinematic Light Beams */}
+        <div className="absolute -top-[10%] -left-[10%] w-[50%] h-[50%] bg-primary/5 blur-[120px] rounded-full rotate-45" />
+        <div className="absolute -bottom-[10%] -right-[10%] w-[50%] h-[50%] bg-accent/5 blur-[120px] rounded-full -rotate-45" />
+      </div>
+
       {/* ── Hero ── */}
       <section className="relative pt-12 pb-16 px-4 text-center space-y-8 z-10 overflow-hidden">
         {/* Background Side Decorations */}
@@ -352,16 +387,17 @@ export default function RanksPage() {
                         <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />
                      </motion.button>
 
-                     <div className="pt-20">
+                     <div className="pt-20 pb-10">
                         <motion.button 
-                          onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-                          whileHover={{ y: -5 }}
-                          className="flex flex-col items-center gap-2 opacity-30 hover:opacity-100 transition-opacity"
+                          onClick={() => topRef.current?.scrollIntoView({ behavior: 'smooth' })}
+                          whileHover={{ y: -8, scale: 1.05 }}
+                          whileTap={{ scale: 0.95 }}
+                          className="flex flex-col items-center gap-2 group cursor-pointer"
                         >
-                           <div className="w-12 h-12 rounded-full border border-foreground/20 flex items-center justify-center">
-                              <ChevronUp className="w-6 h-6" />
+                           <div className="w-16 h-16 rounded-full border-2 border-foreground/10 flex items-center justify-center group-hover:border-primary/50 group-hover:shadow-[0_0_20px_rgba(var(--primary-rgb),0.3)] transition-all duration-500">
+                              <ChevronUp className="w-8 h-8 group-hover:text-primary transition-colors" />
                            </div>
-                           <span className="text-[10px] font-black uppercase tracking-[0.4em]">Volver al Inicio</span>
+                           <span className="text-xs font-black uppercase tracking-[0.3em] text-foreground/40 group-hover:text-primary transition-colors">Regresar a la Cima</span>
                         </motion.button>
                      </div>
                   </div>
