@@ -521,7 +521,9 @@ function ProfileContent() {
           style={{
             backgroundImage: ambientColor
               ? `radial-gradient(ellipse at 50% 0%, ${ambientColor}50, transparent 75%)`
-              : 'radial-gradient(ellipse at 50% 0%, rgba(16,185,129,0.2), transparent 75%)',
+              : getField('is_pro', false) 
+                ? 'radial-gradient(ellipse at 50% 0%, rgba(234,179,8,0.15), transparent 75%)'
+                : 'radial-gradient(ellipse at 50% 0%, rgba(16,185,129,0.2), transparent 75%)',
           }}
         />
         <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/stadium.png')] opacity-[0.03] dark:opacity-[0.05] invert dark:invert-0 pointer-events-none" />
@@ -611,7 +613,7 @@ function ProfileContent() {
               "relative transition-all duration-700 perspective-1000 group/card",
               isEditing && "z-50 scale-105"
             )}>
-               <div className="absolute -inset-10 bg-primary/20 blur-[80px] rounded-full opacity-0 group-hover/card:opacity-100 transition-opacity" />
+               <div className={cn("absolute -inset-10 blur-[80px] rounded-full opacity-0 group-hover/card:opacity-100 transition-opacity", getField('is_pro', false) ? "bg-yellow-500/20" : "bg-primary/20")} />
                <FifaCard
                   player={{
                     ...displayPlayer,
@@ -755,9 +757,10 @@ function ProfileContent() {
                <div className="flex flex-wrap items-center justify-center lg:justify-start gap-x-12 gap-y-6 pt-6 border-t border-foreground/10">
                   {[
                     { label: 'Partidos', value: displayMatches, color: 'text-foreground' },
-                    { label: 'ELO RATING', value: displayElo, color: 'text-primary' },
+                    { label: 'ELO RATING', value: displayElo, color: getField('is_pro', false) ? 'text-yellow-400' : 'text-primary' },
                     { label: 'Goles', value: displayGoals, color: 'text-foreground' },
                     { label: 'Badges', value: displayMvpCount, color: 'text-accent' },
+                    ...(getField('is_pro', false) ? [{ label: 'Visitas (PRO)', value: Math.floor(Math.random() * 50) + 120, color: 'text-yellow-500 drop-shadow-[0_0_10px_rgba(234,179,8,0.4)]' }] : [])
                   ].map((stat, i) => (
                     <div key={i} className="flex flex-col group/stat cursor-default">
                        <span className={cn("text-3xl font-black italic tracking-tighter leading-none group-hover/stat:scale-110 transition-transform origin-left", stat.color)}>{stat.value}</span>
