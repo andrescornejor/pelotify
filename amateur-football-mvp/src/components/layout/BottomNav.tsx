@@ -10,7 +10,6 @@ import {
   Search,
   Flame,
   LayoutGrid,
-  Users,
   Globe
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -54,12 +53,6 @@ export function BottomNav() {
       color: 'from-blue-400 to-indigo-500'
     },
     { 
-      label: 'Social', 
-      href: '/friends', 
-      icon: Users,
-      color: 'from-amber-400 to-orange-500'
-    },
-    { 
       label: 'Chats', 
       href: '/messages', 
       icon: MessageSquare,
@@ -91,8 +84,7 @@ export function BottomNav() {
                      item.href === '/' ? "bg-[#2cfc7d]" : 
                      item.href === '/search' ? "bg-blue-500" :
                      item.href === '/create' ? "bg-primary" :
-                     item.href === '/feed' ? "bg-indigo-500" :
-                     item.href === '/friends' ? "bg-amber-500" : "bg-purple-500"
+                     item.href === '/feed' ? "bg-indigo-500" : "bg-purple-500"
                    )}
                  />
                );

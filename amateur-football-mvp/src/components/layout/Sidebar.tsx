@@ -183,6 +183,12 @@ export const SidebarContent = memo(function SidebarContent({
 
   const navigationGroups: NavGroup[] = useMemo(() => [
     {
+      title: "Premium",
+      items: [
+        { icon: Star, label: 'Pelotify Pro', href: '/pro', isPro: true },
+      ]
+    },
+    {
       title: "Jugar",
       items: [
         { icon: HomeIcon, label: 'Inicio', href: '/' },
