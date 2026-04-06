@@ -234,13 +234,16 @@ export default function CanchasDashboard() {
         <img src="/main_bg.png" alt="Background Texture" className="w-full h-full object-cover scale-110" />
       </div>
 
-      {/* Decorative Vivid Gradients */}
-      <div className="fixed top-[-10%] left-[-10%] w-[60%] h-[60%] bg-primary/10 rounded-full blur-[160px] pointer-events-none z-0 animate-pulse"></div>
-      <div className="fixed bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-blue-600/10 rounded-full blur-[140px] pointer-events-none z-0"></div>
-      <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[40%] h-[40%] bg-purple-500/5 rounded-full blur-[140px] pointer-events-none z-0"></div>
+      {/* Decorative Vivid Gradients - Optimized for Mobile */}
+      <div className="fixed top-[-10%] left-[-10%] w-[60%] h-[60%] bg-primary/10 rounded-full blur-[160px] pointer-events-none z-0 animate-pulse hidden md:block"></div>
+      <div className="fixed bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-blue-600/10 rounded-full blur-[140px] pointer-events-none z-0 hidden md:block"></div>
+      <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[40%] h-[40%] bg-purple-500/5 rounded-full blur-[140px] pointer-events-none z-0 hidden md:block"></div>
+
+      {/* Simplified Mobile Background */}
+      <div className="fixed inset-0 bg-gradient-to-br from-primary/5 via-transparent to-blue-600/5 md:hidden pointer-events-none z-0"></div>
 
       {/* HEADER TRAY */}
-      <header className="fixed top-0 w-full z-40 bg-gradient-to-b from-surface-elevated/95 to-surface-elevated/80 border-b border-border/40 backdrop-blur-[30px] shadow-[0_4px_30px_rgba(0,0,0,0.05)]">
+      <header className="fixed top-0 w-full z-40 bg-surface-elevated/95 md:bg-gradient-to-b md:from-surface-elevated/95 md:to-surface-elevated/80 border-b border-border/40 backdrop-blur-md md:backdrop-blur-[30px] shadow-[0_4px_30px_rgba(0,0,0,0.05)]">
         <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-primary/20 to-transparent"></div>
         <div className="max-w-[1600px] mx-auto px-4 h-16 sm:h-24 flex items-center justify-between">
           <div className="flex items-center gap-4">
@@ -407,26 +410,14 @@ export default function CanchasDashboard() {
           </div>
         </aside>
 
-        {/* CONTENT AREA */}
-        <main className="flex-1 w-full pb-32 md:pb-8 max-w-full">
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={activeTab}
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -10 }}
-              transition={{ duration: 0.2 }}
-            >
-              {activeTab === 'overview' && <OverviewTab business={business} bookings={bookings} fields={fields} onNewBooking={() => setShowBookingModal(true)} onBookingClick={(booking: any) => { setSelectedBooking(booking); setShowEditBookingModal(true); }} onTabChange={setActiveTab} />}
-              {activeTab === 'calendar' && <CalendarTab bookings={bookings} fields={fields} selectedDate={selectedDate} setSelectedDate={setSelectedDate} onSlotClick={(time: string, fieldId: string) => { setSelectedSlot({ time, fieldId }); setShowBookingModal(true); }} onBookingClick={(booking: any) => { setSelectedBooking(booking); setShowEditBookingModal(true); }} />}
-
-              {activeTab === 'finances' && <FinancesTab business={business} bookings={bookings} hasMP={hasMP} user={user} />}
-              {activeTab === 'customers' && <CustomersTab bookings={bookings} />}
-              {activeTab === 'analytics' && <AnalyticsTab bookings={bookings} stats={stats} />}
-              {activeTab === 'settings' && <SettingsTab business={business} fields={fields} setFields={setFields} hasMP={hasMP} setBusiness={setBusiness} logout={logout} router={router} />}
-            </motion.div>
-          </AnimatePresence>
-        </main>
+          <div className="flex-1 w-full pb-32 md:pb-8 max-w-full">
+            {activeTab === 'overview' && <OverviewTab business={business} bookings={bookings} fields={fields} onNewBooking={() => setShowBookingModal(true)} onBookingClick={(booking: any) => { setSelectedBooking(booking); setShowEditBookingModal(true); }} onTabChange={setActiveTab} />}
+            {activeTab === 'calendar' && <CalendarTab bookings={bookings} fields={fields} selectedDate={selectedDate} setSelectedDate={setSelectedDate} onSlotClick={(time: string, fieldId: string) => { setSelectedSlot({ time, fieldId }); setShowBookingModal(true); }} onBookingClick={(booking: any) => { setSelectedBooking(booking); setShowEditBookingModal(true); }} />}
+            {activeTab === 'finances' && <FinancesTab business={business} bookings={bookings} hasMP={hasMP} user={user} />}
+            {activeTab === 'customers' && <CustomersTab bookings={bookings} />}
+            {activeTab === 'analytics' && <AnalyticsTab bookings={bookings} stats={stats} />}
+            {activeTab === 'settings' && <SettingsTab business={business} fields={fields} setFields={setFields} hasMP={hasMP} setBusiness={setBusiness} logout={logout} router={router} />}
+          </div>
       </div>
 
       {/* MOBILE FLOATING ACTION BUTTON */}
@@ -496,13 +487,17 @@ export default function CanchasDashboard() {
 /* =========================================
    OVERVIEW TAB — Simplified
 ========================================= */
-function OverviewTab({ business, bookings, fields, onNewBooking, onBookingClick, onTabChange }: any) {
+const OverviewTab = React.memo(function OverviewTab({ business, bookings, fields, onNewBooking, onBookingClick, onTabChange }: any) {
   const [todaySearch, setTodaySearch] = useState('');
   const today = new Date().toISOString().split('T')[0];
-  const todayBookings = bookings.filter((b: any) => b.date === today && b.status !== 'cancelled');
-  const todayIncome = todayBookings.reduce((acc: number, curr: any) => acc + (curr.total_price || 0), 0);
-  const pendingCount = todayBookings.filter((b: any) => b.status === 'pending').length;
-  const occupancy = fields.length > 0 ? Math.round((todayBookings.length / (16 * fields.length)) * 100) : 0;
+  
+  const { todayBookings, todayIncome, pendingCount, occupancy } = React.useMemo(() => {
+    const dailyBookings = bookings.filter((b: any) => b.date === today && b.status !== 'cancelled');
+    const income = dailyBookings.reduce((acc: number, curr: any) => acc + (curr.total_price || 0), 0);
+    const pending = dailyBookings.filter((b: any) => b.status === 'pending').length;
+    const occ = fields.length > 0 ? Math.round((dailyBookings.length / (16 * fields.length)) * 100) : 0;
+    return { todayBookings: dailyBookings, todayIncome: income, pendingCount: pending, occupancy: occ };
+  }, [bookings, fields.length, today]);
 
   const formatMoney = (amount: number) =>
     new Intl.NumberFormat('es-AR', { style: 'currency', currency: 'ARS', maximumFractionDigits: 0 }).format(amount);
@@ -696,7 +691,7 @@ function UpcomingMatch({ time, field, team, status, price, isPending = false, is
 /* =========================================
    CALENDAR TAB
 ========================================= */
-function CalendarTab({ bookings, fields, selectedDate, setSelectedDate, onSlotClick, onBookingClick }: any) {
+const CalendarTab = React.memo(function CalendarTab({ bookings, fields, selectedDate, setSelectedDate, onSlotClick, onBookingClick }: any) {
   const timeSlots = ["08:00", "09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00", "19:00", "20:00", "21:00", "22:00", "23:00"];
   const [activeFieldId, setActiveFieldId] = useState<string>(fields[0]?.id || '');
   const [weekOffset, setWeekOffset] = useState(0);
@@ -730,15 +725,27 @@ function CalendarTab({ bookings, fields, selectedDate, setSelectedDate, onSlotCl
   const currentHour = new Date().getHours();
   const todayStr = getTodayStr();
 
-  // Active field object
-  const activeField = fields.find((f: any) => f.id === activeFieldId) || fields[0];
+  // Memoized bookings map for O(1) cell lookup
+  const bookingsMap = React.useMemo(() => {
+    const map: Record<string, Record<string, any>> = {};
+    bookings.forEach((b: any) => {
+      if (b.status === 'cancelled' || b.field_id !== activeFieldId) return;
+      if (!map[b.date]) map[b.date] = {};
+      // Round down start_time to HH:00 to match timeSlots
+      const timeStr = b.start_time.substring(0, 5);
+      map[b.date][timeStr] = b;
+    });
+    return map;
+  }, [bookings, activeFieldId]);
 
   // Week stats for the active field
-  const weekBookings = bookings.filter((b: any) =>
-    b.field_id === activeFieldId &&
-    weekDays.includes(b.date) &&
-    b.status !== 'cancelled'
-  );
+  const weekBookings = React.useMemo(() => 
+    bookings.filter((b: any) =>
+      b.field_id === activeFieldId &&
+      weekDays.includes(b.date) &&
+      b.status !== 'cancelled'
+    ), [bookings, activeFieldId, weekDays]);
+
   const weekIncome = weekBookings.reduce((acc: number, curr: any) => acc + (curr.total_price || 0), 0);
   const weekPending = weekBookings.filter((b: any) => b.status === 'pending').length;
   const totalWeekSlots = timeSlots.length * 7;
@@ -951,12 +958,7 @@ function CalendarTab({ bookings, fields, selectedDate, setSelectedDate, onSlotCl
                       const isToday = date === todayStr;
                       const isCellPast = isToday && hour < currentHour && weekOffset === 0;
 
-                      const booking = bookings.find((b: any) =>
-                        b.field_id === activeFieldId &&
-                        b.date === date &&
-                        b.start_time.startsWith(time) &&
-                        b.status !== 'cancelled'
-                      );
+                      const booking = bookingsMap[date]?.[time];
 
                       return (
                         <div
@@ -1016,10 +1018,12 @@ function CalendarTab({ bookings, fields, selectedDate, setSelectedDate, onSlotCl
 /* =========================================
    FINANCES TAB
 ========================================= */
-function FinancesTab({ business, bookings, hasMP, user }: any) {
-  const totalIncome = bookings
-    .filter((b: any) => b.status === 'full_paid' || b.status === 'partial_paid')
-    .reduce((acc: number, curr: any) => acc + (curr.total_price || 0), 0);
+const FinancesTab = React.memo(function FinancesTab({ business, bookings, hasMP, user }: any) {
+  const totalIncome = React.useMemo(() => 
+    bookings
+      .filter((b: any) => b.status === 'full_paid' || b.status === 'partial_paid')
+      .reduce((acc: number, curr: any) => acc + (curr.total_price || 0), 0)
+  , [bookings]);
 
   return (
     <div className="space-y-8 animate-reveal-up">
@@ -1178,7 +1182,7 @@ const PRESET_IMAGES = [
 ];
 
 
-function SettingsTab({ business, fields, setFields, hasMP, setBusiness, logout, router }: any) {
+const SettingsTab = React.memo(function SettingsTab({ business, fields, setFields, hasMP, setBusiness, logout, router }: any) {
   const { user } = useAuth();
   const [loading, setLoading] = useState(false);
   const [deposit, setDeposit] = useState(fields?.[0]?.down_payment_percentage || 30);
@@ -1938,30 +1942,33 @@ function EditBookingModal({ booking, onClose, onUpdate, onDelete }: any) {
 /* =========================================
    CUSTOMERS TAB (CLIENTES)
 ========================================= */
-function CustomersTab({ bookings }: any) {
+const CustomersTab = React.memo(function CustomersTab({ bookings }: any) {
   const [searchTerm, setSearchTerm] = useState('');
   
   // Aggregate bookings by user or name to simulate a customer list
-  const customersMap = new Map();
-  bookings.forEach((b: any) => {
-    if (!b.title) return;
-    const name = b.title.toUpperCase();
-    if (!customersMap.has(name)) {
-      customersMap.set(name, {
-        name: b.title,
-        totalBookings: 0,
-        totalSpent: 0,
-        lastBooking: b.date,
-        isAppUser: !!b.match_id
-      });
-    }
-    const customer = customersMap.get(name);
-    customer.totalBookings++;
-    customer.totalSpent += (b.total_price || 0);
-    if (new Date(b.date) > new Date(customer.lastBooking)) {
-      customer.lastBooking = b.date;
-    }
-  });
+  const customersMap = React.useMemo(() => {
+    const map = new Map();
+    bookings.forEach((b: any) => {
+      if (!b.title) return;
+      const name = b.title.toUpperCase();
+      if (!map.has(name)) {
+        map.set(name, {
+          name: b.title,
+          totalBookings: 0,
+          totalSpent: 0,
+          lastBooking: b.date,
+          isAppUser: !!b.match_id
+        });
+      }
+      const customer = map.get(name);
+      customer.totalBookings++;
+      customer.totalSpent += (b.total_price || 0);
+      if (new Date(b.date) > new Date(customer.lastBooking)) {
+        customer.lastBooking = b.date;
+      }
+    });
+    return map;
+  }, [bookings]);
 
   const filteredCustomers = Array.from(customersMap.values())
     .filter((c: any) => c.name.toLowerCase().includes(searchTerm.toLowerCase()))
@@ -2049,11 +2056,15 @@ function CustomersTab({ bookings }: any) {
 /* =========================================
    ANALYTICS TAB (MÉTRICAS)
 ========================================= */
-function AnalyticsTab({ bookings, stats }: any) {
+const AnalyticsTab = React.memo(function AnalyticsTab({ bookings, stats }: any) {
   // Mock data calculations for analytics
-  const completedBookings = bookings.filter((b:any) => b.status === "full_paid" || b.status === "partial_paid").length;
-  const pendingBookings = bookings.filter((b:any) => b.status === "pending").length;
-  const cancelledBookings = bookings.filter((b:any) => b.status === "cancelled").length;
+  const { completedBookings, pendingBookings, cancelledBookings } = React.useMemo(() => {
+    return {
+      completedBookings: bookings.filter((b: any) => b.status === "full_paid" || b.status === "partial_paid").length,
+      pendingBookings: bookings.filter((b: any) => b.status === "pending").length,
+      cancelledBookings: bookings.filter((b: any) => b.status === "cancelled").length
+    };
+  }, [bookings]);
 
   const handleExportCSV = () => {
     const headers = ['ID,Cliente,Cancha,Fecha,Hora,Monto,Estado'];
