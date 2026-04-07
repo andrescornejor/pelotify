@@ -39,14 +39,7 @@ export async function generateMetadata(
           description,
           url: `${baseUrl}/highlights?v=${v}`,
           siteName: 'Pelotify',
-          images: [
-            {
-              url: ogImage,
-              width: 1200,
-              height: 630,
-              alt: title,
-            }
-          ],
+          images: [ogImage],
           type: 'video.other',
         },
         twitter: {
@@ -56,6 +49,12 @@ export async function generateMetadata(
           images: [ogImage],
           creator: '@pelotify',
         },
+        other: {
+          'twitter:image': ogImage,
+          'twitter:card': 'summary_large_image',
+          'og:image:width': '1200',
+          'og:image:height': '630',
+        }
       };
     }
   }
@@ -64,11 +63,11 @@ export async function generateMetadata(
     title: 'Highlights | Pelotify',
     description: 'Mira las mejores jugadas del fútbol amateur en Pelotify.',
     openGraph: {
-      images: ['https://pelotify.vercel.app/logo_pelotify.png'],
+      images: ['https://pelotify.vercel.app/icon.png'],
     },
     twitter: {
       card: 'summary_large_image',
-      images: ['https://pelotify.vercel.app/logo_pelotify.png'],
+      images: ['https://pelotify.vercel.app/icon.png'],
     }
   };
 }

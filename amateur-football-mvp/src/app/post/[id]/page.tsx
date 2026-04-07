@@ -39,14 +39,7 @@ export async function generateMetadata(
           description,
           url: `${baseUrl}/post/${postId}`,
           siteName: 'Pelotify',
-          images: [
-            {
-              url: ogImage,
-              width: 1200,
-              height: 630,
-              alt: title,
-            },
-          ],
+          images: [ogImage], // Simplified to string array
           type: 'article',
         },
         twitter: {
@@ -56,6 +49,13 @@ export async function generateMetadata(
           images: [ogImage],
           creator: '@pelotify',
         },
+        // Force tags that Next.js might be handling differently
+        other: {
+          'twitter:image': ogImage,
+          'twitter:card': 'summary_large_image',
+          'og:image:width': '1200',
+          'og:image:height': '630',
+        }
       };
     }
   }
@@ -64,11 +64,11 @@ export async function generateMetadata(
     title: 'Post | Pelotify',
     description: 'El lugar donde el fútbol amateur se conecta.',
     openGraph: {
-      images: ['https://pelotify.vercel.app/logo_pelotify.png'],
+      images: ['https://pelotify.vercel.app/icon.png'],
     },
     twitter: {
       card: 'summary_large_image',
-      images: ['https://pelotify.vercel.app/logo_pelotify.png'],
+      images: ['https://pelotify.vercel.app/icon.png'],
     }
   };
 }
