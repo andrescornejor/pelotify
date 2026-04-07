@@ -29,7 +29,7 @@ export async function generateMetadata(
       
       const title = `FutTok de @${username} en Pelotify`;
       const baseUrl = 'https://pelotify.vercel.app';
-      const testImage = data.thumbnail_url || 'https://pelotify.vercel.app/icon.png';
+      const ogImage = `${baseUrl}/api/og?title=${encodeURIComponent(title)}&description=${encodeURIComponent(description)}&username=${encodeURIComponent(username)}&type=highlight${data.thumbnail_url ? `&image=${encodeURIComponent(data.thumbnail_url)}` : ''}`;
 
       return {
         title,
@@ -39,19 +39,19 @@ export async function generateMetadata(
           description,
           url: `${baseUrl}/highlights?v=${v}`,
           siteName: 'Pelotify',
-          images: [testImage],
+          images: [ogImage],
           type: 'video.other',
         },
         twitter: {
           card: 'summary_large_image',
           title,
           description,
-          images: [testImage],
+          images: [ogImage],
           site: '@pelotify',
           creator: '@pelotify',
         },
         other: {
-          'twitter:image': testImage,
+          'twitter:image': ogImage,
           'twitter:card': 'summary_large_image',
         }
       };
