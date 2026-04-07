@@ -567,6 +567,7 @@ export default function FeedPage() {
           </aside>
 
           {/* ── MAIN FEED (center column) ── */}
+          <div className="w-full lg:flex-1 border-x border-foreground/[0.06] min-h-screen flex flex-col relative z-10">
             {/* STICKY HEADER */}
             <div 
                onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} 
