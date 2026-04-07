@@ -1,6 +1,7 @@
 import FeedClient from './FeedClient';
 import { Metadata, ResolvingMetadata } from 'next';
 import { supabase } from '@/lib/supabase';
+import { Suspense } from 'react';
 
 type Props = {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>
@@ -74,5 +75,9 @@ export async function generateMetadata(
 }
 
 export default function FeedPage() {
-  return <FeedClient />;
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-background flex items-center justify-center"><div className="w-8 h-8 border-t-2 border-primary animate-spin rounded-full" /></div>}>
+      <FeedClient />
+    </Suspense>
+  );
 }

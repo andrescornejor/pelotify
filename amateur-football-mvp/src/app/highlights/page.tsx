@@ -1,6 +1,7 @@
 import VideoFeed from '@/components/VideoFeed';
 import { Metadata, ResolvingMetadata } from 'next';
 import { supabase } from '@/lib/supabase';
+import { Suspense } from 'react';
 
 type Props = {
   searchParams: { [key: string]: string | string[] | undefined }
@@ -74,7 +75,9 @@ export async function generateMetadata(
 export default function HighlightsPage() {
   return (
     <main className="h-[100dvh] w-full bg-black overflow-hidden">
-      <VideoFeed />
+      <Suspense fallback={<div className="h-full w-full flex items-center justify-center bg-black"><div className="w-10 h-10 border-t-2 border-primary animate-spin rounded-full" /></div>}>
+        <VideoFeed />
+      </Suspense>
     </main>
   );
 }

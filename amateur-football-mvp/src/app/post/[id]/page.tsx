@@ -1,6 +1,7 @@
 import FeedClient from '@/app/feed/FeedClient';
 import { Metadata, ResolvingMetadata } from 'next';
 import { supabase } from '@/lib/supabase';
+import { Suspense } from 'react';
 
 type Props = {
   params: Promise<{ id: string }>
@@ -73,5 +74,9 @@ export async function generateMetadata(
 
 export default async function PostPage({ params }: Props) {
   const { id } = await params;
-  return <FeedClient standalonePostId={id} />;
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-background flex items-center justify-center"><div className="w-8 h-8 border-t-2 border-primary animate-spin rounded-full" /></div>}>
+      <FeedClient standalonePostId={id} />
+    </Suspense>
+  );
 }
