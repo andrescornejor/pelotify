@@ -174,6 +174,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     if (isLoading) return;
 
+    const isAuthRoute =
+      pathname === '/login' || pathname === '/register' || pathname === '/update-password' || pathname === '/canchas/login' || pathname === '/canchas/register' || pathname === '/email-confirmed';
+    const isOnboardingRoute = pathname === '/onboarding';
+    const isCanchasRoute = pathname?.startsWith('/canchas');
     const isPublicRoute = 
       pathname?.startsWith('/post/') || 
       pathname === '/highlights' || 
@@ -367,6 +371,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       throw error;
     }
   };
+
+  const isAuthRoute =
+    pathname === '/login' || pathname === '/register' || pathname === '/update-password' || pathname === '/canchas/login' || pathname === '/canchas/register' || pathname === '/email-confirmed';
+  const isCanchasRoute = pathname?.startsWith('/canchas');
 
   const isPublicRoute = 
     pathname?.startsWith('/post/') || 
