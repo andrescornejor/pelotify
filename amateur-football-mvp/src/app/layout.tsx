@@ -16,7 +16,7 @@ const kanit = Kanit({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL(process.env.NEXT_PUBLIC_BASE_URL || 'https://pelotify.app'),
+  metadataBase: new URL(process.env.NEXT_PUBLIC_BASE_URL || 'https://pelotify.vercel.app'),
   title: 'Pelotify - Fútbol Amateur',
   description: 'Gestiona tus partidos de fútbol amateur. Crea tu carta FIFA y sube de nivel.',
   icons: {
@@ -29,13 +29,13 @@ export const metadata: Metadata = {
     siteName: 'Pelotify',
     title: 'Pelotify - Fútbol Amateur',
     description: 'Gestiona tus partidos de fútbol amateur. Crea tu carta FIFA y sube de nivel.',
-    images: ['/logo_pelotify.png'],
+    images: ['https://pelotify.vercel.app/logo_pelotify.png'],
   },
   twitter: {
     card: 'summary_large_image',
     title: 'Pelotify - Fútbol Amateur',
     description: 'Gestiona tus partidos de fútbol amateur. Crea tu carta FIFA y sube de nivel.',
-    images: ['/logo_pelotify.png'],
+    images: ['https://pelotify.vercel.app/logo_pelotify.png'],
   },
   appleWebApp: {
     capable: true,
