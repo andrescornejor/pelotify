@@ -566,53 +566,53 @@ export default function FeedClient({ standalonePostId }: { standalonePostId?: st
       />
 
       {/* 3-column layout matching TopHeader padding exactly */}
-      <div className="w-full px-3 sm:px-5 lg:px-10 xl:px-16 pt-[52px]">
+      <div className="w-full px-3 sm:px-5 lg:px-10 xl:px-16 pt-[40px]">
         <div className={cn("flex gap-0", standalonePostId ? "justify-center max-w-2xl mx-auto" : "lg:gap-6 xl:gap-8")}>
 
           {/* ── LEFT SIDEBAR (desktop only) ── */}
           {!standalonePostId && (
             <aside className="hidden lg:flex flex-col w-[280px] xl:w-[320px] shrink-0 sticky top-[52px] self-start pb-8 pt-2 xl:pl-4">
-            {/* Navigation Links - Twitter Style */}
-            <nav className="flex flex-col gap-1 w-full">
-              {[
-                { href: '/feed', icon: Zap, label: 'Feed', color: 'text-primary' },
-                { href: '/search', icon: Search, label: 'Buscar', color: 'text-foreground' },
-                { href: '/friends', icon: Users, label: 'Social', color: 'text-foreground' },
-                { href: '/teams', icon: Trophy, label: 'Equipos', color: 'text-foreground' },
-                { href: '/highlights', icon: Flame, label: 'FutTok', color: 'text-foreground' },
-              ].map(item => (
+              {/* Navigation Links - Twitter Style */}
+              <nav className="flex flex-col gap-1 w-full">
+                {[
+                  { href: '/feed', icon: Zap, label: 'Feed', color: 'text-primary' },
+                  { href: '/search', icon: Search, label: 'Buscar', color: 'text-foreground' },
+                  { href: '/friends', icon: Users, label: 'Social', color: 'text-foreground' },
+                  { href: '/teams', icon: Trophy, label: 'Equipos', color: 'text-foreground' },
+                  { href: '/highlights', icon: Flame, label: 'FutTok', color: 'text-foreground' },
+                ].map(item => (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    className="flex items-center gap-4 px-5 py-3.5 rounded-full text-foreground hover:bg-foreground/[0.08] transition-all duration-200 group w-fit"
+                  >
+                    <item.icon className={cn("w-6 h-6 xl:w-7 xl:h-7 transition-transform group-hover:scale-110", item.color)} />
+                    <span className={cn("text-xl xl:text-2xl font-black italic uppercase font-kanit tracking-tight leading-none pt-1 pr-2", item.color === 'text-primary' ? 'text-primary' : '')}>{item.label}</span>
+                  </Link>
+                ))}
+
                 <Link
-                  key={item.href}
-                  href={item.href}
-                  className="flex items-center gap-4 px-5 py-3.5 rounded-full text-foreground hover:bg-foreground/[0.08] transition-all duration-200 group w-fit"
+                  href="/pro"
+                  className="mt-2 flex items-center gap-4 px-5 py-3.5 rounded-full text-foreground hover:bg-yellow-500/10 transition-all duration-200 group w-fit"
                 >
-                  <item.icon className={cn("w-6 h-6 xl:w-7 xl:h-7 transition-transform group-hover:scale-110", item.color)} />
-                  <span className={cn("text-xl xl:text-2xl font-black italic uppercase font-kanit tracking-tight leading-none pt-1 pr-2", item.color === 'text-primary' ? 'text-primary' : '')}>{item.label}</span>
+                  <div className="relative">
+                    <Zap className="w-6 h-6 xl:w-7 xl:h-7 text-yellow-500 fill-yellow-500 transition-transform group-hover:scale-110" />
+                    <div className="absolute inset-0 bg-yellow-500 blur-md opacity-40 group-hover:opacity-60 transition-opacity" />
+                  </div>
+                  <span className="text-xl xl:text-2xl font-black italic uppercase font-kanit text-yellow-500 tracking-tight leading-none pt-1 pr-2">Pelotify Pro</span>
                 </Link>
-              ))}
 
-              <Link
-                href="/pro"
-                className="mt-2 flex items-center gap-4 px-5 py-3.5 rounded-full text-foreground hover:bg-yellow-500/10 transition-all duration-200 group w-fit"
-              >
-                <div className="relative">
-                  <Zap className="w-6 h-6 xl:w-7 xl:h-7 text-yellow-500 fill-yellow-500 transition-transform group-hover:scale-110" />
-                  <div className="absolute inset-0 bg-yellow-500 blur-md opacity-40 group-hover:opacity-60 transition-opacity" />
-                </div>
-                <span className="text-xl xl:text-2xl font-black italic uppercase font-kanit text-yellow-500 tracking-tight leading-none pt-1 pr-2">Pelotify Pro</span>
-              </Link>
-
-              <button
-                onClick={() => {
-                  window.scrollTo({ top: 0, behavior: 'smooth' });
-                  setTimeout(() => document.querySelector('textarea')?.focus(), 500);
-                }}
-                className="mt-6 w-[90%] py-4 rounded-full bg-primary text-background text-lg xl:text-xl font-black italic uppercase font-kanit tracking-wide hover:opacity-90 transition-all shadow-[0_0_20px_rgba(44,252,125,0.2)] hover:shadow-[0_0_30px_rgba(44,252,125,0.4)] flex items-center justify-center pt-[18px]"
-              >
-                Postear
-              </button>
-            </nav>
-          </aside>
+                <button
+                  onClick={() => {
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                    setTimeout(() => document.querySelector('textarea')?.focus(), 500);
+                  }}
+                  className="mt-6 w-[90%] py-4 rounded-full bg-primary text-background text-lg xl:text-xl font-black italic uppercase font-kanit tracking-wide hover:opacity-90 transition-all shadow-[0_0_20px_rgba(44,252,125,0.2)] hover:shadow-[0_0_30px_rgba(44,252,125,0.4)] flex items-center justify-center pt-[18px]"
+                >
+                  Postear
+                </button>
+              </nav>
+            </aside>
           )}
 
           {/* ── MAIN FEED (center column) ── */}
@@ -640,115 +640,115 @@ export default function FeedClient({ standalonePostId }: { standalonePostId?: st
               <>
                 {/* MOBILE SEARCH BAR */}
                 <div className="lg:hidden p-4 border-b border-foreground/[0.08] bg-background">
-              <div className="relative group">
-                <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-foreground/20 group-focus-within:text-primary transition-colors" />
-                <input
-                  type="text"
-                  placeholder="Buscar posts o usuarios..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  onFocus={() => setIsSearchFocused(true)}
-                  onBlur={() => setTimeout(() => setIsSearchFocused(false), 200)}
-                  className="w-full h-11 bg-foreground/[0.03] border border-foreground/[0.06] rounded-2xl pl-11 pr-10 text-[14px] text-foreground placeholder:text-foreground/30 focus:outline-none focus:border-primary/40 focus:ring-4 focus:ring-primary/5 focus:bg-background transition-all duration-300"
-                />
-                {searchQuery && (
-                  <button
-                    onClick={() => setSearchQuery('')}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 w-6 h-6 flex items-center justify-center rounded-lg bg-foreground/[0.05] text-foreground/40 hover:bg-primary hover:text-background transition-all active:scale-90"
-                  >
-                    <X className="w-3 h-3" />
-                  </button>
-                )}
-              </div>
-            </div>
-
-            {/* CREATE POST BOX */}
-            <div className="p-4 sm:px-5 sm:py-5 border-b border-foreground/[0.08] flex gap-3 bg-background">
-              <div className="w-12 h-12 rounded-full bg-surface-elevated overflow-hidden shrink-0 transition-opacity hover:opacity-90 cursor-pointer">
-                {user?.avatar_url ? (
-                  <img src={user.avatar_url} className="w-full h-full object-cover" alt="" />
-                ) : (
-                  <div className="w-full h-full bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center font-bold text-primary text-[17px]">
-                    {user?.user_metadata?.name?.charAt(0) || '?'}
+                  <div className="relative group">
+                    <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-foreground/20 group-focus-within:text-primary transition-colors" />
+                    <input
+                      type="text"
+                      placeholder="Buscar posts o usuarios..."
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                      onFocus={() => setIsSearchFocused(true)}
+                      onBlur={() => setTimeout(() => setIsSearchFocused(false), 200)}
+                      className="w-full h-11 bg-foreground/[0.03] border border-foreground/[0.06] rounded-2xl pl-11 pr-10 text-[14px] text-foreground placeholder:text-foreground/30 focus:outline-none focus:border-primary/40 focus:ring-4 focus:ring-primary/5 focus:bg-background transition-all duration-300"
+                    />
+                    {searchQuery && (
+                      <button
+                        onClick={() => setSearchQuery('')}
+                        className="absolute right-3 top-1/2 -translate-y-1/2 w-6 h-6 flex items-center justify-center rounded-lg bg-foreground/[0.05] text-foreground/40 hover:bg-primary hover:text-background transition-all active:scale-90"
+                      >
+                        <X className="w-3 h-3" />
+                      </button>
+                    )}
                   </div>
-                )}
-              </div>
-              <div className="flex-1 flex flex-col relative min-h-[50px]">
-                <div className="absolute inset-0 pointer-events-none whitespace-pre-wrap break-words text-lg font-medium leading-relaxed p-0 border-none select-none text-foreground z-0 overflow-hidden">
-                  {newPostContent.split(/(#[\w\u00C0-\u024FáéíóúñÁÉÍÓÚÑ]+)/g).map((part, i) => (
-                    part.startsWith('#') ? <span key={i} className="text-primary font-bold">{part}</span> : part
-                  ))}
-                  {newPostContent.endsWith('\n') ? '\n' : ''}
                 </div>
-                <textarea
-                  value={newPostContent}
-                  onChange={(e) => setNewPostContent(e.target.value)}
-                  placeholder="¡Habla, crack! ¿Qué está pasando?"
-                  className="w-full bg-transparent border-none resize-none focus:outline-none text-transparent text-lg placeholder:text-foreground/35 min-h-[50px] font-medium leading-relaxed relative z-10 selection:bg-primary/20 caret-foreground p-0 m-0 overflow-hidden"
-                  maxLength={500}
-                />
 
-                {/* Image Preview */}
-                {imagePreview && (
-                  <div className="relative mt-3 rounded-2xl overflow-hidden border border-foreground/10 shadow-lg">
-                    <img src={imagePreview} alt="Preview" className="w-full max-h-[300px] object-cover" />
-                    <button
-                      onClick={clearImage}
-                      className="absolute top-2 right-2 w-8 h-8 bg-black/70 text-white rounded-full flex items-center justify-center hover:bg-black/90 transition-all backdrop-blur-sm hover:scale-110 active:scale-95 z-20"
-                    >
-                      <X className="w-4 h-4" />
-                    </button>
-                    {isUploadingImage && (
-                      <div className="absolute inset-0 bg-black/40 flex items-center justify-center backdrop-blur-sm z-10">
-                        <Loader2 className="w-8 h-8 animate-spin text-white" />
+                {/* CREATE POST BOX */}
+                <div className="p-4 sm:px-5 sm:py-5 border-b border-foreground/[0.08] flex gap-3 bg-background">
+                  <div className="w-12 h-12 rounded-full bg-surface-elevated overflow-hidden shrink-0 transition-opacity hover:opacity-90 cursor-pointer">
+                    {user?.avatar_url ? (
+                      <img src={user.avatar_url} className="w-full h-full object-cover" alt="" />
+                    ) : (
+                      <div className="w-full h-full bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center font-bold text-primary text-[17px]">
+                        {user?.user_metadata?.name?.charAt(0) || '?'}
                       </div>
                     )}
                   </div>
-                )}
+                  <div className="flex-1 flex flex-col relative min-h-[50px]">
+                    <div className="absolute inset-0 pointer-events-none whitespace-pre-wrap break-words text-lg font-medium leading-relaxed p-0 border-none select-none text-foreground z-0 overflow-hidden">
+                      {newPostContent.split(/(#[\w\u00C0-\u024FáéíóúñÁÉÍÓÚÑ]+)/g).map((part, i) => (
+                        part.startsWith('#') ? <span key={i} className="text-primary font-bold">{part}</span> : part
+                      ))}
+                      {newPostContent.endsWith('\n') ? '\n' : ''}
+                    </div>
+                    <textarea
+                      value={newPostContent}
+                      onChange={(e) => setNewPostContent(e.target.value)}
+                      placeholder="¡Habla, crack! ¿Qué está pasando?"
+                      className="w-full bg-transparent border-none resize-none focus:outline-none text-transparent text-lg placeholder:text-foreground/35 min-h-[50px] font-medium leading-relaxed relative z-10 selection:bg-primary/20 caret-foreground p-0 m-0 overflow-hidden"
+                      maxLength={500}
+                    />
 
-                <div className="flex items-center justify-between mt-4 pt-3 border-t border-foreground/[0.04]">
-                  <div className="flex items-center gap-0.5">
-                    <button
-                      onClick={() => fileInputRef.current?.click()}
-                      className="p-2 text-primary hover:bg-primary/10 rounded-full transition-colors flex items-center justify-center group"
-                      title="Subir imagen"
-                    >
-                      <ImageIcon className="w-5 h-5 group-hover:scale-105 transition-transform" />
-                    </button>
-                    <button
-                      onClick={() => {
-                        setNewPostContent(prev => prev + (prev.length > 0 && !prev.endsWith(' ') ? ' #' : '#'));
-                        setTimeout(() => document.querySelector('textarea')?.focus(), 10);
-                      }}
-                      className="p-2 text-primary hover:bg-primary/10 rounded-full transition-colors flex items-center justify-center group"
-                      title="Hashtag"
-                    >
-                      <Hash className="w-5 h-5 group-hover:scale-105 transition-transform" />
-                    </button>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    {newPostContent.length > 0 && (
-                      <div className="flex items-center gap-2 mt-1">
-                        <div className="relative w-6 h-6">
-                          <svg className="w-6 h-6 -rotate-90" viewBox="0 0 28 28">
-                            <circle cx="14" cy="14" r="11" fill="none" stroke="currentColor" className="text-foreground/[0.06]" strokeWidth="2.5" />
-                            <circle cx="14" cy="14" r="11" fill="none" stroke="currentColor" className={cn(newPostContent.length > 450 ? "text-amber-500" : newPostContent.length > 480 ? "text-red-500" : "text-primary")} strokeWidth="2.5" strokeDasharray={`${(newPostContent.length / 500) * 69.1} 69.1`} strokeLinecap="round" />
-                          </svg>
-                        </div>
-                        <div className="h-6 w-px bg-foreground/10" />
+                    {/* Image Preview */}
+                    {imagePreview && (
+                      <div className="relative mt-3 rounded-2xl overflow-hidden border border-foreground/10 shadow-lg">
+                        <img src={imagePreview} alt="Preview" className="w-full max-h-[300px] object-cover" />
+                        <button
+                          onClick={clearImage}
+                          className="absolute top-2 right-2 w-8 h-8 bg-black/70 text-white rounded-full flex items-center justify-center hover:bg-black/90 transition-all backdrop-blur-sm hover:scale-110 active:scale-95 z-20"
+                        >
+                          <X className="w-4 h-4" />
+                        </button>
+                        {isUploadingImage && (
+                          <div className="absolute inset-0 bg-black/40 flex items-center justify-center backdrop-blur-sm z-10">
+                            <Loader2 className="w-8 h-8 animate-spin text-white" />
+                          </div>
+                        )}
                       </div>
                     )}
-                    <button
-                      onClick={handlePost}
-                      disabled={isPosting || (!newPostContent.trim() && !selectedImage)}
-                      className="px-5 py-1.5 rounded-full bg-primary text-background font-bold text-[15px] tracking-wide disabled:opacity-50 disabled:cursor-not-allowed hover:bg-primary/90 active:scale-[0.96] transition-all duration-200 mt-1"
-                    >
-                      {isPosting ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Postear'}
-                    </button>
+
+                    <div className="flex items-center justify-between mt-4 pt-3 border-t border-foreground/[0.04]">
+                      <div className="flex items-center gap-0.5">
+                        <button
+                          onClick={() => fileInputRef.current?.click()}
+                          className="p-2 text-primary hover:bg-primary/10 rounded-full transition-colors flex items-center justify-center group"
+                          title="Subir imagen"
+                        >
+                          <ImageIcon className="w-5 h-5 group-hover:scale-105 transition-transform" />
+                        </button>
+                        <button
+                          onClick={() => {
+                            setNewPostContent(prev => prev + (prev.length > 0 && !prev.endsWith(' ') ? ' #' : '#'));
+                            setTimeout(() => document.querySelector('textarea')?.focus(), 10);
+                          }}
+                          className="p-2 text-primary hover:bg-primary/10 rounded-full transition-colors flex items-center justify-center group"
+                          title="Hashtag"
+                        >
+                          <Hash className="w-5 h-5 group-hover:scale-105 transition-transform" />
+                        </button>
+                      </div>
+                      <div className="flex items-center gap-3">
+                        {newPostContent.length > 0 && (
+                          <div className="flex items-center gap-2 mt-1">
+                            <div className="relative w-6 h-6">
+                              <svg className="w-6 h-6 -rotate-90" viewBox="0 0 28 28">
+                                <circle cx="14" cy="14" r="11" fill="none" stroke="currentColor" className="text-foreground/[0.06]" strokeWidth="2.5" />
+                                <circle cx="14" cy="14" r="11" fill="none" stroke="currentColor" className={cn(newPostContent.length > 450 ? "text-amber-500" : newPostContent.length > 480 ? "text-red-500" : "text-primary")} strokeWidth="2.5" strokeDasharray={`${(newPostContent.length / 500) * 69.1} 69.1`} strokeLinecap="round" />
+                              </svg>
+                            </div>
+                            <div className="h-6 w-px bg-foreground/10" />
+                          </div>
+                        )}
+                        <button
+                          onClick={handlePost}
+                          disabled={isPosting || (!newPostContent.trim() && !selectedImage)}
+                          className="px-5 py-1.5 rounded-full bg-primary text-background font-bold text-[15px] tracking-wide disabled:opacity-50 disabled:cursor-not-allowed hover:bg-primary/90 active:scale-[0.96] transition-all duration-200 mt-1"
+                        >
+                          {isPosting ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Postear'}
+                        </button>
+                      </div>
+                    </div>
                   </div>
                 </div>
-              </div>
-            </div>
               </>
             )}
 
@@ -1014,184 +1014,184 @@ export default function FeedClient({ standalonePostId }: { standalonePostId?: st
           {!standalonePostId && (
             <aside className="hidden lg:flex flex-col w-[280px] xl:w-[340px] shrink-0 sticky top-[52px] self-start gap-4 pb-8">
 
-            {/* Search Bar - functional */}
-            <div className="relative group">
-              <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-foreground/20 group-focus-within:text-primary transition-colors" />
-              <input
-                type="text"
-                placeholder="Buscar posts o usuarios..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                onFocus={() => setIsSearchFocused(true)}
-                onBlur={() => setTimeout(() => setIsSearchFocused(false), 200)}
-                className="w-full h-12 bg-foreground/[0.03] border border-foreground/[0.06] rounded-2xl pl-11 pr-10 text-[14px] text-foreground placeholder:text-foreground/30 focus:outline-none focus:border-primary/40 focus:ring-4 focus:ring-primary/5 focus:bg-background transition-all duration-300"
-              />
-              {searchQuery && (
-                <button
-                  onClick={() => setSearchQuery('')}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 w-6 h-6 flex items-center justify-center rounded-lg bg-foreground/[0.05] text-foreground/40 hover:bg-primary hover:text-background transition-all active:scale-90"
-                >
-                  <X className="w-3 h-3" />
-                </button>
-              )}
-            </div>
+              {/* Search Bar - functional */}
+              <div className="relative group">
+                <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-foreground/20 group-focus-within:text-primary transition-colors" />
+                <input
+                  type="text"
+                  placeholder="Buscar posts o usuarios..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  onFocus={() => setIsSearchFocused(true)}
+                  onBlur={() => setTimeout(() => setIsSearchFocused(false), 200)}
+                  className="w-full h-12 bg-foreground/[0.03] border border-foreground/[0.06] rounded-2xl pl-11 pr-10 text-[14px] text-foreground placeholder:text-foreground/30 focus:outline-none focus:border-primary/40 focus:ring-4 focus:ring-primary/5 focus:bg-background transition-all duration-300"
+                />
+                {searchQuery && (
+                  <button
+                    onClick={() => setSearchQuery('')}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 w-6 h-6 flex items-center justify-center rounded-lg bg-foreground/[0.05] text-foreground/40 hover:bg-primary hover:text-background transition-all active:scale-90"
+                  >
+                    <X className="w-3 h-3" />
+                  </button>
+                )}
+              </div>
 
-            {/* Trending - real hashtags from posts */}
-            {trendingTopics.length > 0 && (
+              {/* Trending - real hashtags from posts */}
+              {trendingTopics.length > 0 && (
+                <div className="rounded-2xl bg-foreground/[0.03] overflow-hidden">
+                  <div className="px-4 pt-4 pb-2">
+                    <h3 className="font-black text-foreground text-xl tracking-tight italic font-kanit uppercase">Tendencias</h3>
+                  </div>
+                  <div className="flex flex-col">
+                    {trendingTopics.map((topic, i) => (
+                      <button
+                        key={topic.tag}
+                        onClick={() => handleHashtagClick(topic.tag)}
+                        className="px-4 py-3 hover:bg-foreground/[0.05] transition-colors cursor-pointer text-left w-full"
+                      >
+                        <div className="text-[13px] text-foreground/40 font-medium">Tendencia en Pelotify</div>
+                        <div className="font-bold text-[15px] text-foreground flex items-center gap-1.5 mt-0.5">
+                          {topic.tag}
+                        </div>
+                        <div className="text-[13px] text-foreground/40 mt-0.5">{topic.count} {topic.count === 1 ? 'post' : 'posts'}</div>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Who to Follow - with real friend request */}
               <div className="rounded-2xl bg-foreground/[0.03] overflow-hidden">
                 <div className="px-4 pt-4 pb-2">
-                  <h3 className="font-black text-foreground text-xl tracking-tight italic font-kanit uppercase">Tendencias</h3>
+                  <h3 className="font-black text-foreground text-xl tracking-tight italic font-kanit uppercase">A quién seguir</h3>
                 </div>
                 <div className="flex flex-col">
-                  {trendingTopics.map((topic, i) => (
-                    <button
-                      key={topic.tag}
-                      onClick={() => handleHashtagClick(topic.tag)}
-                      className="px-4 py-3 hover:bg-foreground/[0.05] transition-colors cursor-pointer text-left w-full"
-                    >
-                      <div className="text-[13px] text-foreground/40 font-medium">Tendencia en Pelotify</div>
-                      <div className="font-bold text-[15px] text-foreground flex items-center gap-1.5 mt-0.5">
-                        {topic.tag}
+                  {suggestedUsers.map(su => {
+                    const isFriend = existingFriends.has(su.id);
+                    const isPending = sentFriendRequests.has(su.id);
+
+                    return (
+                      <div
+                        key={su.id}
+                        className="px-4 py-3 hover:bg-foreground/[0.05] transition-colors flex items-center gap-3"
+                      >
+                        <Link
+                          href={`/profile?id=${su.id}`}
+                          className={cn("w-10 h-10 rounded-full overflow-hidden shrink-0 transition-opacity hover:opacity-90 duration-200 z-10", su.is_pro ? "ring-2 ring-yellow-500/40" : "")}
+                        >
+                          {su.avatar_url ? (
+                            <img src={su.avatar_url} className="w-full h-full object-cover" alt="" />
+                          ) : (
+                            <div className={cn("w-full h-full flex items-center justify-center font-bold text-[15px]",
+                              su.is_pro ? "bg-gradient-to-br from-yellow-500/20 to-amber-500/10 text-yellow-500" : "bg-gradient-to-br from-primary/15 to-primary/5 text-primary"
+                            )}>
+                              {su.name?.charAt(0)}
+                            </div>
+                          )}
+                        </Link>
+                        <Link href={`/profile?id=${su.id}`} className="flex-1 min-w-0">
+                          <div className={cn("font-bold text-[15px] truncate leading-tight hover:underline", su.is_pro ? "text-yellow-500" : "text-foreground")}>
+                            {su.name}
+                            {su.is_pro && <Zap className="w-3.5 h-3.5 text-yellow-500 fill-yellow-500 inline ml-1" />}
+                          </div>
+                          <div className="text-[14px] text-foreground/40 truncate leading-tight">
+                            @{su.name?.toLowerCase().replace(/\s+/g, '')}
+                          </div>
+                        </Link>
+                        <div className="shrink-0">
+                          {isFriend ? (
+                            <div className="px-4 py-1.5 rounded-full border border-foreground/[0.08] bg-transparent text-foreground/60 text-[14px] font-bold">
+                              Amigos
+                            </div>
+                          ) : isPending ? (
+                            <div className="px-4 py-1.5 rounded-full border border-foreground/20 bg-transparent text-foreground text-[14px] font-bold">
+                              Pendiente
+                            </div>
+                          ) : (
+                            <button
+                              onClick={() => handleSendFriendRequest(su.id)}
+                              className="px-4 py-1.5 rounded-full bg-foreground text-background text-[14px] font-bold hover:bg-foreground/80 transition-all active:scale-95 shadow-sm hover:shadow-md"
+                            >
+                              Seguir
+                            </button>
+                          )}
+                        </div>
                       </div>
-                      <div className="text-[13px] text-foreground/40 mt-0.5">{topic.count} {topic.count === 1 ? 'post' : 'posts'}</div>
-                    </button>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* Top Ranking */}
+              <div className="rounded-2xl bg-foreground/[0.03] overflow-hidden">
+                <div className="px-4 pt-4 pb-2">
+                  <h3 className="font-black text-foreground text-xl tracking-tight italic font-kanit uppercase">Top ELO</h3>
+                </div>
+                <div className="flex flex-col">
+                  {topPlayers.map((player, i) => (
+                    <Link
+                      key={player.id}
+                      href={`/profile?id=${player.id}`}
+                      className="px-4 py-3 hover:bg-foreground/[0.05] transition-colors flex items-center gap-3"
+                    >
+                      <div className={cn("w-6 flex justify-center text-[15px] font-bold shrink-0",
+                        i === 0 ? "text-yellow-500" :
+                          i === 1 ? "text-foreground/60" :
+                            i === 2 ? "text-orange-500" :
+                              "text-foreground/40"
+                      )}>
+                        {i + 1}
+                      </div>
+                      <div className={cn("w-10 h-10 rounded-full overflow-hidden shrink-0 relative transition-opacity hover:opacity-90 z-10", player.is_pro ? "ring-2 ring-yellow-500/40" : "")}>
+                        {player.avatar_url ? (
+                          <img src={player.avatar_url} className="w-full h-full object-cover" alt="" />
+                        ) : (
+                          <div className={cn("w-full h-full flex items-center justify-center font-bold text-[15px]",
+                            player.is_pro ? "bg-gradient-to-br from-yellow-500/20 to-amber-500/10 text-yellow-500" : "bg-gradient-to-br from-primary/15 to-primary/5 text-primary"
+                          )}>
+                            {player.name?.charAt(0)}
+                          </div>
+                        )}
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <div className={cn("font-bold text-[15px] truncate leading-tight hover:underline flex items-center", player.is_pro ? "text-yellow-500" : "text-foreground")}>
+                          {player.name}
+                          {player.is_pro && <Zap className="w-3.5 h-3.5 text-yellow-500 fill-yellow-500 inline ml-1 shrink-0" />}
+                        </div>
+                        <div className="text-[14px] text-foreground/40 truncate leading-tight">
+                          @{player.name?.toLowerCase().replace(/\s+/g, '')}
+                        </div>
+                      </div>
+                      <div className="text-right shrink-0">
+                        <div className="text-[15px] font-black text-foreground italic font-kanit leading-none">
+                          {player.elo}
+                        </div>
+                        <div className="text-[11px] font-bold text-foreground/40 uppercase tracking-widest mt-0.5">
+                          ELO
+                        </div>
+                      </div>
+                    </Link>
                   ))}
                 </div>
               </div>
-            )}
 
-            {/* Who to Follow - with real friend request */}
-            <div className="rounded-2xl bg-foreground/[0.03] overflow-hidden">
-              <div className="px-4 pt-4 pb-2">
-                <h3 className="font-black text-foreground text-xl tracking-tight italic font-kanit uppercase">A quién seguir</h3>
-              </div>
-              <div className="flex flex-col">
-                {suggestedUsers.map(su => {
-                  const isFriend = existingFriends.has(su.id);
-                  const isPending = sentFriendRequests.has(su.id);
-
-                  return (
-                    <div
-                      key={su.id}
-                      className="px-4 py-3 hover:bg-foreground/[0.05] transition-colors flex items-center gap-3"
-                    >
-                      <Link
-                        href={`/profile?id=${su.id}`}
-                        className={cn("w-10 h-10 rounded-full overflow-hidden shrink-0 transition-opacity hover:opacity-90 duration-200 z-10", su.is_pro ? "ring-2 ring-yellow-500/40" : "")}
-                      >
-                        {su.avatar_url ? (
-                          <img src={su.avatar_url} className="w-full h-full object-cover" alt="" />
-                        ) : (
-                          <div className={cn("w-full h-full flex items-center justify-center font-bold text-[15px]",
-                            su.is_pro ? "bg-gradient-to-br from-yellow-500/20 to-amber-500/10 text-yellow-500" : "bg-gradient-to-br from-primary/15 to-primary/5 text-primary"
-                          )}>
-                            {su.name?.charAt(0)}
-                          </div>
-                        )}
-                      </Link>
-                      <Link href={`/profile?id=${su.id}`} className="flex-1 min-w-0">
-                        <div className={cn("font-bold text-[15px] truncate leading-tight hover:underline", su.is_pro ? "text-yellow-500" : "text-foreground")}>
-                          {su.name}
-                          {su.is_pro && <Zap className="w-3.5 h-3.5 text-yellow-500 fill-yellow-500 inline ml-1" />}
-                        </div>
-                        <div className="text-[14px] text-foreground/40 truncate leading-tight">
-                          @{su.name?.toLowerCase().replace(/\s+/g, '')}
-                        </div>
-                      </Link>
-                      <div className="shrink-0">
-                        {isFriend ? (
-                          <div className="px-4 py-1.5 rounded-full border border-foreground/[0.08] bg-transparent text-foreground/60 text-[14px] font-bold">
-                            Amigos
-                          </div>
-                        ) : isPending ? (
-                          <div className="px-4 py-1.5 rounded-full border border-foreground/20 bg-transparent text-foreground text-[14px] font-bold">
-                            Pendiente
-                          </div>
-                        ) : (
-                          <button
-                            onClick={() => handleSendFriendRequest(su.id)}
-                            className="px-4 py-1.5 rounded-full bg-foreground text-background text-[14px] font-bold hover:bg-foreground/80 transition-all active:scale-95 shadow-sm hover:shadow-md"
-                          >
-                            Seguir
-                          </button>
-                        )}
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-
-            {/* Top Ranking */}
-            <div className="rounded-2xl bg-foreground/[0.03] overflow-hidden">
-              <div className="px-4 pt-4 pb-2">
-                <h3 className="font-black text-foreground text-xl tracking-tight italic font-kanit uppercase">Top ELO</h3>
-              </div>
-              <div className="flex flex-col">
-                {topPlayers.map((player, i) => (
-                  <Link
-                    key={player.id}
-                    href={`/profile?id=${player.id}`}
-                    className="px-4 py-3 hover:bg-foreground/[0.05] transition-colors flex items-center gap-3"
-                  >
-                    <div className={cn("w-6 flex justify-center text-[15px] font-bold shrink-0",
-                      i === 0 ? "text-yellow-500" :
-                        i === 1 ? "text-foreground/60" :
-                          i === 2 ? "text-orange-500" :
-                            "text-foreground/40"
-                    )}>
-                      {i + 1}
-                    </div>
-                    <div className={cn("w-10 h-10 rounded-full overflow-hidden shrink-0 relative transition-opacity hover:opacity-90 z-10", player.is_pro ? "ring-2 ring-yellow-500/40" : "")}>
-                      {player.avatar_url ? (
-                        <img src={player.avatar_url} className="w-full h-full object-cover" alt="" />
-                      ) : (
-                        <div className={cn("w-full h-full flex items-center justify-center font-bold text-[15px]",
-                          player.is_pro ? "bg-gradient-to-br from-yellow-500/20 to-amber-500/10 text-yellow-500" : "bg-gradient-to-br from-primary/15 to-primary/5 text-primary"
-                        )}>
-                          {player.name?.charAt(0)}
-                        </div>
-                      )}
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <div className={cn("font-bold text-[15px] truncate leading-tight hover:underline flex items-center", player.is_pro ? "text-yellow-500" : "text-foreground")}>
-                        {player.name}
-                        {player.is_pro && <Zap className="w-3.5 h-3.5 text-yellow-500 fill-yellow-500 inline ml-1 shrink-0" />}
-                      </div>
-                      <div className="text-[14px] text-foreground/40 truncate leading-tight">
-                        @{player.name?.toLowerCase().replace(/\s+/g, '')}
-                      </div>
-                    </div>
-                    <div className="text-right shrink-0">
-                      <div className="text-[15px] font-black text-foreground italic font-kanit leading-none">
-                        {player.elo}
-                      </div>
-                      <div className="text-[11px] font-bold text-foreground/40 uppercase tracking-widest mt-0.5">
-                        ELO
-                      </div>
-                    </div>
+              {/* Footer Links */}
+              <div className="px-5 py-2 flex flex-wrap gap-x-4 gap-y-2">
+                {[
+                  { label: 'Términos', href: '/terms' },
+                  { label: 'Privacidad', href: '/privacy' },
+                  { label: 'Ayuda', href: '/help' },
+                  { label: 'Pelotify Pro', href: '/pro' },
+                ].map(link => (
+                  <Link key={link.label} href={link.href} className="text-[11px] font-bold text-foreground/30 hover:text-primary transition-colors">
+                    {link.label}
                   </Link>
                 ))}
+                <div className="w-full text-[11px] font-bold text-foreground/20 mt-2">
+                  © 2026 Pelotify. Dominá la cancha.
+                </div>
               </div>
-            </div>
-
-            {/* Footer Links */}
-            <div className="px-5 py-2 flex flex-wrap gap-x-4 gap-y-2">
-              {[
-                { label: 'Términos', href: '/terms' },
-                { label: 'Privacidad', href: '/privacy' },
-                { label: 'Ayuda', href: '/help' },
-                { label: 'Pelotify Pro', href: '/pro' },
-              ].map(link => (
-                <Link key={link.label} href={link.href} className="text-[11px] font-bold text-foreground/30 hover:text-primary transition-colors">
-                  {link.label}
-                </Link>
-              ))}
-              <div className="w-full text-[11px] font-bold text-foreground/20 mt-2">
-                © 2026 Pelotify. Dominá la cancha.
-              </div>
-            </div>
-          </aside>
+            </aside>
           )}
         </div>
       </div>

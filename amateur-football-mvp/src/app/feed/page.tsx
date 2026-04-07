@@ -3,14 +3,15 @@ import { Metadata, ResolvingMetadata } from 'next';
 import { supabase } from '@/lib/supabase';
 
 type Props = {
-  searchParams: { [key: string]: string | string[] | undefined }
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>
 }
 
 export async function generateMetadata(
   { searchParams }: Props,
   parent: ResolvingMetadata
 ): Promise<Metadata> {
-  const postId = searchParams.post;
+  const resolvedParams = await searchParams;
+  const postId = resolvedParams.post;
   
   if (postId && typeof postId === 'string') {
     const { data } = await supabase

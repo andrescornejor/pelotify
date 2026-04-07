@@ -3,14 +3,14 @@ import { Metadata, ResolvingMetadata } from 'next';
 import { supabase } from '@/lib/supabase';
 
 type Props = {
-  params: { id: string }
+  params: Promise<{ id: string }>
 }
 
 export async function generateMetadata(
   { params }: Props,
   parent: ResolvingMetadata
 ): Promise<Metadata> {
-  const postId = params.id;
+  const { id: postId } = await params;
   
   if (postId && typeof postId === 'string') {
     const { data } = await supabase
@@ -50,6 +50,7 @@ export async function generateMetadata(
   };
 }
 
-export default function PostPage({ params }: Props) {
-  return <FeedClient standalonePostId={params.id} />;
+export default async function PostPage({ params }: Props) {
+  const { id } = await params;
+  return <FeedClient standalonePostId={id} />;
 }
