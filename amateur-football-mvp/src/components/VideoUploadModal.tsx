@@ -53,6 +53,37 @@ export default function VideoUploadModal({ onClose, onSuccess }: VideoUploadModa
     return true;
   };
 
+  const captureThumbnail = (): Promise<Blob | null> => {
+    return new Promise((resolve) => {
+      if (!videoRef.current) return resolve(null);
+      const video = videoRef.current;
+      
+      // Start at 0.5s to avoid potential black frame at the very beginning
+      const originalTime = video.currentTime;
+      video.currentTime = 0.5;
+      
+      const handleSeeked = () => {
+        const canvas = document.createElement('canvas');
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        const ctx = canvas.getContext('2d');
+        if (ctx) {
+          ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+          canvas.toBlob((blob) => {
+            video.currentTime = originalTime; // Restore time
+            video.removeEventListener('seeked', handleSeeked);
+            resolve(blob);
+          }, 'image/jpeg', 0.7);
+        } else {
+          video.removeEventListener('seeked', handleSeeked);
+          resolve(null);
+        }
+      };
+      
+      video.addEventListener('seeked', handleSeeked);
+    });
+  };
+
   const handleUpload = async () => {
     if (!file || !user || !validateDuration()) return;
 
@@ -60,31 +91,56 @@ export default function VideoUploadModal({ onClose, onSuccess }: VideoUploadModa
     setError(null);
 
     try {
-      // 1. Upload to Supabase Storage
+      // 0. Capture Thumbnail
+      const thumbnailBlob = await captureThumbnail();
+      
+      // 1. Upload Video to Supabase Storage
       const fileExt = file.name.split('.').pop();
-      const fileName = `${user.id}/${Math.random()}.${fileExt}`;
-      const filePath = `highlights/${fileName}`;
+      const randomId = Math.random().toString(36).substring(7);
+      const videoFileName = `${user.id}/${randomId}.${fileExt}`;
+      const videoPath = `highlights/${videoFileName}`;
 
       const { data: storageData, error: storageError } = await supabase.storage
         .from('match-highlights')
-        .upload(filePath, file, {
+        .upload(videoPath, file, {
           cacheControl: '3600',
           upsert: false
         });
 
       if (storageError) throw storageError;
 
-      // 2. Get Public URL
-      const { data: { publicUrl } } = supabase.storage
+      // 2. Get Video Public URL
+      const { data: { publicUrl: videoUrl } } = supabase.storage
         .from('match-highlights')
-        .getPublicUrl(filePath);
+        .getPublicUrl(videoPath);
 
-      // 3. Insert into Database
+      // 3. Upload Thumbnail if exists
+      let thumbnailUrl = null;
+      if (thumbnailBlob) {
+        const thumbnailPath = `highlights/${user.id}/${randomId}_thumb.jpg`;
+        const { error: thumbError } = await supabase.storage
+          .from('match-highlights')
+          .upload(thumbnailPath, thumbnailBlob, {
+            cacheControl: '3600',
+            upsert: false,
+            contentType: 'image/jpeg'
+          });
+        
+        if (!thumbError) {
+          const { data: { publicUrl: tUrl } } = supabase.storage
+            .from('match-highlights')
+            .getPublicUrl(thumbnailPath);
+          thumbnailUrl = tUrl;
+        }
+      }
+
+      // 4. Insert into Database
       const { error: dbError } = await supabase
         .from('match_highlights')
         .insert({
           user_id: user.id,
-          video_url: publicUrl,
+          video_url: videoUrl,
+          thumbnail_url: thumbnailUrl,
           description: description,
           likes_count: 0,
           views_count: 0

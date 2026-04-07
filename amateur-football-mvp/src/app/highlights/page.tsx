@@ -15,8 +15,8 @@ export async function generateMetadata(
   
   if (v && typeof v === 'string') {
     const { data } = await supabase
-      .from('highlights')
-      .select('description, thumbnail_url, profiles(name)')
+      .from('match_highlights')
+      .select('description, thumbnail_url, video_url, profiles:user_id(name)')
       .eq('id', v)
       .single();
 
@@ -31,6 +31,7 @@ export async function generateMetadata(
       const title = `FutTok de @${username} en Pelotify`;
       const baseUrl = 'https://pelotify.vercel.app';
       const testImage = data.thumbnail_url || 'https://pelotify.vercel.app/icon.png';
+      const videoUrl = data.video_url;
 
       return {
         title,
@@ -41,19 +42,42 @@ export async function generateMetadata(
           url: `${baseUrl}/highlights?v=${v}`,
           siteName: 'Pelotify',
           images: [testImage],
+          videos: [
+            {
+              url: videoUrl,
+              width: 720,
+              height: 1280,
+              type: 'video/mp4',
+            },
+          ],
           type: 'video.other',
         },
         twitter: {
-          card: 'summary_large_image',
+          card: 'player',
           title,
           description,
           images: [testImage],
           site: '@pelotify',
           creator: '@pelotify',
+          players: [
+            {
+              playerUrl: `${baseUrl}/highlights?v=${v}`,
+              width: 720,
+              height: 1280,
+            }
+          ]
         },
         other: {
           'twitter:image': testImage,
-          'twitter:card': 'summary_large_image',
+          'twitter:card': 'player',
+          'twitter:player': `${baseUrl}/highlights?v=${v}`,
+          'twitter:player:width': '720',
+          'twitter:player:height': '1280',
+          'og:video': videoUrl,
+          'og:video:secure_url': videoUrl,
+          'og:video:type': 'video/mp4',
+          'og:video:width': '720',
+          'og:video:height': '1280',
         }
       };
     }
