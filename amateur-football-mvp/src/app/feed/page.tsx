@@ -5,9 +5,9 @@ import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/lib/supabase';
 import { motion, AnimatePresence } from 'framer-motion';
 import { cn } from '@/lib/utils';
-import { 
-  MessageSquare, 
-  Heart, 
+import {
+  MessageSquare,
+  Heart,
   Image as ImageIcon,
   MoreHorizontal,
   Send,
@@ -95,7 +95,7 @@ export default function FeedPage() {
   const [comments, setComments] = useState<Record<string, Comment[]>>({});
   const [newCommentContent, setNewCommentContent] = useState('');
   const [isCommenting, setIsCommenting] = useState<string | null>(null);
-  
+
   // Image upload state
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
@@ -112,7 +112,7 @@ export default function FeedPage() {
 
   // Bookmark state
   const [bookmarkedPosts, setBookmarkedPosts] = useState<Set<string>>(new Set());
-  
+
   // Share state
   const [copiedPostId, setCopiedPostId] = useState<string | null>(null);
 
@@ -137,7 +137,7 @@ export default function FeedPage() {
         .from('friendships')
         .select('id, user_id, friend_id, status')
         .or(`user_id.eq.${user.id},friend_id.eq.${user.id}`);
-      
+
       if (data) {
         const friends = new Set<string>();
         const pending = new Set<string>();
@@ -295,7 +295,7 @@ export default function FeedPage() {
 
   const handlePost = async () => {
     if ((!newPostContent.trim() && !selectedImage) || !user) return;
-    
+
     setIsPosting(true);
     try {
       let imageUrl: string | null = null;
@@ -321,7 +321,7 @@ export default function FeedPage() {
         });
 
       if (error) throw error;
-      
+
       setNewPostContent('');
       clearImage();
       await fetchPosts();
@@ -334,7 +334,7 @@ export default function FeedPage() {
 
   const handleLike = async (postId: string, userHasLiked: boolean) => {
     if (!user) return;
-    
+
     try {
       // Optimistic update
       setPosts(prev => prev.map(p => {
@@ -385,7 +385,7 @@ export default function FeedPage() {
 
       setNewCommentContent('');
       await loadComments(postId);
-      setPosts(prev => prev.map(p => 
+      setPosts(prev => prev.map(p =>
         p.id === postId ? { ...p, comments_count: p.comments_count + 1 } : p
       ));
     } catch (error) {
@@ -409,7 +409,7 @@ export default function FeedPage() {
   const handleBookmark = async (postId: string) => {
     if (!user) return;
     const isBookmarked = bookmarkedPosts.has(postId);
-    
+
     // Optimistic update
     setBookmarkedPosts(prev => {
       const next = new Set(prev);
@@ -472,10 +472,10 @@ export default function FeedPage() {
 
   const handleSendFriendRequest = async (targetUserId: string) => {
     if (!user || sentFriendRequests.has(targetUserId) || existingFriends.has(targetUserId)) return;
-    
+
     // Optimistic
     setSentFriendRequests(prev => new Set(prev).add(targetUserId));
-    
+
     try {
       await sendFriendRequest(user.id, targetUserId);
     } catch (err) {
@@ -539,11 +539,11 @@ export default function FeedPage() {
     <div className="flex flex-col min-h-screen bg-background pt-0 relative overflow-hidden">
       {/* AMBIENT BACKGROUND */}
       <div className="fixed inset-0 pointer-events-none -z-10 overflow-hidden">
-        <div 
+        <div
           className="absolute top-[-5%] right-[-5%] w-[40%] h-[40%] opacity-[0.03]"
           style={{ background: 'radial-gradient(circle, #2cfc7d 0%, transparent 70%)' }}
         />
-        <div 
+        <div
           className="absolute bottom-[-5%] left-[-5%] w-[40%] h-[40%] opacity-[0.02]"
           style={{ background: 'radial-gradient(circle, #f59e0b 0%, transparent 70%)' }}
         />
@@ -558,7 +558,7 @@ export default function FeedPage() {
       />
 
       {/* 3-column layout matching TopHeader padding exactly */}
-      <div className="w-full px-3 sm:px-5 lg:px-10 xl:px-16 pt-[80px]">
+      <div className="w-full px-3 sm:px-5 lg:px-10 xl:px-16 pt-[50px]">
         <div className="flex gap-0 lg:gap-6 xl:gap-8">
 
           {/* ── LEFT SIDEBAR (desktop only) ── */}
@@ -581,19 +581,19 @@ export default function FeedPage() {
                   <span className={cn("text-xl xl:text-2xl font-black italic uppercase font-kanit tracking-tight leading-none pt-1 pr-2", item.color === 'text-primary' ? 'text-primary' : '')}>{item.label}</span>
                 </Link>
               ))}
-              
-              <Link 
-                href="/pro" 
+
+              <Link
+                href="/pro"
                 className="mt-2 flex items-center gap-4 px-5 py-3.5 rounded-full text-foreground hover:bg-yellow-500/10 transition-all duration-200 group w-fit"
               >
-                  <div className="relative">
-                     <Zap className="w-6 h-6 xl:w-7 xl:h-7 text-yellow-500 fill-yellow-500 transition-transform group-hover:scale-110" />
-                     <div className="absolute inset-0 bg-yellow-500 blur-md opacity-40 group-hover:opacity-60 transition-opacity" />
-                  </div>
-                  <span className="text-xl xl:text-2xl font-black italic uppercase font-kanit text-yellow-500 tracking-tight leading-none pt-1 pr-2">Pelotify Pro</span>
+                <div className="relative">
+                  <Zap className="w-6 h-6 xl:w-7 xl:h-7 text-yellow-500 fill-yellow-500 transition-transform group-hover:scale-110" />
+                  <div className="absolute inset-0 bg-yellow-500 blur-md opacity-40 group-hover:opacity-60 transition-opacity" />
+                </div>
+                <span className="text-xl xl:text-2xl font-black italic uppercase font-kanit text-yellow-500 tracking-tight leading-none pt-1 pr-2">Pelotify Pro</span>
               </Link>
-              
-              <button 
+
+              <button
                 onClick={() => {
                   window.scrollTo({ top: 0, behavior: 'smooth' });
                   setTimeout(() => document.querySelector('textarea')?.focus(), 500);
@@ -608,349 +608,349 @@ export default function FeedPage() {
           {/* ── MAIN FEED (center column) ── */}
           <div className="w-full lg:flex-1 border-x border-foreground/[0.08] min-h-screen flex flex-col relative z-20">
             {/* STICKY HEADER */}
-            <div 
-               onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} 
-               className="sticky top-[80px] z-50 bg-background/80 backdrop-blur-md border-b border-foreground/[0.08] px-5 py-4 flex items-center justify-between cursor-pointer hover:bg-foreground/[0.02] transition-colors"
+            <div
+              onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+              className="sticky top-[80px] z-50 bg-background/80 backdrop-blur-md border-b border-foreground/[0.08] px-5 py-4 flex items-center justify-between cursor-pointer hover:bg-foreground/[0.02] transition-colors"
             >
-               <div className="flex items-center gap-2.5">
-                 <h1 className="text-2xl font-black italic uppercase font-kanit text-foreground tracking-tighter leading-none">Inicio</h1>
-               </div>
-               <div className="flex items-center gap-2">
-                 <Link href="/pro" className="group">
-                    <Zap className="w-5 h-5 text-foreground/40 group-hover:text-yellow-500 transition-colors" />
-                 </Link>
-               </div>
+              <div className="flex items-center gap-2.5">
+                <h1 className="text-2xl font-black italic uppercase font-kanit text-foreground tracking-tighter leading-none">Inicio</h1>
+              </div>
+              <div className="flex items-center gap-2">
+                <Link href="/pro" className="group">
+                  <Zap className="w-5 h-5 text-foreground/40 group-hover:text-yellow-500 transition-colors" />
+                </Link>
+              </div>
             </div>
 
             {/* CREATE POST BOX */}
             <div className="p-4 sm:px-5 sm:py-5 border-b border-foreground/[0.08] flex gap-3 bg-background">
-                 <div className="w-12 h-12 rounded-full bg-surface-elevated overflow-hidden shrink-0 transition-opacity hover:opacity-90 cursor-pointer">
-                    {user?.avatar_url ? (
-                       <img src={user.avatar_url} className="w-full h-full object-cover" alt="" />
-                    ) : (
-                       <div className="w-full h-full bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center font-bold text-primary text-[17px]">
-                          {user?.user_metadata?.name?.charAt(0) || '?'}
-                       </div>
-                    )}
-                 </div>
-                 <div className="flex-1 flex flex-col relative min-h-[50px]">
-                    <div className="absolute inset-0 pointer-events-none whitespace-pre-wrap break-words text-lg font-medium leading-relaxed p-0 border-none select-none text-foreground z-0 overflow-hidden">
-                      {newPostContent.split(/(#[\w\u00C0-\u024FáéíóúñÁÉÍÓÚÑ]+)/g).map((part, i) => (
-                        part.startsWith('#') ? <span key={i} className="text-primary font-bold">{part}</span> : part
-                      ))}
-                      {newPostContent.endsWith('\n') ? '\n' : ''}
-                    </div>
-                    <textarea
-                      value={newPostContent}
-                      onChange={(e) => setNewPostContent(e.target.value)}
-                      placeholder="¡Habla, crack! ¿Qué está pasando?"
-                      className="w-full bg-transparent border-none resize-none focus:outline-none text-transparent text-lg placeholder:text-foreground/35 min-h-[50px] font-medium leading-relaxed relative z-10 selection:bg-primary/20 caret-foreground p-0 m-0 overflow-hidden"
-                      maxLength={500}
-                    />
+              <div className="w-12 h-12 rounded-full bg-surface-elevated overflow-hidden shrink-0 transition-opacity hover:opacity-90 cursor-pointer">
+                {user?.avatar_url ? (
+                  <img src={user.avatar_url} className="w-full h-full object-cover" alt="" />
+                ) : (
+                  <div className="w-full h-full bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center font-bold text-primary text-[17px]">
+                    {user?.user_metadata?.name?.charAt(0) || '?'}
+                  </div>
+                )}
+              </div>
+              <div className="flex-1 flex flex-col relative min-h-[50px]">
+                <div className="absolute inset-0 pointer-events-none whitespace-pre-wrap break-words text-lg font-medium leading-relaxed p-0 border-none select-none text-foreground z-0 overflow-hidden">
+                  {newPostContent.split(/(#[\w\u00C0-\u024FáéíóúñÁÉÍÓÚÑ]+)/g).map((part, i) => (
+                    part.startsWith('#') ? <span key={i} className="text-primary font-bold">{part}</span> : part
+                  ))}
+                  {newPostContent.endsWith('\n') ? '\n' : ''}
+                </div>
+                <textarea
+                  value={newPostContent}
+                  onChange={(e) => setNewPostContent(e.target.value)}
+                  placeholder="¡Habla, crack! ¿Qué está pasando?"
+                  className="w-full bg-transparent border-none resize-none focus:outline-none text-transparent text-lg placeholder:text-foreground/35 min-h-[50px] font-medium leading-relaxed relative z-10 selection:bg-primary/20 caret-foreground p-0 m-0 overflow-hidden"
+                  maxLength={500}
+                />
 
-                    {/* Image Preview */}
-                    {imagePreview && (
-                      <div className="relative mt-3 rounded-2xl overflow-hidden border border-foreground/10 shadow-lg">
-                        <img src={imagePreview} alt="Preview" className="w-full max-h-[300px] object-cover" />
-                        <button
-                          onClick={clearImage}
-                          className="absolute top-2 right-2 w-8 h-8 bg-black/70 text-white rounded-full flex items-center justify-center hover:bg-black/90 transition-all backdrop-blur-sm hover:scale-110 active:scale-95 z-20"
-                        >
-                          <X className="w-4 h-4" />
-                        </button>
-                        {isUploadingImage && (
-                          <div className="absolute inset-0 bg-black/40 flex items-center justify-center backdrop-blur-sm z-10">
-                            <Loader2 className="w-8 h-8 animate-spin text-white" />
-                          </div>
-                        )}
+                {/* Image Preview */}
+                {imagePreview && (
+                  <div className="relative mt-3 rounded-2xl overflow-hidden border border-foreground/10 shadow-lg">
+                    <img src={imagePreview} alt="Preview" className="w-full max-h-[300px] object-cover" />
+                    <button
+                      onClick={clearImage}
+                      className="absolute top-2 right-2 w-8 h-8 bg-black/70 text-white rounded-full flex items-center justify-center hover:bg-black/90 transition-all backdrop-blur-sm hover:scale-110 active:scale-95 z-20"
+                    >
+                      <X className="w-4 h-4" />
+                    </button>
+                    {isUploadingImage && (
+                      <div className="absolute inset-0 bg-black/40 flex items-center justify-center backdrop-blur-sm z-10">
+                        <Loader2 className="w-8 h-8 animate-spin text-white" />
                       </div>
                     )}
+                  </div>
+                )}
 
-                    <div className="flex items-center justify-between mt-4 pt-3 border-t border-foreground/[0.04]">
-                       <div className="flex items-center gap-0.5">
-                           <button
-                             onClick={() => fileInputRef.current?.click()}
-                             className="p-2 text-primary hover:bg-primary/10 rounded-full transition-colors flex items-center justify-center group"
-                             title="Subir imagen"
-                           >
-                              <ImageIcon className="w-5 h-5 group-hover:scale-105 transition-transform" />
-                           </button>
-                           <button 
-                             onClick={() => {
-                               setNewPostContent(prev => prev + (prev.length > 0 && !prev.endsWith(' ') ? ' #' : '#'));
-                               setTimeout(() => document.querySelector('textarea')?.focus(), 10);
-                             }}
-                             className="p-2 text-primary hover:bg-primary/10 rounded-full transition-colors flex items-center justify-center group" 
-                             title="Hashtag"
-                           >
-                              <Hash className="w-5 h-5 group-hover:scale-105 transition-transform" />
-                           </button>
-                       </div>
-                       <div className="flex items-center gap-3">
-                           {newPostContent.length > 0 && (
-                             <div className="flex items-center gap-2 mt-1">
-                               <div className="relative w-6 h-6">
-                                 <svg className="w-6 h-6 -rotate-90" viewBox="0 0 28 28">
-                                   <circle cx="14" cy="14" r="11" fill="none" stroke="currentColor" className="text-foreground/[0.06]" strokeWidth="2.5" />
-                                   <circle cx="14" cy="14" r="11" fill="none" stroke="currentColor" className={cn(newPostContent.length > 450 ? "text-amber-500" : newPostContent.length > 480 ? "text-red-500" : "text-primary")} strokeWidth="2.5" strokeDasharray={`${(newPostContent.length / 500) * 69.1} 69.1`} strokeLinecap="round" />
-                                 </svg>
-                               </div>
-                               <div className="h-6 w-px bg-foreground/10" />
-                             </div>
-                           )}
-                           <button
-                             onClick={handlePost}
-                             disabled={isPosting || (!newPostContent.trim() && !selectedImage)}
-                             className="px-5 py-1.5 rounded-full bg-primary text-background font-bold text-[15px] tracking-wide disabled:opacity-50 disabled:cursor-not-allowed hover:bg-primary/90 active:scale-[0.96] transition-all duration-200 mt-1"
-                           >
-                             {isPosting ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Postear'}
-                           </button>
-                       </div>
-                    </div>
-                 </div>
+                <div className="flex items-center justify-between mt-4 pt-3 border-t border-foreground/[0.04]">
+                  <div className="flex items-center gap-0.5">
+                    <button
+                      onClick={() => fileInputRef.current?.click()}
+                      className="p-2 text-primary hover:bg-primary/10 rounded-full transition-colors flex items-center justify-center group"
+                      title="Subir imagen"
+                    >
+                      <ImageIcon className="w-5 h-5 group-hover:scale-105 transition-transform" />
+                    </button>
+                    <button
+                      onClick={() => {
+                        setNewPostContent(prev => prev + (prev.length > 0 && !prev.endsWith(' ') ? ' #' : '#'));
+                        setTimeout(() => document.querySelector('textarea')?.focus(), 10);
+                      }}
+                      className="p-2 text-primary hover:bg-primary/10 rounded-full transition-colors flex items-center justify-center group"
+                      title="Hashtag"
+                    >
+                      <Hash className="w-5 h-5 group-hover:scale-105 transition-transform" />
+                    </button>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    {newPostContent.length > 0 && (
+                      <div className="flex items-center gap-2 mt-1">
+                        <div className="relative w-6 h-6">
+                          <svg className="w-6 h-6 -rotate-90" viewBox="0 0 28 28">
+                            <circle cx="14" cy="14" r="11" fill="none" stroke="currentColor" className="text-foreground/[0.06]" strokeWidth="2.5" />
+                            <circle cx="14" cy="14" r="11" fill="none" stroke="currentColor" className={cn(newPostContent.length > 450 ? "text-amber-500" : newPostContent.length > 480 ? "text-red-500" : "text-primary")} strokeWidth="2.5" strokeDasharray={`${(newPostContent.length / 500) * 69.1} 69.1`} strokeLinecap="round" />
+                          </svg>
+                        </div>
+                        <div className="h-6 w-px bg-foreground/10" />
+                      </div>
+                    )}
+                    <button
+                      onClick={handlePost}
+                      disabled={isPosting || (!newPostContent.trim() && !selectedImage)}
+                      className="px-5 py-1.5 rounded-full bg-primary text-background font-bold text-[15px] tracking-wide disabled:opacity-50 disabled:cursor-not-allowed hover:bg-primary/90 active:scale-[0.96] transition-all duration-200 mt-1"
+                    >
+                      {isPosting ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Postear'}
+                    </button>
+                  </div>
+                </div>
+              </div>
             </div>
 
             {/* POSTS FEED */}
             <div className="flex flex-col pb-20">
               <AnimatePresence>
-                 {filteredPosts.map((post, index) => (
-                   <motion.div
-                     key={post.id}
-                     initial={{ opacity: 0, y: 8 }}
-                     animate={{ opacity: 1, y: 0 }}
-                     transition={{ duration: 0.3, delay: index < 10 ? index * 0.03 : 0 }}
-                     className={cn("p-4 sm:px-5 sm:py-3.5 border-b border-foreground/[0.08] hover:bg-foreground/[0.03] transition-colors duration-200 relative flex gap-3 cursor-pointer group/post", post.author.is_pro ? "bg-gradient-to-r from-yellow-500/[0.03] to-transparent" : "")}
-                   >
-                      {/* LEFTSIDE AVATAR */}
-                      <div className="shrink-0 flex flex-col items-center">
-                          <Link href={`/profile?id=${post.author.id}`} className={cn("w-12 h-12 rounded-full overflow-hidden shrink-0 relative hover:opacity-90 transition-opacity duration-200 z-10", post.author.is_pro ? "ring-2 ring-yellow-500/40" : "")}>
-                               {post.author.avatar_url ? (
-                                 <img src={post.author.avatar_url} className="w-full h-full object-cover" alt="" />
-                               ) : (
-                                 <div className="w-full h-full bg-gradient-to-br from-primary/15 to-primary/5 flex items-center justify-center font-bold text-primary text-[15px]">
-                                    {post.author.name.charAt(0)}
-                                 </div>
-                               )}
-                          </Link>
-                      </div>
-
-                      {/* RIGHTSIDE CONTENT */}
-                      <div className="flex-1 min-w-0 mt-0.5">
-                          {/* Header */}
-                          <div className="flex justify-between items-start">
-                             <div className="flex items-center gap-1.5 flex-wrap leading-tight">
-                                 <Link href={`/profile?id=${post.author.id}`} className="group flex items-center gap-1 min-w-0">
-                                     <span className={cn("font-bold text-[15px] truncate group-hover:underline", post.author.is_pro ? "text-yellow-500" : "text-foreground")}>
-                                        {post.author.name}
-                                     </span>
-                                     {post.author.is_pro && (
-                                        <Zap className="w-3.5 h-3.5 text-yellow-500 fill-yellow-500 shrink-0" />
-                                     )}
-                                     <span className="text-foreground/40 text-[15px] truncate ml-0.5">
-                                        @{post.author.name.toLowerCase().replace(/\s+/g, '')}
-                                     </span>
-                                 </Link>
-                                 <span className="text-foreground/40 text-[15px]">·</span>
-                                 <span className="text-foreground/40 text-[15px] hover:underline cursor-pointer">
-                                    {timeAgo(post.created_at)}
-                                 </span>
-                             </div>
-
-                             {post.author_id === user?.id && (
-                                <div className="relative group/menu shrink-0">
-                                   <button className="text-foreground/40 hover:text-blue-500 p-1.5 hover:bg-blue-500/10 rounded-full transition-colors mt-[-4px]">
-                                     <MoreHorizontal className="w-4 h-4" />
-                                   </button>
-                                   <div className="absolute right-0 top-full mt-1 w-32 bg-surface-elevated border border-foreground/10 rounded-xl shadow-xl flex flex-col opacity-0 group-hover/menu:opacity-100 pointer-events-none group-hover/menu:pointer-events-auto transition-all z-20 overflow-hidden">
-                                      <button 
-                                        onClick={(e) => { e.stopPropagation(); handleDeletePost(post.id); }}
-                                        className="w-full text-left px-4 py-3 text-sm font-bold text-red-500 hover:bg-white/5 flex items-center gap-2"
-                                      >
-                                         <Trash2 className="w-4 h-4" /> Eliminar
-                                      </button>
-                                   </div>
-                                </div>
-                             )}
+                {filteredPosts.map((post, index) => (
+                  <motion.div
+                    key={post.id}
+                    initial={{ opacity: 0, y: 8 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.3, delay: index < 10 ? index * 0.03 : 0 }}
+                    className={cn("p-4 sm:px-5 sm:py-3.5 border-b border-foreground/[0.08] hover:bg-foreground/[0.03] transition-colors duration-200 relative flex gap-3 cursor-pointer group/post", post.author.is_pro ? "bg-gradient-to-r from-yellow-500/[0.03] to-transparent" : "")}
+                  >
+                    {/* LEFTSIDE AVATAR */}
+                    <div className="shrink-0 flex flex-col items-center">
+                      <Link href={`/profile?id=${post.author.id}`} className={cn("w-12 h-12 rounded-full overflow-hidden shrink-0 relative hover:opacity-90 transition-opacity duration-200 z-10", post.author.is_pro ? "ring-2 ring-yellow-500/40" : "")}>
+                        {post.author.avatar_url ? (
+                          <img src={post.author.avatar_url} className="w-full h-full object-cover" alt="" />
+                        ) : (
+                          <div className="w-full h-full bg-gradient-to-br from-primary/15 to-primary/5 flex items-center justify-center font-bold text-primary text-[15px]">
+                            {post.author.name.charAt(0)}
                           </div>
-
-                          {/* Content with clickable hashtags */}
-                          <div className="mt-1 mb-2.5">
-                             <p className="text-foreground text-[15px] leading-snug whitespace-pre-wrap">
-                                {post.content.split(/(#[\w\u00C0-\u024FáéíóúñÁÉÍÓÚÑ]+)/g).map((part, i) => {
-                                  if (part.startsWith('#')) {
-                                    return (
-                                      <button
-                                        key={i}
-                                        onClick={(e) => { e.stopPropagation(); handleHashtagClick(part.slice(1)); }}
-                                        className="text-primary hover:underline font-semibold"
-                                      >
-                                        {part}
-                                      </button>
-                                    );
-                                  }
-                                  return part;
-                                })}
-                             </p>
-                             {/* Post Image */}
-                             {post.image_url && (
-                               <div className="mt-3 rounded-2xl overflow-hidden border border-foreground/[0.08] shadow-sm">
-                                 <img src={post.image_url} alt="" className="w-full max-h-[500px] object-cover" />
-                               </div>
-                             )}
-                          </div>
-
-                          {/* Actions */}
-                          <div className="flex items-center justify-between text-foreground/40 max-w-[425px] pr-2 -ml-2 pb-1">
-                             <button 
-                               onClick={(e) => {
-                                   e.stopPropagation();
-                                   if (expandedPostId === post.id) {
-                                      setExpandedPostId(null);
-                                   } else {
-                                      setExpandedPostId(post.id);
-                                      loadComments(post.id);
-                                   }
-                               }}
-                               className={cn("flex items-center gap-1.5 text-[13px] group/btn transition-colors", expandedPostId === post.id ? "text-blue-500" : "hover:text-blue-500")}
-                             >
-                                <div className={cn("p-2 rounded-full transition-colors", expandedPostId === post.id ? "bg-blue-500/10" : "group-hover/btn:bg-blue-500/10")}>
-                                   <MessageSquare className="w-4.5 h-4.5" />
-                                </div>
-                                <span className="font-medium -ml-0.5">{post.comments_count > 0 ? post.comments_count : ''}</span>
-                             </button>
-
-                             {/* Bookmark */}
-                             <button
-                               onClick={(e) => { e.stopPropagation(); handleBookmark(post.id); }}
-                               className={cn("flex items-center gap-1.5 text-[13px] group/btn transition-colors", bookmarkedPosts.has(post.id) ? "text-green-500" : "hover:text-green-500")}
-                               title={bookmarkedPosts.has(post.id) ? 'Quitar de guardados' : 'Guardar'}
-                             >
-                                <div className={cn("p-2 rounded-full transition-colors", bookmarkedPosts.has(post.id) ? "bg-green-500/10" : "group-hover/btn:bg-green-500/10")}>
-                                   {bookmarkedPosts.has(post.id) ? (
-                                     <BookmarkCheck className="w-4.5 h-4.5 fill-green-500" />
-                                   ) : (
-                                     <Bookmark className="w-4.5 h-4.5" />
-                                   )}
-                                </div>
-                             </button>
-
-                             <button 
-                               onClick={(e) => { e.stopPropagation(); handleLike(post.id, post.user_has_liked); }}
-                               className={cn("flex items-center gap-1.5 text-[13px] group/btn transition-colors", post.user_has_liked ? "text-pink-600" : "hover:text-pink-600")}
-                               title="Me gusta"
-                             >
-                                <div className={cn("p-2 rounded-full transition-colors", post.user_has_liked ? "bg-pink-600/10" : "group-hover/btn:bg-pink-600/10")}>
-                                   <Heart className={cn("w-4.5 h-4.5", post.user_has_liked && "fill-pink-600")} />
-                                </div>
-                                <span className="font-medium -ml-0.5">{post.likes_count > 0 ? post.likes_count : ''}</span>
-                             </button>
-
-                             <button 
-                               onClick={(e) => { e.stopPropagation(); handleShare(post); }}
-                               className={cn("flex items-center gap-1.5 text-[13px] group/btn transition-colors hover:text-primary")}
-                               title="Compartir"
-                             >
-                                <div className="p-2 rounded-full group-hover/btn:bg-primary/10 transition-colors relative">
-                                   {copiedPostId === post.id ? (
-                                      <Check className="w-4.5 h-4.5 text-primary animate-in zoom-in duration-300" />
-                                   ) : (
-                                      <Share2 className="w-4.5 h-4.5" />
-                                   )}
-                                </div>
-                             </button>
-                          </div>
-
-                          {/* Expanded Comments */}
-                          <AnimatePresence>
-                             {expandedPostId === post.id && (
-                                <motion.div
-                                  initial={{ opacity: 0, height: 0 }}
-                                  animate={{ opacity: 1, height: 'auto' }}
-                                  exit={{ opacity: 0, height: 0 }}
-                                  className="mt-4 border-t border-foreground/[0.04] pt-4 overflow-hidden"
-                                >
-                                   {/* Comment Input */}
-                                   <div className="flex gap-3 mb-4">
-                                      <div className="w-8 h-8 rounded-full bg-surface-elevated overflow-hidden shrink-0 mt-1">
-                                          {user?.avatar_url ? (
-                                            <img src={user.avatar_url} className="w-full h-full object-cover" alt="" />
-                                          ) : (
-                                            <div className="w-full h-full bg-primary/10 flex items-center justify-center font-bold text-primary text-xs">
-                                              {user?.user_metadata?.name?.charAt(0) || '?'}
-                                            </div>
-                                          )}
-                                      </div>
-                                      <div className="flex-1 relative">
-                                          <input 
-                                            value={newCommentContent}
-                                            onChange={(e) => setNewCommentContent(e.target.value)}
-                                            onKeyDown={(e) => e.key === 'Enter' && handleComment(post.id)}
-                                            placeholder="Escribí tu comentario..."
-                                            className="w-full bg-foreground/[0.03] border-none rounded-2xl px-4 py-2 text-sm focus:ring-1 focus:ring-primary/30 outline-none pr-10"
-                                          />
-                                          <button 
-                                            onClick={() => handleComment(post.id)}
-                                            disabled={!newCommentContent.trim() || isCommenting === post.id}
-                                            className="absolute right-2 top-1/2 -translate-y-1/2 text-primary disabled:opacity-30 p-1"
-                                          >
-                                            {isCommenting === post.id ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
-                                          </button>
-                                      </div>
-                                   </div>
-
-                                   {/* Comment List */}
-                                   <div className="space-y-4 px-1">
-                                      {comments[post.id]?.map(comment => (
-                                         <div key={comment.id} className="flex gap-3">
-                                            <Link href={`/profile?id=${comment.author.id}`} className={cn("w-8 h-8 rounded-full overflow-hidden shrink-0 ring-1", comment.author.is_pro ? "ring-yellow-500/20" : "ring-foreground/[0.06]")}>
-                                                {comment.author.avatar_url ? (
-                                                  <img src={comment.author.avatar_url} className="w-full h-full object-cover" alt="" />
-                                                ) : (
-                                                  <div className="w-full h-full bg-foreground/5 flex items-center justify-center font-bold text-foreground/40 text-[10px]">
-                                                    {comment.author.name.charAt(0)}
-                                                  </div>
-                                                )}
-                                            </Link>
-                                            <div className="flex-1 bg-foreground/[0.015] rounded-2xl px-4 py-2.5">
-                                               <div className="flex items-center gap-2 mb-0.5">
-                                                  <span className={cn("font-bold text-xs", comment.author.is_pro ? "text-yellow-600" : "text-foreground")}>{comment.author.name}</span>
-                                                  <span className="text-[10px] text-foreground/40">{timeAgo(comment.created_at)}</span>
-                                               </div>
-                                               <p className="text-sm text-foreground/80 leading-relaxed">{comment.content}</p>
-                                            </div>
-                                         </div>
-                                      ))}
-                                      {comments[post.id]?.length === 0 && (
-                                         <div className="py-6 text-center text-foreground/30 text-xs italic">
-                                            Sé el primero en comentar...
-                                         </div>
-                                      )}
-                                   </div>
-                                </motion.div>
-                             )}
-                          </AnimatePresence>
-                      </div>
-                   </motion.div>
-                 ))}
-
-                 {filteredPosts.length === 0 && (
-                    <div className="flex flex-col items-center justify-center py-20 px-4 text-center">
-                        <div className="w-20 h-20 rounded-[2rem] bg-foreground/[0.02] border border-foreground/[0.06] flex items-center justify-center mb-6 relative group overflow-hidden">
-                            <div className="absolute inset-0 bg-gradient-to-br from-primary/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                            <Search className="w-8 h-8 text-foreground/10 group-hover:text-primary/40 transition-colors duration-500" />
-                        </div>
-                        <h3 className="text-xl font-black italic uppercase font-kanit text-foreground tracking-tighter mb-2">No se encontró nada</h3>
-                        <p className="text-foreground/40 text-sm max-w-xs">{searchQuery ? `No hay resultados para "${searchQuery}". Intentá con otra palabra o hashtag.` : "El muro está vacío. ¡Sé el primero en dominar la cancha con un post!"}</p>
-                        {searchQuery && (
-                          <button 
-                            onClick={() => setSearchQuery('')}
-                            className="mt-6 px-6 py-2 rounded-full bg-foreground/5 border border-foreground/10 text-foreground/60 text-xs font-bold hover:bg-foreground/10 transition-all"
-                          >
-                            Ver todo el feed
-                          </button>
                         )}
+                      </Link>
                     </div>
-                 )}
+
+                    {/* RIGHTSIDE CONTENT */}
+                    <div className="flex-1 min-w-0 mt-0.5">
+                      {/* Header */}
+                      <div className="flex justify-between items-start">
+                        <div className="flex items-center gap-1.5 flex-wrap leading-tight">
+                          <Link href={`/profile?id=${post.author.id}`} className="group flex items-center gap-1 min-w-0">
+                            <span className={cn("font-bold text-[15px] truncate group-hover:underline", post.author.is_pro ? "text-yellow-500" : "text-foreground")}>
+                              {post.author.name}
+                            </span>
+                            {post.author.is_pro && (
+                              <Zap className="w-3.5 h-3.5 text-yellow-500 fill-yellow-500 shrink-0" />
+                            )}
+                            <span className="text-foreground/40 text-[15px] truncate ml-0.5">
+                              @{post.author.name.toLowerCase().replace(/\s+/g, '')}
+                            </span>
+                          </Link>
+                          <span className="text-foreground/40 text-[15px]">·</span>
+                          <span className="text-foreground/40 text-[15px] hover:underline cursor-pointer">
+                            {timeAgo(post.created_at)}
+                          </span>
+                        </div>
+
+                        {post.author_id === user?.id && (
+                          <div className="relative group/menu shrink-0">
+                            <button className="text-foreground/40 hover:text-blue-500 p-1.5 hover:bg-blue-500/10 rounded-full transition-colors mt-[-4px]">
+                              <MoreHorizontal className="w-4 h-4" />
+                            </button>
+                            <div className="absolute right-0 top-full mt-1 w-32 bg-surface-elevated border border-foreground/10 rounded-xl shadow-xl flex flex-col opacity-0 group-hover/menu:opacity-100 pointer-events-none group-hover/menu:pointer-events-auto transition-all z-20 overflow-hidden">
+                              <button
+                                onClick={(e) => { e.stopPropagation(); handleDeletePost(post.id); }}
+                                className="w-full text-left px-4 py-3 text-sm font-bold text-red-500 hover:bg-white/5 flex items-center gap-2"
+                              >
+                                <Trash2 className="w-4 h-4" /> Eliminar
+                              </button>
+                            </div>
+                          </div>
+                        )}
+                      </div>
+
+                      {/* Content with clickable hashtags */}
+                      <div className="mt-1 mb-2.5">
+                        <p className="text-foreground text-[15px] leading-snug whitespace-pre-wrap">
+                          {post.content.split(/(#[\w\u00C0-\u024FáéíóúñÁÉÍÓÚÑ]+)/g).map((part, i) => {
+                            if (part.startsWith('#')) {
+                              return (
+                                <button
+                                  key={i}
+                                  onClick={(e) => { e.stopPropagation(); handleHashtagClick(part.slice(1)); }}
+                                  className="text-primary hover:underline font-semibold"
+                                >
+                                  {part}
+                                </button>
+                              );
+                            }
+                            return part;
+                          })}
+                        </p>
+                        {/* Post Image */}
+                        {post.image_url && (
+                          <div className="mt-3 rounded-2xl overflow-hidden border border-foreground/[0.08] shadow-sm">
+                            <img src={post.image_url} alt="" className="w-full max-h-[500px] object-cover" />
+                          </div>
+                        )}
+                      </div>
+
+                      {/* Actions */}
+                      <div className="flex items-center justify-between text-foreground/40 max-w-[425px] pr-2 -ml-2 pb-1">
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            if (expandedPostId === post.id) {
+                              setExpandedPostId(null);
+                            } else {
+                              setExpandedPostId(post.id);
+                              loadComments(post.id);
+                            }
+                          }}
+                          className={cn("flex items-center gap-1.5 text-[13px] group/btn transition-colors", expandedPostId === post.id ? "text-blue-500" : "hover:text-blue-500")}
+                        >
+                          <div className={cn("p-2 rounded-full transition-colors", expandedPostId === post.id ? "bg-blue-500/10" : "group-hover/btn:bg-blue-500/10")}>
+                            <MessageSquare className="w-4.5 h-4.5" />
+                          </div>
+                          <span className="font-medium -ml-0.5">{post.comments_count > 0 ? post.comments_count : ''}</span>
+                        </button>
+
+                        {/* Bookmark */}
+                        <button
+                          onClick={(e) => { e.stopPropagation(); handleBookmark(post.id); }}
+                          className={cn("flex items-center gap-1.5 text-[13px] group/btn transition-colors", bookmarkedPosts.has(post.id) ? "text-green-500" : "hover:text-green-500")}
+                          title={bookmarkedPosts.has(post.id) ? 'Quitar de guardados' : 'Guardar'}
+                        >
+                          <div className={cn("p-2 rounded-full transition-colors", bookmarkedPosts.has(post.id) ? "bg-green-500/10" : "group-hover/btn:bg-green-500/10")}>
+                            {bookmarkedPosts.has(post.id) ? (
+                              <BookmarkCheck className="w-4.5 h-4.5 fill-green-500" />
+                            ) : (
+                              <Bookmark className="w-4.5 h-4.5" />
+                            )}
+                          </div>
+                        </button>
+
+                        <button
+                          onClick={(e) => { e.stopPropagation(); handleLike(post.id, post.user_has_liked); }}
+                          className={cn("flex items-center gap-1.5 text-[13px] group/btn transition-colors", post.user_has_liked ? "text-pink-600" : "hover:text-pink-600")}
+                          title="Me gusta"
+                        >
+                          <div className={cn("p-2 rounded-full transition-colors", post.user_has_liked ? "bg-pink-600/10" : "group-hover/btn:bg-pink-600/10")}>
+                            <Heart className={cn("w-4.5 h-4.5", post.user_has_liked && "fill-pink-600")} />
+                          </div>
+                          <span className="font-medium -ml-0.5">{post.likes_count > 0 ? post.likes_count : ''}</span>
+                        </button>
+
+                        <button
+                          onClick={(e) => { e.stopPropagation(); handleShare(post); }}
+                          className={cn("flex items-center gap-1.5 text-[13px] group/btn transition-colors hover:text-primary")}
+                          title="Compartir"
+                        >
+                          <div className="p-2 rounded-full group-hover/btn:bg-primary/10 transition-colors relative">
+                            {copiedPostId === post.id ? (
+                              <Check className="w-4.5 h-4.5 text-primary animate-in zoom-in duration-300" />
+                            ) : (
+                              <Share2 className="w-4.5 h-4.5" />
+                            )}
+                          </div>
+                        </button>
+                      </div>
+
+                      {/* Expanded Comments */}
+                      <AnimatePresence>
+                        {expandedPostId === post.id && (
+                          <motion.div
+                            initial={{ opacity: 0, height: 0 }}
+                            animate={{ opacity: 1, height: 'auto' }}
+                            exit={{ opacity: 0, height: 0 }}
+                            className="mt-4 border-t border-foreground/[0.04] pt-4 overflow-hidden"
+                          >
+                            {/* Comment Input */}
+                            <div className="flex gap-3 mb-4">
+                              <div className="w-8 h-8 rounded-full bg-surface-elevated overflow-hidden shrink-0 mt-1">
+                                {user?.avatar_url ? (
+                                  <img src={user.avatar_url} className="w-full h-full object-cover" alt="" />
+                                ) : (
+                                  <div className="w-full h-full bg-primary/10 flex items-center justify-center font-bold text-primary text-xs">
+                                    {user?.user_metadata?.name?.charAt(0) || '?'}
+                                  </div>
+                                )}
+                              </div>
+                              <div className="flex-1 relative">
+                                <input
+                                  value={newCommentContent}
+                                  onChange={(e) => setNewCommentContent(e.target.value)}
+                                  onKeyDown={(e) => e.key === 'Enter' && handleComment(post.id)}
+                                  placeholder="Escribí tu comentario..."
+                                  className="w-full bg-foreground/[0.03] border-none rounded-2xl px-4 py-2 text-sm focus:ring-1 focus:ring-primary/30 outline-none pr-10"
+                                />
+                                <button
+                                  onClick={() => handleComment(post.id)}
+                                  disabled={!newCommentContent.trim() || isCommenting === post.id}
+                                  className="absolute right-2 top-1/2 -translate-y-1/2 text-primary disabled:opacity-30 p-1"
+                                >
+                                  {isCommenting === post.id ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
+                                </button>
+                              </div>
+                            </div>
+
+                            {/* Comment List */}
+                            <div className="space-y-4 px-1">
+                              {comments[post.id]?.map(comment => (
+                                <div key={comment.id} className="flex gap-3">
+                                  <Link href={`/profile?id=${comment.author.id}`} className={cn("w-8 h-8 rounded-full overflow-hidden shrink-0 ring-1", comment.author.is_pro ? "ring-yellow-500/20" : "ring-foreground/[0.06]")}>
+                                    {comment.author.avatar_url ? (
+                                      <img src={comment.author.avatar_url} className="w-full h-full object-cover" alt="" />
+                                    ) : (
+                                      <div className="w-full h-full bg-foreground/5 flex items-center justify-center font-bold text-foreground/40 text-[10px]">
+                                        {comment.author.name.charAt(0)}
+                                      </div>
+                                    )}
+                                  </Link>
+                                  <div className="flex-1 bg-foreground/[0.015] rounded-2xl px-4 py-2.5">
+                                    <div className="flex items-center gap-2 mb-0.5">
+                                      <span className={cn("font-bold text-xs", comment.author.is_pro ? "text-yellow-600" : "text-foreground")}>{comment.author.name}</span>
+                                      <span className="text-[10px] text-foreground/40">{timeAgo(comment.created_at)}</span>
+                                    </div>
+                                    <p className="text-sm text-foreground/80 leading-relaxed">{comment.content}</p>
+                                  </div>
+                                </div>
+                              ))}
+                              {comments[post.id]?.length === 0 && (
+                                <div className="py-6 text-center text-foreground/30 text-xs italic">
+                                  Sé el primero en comentar...
+                                </div>
+                              )}
+                            </div>
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
+                    </div>
+                  </motion.div>
+                ))}
+
+                {filteredPosts.length === 0 && (
+                  <div className="flex flex-col items-center justify-center py-20 px-4 text-center">
+                    <div className="w-20 h-20 rounded-[2rem] bg-foreground/[0.02] border border-foreground/[0.06] flex items-center justify-center mb-6 relative group overflow-hidden">
+                      <div className="absolute inset-0 bg-gradient-to-br from-primary/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                      <Search className="w-8 h-8 text-foreground/10 group-hover:text-primary/40 transition-colors duration-500" />
+                    </div>
+                    <h3 className="text-xl font-black italic uppercase font-kanit text-foreground tracking-tighter mb-2">No se encontró nada</h3>
+                    <p className="text-foreground/40 text-sm max-w-xs">{searchQuery ? `No hay resultados para "${searchQuery}". Intentá con otra palabra o hashtag.` : "El muro está vacío. ¡Sé el primero en dominar la cancha con un post!"}</p>
+                    {searchQuery && (
+                      <button
+                        onClick={() => setSearchQuery('')}
+                        className="mt-6 px-6 py-2 rounded-full bg-foreground/5 border border-foreground/10 text-foreground/60 text-xs font-bold hover:bg-foreground/10 transition-all"
+                      >
+                        Ver todo el feed
+                      </button>
+                    )}
+                  </div>
+                )}
               </AnimatePresence>
             </div>
           </div>
@@ -1013,7 +1013,7 @@ export default function FeedPage() {
                 {suggestedUsers.map(su => {
                   const isFriend = existingFriends.has(su.id);
                   const isPending = sentFriendRequests.has(su.id);
-                  
+
                   return (
                     <div
                       key={su.id}
@@ -1026,7 +1026,7 @@ export default function FeedPage() {
                         {su.avatar_url ? (
                           <img src={su.avatar_url} className="w-full h-full object-cover" alt="" />
                         ) : (
-                          <div className={cn("w-full h-full flex items-center justify-center font-bold text-[15px]", 
+                          <div className={cn("w-full h-full flex items-center justify-center font-bold text-[15px]",
                             su.is_pro ? "bg-gradient-to-br from-yellow-500/20 to-amber-500/10 text-yellow-500" : "bg-gradient-to-br from-primary/15 to-primary/5 text-primary"
                           )}>
                             {su.name?.charAt(0)}
@@ -1080,9 +1080,9 @@ export default function FeedPage() {
                   >
                     <div className={cn("w-6 flex justify-center text-[15px] font-bold shrink-0",
                       i === 0 ? "text-yellow-500" :
-                      i === 1 ? "text-foreground/60" :
-                      i === 2 ? "text-orange-500" :
-                      "text-foreground/40"
+                        i === 1 ? "text-foreground/60" :
+                          i === 2 ? "text-orange-500" :
+                            "text-foreground/40"
                     )}>
                       {i + 1}
                     </div>
@@ -1090,7 +1090,7 @@ export default function FeedPage() {
                       {player.avatar_url ? (
                         <img src={player.avatar_url} className="w-full h-full object-cover" alt="" />
                       ) : (
-                        <div className={cn("w-full h-full flex items-center justify-center font-bold text-[15px]", 
+                        <div className={cn("w-full h-full flex items-center justify-center font-bold text-[15px]",
                           player.is_pro ? "bg-gradient-to-br from-yellow-500/20 to-amber-500/10 text-yellow-500" : "bg-gradient-to-br from-primary/15 to-primary/5 text-primary"
                         )}>
                           {player.name?.charAt(0)}
@@ -1098,13 +1098,13 @@ export default function FeedPage() {
                       )}
                     </div>
                     <div className="flex-1 min-w-0">
-                       <div className={cn("font-bold text-[15px] truncate leading-tight hover:underline flex items-center", player.is_pro ? "text-yellow-500" : "text-foreground")}>
-                          {player.name}
-                          {player.is_pro && <Zap className="w-3.5 h-3.5 text-yellow-500 fill-yellow-500 inline ml-1 shrink-0" />}
-                       </div>
-                       <div className="text-[14px] text-foreground/40 truncate leading-tight">
-                          @{player.name?.toLowerCase().replace(/\s+/g, '')}
-                       </div>
+                      <div className={cn("font-bold text-[15px] truncate leading-tight hover:underline flex items-center", player.is_pro ? "text-yellow-500" : "text-foreground")}>
+                        {player.name}
+                        {player.is_pro && <Zap className="w-3.5 h-3.5 text-yellow-500 fill-yellow-500 inline ml-1 shrink-0" />}
+                      </div>
+                      <div className="text-[14px] text-foreground/40 truncate leading-tight">
+                        @{player.name?.toLowerCase().replace(/\s+/g, '')}
+                      </div>
                     </div>
                     <div className="text-right shrink-0">
                       <div className="text-[15px] font-black text-foreground italic font-kanit leading-none">
