@@ -554,11 +554,12 @@ export default function FeedClient({ standalonePostId }: { standalonePostId?: st
       />
 
       {/* 3-column layout matching TopHeader padding exactly */}
-      <div className="w-full px-3 sm:px-5 lg:px-10 xl:px-16 pt-[80px]">
-        <div className="flex gap-0 lg:gap-6 xl:gap-8">
+      <div className="w-full px-3 sm:px-5 lg:px-10 xl:px-16 pt-[64px]">
+        <div className={cn("flex gap-0", standalonePostId ? "justify-center max-w-2xl mx-auto" : "lg:gap-6 xl:gap-8")}>
 
           {/* ── LEFT SIDEBAR (desktop only) ── */}
-          <aside className="hidden lg:flex flex-col w-[280px] xl:w-[320px] shrink-0 sticky top-[80px] self-start pb-8 pt-2 xl:pl-4">
+          {!standalonePostId && (
+            <aside className="hidden lg:flex flex-col w-[280px] xl:w-[320px] shrink-0 sticky top-[64px] self-start pb-8 pt-2 xl:pl-4">
             {/* Navigation Links - Twitter Style */}
             <nav className="flex flex-col gap-1 w-full">
               {[
@@ -600,6 +601,7 @@ export default function FeedClient({ standalonePostId }: { standalonePostId?: st
               </button>
             </nav>
           </aside>
+          )}
 
           {/* ── MAIN FEED (center column) ── */}
           <div className="w-full lg:flex-1 border-x border-foreground/[0.08] min-h-screen flex flex-col relative z-20">
@@ -609,7 +611,7 @@ export default function FeedClient({ standalonePostId }: { standalonePostId?: st
                 if (standalonePostId) router.back();
                 else window.scrollTo({ top: 0, behavior: 'smooth' });
               }}
-              className="sticky top-[80px] z-50 bg-background/80 backdrop-blur-md border-b border-foreground/[0.08] px-5 py-4 flex items-center justify-between cursor-pointer hover:bg-foreground/[0.02] transition-colors"
+              className="sticky top-[64px] z-50 bg-background/80 backdrop-blur-md border-b border-foreground/[0.08] px-5 py-4 flex items-center justify-between cursor-pointer hover:bg-foreground/[0.02] transition-colors"
             >
               <div className="flex items-center gap-2.5">
                 {standalonePostId && <span className="text-foreground/50 mr-1 text-xl leading-none pt-1">←</span>}
@@ -753,7 +755,12 @@ export default function FeedClient({ standalonePostId }: { standalonePostId?: st
                         router.push(`/post/${post.id}`);
                       }
                     }}
-                    className={cn("p-4 sm:px-5 sm:py-3.5 border-b border-foreground/[0.08] hover:bg-foreground/[0.03] transition-colors duration-200 relative flex gap-3 cursor-pointer group/post", post.author.is_pro ? "bg-gradient-to-r from-yellow-500/[0.03] to-transparent" : "")}
+                    className={cn(
+                      "p-4 sm:px-5 sm:py-3.5 border-b border-foreground/[0.08] transition-colors duration-200 relative flex gap-3 group/post",
+                      !standalonePostId && "hover:bg-foreground/[0.03] cursor-pointer",
+                      standalonePostId && "bg-background py-8 sm:py-10",
+                      post.author.is_pro ? "bg-gradient-to-r from-yellow-500/[0.03] to-transparent" : ""
+                    )}
                   >
                     {/* LEFTSIDE AVATAR */}
                     <div className="shrink-0 flex flex-col items-center">
@@ -808,8 +815,8 @@ export default function FeedClient({ standalonePostId }: { standalonePostId?: st
                       </div>
 
                       {/* Content with clickable hashtags */}
-                      <div className="mt-1 mb-2.5">
-                        <p className="text-foreground text-[15px] leading-snug whitespace-pre-wrap">
+                      <div className={cn("mt-1 mb-2.5", standalonePostId ? "mt-4 mb-5" : "")}>
+                        <p className={cn("text-foreground whitespace-pre-wrap", standalonePostId ? "text-xl sm:text-[22px] font-medium leading-relaxed font-kanit tracking-tight" : "text-[15px] leading-snug")}>
                           {post.content.split(/(#[\w\u00C0-\u024FáéíóúñÁÉÍÓÚÑ]+)/g).map((part, i) => {
                             if (part.startsWith('#')) {
                               return (
@@ -987,7 +994,8 @@ export default function FeedClient({ standalonePostId }: { standalonePostId?: st
           </div>
 
           {/* ── RIGHT SIDEBAR (desktop only) ── */}
-          <aside className="hidden lg:flex flex-col w-[280px] xl:w-[340px] shrink-0 sticky top-[80px] self-start gap-4 pb-8">
+          {!standalonePostId && (
+            <aside className="hidden lg:flex flex-col w-[280px] xl:w-[340px] shrink-0 sticky top-[64px] self-start gap-4 pb-8">
 
             {/* Search Bar - functional */}
             <div className="relative group">
@@ -1167,6 +1175,7 @@ export default function FeedClient({ standalonePostId }: { standalonePostId?: st
               </div>
             </div>
           </aside>
+          )}
         </div>
       </div>
 
