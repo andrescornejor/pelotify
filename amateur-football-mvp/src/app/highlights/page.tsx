@@ -22,16 +22,16 @@ export async function generateMetadata(
 
     if (data) {
       const p = Array.isArray(data.profiles) ? data.profiles[0] : data.profiles;
-      const username = (p as any)?.name || 'crack_anonimo';
-      let description = data.description || '¡Mirá esta tremenda jugada en Pelotify!';
+      const username = ((p as any)?.name as string) || 'crack_anonimo';
+      let description = (data.description as string) || '¡Mirá esta tremenda jugada en Pelotify!';
       if (description.length < 60) {
         description = `${description} | Unite a la comunidad de fútbol amateur de Pelotify. Mirá más highlights como este.`;
       }
       
       const title = `FutTok de @${username} en Pelotify`;
       const baseUrl = 'https://pelotify.vercel.app';
-      const testImage = data.thumbnail_url || 'https://pelotify.vercel.app/icon.png';
-      const videoUrl = data.video_url;
+      const testImage = (data.thumbnail_url as string) || 'https://pelotify.vercel.app/icon.png';
+      const videoUrl = data.video_url as string;
 
       return {
         title,
@@ -62,6 +62,7 @@ export async function generateMetadata(
           players: [
             {
               playerUrl: `${baseUrl}/highlights?v=${v}`,
+              streamUrl: videoUrl,
               width: 720,
               height: 1280,
             }
