@@ -22,10 +22,13 @@ export async function generateMetadata(
     if (data) {
       const p = Array.isArray(data.profiles) ? data.profiles[0] : data.profiles;
       const username = (p as any)?.name || 'crack_anonimo';
-      const description = data.description || '¡Mirá esta tremenda jugada en Pelotify!';
-      const title = `FutTok de @${username} en Pelotify`;
-
-      const ogImage = `/api/og?title=${encodeURIComponent(title)}&description=${encodeURIComponent(description)}&username=${encodeURIComponent(username)}&type=highlight${data.thumbnail_url ? `&image=${encodeURIComponent(data.thumbnail_url)}` : ''}`;
+      let description = data.description || '¡Mirá esta tremenda jugada en Pelotify!';
+      if (description.length < 60) {
+        description = `${description} | Unite a la comunidad de fútbol amateur de Pelotify. Mirá más highlights como este.`;
+      }
+      
+      const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://pelotify.vercel.app';
+      const ogImage = `${baseUrl}/api/og?title=${encodeURIComponent(title)}&description=${encodeURIComponent(description)}&username=${encodeURIComponent(username)}&type=highlight${data.thumbnail_url ? `&image=${encodeURIComponent(data.thumbnail_url)}` : ''}`;
 
       return {
         title,
@@ -33,7 +36,15 @@ export async function generateMetadata(
         openGraph: {
           title,
           description,
-          images: [ogImage],
+          url: `${baseUrl}/highlights?v=${v}`,
+          images: [
+            {
+              url: ogImage,
+              width: 1200,
+              height: 630,
+              alt: title,
+            }
+          ],
           type: 'video.other',
         },
         twitter: {
@@ -41,6 +52,7 @@ export async function generateMetadata(
           title,
           description,
           images: [ogImage],
+          creator: '@pelotify',
         },
       };
     }

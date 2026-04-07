@@ -24,9 +24,13 @@ export async function generateMetadata(
       const p = Array.isArray(data.profiles) ? data.profiles[0] : data.profiles;
       const username = (p as any)?.name || 'Usuario Básico';
       const title = `Post de ${username} en Pelotify`;
-      const description = data.content ? (data.content.slice(0, 150) + (data.content.length > 150 ? '...' : '')) : 'Mira esta publicación en Pelotify.';
+      let description = data.content ? (data.content.slice(0, 150) + (data.content.length > 150 ? '...' : '')) : 'Mira esta publicación en Pelotify.';
+      if (description.length < 60) {
+        description = `${description} | Unite a Pelotify y conectá con el fútbol amateur como nunca antes. ¡Seguinos!`;
+      }
 
-      const ogImage = `/api/og?title=${encodeURIComponent(username)}&description=${encodeURIComponent(description)}&username=${encodeURIComponent(username)}${data.image_url ? `&image=${encodeURIComponent(data.image_url)}` : ''}`;
+      const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://pelotify.vercel.app';
+      const ogImage = `${baseUrl}/api/og?title=${encodeURIComponent(username)}&description=${encodeURIComponent(description)}&username=${encodeURIComponent(username)}${data.image_url ? `&image=${encodeURIComponent(data.image_url)}` : ''}`;
 
       return {
         title,
@@ -34,7 +38,15 @@ export async function generateMetadata(
         openGraph: {
           title,
           description,
-          images: [ogImage],
+          url: `${baseUrl}/feed?post=${postId}`,
+          images: [
+            {
+              url: ogImage,
+              width: 1200,
+              height: 630,
+              alt: title,
+            },
+          ],
           type: 'article',
         },
         twitter: {
@@ -42,6 +54,7 @@ export async function generateMetadata(
           title,
           description,
           images: [ogImage],
+          creator: '@pelotify',
         },
       };
     }
