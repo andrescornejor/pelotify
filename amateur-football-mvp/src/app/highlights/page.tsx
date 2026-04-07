@@ -4,14 +4,15 @@ import { supabase } from '@/lib/supabase';
 import { Suspense } from 'react';
 
 type Props = {
-  searchParams: { [key: string]: string | string[] | undefined }
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>
 }
 
 export async function generateMetadata(
   { searchParams }: Props,
   parent: ResolvingMetadata
 ): Promise<Metadata> {
-  const v = searchParams.v;
+  const params = await searchParams;
+  const v = params.v;
   
   if (v && typeof v === 'string') {
     const { data } = await supabase
