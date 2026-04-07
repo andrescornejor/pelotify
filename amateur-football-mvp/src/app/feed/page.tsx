@@ -511,7 +511,7 @@ export default function FeedPage() {
   }
 
   return (
-    <div className="flex flex-col min-h-screen bg-background pt-20 relative overflow-hidden">
+    <div className="flex flex-col min-h-screen bg-background pt-22 relative overflow-hidden">
       {/* AMBIENT BACKGROUND */}
       <div className="fixed inset-0 pointer-events-none -z-10 overflow-hidden">
         <div 
@@ -537,7 +537,7 @@ export default function FeedPage() {
         <div className="flex gap-0 lg:gap-6 xl:gap-8">
 
           {/* ── LEFT SIDEBAR (desktop only) ── */}
-          <aside className="hidden lg:flex flex-col w-[280px] xl:w-[320px] shrink-0 sticky top-24 self-start gap-4 pb-8">
+          <aside className="hidden lg:flex flex-col w-[280px] xl:w-[320px] shrink-0 sticky top-22 self-start gap-4 pb-8">
             {/* Navigation Links */}
             <div className="rounded-[2rem] border border-foreground/[0.06] bg-surface/50 backdrop-blur-md overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-300">
               <div className="p-4 border-b border-foreground/[0.06] bg-gradient-to-r from-foreground/[0.02] to-transparent">
@@ -599,9 +599,9 @@ export default function FeedPage() {
                        </div>
                     )}
                  </div>
-                 <div className="flex-1 flex flex-col relative">
-                    <div className="absolute inset-0 pointer-events-none whitespace-pre-wrap break-words text-lg font-medium leading-relaxed p-0 border-none select-none text-foreground/0 min-h-[50px]">
-                      {newPostContent.split(/(#[\w\u00C0-\u024F]+)/g).map((part, i) => (
+                 <div className="flex-1 flex flex-col relative min-h-[50px]">
+                    <div className="absolute inset-0 pointer-events-none whitespace-pre-wrap break-words text-lg font-medium leading-relaxed p-0 border-none select-none text-foreground z-0 overflow-hidden">
+                      {newPostContent.split(/(#[\w\u00C0-\u024FáéíóúñÁÉÍÓÚÑ]+)/g).map((part, i) => (
                         part.startsWith('#') ? <span key={i} className="text-primary font-bold">{part}</span> : part
                       ))}
                       {newPostContent.endsWith('\n') ? '\n' : ''}
@@ -610,8 +610,7 @@ export default function FeedPage() {
                       value={newPostContent}
                       onChange={(e) => setNewPostContent(e.target.value)}
                       placeholder="¡Habla, crack! ¿Qué está pasando? Usá #hashtags"
-                      className="w-full bg-transparent border-none resize-none focus:outline-none text-foreground text-lg placeholder:text-foreground/35 min-h-[50px] font-medium leading-relaxed relative z-10 selection:bg-primary/30"
-                      style={{ caretColor: 'var(--foreground)' }}
+                      className="w-full bg-transparent border-none resize-none focus:outline-none text-transparent text-lg placeholder:text-foreground/35 min-h-[50px] font-medium leading-relaxed relative z-10 selection:bg-primary/20 caret-foreground p-0 m-0 overflow-hidden"
                       maxLength={500}
                     />
 
@@ -923,7 +922,7 @@ export default function FeedPage() {
           </div>
 
           {/* ── RIGHT SIDEBAR (desktop only) ── */}
-          <aside className="hidden lg:flex flex-col w-[280px] xl:w-[340px] shrink-0 sticky top-24 self-start gap-4 pb-8">
+          <aside className="hidden lg:flex flex-col w-[280px] xl:w-[340px] shrink-0 sticky top-22 self-start gap-4 pb-8">
 
             {/* Search Bar - functional */}
             <div className="relative group">
