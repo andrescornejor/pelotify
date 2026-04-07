@@ -87,11 +87,11 @@ interface Comment {
   };
 }
 
-export default function FeedPage() {
+export default function FeedClient({ standalonePostId }: { standalonePostId?: string } = {}) {
   const { user } = useAuth();
   const router = useRouter();
   const searchParams = useSearchParams();
-  const postParam = searchParams.get('post');
+  const postParam = standalonePostId || searchParams.get('post');
 
   const [posts, setPosts] = useState<Post[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -212,7 +212,7 @@ export default function FeedPage() {
 
   const fetchPosts = async () => {
     try {
-      const { data, error } = await supabase
+      let query = supabase
         .from('posts')
         .select(`
           id, content, image_url, created_at, author_id,
@@ -221,6 +221,12 @@ export default function FeedPage() {
           post_comments(count)
         `)
         .order('created_at', { ascending: false });
+
+      if (standalonePostId) {
+        query = query.eq('id', standalonePostId);
+      }
+
+      const { data, error } = await query;
 
       if (error) throw error;
 
@@ -599,11 +605,15 @@ export default function FeedPage() {
           <div className="w-full lg:flex-1 border-x border-foreground/[0.08] min-h-screen flex flex-col relative z-20">
             {/* STICKY HEADER */}
             <div
-              onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+              onClick={() => {
+                if (standalonePostId) router.back();
+                else window.scrollTo({ top: 0, behavior: 'smooth' });
+              }}
               className="sticky top-[80px] z-50 bg-background/80 backdrop-blur-md border-b border-foreground/[0.08] px-5 py-4 flex items-center justify-between cursor-pointer hover:bg-foreground/[0.02] transition-colors"
             >
               <div className="flex items-center gap-2.5">
-                <h1 className="text-2xl font-black italic uppercase font-kanit text-foreground tracking-tighter leading-none">Inicio</h1>
+                {standalonePostId && <span className="text-foreground/50 mr-1 text-xl leading-none pt-1">←</span>}
+                <h1 className="text-2xl font-black italic uppercase font-kanit text-foreground tracking-tighter leading-none">{standalonePostId ? 'Post' : 'Inicio'}</h1>
               </div>
               <div className="flex items-center gap-2">
                 <Link href="/pro" className="group">
@@ -612,8 +622,10 @@ export default function FeedPage() {
               </div>
             </div>
 
-            {/* MOBILE SEARCH BAR */}
-            <div className="lg:hidden p-4 border-b border-foreground/[0.08] bg-background">
+            {!standalonePostId && (
+              <>
+                {/* MOBILE SEARCH BAR */}
+                <div className="lg:hidden p-4 border-b border-foreground/[0.08] bg-background">
               <div className="relative group">
                 <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-foreground/20 group-focus-within:text-primary transition-colors" />
                 <input
@@ -723,6 +735,8 @@ export default function FeedPage() {
                 </div>
               </div>
             </div>
+              </>
+            )}
 
             {/* POSTS FEED */}
             <div className="flex flex-col pb-20">
@@ -735,14 +749,8 @@ export default function FeedPage() {
                     transition={{ duration: 0.3, delay: index < 10 ? index * 0.03 : 0 }}
                     onClick={(e) => {
                       if ((e.target as HTMLElement).closest('a, button, input')) return;
-                      const isExpanding = expandedPostId !== post.id;
-                      if (isExpanding) {
-                        setExpandedPostId(post.id);
-                        loadComments(post.id);
-                        router.push(`/feed?post=${post.id}`, { scroll: false });
-                      } else {
-                        setExpandedPostId(null);
-                        router.push('/feed', { scroll: false });
+                      if (!standalonePostId) {
+                        router.push(`/post/${post.id}`);
                       }
                     }}
                     className={cn("p-4 sm:px-5 sm:py-3.5 border-b border-foreground/[0.08] hover:bg-foreground/[0.03] transition-colors duration-200 relative flex gap-3 cursor-pointer group/post", post.author.is_pro ? "bg-gradient-to-r from-yellow-500/[0.03] to-transparent" : "")}
@@ -830,14 +838,8 @@ export default function FeedPage() {
                         <button
                           onClick={(e) => {
                             e.stopPropagation();
-                            const isExpanding = expandedPostId !== post.id;
-                            if (isExpanding) {
-                              setExpandedPostId(post.id);
-                              loadComments(post.id);
-                              router.push(`/feed?post=${post.id}`, { scroll: false });
-                            } else {
-                              setExpandedPostId(null);
-                              router.push('/feed', { scroll: false });
+                            if (!standalonePostId) {
+                              router.push(`/post/${post.id}`);
                             }
                           }}
                           className={cn("flex items-center gap-1.5 text-[13px] group/btn transition-colors", expandedPostId === post.id ? "text-blue-500" : "hover:text-blue-500")}
@@ -1172,7 +1174,7 @@ export default function FeedPage() {
         <ShareModal
           isOpen={!!shareModalPost}
           onClose={() => setShareModalPost(null)}
-          url={`${typeof window !== 'undefined' ? window.location.origin : ''}/feed?post=${shareModalPost.id}`}
+          url={`${typeof window !== 'undefined' ? window.location.origin : ''}/post/${shareModalPost.id}`}
           title={`Post de ${shareModalPost.author.name} en Pelotify`}
           text={shareModalPost.content}
           type="post"
