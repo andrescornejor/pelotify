@@ -536,7 +536,7 @@ export default function FeedPage() {
   }
 
   return (
-    <div className="flex flex-col min-h-screen bg-background pt-[110px] relative overflow-hidden">
+    <div className="flex flex-col min-h-screen bg-background pt-4 relative overflow-hidden">
       {/* AMBIENT BACKGROUND */}
       <div className="fixed inset-0 pointer-events-none -z-10 overflow-hidden">
         <div 
@@ -562,7 +562,7 @@ export default function FeedPage() {
         <div className="flex gap-0 lg:gap-6 xl:gap-8">
 
           {/* ── LEFT SIDEBAR (desktop only) ── */}
-          <aside className="hidden lg:flex flex-col w-[280px] xl:w-[320px] shrink-0 sticky top-[110px] self-start gap-4 pb-8">
+          <aside className="hidden lg:flex flex-col w-[280px] xl:w-[320px] shrink-0 sticky top-[96px] self-start gap-4 pb-8">
             {/* Navigation Links */}
             <div className="rounded-[2rem] border border-foreground/[0.06] bg-surface/50 backdrop-blur-md overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-300">
               <div className="p-4 border-b border-foreground/[0.06] bg-gradient-to-r from-foreground/[0.02] to-transparent">
@@ -595,24 +595,6 @@ export default function FeedPage() {
 
           {/* ── MAIN FEED (center column) ── */}
           <div className="w-full lg:flex-1 border-x border-foreground/[0.06] min-h-screen flex flex-col relative z-10">
-            {/* STICKY HEADER */}
-            <div 
-               onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} 
-               className="sticky top-[110px] z-50 bg-background border-b border-foreground/[0.06] px-5 py-4 flex items-center justify-between cursor-pointer active:opacity-80 transition-opacity"
-            >
-               <div className="flex items-center gap-2.5">
-                 <h1 className="text-2xl font-black italic uppercase font-kanit text-foreground tracking-tighter leading-none">Inicio</h1>
-                 <div className="h-5 w-px bg-foreground/10" />
-                 <span className="text-[10px] font-black uppercase text-foreground/30 tracking-[0.2em] font-kanit">Feed</span>
-               </div>
-               <div className="flex items-center gap-2">
-                 <div className="relative">
-                   <Zap className="w-5 h-5 text-primary" />
-                   <div className="absolute -top-0.5 -right-0.5 w-2 h-2 bg-primary rounded-full animate-pulse" />
-                 </div>
-               </div>
-            </div>
-
             {/* CREATE POST BOX */}
             <div className="p-4 sm:p-5 border-b border-foreground/[0.06] flex gap-3 bg-gradient-to-b from-foreground/[0.01] to-transparent">
                  <div className="w-11 h-11 rounded-full bg-surface-elevated overflow-hidden shrink-0 ring-2 ring-foreground/[0.06] hover:ring-primary/30 transition-all duration-300">
@@ -699,6 +681,24 @@ export default function FeedPage() {
                        </div>
                     </div>
                  </div>
+            </div>
+
+            {/* STICKY HEADER */}
+            <div 
+               onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} 
+               className="sticky top-[96px] z-50 bg-background border-b border-foreground/[0.06] px-5 py-4 flex items-center justify-between cursor-pointer active:opacity-80 transition-opacity"
+            >
+               <div className="flex items-center gap-2.5">
+                 <h1 className="text-2xl font-black italic uppercase font-kanit text-foreground tracking-tighter leading-none">Inicio</h1>
+                 <div className="h-5 w-px bg-foreground/10" />
+                 <span className="text-[10px] font-black uppercase text-foreground/30 tracking-[0.2em] font-kanit">Feed</span>
+               </div>
+               <div className="flex items-center gap-2">
+                 <div className="relative">
+                   <Zap className="w-5 h-5 text-primary" />
+                   <div className="absolute -top-0.5 -right-0.5 w-2 h-2 bg-primary rounded-full animate-pulse" />
+                 </div>
+               </div>
             </div>
 
             {/* POSTS FEED */}
@@ -947,7 +947,7 @@ export default function FeedPage() {
           </div>
 
           {/* ── RIGHT SIDEBAR (desktop only) ── */}
-          <aside className="hidden lg:flex flex-col w-[280px] xl:w-[340px] shrink-0 sticky top-[110px] self-start gap-4 pb-8">
+          <aside className="hidden lg:flex flex-col w-[280px] xl:w-[340px] shrink-0 sticky top-[96px] self-start gap-4 pb-8">
 
             {/* Search Bar - functional */}
             <div className="relative group">
