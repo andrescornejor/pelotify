@@ -25,20 +25,22 @@ export async function generateMetadata(
       const title = `Post de ${username} en Pelotify`;
       const description = data.content ? (data.content.slice(0, 150) + (data.content.length > 150 ? '...' : '')) : 'Mira esta publicación en Pelotify.';
 
+      const ogImage = `/api/og?title=${encodeURIComponent(username)}&description=${encodeURIComponent(description)}&username=${encodeURIComponent(username)}${data.image_url ? `&image=${encodeURIComponent(data.image_url)}` : ''}`;
+
       return {
         title,
         description,
         openGraph: {
           title,
           description,
-          images: data.image_url ? [data.image_url] : [],
+          images: [ogImage],
           type: 'article',
         },
         twitter: {
-          card: data.image_url ? 'summary_large_image' : 'summary',
+          card: 'summary_large_image',
           title,
           description,
-          images: data.image_url ? [data.image_url] : [],
+          images: [ogImage],
         },
       };
     }
