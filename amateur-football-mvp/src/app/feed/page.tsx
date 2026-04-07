@@ -47,11 +47,11 @@ function timeAgo(dateString: string) {
   if (days < 30) return `hace ${days}d`;
   const months = Math.floor(days / 30);
   if (months < 12) return `hace ${months} meses`;
-  return `hace ${Math.floor(months / 12)} aÃ±os`;
+  return `hace ${Math.floor(months / 12)} años`;
 }
 
 function extractHashtags(text: string): string[] {
-  const matches = text.match(/#[\w\u00C0-\u024FÃ¡Ã©Ã­Ã³ÃºÃ±ÃÃ‰ÃÃ“ÃšÃ‘]+/g);
+  const matches = text.match(/#[\w\u00C0-\u024FáéíóúñÁÉÍÓÚÑ]+/g);
   return matches ? matches.map(t => t.slice(1)) : [];
 }
 
@@ -396,7 +396,7 @@ export default function FeedPage() {
   };
 
   const handleDeletePost = async (postId: string) => {
-    if (!confirm('Â¿Seguro de que querÃ©s borrar esta publicaciÃ³n?')) return;
+    if (!confirm('¿Seguro de que querés borrar esta publicación?')) return;
     try {
       const { error } = await supabase.from('posts').delete().eq('id', postId);
       if (error) throw error;
@@ -511,7 +511,7 @@ export default function FeedPage() {
   }
 
   return (
-    <div className="flex flex-col min-h-screen bg-background pt-[68px] sm:pt-[76px] lg:pt-[68px] relative overflow-hidden">
+    <div className="flex flex-col min-h-screen bg-background pt-20 relative overflow-hidden">
       {/* AMBIENT BACKGROUND */}
       <div className="fixed inset-0 pointer-events-none -z-10 overflow-hidden">
         <div 
@@ -536,8 +536,8 @@ export default function FeedPage() {
       <div className="w-full px-3 sm:px-5 lg:px-10 xl:px-16">
         <div className="flex gap-0 lg:gap-6 xl:gap-8">
 
-          {/* â”€â”€ LEFT SIDEBAR (desktop only) â”€â”€ */}
-          <aside className="hidden lg:flex flex-col w-[280px] xl:w-[320px] shrink-0 sticky top-[72px] self-start gap-4 pb-8">
+          {/* ── LEFT SIDEBAR (desktop only) ── */}
+          <aside className="hidden lg:flex flex-col w-[280px] xl:w-[320px] shrink-0 sticky top-24 self-start gap-4 pb-8">
             {/* Navigation Links */}
             <div className="rounded-[2rem] border border-foreground/[0.06] bg-surface/50 backdrop-blur-md overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-300">
               <div className="p-4 border-b border-foreground/[0.06] bg-gradient-to-r from-foreground/[0.02] to-transparent">
@@ -573,7 +573,7 @@ export default function FeedPage() {
             {/* STICKY HEADER */}
             <div 
                onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} 
-               className="sticky top-[68px] lg:top-[72px] z-50 backdrop-blur-xl bg-background/80 border-b border-foreground/[0.06] px-5 py-3.5 flex items-center justify-between cursor-pointer active:opacity-80 transition-opacity"
+               className="sticky top-0 z-50 backdrop-blur-xl bg-background/80 border-b border-foreground/[0.06] px-5 py-3.5 flex items-center justify-between cursor-pointer active:opacity-80 transition-opacity"
             >
                <div className="flex items-center gap-2.5">
                  <h1 className="text-2xl font-black italic uppercase font-kanit text-foreground tracking-tighter leading-none">Inicio</h1>
@@ -599,74 +599,81 @@ export default function FeedPage() {
                        </div>
                     )}
                  </div>
-                 <div className="flex-1 flex flex-col">
-                   <textarea
-                     value={newPostContent}
-                     onChange={(e) => setNewPostContent(e.target.value)}
-                     placeholder="Â¡Habla, crack! Â¿QuÃ© estÃ¡ pasando? UsÃ¡ #hashtags"
-                     className="w-full bg-transparent border-none resize-none focus:outline-none text-foreground text-lg placeholder:text-foreground/35 min-h-[50px] font-medium leading-relaxed"
-                     maxLength={500}
-                   />
+                 <div className="flex-1 flex flex-col relative">
+                    <div className="absolute inset-0 pointer-events-none whitespace-pre-wrap break-words text-lg font-medium leading-relaxed p-0 border-none select-none text-foreground/0 min-h-[50px]">
+                      {newPostContent.split(/(#[\w\u00C0-\u024F]+)/g).map((part, i) => (
+                        part.startsWith('#') ? <span key={i} className="text-primary font-bold">{part}</span> : part
+                      ))}
+                      {newPostContent.endsWith('\n') ? '\n' : ''}
+                    </div>
+                    <textarea
+                      value={newPostContent}
+                      onChange={(e) => setNewPostContent(e.target.value)}
+                      placeholder="¡Habla, crack! ¿Qué está pasando? Usá #hashtags"
+                      className="w-full bg-transparent border-none resize-none focus:outline-none text-foreground text-lg placeholder:text-foreground/35 min-h-[50px] font-medium leading-relaxed relative z-10 selection:bg-primary/30"
+                      style={{ caretColor: 'var(--foreground)' }}
+                      maxLength={500}
+                    />
 
-                   {/* Image Preview */}
-                   {imagePreview && (
-                     <div className="relative mt-2 rounded-2xl overflow-hidden border border-foreground/10 shadow-lg">
-                       <img src={imagePreview} alt="Preview" className="w-full max-h-[300px] object-cover" />
-                       <button
-                         onClick={clearImage}
-                         className="absolute top-2 right-2 w-8 h-8 bg-black/70 text-white rounded-full flex items-center justify-center hover:bg-black/90 transition-all backdrop-blur-sm hover:scale-110 active:scale-95"
-                       >
-                         <X className="w-4 h-4" />
-                       </button>
-                       {isUploadingImage && (
-                         <div className="absolute inset-0 bg-black/40 flex items-center justify-center backdrop-blur-sm">
-                           <Loader2 className="w-8 h-8 animate-spin text-white" />
-                         </div>
-                       )}
-                     </div>
-                   )}
+                    {/* Image Preview */}
+                    {imagePreview && (
+                      <div className="relative mt-2 rounded-2xl overflow-hidden border border-foreground/10 shadow-lg">
+                        <img src={imagePreview} alt="Preview" className="w-full max-h-[300px] object-cover" />
+                        <button
+                          onClick={clearImage}
+                          className="absolute top-2 right-2 w-8 h-8 bg-black/70 text-white rounded-full flex items-center justify-center hover:bg-black/90 transition-all backdrop-blur-sm hover:scale-110 active:scale-95"
+                        >
+                          <X className="w-4 h-4" />
+                        </button>
+                        {isUploadingImage && (
+                          <div className="absolute inset-0 bg-black/40 flex items-center justify-center backdrop-blur-sm">
+                            <Loader2 className="w-8 h-8 animate-spin text-white" />
+                          </div>
+                        )}
+                      </div>
+                    )}
 
-                   <div className="flex items-center justify-between mt-3 pt-3 border-t border-foreground/[0.04]">
-                      <div className="flex items-center gap-0.5">
-                          <button
-                            onClick={() => fileInputRef.current?.click()}
-                            className="p-2.5 text-primary/70 hover:text-primary hover:bg-primary/10 rounded-full transition-all duration-200 flex items-center justify-center"
-                            title="Subir imagen"
-                          >
-                             <ImageIcon className="w-5 h-5" />
-                          </button>
-                          <button 
-                            onClick={() => {
-                              setNewPostContent(prev => prev + (prev.length > 0 && !prev.endsWith(' ') ? ' #' : '#'));
-                              setTimeout(() => document.querySelector('textarea')?.focus(), 10);
-                            }}
-                            className="p-2.5 text-foreground/30 hover:text-primary hover:bg-primary/10 rounded-full transition-all duration-200 flex items-center justify-center" 
-                            title="Hashtag"
-                          >
-                             <Hash className="w-5 h-5" />
-                          </button>
-                      </div>
-                      <div className="flex items-center gap-3">
-                          {newPostContent.length > 0 && (
-                            <div className="flex items-center gap-2">
-                              <div className="relative w-7 h-7">
-                                <svg className="w-7 h-7 -rotate-90" viewBox="0 0 28 28">
-                                  <circle cx="14" cy="14" r="11" fill="none" stroke="currentColor" className="text-foreground/[0.06]" strokeWidth="2.5" />
-                                  <circle cx="14" cy="14" r="11" fill="none" stroke="currentColor" className={cn(newPostContent.length > 450 ? "text-amber-500" : newPostContent.length > 480 ? "text-red-500" : "text-primary/60")} strokeWidth="2.5" strokeDasharray={`${(newPostContent.length / 500) * 69.1} 69.1`} strokeLinecap="round" />
-                                </svg>
-                              </div>
-                              <div className="h-5 w-px bg-foreground/10" />
-                            </div>
-                          )}
-                          <button
-                            onClick={handlePost}
-                            disabled={isPosting || (!newPostContent.trim() && !selectedImage)}
-                            className="px-5 py-2 rounded-full bg-gradient-to-r from-primary to-emerald-500 text-white font-bold text-[14px] tracking-wide disabled:opacity-40 disabled:cursor-not-allowed hover:shadow-lg hover:shadow-primary/25 active:scale-[0.96] transition-all duration-200"
-                          >
-                            {isPosting ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Postear'}
-                          </button>
-                      </div>
-                   </div>
+                    <div className="flex items-center justify-between mt-3 pt-3 border-t border-foreground/[0.04]">
+                       <div className="flex items-center gap-0.5">
+                           <button
+                             onClick={() => fileInputRef.current?.click()}
+                             className="p-2.5 text-primary/70 hover:text-primary hover:bg-primary/10 rounded-full transition-all duration-200 flex items-center justify-center"
+                             title="Subir imagen"
+                           >
+                              <ImageIcon className="w-5 h-5" />
+                           </button>
+                           <button 
+                             onClick={() => {
+                               setNewPostContent(prev => prev + (prev.length > 0 && !prev.endsWith(' ') ? ' #' : '#'));
+                               setTimeout(() => document.querySelector('textarea')?.focus(), 10);
+                             }}
+                             className="p-2.5 text-foreground/30 hover:text-primary hover:bg-primary/10 rounded-full transition-all duration-200 flex items-center justify-center" 
+                             title="Hashtag"
+                           >
+                              <Hash className="w-5 h-5" />
+                           </button>
+                       </div>
+                       <div className="flex items-center gap-3">
+                           {newPostContent.length > 0 && (
+                             <div className="flex items-center gap-2">
+                               <div className="relative w-7 h-7">
+                                 <svg className="w-7 h-7 -rotate-90" viewBox="0 0 28 28">
+                                   <circle cx="14" cy="14" r="11" fill="none" stroke="currentColor" className="text-foreground/[0.06]" strokeWidth="2.5" />
+                                   <circle cx="14" cy="14" r="11" fill="none" stroke="currentColor" className={cn(newPostContent.length > 450 ? "text-amber-500" : newPostContent.length > 480 ? "text-red-500" : "text-primary/60")} strokeWidth="2.5" strokeDasharray={`${(newPostContent.length / 500) * 69.1} 69.1`} strokeLinecap="round" />
+                                 </svg>
+                               </div>
+                               <div className="h-5 w-px bg-foreground/10" />
+                             </div>
+                           )}
+                           <button
+                             onClick={handlePost}
+                             disabled={isPosting || (!newPostContent.trim() && !selectedImage)}
+                             className="px-5 py-2 rounded-full bg-gradient-to-r from-primary to-emerald-500 text-white font-bold text-[14px] tracking-wide disabled:opacity-40 disabled:cursor-not-allowed hover:shadow-lg hover:shadow-primary/25 active:scale-[0.96] transition-all duration-200"
+                           >
+                             {isPosting ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Postear'}
+                           </button>
+                       </div>
+                    </div>
                  </div>
             </div>
 
@@ -710,7 +717,7 @@ export default function FeedPage() {
                                         @{post.author.name.toLowerCase().replace(/\s+/g, '')}
                                      </span>
                                  </Link>
-                                 <span className="text-foreground/50 text-[15px]">Â·</span>
+                                 <span className="text-foreground/50 text-[15px]">·</span>
                                  <span className="text-foreground/50 text-[15px] hover:underline cursor-pointer">
                                     {timeAgo(post.created_at)}
                                  </span>
@@ -736,8 +743,8 @@ export default function FeedPage() {
                           {/* Content with clickable hashtags */}
                           <div className="mt-1 mb-3">
                              <p className="text-foreground text-[15px] leading-relaxed whitespace-pre-wrap">
-                                {post.content.split(/(#[\\w\\u00C0-\\u024FáéíóúñÁÉÍÓÚÑ]+|@[\\w.]+)/g).map((part, i) => {
-                                  if (part.startsWith('#') || part.startsWith('@')) {
+                                {post.content.split(/(#[\w\u00C0-\u024FáéíóúñÁÉÍÓÚÑ]+)/g).map((part, i) => {
+                                  if (part.startsWith('#')) {
                                     return (
                                       <button
                                         key={i}
@@ -763,13 +770,13 @@ export default function FeedPage() {
                           <div className="flex items-center justify-between text-foreground/50 max-w-md pr-4">
                              <button 
                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  if (expandedPostId === post.id) {
-                                     setExpandedPostId(null);
-                                  } else {
-                                     setExpandedPostId(post.id);
-                                     loadComments(post.id);
-                                  }
+                                   e.stopPropagation();
+                                   if (expandedPostId === post.id) {
+                                      setExpandedPostId(null);
+                                   } else {
+                                      setExpandedPostId(post.id);
+                                      loadComments(post.id);
+                                   }
                                }}
                                className={cn("flex items-center gap-1.5 text-[13px] group/btn transition-colors", expandedPostId === post.id ? "text-blue-500" : "hover:text-blue-500")}
                              >
@@ -797,132 +804,126 @@ export default function FeedPage() {
                              <button 
                                onClick={(e) => { e.stopPropagation(); handleLike(post.id, post.user_has_liked); }}
                                className={cn("flex items-center gap-1.5 text-[13px] group/btn transition-colors", post.user_has_liked ? "text-pink-600" : "hover:text-pink-600")}
+                               title="Me gusta"
                              >
                                 <div className={cn("p-2 rounded-full transition-colors", post.user_has_liked ? "bg-pink-600/10" : "group-hover/btn:bg-pink-600/10")}>
-                                   <Heart className={cn("w-4 h-4", post.user_has_liked ? "fill-pink-600" : "")} />
+                                   <Heart className={cn("w-4 h-4", post.user_has_liked && "fill-pink-600")} />
                                 </div>
                                 <span>{post.likes_count > 0 ? post.likes_count : ''}</span>
                              </button>
 
-                             {/* Share - real Web Share API or copy link */}
-                             <button
+                             <button 
                                onClick={(e) => { e.stopPropagation(); handleShare(post); }}
-                               className={cn("flex items-center gap-1.5 text-[13px] group/btn transition-colors", copiedPostId === post.id ? "text-blue-500" : "hover:text-blue-500")}
+                               className={cn("flex items-center gap-1.5 text-[13px] group/btn transition-colors hover:text-primary")}
                                title="Compartir"
                              >
-                                <div className={cn("p-2 rounded-full transition-colors", copiedPostId === post.id ? "bg-blue-500/10" : "group-hover/btn:bg-blue-500/10")}>
+                                <div className="p-2 rounded-full group-hover:bg-primary/10 transition-colors relative">
                                    {copiedPostId === post.id ? (
-                                     <Check className="w-4 h-4" />
+                                      <Check className="w-4 h-4 text-primary animate-in zoom-in duration-300" />
                                    ) : (
-                                     <Share2 className="w-4 h-4" />
+                                      <Share2 className="w-4 h-4" />
                                    )}
                                 </div>
                              </button>
                           </div>
 
-                      {/* COMMENTS SECTION */}
-                      {expandedPostId === post.id && (
-                         <motion.div 
-                           initial={{ opacity: 0, height: 0 }}
-                           animate={{ opacity: 1, height: 'auto' }}
-                           className="mt-2 pt-2 border-t border-foreground/10"
-                           onClick={(e) => e.stopPropagation()}
-                         >
-                            <div className="flex gap-3 mb-4 py-2">
-                               <div className="w-8 h-8 rounded-full bg-surface-elevated overflow-hidden shrink-0 border border-foreground/10">
-                                 {user?.avatar_url ? (
-                                    <img src={user.avatar_url} className="w-full h-full object-cover" alt="" />
-                                 ) : (
-                                    <div className="w-full h-full bg-primary/10 flex items-center justify-center font-bold text-primary text-xs">
-                                       {user?.user_metadata?.name?.charAt(0) || '?'}
-                                    </div>
-                                 )}
-                               </div>
-                               <div className="flex-1 flex items-center gap-2 bg-foreground/[0.03] border border-foreground/[0.06] rounded-full pr-1 pl-4 h-10 focus-within:border-primary/40 focus-within:ring-1 focus-within:ring-primary/40 transition-all">
-                                  <input
-                                     type="text"
-                                     placeholder="Postea tu respuesta..."
-                                     value={newCommentContent}
-                                     onChange={(e) => setNewCommentContent(e.target.value)}
-                                     className="flex-1 bg-transparent text-[15px] focus:outline-none placeholder:text-foreground/50 h-full"
-                                  />
-                                  <button
-                                     onClick={() => handleComment(post.id)}
-                                     disabled={isCommenting === post.id || !newCommentContent.trim()}
-                                     className="h-8 px-4 rounded-full bg-gradient-to-r from-primary to-emerald-500 text-white font-bold text-sm tracking-wide disabled:opacity-50 hover:shadow-md hover:shadow-primary/20 transition-all duration-200 flex items-center justify-center"
-                                  >
-                                     {isCommenting === post.id ? <Loader2 className="w-3 h-3 animate-spin" /> : 'Responder'}
-                                  </button>
-                               </div>
-                            </div>
+                          {/* Expanded Comments */}
+                          <AnimatePresence>
+                             {expandedPostId === post.id && (
+                                <motion.div
+                                  initial={{ opacity: 0, height: 0 }}
+                                  animate={{ opacity: 1, height: 'auto' }}
+                                  exit={{ opacity: 0, height: 0 }}
+                                  className="mt-4 border-t border-foreground/[0.04] pt-4 overflow-hidden"
+                                >
+                                   {/* Comment Input */}
+                                   <div className="flex gap-3 mb-4">
+                                      <div className="w-8 h-8 rounded-full bg-surface-elevated overflow-hidden shrink-0 mt-1">
+                                          {user?.avatar_url ? (
+                                            <img src={user.avatar_url} className="w-full h-full object-cover" alt="" />
+                                          ) : (
+                                            <div className="w-full h-full bg-primary/10 flex items-center justify-center font-bold text-primary text-xs">
+                                              {user?.user_metadata?.name?.charAt(0) || '?'}
+                                            </div>
+                                          )}
+                                      </div>
+                                      <div className="flex-1 relative">
+                                          <input 
+                                            value={newCommentContent}
+                                            onChange={(e) => setNewCommentContent(e.target.value)}
+                                            onKeyDown={(e) => e.key === 'Enter' && handleComment(post.id)}
+                                            placeholder="Escribí tu comentario..."
+                                            className="w-full bg-foreground/[0.03] border-none rounded-2xl px-4 py-2 text-sm focus:ring-1 focus:ring-primary/30 outline-none pr-10"
+                                          />
+                                          <button 
+                                            onClick={() => handleComment(post.id)}
+                                            disabled={!newCommentContent.trim() || isCommenting === post.id}
+                                            className="absolute right-2 top-1/2 -translate-y-1/2 text-primary disabled:opacity-30 p-1"
+                                          >
+                                            {isCommenting === post.id ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
+                                          </button>
+                                      </div>
+                                   </div>
 
-                            <div className="flex flex-col">
-                               {comments[post.id]?.map(comment => (
-                                  <div key={comment.id} className="flex gap-3 py-3 border-t border-foreground/[0.04] relative">
-                                     <Link href={`/profile?id=${comment.author.id}`} className="w-10 h-10 rounded-full overflow-hidden shrink-0 bg-surface border border-foreground/10 mt-0.5 relative hover:opacity-90">
-                                        {comment.author.avatar_url ? (
-                                           <img src={comment.author.avatar_url} className="w-full h-full object-cover" alt="" />
-                                        ) : (
-                                           <div className="w-full h-full bg-gradient-to-br from-primary/15 to-primary/5 flex items-center justify-center font-bold text-primary text-sm">
-                                              {comment.author.name.charAt(0)}
-                                           </div>
-                                        )}
-                                     </Link>
-                                     <div className="flex-1 min-w-0">
-                                        <div className="flex items-center gap-1.5 flex-wrap">
-                                           <Link href={`/profile?id=${comment.author.id}`} className={cn("font-bold text-[15px] hover:underline", comment.author.is_pro ? "text-yellow-500" : "text-foreground")}>
-                                              {comment.author.name}
-                                           </Link>
-                                           <span className="text-foreground/50 text-[15px] truncate max-w-[100px] sm:max-w-none">
-                                              @{comment.author.name.toLowerCase().replace(/\s+/g, '')}
-                                           </span>
-                                           <span className="text-foreground/50 text-[15px]">Â·</span>
-                                           <span className="text-foreground/50 text-[15px] hover:underline cursor-pointer">
-                                              {timeAgo(comment.created_at)}
-                                           </span>
-                                        </div>
-                                        <div className="text-foreground/50 text-[13px] mb-1">
-                                            En respuesta a <span className="text-blue-500 cursor-pointer hover:underline">@{post.author.name.toLowerCase().replace(/\s+/g, '')}</span>
-                                        </div>
-                                        <p className="text-[15px] text-foreground leading-relaxed whitespace-pre-wrap">{comment.content}</p>
-                                     </div>
-                                  </div>
-                               ))}
-                            </div>
-                         </motion.div>
-                      )}
-                    </div>
-                  </motion.div>
+                                   {/* Comment List */}
+                                   <div className="space-y-4 px-1">
+                                      {comments[post.id]?.map(comment => (
+                                         <div key={comment.id} className="flex gap-3">
+                                            <Link href={`/profile?id=${comment.author.id}`} className={cn("w-8 h-8 rounded-full overflow-hidden shrink-0 ring-1", comment.author.is_pro ? "ring-yellow-500/20" : "ring-foreground/[0.06]")}>
+                                                {comment.author.avatar_url ? (
+                                                  <img src={comment.author.avatar_url} className="w-full h-full object-cover" alt="" />
+                                                ) : (
+                                                  <div className="w-full h-full bg-foreground/5 flex items-center justify-center font-bold text-foreground/40 text-[10px]">
+                                                    {comment.author.name.charAt(0)}
+                                                  </div>
+                                                )}
+                                            </Link>
+                                            <div className="flex-1 bg-foreground/[0.015] rounded-2xl px-4 py-2.5">
+                                               <div className="flex items-center gap-2 mb-0.5">
+                                                  <span className={cn("font-bold text-xs", comment.author.is_pro ? "text-yellow-600" : "text-foreground")}>{comment.author.name}</span>
+                                                  <span className="text-[10px] text-foreground/40">{timeAgo(comment.created_at)}</span>
+                                               </div>
+                                               <p className="text-sm text-foreground/80 leading-relaxed">{comment.content}</p>
+                                            </div>
+                                         </div>
+                                      ))}
+                                      {comments[post.id]?.length === 0 && (
+                                         <div className="py-6 text-center text-foreground/30 text-xs italic">
+                                            Sé el primero en comentar...
+                                         </div>
+                                      )}
+                                   </div>
+                                </motion.div>
+                             )}
+                          </AnimatePresence>
+                      </div>
+                   </motion.div>
                  ))}
-                 {filteredPosts.length === 0 && searchQuery && (
-                    <div className="text-center py-24 text-foreground/40 font-medium text-lg border-t border-foreground/[0.06] flex flex-col items-center gap-2">
-                       <div className="w-14 h-14 rounded-2xl bg-foreground/[0.04] flex items-center justify-center mb-2">
-                         <Search className="w-6 h-6 text-foreground/25" />
-                       </div>
-                       No se encontraron resultados para &quot;{searchQuery}&quot;
-                       <button
-                         onClick={() => setSearchQuery('')}
-                         className="block mx-auto mt-3 text-primary text-sm font-bold hover:underline"
-                       >
-                         Limpiar bÃºsqueda
-                       </button>
-                    </div>
-                 )}
-                 {filteredPosts.length === 0 && !searchQuery && (
-                    <div className="text-center py-24 text-foreground/40 font-medium text-lg border-t border-foreground/[0.06] flex flex-col items-center gap-3">
-                       <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-primary/10 to-primary/5 flex items-center justify-center mb-2">
-                         <MessageSquare className="w-7 h-7 text-primary/40" />
-                       </div>
-                       <span>AÃºn no hay publicaciones.</span>
-                       <span className="text-sm text-foreground/30">Â¡SÃ© el primero en compartir!</span>
+
+                 {filteredPosts.length === 0 && (
+                    <div className="flex flex-col items-center justify-center py-20 px-4 text-center">
+                        <div className="w-20 h-20 rounded-[2rem] bg-foreground/[0.02] border border-foreground/[0.06] flex items-center justify-center mb-6 relative group overflow-hidden">
+                            <div className="absolute inset-0 bg-gradient-to-br from-primary/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                            <Search className="w-8 h-8 text-foreground/10 group-hover:text-primary/40 transition-colors duration-500" />
+                        </div>
+                        <h3 className="text-xl font-black italic uppercase font-kanit text-foreground tracking-tighter mb-2">No se encontró nada</h3>
+                        <p className="text-foreground/40 text-sm max-w-xs">{searchQuery ? `No hay resultados para "${searchQuery}". Intentá con otra palabra o hashtag.` : "El muro está vacío. ¡Sé el primero en dominar la cancha con un post!"}</p>
+                        {searchQuery && (
+                          <button 
+                            onClick={() => setSearchQuery('')}
+                            className="mt-6 px-6 py-2 rounded-full bg-foreground/5 border border-foreground/10 text-foreground/60 text-xs font-bold hover:bg-foreground/10 transition-all"
+                          >
+                            Ver todo el feed
+                          </button>
+                        )}
                     </div>
                  )}
               </AnimatePresence>
             </div>
           </div>
 
-          {/* â”€â”€ RIGHT SIDEBAR (desktop only) â”€â”€ */}
-          <aside className="hidden lg:flex flex-col w-[280px] xl:w-[340px] shrink-0 sticky top-[72px] self-start gap-4 pb-8">
+          {/* ── RIGHT SIDEBAR (desktop only) ── */}
+          <aside className="hidden lg:flex flex-col w-[280px] xl:w-[340px] shrink-0 sticky top-24 self-start gap-4 pb-8">
 
             {/* Search Bar - functional */}
             <div className="relative group">
@@ -963,7 +964,7 @@ export default function FeedPage() {
                       className="px-4 py-3 hover:bg-foreground/[0.03] transition-colors cursor-pointer text-left w-full"
                     >
                       <div className="text-[13px] text-foreground/40 font-medium">Tendencia #{i+1}</div>
-                      <div className="font-bold text-[15px] text-primary flex items-center gap-1.5">
+                      <div className="font-bold text-[15px] text-foreground flex items-center gap-1.5">
                         <Hash className="w-3.5 h-3.5 text-primary" />
                         {topic.tag}
                       </div>
@@ -979,7 +980,7 @@ export default function FeedPage() {
               <div className="p-4 border-b border-foreground/[0.06] bg-gradient-to-r from-violet-500/[0.04] to-transparent">
                 <h3 className="font-black italic uppercase font-kanit text-foreground text-lg tracking-tighter flex items-center gap-2">
                   <UserPlus className="w-5 h-5 text-violet-500" />
-                  A quiÃ©n seguir
+                  A quién seguir
                 </h3>
               </div>
               <div className="flex flex-col">
@@ -1074,27 +1075,43 @@ export default function FeedPage() {
                       )}
                     </div>
                     <div className="flex-1 min-w-0">
-                      <div className={cn("font-bold text-[14px] truncate", player.is_pro ? "text-yellow-500" : "text-foreground")}>
+                      <div className={cn("font-bold text-[15px] truncate", player.is_pro ? "text-yellow-500" : "text-foreground")}>
                         {player.name}
                       </div>
-                      <div className="text-[12px] text-foreground/40">{player.position || 'Jugador'}</div>
+                      <div className="text-[13px] text-foreground/40 truncate uppercase font-medium tracking-wider">
+                        {player.position || 'Jugador'}
+                      </div>
                     </div>
-                    <div className="text-[14px] font-black text-primary">{player.elo}</div>
+                    <div className="text-right shrink-0">
+                      <div className="text-[14px] font-black text-foreground italic font-kanit">
+                        {player.elo}
+                      </div>
+                      <div className="text-[10px] font-bold text-foreground/30 uppercase tracking-widest">
+                        ELO
+                      </div>
+                    </div>
                   </Link>
                 ))}
               </div>
             </div>
 
             {/* Footer Links */}
-            <div className="px-4 pt-4 pb-4 text-[12px] text-foreground/25 flex flex-wrap gap-x-3 gap-y-1 leading-relaxed">
-              <Link href="/terms" className="hover:underline cursor-pointer">TÃ©rminos</Link>
-              <Link href="/privacy" className="hover:underline cursor-pointer">Privacidad</Link>
-              <Link href="/help" className="hover:underline cursor-pointer">Ayuda</Link>
-              <Link href="/pro" className="hover:underline cursor-pointer">Pelotify Pro</Link>
-              <span>Â© 2026 Pelotify</span>
+            <div className="px-5 py-2 flex flex-wrap gap-x-4 gap-y-2">
+              {[
+                { label: 'Términos', href: '/terms' },
+                { label: 'Privacidad', href: '/privacy' },
+                { label: 'Ayuda', href: '/help' },
+                { label: 'Pelotify Pro', href: '/pro' },
+              ].map(link => (
+                <Link key={link.label} href={link.href} className="text-[11px] font-bold text-foreground/30 hover:text-primary transition-colors">
+                  {link.label}
+                </Link>
+              ))}
+              <div className="w-full text-[11px] font-bold text-foreground/20 mt-2">
+                © 2026 Pelotify. Dominá la cancha.
+              </div>
             </div>
           </aside>
-
         </div>
       </div>
     </div>
