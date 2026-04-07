@@ -600,6 +600,30 @@ export default function FeedPage() {
               </div>
             </div>
 
+            {/* MOBILE SEARCH BAR */}
+            <div className="lg:hidden p-4 border-b border-foreground/[0.08] bg-background">
+              <div className="relative group">
+                <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-foreground/20 group-focus-within:text-primary transition-colors" />
+                <input
+                  type="text"
+                  placeholder="Buscar posts o usuarios..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  onFocus={() => setIsSearchFocused(true)}
+                  onBlur={() => setTimeout(() => setIsSearchFocused(false), 200)}
+                  className="w-full h-11 bg-foreground/[0.03] border border-foreground/[0.06] rounded-2xl pl-11 pr-10 text-[14px] text-foreground placeholder:text-foreground/30 focus:outline-none focus:border-primary/40 focus:ring-4 focus:ring-primary/5 focus:bg-background transition-all duration-300"
+                />
+                {searchQuery && (
+                  <button
+                    onClick={() => setSearchQuery('')}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 w-6 h-6 flex items-center justify-center rounded-lg bg-foreground/[0.05] text-foreground/40 hover:bg-primary hover:text-background transition-all active:scale-90"
+                  >
+                    <X className="w-3 h-3" />
+                  </button>
+                )}
+              </div>
+            </div>
+
             {/* CREATE POST BOX */}
             <div className="p-4 sm:px-5 sm:py-5 border-b border-foreground/[0.08] flex gap-3 bg-background">
               <div className="w-12 h-12 rounded-full bg-surface-elevated overflow-hidden shrink-0 transition-opacity hover:opacity-90 cursor-pointer">
@@ -697,6 +721,15 @@ export default function FeedPage() {
                     initial={{ opacity: 0, y: 8 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.3, delay: index < 10 ? index * 0.03 : 0 }}
+                    onClick={(e) => {
+                      if ((e.target as HTMLElement).closest('a, button, input')) return;
+                      if (expandedPostId === post.id) {
+                        setExpandedPostId(null);
+                      } else {
+                        setExpandedPostId(post.id);
+                        loadComments(post.id);
+                      }
+                    }}
                     className={cn("p-4 sm:px-5 sm:py-3.5 border-b border-foreground/[0.08] hover:bg-foreground/[0.03] transition-colors duration-200 relative flex gap-3 cursor-pointer group/post", post.author.is_pro ? "bg-gradient-to-r from-yellow-500/[0.03] to-transparent" : "")}
                   >
                     {/* LEFTSIDE AVATAR */}
