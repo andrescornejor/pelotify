@@ -511,7 +511,7 @@ export default function FeedPage() {
   }
 
   return (
-    <div className="flex flex-col min-h-screen bg-background pt-[110px] sm:pt-[120px] lg:pt-[110px]">
+    <div className="flex flex-col min-h-screen bg-background pt-[82px] sm:pt-[92px] lg:pt-[82px]">
       {/* Hidden file input */}
       <input
         ref={fileInputRef}
@@ -567,9 +567,11 @@ export default function FeedPage() {
           </aside>
 
           {/* ── MAIN FEED (center column) ── */}
-          <div className="w-full lg:flex-1 border-x border-foreground/[0.06] min-h-screen flex flex-col relative z-10">
             {/* STICKY HEADER */}
-            <div className="sticky top-0 z-50 backdrop-blur-xl bg-background/80 border-b border-foreground/[0.06] px-5 py-3.5 flex items-center justify-between cursor-pointer">
+            <div 
+               onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} 
+               className="sticky top-0 z-50 backdrop-blur-xl bg-background/80 border-b border-foreground/[0.06] px-5 py-3.5 flex items-center justify-between cursor-pointer active:opacity-80 transition-opacity"
+            >
                <div className="flex items-center gap-2.5">
                  <h1 className="text-xl font-black text-foreground tracking-tight">Inicio</h1>
                  <div className="h-5 w-px bg-foreground/10" />
@@ -630,7 +632,14 @@ export default function FeedPage() {
                           >
                              <ImageIcon className="w-5 h-5" />
                           </button>
-                          <button className="p-2.5 text-foreground/30 hover:text-blue-500 hover:bg-blue-500/10 rounded-full transition-all duration-200 flex items-center justify-center" title="Hashtag">
+                          <button 
+                            onClick={() => {
+                              setNewPostContent(prev => prev + (prev.length > 0 && !prev.endsWith(' ') ? ' #' : '#'));
+                              setTimeout(() => document.querySelector('textarea')?.focus(), 10);
+                            }}
+                            className="p-2.5 text-foreground/30 hover:text-primary hover:bg-primary/10 rounded-full transition-all duration-200 flex items-center justify-center" 
+                            title="Hashtag"
+                          >
                              <Hash className="w-5 h-5" />
                           </button>
                       </div>
@@ -1070,9 +1079,10 @@ export default function FeedPage() {
 
             {/* Footer Links */}
             <div className="px-4 pt-4 pb-4 text-[12px] text-foreground/25 flex flex-wrap gap-x-3 gap-y-1 leading-relaxed">
-              <span className="hover:underline cursor-pointer">Términos</span>
-              <span className="hover:underline cursor-pointer">Privacidad</span>
-              <span className="hover:underline cursor-pointer">Accesibilidad</span>
+              <Link href="/terms" className="hover:underline cursor-pointer">Términos</Link>
+              <Link href="/privacy" className="hover:underline cursor-pointer">Privacidad</Link>
+              <Link href="/help" className="hover:underline cursor-pointer">Ayuda</Link>
+              <Link href="/pro" className="hover:underline cursor-pointer">Pelotify Pro</Link>
               <span>© 2026 Pelotify</span>
             </div>
           </aside>
