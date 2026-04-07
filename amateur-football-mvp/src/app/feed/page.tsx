@@ -34,6 +34,7 @@ import Link from 'next/link';
 import { uploadPostImage } from '@/lib/storage';
 import { compressImage, blobToFile } from '@/lib/imageUtils';
 import { sendFriendRequest } from '@/lib/friends';
+import ShareModal from '@/components/ShareModal';
 
 function timeAgo(dateString: string) {
   const date = new Date(dateString);
@@ -115,6 +116,7 @@ export default function FeedPage() {
 
   // Share state
   const [copiedPostId, setCopiedPostId] = useState<string | null>(null);
+  const [shareModalPost, setShareModalPost] = useState<Post | null>(null);
 
   // Friend request state
   const [pendingFriendRequests, setPendingFriendRequests] = useState<Set<string>>(new Set());
@@ -443,31 +445,7 @@ export default function FeedPage() {
   };
 
   const handleShare = async (post: Post) => {
-    const shareUrl = `${window.location.origin}/feed?post=${post.id}`;
-    const shareData = {
-      title: `Post de ${post.author.name} en Pelotify`,
-      text: post.content.slice(0, 100) + (post.content.length > 100 ? '...' : ''),
-      url: shareUrl,
-    };
-
-    try {
-      if (navigator.share && navigator.canShare?.(shareData)) {
-        await navigator.share(shareData);
-      } else {
-        await navigator.clipboard.writeText(shareUrl);
-        setCopiedPostId(post.id);
-        setTimeout(() => setCopiedPostId(null), 2000);
-      }
-    } catch (err) {
-      // User cancelled share or clipboard failed
-      try {
-        await navigator.clipboard.writeText(shareUrl);
-        setCopiedPostId(post.id);
-        setTimeout(() => setCopiedPostId(null), 2000);
-      } catch {
-        console.error('Share error:', err);
-      }
-    }
+    setShareModalPost(post);
   };
 
   const handleSendFriendRequest = async (targetUserId: string) => {
@@ -1138,6 +1116,21 @@ export default function FeedPage() {
           </aside>
         </div>
       </div>
+
+      {shareModalPost && (
+        <ShareModal
+          isOpen={!!shareModalPost}
+          onClose={() => setShareModalPost(null)}
+          url={`${typeof window !== 'undefined' ? window.location.origin : ''}/feed?post=${shareModalPost.id}`}
+          title={`Post de ${shareModalPost.author.name} en Pelotify`}
+          text={shareModalPost.content}
+          type="post"
+          authorName={shareModalPost.author.name}
+          authorAvatar={shareModalPost.author.avatar_url}
+          contentPreview={shareModalPost.content}
+          imagePreview={shareModalPost.image_url}
+        />
+      )}
     </div>
   );
 }

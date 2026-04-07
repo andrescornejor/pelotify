@@ -6,6 +6,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { deleteHighlight, toggleLike, checkIfLiked } from '@/lib/highlights';
 import Link from 'next/link';
 import CommentsModal from './CommentsModal';
+import ShareModal from './ShareModal';
 
 interface VideoPlayerProps {
   id: string;
@@ -52,6 +53,7 @@ export default function VideoPlayer({
   const [showComments, setShowComments] = useState(false);
   const [localComments, setLocalComments] = useState(comments);
   const [showCopied, setShowCopied] = useState(false);
+  const [isShareModalOpen, setIsShareModalOpen] = useState(false);
 
   const { ref: inViewRef, inView } = useInView({ threshold: 0.5 });
 
@@ -187,24 +189,7 @@ export default function VideoPlayer({
   
   const handleShare = async (e: React.MouseEvent) => {
     e.stopPropagation();
-    const shareUrl = `${window.location.origin}/highlights?v=${id}`;
-    const shareData = {
-      title: 'Mira este video en FutTok',
-      text: description || '¡Mirá esta tremenda jugada en Pelotify!',
-      url: shareUrl,
-    };
-
-    try {
-      if (navigator.share && navigator.canShare?.(shareData)) {
-        await navigator.share(shareData);
-      } else {
-        await navigator.clipboard.writeText(shareUrl);
-        setShowCopied(true);
-        setTimeout(() => setShowCopied(false), 2000);
-      }
-    } catch (err) {
-      console.error('Share error:', err);
-    }
+    setIsShareModalOpen(true);
   };
 
   const isOwner = user?.id === userId;
@@ -421,6 +406,19 @@ export default function VideoPlayer({
           />
         )}
       </AnimatePresence>
+
+      <ShareModal
+        isOpen={isShareModalOpen}
+        onClose={() => setIsShareModalOpen(false)}
+        url={`${typeof window !== 'undefined' ? window.location.origin : ''}/highlights?v=${id}`}
+        title={`FutTok de @${userName || 'crack_anonimo'} en Pelotify`}
+        text={description || '🔥 ¡Mirá esta tremenda jugada en Pelotify! #FutbolAmateur'}
+        type="futtok"
+        authorName={`@${userName || 'crack_anonimo'}`}
+        authorAvatar={userAvatar}
+        contentPreview={description}
+        imagePreview={thumbnail}
+      />
     </div>
   );
 }
