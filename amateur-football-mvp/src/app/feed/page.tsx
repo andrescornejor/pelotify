@@ -495,23 +495,48 @@ export default function FeedPage() {
 
   if (isLoading) {
     return (
-      <div className="flex flex-col min-h-[90vh] bg-background items-center justify-center gap-4">
-        <div className="relative">
-          <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-emerald-500/20 via-blue-500/20 to-violet-500/20 flex items-center justify-center animate-pulse">
-            <Zap className="w-7 h-7 text-primary" />
-          </div>
-          <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-emerald-500 to-blue-500 opacity-20 blur-xl animate-pulse" />
+      <div className="flex flex-col min-h-screen bg-background pt-[78px] px-3 sm:px-5 lg:px-10 xl:px-16 relative overflow-hidden">
+        {/* AMBIENT BACKGROUND */}
+        <div className="fixed inset-0 pointer-events-none -z-10 overflow-hidden">
+          <div className="absolute top-[-5%] right-[-5%] w-[40%] h-[40%] opacity-[0.03]" style={{ background: 'radial-gradient(circle, #2cfc7d 0%, transparent 70%)' }} />
         </div>
-        <div className="flex flex-col items-center gap-1">
-          <Loader2 className="w-5 h-5 animate-spin text-foreground/40" />
-          <span className="text-sm font-medium text-foreground/40">Cargando feed...</span>
+
+        <div className="flex gap-0 lg:gap-6 xl:gap-8 grow">
+          {/* LEFT SIDEBAR SKELETON */}
+          <aside className="hidden lg:flex flex-col w-[280px] xl:w-[320px] shrink-0 gap-4">
+            <div className="h-[300px] w-full rounded-[2rem] bg-foreground/[0.03] animate-pulse border border-foreground/[0.06]" />
+          </aside>
+
+          {/* MAIN FEED SKELETON */}
+          <div className="w-full lg:flex-1 border-x border-foreground/[0.06] flex flex-col gap-6 px-5 py-4">
+            <div className="h-20 w-full rounded-2xl bg-foreground/[0.03] animate-pulse" />
+            {[1, 2, 3].map(i => (
+              <div key={i} className="space-y-4">
+                <div className="flex gap-3">
+                  <div className="w-11 h-11 rounded-full bg-foreground/[0.03] animate-pulse" />
+                  <div className="space-y-2 flex-1 pt-1">
+                    <div className="h-4 w-[40%] rounded bg-foreground/[0.03] animate-pulse" />
+                    <div className="h-3 w-[20%] rounded bg-foreground/[0.03] animate-pulse" />
+                  </div>
+                </div>
+                <div className="h-32 w-full rounded-2xl bg-foreground/[0.03] animate-pulse" />
+              </div>
+            ))}
+          </div>
+
+          {/* RIGHT SIDEBAR SKELETON */}
+          <aside className="hidden lg:flex flex-col w-[280px] xl:w-[340px] shrink-0 gap-4">
+            <div className="h-12 w-full rounded-2xl bg-foreground/[0.03] animate-pulse" />
+            <div className="h-[200px] w-full rounded-[2rem] bg-foreground/[0.03] animate-pulse" />
+            <div className="h-[300px] w-full rounded-[2rem] bg-foreground/[0.03] animate-pulse" />
+          </aside>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="flex flex-col min-h-screen bg-background pt-22 relative overflow-hidden">
+    <div className="flex flex-col min-h-screen bg-background pt-[78px] relative overflow-hidden">
       {/* AMBIENT BACKGROUND */}
       <div className="fixed inset-0 pointer-events-none -z-10 overflow-hidden">
         <div 
@@ -537,16 +562,15 @@ export default function FeedPage() {
         <div className="flex gap-0 lg:gap-6 xl:gap-8">
 
           {/* ── LEFT SIDEBAR (desktop only) ── */}
-          <aside className="hidden lg:flex flex-col w-[280px] xl:w-[320px] shrink-0 sticky top-22 self-start gap-0 pb-8">
-            {/* Header matches Main Feed exactly */}
-            <div className="px-5 py-3.5 border-b border-foreground/[0.06] bg-background/50 backdrop-blur-md rounded-t-[2rem]">
-                <h3 className="font-black italic uppercase font-kanit text-foreground text-2xl tracking-tighter flex items-center gap-2 leading-none">
-                  <Globe className="w-5 h-5 text-primary/60" />
+          <aside className="hidden lg:flex flex-col w-[280px] xl:w-[320px] shrink-0 sticky top-[78px] self-start gap-4 pb-8">
+            {/* Navigation Links */}
+            <div className="rounded-[2rem] border border-foreground/[0.06] bg-surface/50 backdrop-blur-md overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-300">
+              <div className="p-4 border-b border-foreground/[0.06] bg-gradient-to-r from-foreground/[0.02] to-transparent">
+                <h3 className="font-black italic uppercase font-kanit text-foreground text-lg tracking-tighter flex items-center gap-2">
+                  <Globe className="w-4.5 h-4.5 text-primary/60" />
                   Navegación
                 </h3>
-            </div>
-            {/* Navigation Links Card */}
-            <div className="rounded-b-[2rem] border-x border-b border-foreground/[0.06] bg-surface/30 backdrop-blur-md overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-300">
+              </div>
               <nav className="flex flex-col p-2 gap-0.5">
                 {[
                   { href: '/search', icon: Search, label: 'Buscar Partidos', color: 'text-blue-500' },
@@ -574,7 +598,7 @@ export default function FeedPage() {
             {/* STICKY HEADER */}
             <div 
                onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} 
-               className="sticky top-0 z-50 backdrop-blur-xl bg-background/80 border-b border-foreground/[0.06] px-5 py-3.5 flex items-center justify-between cursor-pointer active:opacity-80 transition-opacity"
+               className="sticky top-[78px] z-50 backdrop-blur-xl bg-background/80 border-b border-foreground/[0.06] px-5 py-3.5 flex items-center justify-between cursor-pointer active:opacity-80 transition-opacity"
             >
                <div className="flex items-center gap-2.5">
                  <h1 className="text-2xl font-black italic uppercase font-kanit text-foreground tracking-tighter leading-none">Inicio</h1>
@@ -923,18 +947,11 @@ export default function FeedPage() {
           </div>
 
           {/* ── RIGHT SIDEBAR (desktop only) ── */}
-          <aside className="hidden lg:flex flex-col w-[280px] xl:w-[340px] shrink-0 sticky top-22 self-start gap-0 pb-8">
-            {/* Header matches Main Feed exactly */}
-            <div className="px-5 py-3.5 border-b border-foreground/[0.06] bg-background/50 backdrop-blur-md rounded-t-[2rem] mb-4">
-                <h3 className="font-black italic uppercase font-kanit text-foreground text-2xl tracking-tighter flex items-center gap-2 leading-none">
-                  <Search className="w-5 h-5 text-primary/60" />
-                  Buscar
-                </h3>
-            </div>
+          <aside className="hidden lg:flex flex-col w-[280px] xl:w-[340px] shrink-0 sticky top-[78px] self-start gap-4 pb-8">
 
-            {/* Search Bar - functional area */}
-            <div className="relative group px-1">
-              <Search className="absolute left-5 top-1/2 -translate-y-1/2 w-4 h-4 text-foreground/20 group-focus-within:text-primary transition-colors" />
+            {/* Search Bar - functional */}
+            <div className="relative group">
+              <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-foreground/20 group-focus-within:text-primary transition-colors" />
               <input
                 type="text"
                 placeholder="Buscar posts o usuarios..."
