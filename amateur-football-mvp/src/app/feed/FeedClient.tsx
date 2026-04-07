@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef, useMemo, useCallback } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/lib/supabase';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -88,11 +89,15 @@ interface Comment {
 
 export default function FeedPage() {
   const { user } = useAuth();
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const postParam = searchParams.get('post');
+
   const [posts, setPosts] = useState<Post[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [newPostContent, setNewPostContent] = useState('');
   const [isPosting, setIsPosting] = useState(false);
-  const [expandedPostId, setExpandedPostId] = useState<string | null>(null);
+  const [expandedPostId, setExpandedPostId] = useState<string | null>(postParam);
   const [comments, setComments] = useState<Record<string, Comment[]>>({});
   const [newCommentContent, setNewCommentContent] = useState('');
   const [isCommenting, setIsCommenting] = useState<string | null>(null);
@@ -131,6 +136,13 @@ export default function FeedPage() {
       fetchFriendshipStatuses();
     }
   }, [user]);
+
+  useEffect(() => {
+    if (postParam && expandedPostId !== postParam) {
+      setExpandedPostId(postParam);
+      loadComments(postParam);
+    }
+  }, [postParam]);
 
   const fetchFriendshipStatuses = async () => {
     if (!user) return;
@@ -723,11 +735,14 @@ export default function FeedPage() {
                     transition={{ duration: 0.3, delay: index < 10 ? index * 0.03 : 0 }}
                     onClick={(e) => {
                       if ((e.target as HTMLElement).closest('a, button, input')) return;
-                      if (expandedPostId === post.id) {
-                        setExpandedPostId(null);
-                      } else {
+                      const isExpanding = expandedPostId !== post.id;
+                      if (isExpanding) {
                         setExpandedPostId(post.id);
                         loadComments(post.id);
+                        router.push(`/feed?post=${post.id}`, { scroll: false });
+                      } else {
+                        setExpandedPostId(null);
+                        router.push('/feed', { scroll: false });
                       }
                     }}
                     className={cn("p-4 sm:px-5 sm:py-3.5 border-b border-foreground/[0.08] hover:bg-foreground/[0.03] transition-colors duration-200 relative flex gap-3 cursor-pointer group/post", post.author.is_pro ? "bg-gradient-to-r from-yellow-500/[0.03] to-transparent" : "")}
@@ -815,11 +830,14 @@ export default function FeedPage() {
                         <button
                           onClick={(e) => {
                             e.stopPropagation();
-                            if (expandedPostId === post.id) {
-                              setExpandedPostId(null);
-                            } else {
+                            const isExpanding = expandedPostId !== post.id;
+                            if (isExpanding) {
                               setExpandedPostId(post.id);
                               loadComments(post.id);
+                              router.push(`/feed?post=${post.id}`, { scroll: false });
+                            } else {
+                              setExpandedPostId(null);
+                              router.push('/feed', { scroll: false });
                             }
                           }}
                           className={cn("flex items-center gap-1.5 text-[13px] group/btn transition-colors", expandedPostId === post.id ? "text-blue-500" : "hover:text-blue-500")}
