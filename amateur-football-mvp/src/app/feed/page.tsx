@@ -20,7 +20,8 @@ export async function generateMetadata(
       .single();
 
     if (data) {
-      const username = data.profiles?.name || 'Usuario Básico';
+      const p = Array.isArray(data.profiles) ? data.profiles[0] : data.profiles;
+      const username = (p as any)?.name || 'Usuario Básico';
       const title = `Post de ${username} en Pelotify`;
       const description = data.content ? (data.content.slice(0, 150) + (data.content.length > 150 ? '...' : '')) : 'Mira esta publicación en Pelotify.';
 

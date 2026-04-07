@@ -20,7 +20,8 @@ export async function generateMetadata(
       .single();
 
     if (data) {
-      const username = data.profiles?.name || 'crack_anonimo';
+      const p = Array.isArray(data.profiles) ? data.profiles[0] : data.profiles;
+      const username = (p as any)?.name || 'crack_anonimo';
       const description = data.description || '¡Mirá esta tremenda jugada en Pelotify!';
       const title = `FutTok de @${username} en Pelotify`;
 
