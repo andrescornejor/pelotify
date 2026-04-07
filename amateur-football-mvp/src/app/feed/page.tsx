@@ -607,6 +607,21 @@ export default function FeedPage() {
 
           {/* ── MAIN FEED (center column) ── */}
           <div className="w-full lg:flex-1 border-x border-foreground/[0.08] min-h-screen flex flex-col relative z-20">
+            {/* STICKY HEADER */}
+            <div 
+               onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} 
+               className="sticky top-[80px] z-50 bg-background/80 backdrop-blur-md border-b border-foreground/[0.08] px-5 py-4 flex items-center justify-between cursor-pointer hover:bg-foreground/[0.02] transition-colors"
+            >
+               <div className="flex items-center gap-2.5">
+                 <h1 className="text-2xl font-black italic uppercase font-kanit text-foreground tracking-tighter leading-none">Inicio</h1>
+               </div>
+               <div className="flex items-center gap-2">
+                 <Link href="/pro" className="group">
+                    <Zap className="w-5 h-5 text-foreground/40 group-hover:text-yellow-500 transition-colors" />
+                 </Link>
+               </div>
+            </div>
+
             {/* CREATE POST BOX */}
             <div className="p-4 sm:px-5 sm:py-5 border-b border-foreground/[0.08] flex gap-3 bg-background">
                  <div className="w-12 h-12 rounded-full bg-surface-elevated overflow-hidden shrink-0 transition-opacity hover:opacity-90 cursor-pointer">
@@ -693,21 +708,6 @@ export default function FeedPage() {
                        </div>
                     </div>
                  </div>
-            </div>
-
-            {/* STICKY HEADER */}
-            <div 
-               onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} 
-               className="sticky top-[80px] z-50 bg-background/80 backdrop-blur-md border-b border-foreground/[0.08] px-5 py-4 flex items-center justify-between cursor-pointer hover:bg-foreground/[0.02] transition-colors"
-            >
-               <div className="flex items-center gap-2.5">
-                 <h1 className="text-2xl font-black italic uppercase font-kanit text-foreground tracking-tighter leading-none">Inicio</h1>
-               </div>
-               <div className="flex items-center gap-2">
-                 <Link href="/pro" className="group">
-                    <Zap className="w-5 h-5 text-foreground/40 group-hover:text-yellow-500 transition-colors" />
-                 </Link>
-               </div>
             </div>
 
             {/* POSTS FEED */}
