@@ -28,7 +28,7 @@ export async function generateMetadata(
         description = `${description} | Unite a Pelotify y conectá con el fútbol amateur como nunca antes. ¡Seguinos!`;
       }
 
-      const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://pelotify.vercel.app';
+      const baseUrl = 'https://pelotify.vercel.app';
       const ogImage = `${baseUrl}/api/og?title=${encodeURIComponent(username)}&description=${encodeURIComponent(description)}&username=${encodeURIComponent(username)}${data.image_url ? `&image=${encodeURIComponent(data.image_url)}` : ''}`;
 
       return {
@@ -38,6 +38,7 @@ export async function generateMetadata(
           title,
           description,
           url: `${baseUrl}/post/${postId}`,
+          siteName: 'Pelotify',
           images: [
             {
               url: ogImage,
@@ -62,6 +63,13 @@ export async function generateMetadata(
   return {
     title: 'Post | Pelotify',
     description: 'El lugar donde el fútbol amateur se conecta.',
+    openGraph: {
+      images: ['https://pelotify.vercel.app/logo_pelotify.png'],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      images: ['https://pelotify.vercel.app/logo_pelotify.png'],
+    }
   };
 }
 

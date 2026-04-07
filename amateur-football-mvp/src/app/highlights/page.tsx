@@ -28,7 +28,7 @@ export async function generateMetadata(
       }
       
       const title = `FutTok de @${username} en Pelotify`;
-      const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://pelotify.vercel.app';
+      const baseUrl = 'https://pelotify.vercel.app';
       const ogImage = `${baseUrl}/api/og?title=${encodeURIComponent(title)}&description=${encodeURIComponent(description)}&username=${encodeURIComponent(username)}&type=highlight${data.thumbnail_url ? `&image=${encodeURIComponent(data.thumbnail_url)}` : ''}`;
 
       return {
@@ -38,6 +38,7 @@ export async function generateMetadata(
           title,
           description,
           url: `${baseUrl}/highlights?v=${v}`,
+          siteName: 'Pelotify',
           images: [
             {
               url: ogImage,
@@ -62,6 +63,13 @@ export async function generateMetadata(
   return {
     title: 'Highlights | Pelotify',
     description: 'Mira las mejores jugadas del fútbol amateur en Pelotify.',
+    openGraph: {
+      images: ['https://pelotify.vercel.app/logo_pelotify.png'],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      images: ['https://pelotify.vercel.app/logo_pelotify.png'],
+    }
   };
 }
 
