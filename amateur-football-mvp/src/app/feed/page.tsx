@@ -955,6 +955,8 @@ export default function FeedPage() {
               )}
             </div>
 
+            {/* Trending - real hashtags from posts */}
+            {trendingTopics.length > 0 && (
               <div className="rounded-[2rem] border border-foreground/[0.06] bg-surface/50 backdrop-blur-md overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-300">
                 <div className="p-4 border-b border-foreground/[0.06] bg-gradient-to-r from-blue-500/[0.04] to-transparent">
                   <h3 className="font-black italic uppercase font-kanit text-foreground text-lg tracking-tighter flex items-center gap-2">
