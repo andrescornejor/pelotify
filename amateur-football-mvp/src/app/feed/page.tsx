@@ -558,7 +558,7 @@ export default function FeedPage() {
       />
 
       {/* 3-column layout matching TopHeader padding exactly */}
-      <div className="w-full px-3 sm:px-5 lg:px-10 xl:px-16 pt-3 sm:pt-6 lg:pt-5">
+      <div className="w-full px-3 sm:px-5 lg:px-10 xl:px-16 pt-[90px] sm:pt-[100px] lg:pt-[100px]">
         <div className="flex gap-0 lg:gap-6 xl:gap-8">
 
           {/* ── LEFT SIDEBAR (desktop only) ── */}
