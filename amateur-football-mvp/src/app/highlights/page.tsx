@@ -29,7 +29,7 @@ export async function generateMetadata(
       
       const title = `FutTok de @${username} en Pelotify`;
       const baseUrl = 'https://pelotify.vercel.app';
-      const ogImage = `${baseUrl}/api/og?title=${encodeURIComponent(title)}&description=${encodeURIComponent(description)}&username=${encodeURIComponent(username)}&type=highlight${data.thumbnail_url ? `&image=${encodeURIComponent(data.thumbnail_url)}` : ''}`;
+      const testImage = data.thumbnail_url || 'https://pelotify.vercel.app/icon.png';
 
       return {
         title,
@@ -38,26 +38,21 @@ export async function generateMetadata(
           title,
           description,
           url: `${baseUrl}/highlights?v=${v}`,
-          images: [{ url: ogImage }],
-          type: 'website',
+          siteName: 'Pelotify',
+          images: [testImage],
+          type: 'video.other',
         },
         twitter: {
           card: 'summary_large_image',
           title,
           description,
-          images: [ogImage],
+          images: [testImage],
+          site: '@pelotify',
+          creator: '@pelotify',
         },
-        // Forced RAW metadata to match your request 100%
         other: {
-          'og:type': 'website',
-          'og:url': `${baseUrl}/highlights?v=${v}`,
-          'og:title': title,
-          'og:description': description,
-          'og:image': ogImage,
+          'twitter:image': testImage,
           'twitter:card': 'summary_large_image',
-          'twitter:title': title,
-          'twitter:description': description,
-          'twitter:image': ogImage,
         }
       };
     }
@@ -66,9 +61,12 @@ export async function generateMetadata(
   return {
     title: 'Highlights | Pelotify',
     description: 'Mira las mejores jugadas del fútbol amateur en Pelotify.',
-    other: {
-      'og:image': 'https://pelotify.vercel.app/icon.png',
-      'twitter:image': 'https://pelotify.vercel.app/icon.png',
+    openGraph: {
+      images: ['https://pelotify.vercel.app/icon.png'],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      images: ['https://pelotify.vercel.app/icon.png'],
     }
   };
 }
