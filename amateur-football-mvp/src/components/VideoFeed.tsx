@@ -117,30 +117,34 @@ export default function VideoFeed() {
                 <div className="absolute -bottom-2 sm:-bottom-2.5 left-1/2 -translate-x-1/2 w-6 sm:w-8 h-[2px] sm:h-[2.5px] bg-emerald-500 shadow-[0_0_10px_#10b981] rounded-full" />
               )}
             </button>
-            <button 
-              onClick={() => setActiveTab('friends')}
-              className={cn(
-                "font-black text-[9px] sm:text-[10px] tracking-[0.3em] uppercase relative shadow-sm transition-colors",
-                activeTab === 'friends' ? "text-white" : "text-white/40 hover:text-white/80"
-              )}
-            >
-              AMIGOS
-              {activeTab === 'friends' && (
-                <div className="absolute -bottom-2 sm:-bottom-2.5 left-1/2 -translate-x-1/2 w-6 sm:w-8 h-[2px] sm:h-[2.5px] bg-emerald-500 shadow-[0_0_10px_#10b981] rounded-full" />
-              )}
-            </button>
+            {user && (
+              <button 
+                onClick={() => setActiveTab('friends')}
+                className={cn(
+                  "font-black text-[9px] sm:text-[10px] tracking-[0.3em] uppercase relative shadow-sm transition-colors",
+                  activeTab === 'friends' ? "text-white" : "text-white/40 hover:text-white/80"
+                )}
+              >
+                AMIGOS
+                {activeTab === 'friends' && (
+                  <div className="absolute -bottom-2 sm:-bottom-2.5 left-1/2 -translate-x-1/2 w-6 sm:w-8 h-[2px] sm:h-[2.5px] bg-emerald-500 shadow-[0_0_10px_#10b981] rounded-full" />
+                )}
+              </button>
+            )}
           </div>
         </div>
 
-        <div className="pointer-events-auto relative group">
-          <div className="absolute -inset-2 bg-emerald-500/20 rounded-full blur-xl opacity-0 group-hover:opacity-100 transition-opacity" />
-          <button 
-            onClick={() => setIsUploadOpen(true)}
-            className="relative p-3 sm:p-3.5 bg-gradient-to-tr from-emerald-600 to-emerald-400 rounded-2xl text-background shadow-[0_0_30px_rgba(16,185,129,0.3)] hover:shadow-[0_0_40px_rgba(16,185,129,0.5)] hover:scale-105 active:scale-95 transition-all border border-emerald-300/30"
-          >
-            <Plus className="w-5 h-5 sm:w-6 sm:h-6 stroke-[3]" />
-          </button>
-        </div>
+        {user && (
+          <div className="pointer-events-auto relative group">
+            <div className="absolute -inset-2 bg-emerald-500/20 rounded-full blur-xl opacity-0 group-hover:opacity-100 transition-opacity" />
+            <button 
+              onClick={() => setIsUploadOpen(true)}
+              className="relative p-3 sm:p-3.5 bg-gradient-to-tr from-emerald-600 to-emerald-400 rounded-2xl text-background shadow-[0_0_30px_rgba(16,185,129,0.3)] hover:shadow-[0_0_40px_rgba(16,185,129,0.5)] hover:scale-105 active:scale-95 transition-all border border-emerald-300/30"
+            >
+              <Plus className="w-5 h-5 sm:w-6 sm:h-6 stroke-[3]" />
+            </button>
+          </div>
+        )}
       </div>
 
       {/* Vertical Feed with Snap Scroll */}

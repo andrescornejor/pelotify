@@ -174,12 +174,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     if (isLoading) return;
 
-    const isAuthRoute =
-      pathname === '/login' || pathname === '/register' || pathname === '/update-password' || pathname === '/canchas/login' || pathname === '/canchas/register' || pathname === '/email-confirmed';
-    const isOnboardingRoute = pathname === '/onboarding';
-    const isCanchasRoute = pathname?.startsWith('/canchas');
+    const isPublicRoute = 
+      pathname?.startsWith('/post/') || 
+      pathname === '/highlights' || 
+      (pathname === '/feed' && typeof window !== 'undefined' && new URLSearchParams(window.location.search).has('post'));
 
-    if (!user && !isAuthRoute && !isCanchasRoute && pathname !== '/') {
+    if (!user && !isAuthRoute && !isCanchasRoute && pathname !== '/' && !isPublicRoute) {
       router.push('/login');
     } else if (!user && !isAuthRoute && isCanchasRoute && pathname !== '/canchas/login' && pathname !== '/canchas/register') {
       router.push('/canchas/login');
@@ -368,17 +368,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   };
 
-  const isAuthRoute =
-    pathname === '/login' || pathname === '/register' || pathname === '/update-password' || pathname === '/canchas/login' || pathname === '/canchas/register' || pathname === '/email-confirmed';
-  const isCanchasRoute = pathname?.startsWith('/canchas');
+  const isPublicRoute = 
+    pathname?.startsWith('/post/') || 
+    pathname === '/highlights' || 
+    (pathname === '/feed' && typeof window !== 'undefined' && new URLSearchParams(window.location.search).has('post'));
 
-  // Verification and redirect logic for showing loader
-  // 1. Initial loading of auth state (except on auth routes for faster perceived performance)
-  // 2. Not authenticated but trying to access protected route (redirecting to login, unless it's /canchas)
-  // 3. Authenticated but trying to access auth route (redirecting to home)
   const showLoader =
-    (isLoading && !isAuthRoute) ||
-    (!isLoading && !user && !isAuthRoute && !isCanchasRoute && pathname !== '/') ||
+    (isLoading && !isAuthRoute && !isPublicRoute) ||
+    (!isLoading && !user && !isAuthRoute && !isCanchasRoute && pathname !== '/' && !isPublicRoute) ||
     (!isLoading && !user && isCanchasRoute && pathname !== '/canchas/login' && pathname !== '/canchas/register') ||
     (!isLoading && user && isAuthRoute);
 

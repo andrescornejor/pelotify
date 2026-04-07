@@ -294,12 +294,15 @@ export const TopHeader = memo(function TopHeader() {
                       </motion.div>
                     </AnimatePresence>
                   </motion.button>
-
-                  {/* Notification Bell */}
+                  {/* Notification Bell */}
                   <motion.button
                     whileHover={{ scale: 1.08 }}
                     whileTap={{ scale: 0.88 }}
                     onClick={() => {
+                      if (!user) {
+                        window.location.href = '/login';
+                        return;
+                      }
                       setNotificationsOpen(true);
                       setNotifCount(0);
                     }}
@@ -320,27 +323,39 @@ export const TopHeader = memo(function TopHeader() {
                       )}
                     </AnimatePresence>
                   </motion.button>
-
-                  {/* Profile Avatar */}
-                  <Link href="/profile/me">
+ 
+                   {/* Profile Avatar or Login Button */}
+                  <Link href={user ? "/profile/me" : "/login"}>
                     <motion.div
                       whileHover={{ scale: 1.08 }}
                       whileTap={{ scale: 0.92 }}
-                      className="w-12 h-12 lg:w-11 lg:h-11 rounded-2xl p-0.5 bg-foreground/[0.04] border border-foreground/[0.08] hover:border-primary/30 transition-all"
+                      className={cn(
+                        "w-12 h-12 lg:w-11 lg:h-11 rounded-2xl p-0.5 transition-all flex items-center justify-center",
+                        user 
+                          ? "bg-foreground/[0.04] border border-foreground/[0.08] hover:border-primary/30" 
+                          : "bg-primary text-background font-black text-[10px] uppercase shadow-[0_0_20px_rgba(16,185,129,0.4)]"
+                      )}
                     >
-                      <div className="w-full h-full rounded-[0.85rem] overflow-hidden bg-primary/5 flex items-center justify-center">
-                        {user?.avatar_url ? (
-                          <img
-                            src={user.avatar_url}
-                            alt="Perfil"
-                            className="w-full h-full object-cover"
-                          />
-                        ) : (
-                          <User2 className="w-5 h-5 text-primary/60" />
-                        )}
-                      </div>
+                      {user ? (
+                        <div className="w-full h-full rounded-[0.85rem] overflow-hidden bg-primary/5 flex items-center justify-center">
+                          {user.avatar_url ? (
+                            <img
+                              src={user.avatar_url}
+                              alt="Perfil"
+                              className="w-full h-full object-cover"
+                            />
+                          ) : (
+                            <User2 className="w-5 h-5 text-primary/60" />
+                          )}
+                        </div>
+                      ) : (
+                        <div className="flex flex-col items-center leading-none gap-0.5">
+                          <User2 className="w-4 h-4" />
+                          <span className="text-[7px] font-black tracking-tighter">ENTRAR</span>
+                        </div>
+                      )}
                     </motion.div>
-                  </Link>
+                  </Link>>
                 </div>
               </div>
             </div>

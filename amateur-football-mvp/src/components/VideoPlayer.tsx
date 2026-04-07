@@ -135,7 +135,11 @@ export default function VideoPlayer({
     setTimeout(() => setShowDoubleTapHeart(false), 1000); // hide after animation
     
     // Auto-like if not liked
-    if (!isLiked && user) {
+    if (!isLiked) {
+      if (!user) {
+        router.push('/login');
+        return;
+      }
       const newLiked = true;
       setIsLiked(newLiked);
       setLocalLikes(prev => prev + 1);
@@ -156,7 +160,10 @@ export default function VideoPlayer({
 
   const handleLike = async (e: React.MouseEvent) => {
     e.stopPropagation();
-    if (!user) return;
+    if (!user) {
+      router.push('/login');
+      return;
+    }
     
     const newLiked = !isLiked;
     setIsLiked(newLiked);

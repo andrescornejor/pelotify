@@ -365,7 +365,10 @@ export default function FeedClient({ standalonePostId }: { standalonePostId?: st
   };
 
   const handleLike = async (postId: string, userHasLiked: boolean) => {
-    if (!user) return;
+    if (!user) {
+      router.push('/login');
+      return;
+    }
 
     try {
       // Optimistic update
@@ -401,7 +404,11 @@ export default function FeedClient({ standalonePostId }: { standalonePostId?: st
   };
 
   const handleComment = async (postId: string) => {
-    if (!newCommentContent.trim() || !user) return;
+    if (!user) {
+      router.push('/login');
+      return;
+    }
+    if (!newCommentContent.trim()) return;
 
     setIsCommenting(postId);
     try {
@@ -439,7 +446,10 @@ export default function FeedClient({ standalonePostId }: { standalonePostId?: st
   };
 
   const handleBookmark = async (postId: string) => {
-    if (!user) return;
+    if (!user) {
+      router.push('/login');
+      return;
+    }
     const isBookmarked = bookmarkedPosts.has(postId);
 
     // Optimistic update
@@ -663,7 +673,8 @@ export default function FeedClient({ standalonePostId }: { standalonePostId?: st
                 </div>
 
                 {/* CREATE POST BOX */}
-                <div className="p-4 sm:px-5 sm:py-5 border-b border-foreground/[0.08] flex gap-3 bg-background">
+                {user && (
+                  <div className="p-4 sm:px-5 sm:py-5 border-b border-foreground/[0.08] flex gap-3 bg-background">
                   <div className="w-12 h-12 rounded-full bg-surface-elevated overflow-hidden shrink-0 transition-opacity hover:opacity-90 cursor-pointer">
                     {user?.avatar_url ? (
                       <img src={user.avatar_url} className="w-full h-full object-cover" alt="" />
@@ -748,7 +759,7 @@ export default function FeedClient({ standalonePostId }: { standalonePostId?: st
                       </div>
                     </div>
                   </div>
-                </div>
+                )}
               </>
             )}
 
