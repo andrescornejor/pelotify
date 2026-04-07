@@ -47,11 +47,11 @@ function timeAgo(dateString: string) {
   if (days < 30) return `hace ${days}d`;
   const months = Math.floor(days / 30);
   if (months < 12) return `hace ${months} meses`;
-  return `hace ${Math.floor(months / 12)} años`;
+  return `hace ${Math.floor(months / 12)} aÃ±os`;
 }
 
 function extractHashtags(text: string): string[] {
-  const matches = text.match(/#[\w\u00C0-\u024FáéíóúñÁÉÍÓÚÑ]+/g);
+  const matches = text.match(/#[\w\u00C0-\u024FÃ¡Ã©Ã­Ã³ÃºÃ±ÃÃ‰ÃÃ“ÃšÃ‘]+/g);
   return matches ? matches.map(t => t.slice(1)) : [];
 }
 
@@ -396,7 +396,7 @@ export default function FeedPage() {
   };
 
   const handleDeletePost = async (postId: string) => {
-    if (!confirm('¿Seguro de que querés borrar esta publicación?')) return;
+    if (!confirm('Â¿Seguro de que querÃ©s borrar esta publicaciÃ³n?')) return;
     try {
       const { error } = await supabase.from('posts').delete().eq('id', postId);
       if (error) throw error;
@@ -536,8 +536,8 @@ export default function FeedPage() {
       <div className="w-full px-3 sm:px-5 lg:px-10 xl:px-16">
         <div className="flex gap-0 lg:gap-6 xl:gap-8">
 
-          {/* ── LEFT SIDEBAR (desktop only) ── */}
-          <aside className="hidden lg:flex flex-col w-[280px] xl:w-[320px] shrink-0 sticky top-[100px] self-start gap-4 pb-8">
+          {/* â”€â”€ LEFT SIDEBAR (desktop only) â”€â”€ */}
+          <aside className="hidden lg:flex flex-col w-[280px] xl:w-[320px] shrink-0 sticky top-[72px] self-start gap-4 pb-8">
             {/* Navigation Links */}
             <div className="rounded-[2rem] border border-foreground/[0.06] bg-surface/50 backdrop-blur-md overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-300">
               <div className="p-4 border-b border-foreground/[0.06] bg-gradient-to-r from-foreground/[0.02] to-transparent">
@@ -566,15 +566,6 @@ export default function FeedPage() {
                 ))}
               </nav>
             </div>
-
-            {/* Quick Post Button */}
-            <Link
-              href="#"
-              onClick={(e) => { e.preventDefault(); document.querySelector('textarea')?.focus(); }}
-              className="w-full py-4 bg-gradient-to-r from-primary to-primary-dark text-background rounded-full font-black italic uppercase text-[12px] tracking-widest text-center hover:shadow-[0_10px_25px_rgba(44,252,125,0.25)] transition-all active:scale-[0.97] duration-200 shadow-lg font-kanit"
-            >
-              ✍️ Postear
-            </Link>
           </aside>
 
           {/* ── MAIN FEED (center column) ── */}
@@ -582,7 +573,7 @@ export default function FeedPage() {
             {/* STICKY HEADER */}
             <div 
                onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} 
-               className="sticky top-0 z-50 backdrop-blur-xl bg-background/80 border-b border-foreground/[0.06] px-5 py-3.5 flex items-center justify-between cursor-pointer active:opacity-80 transition-opacity"
+               className="sticky top-[68px] lg:top-[72px] z-50 backdrop-blur-xl bg-background/80 border-b border-foreground/[0.06] px-5 py-3.5 flex items-center justify-between cursor-pointer active:opacity-80 transition-opacity"
             >
                <div className="flex items-center gap-2.5">
                  <h1 className="text-2xl font-black italic uppercase font-kanit text-foreground tracking-tighter leading-none">Inicio</h1>
@@ -612,7 +603,7 @@ export default function FeedPage() {
                    <textarea
                      value={newPostContent}
                      onChange={(e) => setNewPostContent(e.target.value)}
-                     placeholder="¡Habla, crack! ¿Qué está pasando? Usá #hashtags"
+                     placeholder="Â¡Habla, crack! Â¿QuÃ© estÃ¡ pasando? UsÃ¡ #hashtags"
                      className="w-full bg-transparent border-none resize-none focus:outline-none text-foreground text-lg placeholder:text-foreground/35 min-h-[50px] font-medium leading-relaxed"
                      maxLength={500}
                    />
@@ -719,7 +710,7 @@ export default function FeedPage() {
                                         @{post.author.name.toLowerCase().replace(/\s+/g, '')}
                                      </span>
                                  </Link>
-                                 <span className="text-foreground/50 text-[15px]">·</span>
+                                 <span className="text-foreground/50 text-[15px]">Â·</span>
                                  <span className="text-foreground/50 text-[15px] hover:underline cursor-pointer">
                                     {timeAgo(post.created_at)}
                                  </span>
@@ -745,8 +736,8 @@ export default function FeedPage() {
                           {/* Content with clickable hashtags */}
                           <div className="mt-1 mb-3">
                              <p className="text-foreground text-[15px] leading-relaxed whitespace-pre-wrap">
-                                {post.content.split(/(#[\w\u00C0-\u024FáéíóúñÁÉÍÓÚÑ]+)/g).map((part, i) => {
-                                  if (part.startsWith('#')) {
+                                {post.content.split(/(#[\\w\\u00C0-\\u024FáéíóúñÁÉÍÓÚÑ]+|@[\\w.]+)/g).map((part, i) => {
+                                  if (part.startsWith('#') || part.startsWith('@')) {
                                     return (
                                       <button
                                         key={i}
@@ -885,7 +876,7 @@ export default function FeedPage() {
                                            <span className="text-foreground/50 text-[15px] truncate max-w-[100px] sm:max-w-none">
                                               @{comment.author.name.toLowerCase().replace(/\s+/g, '')}
                                            </span>
-                                           <span className="text-foreground/50 text-[15px]">·</span>
+                                           <span className="text-foreground/50 text-[15px]">Â·</span>
                                            <span className="text-foreground/50 text-[15px] hover:underline cursor-pointer">
                                               {timeAgo(comment.created_at)}
                                            </span>
@@ -913,7 +904,7 @@ export default function FeedPage() {
                          onClick={() => setSearchQuery('')}
                          className="block mx-auto mt-3 text-primary text-sm font-bold hover:underline"
                        >
-                         Limpiar búsqueda
+                         Limpiar bÃºsqueda
                        </button>
                     </div>
                  )}
@@ -922,16 +913,16 @@ export default function FeedPage() {
                        <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-primary/10 to-primary/5 flex items-center justify-center mb-2">
                          <MessageSquare className="w-7 h-7 text-primary/40" />
                        </div>
-                       <span>Aún no hay publicaciones.</span>
-                       <span className="text-sm text-foreground/30">¡Sé el primero en compartir!</span>
+                       <span>AÃºn no hay publicaciones.</span>
+                       <span className="text-sm text-foreground/30">Â¡SÃ© el primero en compartir!</span>
                     </div>
                  )}
               </AnimatePresence>
             </div>
           </div>
 
-          {/* ── RIGHT SIDEBAR (desktop only) ── */}
-          <aside className="hidden lg:flex flex-col w-[280px] xl:w-[340px] shrink-0 sticky top-[100px] self-start gap-4 pb-8">
+          {/* â”€â”€ RIGHT SIDEBAR (desktop only) â”€â”€ */}
+          <aside className="hidden lg:flex flex-col w-[280px] xl:w-[340px] shrink-0 sticky top-[72px] self-start gap-4 pb-8">
 
             {/* Search Bar - functional */}
             <div className="relative group">
@@ -972,7 +963,7 @@ export default function FeedPage() {
                       className="px-4 py-3 hover:bg-foreground/[0.03] transition-colors cursor-pointer text-left w-full"
                     >
                       <div className="text-[13px] text-foreground/40 font-medium">Tendencia #{i+1}</div>
-                      <div className="font-bold text-[15px] text-foreground flex items-center gap-1.5">
+                      <div className="font-bold text-[15px] text-primary flex items-center gap-1.5">
                         <Hash className="w-3.5 h-3.5 text-primary" />
                         {topic.tag}
                       </div>
@@ -988,7 +979,7 @@ export default function FeedPage() {
               <div className="p-4 border-b border-foreground/[0.06] bg-gradient-to-r from-violet-500/[0.04] to-transparent">
                 <h3 className="font-black italic uppercase font-kanit text-foreground text-lg tracking-tighter flex items-center gap-2">
                   <UserPlus className="w-5 h-5 text-violet-500" />
-                  A quién seguir
+                  A quiÃ©n seguir
                 </h3>
               </div>
               <div className="flex flex-col">
@@ -1096,11 +1087,11 @@ export default function FeedPage() {
 
             {/* Footer Links */}
             <div className="px-4 pt-4 pb-4 text-[12px] text-foreground/25 flex flex-wrap gap-x-3 gap-y-1 leading-relaxed">
-              <Link href="/terms" className="hover:underline cursor-pointer">Términos</Link>
+              <Link href="/terms" className="hover:underline cursor-pointer">TÃ©rminos</Link>
               <Link href="/privacy" className="hover:underline cursor-pointer">Privacidad</Link>
               <Link href="/help" className="hover:underline cursor-pointer">Ayuda</Link>
               <Link href="/pro" className="hover:underline cursor-pointer">Pelotify Pro</Link>
-              <span>© 2026 Pelotify</span>
+              <span>Â© 2026 Pelotify</span>
             </div>
           </aside>
 
