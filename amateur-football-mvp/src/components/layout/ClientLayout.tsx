@@ -82,7 +82,7 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
                 pathname.startsWith('/messages')
                 ? 'pb-24 lg:pb-0'
                 : isFeedOrPostPage
-                ? 'pt-24 pb-0 lg:pb-0'
+                ? 'pt-[84px] pb-0 lg:pt-24 lg:pb-0'
                 : 'pt-24 pb-24 lg:pb-0'
               : ''
           )}
