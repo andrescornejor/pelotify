@@ -516,7 +516,7 @@ export default function FeedClient({ standalonePostId }: { standalonePostId?: st
 
   if (isLoading) {
     return (
-      <div className="flex flex-col min-h-screen bg-background pt-[10px] sm:pt-[25px] lg:pt-[30px] px-3 sm:px-5 lg:px-10 xl:px-16 relative overflow-hidden">
+      <div className="flex flex-col min-h-screen bg-background pt-[10px] sm:pt-[25px] lg:pt-[30px] px-0 sm:px-5 lg:px-10 xl:px-16 relative overflow-hidden">
         {/* AMBIENT BACKGROUND */}
         <div className="fixed inset-0 pointer-events-none -z-10 overflow-hidden">
           <div className="absolute top-[-5%] right-[-5%] w-[40%] h-[40%] opacity-[0.03]" style={{ background: 'radial-gradient(circle, #2cfc7d 0%, transparent 70%)' }} />
@@ -529,7 +529,7 @@ export default function FeedClient({ standalonePostId }: { standalonePostId?: st
           </aside>
 
           {/* MAIN FEED SKELETON */}
-          <div className="w-full lg:flex-1 border-x border-foreground/[0.06] flex flex-col gap-6 px-5 py-4">
+          <div className="w-full lg:flex-1 border-x-0 sm:border-x border-foreground/[0.06] flex flex-col gap-6 px-4 sm:px-5 py-4">
             <div className="h-20 w-full rounded-2xl bg-foreground/[0.03] animate-pulse" />
             {[1, 2, 3].map(i => (
               <div key={i} className="space-y-4">
@@ -579,7 +579,7 @@ export default function FeedClient({ standalonePostId }: { standalonePostId?: st
       />
 
       {/* 3-column layout matching TopHeader padding exactly */}
-      <div className="w-full px-3 sm:px-5 lg:px-10 xl:px-16 pt-[10px] sm:pt-[25px] lg:pt-[30px]">
+      <div className="w-full px-0 sm:px-5 lg:px-10 xl:px-16 pt-[10px] sm:pt-[25px] lg:pt-[30px]">
         <div className={cn("flex gap-0", standalonePostId ? "justify-center max-w-2xl mx-auto" : "lg:gap-6 xl:gap-8")}>
 
           {/* ── LEFT SIDEBAR (desktop only) ── */}
@@ -629,14 +629,14 @@ export default function FeedClient({ standalonePostId }: { standalonePostId?: st
           )}
 
           {/* ── MAIN FEED (center column) ── */}
-          <div className="w-full lg:flex-1 border-x border-foreground/[0.08] min-h-screen flex flex-col relative z-20">
+          <div className="w-full lg:flex-1 border-x-0 sm:border-x border-foreground/[0.08] min-h-screen flex flex-col relative z-20">
             {/* STICKY HEADER */}
             <div
               onClick={() => {
                 if (standalonePostId) router.back();
                 else window.scrollTo({ top: 0, behavior: 'smooth' });
               }}
-              className="sticky top-[10px] sm:top-[25px] lg:top-[30px] z-50 bg-background/80 backdrop-blur-md border-b border-foreground/[0.08] px-5 py-3 flex items-center justify-between cursor-pointer hover:bg-foreground/[0.02] transition-colors"
+              className="sticky top-[72px] sm:top-[85px] lg:top-[30px] z-50 bg-background/85 backdrop-blur-xl border-b border-foreground/[0.08] px-4 sm:px-5 py-3.5 flex items-center justify-between cursor-pointer hover:bg-foreground/[0.02] transition-colors shadow-sm"
             >
               <div className="flex items-center gap-2.5">
                 {standalonePostId && <span className="text-foreground/50 mr-1 text-xl leading-none pt-1">←</span>}
@@ -652,9 +652,9 @@ export default function FeedClient({ standalonePostId }: { standalonePostId?: st
             {!standalonePostId && (
               <>
                 {/* MOBILE SEARCH BAR */}
-                <div className="lg:hidden p-4 border-b border-foreground/[0.08] bg-background">
+                <div className="lg:hidden p-3 sm:p-4 border-b border-foreground/[0.08] bg-background/50 backdrop-blur-sm">
                   <div className="relative group">
-                    <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-foreground/20 group-focus-within:text-primary transition-colors" />
+                    <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-[18px] h-[18px] text-foreground/30 group-focus-within:text-primary transition-colors" />
                     <input
                       type="text"
                       placeholder="Buscar posts o usuarios..."
@@ -677,7 +677,7 @@ export default function FeedClient({ standalonePostId }: { standalonePostId?: st
 
                 {/* CREATE POST BOX */}
                 {user && (
-                  <div className="p-4 sm:px-5 sm:py-5 border-b border-foreground/[0.08] flex gap-3 bg-background">
+                  <div className="p-4 sm:px-5 sm:py-5 border-b border-foreground/[0.05] flex gap-3 sm:gap-4 bg-background">
                   <div className="w-12 h-12 rounded-full bg-surface-elevated overflow-hidden shrink-0 transition-opacity hover:opacity-90 cursor-pointer">
                     {user?.avatar_url ? (
                       <img src={user.avatar_url} className="w-full h-full object-cover" alt="" />
@@ -783,9 +783,9 @@ export default function FeedClient({ standalonePostId }: { standalonePostId?: st
                       }
                     }}
                     className={cn(
-                      "p-4 sm:px-5 sm:py-3.5 border-b border-foreground/[0.08] transition-colors duration-200 relative flex gap-3 group/post",
+                      "p-4 sm:px-5 sm:py-4 border-b border-foreground/[0.06] transition-colors duration-200 relative flex gap-3 sm:gap-4 group/post",
                       !standalonePostId && "hover:bg-foreground/[0.03] cursor-pointer",
-                      standalonePostId && "bg-background py-8 sm:py-10",
+                      standalonePostId && "bg-background py-8 sm:py-10 border-b-2",
                       post.author.is_pro ? "bg-gradient-to-r from-yellow-500/[0.03] to-transparent" : ""
                     )}
                   >

@@ -51,6 +51,7 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
     pathname.startsWith('/canchas');
 
   const isHighlightsPage = pathname === '/highlights';
+  const isFeedOrPostPage = pathname.startsWith('/feed') || pathname.startsWith('/post');
   const showNav = !isAuthPage && !!user && !isHighlightsPage;
 
   if (isAuthPage) {
@@ -80,6 +81,8 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
                 pathname.startsWith('/profile/') ||
                 pathname.startsWith('/messages')
                 ? 'pb-24 lg:pb-0'
+                : isFeedOrPostPage
+                ? 'pt-24 pb-0 lg:pb-0'
                 : 'pt-24 pb-24 lg:pb-0'
               : ''
           )}
@@ -90,7 +93,7 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
         </main>
 
         {/* Mobile Navigation */}
-        {showNav && (
+        {showNav && !isFeedOrPostPage && (
           <div className="lg:hidden">
             <BottomNav />
           </div>
