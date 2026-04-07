@@ -1,6 +1,10 @@
 import { ImageResponse } from 'next/og';
 import { NextRequest } from 'next/server';
 
+export async function GET(req: NextRequest) {
+  try {
+    const { searchParams } = new URL(req.url);
+
     const title = searchParams.get('title') || 'Pelotify';
     const description = searchParams.get('description') || '';
     const username = searchParams.get('username') || '';
@@ -20,7 +24,6 @@ import { NextRequest } from 'next/server';
             backgroundColor: '#09090b',
             color: 'white',
             padding: '60px',
-            fontFamily: 'sans-serif',
           }}
         >
           {/* Main Card container */}
@@ -41,7 +44,7 @@ import { NextRequest } from 'next/server';
             <div style={{ display: 'flex', flexDirection: 'column', flex: 1 }}>
                <div style={{ display: 'flex', alignItems: 'center', marginBottom: '24px' }}>
                 <div style={{ width: '40px', height: '40px', backgroundColor: '#2cfc7d', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#000', fontSize: '24px', fontWeight: 'bold' }}>P</div>
-                <div style={{ marginLeft: '12px', fontSize: '28px', fontWeight: 'bold', fontStyle: 'italic' }}>PELOTIFY</div>
+                <div style={{ marginLeft: '12px', fontSize: '28px', fontWeight: 'bold' }}>PELOTIFY</div>
               </div>
 
               {username && (
