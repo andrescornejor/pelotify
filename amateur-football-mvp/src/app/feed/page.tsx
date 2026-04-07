@@ -495,7 +495,7 @@ export default function FeedPage() {
 
   if (isLoading) {
     return (
-      <div className="flex flex-col min-h-screen bg-background pt-[78px] px-3 sm:px-5 lg:px-10 xl:px-16 relative overflow-hidden">
+      <div className="flex flex-col min-h-screen bg-background pt-14 px-3 sm:px-5 lg:px-10 xl:px-16 relative overflow-hidden">
         {/* AMBIENT BACKGROUND */}
         <div className="fixed inset-0 pointer-events-none -z-10 overflow-hidden">
           <div className="absolute top-[-5%] right-[-5%] w-[40%] h-[40%] opacity-[0.03]" style={{ background: 'radial-gradient(circle, #2cfc7d 0%, transparent 70%)' }} />
@@ -536,7 +536,7 @@ export default function FeedPage() {
   }
 
   return (
-    <div className="flex flex-col min-h-screen bg-background pt-[78px] relative overflow-hidden">
+    <div className="flex flex-col min-h-screen bg-background pt-14 relative overflow-hidden">
       {/* AMBIENT BACKGROUND */}
       <div className="fixed inset-0 pointer-events-none -z-10 overflow-hidden">
         <div 
@@ -562,7 +562,7 @@ export default function FeedPage() {
         <div className="flex gap-0 lg:gap-6 xl:gap-8">
 
           {/* ── LEFT SIDEBAR (desktop only) ── */}
-          <aside className="hidden lg:flex flex-col w-[280px] xl:w-[320px] shrink-0 sticky top-[78px] self-start gap-4 pb-8">
+          <aside className="hidden lg:flex flex-col w-[280px] xl:w-[320px] shrink-0 sticky top-14 self-start gap-4 pb-8">
             {/* Navigation Links */}
             <div className="rounded-[2rem] border border-foreground/[0.06] bg-surface/50 backdrop-blur-md overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-300">
               <div className="p-4 border-b border-foreground/[0.06] bg-gradient-to-r from-foreground/[0.02] to-transparent">
@@ -598,7 +598,7 @@ export default function FeedPage() {
             {/* STICKY HEADER */}
             <div 
                onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} 
-               className="sticky top-[78px] z-50 backdrop-blur-xl bg-background/80 border-b border-foreground/[0.06] px-5 py-3.5 flex items-center justify-between cursor-pointer active:opacity-80 transition-opacity"
+               className="sticky top-14 z-50 backdrop-blur-xl bg-background/80 border-b border-foreground/[0.06] px-5 py-3.5 flex items-center justify-between cursor-pointer active:opacity-80 transition-opacity"
             >
                <div className="flex items-center gap-2.5">
                  <h1 className="text-2xl font-black italic uppercase font-kanit text-foreground tracking-tighter leading-none">Inicio</h1>
@@ -947,7 +947,7 @@ export default function FeedPage() {
           </div>
 
           {/* ── RIGHT SIDEBAR (desktop only) ── */}
-          <aside className="hidden lg:flex flex-col w-[280px] xl:w-[340px] shrink-0 sticky top-[78px] self-start gap-4 pb-8">
+          <aside className="hidden lg:flex flex-col w-[280px] xl:w-[340px] shrink-0 sticky top-14 self-start gap-4 pb-8">
 
             {/* Search Bar - functional */}
             <div className="relative group">
