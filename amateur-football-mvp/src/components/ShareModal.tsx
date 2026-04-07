@@ -91,9 +91,9 @@ export default function ShareModal({
           {/* Modal Container */}
           <div className="fixed inset-0 z-[101] flex items-end sm:items-center justify-center p-0 sm:p-4 pointer-events-none">
             <motion.div
-              initial={{ y: '100%', opacity: 1, sm: { opacity: 0, scale: 0.95 } }}
-              animate={{ y: 0, opacity: 1, sm: { opacity: 1, scale: 1 } }}
-              exit={{ y: '100%', opacity: 1, sm: { opacity: 0, scale: 0.95 } }}
+              initial={{ y: '100%', opacity: 1 }}
+              animate={{ y: 0, opacity: 1 }}
+              exit={{ y: '100%', opacity: 1 }}
               transition={{ type: 'spring', damping: 25, stiffness: 300, mass: 0.8 }}
               className="w-full sm:w-full sm:max-w-md bg-background border border-foreground/10 sm:rounded-[2rem] rounded-t-[2rem] shadow-2xl pointer-events-auto flex flex-col max-h-[90vh] overflow-hidden"
             >
