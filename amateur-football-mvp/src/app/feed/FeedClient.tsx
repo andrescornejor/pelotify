@@ -516,7 +516,7 @@ export default function FeedClient({ standalonePostId }: { standalonePostId?: st
 
   if (isLoading) {
     return (
-      <div className="flex flex-col min-h-screen bg-background pt-[30px] sm:pt-[45px] lg:pt-[50px] px-3 sm:px-5 lg:px-10 xl:px-16 relative overflow-hidden">
+      <div className="flex flex-col min-h-screen bg-background pt-[10px] sm:pt-[25px] lg:pt-[30px] px-3 sm:px-5 lg:px-10 xl:px-16 relative overflow-hidden">
         {/* AMBIENT BACKGROUND */}
         <div className="fixed inset-0 pointer-events-none -z-10 overflow-hidden">
           <div className="absolute top-[-5%] right-[-5%] w-[40%] h-[40%] opacity-[0.03]" style={{ background: 'radial-gradient(circle, #2cfc7d 0%, transparent 70%)' }} />
@@ -579,12 +579,12 @@ export default function FeedClient({ standalonePostId }: { standalonePostId?: st
       />
 
       {/* 3-column layout matching TopHeader padding exactly */}
-      <div className="w-full px-3 sm:px-5 lg:px-10 xl:px-16 pt-[30px] sm:pt-[45px] lg:pt-[50px]">
+      <div className="w-full px-3 sm:px-5 lg:px-10 xl:px-16 pt-[10px] sm:pt-[25px] lg:pt-[30px]">
         <div className={cn("flex gap-0", standalonePostId ? "justify-center max-w-2xl mx-auto" : "lg:gap-6 xl:gap-8")}>
 
           {/* ── LEFT SIDEBAR (desktop only) ── */}
           {!standalonePostId && (
-            <aside className="hidden lg:flex flex-col w-[280px] xl:w-[320px] shrink-0 sticky top-[60px] lg:top-[65px] xl:top-[65px] self-start pb-8 pt-0 xl:pl-4">
+            <aside className="hidden lg:flex flex-col w-[280px] xl:w-[320px] shrink-0 sticky top-[40px] lg:top-[45px] xl:top-[45px] self-start pb-8 pt-0 xl:pl-4">
               {/* Navigation Links - Twitter Style */}
               <nav className="flex flex-col gap-1 w-full">
                 {[
@@ -636,7 +636,7 @@ export default function FeedClient({ standalonePostId }: { standalonePostId?: st
                 if (standalonePostId) router.back();
                 else window.scrollTo({ top: 0, behavior: 'smooth' });
               }}
-              className="sticky top-[30px] sm:top-[45px] lg:top-[50px] z-50 bg-background/80 backdrop-blur-md border-b border-foreground/[0.08] px-5 py-3 flex items-center justify-between cursor-pointer hover:bg-foreground/[0.02] transition-colors"
+              className="sticky top-[10px] sm:top-[25px] lg:top-[30px] z-50 bg-background/80 backdrop-blur-md border-b border-foreground/[0.08] px-5 py-3 flex items-center justify-between cursor-pointer hover:bg-foreground/[0.02] transition-colors"
             >
               <div className="flex items-center gap-2.5">
                 {standalonePostId && <span className="text-foreground/50 mr-1 text-xl leading-none pt-1">←</span>}
