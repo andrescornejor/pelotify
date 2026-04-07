@@ -5,6 +5,7 @@ import { useInView } from 'react-intersection-observer';
 import { useAuth } from '@/contexts/AuthContext';
 import { deleteHighlight, toggleLike, checkIfLiked } from '@/lib/highlights';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import CommentsModal from './CommentsModal';
 import ShareModal from './ShareModal';
 import { supabase } from '@/lib/supabase';
