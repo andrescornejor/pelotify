@@ -759,6 +759,7 @@ export default function FeedClient({ standalonePostId }: { standalonePostId?: st
                       </div>
                     </div>
                   </div>
+                </div>
                 )}
               </>
             )}

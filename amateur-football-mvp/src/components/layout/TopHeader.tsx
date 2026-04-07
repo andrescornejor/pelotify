@@ -355,7 +355,7 @@ export const TopHeader = memo(function TopHeader() {
                         </div>
                       )}
                     </motion.div>
-                  </Link>>
+                  </Link>
                 </div>
               </div>
             </div>
