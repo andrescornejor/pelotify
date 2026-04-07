@@ -4,9 +4,10 @@ import { Heart, MessageCircle, Share2, User2, Play, Pause, Trash2, ChevronLeft, 
 import { useInView } from 'react-intersection-observer';
 import { useAuth } from '@/contexts/AuthContext';
 import { deleteHighlight, toggleLike, checkIfLiked } from '@/lib/highlights';
-import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import CommentsModal from './CommentsModal';
 import ShareModal from './ShareModal';
+import { supabase } from '@/lib/supabase';
 
 interface VideoPlayerProps {
   id: string;
@@ -38,6 +39,7 @@ export default function VideoPlayer({
   onInView
 }: VideoPlayerProps) {
   const { user } = useAuth();
+  const router = useRouter();
   const videoRef = useRef<HTMLVideoElement>(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [isMuted, setIsMuted] = useState(true);
