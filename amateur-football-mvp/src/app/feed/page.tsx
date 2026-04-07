@@ -511,7 +511,18 @@ export default function FeedPage() {
   }
 
   return (
-    <div className="flex flex-col min-h-screen bg-background pt-[82px] sm:pt-[92px] lg:pt-[82px]">
+    <div className="flex flex-col min-h-screen bg-background pt-[68px] sm:pt-[76px] lg:pt-[68px] relative overflow-hidden">
+      {/* AMBIENT BACKGROUND */}
+      <div className="fixed inset-0 pointer-events-none -z-10 overflow-hidden">
+        <div 
+          className="absolute top-[-5%] right-[-5%] w-[40%] h-[40%] opacity-[0.03]"
+          style={{ background: 'radial-gradient(circle, #2cfc7d 0%, transparent 70%)' }}
+        />
+        <div 
+          className="absolute bottom-[-5%] left-[-5%] w-[40%] h-[40%] opacity-[0.02]"
+          style={{ background: 'radial-gradient(circle, #f59e0b 0%, transparent 70%)' }}
+        />
+      </div>
       {/* Hidden file input */}
       <input
         ref={fileInputRef}
@@ -528,10 +539,10 @@ export default function FeedPage() {
           {/* ── LEFT SIDEBAR (desktop only) ── */}
           <aside className="hidden lg:flex flex-col w-[280px] xl:w-[320px] shrink-0 sticky top-[100px] self-start gap-4 pb-8">
             {/* Navigation Links */}
-            <div className="rounded-2xl border border-foreground/[0.06] bg-surface overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-300">
+            <div className="rounded-[2rem] border border-foreground/[0.06] bg-surface/50 backdrop-blur-md overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-300">
               <div className="p-4 border-b border-foreground/[0.06] bg-gradient-to-r from-foreground/[0.02] to-transparent">
-                <h3 className="font-bold text-foreground text-lg flex items-center gap-2">
-                  <Globe className="w-4 h-4 text-primary/60" />
+                <h3 className="font-black italic uppercase font-kanit text-foreground text-lg tracking-tighter flex items-center gap-2">
+                  <Globe className="w-4.5 h-4.5 text-primary/60" />
                   Navegación
                 </h3>
               </div>
@@ -550,7 +561,7 @@ export default function FeedPage() {
                     <div className={cn("p-1.5 rounded-lg bg-foreground/[0.03] group-hover:bg-foreground/[0.06] transition-colors", `group-hover:${item.color}`)}>
                       <item.icon className={cn("w-4 h-4 transition-colors", `group-hover:${item.color}`)} />
                     </div>
-                    <span className="text-[15px] font-semibold">{item.label}</span>
+                    <span className="text-[11px] font-black uppercase tracking-widest italic font-kanit leading-none">{item.label}</span>
                   </Link>
                 ))}
               </nav>
@@ -560,7 +571,7 @@ export default function FeedPage() {
             <Link
               href="#"
               onClick={(e) => { e.preventDefault(); document.querySelector('textarea')?.focus(); }}
-              className="w-full py-3.5 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-full font-bold text-[15px] text-center hover:from-blue-600 hover:to-blue-700 transition-all shadow-md hover:shadow-lg hover:shadow-blue-500/20 active:scale-[0.97] duration-200"
+              className="w-full py-4 bg-gradient-to-r from-primary to-primary-dark text-background rounded-full font-black italic uppercase text-[12px] tracking-widest text-center hover:shadow-[0_10px_25px_rgba(44,252,125,0.25)] transition-all active:scale-[0.97] duration-200 shadow-lg font-kanit"
             >
               ✍️ Postear
             </Link>
@@ -574,9 +585,9 @@ export default function FeedPage() {
                className="sticky top-0 z-50 backdrop-blur-xl bg-background/80 border-b border-foreground/[0.06] px-5 py-3.5 flex items-center justify-between cursor-pointer active:opacity-80 transition-opacity"
             >
                <div className="flex items-center gap-2.5">
-                 <h1 className="text-xl font-black text-foreground tracking-tight">Inicio</h1>
+                 <h1 className="text-2xl font-black italic uppercase font-kanit text-foreground tracking-tighter leading-none">Inicio</h1>
                  <div className="h-5 w-px bg-foreground/10" />
-                 <span className="text-xs font-semibold text-foreground/30 tracking-wider uppercase">Feed</span>
+                 <span className="text-[10px] font-black uppercase text-foreground/30 tracking-[0.2em] font-kanit">Feed</span>
                </div>
                <div className="flex items-center gap-2">
                  <div className="relative">
@@ -923,8 +934,8 @@ export default function FeedPage() {
           <aside className="hidden lg:flex flex-col w-[280px] xl:w-[340px] shrink-0 sticky top-[100px] self-start gap-4 pb-8">
 
             {/* Search Bar - functional */}
-            <div className="relative">
-              <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-foreground/40" />
+            <div className="relative group">
+              <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-foreground/20 group-focus-within:text-primary transition-colors" />
               <input
                 type="text"
                 placeholder="Buscar posts o usuarios..."
@@ -932,23 +943,24 @@ export default function FeedPage() {
                 onChange={(e) => setSearchQuery(e.target.value)}
                 onFocus={() => setIsSearchFocused(true)}
                 onBlur={() => setTimeout(() => setIsSearchFocused(false), 200)}
-                className="w-full h-11 bg-foreground/[0.04] border border-foreground/10 rounded-full pl-11 pr-10 text-[15px] text-foreground placeholder:text-foreground/40 focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/50 focus:bg-background transition-all duration-200"
+                className="w-full h-12 bg-foreground/[0.03] border border-foreground/[0.06] rounded-2xl pl-11 pr-10 text-[14px] text-foreground placeholder:text-foreground/30 focus:outline-none focus:border-primary/40 focus:ring-4 focus:ring-primary/5 focus:bg-background transition-all duration-300"
               />
               {searchQuery && (
                 <button
                   onClick={() => setSearchQuery('')}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 w-6 h-6 flex items-center justify-center rounded-full bg-blue-500 text-white hover:bg-blue-600 transition-colors"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 w-6 h-6 flex items-center justify-center rounded-lg bg-foreground/[0.05] text-foreground/40 hover:bg-primary hover:text-background transition-all active:scale-90"
                 >
                   <X className="w-3 h-3" />
                 </button>
               )}
             </div>
 
-            {/* Trending - real hashtags from posts */}
-            {trendingTopics.length > 0 && (
-              <div className="rounded-2xl border border-foreground/[0.06] bg-surface overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-300">
+              <div className="rounded-[2rem] border border-foreground/[0.06] bg-surface/50 backdrop-blur-md overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-300">
                 <div className="p-4 border-b border-foreground/[0.06] bg-gradient-to-r from-blue-500/[0.04] to-transparent">
-                  <h3 className="font-bold text-foreground text-xl flex items-center gap-2"><TrendingUp className="w-4.5 h-4.5 text-blue-500" />Tendencias</h3>
+                  <h3 className="font-black italic uppercase font-kanit text-foreground text-lg tracking-tighter flex items-center gap-2">
+                    <TrendingUp className="w-5 h-5 text-blue-500" />
+                    Tendencias
+                  </h3>
                 </div>
                 <div className="flex flex-col">
                   {trendingTopics.map((topic, i) => (
@@ -970,9 +982,9 @@ export default function FeedPage() {
             )}
 
             {/* Who to Follow - with real friend request */}
-            <div className="rounded-2xl border border-foreground/[0.06] bg-surface overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-300">
+            <div className="rounded-[2rem] border border-foreground/[0.06] bg-surface/50 backdrop-blur-md overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-300">
               <div className="p-4 border-b border-foreground/[0.06] bg-gradient-to-r from-violet-500/[0.04] to-transparent">
-                <h3 className="font-bold text-foreground text-xl flex items-center gap-2">
+                <h3 className="font-black italic uppercase font-kanit text-foreground text-lg tracking-tighter flex items-center gap-2">
                   <UserPlus className="w-5 h-5 text-violet-500" />
                   A quién seguir
                 </h3>
@@ -1035,10 +1047,12 @@ export default function FeedPage() {
             </div>
 
             {/* Top Ranking */}
-            <div className="rounded-2xl border border-foreground/[0.06] bg-surface overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-300">
-              <div className="p-4 border-b border-foreground/[0.06] bg-gradient-to-r from-yellow-500/[0.04] to-transparent flex items-center gap-2">
-                <Trophy className="w-5 h-5 text-yellow-500" />
-                <h3 className="font-bold text-foreground text-xl">Top ELO</h3>
+            <div className="rounded-[2rem] border border-foreground/[0.06] bg-surface/50 backdrop-blur-md overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-300">
+              <div className="p-4 border-b border-foreground/[0.06] bg-gradient-to-r from-yellow-500/[0.04] to-transparent">
+                <h3 className="font-black italic uppercase font-kanit text-foreground text-lg tracking-tighter flex items-center gap-2">
+                  <Trophy className="w-5 h-5 text-yellow-500" />
+                  Top ELO
+                </h3>
               </div>
               <div className="flex flex-col">
                 {topPlayers.map((player, i) => (
