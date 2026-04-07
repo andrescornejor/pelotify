@@ -138,7 +138,7 @@ export default function FeedClient({ standalonePostId }: { standalonePostId?: st
   }, [user]);
 
   useEffect(() => {
-    if (postParam && expandedPostId !== postParam) {
+    if (postParam) {
       setExpandedPostId(postParam);
       loadComments(postParam);
     }
@@ -846,7 +846,12 @@ export default function FeedClient({ standalonePostId }: { standalonePostId?: st
                           onClick={(e) => {
                             e.stopPropagation();
                             if (!standalonePostId) {
-                              router.push(`/post/${post.id}`);
+                              if (expandedPostId === post.id) {
+                                setExpandedPostId(null);
+                              } else {
+                                setExpandedPostId(post.id);
+                                loadComments(post.id);
+                              }
                             }
                           }}
                           className={cn("flex items-center gap-1.5 text-[13px] group/btn transition-colors", expandedPostId === post.id ? "text-blue-500" : "hover:text-blue-500")}
