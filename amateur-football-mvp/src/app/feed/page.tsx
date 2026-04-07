@@ -495,8 +495,17 @@ export default function FeedPage() {
 
   if (isLoading) {
     return (
-      <div className="flex flex-col min-h-[90vh] bg-background items-center justify-center">
-        <Loader2 className="w-8 h-8 animate-spin text-primary" />
+      <div className="flex flex-col min-h-[90vh] bg-background items-center justify-center gap-4">
+        <div className="relative">
+          <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-emerald-500/20 via-blue-500/20 to-violet-500/20 flex items-center justify-center animate-pulse">
+            <Zap className="w-7 h-7 text-primary" />
+          </div>
+          <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-emerald-500 to-blue-500 opacity-20 blur-xl animate-pulse" />
+        </div>
+        <div className="flex flex-col items-center gap-1">
+          <Loader2 className="w-5 h-5 animate-spin text-foreground/40" />
+          <span className="text-sm font-medium text-foreground/40">Cargando feed...</span>
+        </div>
       </div>
     );
   }
@@ -519,23 +528,28 @@ export default function FeedPage() {
           {/* ── LEFT SIDEBAR (desktop only) ── */}
           <aside className="hidden lg:flex flex-col w-[280px] xl:w-[320px] shrink-0 sticky top-[100px] self-start gap-4 pb-8">
             {/* Navigation Links */}
-            <div className="rounded-2xl border border-foreground/10 bg-surface overflow-hidden">
-              <div className="p-4 border-b border-foreground/10">
-                <h3 className="font-bold text-foreground text-lg">Navegación</h3>
+            <div className="rounded-2xl border border-foreground/[0.06] bg-surface overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-300">
+              <div className="p-4 border-b border-foreground/[0.06] bg-gradient-to-r from-foreground/[0.02] to-transparent">
+                <h3 className="font-bold text-foreground text-lg flex items-center gap-2">
+                  <Globe className="w-4 h-4 text-primary/60" />
+                  Navegación
+                </h3>
               </div>
               <nav className="flex flex-col p-2 gap-0.5">
                 {[
-                  { href: '/search', icon: Search, label: 'Buscar Partidos' },
-                  { href: '/friends', icon: Users, label: 'Social Hub' },
-                  { href: '/teams', icon: Trophy, label: 'Mis Equipos' },
-                  { href: '/highlights', icon: Flame, label: 'FutTok' },
+                  { href: '/search', icon: Search, label: 'Buscar Partidos', color: 'text-blue-500' },
+                  { href: '/friends', icon: Users, label: 'Social Hub', color: 'text-violet-500' },
+                  { href: '/teams', icon: Trophy, label: 'Mis Equipos', color: 'text-amber-500' },
+                  { href: '/highlights', icon: Flame, label: 'FutTok', color: 'text-rose-500' },
                 ].map(item => (
                   <Link
                     key={item.href}
                     href={item.href}
-                    className="flex items-center gap-3 px-4 py-3 rounded-xl text-foreground/60 hover:text-foreground hover:bg-foreground/[0.04] transition-colors group"
+                    className="flex items-center gap-3 px-4 py-3 rounded-xl text-foreground/60 hover:text-foreground hover:bg-foreground/[0.04] transition-all duration-200 group"
                   >
-                    <item.icon className="w-5 h-5 group-hover:text-blue-500 transition-colors" />
+                    <div className={cn("p-1.5 rounded-lg bg-foreground/[0.03] group-hover:bg-foreground/[0.06] transition-colors", `group-hover:${item.color}`)}>
+                      <item.icon className={cn("w-4 h-4 transition-colors", `group-hover:${item.color}`)} />
+                    </div>
                     <span className="text-[15px] font-semibold">{item.label}</span>
                   </Link>
                 ))}
@@ -546,27 +560,36 @@ export default function FeedPage() {
             <Link
               href="#"
               onClick={(e) => { e.preventDefault(); document.querySelector('textarea')?.focus(); }}
-              className="w-full py-3.5 bg-blue-500 text-white rounded-full font-bold text-[15px] text-center hover:bg-blue-600 transition-colors shadow-sm active:scale-95"
+              className="w-full py-3.5 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-full font-bold text-[15px] text-center hover:from-blue-600 hover:to-blue-700 transition-all shadow-md hover:shadow-lg hover:shadow-blue-500/20 active:scale-[0.97] duration-200"
             >
-              Postear
+              ✍️ Postear
             </Link>
           </aside>
 
           {/* ── MAIN FEED (center column) ── */}
-          <div className="w-full lg:flex-1 border-x border-foreground/10 min-h-screen flex flex-col relative z-10">
+          <div className="w-full lg:flex-1 border-x border-foreground/[0.06] min-h-screen flex flex-col relative z-10">
             {/* STICKY HEADER */}
-            <div className="sticky top-0 z-50 backdrop-blur-xl bg-background/80 border-b border-foreground/10 px-4 py-3 flex items-center justify-between cursor-pointer">
-               <h1 className="text-xl font-bold text-foreground">Inicio</h1>
-               <Zap className="w-5 h-5 text-blue-500" />
+            <div className="sticky top-0 z-50 backdrop-blur-xl bg-background/80 border-b border-foreground/[0.06] px-5 py-3.5 flex items-center justify-between cursor-pointer">
+               <div className="flex items-center gap-2.5">
+                 <h1 className="text-xl font-black text-foreground tracking-tight">Inicio</h1>
+                 <div className="h-5 w-px bg-foreground/10" />
+                 <span className="text-xs font-semibold text-foreground/30 tracking-wider uppercase">Feed</span>
+               </div>
+               <div className="flex items-center gap-2">
+                 <div className="relative">
+                   <Zap className="w-5 h-5 text-primary" />
+                   <div className="absolute -top-0.5 -right-0.5 w-2 h-2 bg-primary rounded-full animate-pulse" />
+                 </div>
+               </div>
             </div>
 
             {/* CREATE POST BOX */}
-            <div className="p-4 border-b border-foreground/10 flex gap-3">
-                 <div className="w-10 h-10 rounded-full bg-surface-elevated overflow-hidden shrink-0">
+            <div className="p-4 sm:p-5 border-b border-foreground/[0.06] flex gap-3 bg-gradient-to-b from-foreground/[0.01] to-transparent">
+                 <div className="w-11 h-11 rounded-full bg-surface-elevated overflow-hidden shrink-0 ring-2 ring-foreground/[0.06] hover:ring-primary/30 transition-all duration-300">
                     {user?.avatar_url ? (
                        <img src={user.avatar_url} className="w-full h-full object-cover" alt="" />
                     ) : (
-                       <div className="w-full h-full bg-primary/10 flex items-center justify-center font-bold text-primary">
+                       <div className="w-full h-full bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center font-bold text-primary">
                           {user?.user_metadata?.name?.charAt(0) || '?'}
                        </div>
                     )}
@@ -576,17 +599,17 @@ export default function FeedPage() {
                      value={newPostContent}
                      onChange={(e) => setNewPostContent(e.target.value)}
                      placeholder="¡Habla, crack! ¿Qué está pasando? Usá #hashtags"
-                     className="w-full bg-transparent border-none resize-none focus:outline-none text-foreground text-lg placeholder:text-foreground/50 min-h-[50px] font-medium"
+                     className="w-full bg-transparent border-none resize-none focus:outline-none text-foreground text-lg placeholder:text-foreground/35 min-h-[50px] font-medium leading-relaxed"
                      maxLength={500}
                    />
 
                    {/* Image Preview */}
                    {imagePreview && (
-                     <div className="relative mt-2 rounded-2xl overflow-hidden border border-foreground/10">
+                     <div className="relative mt-2 rounded-2xl overflow-hidden border border-foreground/10 shadow-lg">
                        <img src={imagePreview} alt="Preview" className="w-full max-h-[300px] object-cover" />
                        <button
                          onClick={clearImage}
-                         className="absolute top-2 right-2 w-8 h-8 bg-black/70 text-white rounded-full flex items-center justify-center hover:bg-black/90 transition-colors backdrop-blur-sm"
+                         className="absolute top-2 right-2 w-8 h-8 bg-black/70 text-white rounded-full flex items-center justify-center hover:bg-black/90 transition-all backdrop-blur-sm hover:scale-110 active:scale-95"
                        >
                          <X className="w-4 h-4" />
                        </button>
@@ -598,22 +621,35 @@ export default function FeedPage() {
                      </div>
                    )}
 
-                   <div className="flex items-center justify-between mt-2 pt-2">
-                      <div className="flex items-center gap-1">
+                   <div className="flex items-center justify-between mt-3 pt-3 border-t border-foreground/[0.04]">
+                      <div className="flex items-center gap-0.5">
                           <button
                             onClick={() => fileInputRef.current?.click()}
-                            className="p-2 text-blue-500 hover:bg-blue-500/10 rounded-full transition-colors flex items-center justify-center"
+                            className="p-2.5 text-primary/70 hover:text-primary hover:bg-primary/10 rounded-full transition-all duration-200 flex items-center justify-center"
                             title="Subir imagen"
                           >
                              <ImageIcon className="w-5 h-5" />
                           </button>
+                          <button className="p-2.5 text-foreground/30 hover:text-blue-500 hover:bg-blue-500/10 rounded-full transition-all duration-200 flex items-center justify-center" title="Hashtag">
+                             <Hash className="w-5 h-5" />
+                          </button>
                       </div>
                       <div className="flex items-center gap-3">
-                          <span className="text-xs font-medium text-foreground/40">{newPostContent.length}/500</span>
+                          {newPostContent.length > 0 && (
+                            <div className="flex items-center gap-2">
+                              <div className="relative w-7 h-7">
+                                <svg className="w-7 h-7 -rotate-90" viewBox="0 0 28 28">
+                                  <circle cx="14" cy="14" r="11" fill="none" stroke="currentColor" className="text-foreground/[0.06]" strokeWidth="2.5" />
+                                  <circle cx="14" cy="14" r="11" fill="none" stroke="currentColor" className={cn(newPostContent.length > 450 ? "text-amber-500" : newPostContent.length > 480 ? "text-red-500" : "text-primary/60")} strokeWidth="2.5" strokeDasharray={`${(newPostContent.length / 500) * 69.1} 69.1`} strokeLinecap="round" />
+                                </svg>
+                              </div>
+                              <div className="h-5 w-px bg-foreground/10" />
+                            </div>
+                          )}
                           <button
                             onClick={handlePost}
                             disabled={isPosting || (!newPostContent.trim() && !selectedImage)}
-                            className="px-5 py-1.5 rounded-full bg-blue-500 text-white font-bold text-[15px] tracking-wide disabled:opacity-50 disabled:cursor-not-allowed hover:bg-blue-600 active:scale-95 transition-all shadow-sm"
+                            className="px-5 py-2 rounded-full bg-gradient-to-r from-primary to-emerald-500 text-white font-bold text-[14px] tracking-wide disabled:opacity-40 disabled:cursor-not-allowed hover:shadow-lg hover:shadow-primary/25 active:scale-[0.96] transition-all duration-200"
                           >
                             {isPosting ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Postear'}
                           </button>
@@ -625,20 +661,21 @@ export default function FeedPage() {
             {/* POSTS FEED */}
             <div className="flex flex-col pb-20">
               <AnimatePresence>
-                 {filteredPosts.map((post) => (
+                 {filteredPosts.map((post, index) => (
                    <motion.div
                      key={post.id}
-                     initial={{ opacity: 0 }}
-                     animate={{ opacity: 1 }}
-                     className={cn("p-4 border-b border-foreground/10 hover:bg-foreground/[0.02] transition-colors relative flex gap-3 cursor-pointer", post.author.is_pro ? "bg-yellow-500/[0.02]" : "")}
+                     initial={{ opacity: 0, y: 8 }}
+                     animate={{ opacity: 1, y: 0 }}
+                     transition={{ duration: 0.3, delay: index < 10 ? index * 0.03 : 0 }}
+                     className={cn("p-4 sm:px-5 border-b border-foreground/[0.06] hover:bg-foreground/[0.015] transition-all duration-200 relative flex gap-3 cursor-pointer group/post", post.author.is_pro ? "bg-gradient-to-r from-yellow-500/[0.03] to-transparent" : "")}
                    >
                       {/* LEFTSIDE AVATAR */}
                       <div className="shrink-0 flex flex-col items-center">
-                          <Link href={`/profile?id=${post.author.id}`} className={cn("w-10 h-10 rounded-full overflow-hidden shrink-0 border relative hover:opacity-90 transition-opacity", post.author.is_pro ? "border-yellow-500/50" : "border-foreground/10")}>
+                          <Link href={`/profile?id=${post.author.id}`} className={cn("w-11 h-11 rounded-full overflow-hidden shrink-0 relative hover:scale-105 transition-transform duration-200 ring-2", post.author.is_pro ? "ring-yellow-500/40" : "ring-foreground/[0.06]")}>
                                {post.author.avatar_url ? (
                                  <img src={post.author.avatar_url} className="w-full h-full object-cover" alt="" />
                                ) : (
-                                 <div className="w-full h-full bg-primary/10 flex items-center justify-center font-bold text-primary text-sm">
+                                 <div className="w-full h-full bg-gradient-to-br from-primary/15 to-primary/5 flex items-center justify-center font-bold text-primary text-sm">
                                     {post.author.name.charAt(0)}
                                  </div>
                                )}
@@ -693,7 +730,7 @@ export default function FeedPage() {
                                       <button
                                         key={i}
                                         onClick={(e) => { e.stopPropagation(); handleHashtagClick(part.slice(1)); }}
-                                        className="text-blue-500 hover:underline font-medium"
+                                        className="text-primary hover:underline font-semibold"
                                       >
                                         {part}
                                       </button>
@@ -704,8 +741,8 @@ export default function FeedPage() {
                              </p>
                              {/* Post Image */}
                              {post.image_url && (
-                               <div className="mt-3 rounded-2xl overflow-hidden border border-foreground/10">
-                                 <img src={post.image_url} alt="" className="w-full max-h-[400px] object-cover" />
+                               <div className="mt-3 rounded-2xl overflow-hidden border border-foreground/[0.06] shadow-sm group-hover/post:shadow-md transition-shadow duration-300">
+                                 <img src={post.image_url} alt="" className="w-full max-h-[420px] object-cover transition-transform duration-500 group-hover/post:scale-[1.01]" />
                                </div>
                              )}
                           </div>
@@ -789,7 +826,7 @@ export default function FeedPage() {
                                     </div>
                                  )}
                                </div>
-                               <div className="flex-1 flex items-center gap-2 bg-foreground/[0.03] border border-foreground/10 rounded-full pr-1 pl-4 h-10 focus-within:border-blue-500/50 focus-within:ring-1 focus-within:ring-blue-500/50 transition-all">
+                               <div className="flex-1 flex items-center gap-2 bg-foreground/[0.03] border border-foreground/[0.06] rounded-full pr-1 pl-4 h-10 focus-within:border-primary/40 focus-within:ring-1 focus-within:ring-primary/40 transition-all">
                                   <input
                                      type="text"
                                      placeholder="Postea tu respuesta..."
@@ -800,7 +837,7 @@ export default function FeedPage() {
                                   <button
                                      onClick={() => handleComment(post.id)}
                                      disabled={isCommenting === post.id || !newCommentContent.trim()}
-                                     className="h-8 px-4 rounded-full bg-blue-500 text-white font-bold text-sm tracking-wide disabled:opacity-50 hover:bg-blue-600 transition-colors flex items-center justify-center"
+                                     className="h-8 px-4 rounded-full bg-gradient-to-r from-primary to-emerald-500 text-white font-bold text-sm tracking-wide disabled:opacity-50 hover:shadow-md hover:shadow-primary/20 transition-all duration-200 flex items-center justify-center"
                                   >
                                      {isCommenting === post.id ? <Loader2 className="w-3 h-3 animate-spin" /> : 'Responder'}
                                   </button>
@@ -809,12 +846,12 @@ export default function FeedPage() {
 
                             <div className="flex flex-col">
                                {comments[post.id]?.map(comment => (
-                                  <div key={comment.id} className="flex gap-3 py-3 border-t border-foreground/5 relative">
+                                  <div key={comment.id} className="flex gap-3 py-3 border-t border-foreground/[0.04] relative">
                                      <Link href={`/profile?id=${comment.author.id}`} className="w-10 h-10 rounded-full overflow-hidden shrink-0 bg-surface border border-foreground/10 mt-0.5 relative hover:opacity-90">
                                         {comment.author.avatar_url ? (
                                            <img src={comment.author.avatar_url} className="w-full h-full object-cover" alt="" />
                                         ) : (
-                                           <div className="w-full h-full bg-primary/10 flex items-center justify-center font-bold text-primary text-sm">
+                                           <div className="w-full h-full bg-gradient-to-br from-primary/15 to-primary/5 flex items-center justify-center font-bold text-primary text-sm">
                                               {comment.author.name.charAt(0)}
                                            </div>
                                         )}
@@ -846,20 +883,26 @@ export default function FeedPage() {
                   </motion.div>
                  ))}
                  {filteredPosts.length === 0 && searchQuery && (
-                    <div className="text-center py-20 text-foreground/50 font-medium text-lg border-t border-foreground/10">
-                       <Search className="w-8 h-8 mx-auto mb-3 text-foreground/30" />
+                    <div className="text-center py-24 text-foreground/40 font-medium text-lg border-t border-foreground/[0.06] flex flex-col items-center gap-2">
+                       <div className="w-14 h-14 rounded-2xl bg-foreground/[0.04] flex items-center justify-center mb-2">
+                         <Search className="w-6 h-6 text-foreground/25" />
+                       </div>
                        No se encontraron resultados para &quot;{searchQuery}&quot;
                        <button
                          onClick={() => setSearchQuery('')}
-                         className="block mx-auto mt-3 text-blue-500 text-sm font-bold hover:underline"
+                         className="block mx-auto mt-3 text-primary text-sm font-bold hover:underline"
                        >
                          Limpiar búsqueda
                        </button>
                     </div>
                  )}
                  {filteredPosts.length === 0 && !searchQuery && (
-                    <div className="text-center py-20 text-foreground/50 font-medium text-lg border-t border-foreground/10">
-                       Aún no hay publicaciones. ¡Sé el primero!
+                    <div className="text-center py-24 text-foreground/40 font-medium text-lg border-t border-foreground/[0.06] flex flex-col items-center gap-3">
+                       <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-primary/10 to-primary/5 flex items-center justify-center mb-2">
+                         <MessageSquare className="w-7 h-7 text-primary/40" />
+                       </div>
+                       <span>Aún no hay publicaciones.</span>
+                       <span className="text-sm text-foreground/30">¡Sé el primero en compartir!</span>
                     </div>
                  )}
               </AnimatePresence>
@@ -879,7 +922,7 @@ export default function FeedPage() {
                 onChange={(e) => setSearchQuery(e.target.value)}
                 onFocus={() => setIsSearchFocused(true)}
                 onBlur={() => setTimeout(() => setIsSearchFocused(false), 200)}
-                className="w-full h-11 bg-foreground/[0.04] border border-foreground/10 rounded-full pl-11 pr-10 text-[15px] text-foreground placeholder:text-foreground/40 focus:outline-none focus:border-blue-500/50 focus:ring-1 focus:ring-blue-500/50 focus:bg-background transition-all"
+                className="w-full h-11 bg-foreground/[0.04] border border-foreground/10 rounded-full pl-11 pr-10 text-[15px] text-foreground placeholder:text-foreground/40 focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/50 focus:bg-background transition-all duration-200"
               />
               {searchQuery && (
                 <button
@@ -893,9 +936,9 @@ export default function FeedPage() {
 
             {/* Trending - real hashtags from posts */}
             {trendingTopics.length > 0 && (
-              <div className="rounded-2xl border border-foreground/10 bg-surface overflow-hidden">
-                <div className="p-4 border-b border-foreground/10">
-                  <h3 className="font-bold text-foreground text-xl">Tendencias</h3>
+              <div className="rounded-2xl border border-foreground/[0.06] bg-surface overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-300">
+                <div className="p-4 border-b border-foreground/[0.06] bg-gradient-to-r from-blue-500/[0.04] to-transparent">
+                  <h3 className="font-bold text-foreground text-xl flex items-center gap-2"><TrendingUp className="w-4.5 h-4.5 text-blue-500" />Tendencias</h3>
                 </div>
                 <div className="flex flex-col">
                   {trendingTopics.map((topic, i) => (
@@ -906,7 +949,7 @@ export default function FeedPage() {
                     >
                       <div className="text-[13px] text-foreground/40 font-medium">Tendencia #{i+1}</div>
                       <div className="font-bold text-[15px] text-foreground flex items-center gap-1.5">
-                        <Hash className="w-3.5 h-3.5 text-blue-500" />
+                        <Hash className="w-3.5 h-3.5 text-primary" />
                         {topic.tag}
                       </div>
                       <div className="text-[13px] text-foreground/40">{topic.count} {topic.count === 1 ? 'post' : 'posts'}</div>
@@ -917,9 +960,12 @@ export default function FeedPage() {
             )}
 
             {/* Who to Follow - with real friend request */}
-            <div className="rounded-2xl border border-foreground/10 bg-surface overflow-hidden">
-              <div className="p-4 border-b border-foreground/10">
-                <h3 className="font-bold text-foreground text-xl">A quién seguir</h3>
+            <div className="rounded-2xl border border-foreground/[0.06] bg-surface overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-300">
+              <div className="p-4 border-b border-foreground/[0.06] bg-gradient-to-r from-violet-500/[0.04] to-transparent">
+                <h3 className="font-bold text-foreground text-xl flex items-center gap-2">
+                  <UserPlus className="w-5 h-5 text-violet-500" />
+                  A quién seguir
+                </h3>
               </div>
               <div className="flex flex-col">
                 {suggestedUsers.map(su => {
@@ -929,16 +975,18 @@ export default function FeedPage() {
                   return (
                     <div
                       key={su.id}
-                      className="px-4 py-3 hover:bg-foreground/[0.03] transition-colors flex items-center gap-3"
+                      className="px-4 py-3 hover:bg-foreground/[0.03] transition-colors flex items-center gap-3 border-b border-foreground/[0.02] last:border-0"
                     >
                       <Link
                         href={`/profile?id=${su.id}`}
-                        className={cn("w-10 h-10 rounded-full overflow-hidden shrink-0 border", su.is_pro ? "border-yellow-500/50" : "border-foreground/10")}
+                        className={cn("w-10 h-10 rounded-full overflow-hidden shrink-0 transition-transform hover:scale-110 duration-200 ring-2", su.is_pro ? "ring-yellow-500/40" : "ring-foreground/[0.06]")}
                       >
                         {su.avatar_url ? (
                           <img src={su.avatar_url} className="w-full h-full object-cover" alt="" />
                         ) : (
-                          <div className="w-full h-full bg-primary/10 flex items-center justify-center font-bold text-primary text-sm">
+                          <div className={cn("w-full h-full flex items-center justify-center font-bold text-sm", 
+                            su.is_pro ? "bg-gradient-to-br from-yellow-500/20 to-amber-500/10 text-yellow-500" : "bg-gradient-to-br from-primary/15 to-primary/5 text-primary"
+                          )}>
                             {su.name?.charAt(0)}
                           </div>
                         )}
@@ -949,22 +997,22 @@ export default function FeedPage() {
                           {su.is_pro && <Zap className="w-3 h-3 text-yellow-500 fill-yellow-500 inline ml-1" />}
                         </div>
                         <div className="text-[13px] text-foreground/40 truncate">
-                          {su.position || 'Jugador'} · @{su.name?.toLowerCase().replace(/\s+/g, '')}
+                          @{su.name?.toLowerCase().replace(/\s+/g, '')}
                         </div>
                       </Link>
                       <div className="shrink-0">
                         {isFriend ? (
-                          <div className="px-4 py-1.5 rounded-full border border-foreground/20 text-foreground/50 text-[13px] font-bold">
+                          <div className="px-3 py-1.5 rounded-full border border-foreground/[0.06] bg-foreground/[0.02] text-foreground/40 text-[12px] font-bold">
                             Amigos
                           </div>
                         ) : isPending ? (
-                          <div className="px-4 py-1.5 rounded-full border border-blue-500/30 text-blue-500 text-[13px] font-bold">
+                          <div className="px-3 py-1.5 rounded-full border border-primary/20 bg-primary/5 text-primary text-[12px] font-bold animate-pulse">
                             Enviada
                           </div>
                         ) : (
                           <button
                             onClick={() => handleSendFriendRequest(su.id)}
-                            className="px-4 py-1.5 rounded-full bg-foreground text-background text-[13px] font-bold hover:bg-foreground/80 transition-colors active:scale-95"
+                            className="px-4 py-1.5 rounded-full bg-foreground text-background text-[12px] font-bold hover:bg-foreground/80 transition-all active:scale-95 shadow-sm hover:shadow-md"
                           >
                             Agregar
                           </button>
@@ -977,8 +1025,8 @@ export default function FeedPage() {
             </div>
 
             {/* Top Ranking */}
-            <div className="rounded-2xl border border-foreground/10 bg-surface overflow-hidden">
-              <div className="p-4 border-b border-foreground/10 flex items-center gap-2">
+            <div className="rounded-2xl border border-foreground/[0.06] bg-surface overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-300">
+              <div className="p-4 border-b border-foreground/[0.06] bg-gradient-to-r from-yellow-500/[0.04] to-transparent flex items-center gap-2">
                 <Trophy className="w-5 h-5 text-yellow-500" />
                 <h3 className="font-bold text-foreground text-xl">Top ELO</h3>
               </div>
@@ -997,11 +1045,13 @@ export default function FeedPage() {
                     )}>
                       {i + 1}
                     </div>
-                    <div className={cn("w-8 h-8 rounded-full overflow-hidden shrink-0 border", player.is_pro ? "border-yellow-500/50" : "border-foreground/10")}>
+                    <div className={cn("w-9 h-9 rounded-full overflow-hidden shrink-0 relative ring-2", player.is_pro ? "ring-yellow-500/40" : "ring-foreground/[0.06]")}>
                       {player.avatar_url ? (
                         <img src={player.avatar_url} className="w-full h-full object-cover" alt="" />
                       ) : (
-                        <div className="w-full h-full bg-primary/10 flex items-center justify-center font-bold text-primary text-xs">
+                        <div className={cn("w-full h-full flex items-center justify-center font-bold text-xs", 
+                          player.is_pro ? "bg-gradient-to-br from-yellow-500/20 to-amber-500/10 text-yellow-500" : "bg-gradient-to-br from-primary/15 to-primary/5 text-primary"
+                        )}>
                           {player.name?.charAt(0)}
                         </div>
                       )}
@@ -1019,7 +1069,7 @@ export default function FeedPage() {
             </div>
 
             {/* Footer Links */}
-            <div className="px-4 pt-2 pb-4 text-[13px] text-foreground/30 flex flex-wrap gap-x-3 gap-y-1 leading-relaxed">
+            <div className="px-4 pt-4 pb-4 text-[12px] text-foreground/25 flex flex-wrap gap-x-3 gap-y-1 leading-relaxed">
               <span className="hover:underline cursor-pointer">Términos</span>
               <span className="hover:underline cursor-pointer">Privacidad</span>
               <span className="hover:underline cursor-pointer">Accesibilidad</span>
