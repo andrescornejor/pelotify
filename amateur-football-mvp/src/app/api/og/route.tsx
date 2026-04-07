@@ -27,60 +27,66 @@ export async function GET(req: NextRequest) {
             flexDirection: 'column',
             alignItems: 'center',
             justifyContent: 'center',
-            backgroundColor: '#09090b',
-            padding: '40px',
+            backgroundColor: '#050505',
+            padding: '50px',
             position: 'relative',
           }}
         >
-          {/* Background effects */}
-          <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, opacity: 0.3, display: 'flex' }}>
-            <div style={{ position: 'absolute', top: '-10%', left: '-10%', width: '50%', height: '50%', backgroundColor: '#10b981', filter: 'blur(100px)', borderRadius: '50%' }} />
-            <div style={{ position: 'absolute', bottom: '-10%', right: '-10%', width: '50%', height: '50%', backgroundColor: '#f59e0b', filter: 'blur(100px)', borderRadius: '50%' }} />
-          </div>
+          {/* Subtle Ambient Glows */}
+          <div style={{ position: 'absolute', top: '-10%', right: '-10%', width: '60%', height: '60%', backgroundColor: '#2cfc7d', filter: 'blur(150px)', opacity: 0.1, borderRadius: '50%' }} />
+          <div style={{ position: 'absolute', bottom: '-10%', left: '-10%', width: '60%', height: '60%', backgroundColor: '#f59e0b', filter: 'blur(150px)', opacity: 0.05, borderRadius: '50%' }} />
 
           <div
             style={{
               display: 'flex',
               flexDirection: 'row',
               alignItems: 'center',
-              justifyContent: 'space-between',
               width: '100%',
-              gap: '40px',
+              gap: '50px',
               zIndex: 10,
             }}
           >
-            <div style={{ display: 'flex', flexDirection: 'column', flex: 1 }}>
-              <div style={{ display: 'flex', alignItems: 'center', marginBottom: '20px' }}>
-                <div style={{ width: '40px', height: '40px', backgroundColor: '#2cfc7d', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyItems: 'center', color: '#000', fontSize: '24px', fontWeight: 'bold', justifyContent: 'center' }}>P</div>
-                <div style={{ marginLeft: '12px', fontSize: '28px', fontWeight: 'bold', color: '#fff', textTransform: 'uppercase', fontStyle: 'italic' }}>PELOTIFY</div>
+            {/* Left Content Side */}
+            <div style={{ display: 'flex', flexDirection: 'column', flex: 1, justifyContent: 'center' }}>
+              <div style={{ display: 'flex', alignItems: 'center', marginBottom: '30px' }}>
+                <div style={{ width: '50px', height: '50px', backgroundColor: '#2cfc7d', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 0 20px rgba(44, 252, 125, 0.3)' }}>
+                  <div style={{ color: '#000', fontSize: '30px', fontWeight: 'bold' }}>P</div>
+                </div>
+                <div style={{ marginLeft: '15px', fontSize: '32px', fontWeight: '900', color: '#fff', letterSpacing: '-0.5px' }}>PELOTIFY</div>
               </div>
 
-              {username && (
-                <div style={{ fontSize: '24px', color: '#2cfc7d', fontWeight: 'bold', marginBottom: '10px' }}>
-                  @{username} {type === 'highlight' ? 'subió un FutTok' : 'publicó un post'}
-                </div>
-              )}
-              
-              <div style={{ fontSize: '48px', fontWeight: 'bold', color: '#fff', marginBottom: '20px', lineHeight: 1.1 }}>
-                {title.length > 80 ? title.substring(0, 80) + '...' : title}
+              <div style={{ fontSize: '26px', color: '#2cfc7d', fontWeight: 'bold', marginBottom: '15px', textTransform: 'uppercase', letterSpacing: '1px' }}>
+                {type === 'highlight' ? 'FutTok Destacado' : 'Post Social'}
               </div>
               
-              {description && (
-                <div style={{ fontSize: '24px', color: '#a1a1aa', lineHeight: 1.4 }}>
-                  {description.length > 150 ? description.substring(0, 150) + '...' : description}
-                </div>
-              )}
+              <div style={{ fontSize: '56px', fontWeight: 'bold', color: '#fff', marginBottom: '25px', lineHeight: 1.1, letterSpacing: '-1px' }}>
+                {username ? `@${username}` : title}
+              </div>
+              
+              <div style={{ fontSize: '28px', color: '#a1a1aa', lineHeight: 1.4, fontWeight: '500' }}>
+                {description && description.length > 140 ? description.substring(0, 140) + '...' : description}
+              </div>
             </div>
 
+            {/* Right Media Side */}
             {image && (
-              <div style={{ width: '350px', height: '350px', display: 'flex', borderRadius: '24px', overflow: 'hidden', border: '1px solid rgba(255,255,255,0.1)' }}>
+              <div style={{ position: 'relative', width: '400px', height: '400px', display: 'flex', borderRadius: '40px', overflow: 'hidden', border: '2px solid rgba(255,255,255,0.1)', boxShadow: '0 20px 50px rgba(0,0,0,0.5)' }}>
                 <img src={image} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                
+                {/* Play Icon Overlay for Highlights */}
+                {type === 'highlight' && (
+                  <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: 'rgba(0,0,0,0.3)' }}>
+                    <div style={{ width: '100px', height: '100px', backgroundColor: 'rgba(255,255,255,0.2)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '5px solid white', backdropFilter: 'blur(5px)' }}>
+                      <div style={{ borderLeft: '35px solid white', borderTop: '20px solid transparent', borderBottom: '20px solid transparent', marginLeft: '10px' }} />
+                    </div>
+                  </div>
+                )}
               </div>
             )}
           </div>
           
-          <div style={{ position: 'absolute', bottom: '40px', left: '40px', display: 'flex', flexDirection: 'row', alignItems: 'center', zIndex: 10 }}>
-             <div style={{ fontSize: '18px', color: '#ffffff30' }}>pelotify.app</div>
+          <div style={{ position: 'absolute', bottom: '50px', left: '50px', display: 'flex', alignItems: 'center', zIndex: 10 }}>
+             <div style={{ fontSize: '20px', color: 'rgba(255,255,255,0.2)', fontWeight: 'bold' }}>pelotify.app</div>
           </div>
         </div>
       ),
