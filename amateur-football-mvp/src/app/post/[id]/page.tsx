@@ -29,7 +29,7 @@ export async function generateMetadata(
       }
 
       const baseUrl = 'https://pelotify.vercel.app';
-      const ogImage = `${baseUrl}/api/og?title=${encodeURIComponent(username)}&description=${encodeURIComponent(description)}&username=${encodeURIComponent(username)}${data.image_url ? `&image=${encodeURIComponent(data.image_url)}` : ''}`;
+      const testImage = data.image_url || 'https://pelotify.vercel.app/icon.png';
 
       return {
         title,
@@ -39,19 +39,19 @@ export async function generateMetadata(
           description,
           url: `${baseUrl}/post/${postId}`,
           siteName: 'Pelotify',
-          images: [ogImage],
+          images: [testImage],
           type: 'article',
         },
         twitter: {
           card: 'summary_large_image',
           title,
           description,
-          images: [ogImage],
+          images: [testImage],
           site: '@pelotify',
           creator: '@pelotify',
         },
         other: {
-          'twitter:image': ogImage,
+          'twitter:image': testImage,
           'twitter:card': 'summary_large_image',
         }
       };
