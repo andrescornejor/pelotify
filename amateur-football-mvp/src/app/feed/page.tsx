@@ -495,7 +495,7 @@ export default function FeedPage() {
 
   if (isLoading) {
     return (
-      <div className="flex flex-col min-h-screen bg-background pt-[110px] px-3 sm:px-5 lg:px-10 xl:px-16 relative overflow-hidden">
+      <div className="flex flex-col min-h-screen bg-background pt-0 px-3 sm:px-5 lg:px-10 xl:px-16 relative overflow-hidden">
         {/* AMBIENT BACKGROUND */}
         <div className="fixed inset-0 pointer-events-none -z-10 overflow-hidden">
           <div className="absolute top-[-5%] right-[-5%] w-[40%] h-[40%] opacity-[0.03]" style={{ background: 'radial-gradient(circle, #2cfc7d 0%, transparent 70%)' }} />
@@ -558,11 +558,11 @@ export default function FeedPage() {
       />
 
       {/* 3-column layout matching TopHeader padding exactly */}
-      <div className="w-full px-3 sm:px-5 lg:px-10 xl:px-16 pt-[50px]">
+      <div className="w-full px-3 sm:px-5 lg:px-10 xl:px-16 pt-0 lg:pt-2">
         <div className="flex gap-0 lg:gap-6 xl:gap-8">
 
           {/* ── LEFT SIDEBAR (desktop only) ── */}
-          <aside className="hidden lg:flex flex-col w-[280px] xl:w-[320px] shrink-0 sticky top-[80px] self-start pb-8 pt-2 xl:pl-4">
+          <aside className="hidden lg:flex flex-col w-[280px] xl:w-[320px] shrink-0 sticky top-[96px] lg:top-[100px] self-start pb-8 pt-2 xl:pl-4">
             {/* Navigation Links - Twitter Style */}
             <nav className="flex flex-col gap-1 w-full">
               {[
@@ -610,7 +610,7 @@ export default function FeedPage() {
             {/* STICKY HEADER */}
             <div
               onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-              className="sticky top-[80px] z-50 bg-background/80 backdrop-blur-md border-b border-foreground/[0.08] px-5 py-4 flex items-center justify-between cursor-pointer hover:bg-foreground/[0.02] transition-colors"
+              className="sticky top-[96px] z-50 bg-background/80 backdrop-blur-md border-b border-foreground/[0.08] px-5 py-4 flex items-center justify-between cursor-pointer hover:bg-foreground/[0.02] transition-colors"
             >
               <div className="flex items-center gap-2.5">
                 <h1 className="text-2xl font-black italic uppercase font-kanit text-foreground tracking-tighter leading-none">Inicio</h1>
@@ -956,7 +956,7 @@ export default function FeedPage() {
           </div>
 
           {/* ── RIGHT SIDEBAR (desktop only) ── */}
-          <aside className="hidden lg:flex flex-col w-[280px] xl:w-[340px] shrink-0 sticky top-[80px] self-start gap-4 pb-8">
+          <aside className="hidden lg:flex flex-col w-[280px] xl:w-[340px] shrink-0 sticky top-[96px] lg:top-[100px] self-start gap-4 pb-8">
 
             {/* Search Bar - functional */}
             <div className="relative group">
