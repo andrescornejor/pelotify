@@ -126,6 +126,9 @@ export default function FeedClient({ standalonePostId }: { standalonePostId?: st
   const [copiedPostId, setCopiedPostId] = useState<string | null>(null);
   const [shareModalPost, setShareModalPost] = useState<Post | null>(null);
 
+  // Fullscreen Image state
+  const [expandedImage, setExpandedImage] = useState<string | null>(null);
+
   // Friend request state
   const [pendingFriendRequests, setPendingFriendRequests] = useState<Set<string>>(new Set());
   const [sentFriendRequests, setSentFriendRequests] = useState<Set<string>>(new Set());
@@ -858,7 +861,13 @@ export default function FeedClient({ standalonePostId }: { standalonePostId?: st
                         </p>
                         {/* Post Image */}
                         {post.image_url && (
-                          <div className="mt-3 rounded-2xl overflow-hidden border border-foreground/[0.08] shadow-sm">
+                          <div 
+                            className="mt-3 rounded-2xl overflow-hidden border border-foreground/[0.08] shadow-sm cursor-pointer hover:opacity-95 transition-opacity"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setExpandedImage(post.image_url);
+                            }}
+                          >
                             <img src={post.image_url} alt="" className="w-full max-h-[500px] object-cover" />
                           </div>
                         )}
@@ -1222,6 +1231,39 @@ export default function FeedClient({ standalonePostId }: { standalonePostId?: st
           imagePreview={shareModalPost.image_url}
         />
       )}
+
+      {/* Fullscreen Image Modal */}
+      <AnimatePresence>
+        {expandedImage && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setExpandedImage(null)}
+            className="fixed inset-0 z-[100] flex items-center justify-center bg-black/90 p-4 backdrop-blur-sm"
+          >
+            <motion.div
+              initial={{ scale: 0.95 }}
+              animate={{ scale: 1 }}
+              exit={{ scale: 0.95 }}
+              onClick={(e) => e.stopPropagation()}
+              className="relative max-w-[95vw] max-h-[95vh] w-full h-full flex items-center justify-center"
+            >
+              <button
+                onClick={() => setExpandedImage(null)}
+                className="absolute top-4 right-4 sm:top-8 sm:right-8 w-12 h-12 bg-white/10 hover:bg-white/20 text-white rounded-full flex items-center justify-center transition-all backdrop-blur-md z-50 border border-white/20"
+              >
+                <X className="w-6 h-6" />
+              </button>
+              <img
+                src={expandedImage}
+                alt="Expanded view"
+                className="max-w-full max-h-full object-contain rounded-lg shadow-2xl"
+              />
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
