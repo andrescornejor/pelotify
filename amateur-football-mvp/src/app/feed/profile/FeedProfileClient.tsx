@@ -85,7 +85,7 @@ type TabType = 'posts' | 'likes' | 'bookmarks' | 'media';
 export default function FeedProfilePage() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { user, loading: authLoading } = useAuth();
+  const { user, isLoading: authLoading } = useAuth();
   const rawId = searchParams.get('id');
   const profileId = (rawId && rawId !== 'undefined' && rawId !== 'null') ? rawId : user?.id;
 
