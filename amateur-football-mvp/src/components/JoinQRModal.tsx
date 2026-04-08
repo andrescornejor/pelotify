@@ -1,9 +1,8 @@
 'use client';
 
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, QrCode, Share2, Copy, Check, Zap } from 'lucide-react';
+import { X, QrCode, Share2, Copy, Check } from 'lucide-react';
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
 import { QRCodeCanvas } from 'qrcode.react';
 
 interface JoinQRModalProps {
@@ -14,7 +13,6 @@ interface JoinQRModalProps {
 }
 
 export default function JoinQRModal({ isOpen, onClose, matchId, venueName }: JoinQRModalProps) {
-  const router = useRouter();
   const [copied, setCopied] = useState(false);
   const shareUrl = typeof window !== 'undefined' ? `${window.location.origin}/match?id=${matchId}` : '';
 
@@ -101,18 +99,6 @@ export default function JoinQRModal({ isOpen, onClose, matchId, venueName }: Joi
               </p>
 
               <div className="flex gap-3">
-                <button
-                  onClick={() => {
-                     const textToShare = `¡Unite al partido en ${venueName}!\n\nTe invito a jugar en Pelotify. Sumate acá:\n\n${shareUrl}`;
-                     router.push(`/feed?shareText=${encodeURIComponent(textToShare)}`);
-                     onClose();
-                  }}
-                  className="w-16 shrink-0 h-16 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center gap-3 hover:bg-white/10 transition-all active:scale-95 overflow-hidden relative group"
-                  title="Compartir en Vestuario"
-                >
-                   <Zap className="w-5 h-5 text-primary group-hover:scale-110 transition-transform" />
-                </button>
-
                 <button
                   onClick={handleCopy}
                   className="flex-1 h-16 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center gap-3 hover:bg-white/10 transition-all active:scale-95 overflow-hidden relative"

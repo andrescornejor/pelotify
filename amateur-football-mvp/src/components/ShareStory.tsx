@@ -3,7 +3,6 @@
 import React, { useRef, useState } from 'react';
 import { toBlob } from 'html-to-image';
 import { Share2, Loader2, Trophy, Zap, MapPin, Calendar, Star, Goal, Users } from 'lucide-react';
-import { useRouter } from 'next/navigation';
 import { Share } from '@capacitor/share';
 import { Filesystem, Directory } from '@capacitor/filesystem';
 import { Capacitor } from '@capacitor/core';
@@ -19,7 +18,6 @@ interface ShareStoryProps {
 }
 
 export function ShareStory({ type, data, trigger, className }: ShareStoryProps) {
-  const router = useRouter();
   const containerRef = useRef<HTMLDivElement>(null);
   const [isGenerating, setIsGenerating] = useState(false);
 
@@ -105,27 +103,16 @@ export function ShareStory({ type, data, trigger, className }: ShareStoryProps) 
 
   return (
     <>
-      <div className={cn("flex items-center gap-2", className && className.includes('w-full') ? 'w-full' : '')}>
-        <button
-          onClick={() => {
-            const textToShare = type === 'profile' ? `Mirá mi perfil en Pelotify ⚽\n\n${shareUrl}` : `Mirá este partido en Pelotify ⚽\n\n${shareUrl}`;
-            router.push(`/feed?shareText=${encodeURIComponent(textToShare)}`);
-          }}
-          className="flex-shrink-0 flex items-center justify-center gap-2 h-14 w-14 rounded-2xl transition-all active:scale-95 bg-primary/10 text-primary border border-primary/20 hover:scale-105"
-          title="Compartir en Vestuario"
-        >
-          <Zap className="w-5 h-5 fill-primary" />
-        </button>
-        <button
-          onClick={handleShare}
-          disabled={isGenerating}
-          className={cn(
-            "flex-1 flex items-center justify-center gap-2 px-6 h-14 rounded-2xl transition-all active:scale-95",
-            "bg-primary text-black font-black uppercase tracking-widest text-[10px]",
-            "shadow-xl shadow-primary/20 disabled:opacity-50",
-            className?.replace('w-full', '')
-          )}
-        >
+      <button
+        onClick={handleShare}
+        disabled={isGenerating}
+        className={cn(
+          "flex items-center justify-center gap-2 px-6 h-14 rounded-2xl transition-all active:scale-95",
+          "bg-primary text-black font-black uppercase tracking-widest text-[10px]",
+          "shadow-xl shadow-primary/20 disabled:opacity-50",
+          className
+        )}
+      >
         {isGenerating ? (
           <Loader2 className="w-4 h-4 animate-spin" />
         ) : (
@@ -136,8 +123,7 @@ export function ShareStory({ type, data, trigger, className }: ShareStoryProps) 
             </>
           )
         )}
-        </button>
-      </div>
+      </button>
 
       {/* Robust Rendering target (Absolute instead of fixed inset-0) */}
       <div className="absolute left-0 top-0 pointer-events-none opacity-0 z-[-100] overflow-hidden">

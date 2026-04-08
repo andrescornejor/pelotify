@@ -2,8 +2,7 @@
 
 import React, { useRef, useState } from 'react';
 import { toBlob } from 'html-to-image';
-import { Loader2, Instagram, MapPin, Clock, Calendar, Zap } from 'lucide-react';
-import { useRouter } from 'next/navigation';
+import { Loader2, Instagram, MapPin, Clock, Calendar } from 'lucide-react';
 import { Share } from '@capacitor/share';
 import { Filesystem, Directory } from '@capacitor/filesystem';
 import { Capacitor } from '@capacitor/core';
@@ -18,7 +17,6 @@ interface MatchPromotionShareProps {
 }
 
 export function MatchPromotionShare({ match, teamALogo, teamBLogo, className }: MatchPromotionShareProps) {
-  const router = useRouter();
   const containerRef = useRef<HTMLDivElement>(null);
   const [isGenerating, setIsGenerating] = useState(false);
 
@@ -105,25 +103,7 @@ export function MatchPromotionShare({ match, teamALogo, teamBLogo, className }: 
 
   return (
     <>
-      <div className="flex items-center gap-2">
-        <button
-          onClick={() => {
-            const shareUrl = typeof window !== 'undefined' ? `${window.location.origin}/match?id=${match.id}` : '';
-            const textToShare = `¡Se viene un partidazo! ${teamAName} vs ${teamBName}\n\n${shareUrl}`;
-            router.push(`/feed?shareText=${encodeURIComponent(textToShare)}`);
-          }}
-          className={cn(
-            "px-4 py-1.5 bg-primary/10 rounded-xl border border-primary/20 flex items-center gap-1.5 hover:scale-105 active:scale-95 transition-all text-primary",
-            className
-          )}
-          title="Compartir en Vestuario"
-        >
-          <Zap className="w-3.5 h-3.5 fill-primary" />
-          <span className="font-black text-[9px] uppercase tracking-[0.2em] italic">
-            Vestuario
-          </span>
-        </button>
-        <button
+      <button
         onClick={handleShare}
         disabled={isGenerating}
         className={cn(
@@ -139,8 +119,7 @@ export function MatchPromotionShare({ match, teamALogo, teamBLogo, className }: 
         <span className="font-black text-[9px] uppercase tracking-[0.2em] italic">
           Hypear
         </span>
-        </button>
-      </div>
+      </button>
 
       {/* Hidden Render Target for Poster (1080x1920) */}
       <div className="absolute left-0 top-0 pointer-events-none opacity-0 z-[-100] overflow-hidden">

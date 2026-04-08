@@ -1,9 +1,8 @@
 'use client';
 
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Copy, Check, MessageCircle, Twitter, Facebook, Link as LinkIcon, Send, Zap } from 'lucide-react';
+import { X, Copy, Check, MessageCircle, Twitter, Facebook, Link as LinkIcon, Send } from 'lucide-react';
 import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
 import { cn } from '@/lib/utils';
 import Image from 'next/image';
 
@@ -32,7 +31,6 @@ export default function ShareModal({
   contentPreview,
   imagePreview
 }: ShareModalProps) {
-  const router = useRouter();
   const [copied, setCopied] = useState(false);
 
   // Prevent scroll when open
@@ -75,12 +73,6 @@ export default function ShareModal({
     } catch (err) {
       console.error('Error sharing native', err);
     }
-  };
-
-  const handleShareVestuario = () => {
-    const textToShare = text ? `${title}\n\n${text}\n\n${url}` : `${title}\n\n${url}`;
-    router.push(`/feed?shareText=${encodeURIComponent(textToShare)}`);
-    onClose();
   };
 
   return (
@@ -166,16 +158,6 @@ export default function ShareModal({
                   {/* Share Apps Horizontal Scroll */}
                   <div className="flex overflow-x-auto gap-4 pb-2 px-2 snap-x snap-mandatory no-scrollbar hide-scroll">
                     
-                    <button 
-                      onClick={handleShareVestuario}
-                      className="snap-start shrink-0 w-[72px] flex flex-col items-center gap-2 group"
-                    >
-                      <div className="w-14 h-14 rounded-full bg-primary flex items-center justify-center shadow-lg group-active:scale-90 transition-transform">
-                        <Zap className="w-7 h-7 text-background fill-background" />
-                      </div>
-                      <span className="text-[11px] font-semibold text-foreground/70">Vestuario</span>
-                    </button>
-
                     <button 
                       onClick={handleShareWhatsApp}
                       className="snap-start shrink-0 w-[72px] flex flex-col items-center gap-2 group"
