@@ -32,6 +32,7 @@ import {
   LinkIcon,
 } from 'lucide-react';
 import Link from 'next/link';
+import MatchPostCard from '@/components/feed/MatchPostCard';
 import { uploadPostImage } from '@/lib/storage';
 import { compressImage, blobToFile } from '@/lib/imageUtils';
 import { sendFriendRequest } from '@/lib/friends';
@@ -845,21 +846,37 @@ export default function FeedClient({ standalonePostId }: { standalonePostId?: st
                       {/* Content with clickable hashtags */}
                       <div className={cn("mt-1 mb-2.5", standalonePostId ? "mt-4 mb-5" : "")}>
                         <p className={cn("text-foreground whitespace-pre-wrap", standalonePostId ? "text-xl sm:text-[22px] font-medium leading-relaxed font-kanit tracking-tight" : "text-[15px] leading-snug")}>
-                          {post.content.split(/(#[\w\u00C0-\u024FáéíóúñÁÉÍÓÚÑ]+)/g).map((part, i) => {
-                            if (part.startsWith('#')) {
-                              return (
-                                <button
-                                  key={i}
-                                  onClick={(e) => { e.stopPropagation(); handleHashtagClick(part.slice(1)); }}
-                                  className="text-primary hover:underline font-semibold"
-                                >
-                                  {part}
-                                </button>
-                              );
+                          {(() => {
+                            let content = post.content;
+                            const hasMatchCard = post.content.match(/[?&]id=([0-9a-fA-F-]{36})/);
+                            if (hasMatchCard) {
+                              content = content.replace(/https?:\/\/[^\s]+match\?id=[0-9a-fA-F-]{36}[^\s]*/g, '');
                             }
-                            return part;
-                          })}
+
+                            return content.split(/(#[\w\u00C0-\u024FáéíóúñÁÉÍÓÚÑ]+)/g).map((part, i) => {
+                              if (part.startsWith('#')) {
+                                return (
+                                  <button
+                                    key={i}
+                                    onClick={(e) => { e.stopPropagation(); handleHashtagClick(part.slice(1)); }}
+                                    className="text-primary hover:underline font-semibold"
+                                  >
+                                    {part}
+                                  </button>
+                                );
+                              }
+                              return part;
+                            });
+                          })()}
                         </p>
+                        {/* Detect and render Match Card */}
+                        {(() => {
+                           const matchIdMatch = post.content.match(/[?&]id=([0-9a-fA-F-]{36})/);
+                           if (matchIdMatch) {
+                             return <MatchPostCard matchId={matchIdMatch[1]} />;
+                           }
+                           return null;
+                        })()}
                         {/* Post Image */}
                         {post.image_url && (
                           <div
