@@ -43,6 +43,7 @@ async function fetchHomeData(userId: string): Promise<HomeData> {
         .limit(5),
       supabase
         .from('canchas_businesses')
+        .select('*')
         .eq('is_active', true)
         .order('name', { ascending: true })
         .limit(6),
