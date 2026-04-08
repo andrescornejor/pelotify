@@ -343,7 +343,7 @@ export default function VideoPlayer({
 
         {/* Bottom Info Section */}
         <div className="absolute left-6 bottom-12 right-20 z-30 space-y-4">
-          <Link href={`/profile?id=${userId}`} className="inline-block block">
+          <Link href={`/profile?id=${userId}&tab=futtok`} className="inline-block block">
             <motion.div 
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}

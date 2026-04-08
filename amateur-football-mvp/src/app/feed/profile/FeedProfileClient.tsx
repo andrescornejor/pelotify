@@ -98,7 +98,18 @@ export default function FeedProfilePage() {
 
   const [profile, setProfile] = useState<ProfileData | null>(null);
   const [isLoadingProfile, setIsLoadingProfile] = useState(true);
-  const [activeTab, setActiveTab] = useState<TabType>('posts');
+  const initialTab = (searchParams.get('tab') as TabType) || 'posts';
+  const [activeTab, setActiveTab] = useState<TabType>(
+    ['posts', 'likes', 'bookmarks', 'media'].includes(initialTab) ? initialTab : 'posts'
+  );
+  
+  // Sync tab with URL
+  useEffect(() => {
+    const tabParam = searchParams.get('tab');
+    if (tabParam && ['posts', 'likes', 'bookmarks', 'media'].includes(tabParam)) {
+      setActiveTab(tabParam as TabType);
+    }
+  }, [searchParams]);
 
   const [posts, setPosts] = useState<Post[]>([]);
   const [likedPosts, setLikedPosts] = useState<Post[]>([]);

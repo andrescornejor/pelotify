@@ -89,7 +89,10 @@ function ProfileContent() {
   const id = searchParams.get('id');
   const isMe = id === 'me' || id === user?.id || (!id && user?.id);
 
-  const [activeTab, setActiveTab] = useState<'overview' | 'history' | 'futtok' | 'wall' | 'wallet'>('overview');
+  const initialTab = (searchParams.get('tab') as any) || 'overview';
+  const [activeTab, setActiveTab] = useState<'overview' | 'history' | 'futtok' | 'wall' | 'wallet'>(
+    ['overview', 'history', 'futtok', 'wall', 'wallet'].includes(initialTab) ? initialTab : 'overview'
+  );
 
   // Edit state
   const [isEditing, setIsEditing] = useState(false);
@@ -136,6 +139,14 @@ function ProfileContent() {
   // Avatar Upload State
   const [avatarFile, setAvatarFile] = useState<File | null>(null);
   const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
+  
+  // Sync tab with URL
+  useEffect(() => {
+    const tabParam = searchParams.get('tab');
+    if (tabParam && ['overview', 'history', 'futtok', 'wall', 'wallet'].includes(tabParam)) {
+      setActiveTab(tabParam as any);
+    }
+  }, [searchParams]);
 
   useEffect(() => {
     if (isMe && user) {
