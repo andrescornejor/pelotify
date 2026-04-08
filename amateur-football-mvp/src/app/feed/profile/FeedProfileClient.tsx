@@ -614,13 +614,14 @@ export default function FeedProfilePage() {
             </div>
 
             {/* ── COVER BANNER ── */}
-            <div className="relative w-full h-36 sm:h-48 bg-zinc-900 overflow-hidden">
+            <div className="relative w-full h-36 sm:h-48 bg-background overflow-hidden group/banner shadow-inner">
               <img
                 src={profile.cover_url || "https://images.unsplash.com/photo-1574629810360-7efbbe195018?auto=format&fit=crop&q=80&w=2000"}
                 alt=""
-                className="w-full h-full object-cover brightness-75"
+                className="w-full h-full object-cover brightness-75 group-hover/banner:scale-105 transition-transform duration-[4s]"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent" />
+              <div className="absolute inset-x-0 bottom-0 h-full z-10 bg-gradient-to-t from-background via-background/60 to-transparent" />
+              <div className="absolute inset-x-0 bottom-0 h-1/2 z-10 bg-gradient-to-t from-background to-transparent" />
             </div>
 
             {/* ── PROFILE INFO ── */}

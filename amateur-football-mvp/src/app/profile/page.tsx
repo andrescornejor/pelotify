@@ -559,9 +559,13 @@ function ProfileContent() {
       </div>
 
       {/* Hero Banner Section */}
-      <div className="relative w-full h-[280px] sm:h-[450px] lg:h-[500px] overflow-hidden group/banner bg-zinc-950">
-        <div className="absolute inset-0 z-10 bg-gradient-to-t from-background via-transparent to-transparent opacity-100" />
-        <div className="absolute inset-0 z-10 bg-gradient-to-b from-black/60 via-transparent to-black/60 opacity-100" />
+      <div className="relative w-full h-[280px] sm:h-[450px] lg:h-[500px] overflow-hidden group/banner bg-background">
+        {/* Layered gradients for deep cinematic transition */}
+        <div className="absolute inset-x-0 bottom-0 h-full z-10 bg-gradient-to-t from-background via-background/70 to-transparent opacity-100" />
+        <div className="absolute inset-x-0 bottom-0 h-1/2 z-10 bg-gradient-to-t from-background to-transparent opacity-100" />
+        <div className="absolute inset-x-0 top-0 h-[60%] z-10 bg-gradient-to-b from-black/40 via-transparent to-transparent opacity-100" />
+        <div className="absolute inset-0 z-10 backdrop-blur-[1px] opacity-30 mix-blend-overlay" />
+        <div className="absolute inset-0 z-10 bg-gradient-to-br from-primary/5 via-transparent to-accent/5 opacity-50" />
         
         {/* Placeholder or User Cover */}
         <motion.img 
