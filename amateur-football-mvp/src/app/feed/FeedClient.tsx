@@ -773,13 +773,10 @@ export default function FeedClient({ standalonePostId }: { standalonePostId?: st
 
             {/* POSTS FEED */}
             <div className="flex flex-col pb-20">
-              <AnimatePresence>
                 {filteredPosts.map((post, index) => (
-                  <motion.div
+                  <div
                     key={post.id}
-                    initial={{ opacity: 0, y: 8 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.3, delay: index < 10 ? index * 0.03 : 0 }}
+                    style={{ animationDelay: `${index < 10 ? index * 0.03 : 0}s`, animationFillMode: 'both' }}
                     onClick={(e) => {
                       if ((e.target as HTMLElement).closest('a, button, input')) return;
                       if (!standalonePostId) {
@@ -787,7 +784,7 @@ export default function FeedClient({ standalonePostId }: { standalonePostId?: st
                       }
                     }}
                     className={cn(
-                      "p-4 sm:px-5 sm:py-4 border-b border-foreground/[0.06] transition-colors duration-200 relative flex gap-3 sm:gap-4 group/post",
+                      "p-4 sm:px-5 sm:py-4 border-b border-foreground/[0.06] transition-colors duration-200 relative flex gap-3 sm:gap-4 group/post animate-in fade-in slide-in-from-bottom-2",
                       !standalonePostId && "hover:bg-foreground/[0.03] cursor-pointer",
                       standalonePostId && "bg-background py-8 sm:py-10 border-b-2",
                       post.author.is_pro ? "bg-gradient-to-r from-yellow-500/[0.03] to-transparent" : ""
@@ -797,7 +794,7 @@ export default function FeedClient({ standalonePostId }: { standalonePostId?: st
                     <div className="shrink-0 flex flex-col items-center">
                       <Link href={`/profile?id=${post.author.id}`} className={cn("w-12 h-12 rounded-full overflow-hidden shrink-0 relative hover:opacity-90 transition-opacity duration-200 z-10", post.author.is_pro ? "ring-2 ring-yellow-500/40" : "")}>
                         {post.author.avatar_url ? (
-                          <img src={post.author.avatar_url} className="w-full h-full object-cover" alt="" />
+                          <img src={post.author.avatar_url} loading="lazy" className="w-full h-full object-cover" alt="" />
                         ) : (
                           <div className="w-full h-full bg-gradient-to-br from-primary/15 to-primary/5 flex items-center justify-center font-bold text-primary text-[15px]">
                             {post.author.name.charAt(0)}
@@ -872,7 +869,7 @@ export default function FeedClient({ standalonePostId }: { standalonePostId?: st
                               setExpandedImage(post.image_url);
                             }}
                           >
-                            <img src={post.image_url} alt="" className="w-full max-h-[500px] object-cover" />
+                            <img src={post.image_url} alt="" loading="lazy" className="w-full max-h-[500px] object-cover" />
                           </div>
                         )}
                       </div>
@@ -941,13 +938,9 @@ export default function FeedClient({ standalonePostId }: { standalonePostId?: st
                       </div>
 
                       {/* Expanded Comments */}
-                      <AnimatePresence>
                         {expandedPostId === post.id && (
-                          <motion.div
-                            initial={{ opacity: 0, height: 0 }}
-                            animate={{ opacity: 1, height: 'auto' }}
-                            exit={{ opacity: 0, height: 0 }}
-                            className="mt-4 border-t border-foreground/[0.04] pt-4 overflow-hidden"
+                          <div
+                            className="mt-4 border-t border-foreground/[0.04] pt-4 overflow-hidden animate-in fade-in duration-300"
                           >
                             {/* Comment Input */}
                             <div className="flex gap-3 mb-4">
@@ -984,7 +977,7 @@ export default function FeedClient({ standalonePostId }: { standalonePostId?: st
                                 <div key={comment.id} className="flex gap-3">
                                   <Link href={`/profile?id=${comment.author.id}`} className={cn("w-8 h-8 rounded-full overflow-hidden shrink-0 ring-1", comment.author.is_pro ? "ring-yellow-500/20" : "ring-foreground/[0.06]")}>
                                     {comment.author.avatar_url ? (
-                                      <img src={comment.author.avatar_url} className="w-full h-full object-cover" alt="" />
+                                      <img src={comment.author.avatar_url} loading="lazy" className="w-full h-full object-cover" alt="" />
                                     ) : (
                                       <div className="w-full h-full bg-foreground/5 flex items-center justify-center font-bold text-foreground/40 text-[10px]">
                                         {comment.author.name.charAt(0)}
@@ -1006,11 +999,10 @@ export default function FeedClient({ standalonePostId }: { standalonePostId?: st
                                 </div>
                               )}
                             </div>
-                          </motion.div>
+                          </div>
                         )}
-                      </AnimatePresence>
                     </div>
-                  </motion.div>
+                  </div>
                 ))}
 
                 {filteredPosts.length === 0 && (
@@ -1031,7 +1023,6 @@ export default function FeedClient({ standalonePostId }: { standalonePostId?: st
                     )}
                   </div>
                 )}
-              </AnimatePresence>
             </div>
           </div>
 
@@ -1105,7 +1096,7 @@ export default function FeedClient({ standalonePostId }: { standalonePostId?: st
                           className={cn("w-10 h-10 rounded-full overflow-hidden shrink-0 transition-opacity hover:opacity-90 duration-200 z-10", su.is_pro ? "ring-2 ring-yellow-500/40" : "")}
                         >
                           {su.avatar_url ? (
-                            <img src={su.avatar_url} className="w-full h-full object-cover" alt="" />
+                            <img src={su.avatar_url} loading="lazy" className="w-full h-full object-cover" alt="" />
                           ) : (
                             <div className={cn("w-full h-full flex items-center justify-center font-bold text-[15px]",
                               su.is_pro ? "bg-gradient-to-br from-yellow-500/20 to-amber-500/10 text-yellow-500" : "bg-gradient-to-br from-primary/15 to-primary/5 text-primary"
@@ -1169,7 +1160,7 @@ export default function FeedClient({ standalonePostId }: { standalonePostId?: st
                       </div>
                       <div className={cn("w-10 h-10 rounded-full overflow-hidden shrink-0 relative transition-opacity hover:opacity-90 z-10", player.is_pro ? "ring-2 ring-yellow-500/40" : "")}>
                         {player.avatar_url ? (
-                          <img src={player.avatar_url} className="w-full h-full object-cover" alt="" />
+                          <img src={player.avatar_url} loading="lazy" className="w-full h-full object-cover" alt="" />
                         ) : (
                           <div className={cn("w-full h-full flex items-center justify-center font-bold text-[15px]",
                             player.is_pro ? "bg-gradient-to-br from-yellow-500/20 to-amber-500/10 text-yellow-500" : "bg-gradient-to-br from-primary/15 to-primary/5 text-primary"

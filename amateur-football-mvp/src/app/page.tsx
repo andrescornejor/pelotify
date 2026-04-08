@@ -62,17 +62,7 @@ export default function HomePage() {
   const [countdownText, setCountdownText] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<'activity' | 'teams' | 'venues' | 'futtok'>('activity');
   const { performanceMode, setPerformanceMode } = useSettings();
-  const [scrollProgress, setScrollProgress] = useState(0);
-
-  // Local sync to set global perf-mode if user previously toggled it here (Legacy compatibility)
-  useEffect(() => {
-    const handleScroll = () => {
-      const total = document.documentElement.scrollHeight - window.innerHeight;
-      setScrollProgress(window.scrollY / total);
-    };
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+  // Local sync removed for performance - scroll listeners degrade FPS on mobile wildly
 
   useEffect(() => {
     const hour = new Date().getHours();
@@ -250,11 +240,6 @@ export default function HomePage() {
       )}
     >
       <OnboardingTour />
-      {/*  SCROLL PROGRESS BAR  */}
-      <div
-        className="scroll-progress-bar"
-        style={{ transform: `scaleX(${scrollProgress})` }}
-      />
 
       {/*  AMBIENT  Simplified for Performance  */}
       {!performanceMode && (
@@ -302,24 +287,13 @@ export default function HomePage() {
           }}
         >
           {/* Backdrop image & Effects */}
-          <div className="absolute inset-0 z-0 select-none">
-            <motion.img
-              initial={false}
-              animate={
-                performanceMode
-                  ? { scale: 1, rotate: 0 }
-                  : {
-                    scale: [1.02, 1.08, 1.02],
-                    rotate: [0, 1, 0],
-                  }
-              }
-              transition={{ duration: 25, repeat: Infinity, ease: 'linear' }}
+          <div className="absolute inset-0 z-0 select-none bg-background">
+            <img
               src="https://images.unsplash.com/photo-1574629810360-7efbbe195018?auto=format&fit=crop&q=60&w=1200"
               alt=""
-              fetchPriority="high"
               className={cn(
-                'w-full h-full object-cover grayscale opacity-[0.08] dark:opacity-[0.12] scale-110 transition-opacity',
-                performanceMode && 'grayscale-0 opacity-20 scale-100'
+                'w-full h-full object-cover grayscale opacity-[0.08] dark:opacity-[0.12] transition-opacity',
+                performanceMode && 'grayscale-0 opacity-20'
               )}
             />
             {/* Overlay gradients for depth */}
@@ -333,16 +307,6 @@ export default function HomePage() {
               <>
                 <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-transparent to-accent/5" />
                 <div className="absolute inset-0 backdrop-blur-[2px] opacity-40 mix-blend-overlay" />
-
-                {/* Animated "Beam" light effect */}
-                <motion.div
-                  animate={{
-                    x: ['-100%', '100%'],
-                    opacity: [0, 0.3, 0],
-                  }}
-                  transition={{ duration: 8, repeat: Infinity, ease: 'linear' }}
-                  className="absolute inset-0 bg-gradient-to-r from-transparent via-primary/10 to-transparent skew-x-[-25deg]"
-                />
               </>
             )}
           </div>
@@ -1026,13 +990,11 @@ export default function HomePage() {
                           {/* Animated connecting line */}
                           <div className="absolute h-px w-64 bg-gradient-to-r from-transparent via-foreground/20 to-transparent top-1/2 -translate-y-1/2 -left-22 -z-10 group-hover/matchup:via-primary/40 transition-colors duration-500" />
                           
-                          <motion.div 
-                            animate={{ rotate: [0, 5, -5, 0] }} 
-                            transition={{ repeat: Infinity, duration: 5 }}
+                          <div 
                             className="w-14 h-14 rounded-[1.2rem] bg-gradient-to-br from-surface to-background border border-foreground/20 flex items-center justify-center shadow-lg shadow-black/50 rotate-45"
                           >
                             <span className="text-xl font-black italic text-transparent bg-clip-text bg-gradient-to-b from-primary to-primary-dark font-kanit -rotate-45 leading-none mt-1">VS</span>
-                          </motion.div>
+                          </div>
                           
                           {countdownText && (
                             <div className="absolute -bottom-10 whitespace-nowrap px-3 py-1.5 rounded-full bg-background/80 backdrop-blur-sm border border-primary/30 text-primary text-[9px] font-black uppercase tracking-[0.2em] shadow-[0_0_15px_rgba(44,252,125,0.2)] animate-pulse">
