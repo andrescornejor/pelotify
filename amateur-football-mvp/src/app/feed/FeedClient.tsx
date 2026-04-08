@@ -666,7 +666,7 @@ export default function FeedClient({ standalonePostId }: { standalonePostId?: st
                   {/* Cover strip */}
                   <div className="h-16 bg-gradient-to-r from-primary/20 via-primary/5 to-transparent relative">
                     <div className="absolute -bottom-5 left-4">
-                      <Link href={`/profile?id=${user.id}`} className="block w-12 h-12 rounded-full overflow-hidden border-2 border-background shadow-lg hover:opacity-90 transition-opacity">
+                      <Link href={`/feed/profile?id=${user.id}`} className="block w-12 h-12 rounded-full overflow-hidden border-2 border-background shadow-lg hover:opacity-90 transition-opacity">
                         {user?.avatar_url ? (
                           <img src={user.avatar_url} className="w-full h-full object-cover" alt="" />
                         ) : (
@@ -679,7 +679,7 @@ export default function FeedClient({ standalonePostId }: { standalonePostId?: st
                   </div>
                   <div className="pt-7 pb-4 px-4">
                     {/* Name */}
-                    <Link href={`/profile?id=${user.id}`} className="block">
+                    <Link href={`/feed/profile?id=${user.id}`} className="block">
                       <div className="font-bold text-[15px] text-foreground truncate hover:underline leading-tight">{user.name}</div>
                     </Link>
                     {/* Handle - editable */}
@@ -697,15 +697,15 @@ export default function FeedClient({ standalonePostId }: { standalonePostId?: st
                     </button>
                     {/* Quick stats */}
                     <div className="flex items-center gap-4 mt-3 pt-3 border-t border-foreground/[0.06]">
-                      <Link href={`/profile?id=${user.id}`} className="text-center group/stat hover:text-primary transition-colors">
+                      <Link href={`/feed/profile?id=${user.id}`} className="text-center group/stat hover:text-primary transition-colors">
                         <div className="text-sm font-black text-foreground group-hover/stat:text-primary leading-none">{user.user_metadata?.matches || 0}</div>
                         <div className="text-[9px] font-bold text-foreground/30 uppercase tracking-wider mt-0.5">Partidos</div>
                       </Link>
-                      <Link href={`/profile?id=${user.id}`} className="text-center group/stat hover:text-primary transition-colors">
+                      <Link href={`/feed/profile?id=${user.id}`} className="text-center group/stat hover:text-primary transition-colors">
                         <div className="text-sm font-black text-foreground group-hover/stat:text-primary leading-none">{user.user_metadata?.elo || 0}</div>
                         <div className="text-[9px] font-bold text-foreground/30 uppercase tracking-wider mt-0.5">ELO</div>
                       </Link>
-                      <Link href={`/profile?id=${user.id}`} className="text-center group/stat hover:text-primary transition-colors">
+                      <Link href={`/feed/profile?id=${user.id}`} className="text-center group/stat hover:text-primary transition-colors">
                         <div className="text-sm font-black text-foreground group-hover/stat:text-primary leading-none">{user.user_metadata?.goals || 0}</div>
                         <div className="text-[9px] font-bold text-foreground/30 uppercase tracking-wider mt-0.5">Goles</div>
                       </Link>
@@ -788,7 +788,7 @@ export default function FeedClient({ standalonePostId }: { standalonePostId?: st
             {!standalonePostId && user && (
               <div className="lg:hidden border-b border-foreground/[0.06] bg-foreground/[0.02]">
                 <div className="flex items-center gap-3 px-4 py-3">
-                  <Link href={`/profile?id=${user.id}`} className="w-9 h-9 rounded-full overflow-hidden shrink-0 border border-foreground/10">
+                  <Link href={`/feed/profile?id=${user.id}`} className="w-9 h-9 rounded-full overflow-hidden shrink-0 border border-foreground/10">
                     {user?.avatar_url ? (
                       <img src={user.avatar_url} className="w-full h-full object-cover" alt="" />
                     ) : (
@@ -813,7 +813,7 @@ export default function FeedClient({ standalonePostId }: { standalonePostId?: st
                     </button>
                   </div>
                   <Link
-                    href={`/profile?id=${user.id}`}
+                    href={`/feed/profile?id=${user.id}`}
                     className="px-3 py-1.5 rounded-full border border-foreground/[0.08] text-[11px] font-bold text-foreground/50 hover:text-primary hover:border-primary/30 transition-all"
                   >
                     Ver Perfil
@@ -956,7 +956,7 @@ export default function FeedClient({ standalonePostId }: { standalonePostId?: st
                   >
                     {/* LEFTSIDE AVATAR */}
                     <div className="shrink-0 flex flex-col items-center">
-                      <Link href={`/profile?id=${post.author.id}`} className={cn("w-12 h-12 rounded-full overflow-hidden shrink-0 relative hover:opacity-90 transition-opacity duration-200 z-10", post.author.is_pro ? "ring-2 ring-yellow-500/40" : "")}>
+                      <Link href={`/feed/profile?id=${post.author.id}`} className={cn("w-12 h-12 rounded-full overflow-hidden shrink-0 relative hover:opacity-90 transition-opacity duration-200 z-10", post.author.is_pro ? "ring-2 ring-yellow-500/40" : "")}>
                         {post.author.avatar_url ? (
                           <img src={post.author.avatar_url} loading="lazy" className="w-full h-full object-cover" alt="" />
                         ) : (
@@ -972,7 +972,7 @@ export default function FeedClient({ standalonePostId }: { standalonePostId?: st
                       {/* Header */}
                       <div className="flex justify-between items-start">
                         <div className="flex items-center gap-1.5 flex-wrap leading-tight">
-                          <Link href={`/profile?id=${post.author.id}`} className="group flex items-center gap-1 min-w-0">
+                          <Link href={`/feed/profile?id=${post.author.id}`} className="group flex items-center gap-1 min-w-0">
                             <span className={cn("font-bold text-[15px] truncate group-hover:underline", post.author.is_pro ? "text-yellow-500" : "text-foreground")}>
                               {post.author.name}
                             </span>
@@ -1155,7 +1155,7 @@ export default function FeedClient({ standalonePostId }: { standalonePostId?: st
                             <div className="space-y-4 px-1">
                               {comments[post.id]?.map(comment => (
                                 <div key={comment.id} className="flex gap-3">
-                                  <Link href={`/profile?id=${comment.author.id}`} className={cn("w-8 h-8 rounded-full overflow-hidden shrink-0 ring-1", comment.author.is_pro ? "ring-yellow-500/20" : "ring-foreground/[0.06]")}>
+                                  <Link href={`/feed/profile?id=${comment.author.id}`} className={cn("w-8 h-8 rounded-full overflow-hidden shrink-0 ring-1", comment.author.is_pro ? "ring-yellow-500/20" : "ring-foreground/[0.06]")}>
                                     {comment.author.avatar_url ? (
                                       <img src={comment.author.avatar_url} loading="lazy" className="w-full h-full object-cover" alt="" />
                                     ) : (
@@ -1272,7 +1272,7 @@ export default function FeedClient({ standalonePostId }: { standalonePostId?: st
                         className="px-4 py-3 hover:bg-foreground/[0.05] transition-colors flex items-center gap-3"
                       >
                         <Link
-                          href={`/profile?id=${su.id}`}
+                          href={`/feed/profile?id=${su.id}`}
                           className={cn("w-10 h-10 rounded-full overflow-hidden shrink-0 transition-opacity hover:opacity-90 duration-200 z-10", su.is_pro ? "ring-2 ring-yellow-500/40" : "")}
                         >
                           {su.avatar_url ? (
@@ -1285,7 +1285,7 @@ export default function FeedClient({ standalonePostId }: { standalonePostId?: st
                             </div>
                           )}
                         </Link>
-                        <Link href={`/profile?id=${su.id}`} className="flex-1 min-w-0">
+                        <Link href={`/feed/profile?id=${su.id}`} className="flex-1 min-w-0">
                           <div className={cn("font-bold text-[15px] truncate leading-tight hover:underline", su.is_pro ? "text-yellow-500" : "text-foreground")}>
                             {su.name}
                             {su.is_pro && <Zap className="w-3.5 h-3.5 text-yellow-500 fill-yellow-500 inline ml-1" />}
@@ -1327,7 +1327,7 @@ export default function FeedClient({ standalonePostId }: { standalonePostId?: st
                   {topPlayers.map((player, i) => (
                     <Link
                       key={player.id}
-                      href={`/profile?id=${player.id}`}
+                      href={`/feed/profile?id=${player.id}`}
                       className="px-4 py-3 hover:bg-foreground/[0.05] transition-colors flex items-center gap-3"
                     >
                       <div className={cn("w-6 flex justify-center text-[15px] font-bold shrink-0",
