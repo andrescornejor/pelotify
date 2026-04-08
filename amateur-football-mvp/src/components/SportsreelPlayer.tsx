@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Play, ExternalLink, Video, Heart, Share2, Info } from 'lucide-react';
+import { Play, ExternalLink, Video, Heart, Share2, Info, AlertCircle, Save, Youtube } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface SportsreelPlayerProps {
@@ -58,19 +58,47 @@ export function SportsreelPlayer({ url, className }: SportsreelPlayerProps) {
             Reviví tus jugadas virales y compartí tu talento con la comunidad. Cortesía de <span className="text-primary/60 font-black">Sportsreel</span>.
           </p>
 
-          <div className="flex flex-wrap items-center justify-center md:justify-start gap-4 pt-2">
+          <div className="flex flex-wrap items-center justify-center md:justify-start gap-3 pt-2">
             <a 
               href={url}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-3 px-8 h-14 rounded-2xl bg-white text-black font-black uppercase tracking-widest text-[10px] hover:scale-105 active:scale-95 transition-all shadow-xl"
+              className="flex items-center gap-3 px-8 h-14 rounded-2xl bg-primary text-black font-black uppercase tracking-widest text-[10px] hover:scale-105 active:scale-95 transition-all shadow-xl shadow-primary/20"
             >
-              Ver Video <ExternalLink className="w-4 h-4" />
+              Ver en Sportsreel <ExternalLink className="w-4 h-4" />
             </a>
             
-            <div className="flex items-center gap-2 px-6 h-14 rounded-2xl bg-white/5 border border-white/10 text-white/40 font-black uppercase tracking-widest text-[9px]">
+            <button className="flex items-center gap-2 px-6 h-14 rounded-2xl bg-white/5 border border-white/10 text-white/60 font-black uppercase tracking-widest text-[9px] hover:bg-white/10 transition-all">
                <Share2 className="w-4 h-4" />
                Compartir
+            </button>
+          </div>
+
+          {/* Persistence Options (Permanent Storage) */}
+          <div className="pt-6 space-y-4">
+            <div className="p-4 rounded-2xl bg-amber-500/10 border border-amber-500/20 flex items-start gap-4">
+               <AlertCircle className="w-5 h-5 text-amber-500 shrink-0 mt-0.5" />
+               <div className="space-y-1">
+                  <p className="text-[10px] font-black text-amber-500 uppercase tracking-widest">Aviso de Temporalidad</p>
+                  <p className="text-[11px] text-white/60 font-medium">Los videos en Sportsreel suelen borrarse después de 30 días. Guardalo en Pelotify para que sea eterno.</p>
+               </div>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+               <div className="p-4 rounded-2xl bg-zinc-900/50 border border-white/5 space-y-3">
+                  <div className="flex items-center gap-2">
+                     <Youtube className="w-4 h-4 text-red-500" />
+                     <span className="text-[9px] font-black uppercase text-white/40 tracking-widest">Opción YouTube (Gratis)</span>
+                  </div>
+                  <p className="text-[10px] text-white/30 font-medium leading-relaxed">Subí el video como "No Listado" y pegá el link acá para guardarlo de por vida sin costo.</p>
+               </div>
+               <div className="p-4 rounded-2xl bg-zinc-900/50 border border-white/5 space-y-3">
+                  <div className="flex items-center gap-2">
+                     <Save className="w-4 h-4 text-primary" />
+                     <span className="text-[9px] font-black uppercase text-white/40 tracking-widest">Nube Pelotify (Supabase)</span>
+                  </div>
+                  <p className="text-[10px] text-white/30 font-medium leading-relaxed">Usaremos tu espacio de 1GB en Supabase para guardar el clip original.</p>
+               </div>
             </div>
           </div>
         </div>
