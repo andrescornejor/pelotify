@@ -85,8 +85,9 @@ type TabType = 'posts' | 'likes' | 'bookmarks' | 'media';
 export default function FeedProfilePage() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { user } = useAuth();
-  const profileId = searchParams.get('id') || user?.id;
+  const { user, loading: authLoading } = useAuth();
+  const rawId = searchParams.get('id');
+  const profileId = (rawId && rawId !== 'undefined' && rawId !== 'null') ? rawId : user?.id;
 
   const [profile, setProfile] = useState<ProfileData | null>(null);
   const [isLoadingProfile, setIsLoadingProfile] = useState(true);
@@ -136,17 +137,25 @@ export default function FeedProfilePage() {
   }, [activeTab]);
 
   const fetchProfile = async () => {
+    if (!profileId) {
+      if (!authLoading && !searchParams.get('id')) {
+        setIsLoadingProfile(false);
+      }
+      return;
+    }
+
     setIsLoadingProfile(true);
     try {
       const { data, error } = await supabase
         .from('profiles')
-        .select('id, name, avatar_url, is_pro, position, handle, bio, elo, matches, goals, instagram, cover_url, created_at')
-        .eq('id', profileId!)
+        .select('*')
+        .eq('id', profileId)
         .single();
       if (error) throw error;
       setProfile(data);
     } catch (err) {
       console.error('Error fetching profile:', err);
+      setProfile(null);
     } finally {
       setIsLoadingProfile(false);
     }
@@ -426,7 +435,7 @@ export default function FeedProfilePage() {
 
   const displayHandle = profile?.handle || profile?.name?.toLowerCase().replace(/\s+/g, '') || '';
 
-  if (isLoadingProfile) {
+  if (isLoadingProfile || (authLoading && !searchParams.get('id'))) {
     return (
       <div className="flex flex-col min-h-screen bg-background relative overflow-hidden">
         <div className="fixed inset-0 pointer-events-none -z-10 overflow-hidden">
@@ -454,7 +463,11 @@ export default function FeedProfilePage() {
     );
   }
 
-  if (!profile) {
+  if (!profile && !isLoadingProfile && !authLoading) {
+    if (isMe) {
+      router.replace(`/profile?id=${user?.id}`);
+      return null;
+    }
     return (
       <div className="flex flex-col items-center justify-center min-h-screen bg-background p-8 text-center">
         <h2 className="text-2xl font-black italic uppercase tracking-tighter text-foreground mb-2">Perfil no encontrado</h2>
