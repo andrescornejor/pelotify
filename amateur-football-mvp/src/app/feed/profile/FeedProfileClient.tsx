@@ -479,6 +479,8 @@ export default function FeedProfilePage() {
     );
   }
 
+  if (!profile) return null;
+
   const joinDate = new Date(profile.created_at);
   const joinMonth = joinDate.toLocaleString('es', { month: 'long' });
   const joinYear = joinDate.getFullYear();
