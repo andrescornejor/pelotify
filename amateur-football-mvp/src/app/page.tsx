@@ -62,6 +62,17 @@ export default function HomePage() {
   const [countdownText, setCountdownText] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<'activity' | 'teams' | 'venues' | 'futtok'>('activity');
   const { performanceMode, setPerformanceMode } = useSettings();
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth < 768);
+    handleResize(); // initial check
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  const reduceAnimations = performanceMode || isMobile;
+
   // Local sync removed for performance - scroll listeners degrade FPS on mobile wildly
 
   useEffect(() => {
@@ -276,9 +287,9 @@ export default function HomePage() {
             HERO  full-width cinematic header
          */}
         <motion.section
-          initial={{ opacity: 0, y: 30 }}
+          initial={reduceAnimations ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+          transition={{ duration: reduceAnimations ? 0 : 0.8, ease: [0.16, 1, 0.3, 1] }}
           className="relative overflow-hidden rounded-[2.5rem] lg:rounded-[3rem] shadow-2xl group/hero"
           style={{
             background:
@@ -291,19 +302,21 @@ export default function HomePage() {
             <img
               src="https://images.unsplash.com/photo-1574629810360-7efbbe195018?auto=format&fit=crop&q=60&w=1200"
               alt=""
+              fetchPriority="high"
+              decoding="async"
               className={cn(
                 'w-full h-full object-cover grayscale opacity-[0.08] dark:opacity-[0.12] transition-opacity',
-                performanceMode && 'grayscale-0 opacity-20'
+                reduceAnimations && 'grayscale-0 opacity-20'
               )}
             />
             {/* Overlay gradients for depth */}
             <div
               className={cn(
                 'absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent opacity-90',
-                performanceMode && 'opacity-70'
+                reduceAnimations && 'opacity-70'
               )}
             />
-            {!performanceMode && (
+            {!reduceAnimations && (
               <>
                 <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-transparent to-accent/5" />
                 <div className="absolute inset-0 backdrop-blur-[2px] opacity-40 mix-blend-overlay" />
@@ -316,19 +329,19 @@ export default function HomePage() {
             {/* Left: Text & Branding */}
             <div className="flex-1 space-y-6 lg:space-y-8 max-w-2xl">
               <motion.div
-                initial={performanceMode ? { opacity: 1 } : { x: -20, opacity: 0 }}
+                initial={reduceAnimations ? { opacity: 1, x: 0 } : { x: -20, opacity: 0 }}
                 animate={{ x: 0, opacity: 1 }}
-                transition={{ delay: 0.2, type: 'spring', stiffness: 200 }}
+                transition={reduceAnimations ? { duration: 0 } : { delay: 0.2, type: 'spring', stiffness: 200 }}
                 className={cn(
                   'inline-flex items-center gap-3 px-4 py-1.5 rounded-full bg-foreground/[0.04] border border-foreground/15',
-                  performanceMode && 'bg-surface'
+                  reduceAnimations && 'bg-surface'
                 )}
               >
                 <div className="relative flex h-2 w-2">
                   <span
                     className={cn(
                       'absolute inline-flex h-full w-full rounded-full bg-foreground/20 opacity-75',
-                      !performanceMode && 'animate-ping'
+                      !reduceAnimations && 'animate-ping'
                     )}
                   />
                   <span className="relative inline-flex rounded-full h-2 w-2 bg-foreground/30" />
@@ -341,9 +354,9 @@ export default function HomePage() {
               {/* Title Section based on Branding */}
               <div className="flex flex-col">
                 <motion.h1
-                  initial={{ opacity: 0, x: -40 }}
+                  initial={reduceAnimations ? { opacity: 1, x: 0 } : { opacity: 0, x: -40 }}
                   animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: 0.3, duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+                  transition={reduceAnimations ? { duration: 0 } : { delay: 0.3, duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
                   className="font-black italic uppercase font-kanit tracking-tighter text-foreground"
                   style={{ fontSize: 'clamp(3rem, 10vw, 7.5rem)', lineHeight: '0.85' }}
                 >
@@ -352,9 +365,9 @@ export default function HomePage() {
               </div>
 
               <motion.div
-                initial={{ opacity: 0 }}
+                initial={reduceAnimations ? { opacity: 1 } : { opacity: 0 }}
                 animate={{ opacity: 1 }}
-                transition={{ delay: 0.5 }}
+                transition={reduceAnimations ? { duration: 0 } : { delay: 0.5 }}
                 className="flex items-center gap-4 py-2"
               >
                 <div className="h-[2px] w-12 bg-primary/30" />
@@ -390,9 +403,9 @@ export default function HomePage() {
 
               {/* Stats / Rank Summary */}
               <motion.div
-                initial={{ opacity: 0, y: 20 }}
+                initial={reduceAnimations ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.6 }}
+                transition={reduceAnimations ? { duration: 0 } : { delay: 0.6 }}
                 className="grid grid-cols-2 sm:grid-cols-3 gap-4 lg:gap-6 pt-2 lg:pt-4"
               >
                 {[
@@ -428,9 +441,9 @@ export default function HomePage() {
 
             {/* Right: Modern CTA Cards */}
             <motion.div
-              initial={{ opacity: 0, scale: 0.9 }}
+              initial={reduceAnimations ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: 0.4, duration: 0.7 }}
+              transition={reduceAnimations ? { duration: 0 } : { delay: 0.4, duration: 0.7 }}
               className="lg:shrink-0 w-full lg:w-[400px] space-y-4"
             >
               {/* Rank Progress Card */}
@@ -473,9 +486,9 @@ export default function HomePage() {
                 <div className="space-y-3 relative z-10">
                   <div className="relative h-3 bg-foreground/5 rounded-full p-0.5 overflow-hidden border border-foreground/15">
                     <motion.div
-                      initial={{ width: 0 }}
+                      initial={reduceAnimations ? { width: `${rankCalculation.progress}%` } : { width: 0 }}
                       animate={{ width: `${rankCalculation.progress}%` }}
-                      transition={{ duration: 2, ease: 'circOut', delay: 0.8 }}
+                      transition={reduceAnimations ? { duration: 0 } : { duration: 2, ease: 'circOut', delay: 0.8 }}
                       className="h-full rounded-full relative"
                       style={{
                         background: `linear-gradient(90deg, ${rankCalculation.info.color}, #5dfd9d)`,
@@ -513,7 +526,7 @@ export default function HomePage() {
                     whileTap={{ scale: 0.98 }}
                     className="w-full h-16 rounded-[2rem] glass-premium border-foreground/15 text-foreground text-[11px] font-black uppercase tracking-widest italic flex items-center justify-center gap-3 relative overflow-hidden group shadow-xl transition-all duration-500 leading-none"
                   >
-                    {!performanceMode && (
+                    {!reduceAnimations && (
                       <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                     )}
                     <Search className="w-5 h-5 relative z-10 text-primary group-hover:scale-110 transition-transform duration-500" />
@@ -531,7 +544,7 @@ export default function HomePage() {
                     whileTap={{ scale: 0.98 }}
                     className="w-full h-16 rounded-[2rem] glass-premium border-foreground/15 text-orange-500/50 hover:text-orange-500 font-black uppercase text-[10px] tracking-[0.2em] flex items-center justify-center transition-all duration-500 shadow-xl relative overflow-hidden group"
                   >
-                    {!performanceMode && (
+                    {!reduceAnimations && (
                       <div className="absolute inset-0 bg-gradient-to-br from-orange-500/5 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                     )}
                     <Flame className="w-6 h-6 relative z-10 transition-transform group-hover:scale-125 group-hover:rotate-12 duration-500" />
