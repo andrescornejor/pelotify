@@ -850,7 +850,7 @@ export default function FeedClient({ standalonePostId }: { standalonePostId?: st
                             let content = post.content;
                             const hasMatchCard = post.content.match(/[?&]id=([0-9a-fA-F-]{36})/);
                             if (hasMatchCard) {
-                              content = content.replace(/https?:\/\/[^\s]+match\?id=[0-9a-fA-F-]{36}[^\s]*/g, '');
+                              content = content.replace(/\n?https?:\/\/[^\s]+match\?id=[0-9a-fA-F-]{36}[^\s]*/g, '');
                             }
 
                             return content.split(/(#[\w\u00C0-\u024FáéíóúñÁÉÍÓÚÑ]+)/g).map((part, i) => {

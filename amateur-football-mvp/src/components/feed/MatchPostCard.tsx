@@ -1,7 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { Calendar, Clock, MapPin, Users, Zap, ChevronRight } from 'lucide-react';
+import { Calendar, Clock, MapPin, Users, Zap, ChevronRight, AlertCircle } from 'lucide-react';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { supabase } from '@/lib/supabase';
@@ -14,20 +14,34 @@ interface MatchPostCardProps {
 export default function MatchPostCard({ matchId }: MatchPostCardProps) {
   const [match, setMatch] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const [errorStatus, setErrorStatus] = useState<string | null>(null);
 
   useEffect(() => {
     async function fetchMatch() {
       try {
         const { data, error } = await supabase
           .from('matches')
-          .select('*, participants(count)')
+          .select('*, participants:match_participants(count)')
           .eq('id', matchId)
           .single();
 
-        if (error) throw error;
+        if (error) {
+          console.error('Supabase error fetching match:', error);
+          setErrorStatus(error.message);
+          setLoading(false);
+          return;
+        }
+        
+        if (!data) {
+          setErrorStatus('Not found');
+          setLoading(false);
+          return;
+        }
+
         setMatch(data);
-      } catch (err) {
-        console.error('Error fetching match for card:', err);
+      } catch (err: any) {
+        console.error('Catch error fetching match for card:', err);
+        setErrorStatus(err.message || 'Unknown error');
       } finally {
         setLoading(false);
       }
@@ -40,8 +54,23 @@ export default function MatchPostCard({ matchId }: MatchPostCardProps) {
 
   if (loading) {
     return (
-      <div className="w-full h-32 glass-premium rounded-3xl animate-pulse flex items-center justify-center border border-white/5">
-        <Zap className="w-6 h-6 text-primary/20 animate-pulse" />
+      <div className="w-full h-32 glass-premium rounded-[2.5rem] animate-pulse flex items-center justify-center border border-white/5 my-4">
+        <div className="flex flex-col items-center gap-2">
+          <Zap className="w-6 h-6 text-primary/20 animate-pulse" />
+          <span className="text-[8px] font-black text-white/10 uppercase tracking-widest">Cargando Match...</span>
+        </div>
+      </div>
+    );
+  }
+
+  if (errorStatus) {
+    return (
+      <div className="w-full p-6 glass-premium rounded-[2.5rem] border border-red-500/20 flex items-center justify-center gap-3 my-4">
+        <AlertCircle className="w-5 h-5 text-red-500/50" />
+        <div className="flex flex-col">
+          <span className="text-[10px] font-black text-red-500/50 uppercase tracking-widest">No se pudo cargar el partido</span>
+          <span className="text-[8px] font-bold text-red-500/30 uppercase tracking-widest">{errorStatus}</span>
+        </div>
       </div>
     );
   }
