@@ -560,7 +560,7 @@ export default function RecruitmentMarketplace() {
                       <Skull className="text-primary" size={60} />
                    </div>
                 </div>
-                <h3 className="text-5xl font-black italic uppercase font-kanit mb-4 tracking-tighter">Silencio en el vestuario</h3>
+                <h3 className="text-5xl font-black italic uppercase font-kanit mb-4 tracking-tighter">Silencio en el 3erTiempo</h3>
                 <p className="text-foreground/40 font-medium italic text-xl mb-12 max-w-md mx-auto">No hay búsquedas activas para estos puestos. ¿Por qué no armas una vos?</p>
                 <Link href="/recruitment/create">
                   <button className="bg-primary text-black px-12 py-6 rounded-[2rem] font-black text-xl uppercase tracking-tight italic shadow-glow-primary hover:scale-105 active:scale-95 transition-all">

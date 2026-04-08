@@ -33,7 +33,7 @@ import { useSettings } from '@/contexts/SettingsContext';
 
 const DESKTOP_NAV = [
   { href: '/highlights', icon: Play, label: 'FutTok' },
-  { href: '/feed', icon: Globe, label: 'Vestuario' },
+  { href: '/feed', icon: Globe, label: '3erTiempo' },
   { href: '/search', icon: Search, label: 'Buscar' },
   { href: '/friends', icon: Users, label: 'Amigos', id: 'friends' },
   { href: '/messages', icon: MessageSquare, label: 'Mensajes' },

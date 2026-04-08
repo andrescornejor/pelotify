@@ -524,7 +524,7 @@ export default function FeedProfilePage() {
         <h2 className="text-2xl font-black italic uppercase tracking-tighter text-foreground mb-2">Perfil no encontrado</h2>
         <p className="text-foreground/40 text-sm mb-6">Este usuario no existe o fue eliminado.</p>
         <button onClick={() => router.push('/feed')} className="px-6 py-3 bg-primary text-background rounded-full font-bold text-sm">
-          Volver al Vestuario
+          Volver al 3erTiempo
         </button>
       </div>
     );
@@ -869,7 +869,7 @@ export default function FeedProfilePage() {
               <Search className="w-5 h-5 text-foreground/30" />
               <input
                 type="text"
-                placeholder="Buscar en el Vestuario..."
+                placeholder="Buscar en el 3erTiempo..."
                 className="bg-transparent border-none outline-none text-sm font-medium w-full placeholder:text-foreground/20"
               />
             </div>

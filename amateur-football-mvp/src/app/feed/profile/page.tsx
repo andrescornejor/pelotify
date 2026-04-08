@@ -3,8 +3,8 @@ import { Metadata } from 'next';
 import { Suspense } from 'react';
 
 export const metadata: Metadata = {
-  title: 'Perfil | Vestuario - Pelotify',
-  description: 'Mira los posts, me gusta y actividad de este jugador en el Vestuario de Pelotify.',
+  title: 'Perfil | 3erTiempo - Pelotify',
+  description: 'Mira los posts, me gusta y actividad de este jugador en el 3erTiempo de Pelotify.',
 };
 
 export default function FeedProfilePage() {

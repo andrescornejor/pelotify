@@ -717,7 +717,7 @@ export default function FeedClient({ standalonePostId }: { standalonePostId?: st
               {/* Navigation Links - Twitter Style */}
               <nav className="flex flex-col gap-1 w-full">
                 {[
-                  { href: '/feed', icon: Zap, label: 'Vestuario', color: 'text-primary' },
+                  { href: '/feed', icon: Zap, label: '3erTiempo', color: 'text-primary' },
                   { href: '/search', icon: Search, label: 'Buscar', color: 'text-foreground' },
                   { href: '/friends', icon: Users, label: 'Social', color: 'text-foreground' },
                   { href: '/teams', icon: Trophy, label: 'Equipos', color: 'text-foreground' },
@@ -832,7 +832,7 @@ export default function FeedClient({ standalonePostId }: { standalonePostId?: st
             >
               <div className="flex items-center gap-2.5">
                 {standalonePostId && <span className="text-foreground/50 mr-1 text-xl leading-none pt-1">←</span>}
-                <h1 className="text-2xl font-black italic uppercase font-kanit text-foreground tracking-tighter leading-none">{standalonePostId ? 'Post' : 'Vestuario'}</h1>
+                <h1 className="text-2xl font-black italic uppercase font-kanit text-foreground tracking-tighter leading-none">{standalonePostId ? 'Post' : '3erTiempo'}</h1>
               </div>
               <div className="flex items-center gap-2">
                 <Link href="/pro" className="group">

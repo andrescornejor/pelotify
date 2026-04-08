@@ -104,7 +104,7 @@ export const TeamCard = ({ team, performanceMode }: TeamCardProps) => {
         <div className="flex items-center gap-6 relative z-10 w-full sm:w-auto mt-6 sm:mt-0">
           <div className="hidden xl:flex flex-col items-end opacity-0 group-hover:opacity-100 translate-x-8 group-hover:translate-x-0 transition-all duration-700">
             <span className="text-[11px] font-bold text-primary tracking-wide font-kanit">Sede Central</span>
-            <span className="text-[9px] font-medium text-foreground/30 mt-1">Entrar al vestuario</span>
+            <span className="text-[9px] font-medium text-foreground/30 mt-1">Entrar al 3erTiempo</span>
           </div>
           <div 
             className="w-16 h-16 rounded-[2rem] bg-foreground/[0.04] border border-white/5 flex items-center justify-center group-hover:bg-primary group-hover:text-background transition-all duration-700 shadow-xl group-hover:shadow-[0_15px_30px_rgba(44,252,125,0.2)] group-hover:scale-110"

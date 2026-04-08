@@ -392,7 +392,7 @@ export default function CreateMatchPage() {
       queryClient.invalidateQueries({ queryKey: queryKeys.matches.all });
       queryClient.invalidateQueries({ queryKey: queryKeys.matches.lists() });
 
-      // Share in Vestuario if selected
+      // Share in 3erTiempo if selected
       if (shareInFeed && match.id) {
         try {
           const matchUrl = `${window.location.origin}/match?id=${match.id}`;
@@ -412,7 +412,7 @@ ${matchUrl}`;
             content: content,
           });
         } catch (postErr) {
-          console.error("Failed to share in Vestuario:", postErr);
+          console.error("Failed to share in 3erTiempo:", postErr);
           // Don't block the match creation flow if feed post fails
         }
       }
@@ -1444,7 +1444,7 @@ ${matchUrl}`;
                     </p>
                   </div>
 
-                  {/* Share in Vestuario Toggle */}
+                  {/* Share in 3erTiempo Toggle */}
                   <div className="mx-6 mb-6">
                     <button
                       type="button"
@@ -1468,7 +1468,7 @@ ${matchUrl}`;
                             "block text-sm font-black italic uppercase tracking-tight leading-none",
                             shareInFeed ? "text-foreground" : "text-foreground/40"
                           )}>
-                            Publicar en Vestuario
+                            Publicar en 3erTiempo
                           </span>
                           <span className={cn(
                             "block text-[10px] font-bold uppercase tracking-widest mt-1",

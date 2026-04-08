@@ -59,7 +59,7 @@ ${shareUrl}`;
       setTimeout(() => setSharedToFeed(false), 3000);
     } catch (err) {
       console.error('Feed share failed:', err);
-      alert('Error al compartir en Vestuario');
+      alert('Error al compartir en 3erTiempo');
     } finally {
       setIsSharingToFeed(false);
     }
@@ -194,7 +194,7 @@ ${shareUrl}`;
                     <MessageSquare className="w-4 h-4" />
                   )}
                   <span className="text-[10px] font-black uppercase tracking-widest">
-                    {sharedToFeed ? 'Publicado' : 'Vestuario'}
+                    {sharedToFeed ? 'Publicado' : '3erTiempo'}
                   </span>
                 </button>
               </div>
