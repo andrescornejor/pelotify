@@ -12,10 +12,11 @@ interface HomeData {
   activities: any[];
   highlights: any[];
   featuredVenues: any[];
+  recentPosts: any[];
 }
 
 async function fetchHomeData(userId: string): Promise<HomeData> {
-  const [teamsRes, matchesRes, playersCountRes, recentProfilesRes, venuesRes] =
+  const [teamsRes, matchesRes, playersCountRes, recentProfilesRes, venuesRes, postsRes] =
     await Promise.all([
       supabase
         .from('team_members')
@@ -42,10 +43,19 @@ async function fetchHomeData(userId: string): Promise<HomeData> {
         .limit(5),
       supabase
         .from('canchas_businesses')
-        .select('*')
         .eq('is_active', true)
         .order('name', { ascending: true })
         .limit(6),
+      supabase
+        .from('posts')
+        .select(`
+          id, content, image_url, created_at, author_id,
+          author:profiles(id, name, avatar_url, is_pro, handle),
+          post_likes(id, user_id),
+          post_comments(count)
+        `)
+        .order('created_at', { ascending: false })
+        .limit(12),
     ]);
 
   const userTeams = teamsRes.data
@@ -71,8 +81,15 @@ async function fetchHomeData(userId: string): Promise<HomeData> {
 
   const highlights = await getHighlights(6);
   const featuredVenues = venuesRes.data || [];
+  
+  const recentPosts = postsRes.data ? postsRes.data.map((p: any) => ({
+    ...p,
+    likes_count: p.post_likes.length,
+    comments_count: p.post_comments[0].count,
+    user_has_liked: p.post_likes.some((like: any) => like.user_id === userId)
+  })) : [];
 
-  return { userTeams, nextMatch, totalPlayers, activities, highlights, featuredVenues };
+  return { userTeams, nextMatch, totalPlayers, activities, highlights, featuredVenues, recentPosts };
 }
 
 /**

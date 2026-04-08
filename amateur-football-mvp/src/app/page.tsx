@@ -25,6 +25,7 @@ import {
   Shield,
   Crown,
   Play,
+  Heart,
 } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useSettings } from '@/contexts/SettingsContext';
@@ -57,10 +58,11 @@ export default function HomePage() {
   const totalPlayers = homeData?.totalPlayers || 0;
   const highlights = homeData?.highlights || [];
   const featuredVenues = homeData?.featuredVenues || [];
+  const recentPosts = homeData?.recentPosts || [];
 
   const [greeting, setGreeting] = useState('');
   const [countdownText, setCountdownText] = useState<string | null>(null);
-  const [activeTab, setActiveTab] = useState<'activity' | 'teams' | 'venues' | 'futtok'>('activity');
+  const [activeTab, setActiveTab] = useState<'activity' | 'teams' | 'social' | 'futtok'>('activity');
   const { performanceMode, setPerformanceMode } = useSettings();
   const [isMobile, setIsMobile] = useState(false);
 
@@ -659,7 +661,7 @@ export default function HomePage() {
                 {[
                   { id: 'activity', label: 'Feed', icon: Activity },
                   { id: 'teams', label: 'Equipos', icon: Users },
-                  { id: 'venues', label: 'Sedes', icon: MapPin },
+                  { id: 'social', label: '3erTiempo', icon: MessageSquare },
                   { id: 'futtok', label: 'FutTok', icon: Flame },
                 ].map((tab) => {
                   const isSelected = activeTab === tab.id;
@@ -937,9 +939,9 @@ export default function HomePage() {
                 </motion.div>
               )}
 
-              {activeTab === 'venues' && (
+              {activeTab === 'social' && (
                 <motion.div
-                  key="venues-tab"
+                  key="social-tab"
                   initial="hidden"
                   animate="visible"
                   exit="exit"
@@ -949,22 +951,93 @@ export default function HomePage() {
                   <div className="flex items-center justify-between px-1">
                     <div className="flex flex-col gap-1">
                       <h2 className="text-xl lg:text-2xl font-black text-foreground italic uppercase tracking-tighter font-kanit">
-                        Sedes Destacadas
+                        Lo último en 3erTiempo
                       </h2>
                       <span className="text-[9px] font-semibold text-foreground/40 tracking-wide font-kanit">
-                        Complejos verificados en Rosario
+                        Comunidad activa en Pelotify
                       </span>
                     </div>
-                    <Link href="/establecimientos" className="group flex items-center gap-2 px-5 py-2.5 rounded-full text-[9px] font-black text-white hover:text-primary transition-all tracking-[0.2em] uppercase glass-premium border-primary/20 hover:border-primary/50 shadow-lg shadow-primary/5">
-                      EXPLORAR <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
+                    <Link href="/feed" className="group flex items-center gap-2 px-5 py-2.5 rounded-full text-[9px] font-black text-white hover:text-primary transition-all tracking-[0.2em] uppercase glass-premium border-primary/20 hover:border-primary/50 shadow-lg shadow-primary/5">
+                      VER MURO <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
                     </Link>
                   </div>
 
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                    {featuredVenues.length > 0 ? (
-                      featuredVenues.map((venue) => <VenueCard key={venue.id} venue={venue} performanceMode={performanceMode} />)
+                  <div className="space-y-4">
+                    {recentPosts.length > 0 ? (
+                      recentPosts.map((post, idx) => (
+                        <motion.div
+                          key={post.id}
+                          initial={{ opacity: 0, y: 20 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          transition={{ delay: idx * 0.05 }}
+                          className="glass-premium rounded-[2rem] border-foreground/10 overflow-hidden group hover:border-primary/20 transition-all duration-300"
+                        >
+                          <div className="p-5 flex flex-col gap-4">
+                            <div className="flex items-center justify-between">
+                              <div className="flex items-center gap-3">
+                                <Link href={`/feed/profile?id=${post.author.id}`} className="relative">
+                                  <div className={cn(
+                                    "w-10 h-10 rounded-full overflow-hidden border border-foreground/10 shadow-sm",
+                                    post.author.is_pro && "ring-2 ring-primary ring-offset-2 ring-offset-background"
+                                  )}>
+                                    {post.author.avatar_url ? (
+                                      <img src={post.author.avatar_url} alt="" className="w-full h-full object-cover" />
+                                    ) : (
+                                      <div className="w-full h-full bg-surface-elevated flex items-center justify-center text-foreground/40 font-bold text-sm">
+                                        {post.author.name.charAt(0)}
+                                      </div>
+                                    )}
+                                  </div>
+                                  {post.author.is_pro && (
+                                    <div className="absolute -bottom-1 -right-1 bg-primary text-background p-0.5 rounded shadow-lg">
+                                      <Zap className="w-2.5 h-2.5 fill-black" />
+                                    </div>
+                                  )}
+                                </Link>
+                                <div>
+                                  <div className="flex items-center gap-1.5">
+                                    <span className="font-bold text-sm text-foreground leading-none">{post.author.name}</span>
+                                    {post.author.is_pro && <span className="text-[8px] font-black text-primary uppercase tracking-tighter bg-primary/10 px-1 rounded">PRO</span>}
+                                  </div>
+                                  <div className="text-[10px] font-bold text-foreground/30 uppercase tracking-widest mt-0.5">
+                                    @{post.author.handle || post.author.name.toLowerCase().replace(/\s+/g, '')}
+                                  </div>
+                                </div>
+                              </div>
+                              <span className="text-[10px] font-bold text-foreground/20 uppercase">
+                                {new Date(post.created_at).toLocaleDateString()}
+                              </span>
+                            </div>
+
+                            <p className="text-[15px] text-foreground/80 leading-snug whitespace-pre-wrap font-medium">
+                              {post.content}
+                            </p>
+
+                            {post.image_url && (
+                              <div className="relative aspect-video rounded-2xl overflow-hidden border border-foreground/10 shadow-sm">
+                                <img src={post.image_url} alt="" className="w-full h-full object-cover" />
+                                <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
+                              </div>
+                            )}
+
+                            <div className="flex items-center gap-6 pt-2">
+                              <div className="flex items-center gap-1.5 text-foreground/40">
+                                <Heart className={cn("w-4 h-4", post.user_has_liked && "fill-pink-500 text-pink-500")} />
+                                <span className="text-xs font-bold">{post.likes_count}</span>
+                              </div>
+                              <div className="flex items-center gap-1.5 text-foreground/40">
+                                <MessageSquare className="w-4 h-4" />
+                                <span className="text-xs font-bold">{post.comments_count}</span>
+                              </div>
+                              <Link href={`/feed?post=${post.id}`} className="ml-auto text-[10px] font-black text-primary uppercase tracking-[0.2em] hover:underline">
+                                RESPONDER
+                              </Link>
+                            </div>
+                          </div>
+                        </motion.div>
+                      ))
                     ) : (
-                      Array(2).fill(0).map((_, i) => <div key={i} className="h-80 rounded-[3rem] bg-surface animate-pulse" />)
+                      <EmptyState icon={MessageSquare} title="Silencio en el Muro" description="Se el primero en postear algo épico." />
                     )}
                   </div>
                 </motion.div>
