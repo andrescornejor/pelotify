@@ -296,9 +296,10 @@ export default function PostMatchModal({
                         >
                           <Minus className="w-6 h-6" />
                         </button>
-                      </div>
                     </div>
                 </div>
+              </div>
+            </div>
 
                 <div className="space-y-4">
                   <div className="flex items-center gap-3 px-1">
