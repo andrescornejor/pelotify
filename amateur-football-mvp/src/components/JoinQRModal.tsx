@@ -65,6 +65,20 @@ ${shareUrl}`;
     }
   };
 
+  const handleShare = async () => {
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: `¡Unite al partido en ${venueName}!`,
+          text: `Te invito a jugar en Pelotify. Sumate acá:`,
+          url: shareUrl,
+        });
+      } catch (err) {
+        console.error('Share failed:', err);
+      }
+    }
+  };
+
   return (
     <AnimatePresence>
       {isOpen && (
