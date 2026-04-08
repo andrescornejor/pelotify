@@ -1,7 +1,8 @@
 'use client';
 
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, QrCode, Share2, Copy, Check } from 'lucide-react';
+import { X, QrCode, Share2, Copy, Check, MessageSquare, Loader2 } from 'lucide-react';
+import { supabase } from '@/lib/supabase';
 import { useState } from 'react';
 import { QRCodeCanvas } from 'qrcode.react';
 
@@ -10,10 +11,13 @@ interface JoinQRModalProps {
   onClose: () => void;
   matchId: string;
   venueName: string;
+  match?: any;
 }
 
-export default function JoinQRModal({ isOpen, onClose, matchId, venueName }: JoinQRModalProps) {
+export default function JoinQRModal({ isOpen, onClose, matchId, venueName, match }: JoinQRModalProps) {
   const [copied, setCopied] = useState(false);
+  const [isSharingToFeed, setIsSharingToFeed] = useState(false);
+  const [sharedToFeed, setSharedToFeed] = useState(false);
   const shareUrl = typeof window !== 'undefined' ? `${window.location.origin}/match?id=${matchId}` : '';
 
   const handleCopy = () => {
@@ -22,17 +26,42 @@ export default function JoinQRModal({ isOpen, onClose, matchId, venueName }: Joi
     setTimeout(() => setCopied(false), 2000);
   };
 
-  const handleShare = async () => {
-    if (navigator.share) {
-      try {
-        await navigator.share({
-          title: `¡Unite al partido en ${venueName}!`,
-          text: `Te invito a jugar en Pelotify. Sumate acá:`,
-          url: shareUrl,
-        });
-      } catch (err) {
-        console.error('Share failed:', err);
-      }
+  const handleShareToFeed = async () => {
+    if (!match || isSharingToFeed || sharedToFeed) return;
+    
+    setIsSharingToFeed(true);
+    try {
+      // Helper functions for formatting (simplified version since we don't have the page's helpers here)
+      const dateLabel = new Date(match.date + 'T12:00:00').toLocaleDateString('es-ES', { weekday: 'long', day: 'numeric', month: 'long' });
+      const timeLabel = match.time;
+      
+      const content = `⚽ ¡Los invito al partido! ¿Quién se suma?
+
+📅 ${dateLabel}
+⏰ ${timeLabel}
+🏟️ ${match.location}
+🏆 ${match.type}
+💰 ${match.price > 0 ? `$${match.price}` : 'Libre'}
+
+¡Sumate acá! 👇
+${shareUrl}`;
+
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) throw new Error("No user found");
+
+      const { error } = await supabase.from('posts').insert({
+        author_id: user.id,
+        content: content,
+      });
+
+      if (error) throw error;
+      setSharedToFeed(true);
+      setTimeout(() => setSharedToFeed(false), 3000);
+    } catch (err) {
+      console.error('Feed share failed:', err);
+      alert('Error al compartir en Vestuario');
+    } finally {
+      setIsSharingToFeed(false);
     }
   };
 
@@ -132,10 +161,27 @@ export default function JoinQRModal({ isOpen, onClose, matchId, venueName }: Joi
 
                 <button
                   onClick={handleShare}
-                  className="flex-1 h-16 rounded-2xl bg-primary text-black flex items-center justify-center gap-3 hover:scale-105 transition-all active:scale-95 shadow-xl shadow-primary/20"
+                  className="flex-1 h-16 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center gap-3 hover:bg-white/10 transition-all active:scale-95 text-white/60"
                 >
                   <Share2 className="w-4 h-4" />
-                  <span className="text-[10px] font-black uppercase tracking-widest">Compartir</span>
+                  <span className="text-[10px] font-black uppercase tracking-widest text-center">Externo</span>
+                </button>
+
+                <button
+                  onClick={handleShareToFeed}
+                  disabled={isSharingToFeed || sharedToFeed}
+                  className="flex-[1.5] h-16 rounded-2xl bg-primary text-black flex items-center justify-center gap-3 hover:scale-105 transition-all active:scale-95 shadow-xl shadow-primary/20 disabled:opacity-50"
+                >
+                  {isSharingToFeed ? (
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                  ) : sharedToFeed ? (
+                    <Check className="w-4 h-4" />
+                  ) : (
+                    <MessageSquare className="w-4 h-4" />
+                  )}
+                  <span className="text-[10px] font-black uppercase tracking-widest">
+                    {sharedToFeed ? 'Publicado' : 'Vestuario'}
+                  </span>
                 </button>
               </div>
             </div>

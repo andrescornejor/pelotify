@@ -19,6 +19,7 @@ import {
   Unlock,
   ChevronRight,
   AlertTriangle,
+  MessageSquare,
 } from 'lucide-react';
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
@@ -235,6 +236,8 @@ export default function CreateMatchPage() {
     lng: undefined as number | undefined,
   });
 
+  const [shareInFeed, setShareInFeed] = useState(true);
+
   useEffect(() => {
     // Escuchar cambios de cancha y fecha para obtener horarios ocupados
     const fetchBookings = async () => {
@@ -388,6 +391,31 @@ export default function CreateMatchPage() {
       queryClient.invalidateQueries({ queryKey: queryKeys.userMatches.all });
       queryClient.invalidateQueries({ queryKey: queryKeys.matches.all });
       queryClient.invalidateQueries({ queryKey: queryKeys.matches.lists() });
+
+      // Share in Vestuario if selected
+      if (shareInFeed && match.id) {
+        try {
+          const matchUrl = `${window.location.origin}/match?id=${match.id}`;
+          const content = `⚽ ¡Armé un partido! ¿Quién se suma?
+
+📅 ${getSelectedDateLabel()}
+⏰ ${getTimeLabel()}
+🏟️ ${formData.location}
+🏆 ${FORMAT_DATA[formData.type].label}
+💰 ${formData.price > 0 ? `$${formData.price}` : 'Libre'}
+
+¡Sumate acá! 👇
+${matchUrl}`;
+
+          await supabase.from('posts').insert({
+            author_id: user.id,
+            content: content,
+          });
+        } catch (postErr) {
+          console.error("Failed to share in Vestuario:", postErr);
+          // Don't block the match creation flow if feed post fails
+        }
+      }
 
       // Si es un establecimiento registrado y elige Mercado Pago, redirigir a pagar la seña
       if (formData.business_id && formData.field_id && formData.payment_method === 'mercado_pago') {
@@ -1414,6 +1442,49 @@ export default function CreateMatchPage() {
                     <p className="text-[10px] text-foreground/30 font-bold uppercase tracking-wider leading-relaxed flex-1">
                       Serás el organizador con control total sobre los jugadores
                     </p>
+                  </div>
+
+                  {/* Share in Vestuario Toggle */}
+                  <div className="mx-6 mb-6">
+                    <button
+                      type="button"
+                      onClick={() => setShareInFeed(!shareInFeed)}
+                      className={cn(
+                        "w-full p-4 rounded-3xl border transition-all duration-300 flex items-center justify-between group",
+                        shareInFeed 
+                          ? "bg-primary/10 border-primary/30 text-primary" 
+                          : "bg-foreground/[0.02] border-foreground/10 text-foreground/40"
+                      )}
+                    >
+                      <div className="flex items-center gap-3">
+                        <div className={cn(
+                          "w-10 h-10 rounded-2xl flex items-center justify-center transition-all duration-500",
+                          shareInFeed ? "bg-primary text-black shadow-lg shadow-primary/20" : "bg-foreground/[0.04] text-foreground/20"
+                        )}>
+                          <MessageSquare className="w-5 h-5" />
+                        </div>
+                        <div className="text-left">
+                          <span className={cn(
+                            "block text-sm font-black italic uppercase tracking-tight leading-none",
+                            shareInFeed ? "text-foreground" : "text-foreground/40"
+                          )}>
+                            Publicar en Vestuario
+                          </span>
+                          <span className={cn(
+                            "block text-[10px] font-bold uppercase tracking-widest mt-1",
+                            shareInFeed ? "text-primary/70" : "text-foreground/20"
+                          )}>
+                            ¡Atraé a más jugadores!
+                          </span>
+                        </div>
+                      </div>
+                      <div className={cn(
+                        "w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all duration-300",
+                        shareInFeed ? "bg-primary border-primary" : "border-foreground/10"
+                      )}>
+                        {shareInFeed && <CheckCircle2 className="w-4 h-4 text-black" />}
+                      </div>
+                    </button>
                   </div>
 
                   {formData.business_id && formData.payment_method === 'mercado_pago' && (

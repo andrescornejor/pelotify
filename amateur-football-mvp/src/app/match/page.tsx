@@ -1058,6 +1058,7 @@ function MatchLobbyContent() {
         <JoinQRModal
           isOpen={isQRModalOpen}
           onClose={() => setIsQRModalOpen(false)}
+          match={match}
           matchId={match.id}
           venueName={match.location}
         />
