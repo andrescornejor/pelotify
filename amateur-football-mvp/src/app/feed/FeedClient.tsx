@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useRef, useMemo, useCallback } from 'react';
+import { useState, useEffect, useRef, useMemo, useCallback, Fragment } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/lib/supabase';
@@ -16,6 +16,8 @@ import {
   Trash2,
   Share2,
   Zap,
+  AtSign,
+  Pencil,
   TrendingUp,
   Search,
   X,
@@ -70,6 +72,7 @@ interface Post {
     avatar_url: string | null;
     is_pro: boolean;
     position: string;
+    handle: string | null;
   };
   likes_count: number;
   comments_count: number;
@@ -135,14 +138,81 @@ export default function FeedClient({ standalonePostId }: { standalonePostId?: st
   const [sentFriendRequests, setSentFriendRequests] = useState<Set<string>>(new Set());
   const [existingFriends, setExistingFriends] = useState<Set<string>>(new Set());
 
+  // Handle editing state
+  const [showHandleModal, setShowHandleModal] = useState(false);
+  const [editingHandle, setEditingHandle] = useState('');
+  const [currentUserHandle, setCurrentUserHandle] = useState<string | null>(null);
+  const [isSavingHandle, setIsSavingHandle] = useState(false);
+  const [handleError, setHandleError] = useState('');
+
   useEffect(() => {
     fetchPosts();
     fetchSidebarData();
     if (user) {
       fetchBookmarks();
       fetchFriendshipStatuses();
+      fetchUserHandle();
     }
   }, [user]);
+
+  const fetchUserHandle = async () => {
+    if (!user) return;
+    try {
+      const { data } = await supabase
+        .from('profiles')
+        .select('handle')
+        .eq('id', user.id)
+        .maybeSingle();
+      if (data?.handle) {
+        setCurrentUserHandle(data.handle);
+      }
+    } catch (err) {
+      console.error('Error fetching handle:', err);
+    }
+  };
+
+  const handleSaveHandle = async () => {
+    if (!user) return;
+    const trimmed = editingHandle.trim().toLowerCase().replace(/[^a-z0-9._]/g, '');
+    if (!trimmed || trimmed.length < 3) {
+      setHandleError('Mínimo 3 caracteres (letras, números, . y _)');
+      return;
+    }
+    if (trimmed.length > 30) {
+      setHandleError('Máximo 30 caracteres');
+      return;
+    }
+    setIsSavingHandle(true);
+    setHandleError('');
+    try {
+      // Check if handle is already taken
+      const { data: existing } = await supabase
+        .from('profiles')
+        .select('id')
+        .eq('handle', trimmed)
+        .neq('id', user.id)
+        .maybeSingle();
+      if (existing) {
+        setHandleError('Este @ ya está en uso. Probá con otro.');
+        setIsSavingHandle(false);
+        return;
+      }
+      const { error } = await supabase
+        .from('profiles')
+        .update({ handle: trimmed })
+        .eq('id', user.id);
+      if (error) throw error;
+      setCurrentUserHandle(trimmed);
+      setShowHandleModal(false);
+      // Refresh posts to show updated handle
+      await fetchPosts();
+    } catch (err: any) {
+      console.error('Error saving handle:', err);
+      setHandleError(err.message || 'Error al guardar');
+    } finally {
+      setIsSavingHandle(false);
+    }
+  };
 
   useEffect(() => {
     if (postParam) {
@@ -208,7 +278,7 @@ export default function FeedClient({ standalonePostId }: { standalonePostId?: st
       // Top players by elo
       const { data: players } = await supabase
         .from('profiles')
-        .select('id, name, avatar_url, elo, position, is_pro')
+        .select('id, name, avatar_url, elo, position, is_pro, handle')
         .order('elo', { ascending: false })
         .limit(5);
       if (players) setTopPlayers(players);
@@ -216,7 +286,7 @@ export default function FeedClient({ standalonePostId }: { standalonePostId?: st
       // Suggested users (random recent users, excluding current user)
       const { data: suggested } = await supabase
         .from('profiles')
-        .select('id, name, avatar_url, position, is_pro')
+        .select('id, name, avatar_url, position, is_pro, handle')
         .neq('id', user?.id || '')
         .order('created_at', { ascending: false })
         .limit(4);
@@ -232,7 +302,7 @@ export default function FeedClient({ standalonePostId }: { standalonePostId?: st
         .from('posts')
         .select(`
           id, content, image_url, created_at, author_id,
-          author:profiles(id, name, avatar_url, is_pro, position),
+          author:profiles(id, name, avatar_url, is_pro, position, handle),
           post_likes(id, user_id),
           post_comments(count)
         `)
@@ -683,14 +753,29 @@ export default function FeedClient({ standalonePostId }: { standalonePostId?: st
                 {/* CREATE POST BOX */}
                 {user && (
                   <div className="p-4 sm:px-5 sm:py-5 border-b border-foreground/[0.05] flex gap-3 sm:gap-4 bg-background">
-                    <div className="w-12 h-12 rounded-full bg-surface-elevated overflow-hidden shrink-0 transition-opacity hover:opacity-90 cursor-pointer">
-                      {user?.avatar_url ? (
-                        <img src={user.avatar_url} className="w-full h-full object-cover" alt="" />
-                      ) : (
-                        <div className="w-full h-full bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center font-bold text-primary text-[17px]">
-                          {user?.user_metadata?.name?.charAt(0) || '?'}
-                        </div>
-                      )}
+                    <div className="flex flex-col items-center gap-1 shrink-0">
+                      <div className="w-12 h-12 rounded-full bg-surface-elevated overflow-hidden transition-opacity hover:opacity-90 cursor-pointer">
+                        {user?.avatar_url ? (
+                          <img src={user.avatar_url} className="w-full h-full object-cover" alt="" />
+                        ) : (
+                          <div className="w-full h-full bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center font-bold text-primary text-[17px]">
+                            {user?.user_metadata?.name?.charAt(0) || '?'}
+                          </div>
+                        )}
+                      </div>
+                      <button
+                        onClick={() => {
+                          setEditingHandle(currentUserHandle || user.name.toLowerCase().replace(/\s+/g, ''));
+                          setHandleError('');
+                          setShowHandleModal(true);
+                        }}
+                        className="flex items-center gap-0.5 text-[11px] text-foreground/40 hover:text-primary transition-colors group/handle"
+                        title="Editar tu @"
+                      >
+                        <AtSign className="w-3 h-3" />
+                        <span className="truncate max-w-[60px]">{currentUserHandle || user.name.toLowerCase().replace(/\s+/g, '')}</span>
+                        <Pencil className="w-2.5 h-2.5 opacity-0 group-hover/handle:opacity-100 transition-opacity" />
+                      </button>
                     </div>
                     <div className="flex-1 flex flex-col relative min-h-[50px]">
                       <div className="absolute inset-0 pointer-events-none whitespace-pre-wrap break-words text-lg font-medium leading-relaxed p-0 border-none select-none text-foreground z-0 overflow-hidden">
@@ -817,7 +902,7 @@ export default function FeedClient({ standalonePostId }: { standalonePostId?: st
                               <Zap className="w-3.5 h-3.5 text-yellow-500 fill-yellow-500 shrink-0" />
                             )}
                             <span className="text-foreground/40 text-[15px] truncate ml-0.5">
-                              @{post.author.name.toLowerCase().replace(/\s+/g, '')}
+                              @{post.author.handle || post.author.name.toLowerCase().replace(/\s+/g, '')}
                             </span>
                           </Link>
                           <span className="text-foreground/40 text-[15px]">·</span>
@@ -1128,7 +1213,7 @@ export default function FeedClient({ standalonePostId }: { standalonePostId?: st
                             {su.is_pro && <Zap className="w-3.5 h-3.5 text-yellow-500 fill-yellow-500 inline ml-1" />}
                           </div>
                           <div className="text-[14px] text-foreground/40 truncate leading-tight">
-                            @{su.name?.toLowerCase().replace(/\s+/g, '')}
+                            @{su.handle || su.name?.toLowerCase().replace(/\s+/g, '')}
                           </div>
                         </Link>
                         <div className="shrink-0">
@@ -1192,7 +1277,7 @@ export default function FeedClient({ standalonePostId }: { standalonePostId?: st
                           {player.is_pro && <Zap className="w-3.5 h-3.5 text-yellow-500 fill-yellow-500 inline ml-1 shrink-0" />}
                         </div>
                         <div className="text-[14px] text-foreground/40 truncate leading-tight">
-                          @{player.name?.toLowerCase().replace(/\s+/g, '')}
+                          @{player.handle || player.name?.toLowerCase().replace(/\s+/g, '')}
                         </div>
                       </div>
                       <div className="text-right shrink-0">
@@ -1272,6 +1357,126 @@ export default function FeedClient({ standalonePostId }: { standalonePostId?: st
                 alt="Expanded view"
                 className="max-w-full max-h-full object-contain rounded-lg shadow-2xl"
               />
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Handle Edit Modal */}
+      <AnimatePresence>
+        {showHandleModal && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setShowHandleModal(false)}
+            className="fixed inset-0 z-[100] flex items-center justify-center bg-black/70 backdrop-blur-sm p-4"
+          >
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0, y: 20 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              exit={{ scale: 0.9, opacity: 0, y: 20 }}
+              transition={{ type: 'spring', damping: 25, stiffness: 300 }}
+              onClick={(e) => e.stopPropagation()}
+              className="w-full max-w-sm bg-surface-elevated border border-foreground/10 rounded-[2rem] p-6 sm:p-8 shadow-2xl relative overflow-hidden"
+            >
+              {/* Ambient glow */}
+              <div className="absolute top-0 right-0 w-40 h-40 bg-primary/10 blur-[60px] rounded-full pointer-events-none -z-10" />
+
+              {/* Header */}
+              <div className="flex items-center gap-3 mb-6">
+                <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center border border-primary/20">
+                  <AtSign className="w-5 h-5 text-primary" />
+                </div>
+                <div>
+                  <h3 className="text-lg font-black italic uppercase tracking-tight text-foreground font-kanit leading-none">Editar @</h3>
+                  <p className="text-[10px] font-bold text-foreground/40 uppercase tracking-widest mt-0.5">Tu nombre de usuario</p>
+                </div>
+                <button
+                  onClick={() => setShowHandleModal(false)}
+                  className="ml-auto w-8 h-8 rounded-full bg-foreground/5 hover:bg-foreground/10 flex items-center justify-center text-foreground/40 hover:text-foreground transition-all"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+
+              {/* Input */}
+              <div className="relative mb-4">
+                <div className="absolute left-4 top-1/2 -translate-y-1/2 text-primary font-bold text-lg">@</div>
+                <input
+                  value={editingHandle}
+                  onChange={(e) => {
+                    const val = e.target.value.toLowerCase().replace(/[^a-z0-9._]/g, '');
+                    setEditingHandle(val);
+                    setHandleError('');
+                  }}
+                  placeholder="tu_handle"
+                  maxLength={30}
+                  autoFocus
+                  className="w-full h-14 bg-foreground/[0.04] border border-foreground/10 rounded-2xl pl-10 pr-4 text-lg text-foreground font-bold placeholder:text-foreground/20 focus:outline-none focus:border-primary/50 focus:ring-4 focus:ring-primary/10 transition-all"
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') handleSaveHandle();
+                  }}
+                />
+              </div>
+
+              {/* Error */}
+              {handleError && (
+                <div className="mb-4 px-4 py-2.5 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-[12px] font-bold">
+                  {handleError}
+                </div>
+              )}
+
+              {/* Preview */}
+              <div className="mb-6 px-4 py-3 rounded-xl bg-foreground/[0.03] border border-foreground/[0.06]">
+                <div className="text-[10px] font-black text-foreground/30 uppercase tracking-widest mb-1.5">Vista previa</div>
+                <div className="flex items-center gap-2">
+                  <div className="w-8 h-8 rounded-full overflow-hidden shrink-0">
+                    {user?.avatar_url ? (
+                      <img src={user.avatar_url} className="w-full h-full object-cover" alt="" />
+                    ) : (
+                      <div className="w-full h-full bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center font-bold text-primary text-xs">
+                        {user?.name?.charAt(0) || '?'}
+                      </div>
+                    )}
+                  </div>
+                  <div>
+                    <span className="font-bold text-sm text-foreground">{user?.name}</span>
+                    <span className="text-foreground/40 text-sm ml-1.5">
+                      @{editingHandle || user?.name?.toLowerCase().replace(/\s+/g, '')}
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Actions */}
+              <div className="flex gap-3">
+                <button
+                  onClick={() => setShowHandleModal(false)}
+                  className="flex-1 h-12 rounded-2xl bg-foreground/5 border border-foreground/10 text-sm font-bold text-foreground/60 hover:bg-foreground/10 transition-all active:scale-[0.97]"
+                >
+                  Cancelar
+                </button>
+                <button
+                  onClick={handleSaveHandle}
+                  disabled={isSavingHandle || !editingHandle.trim()}
+                  className="flex-1 h-12 rounded-2xl bg-primary text-background text-sm font-black uppercase tracking-wider shadow-lg shadow-primary/20 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-primary/90 active:scale-[0.97] transition-all flex items-center justify-center gap-2"
+                >
+                  {isSavingHandle ? (
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                  ) : (
+                    <>
+                      <Check className="w-4 h-4" />
+                      Guardar
+                    </>
+                  )}
+                </button>
+              </div>
+
+              {/* Hint */}
+              <p className="text-center text-[10px] text-foreground/25 font-bold mt-4">
+                Solo letras, números, puntos y guión bajo
+              </p>
             </motion.div>
           </motion.div>
         )}
