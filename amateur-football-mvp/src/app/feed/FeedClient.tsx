@@ -659,6 +659,61 @@ export default function FeedClient({ standalonePostId }: { standalonePostId?: st
           {/* ── LEFT SIDEBAR (desktop only) ── */}
           {!standalonePostId && (
             <aside className="hidden lg:flex flex-col w-[280px] xl:w-[320px] shrink-0 sticky top-[40px] lg:top-[45px] xl:top-[45px] self-start pb-8 pt-0 xl:pl-4">
+
+              {/* ── PERFIL CARD ── */}
+              {user && (
+                <div className="mb-4 rounded-[1.5rem] bg-foreground/[0.03] border border-foreground/[0.06] overflow-hidden">
+                  {/* Cover strip */}
+                  <div className="h-16 bg-gradient-to-r from-primary/20 via-primary/5 to-transparent relative">
+                    <div className="absolute -bottom-5 left-4">
+                      <Link href={`/profile?id=${user.id}`} className="block w-12 h-12 rounded-full overflow-hidden border-2 border-background shadow-lg hover:opacity-90 transition-opacity">
+                        {user?.avatar_url ? (
+                          <img src={user.avatar_url} className="w-full h-full object-cover" alt="" />
+                        ) : (
+                          <div className="w-full h-full bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center font-bold text-primary text-[15px]">
+                            {user?.name?.charAt(0) || '?'}
+                          </div>
+                        )}
+                      </Link>
+                    </div>
+                  </div>
+                  <div className="pt-7 pb-4 px-4">
+                    {/* Name */}
+                    <Link href={`/profile?id=${user.id}`} className="block">
+                      <div className="font-bold text-[15px] text-foreground truncate hover:underline leading-tight">{user.name}</div>
+                    </Link>
+                    {/* Handle - editable */}
+                    <button
+                      onClick={() => {
+                        setEditingHandle(currentUserHandle || user.name.toLowerCase().replace(/\s+/g, ''));
+                        setHandleError('');
+                        setShowHandleModal(true);
+                      }}
+                      className="flex items-center gap-1 mt-0.5 text-[13px] text-foreground/40 hover:text-primary transition-colors group/handle cursor-pointer"
+                      title="Editar tu @"
+                    >
+                      <span>@{currentUserHandle || user.name.toLowerCase().replace(/\s+/g, '')}</span>
+                      <Pencil className="w-3 h-3 opacity-0 group-hover/handle:opacity-100 transition-opacity" />
+                    </button>
+                    {/* Quick stats */}
+                    <div className="flex items-center gap-4 mt-3 pt-3 border-t border-foreground/[0.06]">
+                      <Link href={`/profile?id=${user.id}`} className="text-center group/stat hover:text-primary transition-colors">
+                        <div className="text-sm font-black text-foreground group-hover/stat:text-primary leading-none">{user.user_metadata?.matches || 0}</div>
+                        <div className="text-[9px] font-bold text-foreground/30 uppercase tracking-wider mt-0.5">Partidos</div>
+                      </Link>
+                      <Link href={`/profile?id=${user.id}`} className="text-center group/stat hover:text-primary transition-colors">
+                        <div className="text-sm font-black text-foreground group-hover/stat:text-primary leading-none">{user.user_metadata?.elo || 0}</div>
+                        <div className="text-[9px] font-bold text-foreground/30 uppercase tracking-wider mt-0.5">ELO</div>
+                      </Link>
+                      <Link href={`/profile?id=${user.id}`} className="text-center group/stat hover:text-primary transition-colors">
+                        <div className="text-sm font-black text-foreground group-hover/stat:text-primary leading-none">{user.user_metadata?.goals || 0}</div>
+                        <div className="text-[9px] font-bold text-foreground/30 uppercase tracking-wider mt-0.5">Goles</div>
+                      </Link>
+                    </div>
+                  </div>
+                </div>
+              )}
+
               {/* Navigation Links - Twitter Style */}
               <nav className="flex flex-col gap-1 w-full">
                 {[
@@ -729,6 +784,44 @@ export default function FeedClient({ standalonePostId }: { standalonePostId?: st
               </div>
             )}
 
+            {/* MOBILE PROFILE BAR (Perfil section for handle editing) */}
+            {!standalonePostId && user && (
+              <div className="lg:hidden border-b border-foreground/[0.06] bg-foreground/[0.02]">
+                <div className="flex items-center gap-3 px-4 py-3">
+                  <Link href={`/profile?id=${user.id}`} className="w-9 h-9 rounded-full overflow-hidden shrink-0 border border-foreground/10">
+                    {user?.avatar_url ? (
+                      <img src={user.avatar_url} className="w-full h-full object-cover" alt="" />
+                    ) : (
+                      <div className="w-full h-full bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center font-bold text-primary text-xs">
+                        {user?.name?.charAt(0) || '?'}
+                      </div>
+                    )}
+                  </Link>
+                  <div className="flex-1 min-w-0">
+                    <div className="font-bold text-[13px] text-foreground truncate leading-tight">{user.name}</div>
+                    <button
+                      onClick={() => {
+                        setEditingHandle(currentUserHandle || user.name.toLowerCase().replace(/\s+/g, ''));
+                        setHandleError('');
+                        setShowHandleModal(true);
+                      }}
+                      className="flex items-center gap-1 text-[12px] text-foreground/40 hover:text-primary transition-colors group/mhandle"
+                      title="Editar tu @"
+                    >
+                      <span>@{currentUserHandle || user.name.toLowerCase().replace(/\s+/g, '')}</span>
+                      <Pencil className="w-2.5 h-2.5 opacity-0 group-hover/mhandle:opacity-100 transition-opacity" />
+                    </button>
+                  </div>
+                  <Link
+                    href={`/profile?id=${user.id}`}
+                    className="px-3 py-1.5 rounded-full border border-foreground/[0.08] text-[11px] font-bold text-foreground/50 hover:text-primary hover:border-primary/30 transition-all"
+                  >
+                    Ver Perfil
+                  </Link>
+                </div>
+              </div>
+            )}
+
             {/* STICKY HEADER */}
             <div
               onClick={() => {
@@ -753,29 +846,14 @@ export default function FeedClient({ standalonePostId }: { standalonePostId?: st
                 {/* CREATE POST BOX */}
                 {user && (
                   <div className="p-4 sm:px-5 sm:py-5 border-b border-foreground/[0.05] flex gap-3 sm:gap-4 bg-background">
-                    <div className="flex flex-col items-center gap-1 shrink-0">
-                      <div className="w-12 h-12 rounded-full bg-surface-elevated overflow-hidden transition-opacity hover:opacity-90 cursor-pointer">
-                        {user?.avatar_url ? (
-                          <img src={user.avatar_url} className="w-full h-full object-cover" alt="" />
-                        ) : (
-                          <div className="w-full h-full bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center font-bold text-primary text-[17px]">
-                            {user?.user_metadata?.name?.charAt(0) || '?'}
-                          </div>
-                        )}
-                      </div>
-                      <button
-                        onClick={() => {
-                          setEditingHandle(currentUserHandle || user.name.toLowerCase().replace(/\s+/g, ''));
-                          setHandleError('');
-                          setShowHandleModal(true);
-                        }}
-                        className="flex items-center gap-0.5 text-[11px] text-foreground/40 hover:text-primary transition-colors group/handle"
-                        title="Editar tu @"
-                      >
-                        <AtSign className="w-3 h-3" />
-                        <span className="truncate max-w-[60px]">{currentUserHandle || user.name.toLowerCase().replace(/\s+/g, '')}</span>
-                        <Pencil className="w-2.5 h-2.5 opacity-0 group-hover/handle:opacity-100 transition-opacity" />
-                      </button>
+                    <div className="w-12 h-12 rounded-full bg-surface-elevated overflow-hidden shrink-0 transition-opacity hover:opacity-90 cursor-pointer">
+                      {user?.avatar_url ? (
+                        <img src={user.avatar_url} className="w-full h-full object-cover" alt="" />
+                      ) : (
+                        <div className="w-full h-full bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center font-bold text-primary text-[17px]">
+                          {user?.user_metadata?.name?.charAt(0) || '?'}
+                        </div>
+                      )}
                     </div>
                     <div className="flex-1 flex flex-col relative min-h-[50px]">
                       <div className="absolute inset-0 pointer-events-none whitespace-pre-wrap break-words text-lg font-medium leading-relaxed p-0 border-none select-none text-foreground z-0 overflow-hidden">
