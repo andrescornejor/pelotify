@@ -20,8 +20,8 @@ export const metadata: Metadata = {
   title: 'Pelotify - Fútbol Amateur',
   description: 'Gestiona tus partidos de fútbol amateur. Crea tu carta FIFA y sube de nivel.',
   icons: {
-    icon: [{ url: '/icon.png' }, { url: '/logo_pelotify.png' }],
-    apple: '/logo_pelotify.png',
+    icon: [{ url: '/icon-192.png', sizes: '192x192' }, { url: '/icon-512.png', sizes: '512x512' }],
+    apple: [{ url: '/icon-512.png', sizes: '512x512' }],
   },
   manifest: '/manifest.json',
   openGraph: {
@@ -29,7 +29,7 @@ export const metadata: Metadata = {
     siteName: 'Pelotify',
     title: 'Pelotify - Fútbol Amateur',
     description: 'Gestiona tus partidos de fútbol amateur. Crea tu carta FIFA y sube de nivel.',
-    images: ['https://pelotify.vercel.app/icon.png'],
+    images: ['/icon-512.png'],
   },
   twitter: {
     card: 'summary_large_image',
@@ -37,7 +37,7 @@ export const metadata: Metadata = {
     creator: '@pelotify',
     title: 'Pelotify - Fútbol Amateur',
     description: 'Gestiona tus partidos de fútbol amateur. Crea tu carta FIFA y sube de nivel.',
-    images: ['https://pelotify.vercel.app/icon.png'],
+    images: ['/icon-512.png'],
   },
   appleWebApp: {
     capable: true,
