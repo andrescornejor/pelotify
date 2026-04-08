@@ -99,6 +99,14 @@ export default function FeedClient({ standalonePostId }: { standalonePostId?: st
   const [posts, setPosts] = useState<Post[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [newPostContent, setNewPostContent] = useState('');
+
+  // Handle incoming shared text from other parts of the app
+  useEffect(() => {
+    const shareText = searchParams.get('shareText');
+    if (shareText && !newPostContent) {
+      setNewPostContent(shareText);
+    }
+  }, [searchParams]);
   const [isPosting, setIsPosting] = useState(false);
   const [expandedPostId, setExpandedPostId] = useState<string | null>(postParam);
   const [comments, setComments] = useState<Record<string, Comment[]>>({});
