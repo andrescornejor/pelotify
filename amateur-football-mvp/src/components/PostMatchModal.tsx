@@ -13,6 +13,9 @@ import {
   Flame,
   Sparkles,
   Medal,
+  Play,
+  Video,
+  Link2,
 } from 'lucide-react';
 import { MatchParticipant } from '@/lib/matches';
 import { supabase } from '@/lib/supabase';
@@ -40,6 +43,7 @@ export default function PostMatchModal({
   const [scoreA, setScoreA] = useState(0);
   const [scoreB, setScoreB] = useState(0);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [sportsreelUrl, setSportsreelUrl] = useState('');
 
   const myParticipant = participants.find((p) => p.user_id === currentUserId);
   const myTeam = myParticipant?.team || 'A';
@@ -123,6 +127,14 @@ export default function PostMatchModal({
         supabase.auth
           .updateUser({ data: { last_match_sync: new Date().toISOString() } })
           .catch(() => {});
+      }
+
+      // If consensus or even if not, we can save the URL if it was provided
+      if (sportsreelUrl) {
+        await supabase
+          .from('matches')
+          .update({ sportsreel_url: sportsreelUrl })
+          .eq('id', matchId);
       }
 
       setStep('success');
@@ -286,6 +298,26 @@ export default function PostMatchModal({
                         </button>
                       </div>
                     </div>
+                </div>
+
+                <div className="space-y-4">
+                  <div className="flex items-center gap-3 px-1">
+                    <Video className="w-5 h-5 text-primary" />
+                    <h4 className="text-[11px] font-black uppercase italic tracking-tighter text-foreground/60">
+                      Link de Sportsreel (Opcional)
+                    </h4>
+                  </div>
+                  <div className="relative group/input">
+                    <div className="absolute inset-y-0 left-0 pl-5 flex items-center pointer-events-none">
+                      <Link2 className="w-4 h-4 text-foreground/20 group-focus-within/input:text-primary transition-colors" />
+                    </div>
+                    <input
+                      type="url"
+                      value={sportsreelUrl}
+                      onChange={(e) => setSportsreelUrl(e.target.value)}
+                      placeholder="https://www.sportsreel.com.ar/#/video/..."
+                      className="w-full h-16 bg-foreground/[0.03] border border-foreground/10 rounded-2xl pl-12 pr-6 text-sm font-medium focus:outline-none focus:border-primary/50 focus:bg-primary/5 transition-all outline-none"
+                    />
                   </div>
                 </div>
 

@@ -22,6 +22,7 @@ import { findVenueByLocation } from '@/lib/venues';
 import dynamic from 'next/dynamic';
 import { Loader2 } from 'lucide-react';
 import { ShareStory } from './ShareStory';
+import { SportsreelPlayer } from './SportsreelPlayer';
 
 const VenueMap = dynamic(() => import('./VenueMap'), {
   ssr: false,
@@ -217,6 +218,13 @@ export default function PostMatchView({ match, participants, stats }: PostMatchV
           className="h-20 px-12 rounded-[2.5rem] text-sm shadow-[0_20px_50px_rgba(16,185,129,0.3)] hover:scale-105"
         />
       </motion.div>
+
+      {/* ── SPORTSREEL VIDEO ── */}
+      {match.sportsreel_url && (
+        <div className="max-w-4xl mx-auto w-full">
+           <SportsreelPlayer url={match.sportsreel_url} />
+        </div>
+      )}
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
         {/* ── MAIN CONTENT (STATS & TEAMS) ── */}
