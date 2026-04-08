@@ -6,6 +6,12 @@ import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/lib/supabase';
 import { cn } from '@/lib/utils';
 import {
+  Home,
+  Search,
+  Users,
+  Shield,
+  Play,
+  TrendingUp,
   ArrowLeft,
   Heart,
   MessageSquare,
@@ -23,7 +29,8 @@ import {
   Share2,
   MapPin,
   Calendar,
-  LinkIcon,
+  Link as LucideLink,
+  Link2 as LinkIcon,
 } from 'lucide-react';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -113,6 +120,11 @@ export default function FeedProfilePage() {
   // Bookmarks
   const [bookmarkedPosts, setBookmarkedPosts] = useState<Set<string>>(new Set());
 
+  // Sidebar results (copy from FeedClient)
+  const [suggestedUsers, setSuggestedUsers] = useState<any[]>([]);
+  const [topPlayers, setTopPlayers] = useState<any[]>([]);
+  const [currentUserHandle, setCurrentUserHandle] = useState<string | null>(null);
+
   useEffect(() => {
     if (profileId) {
       fetchProfile();
@@ -121,10 +133,49 @@ export default function FeedProfilePage() {
   }, [profileId]);
 
   useEffect(() => {
-    if (profileId && user) {
+    if (user) {
+      fetchSidebarData();
       fetchBookmarks();
+      fetchUserHandle();
     }
-  }, [profileId, user]);
+  }, [user]);
+
+  const fetchUserHandle = async () => {
+    if (!user) return;
+    try {
+      const { data } = await supabase
+        .from('profiles')
+        .select('handle')
+        .eq('id', user.id)
+        .maybeSingle();
+      if (data?.handle) {
+        setCurrentUserHandle(data.handle);
+      }
+    } catch (err) {
+      console.error('Error fetching handle:', err);
+    }
+  };
+
+  const fetchSidebarData = async () => {
+    try {
+      const { data: players } = await supabase
+        .from('profiles')
+        .select('id, name, avatar_url, elo, position, is_pro, handle')
+        .order('elo', { ascending: false })
+        .limit(5);
+      if (players) setTopPlayers(players);
+
+      const { data: suggested } = await supabase
+        .from('profiles')
+        .select('id, name, avatar_url, position, is_pro, handle')
+        .neq('id', user?.id || '')
+        .order('created_at', { ascending: false })
+        .limit(4);
+      if (suggested) setSuggestedUsers(suggested);
+    } catch (err) {
+      console.error('Error fetching sidebar:', err);
+    }
+  };
 
   useEffect(() => {
     if (activeTab === 'likes' && likedPosts.length === 0) {
@@ -485,328 +536,432 @@ export default function FeedProfilePage() {
   const joinMonth = joinDate.toLocaleString('es', { month: 'long' });
   const joinYear = joinDate.getFullYear();
 
+  const MENU_ITEMS = [
+    { href: '/feed', icon: Home, label: 'Muro Social', color: 'text-primary' },
+    { href: '/messages', icon: MessageSquare, label: 'Mensajes', color: 'text-blue-500' },
+    { href: '/friends', icon: Users, label: 'Mis Amigos', color: 'text-purple-500' },
+    { href: '/teams', icon: Shield, label: 'Mis Equipos', color: 'text-green-500' },
+    { href: '/highlights', icon: Play, label: 'FutTok', color: 'text-pink-500' },
+  ];
+
   return (
     <div className="flex flex-col min-h-screen bg-background relative overflow-hidden">
-      {/* Ambient */}
+      {/* Ambient Backdrop */}
       <div className="fixed inset-0 pointer-events-none -z-10 overflow-hidden">
-        <div className="absolute top-[-5%] right-[-5%] w-[40%] h-[40%] opacity-[0.03]" style={{ background: 'radial-gradient(circle, #2cfc7d 0%, transparent 70%)' }} />
+        <div
+          className="absolute top-[-5%] right-[-5%] w-[40%] h-[40%] opacity-[0.03]"
+          style={{ background: 'radial-gradient(circle, #2cfc7d 0%, transparent 70%)' }}
+        />
       </div>
 
-      <div className="max-w-2xl mx-auto w-full border-x border-foreground/[0.06] min-h-screen">
-        {/* ── STICKY TOP BAR ── */}
-        <div className="sticky top-[84px] sm:top-[85px] lg:top-[30px] z-50 bg-background/85 backdrop-blur-xl border-b border-foreground/[0.08] px-4 py-3 flex items-center gap-4 shadow-sm">
-          <button
-            onClick={() => router.back()}
-            className="w-9 h-9 rounded-full hover:bg-foreground/[0.08] flex items-center justify-center transition-colors shrink-0"
-          >
-            <ArrowLeft className="w-5 h-5 text-foreground" />
-          </button>
-          <div className="flex-1 min-w-0">
-            <h1 className="text-xl font-black italic uppercase font-kanit text-foreground tracking-tighter leading-none truncate">
-              {profile.name}
-            </h1>
-            <p className="text-[11px] text-foreground/40 font-bold">{posts.length} posts</p>
-          </div>
-        </div>
-
-        {/* ── COVER BANNER ── */}
-        <div className="relative w-full h-36 sm:h-48 bg-zinc-900 overflow-hidden">
-          <img
-            src={profile.cover_url || "https://images.unsplash.com/photo-1574629810360-7efbbe195018?auto=format&fit=crop&q=80&w=2000"}
-            alt=""
-            className="w-full h-full object-cover brightness-75"
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent" />
-        </div>
-
-        {/* ── PROFILE INFO ── */}
-        <div className="px-4 sm:px-5 relative">
-          {/* Avatar */}
-          <div className="absolute -top-10 left-4">
-            <Link
-              href={`/profile?id=${profile.id}`}
-              className={cn(
-                "block w-20 h-20 rounded-full overflow-hidden border-4 border-background shadow-xl hover:opacity-90 transition-opacity",
-                profile.is_pro && "ring-2 ring-yellow-500/60"
-              )}
-            >
-              {profile.avatar_url ? (
-                <img src={profile.avatar_url} className="w-full h-full object-cover" alt="" />
-              ) : (
-                <div className="w-full h-full bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center font-bold text-primary text-2xl">
-                  {profile.name.charAt(0)}
-                </div>
-              )}
-            </Link>
-          </div>
-
-          {/* Edit button area */}
-          <div className="flex justify-end pt-3 pb-2">
-            {isMe ? (
-              <Link
-                href={`/profile?id=${user?.id}`}
-                className="px-5 py-2 rounded-full border border-foreground/15 text-[12px] font-black uppercase tracking-wider text-foreground hover:bg-foreground/[0.05] transition-all"
-              >
-                Editar Perfil
-              </Link>
-            ) : (
-              <button
-                onClick={() => router.push(`/messages?user=${profile.id}`)}
-                className="px-5 py-2 rounded-full bg-primary text-background text-[12px] font-black uppercase tracking-wider hover:bg-primary/90 transition-all shadow-md"
-              >
-                Mensaje
-              </button>
-            )}
-          </div>
-
-          {/* Name & Handle */}
-          <div className="mt-1">
-            <div className="flex items-center gap-2">
-              <h2 className={cn("text-xl font-black text-foreground leading-tight", profile.is_pro && "text-yellow-500")}>
-                {profile.name}
-              </h2>
-              {profile.is_pro && (
-                <Zap className="w-4 h-4 text-yellow-500 fill-yellow-500 shrink-0" />
-              )}
-            </div>
-            <div className="flex items-center gap-1.5 mt-0.5">
-              {isMe ? (
-                <button
-                  onClick={() => {
-                    setEditingHandle(profile.handle || profile.name.toLowerCase().replace(/\s+/g, ''));
-                    setHandleError('');
-                    setShowHandleModal(true);
-                  }}
-                  className="flex items-center gap-1 text-[14px] text-foreground/40 hover:text-primary transition-colors group/handle"
-                >
-                  <span>@{displayHandle}</span>
-                  <Pencil className="w-3 h-3 opacity-0 group-hover/handle:opacity-100 transition-opacity" />
-                </button>
-              ) : (
-                <span className="text-[14px] text-foreground/40">@{displayHandle}</span>
-              )}
-            </div>
-          </div>
-
-          {/* Bio */}
-          {profile.bio && (
-            <p className="text-[14px] text-foreground/70 mt-3 leading-relaxed">{profile.bio}</p>
-          )}
-
-          {/* Meta info */}
-          <div className="flex flex-wrap items-center gap-x-4 gap-y-1 mt-3 text-[13px] text-foreground/40">
-            <div className="flex items-center gap-1">
-              <MapPin className="w-3.5 h-3.5" />
-              <span>{profile.position}</span>
-            </div>
-            {profile.instagram && (
-              <a href={`https://instagram.com/${profile.instagram}`} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1 hover:text-primary transition-colors">
-                <LinkIcon className="w-3.5 h-3.5" />
-                <span>@{profile.instagram}</span>
-              </a>
-            )}
-            <div className="flex items-center gap-1">
-              <Calendar className="w-3.5 h-3.5" />
-              <span>Se unió en {joinMonth} {joinYear}</span>
-            </div>
-          </div>
-
-          {/* Stats */}
-          <div className="flex items-center gap-6 mt-4 pb-4">
-            <div className="flex items-center gap-1.5">
-              <span className="font-black text-foreground text-sm">{profile.elo || 0}</span>
-              <span className="text-foreground/40 text-[13px]">ELO</span>
-            </div>
-            <div className="flex items-center gap-1.5">
-              <span className="font-black text-foreground text-sm">{profile.matches || 0}</span>
-              <span className="text-foreground/40 text-[13px]">Partidos</span>
-            </div>
-            <div className="flex items-center gap-1.5">
-              <span className="font-black text-foreground text-sm">{profile.goals || 0}</span>
-              <span className="text-foreground/40 text-[13px]">Goles</span>
-            </div>
-          </div>
-        </div>
-
-        {/* ── TABS ── */}
-        <div className="border-b border-foreground/[0.08] flex">
-          {tabs.map(tab => (
-            <button
-              key={tab.id}
-              onClick={() => setActiveTab(tab.id)}
-              className={cn(
-                "flex-1 py-3.5 text-center text-[14px] font-bold transition-colors relative hover:bg-foreground/[0.04]",
-                activeTab === tab.id ? "text-foreground" : "text-foreground/40"
-              )}
-            >
-              {tab.label}
-              {activeTab === tab.id && (
-                <motion.div
-                  layoutId="feedProfileTab"
-                  className="absolute bottom-0 left-1/2 -translate-x-1/2 w-14 h-1 bg-primary rounded-full"
-                />
-              )}
-            </button>
-          ))}
-        </div>
-
-        {/* ── POSTS LIST ── */}
-        <div className="flex flex-col pb-20">
-          {isLoadingPosts && currentPosts.length === 0 ? (
-            <div className="flex flex-col items-center justify-center py-16">
-              <Loader2 className="w-8 h-8 animate-spin text-foreground/20 mb-4" />
-              <p className="text-foreground/30 text-sm">Cargando...</p>
-            </div>
-          ) : currentPosts.length === 0 ? (
-            <div className="flex flex-col items-center justify-center py-16 px-6 text-center">
-              <div className="w-16 h-16 rounded-full bg-foreground/[0.03] border border-foreground/[0.06] flex items-center justify-center mb-4">
-                {activeTab === 'likes' ? <Heart className="w-7 h-7 text-foreground/10" /> :
-                  activeTab === 'bookmarks' ? <Bookmark className="w-7 h-7 text-foreground/10" /> :
-                    activeTab === 'media' ? <ImageIcon className="w-7 h-7 text-foreground/10" /> :
-                      <MessageSquare className="w-7 h-7 text-foreground/10" />
-                }
-              </div>
-              <h3 className="text-lg font-black italic uppercase font-kanit text-foreground tracking-tighter mb-1">
-                {activeTab === 'posts' ? 'Sin posts todavía' :
-                  activeTab === 'likes' ? 'Sin me gusta todavía' :
-                    activeTab === 'bookmarks' ? 'Nada guardado' :
-                      'Sin multimedia'}
-              </h3>
-              <p className="text-foreground/30 text-sm max-w-xs">
-                {activeTab === 'posts' && isMe ? 'Cuando publiques algo, aparecerá acá.' :
-                  activeTab === 'posts' ? 'Este usuario aún no ha publicado nada.' :
-                    activeTab === 'likes' ? 'Los posts que le gusten aparecerán acá.' :
-                      activeTab === 'bookmarks' ? 'Los posts que guardes aparecerán acá.' :
-                        'Los posts con imágenes aparecerán acá.'}
-              </p>
-            </div>
-          ) : (
-            currentPosts.map((post, index) => (
-              <div
-                key={post.id}
-                onClick={(e) => {
-                  if ((e.target as HTMLElement).closest('a, button, input')) return;
-                  router.push(`/post/${post.id}`);
-                }}
-                className={cn(
-                  "p-4 sm:px-5 sm:py-4 border-b border-foreground/[0.06] transition-colors duration-200 relative flex gap-3 sm:gap-4 group/post hover:bg-foreground/[0.03] cursor-pointer animate-in fade-in slide-in-from-bottom-2",
-                  post.author.is_pro ? "bg-gradient-to-r from-yellow-500/[0.03] to-transparent" : ""
-                )}
-                style={{ animationDelay: `${index < 10 ? index * 0.03 : 0}s`, animationFillMode: 'both' }}
-              >
-                {/* Avatar */}
-                <div className="shrink-0">
-                  <Link href={`/feed/profile?id=${post.author.id}`} className={cn("block w-11 h-11 rounded-full overflow-hidden hover:opacity-90 transition-opacity", post.author.is_pro && "ring-2 ring-yellow-500/40")}>
-                    {post.author.avatar_url ? (
-                      <img src={post.author.avatar_url} loading="lazy" className="w-full h-full object-cover" alt="" />
-                    ) : (
-                      <div className="w-full h-full bg-gradient-to-br from-primary/15 to-primary/5 flex items-center justify-center font-bold text-primary text-sm">
-                        {post.author.name.charAt(0)}
-                      </div>
-                    )}
-                  </Link>
-                </div>
-
-                {/* Content */}
-                <div className="flex-1 min-w-0">
-                  {/* Header */}
-                  <div className="flex justify-between items-start">
-                    <div className="flex items-center gap-1.5 flex-wrap leading-tight">
-                      <Link href={`/feed/profile?id=${post.author.id}`} className="group flex items-center gap-1 min-w-0">
-                        <span className={cn("font-bold text-[15px] truncate group-hover:underline", post.author.is_pro ? "text-yellow-500" : "text-foreground")}>
-                          {post.author.name}
-                        </span>
-                        {post.author.is_pro && <Zap className="w-3.5 h-3.5 text-yellow-500 fill-yellow-500 shrink-0" />}
-                        <span className="text-foreground/40 text-[15px] truncate ml-0.5">
-                          @{post.author.handle || post.author.name.toLowerCase().replace(/\s+/g, '')}
-                        </span>
-                      </Link>
-                      <span className="text-foreground/40 text-[15px]">·</span>
-                      <span className="text-foreground/40 text-[15px]">{timeAgo(post.created_at)}</span>
-                    </div>
-                    {post.author_id === user?.id && (
-                      <div className="relative group/menu shrink-0">
-                        <button className="text-foreground/40 hover:text-blue-500 p-1.5 hover:bg-blue-500/10 rounded-full transition-colors mt-[-4px]">
-                          <MoreHorizontal className="w-4 h-4" />
-                        </button>
-                        <div className="absolute right-0 top-full mt-1 w-32 bg-surface-elevated border border-foreground/10 rounded-xl shadow-xl flex flex-col opacity-0 group-hover/menu:opacity-100 pointer-events-none group-hover/menu:pointer-events-auto transition-all z-20 overflow-hidden">
-                          <button
-                            onClick={(e) => { e.stopPropagation(); handleDeletePost(post.id); }}
-                            className="w-full text-left px-4 py-3 text-sm font-bold text-red-500 hover:bg-white/5 flex items-center gap-2"
-                          >
-                            <Trash2 className="w-4 h-4" /> Eliminar
-                          </button>
+      <div className="w-full px-0 sm:px-5 lg:px-10 xl:px-16 pt-0 sm:pt-[25px] lg:pt-[30px]">
+        <div className="lg:gap-6 xl:gap-8 flex">
+          {/* ── LEFT SIDEBAR ── */}
+          <aside className="hidden lg:flex flex-col w-[280px] xl:w-[320px] shrink-0 sticky top-[45px] self-start pb-8 pt-0 xl:pl-4">
+            {/* Perfil Card */}
+            {user && (
+              <div className="mb-4 rounded-[1.5rem] bg-foreground/[0.03] border border-foreground/[0.06] overflow-hidden">
+                <div className="h-16 bg-gradient-to-r from-primary/20 via-primary/5 to-transparent relative">
+                  <div className="absolute -bottom-5 left-4">
+                    <Link href={`/feed/profile?id=${user.id}`} className="block w-12 h-12 rounded-full overflow-hidden border-2 border-background shadow-lg hover:opacity-90 transition-opacity">
+                      {user.avatar_url ? (
+                        <img src={user.avatar_url} className="w-full h-full object-cover" alt="" />
+                      ) : (
+                        <div className="w-full h-full bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center font-bold text-primary text-[15px]">
+                          {user.name?.charAt(0) || '?'}
                         </div>
-                      </div>
-                    )}
-                  </div>
-
-                  {/* Post content */}
-                  <div className="mt-1 mb-2.5">
-                    <p className="text-[15px] text-foreground whitespace-pre-wrap leading-snug">
-                      {(() => {
-                        let content = post.content;
-                        const hasMatchCard = content.match(/[?&]id=([0-9a-fA-F-]{36})/);
-                        if (hasMatchCard) {
-                          content = content.replace(/\n?https?:\/\/[^\s]+match\?id=[0-9a-fA-F-]{36}[^\s]*/g, '');
-                        }
-                        return content.split(/(#[\w\u00C0-\u024FáéíóúñÁÉÍÓÚÑ]+)/g).map((part, i) => {
-                          if (part.startsWith('#')) {
-                            return <span key={i} className="text-primary hover:underline font-semibold">{part}</span>;
-                          }
-                          return part;
-                        });
-                      })()}
-                    </p>
-                    {(() => {
-                      const matchIdMatch = post.content.match(/[?&]id=([0-9a-fA-F-]{36})/);
-                      if (matchIdMatch) return <MatchPostCard matchId={matchIdMatch[1]} />;
-                      return null;
-                    })()}
-                    {post.image_url && (
-                      <div className="mt-3 rounded-2xl overflow-hidden border border-foreground/[0.08] shadow-sm">
-                        <img src={post.image_url} alt="" loading="lazy" className="w-full max-h-[500px] object-cover" />
-                      </div>
-                    )}
-                  </div>
-
-                  {/* Actions */}
-                  <div className="flex items-center justify-between text-foreground/40 max-w-[400px] -ml-2">
-                    <button
-                      onClick={(e) => { e.stopPropagation(); router.push(`/post/${post.id}`); }}
-                      className="flex items-center gap-1.5 p-2 rounded-full hover:bg-blue-500/10 hover:text-blue-500 transition-colors group/action"
-                    >
-                      <MessageSquare className="w-[18px] h-[18px]" />
-                      {post.comments_count > 0 && <span className="text-[13px]">{post.comments_count}</span>}
-                    </button>
-                    <button
-                      onClick={(e) => { e.stopPropagation(); handleLike(post.id, post.user_has_liked); }}
-                      className={cn("flex items-center gap-1.5 p-2 rounded-full transition-colors group/action",
-                        post.user_has_liked ? "text-pink-500" : "hover:bg-pink-500/10 hover:text-pink-500"
                       )}
-                    >
-                      <Heart className={cn("w-[18px] h-[18px]", post.user_has_liked && "fill-pink-500")} />
-                      {post.likes_count > 0 && <span className="text-[13px]">{post.likes_count}</span>}
-                    </button>
-                    <button
-                      onClick={(e) => { e.stopPropagation(); setShareModalPost(post); }}
-                      className="flex items-center gap-1.5 p-2 rounded-full hover:bg-primary/10 hover:text-primary transition-colors"
-                    >
-                      <Share2 className="w-[18px] h-[18px]" />
-                    </button>
-                    <button
-                      onClick={(e) => { e.stopPropagation(); handleBookmark(post.id); }}
-                      className={cn("p-2 rounded-full transition-colors",
-                        bookmarkedPosts.has(post.id) ? "text-primary" : "hover:bg-primary/10 hover:text-primary"
-                      )}
-                    >
-                      {bookmarkedPosts.has(post.id) ? <BookmarkCheck className="w-[18px] h-[18px]" /> : <Bookmark className="w-[18px] h-[18px]" />}
-                    </button>
+                    </Link>
+                  </div>
+                </div>
+                <div className="pt-7 pb-4 px-4">
+                  <Link href={`/feed/profile?id=${user.id}`} className="block">
+                    <div className="font-bold text-[15px] text-foreground truncate hover:underline leading-tight">{user.name}</div>
+                  </Link>
+                  <div className="flex items-center gap-1.5 mt-0.5 group/handle">
+                    <span className="text-[13px] text-foreground/40">@{currentUserHandle || user.name.toLowerCase().replace(/\s+/g, '')}</span>
+                  </div>
+                  {/* Quick stats */}
+                  <div className="flex items-center gap-4 mt-3 pt-3 border-t border-foreground/[0.06]">
+                    <div className="text-center group/stat">
+                      <div className="text-sm font-black text-foreground">{user.user_metadata?.matches || 0}</div>
+                      <div className="text-[9px] font-bold text-foreground/30 uppercase tracking-wider mt-0.5">Partidos</div>
+                    </div>
+                    <div className="text-center group/stat">
+                      <div className="text-sm font-black text-foreground">{user.user_metadata?.elo || 0}</div>
+                      <div className="text-[9px] font-bold text-foreground/30 uppercase tracking-wider mt-0.5">ELO</div>
+                    </div>
+                    <div className="text-center group/stat">
+                      <div className="text-sm font-black text-foreground">{user.user_metadata?.goals || 0}</div>
+                      <div className="text-[9px] font-bold text-foreground/30 uppercase tracking-wider mt-0.5">Goles</div>
+                    </div>
                   </div>
                 </div>
               </div>
-            ))
-          )}
+            )}
+
+            {/* Navigation Menu */}
+            <div className="flex flex-col gap-1 pr-4">
+              {MENU_ITEMS.map((item) => (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className="flex items-center gap-4 px-5 py-3.5 rounded-full text-foreground hover:bg-foreground/[0.05] transition-all duration-200 group"
+                >
+                  <item.icon className={cn("w-6 h-6 xl:w-7 xl:h-7 transition-transform group-hover:scale-110", item.color)} />
+                  <span className="text-xl xl:text-2xl font-black italic uppercase font-kanit tracking-tight leading-none pt-1 pr-2">{item.label}</span>
+                </Link>
+              ))}
+
+              <Link
+                href="/pro"
+                className="mt-2 flex items-center gap-4 px-5 py-3.5 rounded-full text-foreground hover:bg-yellow-500/10 transition-all duration-200 group w-fit"
+              >
+                <div className="relative">
+                  <Zap className="w-6 h-6 xl:w-7 xl:h-7 text-yellow-500 fill-yellow-500 transition-transform group-hover:scale-110" />
+                  <div className="absolute inset-0 bg-yellow-500 blur-md opacity-40 group-hover:opacity-60 transition-opacity" />
+                </div>
+                <span className="text-xl xl:text-2xl font-black italic uppercase font-kanit text-yellow-500 tracking-tight leading-none pt-1 pr-2">Pelotify Pro</span>
+              </Link>
+            </div>
+          </aside>
+
+          {/* ── MIDDLE CONTENT (Profile) ── */}
+          <main className="flex-1 min-w-0 max-w-2xl border-x border-foreground/[0.06] bg-background min-h-screen pb-20">
+            {/* ── STICKY TOP BAR ── */}
+            <div className="sticky top-[84px] sm:top-[85px] lg:top-[30px] z-50 bg-background/85 backdrop-blur-xl border-b border-foreground/[0.08] px-4 py-3 flex items-center gap-4 shadow-sm">
+              <button
+                onClick={() => router.back()}
+                className="w-9 h-9 rounded-full hover:bg-foreground/[0.08] flex items-center justify-center transition-colors shrink-0"
+              >
+                <ArrowLeft className="w-5 h-5 text-foreground" />
+              </button>
+              <div className="flex-1 min-w-0">
+                <h1 className="text-xl font-black italic uppercase font-kanit text-foreground tracking-tighter leading-none truncate">
+                  {profile.name}
+                </h1>
+                <p className="text-[11px] text-foreground/40 font-bold">{posts.length} posts</p>
+              </div>
+            </div>
+
+            {/* ── COVER BANNER ── */}
+            <div className="relative w-full h-36 sm:h-48 bg-zinc-900 overflow-hidden">
+              <img
+                src={profile.cover_url || "https://images.unsplash.com/photo-1574629810360-7efbbe195018?auto=format&fit=crop&q=80&w=2000"}
+                alt=""
+                className="w-full h-full object-cover brightness-75"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent" />
+            </div>
+
+            {/* ── PROFILE INFO ── */}
+            <div className="px-4 sm:px-5 relative">
+              <div className="absolute -top-10 left-4">
+                <Link
+                  href={`/profile?id=${profile.id}`}
+                  className={cn(
+                    "block w-20 h-20 rounded-full overflow-hidden border-4 border-background shadow-xl hover:opacity-90 transition-opacity",
+                    profile.is_pro && "ring-2 ring-yellow-500/60"
+                  )}
+                >
+                  {profile.avatar_url ? (
+                    <img src={profile.avatar_url} className="w-full h-full object-cover" alt="" />
+                  ) : (
+                    <div className="w-full h-full bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center font-bold text-primary text-2xl">
+                      {profile.name.charAt(0)}
+                    </div>
+                  )}
+                </Link>
+              </div>
+
+              <div className="flex justify-end pt-3 pb-2">
+                {isMe ? (
+                  <Link
+                    href={`/profile?id=${user?.id}`}
+                    className="px-5 py-2 rounded-full border border-foreground/15 text-[12px] font-black uppercase tracking-wider text-foreground hover:bg-foreground/[0.05] transition-all"
+                  >
+                    Editar Perfil
+                  </Link>
+                ) : (
+                  <button
+                    onClick={() => router.push(`/messages?user=${profile.id}`)}
+                    className="px-5 py-2 rounded-full bg-primary text-background text-[12px] font-black uppercase tracking-wider hover:bg-primary/90 transition-all shadow-md"
+                  >
+                    Mensaje
+                  </button>
+                )}
+              </div>
+
+              <div className="mt-1">
+                <div className="flex items-center gap-2">
+                  <h2 className={cn("text-xl font-black text-foreground leading-tight", profile.is_pro && "text-yellow-500")}>
+                    {profile.name}
+                  </h2>
+                  {profile.is_pro && <Zap className="w-4 h-4 text-yellow-500 fill-yellow-500 shrink-0" />}
+                </div>
+                <div className="flex items-center gap-1.5 mt-0.5">
+                  {isMe ? (
+                    <button
+                      onClick={() => {
+                        setEditingHandle(profile.handle || profile.name.toLowerCase().replace(/\s+/g, ''));
+                        setHandleError('');
+                        setShowHandleModal(true);
+                      }}
+                      className="flex items-center gap-1 text-[14px] text-foreground/40 hover:text-primary transition-colors group/handle"
+                    >
+                      <span>@{displayHandle}</span>
+                      <Pencil className="w-3 h-3 opacity-0 group-hover/handle:opacity-100 transition-opacity" />
+                    </button>
+                  ) : (
+                    <span className="text-[14px] text-foreground/40">@{displayHandle}</span>
+                  )}
+                </div>
+              </div>
+
+              {profile.bio && <p className="text-[14px] text-foreground/70 mt-3 leading-relaxed">{profile.bio}</p>}
+
+              <div className="flex flex-wrap items-center gap-x-4 gap-y-1 mt-3 text-[13px] text-foreground/40">
+                <div className="flex items-center gap-1">
+                  <MapPin className="w-3.5 h-3.5" />
+                  <span>{profile.position}</span>
+                </div>
+                {profile.instagram && (
+                  <a href={`https://instagram.com/${profile.instagram}`} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1 hover:text-primary transition-colors">
+                    <LinkIcon className="w-3.5 h-3.5" />
+                    <span>@{profile.instagram}</span>
+                  </a>
+                )}
+                <div className="flex items-center gap-1">
+                  <Calendar className="w-3.5 h-3.5" />
+                  <span>Se unió en {joinMonth} {joinYear}</span>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-6 mt-4 pb-4">
+                <div className="flex items-center gap-1.5">
+                  <span className="font-black text-foreground text-sm">{profile.elo || 0}</span>
+                  <span className="text-foreground/40 text-[13px]">ELO</span>
+                </div>
+                <div className="flex items-center gap-1.5">
+                  <span className="font-black text-foreground text-sm">{profile.matches || 0}</span>
+                  <span className="text-foreground/40 text-[13px]">Partidos</span>
+                </div>
+                <div className="flex items-center gap-1.5">
+                  <span className="font-black text-foreground text-sm">{profile.goals || 0}</span>
+                  <span className="text-foreground/40 text-[13px]">Goles</span>
+                </div>
+              </div>
+            </div>
+
+            <div className="border-b border-foreground/[0.08] flex">
+              {tabs.map(tab => (
+                <button
+                  key={tab.id}
+                  onClick={() => setActiveTab(tab.id)}
+                  className={cn(
+                    "flex-1 py-3.5 text-center text-[14px] font-bold transition-colors relative hover:bg-foreground/[0.04]",
+                    activeTab === tab.id ? "text-foreground" : "text-foreground/40"
+                  )}
+                >
+                  {tab.label}
+                  {activeTab === tab.id && (
+                    <motion.div
+                      layoutId="feedProfileTab"
+                      className="absolute bottom-0 left-1/2 -translate-x-1/2 w-14 h-1 bg-primary rounded-full"
+                    />
+                  )}
+                </button>
+              ))}
+            </div>
+
+            {/* List */}
+            <div className="flex flex-col">
+              {isLoadingPosts && currentPosts.length === 0 ? (
+                <div className="flex flex-col items-center justify-center py-16">
+                  <Loader2 className="w-8 h-8 animate-spin text-foreground/20 mb-4" />
+                  <p className="text-foreground/30 text-sm">Cargando...</p>
+                </div>
+              ) : currentPosts.length === 0 ? (
+                <div className="flex flex-col items-center justify-center py-16 px-6 text-center">
+                  <div className="w-16 h-16 rounded-full bg-foreground/[0.03] border border-foreground/[0.06] flex items-center justify-center mb-4">
+                    {activeTab === 'likes' ? <Heart className="w-7 h-7 text-foreground/10" /> :
+                      activeTab === 'bookmarks' ? <Bookmark className="w-7 h-7 text-foreground/10" /> :
+                        activeTab === 'media' ? <ImageIcon className="w-7 h-7 text-foreground/10" /> :
+                          <MessageSquare className="w-7 h-7 text-foreground/10" />
+                    }
+                  </div>
+                  <h3 className="text-lg font-black italic uppercase font-kanit text-foreground tracking-tighter mb-1">
+                    {activeTab === 'posts' ? 'Sin posts todavía' : activeTab === 'likes' ? 'Sin me gusta todavía' : activeTab === 'bookmarks' ? 'Nada guardado' : 'Sin multimedia'}
+                  </h3>
+                  <p className="text-foreground/30 text-sm max-w-xs">
+                    {activeTab === 'posts' && isMe ? 'Cuando publiques algo, aparecerá acá.' : activeTab === 'posts' ? 'Este usuario aún no ha publicado nada.' : activeTab === 'likes' ? 'Los posts que le gusten aparecerán acá.' : activeTab === 'bookmarks' ? 'Los posts que guardes aparecerán acá.' : 'Los posts con imágenes aparecerán acá.'}
+                  </p>
+                </div>
+              ) : (
+                currentPosts.map((post, index) => (
+                  <div
+                    key={post.id}
+                    onClick={(e) => {
+                      if ((e.target as HTMLElement).closest('a, button, input')) return;
+                      router.push(`/post/${post.id}`);
+                    }}
+                    className={cn(
+                      "p-4 sm:px-5 sm:py-4 border-b border-foreground/[0.06] transition-colors duration-200 relative flex gap-3 sm:gap-4 group/post hover:bg-foreground/[0.03] cursor-pointer animate-in fade-in slide-in-from-bottom-2",
+                      post.author.is_pro ? "bg-gradient-to-r from-yellow-500/[0.03] to-transparent" : ""
+                    )}
+                    style={{ animationDelay: `${index < 10 ? index * 0.03 : 0}s`, animationFillMode: 'both' }}
+                  >
+                    <div className="shrink-0">
+                      <Link href={`/feed/profile?id=${post.author.id}`} className={cn("block w-11 h-11 rounded-full overflow-hidden hover:opacity-90 transition-opacity", post.author.is_pro && "ring-2 ring-yellow-500/40")}>
+                        {post.author.avatar_url ? (
+                          <img src={post.author.avatar_url} loading="lazy" className="w-full h-full object-cover" alt="" />
+                        ) : (
+                          <div className="w-full h-full bg-gradient-to-br from-primary/15 to-primary/5 flex items-center justify-center font-bold text-primary text-sm">
+                            {post.author.name.charAt(0)}
+                          </div>
+                        )}
+                      </Link>
+                    </div>
+
+                    <div className="flex-1 min-w-0">
+                      <div className="flex justify-between items-start">
+                        <div className="flex items-center gap-1.5 flex-wrap leading-tight">
+                          <Link href={`/feed/profile?id=${post.author.id}`} className="group flex items-center gap-1 min-w-0">
+                            <span className={cn("font-bold text-[15px] truncate group-hover:underline", post.author.is_pro ? "text-yellow-500" : "text-foreground")}>
+                              {post.author.name}
+                            </span>
+                            {post.author.is_pro && <Zap className="w-3.5 h-3.5 text-yellow-500 fill-yellow-500 shrink-0" />}
+                            <span className="text-foreground/40 text-[15px] truncate ml-0.5">
+                              @{post.author.handle || post.author.name.toLowerCase().replace(/\s+/g, '')}
+                            </span>
+                          </Link>
+                          <span className="text-foreground/40 text-[15px]">·</span>
+                          <span className="text-foreground/40 text-[15px]">{timeAgo(post.created_at)}</span>
+                        </div>
+                        {post.author_id === user?.id && (
+                          <div className="relative group/menu shrink-0">
+                            <button className="text-foreground/40 hover:text-blue-500 p-1.5 hover:bg-blue-500/10 rounded-full transition-colors mt-[-4px]">
+                              <MoreHorizontal className="w-4 h-4" />
+                            </button>
+                            <div className="absolute right-0 top-full mt-1 w-32 bg-surface-elevated border border-foreground/10 rounded-xl shadow-xl flex flex-col opacity-0 group-hover/menu:opacity-100 pointer-events-none group-hover/menu:pointer-events-auto transition-all z-20 overflow-hidden">
+                              <button
+                                onClick={(e) => { e.stopPropagation(); handleDeletePost(post.id); }}
+                                className="w-full text-left px-4 py-3 text-sm font-bold text-red-500 hover:bg-white/5 flex items-center gap-2"
+                              >
+                                <Trash2 className="w-4 h-4" /> Eliminar
+                              </button>
+                            </div>
+                          </div>
+                        )}
+                      </div>
+
+                      <div className="mt-1 mb-2.5">
+                        <p className="text-[15px] text-foreground whitespace-pre-wrap leading-snug">
+                          {(() => {
+                            let content = post.content;
+                            const hasMatchCard = content.match(/[?&]id=([0-9a-fA-F-]{36})/);
+                            if (hasMatchCard) {
+                              content = content.replace(/\n?https?:\/\/[^\s]+match\?id=[0-9a-fA-F-]{36}[^\s]*/g, '');
+                            }
+                            return content.split(/(#[\w\u00C0-\u024FáéíóúñÁÉÍÓÚÑ]+)/g).map((part, i) => {
+                              if (part.startsWith('#')) return <span key={i} className="text-primary hover:underline font-semibold">{part}</span>;
+                              return part;
+                            });
+                          })()}
+                        </p>
+                        {(() => {
+                          const matchIdMatch = post.content.match(/[?&]id=([0-9a-fA-F-]{36})/);
+                          if (matchIdMatch) return <MatchPostCard matchId={matchIdMatch[1]} />;
+                          return null;
+                        })()}
+                        {post.image_url && (
+                          <div className="mt-3 rounded-2xl overflow-hidden border border-foreground/[0.08] shadow-sm">
+                            <img src={post.image_url} alt="" loading="lazy" className="w-full max-h-[500px] object-cover" />
+                          </div>
+                        )}
+                      </div>
+
+                      <div className="flex items-center justify-between text-foreground/40 max-w-[400px] -ml-2">
+                        <button onClick={(e) => { e.stopPropagation(); router.push(`/post/${post.id}`); }} className="flex items-center gap-1.5 p-2 rounded-full hover:bg-blue-500/10 hover:text-blue-500 transition-colors group/action">
+                          <MessageSquare className="w-[18px] h-[18px]" />
+                          {post.comments_count > 0 && <span className="text-[13px]">{post.comments_count}</span>}
+                        </button>
+                        <button onClick={(e) => { e.stopPropagation(); handleLike(post.id, post.user_has_liked); }} className={cn("flex items-center gap-1.5 p-2 rounded-full transition-colors group/action", post.user_has_liked ? "text-pink-500" : "hover:bg-pink-500/10 hover:text-pink-500")}>
+                          <Heart className={cn("w-[18px] h-[18px]", post.user_has_liked && "fill-pink-500")} />
+                          {post.likes_count > 0 && <span className="text-[13px]">{post.likes_count}</span>}
+                        </button>
+                        <button onClick={(e) => { e.stopPropagation(); setShareModalPost(post); }} className="flex items-center gap-1.5 p-2 rounded-full hover:bg-primary/10 hover:text-primary transition-colors">
+                          <Share2 className="w-[18px] h-[18px]" />
+                        </button>
+                        <button onClick={(e) => { e.stopPropagation(); handleBookmark(post.id); }} className={cn("p-2 rounded-full transition-colors", bookmarkedPosts.has(post.id) ? "text-primary" : "hover:bg-primary/10 hover:text-primary")}>
+                          {bookmarkedPosts.has(post.id) ? <BookmarkCheck className="w-[18px] h-[18px]" /> : <Bookmark className="w-[18px] h-[18px]" />}
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                ))
+              )}
+            </div>
+          </main>
+
+          {/* ── RIGHT SIDEBAR ── */}
+          <aside className="hidden xl:flex flex-col w-[320px] shrink-0 sticky top-[45px] self-start gap-5">
+            {/* Search */}
+            <div className="bg-foreground/[0.03] border border-foreground/10 rounded-2xl h-12 flex items-center px-4 gap-3 focus-within:bg-background focus-within:border-primary/50 transition-all">
+              <Search className="w-5 h-5 text-foreground/30" />
+              <input
+                type="text"
+                placeholder="Buscar en el Vestuario..."
+                className="bg-transparent border-none outline-none text-sm font-medium w-full placeholder:text-foreground/20"
+              />
+            </div>
+
+            {/* Suggested Users */}
+            <div className="bg-foreground/[0.03] border border-foreground/[0.06] rounded-[2rem] overflow-hidden">
+              <div className="px-6 py-4 border-b border-foreground/[0.06]">
+                <h3 className="text-[11px] font-black uppercase tracking-[0.2em] text-foreground/40 italic">A quién seguir</h3>
+              </div>
+              <div className="flex flex-col">
+                {suggestedUsers.map((su) => (
+                  <div key={su.id} className="px-6 py-4 hover:bg-foreground/[0.05] transition-colors flex items-center gap-3">
+                    <Link href={`/feed/profile?id=${su.id}`} className={cn("w-10 h-10 rounded-full overflow-hidden shrink-0", su.is_pro && "ring-2 ring-yellow-500/40")}>
+                      {su.avatar_url ? <img src={su.avatar_url} className="w-full h-full object-cover" alt="" /> : <div className="w-full h-full bg-primary/10 flex items-center justify-center font-bold text-primary text-xs">{su.name.charAt(0)}</div>}
+                    </Link>
+                    <Link href={`/feed/profile?id=${su.id}`} className="flex-1 min-w-0">
+                      <div className="font-bold text-[14px] truncate leading-tight hover:underline">{su.name}</div>
+                      <div className="text-[11px] text-foreground/40 truncate">@{su.handle || su.name.toLowerCase().replace(/\s+/g, '')}</div>
+                    </Link>
+                    <button className="px-4 py-1.5 rounded-full bg-foreground text-background text-[11px] font-black uppercase hover:bg-foreground/80 transition-all">Seguir</button>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Top Players */}
+            <div className="bg-foreground/[0.03] border border-foreground/[0.06] rounded-[2rem] overflow-hidden">
+              <div className="px-6 py-4 border-b border-foreground/[0.06] flex justify-between items-center">
+                <h3 className="text-[11px] font-black uppercase tracking-[0.2em] text-foreground/40 italic">Ranking ELO</h3>
+                <TrendingUp className="w-4 h-4 text-primary" />
+              </div>
+              <div className="flex flex-col">
+                {topPlayers.map((player) => (
+                  <Link key={player.id} href={`/feed/profile?id=${player.id}`} className="px-6 py-3.5 hover:bg-foreground/[0.05] transition-colors flex items-center gap-3">
+                    <div className="w-8 h-8 rounded-full overflow-hidden shrink-0 bg-primary/5 flex items-center justify-center">
+                      {player.avatar_url ? <img src={player.avatar_url} className="w-full h-full object-cover" alt="" /> : <span className="text-primary font-bold text-[10px]">{player.name.charAt(0)}</span>}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="font-bold text-[13px] truncate leading-none mb-0.5">{player.name}</div>
+                      <div className="text-[10px] text-foreground/30 font-bold uppercase">{player.position}</div>
+                    </div>
+                    <div className="text-right">
+                      <div className="text-xs font-black text-primary italic leading-none">{player.elo}</div>
+                      <div className="text-[8px] font-bold text-foreground/30 uppercase tracking-tighter">ELO</div>
+                    </div>
+                  </Link>
+                ))}
+              </div>
+            </div>
+          </aside>
         </div>
       </div>
 
