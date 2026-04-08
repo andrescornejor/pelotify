@@ -558,48 +558,6 @@ export default function FeedProfilePage() {
         <div className="lg:gap-6 xl:gap-8 flex">
           {/* ── LEFT SIDEBAR ── */}
           <aside className="hidden lg:flex flex-col w-[280px] xl:w-[320px] shrink-0 sticky top-[45px] self-start pb-8 pt-0 xl:pl-4">
-            {/* Perfil Card */}
-            {user && (
-              <div className="mb-4 rounded-[1.5rem] bg-foreground/[0.03] border border-foreground/[0.06] overflow-hidden">
-                <div className="h-16 bg-gradient-to-r from-primary/20 via-primary/5 to-transparent relative">
-                  <div className="absolute -bottom-5 left-4">
-                    <Link href={`/feed/profile?id=${user.id}`} className="block w-12 h-12 rounded-full overflow-hidden border-2 border-background shadow-lg hover:opacity-90 transition-opacity">
-                      {user.avatar_url ? (
-                        <img src={user.avatar_url} className="w-full h-full object-cover" alt="" />
-                      ) : (
-                        <div className="w-full h-full bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center font-bold text-primary text-[15px]">
-                          {user.name?.charAt(0) || '?'}
-                        </div>
-                      )}
-                    </Link>
-                  </div>
-                </div>
-                <div className="pt-7 pb-4 px-4">
-                  <Link href={`/feed/profile?id=${user.id}`} className="block">
-                    <div className="font-bold text-[15px] text-foreground truncate hover:underline leading-tight">{user.name}</div>
-                  </Link>
-                  <div className="flex items-center gap-1.5 mt-0.5 group/handle">
-                    <span className="text-[13px] text-foreground/40">@{currentUserHandle || user.name.toLowerCase().replace(/\s+/g, '')}</span>
-                  </div>
-                  {/* Quick stats */}
-                  <div className="flex items-center gap-4 mt-3 pt-3 border-t border-foreground/[0.06]">
-                    <div className="text-center group/stat">
-                      <div className="text-sm font-black text-foreground">{user.user_metadata?.matches || 0}</div>
-                      <div className="text-[9px] font-bold text-foreground/30 uppercase tracking-wider mt-0.5">Partidos</div>
-                    </div>
-                    <div className="text-center group/stat">
-                      <div className="text-sm font-black text-foreground">{user.user_metadata?.elo || 0}</div>
-                      <div className="text-[9px] font-bold text-foreground/30 uppercase tracking-wider mt-0.5">ELO</div>
-                    </div>
-                    <div className="text-center group/stat">
-                      <div className="text-sm font-black text-foreground">{user.user_metadata?.goals || 0}</div>
-                      <div className="text-[9px] font-bold text-foreground/30 uppercase tracking-wider mt-0.5">Goles</div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            )}
-
             {/* Navigation Menu */}
             <div className="flex flex-col gap-1 pr-4">
               {MENU_ITEMS.map((item) => (
