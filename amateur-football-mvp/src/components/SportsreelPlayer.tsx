@@ -39,10 +39,10 @@ export function SportsreelPlayer({ url, className }: SportsreelPlayerProps) {
       setDownloadStage('done');
 
       // Step 2: Trigger the download of the REAL video (API actively scrapes and merges .m3u8 -> .ts)
-      const downloadLink = `/api/video/download-real?url=${encodeURIComponent(url)}`;
+      const downloadLink = `/api/video/download-real?url=${encodeURIComponent(url)}&id=${videoId || 'pelotify'}`;
       const a = document.createElement('a');
       a.href = downloadLink;
-      a.setAttribute('download', '');
+      a.setAttribute('download', `partido_${videoId || 'completo'}.mp4`);
       a.target = '_blank';
       document.body.appendChild(a);
       a.click();

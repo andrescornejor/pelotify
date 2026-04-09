@@ -106,13 +106,13 @@ export async function GET(request: Request) {
       }
     });
 
-    // Serving concatenated .ts segments as video/mp2t.
-    // Changing the extension to .ts (Transport Stream) is critical because .mp4 headers won't match,
-    // which causes the "Corrupt or format not supported" error in strict players. VLC plays .ts perfectly.
+    // Serving concatenated .ts segments as video/mp4.
+    // Changing the extension to .mp4 explicitly because mobile browsers and strict clients
+    // strongly prefer MP4 declarations even for raw stream buffers.
     return new NextResponse(readableStream, {
       headers: {
-        'Content-Type': 'video/mp2t',
-        'Content-Disposition': `attachment; filename="partido_${customId}_fusion.ts"`,
+        'Content-Type': 'video/mp4',
+        'Content-Disposition': `attachment; filename="partido_${customId}_fusion.mp4"`,
       },
     });
 
