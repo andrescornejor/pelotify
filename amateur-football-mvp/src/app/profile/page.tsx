@@ -55,6 +55,7 @@ import { getRankByElo } from '@/lib/ranks';
 import { ShareStory } from '@/components/ShareStory';
 import { getUserHighlights, Highlight } from '@/lib/highlights';
 import confetti from 'canvas-confetti';
+import { SkillPointAllocator } from '@/components/SkillPointAllocator';
 import { RadarChart } from '@/components/RadarChart';
 
 interface PlayerStats {
@@ -655,6 +656,7 @@ function ProfileContent() {
                     image: avatarPreview || (getField('avatar_url', undefined) as string | undefined),
                     mvpTrophies: displayMvpCount,
                     badges: userBadges.map((b) => b.badge_type as string),
+                    pendingPoints: skillPoints,
                   }}
                 />
                 {isEditing && (
@@ -968,29 +970,78 @@ function ProfileContent() {
                             ].map((item, idx) => (
                               <div
                                 key={idx}
-                                className="space-y-3 bg-background/30 p-5 rounded-[2rem] border border-foreground/[0.03] hover:border-foreground/10 transition-colors"
+                                className="group/stat-card relative p-6 rounded-[2.2rem] bg-foreground/[0.02] border border-foreground/[0.06] hover:bg-foreground/[0.04] hover:border-primary/20 transition-all duration-500 overflow-hidden"
                               >
-                                <div className="flex items-center gap-2">
-                                  <div className={cn('w-1.5 h-1.5 rounded-full', item.dot)} />
-                                  <span className="text-[10px] font-black uppercase text-foreground/50 tracking-[0.3em] leading-none">
+                                <div className="absolute -right-4 -top-4 w-20 h-20 bg-primary/5 blur-2xl opacity-0 group-hover/stat-card:opacity-100 transition-opacity" />
+                                <div className="flex items-center gap-3 mb-4">
+                                  <div className={cn('w-2 h-2 rounded-full shadow-[0_0_8px_currentColor]', item.dot.replace('bg-', 'text-'))} />
+                                  <span className="text-[10px] font-black uppercase text-foreground/40 tracking-[0.3em] leading-none group-hover/stat-card:text-foreground/60 transition-colors">
                                     {item.label}
                                   </span>
                                 </div>
-                                <p
-                                  className={cn(
-                                    'text-2xl lg:text-3xl font-black italic uppercase tracking-tighter truncate',
-                                    item.isTeam
-                                      ? 'text-primary hover:text-white transition-colors cursor-pointer'
-                                      : 'text-foreground'
-                                  )}
-                                >
-                                  {item.value}{' '}
-                                  <span className="text-foreground/40 text-sm not-italic ml-1 tracking-normal font-bold">
-                                    {item.unit}
+                                <div className="relative flex items-end gap-1.5">
+                                  <span
+                                    className={cn(
+                                      'text-3xl lg:text-4xl font-black italic uppercase tracking-tighter truncate leading-none',
+                                      item.isTeam
+                                        ? 'text-primary'
+                                        : 'text-foreground'
+                                    )}
+                                  >
+                                    {item.value}
                                   </span>
-                                </p>
+                                  {item.unit && (
+                                    <span className="text-[10px] font-black text-foreground/20 uppercase tracking-widest mb-1">
+                                      {item.unit}
+                                    </span>
+                                  )}
+                                </div>
                               </div>
                             ))}
+                          </div>
+                        )}
+
+                        {/* Attribute Grid (Non-editing view) */}
+                        {!isEditing && (
+                          <div className="pt-8 border-t border-foreground/5">
+                            <div className="flex items-center justify-between mb-8">
+                               <div className="flex items-center gap-3">
+                                  <Zap className="w-5 h-5 text-primary" />
+                                  <h4 className="text-[11px] font-black uppercase tracking-[0.3em] text-foreground/60 italic">Atributos Base</h4>
+                               </div>
+                               {skillPoints > 0 && isMe && (
+                                 <motion.div 
+                                    animate={{ scale: [1, 1.05, 1] }} 
+                                    transition={{ duration: 2, repeat: Infinity }}
+                                    className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary/10 border border-primary/20"
+                                 >
+                                    <span className="text-[8px] font-black uppercase tracking-wider text-primary">{skillPoints} Puntos Disponibles</span>
+                                 </motion.div>
+                               )}
+                            </div>
+                            <div className="grid grid-cols-3 gap-4">
+                               {[
+                                 { label: 'PAC', val: playerStats.pac, color: '#3b82f6' },
+                                 { label: 'SHO', val: playerStats.sho, color: '#ef4444' },
+                                 { label: 'PAS', val: playerStats.pas, color: '#8b5cf6' },
+                                 { label: 'DRI', val: playerStats.dri, color: '#f59e0b' },
+                                 { label: 'DEF', val: playerStats.def, color: '#10b981' },
+                                 { label: 'PHY', val: playerStats.phy, color: '#f97316' },
+                               ].map((stat) => (
+                                 <div key={stat.label} className="flex flex-col gap-1.5">
+                                    <div className="flex justify-between items-end">
+                                       <span className="text-[9px] font-black text-foreground/30 uppercase tracking-wider">{stat.label}</span>
+                                       <span className="text-xs font-black italic text-foreground tracking-tighter leading-none">{stat.val}</span>
+                                    </div>
+                                    <div className="h-1 bg-foreground/[0.04] rounded-full overflow-hidden">
+                                       <div 
+                                          className="h-full rounded-full transition-all duration-1000" 
+                                          style={{ width: `${(stat.val/99)*100}%`, backgroundColor: stat.color }} 
+                                       />
+                                    </div>
+                                 </div>
+                               ))}
+                            </div>
                           </div>
                         )}
                       </div>
@@ -1008,61 +1059,12 @@ function ProfileContent() {
                         <div className="absolute top-0 left-0 w-64 h-64 bg-accent/10 blur-[80px] opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none" />
                         
                         {isEditing ? (
-                          <>
-                            <div className="flex items-center justify-between relative z-10 border-b border-foreground/5 pb-6">
-                                <div className="flex items-center gap-5">
-                                    <div className="w-14 h-14 rounded-[1.5rem] bg-background/50 flex items-center justify-center border border-accent/20 shadow-[0_0_20px_rgba(245,158,11,0.1)] group-hover:scale-110 transition-transform">
-                                        <Zap className="w-6 h-6 text-accent" />
-                                    </div>
-                                    <div className="flex flex-col">
-                                        <h3 className="text-xl font-black uppercase tracking-tighter text-foreground italic leading-none">
-                                            Atributos
-                                        </h3>
-                                        <span className="text-[10px] font-black text-foreground/40 uppercase tracking-[0.3em] mt-1">
-                                            Skill Points: <span className="text-primary">{skillPoints}</span>
-                                        </span>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div className="grid grid-cols-2 gap-4 relative z-10 pb-4">
-                                {(Object.keys(editedStats) as Array<keyof PlayerStats>).map((stat) => (
-                                    <div key={stat} className="bg-background/40 p-5 rounded-[2rem] border border-foreground/5 space-y-3 group/skill relative overflow-hidden">
-                                         <div className="flex items-center justify-between">
-                                            <span className="text-[11px] font-black uppercase text-foreground/50 tracking-[0.2em] group-hover/skill:text-primary transition-colors italic">{stat}</span>
-                                            <span className="text-xl font-black italic text-foreground tracking-tighter">{editedStats[stat]}</span>
-                                         </div>
-                                         <div className="flex items-center gap-2">
-                                            <button 
-                                              onClick={() => {
-                                                if (editedStats[stat] > 0) {
-                                                  setEditedStats({ ...editedStats, [stat]: editedStats[stat] - 1 });
-                                                  setSkillPoints(skillPoints + 1);
-                                                }
-                                              }}
-                                              className="w-10 h-10 rounded-xl bg-foreground/5 border border-foreground/10 flex items-center justify-center hover:bg-red-500/20 hover:text-red-500 transition-all text-foreground/30"
-                                            >-</button>
-                                            <div className="flex-1 h-2 bg-foreground/5 rounded-full overflow-hidden">
-                                                <motion.div 
-                                                    className="h-full bg-primary shadow-[0_0_10px_rgba(44,252,125,0.4)]"
-                                                    initial={{ width: 0 }}
-                                                    animate={{ width: `${(editedStats[stat] / 99) * 100}%` }}
-                                                />
-                                            </div>
-                                            <button 
-                                              onClick={() => {
-                                                if (skillPoints > 0 && editedStats[stat] < 99) {
-                                                  setEditedStats({ ...editedStats, [stat]: editedStats[stat] + 1 });
-                                                  setSkillPoints(skillPoints - 1);
-                                                }
-                                              }}
-                                              className="w-10 h-10 rounded-xl bg-foreground/5 border border-foreground/10 flex items-center justify-center hover:bg-primary/20 hover:text-primary transition-all text-foreground/30"
-                                            >+</button>
-                                         </div>
-                                    </div>
-                                ))}
-                            </div>
-                          </>
+                          <SkillPointAllocator
+                            stats={editedStats}
+                            skillPoints={skillPoints}
+                            onStatsChange={setEditedStats}
+                            onSkillPointsChange={setSkillPoints}
+                          />
                         ) : (
                           <>
                             <div className="flex items-center justify-between relative z-10 border-b border-foreground/5 pb-6">

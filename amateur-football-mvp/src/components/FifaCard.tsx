@@ -22,8 +22,8 @@ interface FifaCardProps {
     };
     countryUrl?: string;
     clubUrl?: string;
-    mvpTrophies?: number;
     badges?: string[];
+    pendingPoints?: number;
   };
 }
 
@@ -149,6 +149,27 @@ export function FifaCard({ player }: FifaCardProps) {
             }}
           />
         </div>
+
+        {/* Skill Points Glowing Notification */}
+        {player.pendingPoints && player.pendingPoints > 0 && (
+          <motion.div
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="absolute top-4 right-4 z-40"
+          >
+             <div className="relative group">
+                <motion.div 
+                  animate={{ scale: [1, 1.2, 1], opacity: [0.5, 0.8, 0.5] }}
+                  transition={{ duration: 2, repeat: Infinity }}
+                  className="absolute inset-0 bg-primary rounded-full blur-md" 
+                />
+                <div className="relative bg-black border border-primary/50 text-primary px-2 py-1 rounded-full flex items-center gap-1.5 shadow-2xl">
+                   <Zap className="w-2.5 h-2.5 fill-primary" />
+                   <span className="text-[8px] font-black uppercase tracking-wider">{player.pendingPoints} Puntos</span>
+                </div>
+             </div>
+          </motion.div>
+        )}
 
         {/* Top decoration bar */}
         <div
