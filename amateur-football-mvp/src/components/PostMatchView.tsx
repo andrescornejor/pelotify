@@ -272,79 +272,21 @@ export default function PostMatchView({ match, participants, stats }: PostMatchV
             </div>
           </motion.div>
 
-          {/* MATCH INFO SUMMARY */}
-          <div className="glass-premium rounded-[3.5rem] p-8 md:p-10 border border-foreground/10 space-y-8 relative overflow-hidden group/info">
-            <div className="absolute top-0 right-0 w-32 h-32 bg-foreground/5 blur-[50px] -mr-16 -mt-16 rounded-full group-hover/info:scale-150 transition-transform duration-1000" />
-
-            <div className="flex items-center gap-4 relative z-10 px-2">
-              <div className="w-2 h-2 rounded-full bg-primary" />
-              <h3 className="text-[11px] font-black uppercase tracking-[0.5em] text-foreground/40 italic">
-                Resumen de Jornada
-              </h3>
-            </div>
-
-            <div className="space-y-4 relative z-10">
-              {[
-                {
-                  icon: Calendar,
-                  label: 'FECHA',
-                  value: formatDate(match.date),
-                  color: 'text-primary',
-                },
-                { icon: Clock, label: 'HORA', value: match.time, color: 'text-primary' },
-                {
-                  icon: MapPin,
-                  label: 'ESTADIO',
-                  value: (() => {
-                    const venue = findVenueByLocation(match.location);
-                    return venue?.displayName || venue?.name || match.location;
-                  })(),
-                  color: 'text-blue-500',
-                },
-                {
-                  icon: Shield,
-                  label: 'NIVEL',
-                  value: match.level || 'Competitivo',
-                  color: 'text-accent',
-                },
-              ].map((item, idx) => (
-                <div
-                  key={idx}
-                  className="flex items-center justify-between p-5 rounded-[2rem] bg-foreground/[0.03] border border-white/5 hover:bg-foreground/[0.06] transition-all"
-                >
-                  <div className="flex items-center gap-5">
-                    <div className="p-3 bg-zinc-900 rounded-xl border border-white/5">
-                      <item.icon className={cn('w-4 h-4', item.color)} />
-                    </div>
-                    <span className="text-[10px] font-black text-foreground/40 uppercase tracking-widest">
-                      {item.label}
-                    </span>
-                  </div>
-                  <span className="text-sm font-black text-foreground uppercase italic tracking-tighter">
-                    {item.value}
-                  </span>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          <div className="glass-premium rounded-[3.5rem] p-8 border border-foreground/10 relative overflow-hidden group/map">
-            <VenueMap location={match.location} />
-          </div>
-
+          {/* BACK TO TOP ACTION */}
           <div className="px-4">
             <button
               onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-              className="w-full flex items-center justify-center gap-3 py-6 text-[10px] font-black uppercase tracking-[0.4em] text-foreground/30 hover:text-primary transition-all group/scroll"
+              className="w-full flex items-center justify-center gap-4 py-8 text-[11px] font-black uppercase tracking-[0.5em] text-foreground/20 hover:text-primary transition-all group/scroll"
             >
-              VOLVER AL TOP{' '}
-              <ArrowRight className="w-4 h-4 -rotate-90 group-hover/scroll:-translate-y-1 transition-transform" />
+              <div className="w-10 h-10 rounded-full border border-white/5 flex items-center justify-center group-hover/scroll:border-primary/30 transition-colors">
+                <ArrowRight className="w-4 h-4 -rotate-90 group-hover/scroll:-translate-y-1 transition-transform" />
+              </div>
+              VOLVER AL TOP
             </button>
-          </div>
           </div>
         </div>
       </div>
-  );
+    );
 }
 
 function formatDate(dateStr: string) {
