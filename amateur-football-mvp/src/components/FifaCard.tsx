@@ -1,5 +1,5 @@
 import { motion, useMotionValue, useTransform, useSpring } from 'framer-motion';
-import { Star, Award } from 'lucide-react';
+import { Star, Award, Zap } from 'lucide-react';
 import { useRef } from 'react';
 import { cn } from '@/lib/utils';
 import { getRankByElo } from '@/lib/ranks';
