@@ -352,16 +352,16 @@ export default function PostMatchView({ match, participants, stats }: PostMatchV
                           />
                         ) : (
                           <span className="text-xs font-black text-foreground/20 italic">
-                            {p.profiles?.name?.[0].toUpperCase()}
+                            {p.profiles?.name?.[0]?.toUpperCase() || 'P'}
                           </span>
                         )}
                       </div>
                       <div className="flex flex-col min-w-0">
                         <span className="text-[11px] font-black text-foreground uppercase italic tracking-tighter truncate">
-                          {p.profiles?.name?.split(' ')[0]}
+                          {p.profiles?.name?.split(' ')[0] || 'Jugador'}
                         </span>
                         <span className="text-[8px] font-black text-foreground/30 uppercase tracking-[0.2em]">
-                          {p.profiles?.position || 'Jugador'}
+                          {p.profiles?.position || 'Convocado'}
                         </span>
                       </div>
                     </div>

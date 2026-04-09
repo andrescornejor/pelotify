@@ -208,6 +208,7 @@ function MatchLobbyContent() {
   // 1. ALL HOOKS MUST BE AT THE TOP (Unconditional)
   const { data: match, isLoading, error } = useMatchById(id || undefined);
   const { data: matchStats } = useMatchStats(match?.id);
+  const { data: matchReports } = useMatchReports(match?.id);
 
   const joinMutation = useJoinMatch();
   const switchMutation = useSwitchTeam();
@@ -318,6 +319,29 @@ function MatchLobbyContent() {
   const hasJoined = !!myEntry;
   const isConfirmed = myEntry?.status === 'confirmed';
   const myTeam = myEntry?.team;
+
+  const isChronologicallyFinished = useMemo(() => {
+    if (!match) return false;
+    try {
+      const matchStart = new Date(`${match.date}T${match.time}`);
+      const matchEnd = new Date(matchStart.getTime() + 90 * 60 * 1000); // 1.5 horas después
+      return new Date() > matchEnd;
+    } catch (e) {
+      return false;
+    }
+  }, [match]);
+
+  const hasReported = useMemo(() => {
+    if (!user || !matchReports) return false;
+    return matchReports.some((r: any) => r.reporter_id === user.id);
+  }, [user, matchReports]);
+
+  // Si se terminó el partido y soy el creador, podemos forzar el modal si no hay reportes
+  useEffect(() => {
+    if (isChronologicallyFinished && !isCompleted && !hasReported && hasJoined && !isPostMatchModalOpen) {
+       // Opcional: Podríamos dispararlo automáticamente, pero mejor dejar un botón prominente
+    }
+  }, [isChronologicallyFinished, isCompleted, hasReported, hasJoined]);
 
   // 3. HANDLERS (Regular functions, safe to keep here)
   const handleJoinTeam = async (team: 'A' | 'B' | null) => {
@@ -640,7 +664,7 @@ function MatchLobbyContent() {
 
         <Link
           href="/"
-          className="absolute top-24 left-4 md:left-8 w-12 h-12 rounded-2xl glass-premium flex items-center justify-center hover:scale-110 active:scale-95 transition-all text-foreground/50 hover:text-primary z-30"
+          className="absolute top-8 left-4 md:left-8 w-12 h-12 rounded-2xl glass-premium flex items-center justify-center hover:scale-110 active:scale-95 transition-all text-foreground/50 hover:text-primary z-30"
         >
           <ArrowLeft className="w-6 h-6" />
         </Link>
@@ -659,9 +683,27 @@ function MatchLobbyContent() {
                   </span>
                 )}
               </div>
-              <h1 className="text-4xl md:text-6xl font-black italic uppercase tracking-tighter text-foreground leading-[0.9]">
-                {venueInfo?.name || match.location}
-              </h1>
+              {isCompleted ? (
+                <div className="flex items-center gap-10">
+                   <div className="text-center">
+                      <div className="text-[8rem] md:text-[10rem] font-black italic tracking-tighter text-foreground leading-none drop-shadow-2xl">{match.team_a_score ?? 0}</div>
+                      <div className="text-[10px] font-black uppercase tracking-[0.4em] text-primary mt-4">LOCAL (A)</div>
+                   </div>
+                   <div className="flex flex-col items-center gap-2 mb-10">
+                      <div className="w-1.5 h-12 bg-primary/20 rounded-full" />
+                      <div className="w-3 h-3 bg-amber-500 rounded-full shadow-[0_0_20px_rgba(245,158,11,0.5)]" />
+                      <div className="w-1.5 h-12 bg-primary/20 rounded-full" />
+                   </div>
+                   <div className="text-center">
+                      <div className="text-[8rem] md:text-[10rem] font-black italic tracking-tighter text-foreground leading-none drop-shadow-2xl">{match.team_b_score ?? 0}</div>
+                      <div className="text-[10px] font-black uppercase tracking-[0.4em] text-rose-500 mt-4">VISITA (B)</div>
+                   </div>
+                </div>
+              ) : (
+                <h1 className="text-4xl md:text-6xl font-black italic uppercase tracking-tighter text-foreground leading-[0.9]">
+                  {venueInfo?.name || match.location}
+                </h1>
+              )}
               <div className="flex flex-wrap items-center gap-6 text-foreground/50 font-black italic uppercase text-xs py-2 px-1">
                 <div className="flex items-center gap-2">
                   <Calendar className="w-4 h-4 text-primary" />
@@ -674,30 +716,39 @@ function MatchLobbyContent() {
               </div>
             </div>
 
-            <div className="flex items-center gap-4">
-                {!isCompleted && (
-                  <div className="flex items-center gap-3">
-                    {/* Entry QR Button for participants in partner venues */}
-                    {isConfirmed && match.business_id && (
+              <div className="flex items-center gap-4">
+                  {!isCompleted && !isChronologicallyFinished && (
+                    <div className="flex items-center gap-3">
+                      {/* Entry QR Button for participants in partner venues */}
+                      {isConfirmed && match.business_id && (
+                        <button
+                          onClick={() => setIsEntryQRModalOpen(true)}
+                          className="h-14 px-8 rounded-2xl bg-primary text-black font-black italic uppercase text-xs flex items-center gap-3 hover:scale-105 active:scale-95 transition-all shadow-xl shadow-primary/20"
+                          title="Mostrar Pase QR para ingresar"
+                        >
+                          <QrCode className="w-5 h-5" /> Pase QR
+                        </button>
+                      )}
+                      
+                      <CalendarButton match={match} className="h-14 !px-6 rounded-2xl glass-premium" />
                       <button
-                        onClick={() => setIsEntryQRModalOpen(true)}
-                        className="h-14 px-8 rounded-2xl bg-primary text-black font-black italic uppercase text-xs flex items-center gap-3 hover:scale-105 active:scale-95 transition-all shadow-xl shadow-primary/20"
-                        title="Mostrar Pase QR para ingresar"
+                        onClick={() => setIsQRModalOpen(true)}
+                        className="h-14 px-8 rounded-2xl glass-premium border-white/5 font-black italic uppercase text-xs flex items-center gap-3 hover:scale-105 active:scale-95 transition-all text-foreground"
                       >
-                        <QrCode className="w-5 h-5" /> Pase QR
+                        <Users className="w-5 h-5 text-primary" /> Invitar
                       </button>
-                    )}
-                    
-                    <CalendarButton match={match} className="h-14 !px-6 rounded-2xl glass-premium" />
+                    </div>
+                  )}
+
+                  {(isChronologicallyFinished || isCompleted) && hasJoined && !hasReported && (
                     <button
-                      onClick={() => setIsQRModalOpen(true)}
-                      className="h-14 px-8 rounded-2xl glass-premium border-white/5 font-black italic uppercase text-xs flex items-center gap-3 hover:scale-105 active:scale-95 transition-all text-foreground"
+                      onClick={() => setIsPostMatchModalOpen(true)}
+                      className="h-14 px-8 rounded-2xl bg-primary text-black font-black italic uppercase text-xs flex items-center gap-3 hover:scale-105 active:scale-95 transition-all shadow-xl shadow-primary/20 animate-pulse"
                     >
-                      <Users className="w-5 h-5 text-primary" /> Invitar
+                      <Trophy className="w-5 h-5" /> {isCompleted ? 'Votar MVP' : 'Reportar Resultado'}
                     </button>
-                  </div>
-                )}
-            </div>
+                  )}
+              </div>
           </div>
         </div>
       </div>
@@ -984,21 +1035,28 @@ function MatchLobbyContent() {
                     >
                       <div className="flex items-center gap-3 text-primary/80">
                         <DollarSign className="w-5 h-5" />
-                        <span className="text-[10px] font-black uppercase tracking-widest italic">Estado de Ganancias</span>
+                        <span className="text-[10px] font-black uppercase tracking-widest italic">Ganancias del Encuentro</span>
                       </div>
                       
                       {(match as any).payout_status === 'disputed' ? (
                         <div className="space-y-2">
                            <div className="px-3 py-1 rounded-lg bg-red-500/10 text-red-500 text-[9px] font-black uppercase inline-block">Pago Bloqueado</div>
-                           <p className="text-[9px] font-bold text-foreground/40 uppercase leading-relaxed">
+                           <p className="text-[9px] font-bold text-foreground/40 uppercase leading-relaxed font-manrope">
                              Un jugador ha reportado una irregularidad. El dinero se encuentra retenido para revisión.
+                           </p>
+                        </div>
+                      ) : isCompleted ? (
+                        <div className="space-y-2">
+                           <div className="px-3 py-1 rounded-lg bg-primary/10 text-primary text-[9px] font-black uppercase inline-block">Pago Acreditado</div>
+                           <p className="text-[9px] font-bold text-foreground/40 uppercase leading-relaxed font-manrope">
+                             El pago ha sido liberado exitosamente. Podrás verlo en tu billetera.
                            </p>
                         </div>
                       ) : (
                         <div className="space-y-2">
                            <div className="px-3 py-1 rounded-lg bg-primary/10 text-primary text-[9px] font-black uppercase inline-block">Fideicomiso Activo</div>
-                           <p className="text-[9px] font-bold text-foreground/40 uppercase leading-relaxed font-kanit">
-                             Las ganancias se acreditarán en tu perfil <b>1 hora después</b> de iniciado el partido, tras validar que se haya jugado correctamente.
+                           <p className="text-[9px] font-bold text-foreground/40 uppercase leading-relaxed font-manrope">
+                             Las ganancias se acreditarán en tu perfil automáticamente 1 hora después de iniciado el partido.
                            </p>
                         </div>
                       )}

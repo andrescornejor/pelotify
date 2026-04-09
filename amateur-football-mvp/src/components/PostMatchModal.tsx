@@ -383,48 +383,47 @@ export default function PostMatchModal({
                     ) : (
                       teammates.map((player) => (
                         <motion.div
-                          whileHover={{ scale: 1.02 }}
+                          whileHover={{ scale: 1.01 }}
                           key={player.user_id}
                           className="flex items-center justify-between p-4 bg-foreground/[0.02] rounded-[1.5rem] border border-foreground/5 hover:border-foreground/10 transition-all"
                         >
                           <div className="flex items-center gap-4">
-                            <div className="w-12 h-12 rounded-[1rem] bg-background/50 flex flex-col items-center justify-center border border-foreground/10 shadow-inner">
+                            <div className="w-12 h-12 rounded-[1rem] bg-background/50 flex flex-col items-center justify-center border border-foreground/10 shadow-inner overflow-hidden">
                               {player.profiles?.avatar_url ? (
                                 <img
                                   src={player.profiles.avatar_url}
-                                  className="w-full h-full rounded-[1rem] object-cover"
+                                  className="w-full h-full object-cover"
+                                  alt=""
                                 />
                               ) : (
-                                <span className="text-xl font-black italic">
+                                <span className="text-xl font-black italic opacity-20">
                                   {player.profiles?.name?.[0].toUpperCase() || 'P'}
                                 </span>
                               )}
                             </div>
-                            <div className="flex flex-col">
-                              <span className="text-sm font-black uppercase tracking-tight text-foreground truncate max-w-[100px] sm:max-w-xs">
+                            <div className="flex flex-col min-w-0">
+                              <span className="text-sm font-black uppercase tracking-tight text-foreground truncate max-w-[120px]">
                                 {player.profiles?.name || 'Jugador'}
                               </span>
-                              <span className="text-[9px] text-foreground/40 uppercase font-black tracking-widest">
+                              <span className="text-[9px] text-foreground/40 uppercase font-black tracking-widest truncate">
                                 {player.profiles?.position || 'DC'}
                               </span>
                             </div>
                           </div>
-                          <div className="flex gap-1.5 sm:gap-2">
+                          <div className="flex gap-1">
                             {[1, 2, 3, 4, 5].map((s) => (
-                              <motion.button
-                                whileHover={{ scale: 1.2, rotate: 5 }}
-                                whileTap={{ scale: 0.9 }}
+                              <button
                                 key={s}
                                 onClick={() => handleRatingChange(player.user_id, s)}
                                 className={cn(
-                                  'w-8 h-8 sm:w-10 sm:h-10 rounded-full flex items-center justify-center transition-all',
-                                  playerRatings[player.user_id] >= s
-                                    ? 'bg-accent/20 text-accent border border-accent/20'
+                                  'w-8 h-8 sm:w-9 sm:h-9 rounded-full flex items-center justify-center transition-all',
+                                  (playerRatings[player.user_id] || 0) >= s
+                                    ? 'bg-accent/20 text-accent'
                                     : 'bg-foreground/5 text-foreground/20 hover:text-foreground/40'
                                 )}
                               >
-                                <Star className="w-4 h-4 fill-current" />
-                              </motion.button>
+                                <Star className={cn("w-4 h-4", (playerRatings[player.user_id] || 0) >= s && "fill-current")} />
+                              </button>
                             ))}
                           </div>
                         </motion.div>
@@ -632,10 +631,8 @@ export default function PostMatchModal({
                 key="success"
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
-                className="h-full flex flex-col items-center justify-center text-center gap-8 relative z-50"
+                className="flex flex-col items-center justify-center h-full text-center gap-8 py-10"
               >
-                <div className="absolute inset-0 bg-[url('/noise.png')] opacity-10 mix-blend-overlay pointer-events-none" />
-
                 <motion.div
                   initial={{ rotate: -180, scale: 0 }}
                   animate={{ rotate: 0, scale: 1 }}
