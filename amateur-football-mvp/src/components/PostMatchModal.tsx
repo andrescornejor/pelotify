@@ -16,6 +16,8 @@ import {
   Play,
   Video,
   Link2,
+  Wand2,
+  ExternalLink,
 } from 'lucide-react';
 import { MatchParticipant } from '@/lib/matches';
 import { supabase } from '@/lib/supabase';
@@ -93,6 +95,36 @@ export default function PostMatchModal({
         })
       );
     }, 250);
+  };
+
+  const [isDetecting, setIsDetecting] = useState(false);
+
+  const handleAutoDetect = async () => {
+    if (!match?.location) return;
+    setIsDetecting(true);
+    try {
+      const res = await fetch('/api/video/auto-detect', {
+        method: 'POST',
+        body: JSON.stringify({
+          matchId,
+          location: match.location,
+          date: match.date,
+          time: match.time,
+        }),
+      });
+      const data = await res.json();
+      if (data.profileUrl) {
+        if (confirm(`${data.suggestion}\n\n¿Querés abrir el perfil de la sede para buscar el link?`)) {
+          window.open(data.profileUrl, '_blank');
+        }
+      } else {
+        alert('No pudimos detectar una sede con Sportsreel para esta ubicación.');
+      }
+    } catch (e) {
+      console.error('Auto-detect failed:', e);
+    } finally {
+      setIsDetecting(false);
+    }
   };
 
   const handleSubmit = async () => {
@@ -317,8 +349,25 @@ export default function PostMatchModal({
                       value={sportsreelUrl}
                       onChange={(e) => setSportsreelUrl(e.target.value)}
                       placeholder="https://www.sportsreel.com.ar/#/video/..."
-                      className="w-full h-16 bg-foreground/[0.03] border border-foreground/10 rounded-2xl pl-12 pr-6 text-sm font-medium focus:outline-none focus:border-primary/50 focus:bg-primary/5 transition-all outline-none"
+                      className="w-full h-16 bg-foreground/[0.03] border border-foreground/10 rounded-2xl pl-12 pr-16 text-sm font-medium focus:outline-none focus:border-primary/50 focus:bg-primary/5 transition-all outline-none"
                     />
+                    {(match?.location?.toLowerCase().includes('olimpicus') || match?.location?.toLowerCase().includes('ovalo') || match?.location?.toLowerCase().includes('óvalo')) && (
+                      <button
+                        onClick={handleAutoDetect}
+                        disabled={isDetecting}
+                        className="absolute right-2 top-2 bottom-2 px-4 rounded-xl bg-primary/10 hover:bg-primary/20 text-primary border border-primary/20 transition-all flex items-center justify-center gap-2 group/wand"
+                        title="Detectar automáticamente"
+                      >
+                        {isDetecting ? (
+                          <div className="w-4 h-4 border-2 border-primary border-t-transparent animate-spin rounded-full" />
+                        ) : (
+                          <>
+                            <Wand2 className="w-4 h-4 group-hover:rotate-12 transition-transform" />
+                            <span className="text-[10px] font-black uppercase hidden sm:inline">AUTO</span>
+                          </>
+                        )}
+                      </button>
+                    )}
                   </div>
                 </div>
 
