@@ -774,7 +774,7 @@ function MatchLobbyContent() {
       <div className="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-10 xl:px-14 2xl:px-16 mt-8 relative z-20">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
           {/* ── LEFT: PITCH & TEAMS ── */}
-          <div className="lg:col-span-8 space-y-8">
+          <div className={cn("space-y-8", isCompleted ? "lg:col-span-12" : "lg:col-span-8")}>
             {/* Stats Bar */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               {[
@@ -968,9 +968,10 @@ function MatchLobbyContent() {
           </div>
 
           {/* ── RIGHT: SIDEBAR ── */}
-          <div className="lg:col-span-4 space-y-8">
-             {/* Payment Card if needed */}
-             {isConfirmed && match.price > 0 && !isCompleted && !myEntry?.paid && (!isCreator || !!venueInfo || !!match.business_id) && (
+          {!isCompleted && (
+            <div className="lg:col-span-4 space-y-8">
+               {/* Payment Card if needed */}
+               {isConfirmed && match.price > 0 && !myEntry?.paid && (!isCreator || !!venueInfo || !!match.business_id) && (
                 <div className="p-8 rounded-[3rem] bg-[#009EE3]/5 border border-[#009EE3]/20 space-y-6 relative overflow-hidden group">
                   <div className="absolute top-0 right-0 p-8 opacity-5 group-hover:scale-110 transition-transform duration-1000">
                     <DollarSign className="w-32 h-32 text-[#009EE3]" />
@@ -1125,9 +1126,10 @@ function MatchLobbyContent() {
                  </button>
                )}
              </div>
-          </div>
-        </div>
-      </div>
+           </div>
+         )}
+         </div>
+       </div>
 
       {/* Modals */}
       {isQRModalOpen && (
