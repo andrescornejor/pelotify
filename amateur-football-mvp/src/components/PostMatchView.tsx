@@ -44,6 +44,10 @@ interface PostMatchViewProps {
       name: string;
       goals: number;
       team: 'A' | 'B';
+      profiles?: {
+        name?: string;
+        avatar_url?: string;
+      };
     }>;
     mvp: {
       id: string;
@@ -148,7 +152,7 @@ export default function PostMatchView({ match, participants, stats }: PostMatchV
                       </div>
                       <div className="flex flex-col">
                         <span className="text-sm font-black text-foreground uppercase italic tracking-tighter">
-                          {scorer.profiles?.name || 'Jugador'}
+                          {scorer.profiles?.name || scorer.name || 'Jugador'}
                         </span>
                         <span className="text-[9px] font-black text-foreground/30 uppercase tracking-[0.2em]">
                           Artillero Pelotify
