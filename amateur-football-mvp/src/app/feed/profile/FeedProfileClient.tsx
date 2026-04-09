@@ -625,7 +625,7 @@ export default function FeedProfilePage() {
             </div>
 
             {/* ── PROFILE INFO ── */}
-            <div className="px-4 sm:px-5 relative">
+            <div className="px-4 sm:px-5 relative z-20">
               <div className="absolute -top-10 left-4">
                 <Link
                   href={`/profile?id=${profile.id}`}
