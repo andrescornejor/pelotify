@@ -286,7 +286,8 @@ export default function PostMatchView({ match, participants, stats }: PostMatchV
           </div>
         </div>
       </div>
-    );
+    </div>
+  );
 }
 
 function formatDate(dateStr: string) {
