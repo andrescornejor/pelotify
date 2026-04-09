@@ -298,7 +298,7 @@ export default function PostMatchView({ match, participants, stats }: PostMatchV
 
       {/* ── SPORTSREEL VIDEO ── */}
       {match.sportsreel_url && (
-        <div className="max-w-4xl mx-auto w-full pt-8">
+        <div className="w-full pt-8">
            <SportsreelPlayer url={match.sportsreel_url} />
         </div>
       )}

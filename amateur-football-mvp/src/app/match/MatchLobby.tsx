@@ -501,7 +501,7 @@ function MatchLobbyContent() {
 
           <Link
             href="/"
-            className="absolute top-8 left-4 md:left-8 w-12 h-12 rounded-2xl glass-premium flex items-center justify-center hover:scale-110 active:scale-95 transition-all text-foreground/50 hover:text-primary z-30"
+            className="absolute top-24 left-4 md:left-8 w-12 h-12 rounded-2xl glass-premium flex items-center justify-center hover:scale-110 active:scale-95 transition-all text-foreground/50 hover:text-primary z-30"
           >
             <ArrowLeft className="w-6 h-6" />
           </Link>
@@ -671,7 +671,7 @@ function MatchLobbyContent() {
 
         <Link
           href="/"
-          className="absolute top-8 left-4 md:left-8 w-12 h-12 rounded-2xl glass-premium flex items-center justify-center hover:scale-110 active:scale-95 transition-all text-foreground/50 hover:text-primary z-30"
+          className="absolute top-24 left-4 md:left-8 w-12 h-12 rounded-2xl glass-premium flex items-center justify-center hover:scale-110 active:scale-95 transition-all text-foreground/50 hover:text-primary z-50"
         >
           <ArrowLeft className="w-6 h-6" />
         </Link>
@@ -753,49 +753,51 @@ function MatchLobbyContent() {
           {/* ── LEFT: PITCH & TEAMS ── */}
           <div className={cn("space-y-8", isCompleted ? "lg:col-span-12" : "lg:col-span-8")}>
             {/* Stats Bar */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              {[
-                { icon: Users, label: 'Cupos', value: `${participants.length}/${teamSize * 2}`, color: 'text-primary' },
-                { icon: Shield, label: 'Formato', value: match.type || 'F5', color: 'text-indigo-400' },
-                { icon: DollarSign, label: 'Costo', value: match.price > 0 ? `$${match.price}` : 'Gratis', color: 'text-emerald-400' },
-                { icon: Zap, label: 'Estado', value: isCompleted ? 'Finalizado' : 'En Lobby', color: 'text-amber-400' },
-              ].map((stat, i) => (
-                <motion.div 
-                  key={i} 
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.1 * i }}
-                  whileHover={{ y: -5 }}
-                  className={cn(
-                    "p-6 md:p-8 rounded-[2.5rem] glass-premium border-white/5 space-y-4 transition-all group/stat relative overflow-hidden",
-                    stat.label === 'Cupos' && "md:col-span-1 lg:col-span-1"
-                  )}
-                >
-                  <div className="absolute inset-0 bg-gradient-to-br from-white/[0.02] to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-                  <div className="flex items-center justify-between relative z-10">
-                    <div className={cn('p-3 rounded-2xl bg-foreground/5 transition-transform group-hover/stat:rotate-12', stat.color)}>
-                      <stat.icon className="w-5 h-5" />
-                    </div>
-                    <span className="text-[10px] font-black text-foreground/10 uppercase tracking-[0.2em]">{stat.label}</span>
-                  </div>
-                  <div className="relative z-10">
-                    <div className="text-2xl font-black italic font-kanit uppercase tracking-tighter text-foreground group-hover/stat:text-primary transition-colors">{stat.value}</div>
-                    {stat.label === 'Cupos' && (
-                      <div className="mt-4 h-1.5 w-full bg-foreground/5 rounded-full overflow-hidden">
-                        <motion.div 
-                          initial={{ width: 0 }}
-                          animate={{ width: `${(participants.length / (teamSize * 2)) * 100}%` }}
-                          className={cn(
-                            "h-full rounded-full",
-                            participants.length >= teamSize * 2 ? "bg-rose-500" : "bg-primary shadow-[0_0_10px_rgba(var(--primary-rgb),0.5)]"
-                          )}
-                        />
-                      </div>
+            {!isCompleted && (
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                {[
+                  { icon: Users, label: 'Cupos', value: `${participants.length}/${teamSize * 2}`, color: 'text-primary' },
+                  { icon: Shield, label: 'Formato', value: match.type || 'F5', color: 'text-indigo-400' },
+                  { icon: DollarSign, label: 'Costo', value: match.price > 0 ? `$${match.price}` : 'Gratis', color: 'text-emerald-400' },
+                  { icon: Zap, label: 'Estado', value: isCompleted ? 'Finalizado' : 'En Lobby', color: 'text-amber-400' },
+                ].map((stat, i) => (
+                  <motion.div 
+                    key={i} 
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.1 * i }}
+                    whileHover={{ y: -5 }}
+                    className={cn(
+                      "p-6 md:p-8 rounded-[2.5rem] glass-premium border-white/5 space-y-4 transition-all group/stat relative overflow-hidden",
+                      stat.label === 'Cupos' && "md:col-span-1 lg:col-span-1"
                     )}
-                  </div>
-                </motion.div>
-              ))}
-            </div>
+                  >
+                    <div className="absolute inset-0 bg-gradient-to-br from-white/[0.02] to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                    <div className="flex items-center justify-between relative z-10">
+                      <div className={cn('p-3 rounded-2xl bg-foreground/5 transition-transform group-hover/stat:rotate-12', stat.color)}>
+                        <stat.icon className="w-5 h-5" />
+                      </div>
+                      <span className="text-[10px] font-black text-foreground/10 uppercase tracking-[0.2em]">{stat.label}</span>
+                    </div>
+                    <div className="relative z-10">
+                      <div className="text-2xl font-black italic font-kanit uppercase tracking-tighter text-foreground group-hover/stat:text-primary transition-colors">{stat.value}</div>
+                      {stat.label === 'Cupos' && (
+                        <div className="mt-4 h-1.5 w-full bg-foreground/5 rounded-full overflow-hidden">
+                          <motion.div 
+                            initial={{ width: 0 }}
+                            animate={{ width: `${(participants.length / (teamSize * 2)) * 100}%` }}
+                            className={cn(
+                              "h-full rounded-full",
+                              participants.length >= teamSize * 2 ? "bg-rose-500" : "bg-primary shadow-[0_0_10px_rgba(var(--primary-rgb),0.5)]"
+                            )}
+                          />
+                        </div>
+                      )}
+                    </div>
+                  </motion.div>
+                ))}
+              </div>
+            )}
 
             {!isCompleted ? (
               <div className="space-y-6">
