@@ -67,7 +67,7 @@ export default function PostMatchView({ match, participants, stats }: PostMatchV
   const winner = scoreA > scoreB ? 'A' : scoreB > scoreA ? 'B' : 'Draw';
 
   return (
-    <div className="space-y-12 pb-20">
+    <div className="max-w-6xl mx-auto px-4 md:px-0 space-y-12 pb-20">
 
       {/* ── SHARE ACTION ── */}
       <motion.div

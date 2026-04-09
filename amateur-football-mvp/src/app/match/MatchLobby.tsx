@@ -550,7 +550,7 @@ function MatchLobbyContent() {
             </div>
           </div>
 
-        <div className="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-10 xl:px-14 2xl:px-16 -mt-12 relative z-20">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-12 relative z-20">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
             <div className="lg:col-span-8 space-y-12">
                {/* Call to Action Card */}
@@ -676,7 +676,7 @@ function MatchLobbyContent() {
           <ArrowLeft className="w-6 h-6" />
         </Link>
 
-        <div className="relative z-10 max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-10 xl:px-14 2xl:px-16 h-full flex flex-col justify-end pb-16">
+        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-full flex flex-col justify-end pb-16">
 
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-8">
             <div className="space-y-4">
