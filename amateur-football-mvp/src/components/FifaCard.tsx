@@ -22,6 +22,7 @@ interface FifaCardProps {
     };
     countryUrl?: string;
     clubUrl?: string;
+    mvpTrophies?: number;
     badges?: string[];
     pendingPoints?: number;
   };
