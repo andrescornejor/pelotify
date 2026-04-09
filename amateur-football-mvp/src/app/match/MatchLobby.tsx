@@ -259,6 +259,16 @@ function MatchLobbyContent() {
     }
   }, [match?.team_a_name, match?.team_b_name]);
 
+  // Derived check for effect
+  const participantsTemp = match?.participants || [];
+  const myEntryTemp = participantsTemp.find((p) => p.user_id === user?.id);
+  
+  useEffect(() => {
+    if (isChronologicallyFinished && !match?.is_completed && !hasReported && !!myEntryTemp && !isPostMatchModalOpen) {
+       // Auto-trigger logic here if needed
+    }
+  }, [isChronologicallyFinished, match?.is_completed, hasReported, !!myEntryTemp, isPostMatchModalOpen]);
+
 
 
   // Sync venue info when match loads
@@ -339,12 +349,6 @@ function MatchLobbyContent() {
   const myTeam = myEntry?.team;
 
 
-  // Si se terminó el partido y soy el creador, podemos forzar el modal si no hay reportes
-  useEffect(() => {
-    if (isChronologicallyFinished && !isCompleted && !hasReported && hasJoined && !isPostMatchModalOpen) {
-       // Opcional: Podríamos dispararlo automáticamente, pero mejor dejar un botón prominente
-    }
-  }, [isChronologicallyFinished, isCompleted, hasReported, hasJoined]);
 
   // 3. HANDLERS (Regular functions, safe to keep here)
   const handleJoinTeam = async (team: 'A' | 'B' | null) => {
