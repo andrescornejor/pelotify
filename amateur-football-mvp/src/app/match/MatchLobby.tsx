@@ -226,12 +226,29 @@ function MatchLobbyContent() {
   const [isTacticalMode, setIsTacticalMode] = useState(false);
   const [selectedPlayerId, setSelectedPlayerId] = useState<string | null>(null);
 
+  const [isEditingNames, setIsEditingNames] = useState(false);
   const updateMatchMutation = useUpdateMatch();
   const [teamAName, setTeamAName] = useState('Local');
   const [teamBName, setTeamBName] = useState('Visitante');
-  const [isEditingNames, setIsEditingNames] = useState(false);
 
-  // 2. LOGIC & EFFECTS
+  // 3. MEMOS & DERIVED STATE (hooks)
+  const isChronologicallyFinished = useMemo(() => {
+    if (!match) return false;
+    try {
+      const matchStart = new Date(`${match.date}T${match.time}`);
+      const matchEnd = new Date(matchStart.getTime() + 90 * 60 * 1000); // 1.5 horas después
+      return new Date() > matchEnd;
+    } catch (e) {
+      return false;
+    }
+  }, [match]);
+
+  const hasReported = useMemo(() => {
+    if (!user || !matchReports) return false;
+    return matchReports.some((r: any) => r.reporter_id === user.id);
+  }, [user, matchReports]);
+
+  // 4. EFFECTS
 
 
   // Sync team names
@@ -321,21 +338,6 @@ function MatchLobbyContent() {
   const isConfirmed = myEntry?.status === 'confirmed';
   const myTeam = myEntry?.team;
 
-  const isChronologicallyFinished = useMemo(() => {
-    if (!match) return false;
-    try {
-      const matchStart = new Date(`${match.date}T${match.time}`);
-      const matchEnd = new Date(matchStart.getTime() + 90 * 60 * 1000); // 1.5 horas después
-      return new Date() > matchEnd;
-    } catch (e) {
-      return false;
-    }
-  }, [match]);
-
-  const hasReported = useMemo(() => {
-    if (!user || !matchReports) return false;
-    return matchReports.some((r: any) => r.reporter_id === user.id);
-  }, [user, matchReports]);
 
   // Si se terminó el partido y soy el creador, podemos forzar el modal si no hay reportes
   useEffect(() => {
