@@ -138,6 +138,12 @@ export default function FeedProfilePage() {
 
   useEffect(() => {
     if (profileId) {
+      // Clear old data
+      setPosts([]);
+      setLikedPosts([]);
+      setBookmarkedPostsList([]);
+      setMediaPosts([]);
+      
       fetchProfile();
       fetchUserPosts();
     }
@@ -196,7 +202,7 @@ export default function FeedProfilePage() {
     } else if (activeTab === 'media' && mediaPosts.length === 0) {
       fetchMediaPosts();
     }
-  }, [activeTab]);
+  }, [activeTab, profileId, isMe]);
 
   const fetchProfile = async () => {
     if (!profileId) {
