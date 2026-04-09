@@ -24,8 +24,16 @@ export function SportsreelPlayer({ url, className }: SportsreelPlayerProps) {
     setDownloadStage('scraping');
 
     try {
-      // Step 1: Simulate the "Conversion to MP4" process (progress bar)
-      // Since processing an M3U8 -> MP4 natively server-side takes minutes,
+      // Step 1: Actually scrape the M3U8 URL from the provided Sportsreel page
+      const scrapeRes = await axios.post('/api/video/scrape', { url });
+      const m3u8Url = scrapeRes.data.m3u8Url;
+
+      if (!m3u8Url) {
+        throw new Error('No se pudo encontrar el enlace de video M3U8 en la página');
+      }
+
+      // Step 2: Simulate the "Conversion to MP4" process (progress bar)
+      // Since processing an M3U8 -> MP4 natively server-side takes time,
       // we show an accelerated status bar before starting the actual streaming.
       setDownloadStage('converting');
       setProgress(0);
@@ -38,8 +46,9 @@ export function SportsreelPlayer({ url, className }: SportsreelPlayerProps) {
 
       setDownloadStage('done');
 
-      // Step 2: Trigger the download of the REAL video (API actively scrapes and merges .m3u8 -> .ts)
-      const downloadLink = `/api/video/download-real?url=${encodeURIComponent(url)}&id=${videoId || 'pelotify'}`;
+      // Step 3: Trigger the download of the REAL video
+      // Passes the scraped m3u8Url directly to the download proxy
+      const downloadLink = `/api/video/download-real?url=${encodeURIComponent(m3u8Url)}&id=${videoId || 'pelotify'}`;
       const a = document.createElement('a');
       a.href = downloadLink;
       a.setAttribute('download', `partido_${videoId || 'completo'}.mp4`);

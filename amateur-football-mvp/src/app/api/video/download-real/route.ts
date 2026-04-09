@@ -38,10 +38,13 @@ export async function GET(request: Request) {
     const readableStream = new ReadableStream({
       start(controller) {
         const command = ffmpeg(mediaUrl)
+          .inputOptions([
+            '-protocol_whitelist', 'file,http,https,tcp,tls,crypto'
+          ])
           .outputOptions([
-            '-c copy',           // Copy original encoding (fastest)
-            '-f mp4',            // Force MP4 container
-            '-movflags frag_keyframe+empty_moov' // Fragmented MP4 allows seamless HTTP streaming
+            '-c', 'copy',           // Copy original encoding (fastest)
+            '-f', 'mp4',            // Force MP4 container
+            '-movflags', 'frag_keyframe+empty_moov' // Fragmented MP4 allows seamless HTTP streaming
           ])
           .on('error', (err) => {
             console.error('FFmpeg engine error:', err);

@@ -34,9 +34,16 @@ export async function POST(request: Request) {
       $('script').each((_, element) => {
         const scriptContent = $(element).html();
         if (scriptContent && scriptContent.includes('.m3u8')) {
-          const match = scriptContent.match(/(https?:\/\/[^\s"'<>]+\.m3u8[^\s"'<>]*)/);
+          // Try to match standard URL first
+          let match = scriptContent.match(/(https?:\/\/[^\s"'<>]+\.m3u8[^\s"'<>]*)/);
+          
+          if (!match) {
+            // Try to match JSON escaped URL (e.g., https:\/\/...)
+            match = scriptContent.match(/(https?:\\\/\\\/[^\s"'<>\\]+\.m3u8[^\s"'<>\\]*)/);
+          }
+          
           if (match && match[1]) {
-            m3u8Url = match[1];
+            m3u8Url = match[1].replace(/\\\//g, '/');
           }
         }
       });
