@@ -49,13 +49,8 @@ export function SportsreelPlayer({ url, className }: SportsreelPlayerProps) {
       // Step 3: Trigger the download of the REAL video
       // Passes the scraped m3u8Url directly to the download proxy
       const downloadLink = `/api/video/download-real?url=${encodeURIComponent(m3u8Url)}&id=${videoId || 'pelotify'}`;
-      const a = document.createElement('a');
-      a.href = downloadLink;
-      a.setAttribute('download', `partido_${videoId || 'completo'}.mp4`);
-      a.target = '_blank';
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
+      // Open the download directly in the current tab - _blank causes popup blockers
+      window.location.href = downloadLink;
 
       setTimeout(() => {
         setIsDownloading(false);

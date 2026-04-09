@@ -1,6 +1,5 @@
 import { NextResponse } from 'next/server';
 import axios from 'axios';
-import * as cheerio from 'cheerio';
 
 export async function POST(request: Request) {
   try {
@@ -10,66 +9,57 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'URL is required' }, { status: 400 });
     }
 
-    // Attempt to scrape the target URL to find an m3u8 link
-    const { data: html } = await axios.get(url, {
-      headers: {
-        'User-Agent':
-          'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
-      },
-    });
+    // Extract the video UUID from the Sportsreel URL
+    // Format: https://www.sportsreel.com.ar/#/video/{uuid}
+    const videoIdMatch = url.match(/\/video\/([a-f0-9\-]{36})/i);
+    if (!videoIdMatch) {
+      return NextResponse.json(
+        { error: 'No se pudo extraer el ID del video de la URL de Sportsreel' },
+        { status: 400 }
+      );
+    }
+    const videoId = videoIdMatch[1];
 
-    const $ = cheerio.load(html);
+    // Step 1: Get video block metadata (contains canchaId and VMS info)
+    const { data: vodBlock } = await axios.get(
+      `https://servicios.sportsreel.com.ar/vodBlocks/get/${videoId}`,
+      { headers: { 'User-Agent': 'Mozilla/5.0' } }
+    );
 
-    // Look for m3u8 links in source tags
-    let m3u8Url = '';
-    $('source').each((_, element) => {
-      const src = $(element).attr('src');
-      if (src && src.includes('.m3u8')) {
-        try {
-          m3u8Url = new URL(src, url).href;
-        } catch (e) {
-          m3u8Url = src;
-        }
-      }
-    });
+    const canchaId = vodBlock.canchaId;
+    // VMS info is nested inside eid.Vms
+    const vmsUrl = vodBlock.eid?.Vms?.url;
+    const vmsPort = vodBlock.eid?.Vms?.port;
 
-    // If not found in source, try searching in script tags (common in video players)
-    if (!m3u8Url) {
-      $('script').each((_, element) => {
-        const scriptContent = $(element).html();
-        if (scriptContent && scriptContent.includes('.m3u8')) {
-          // Look for any string ending in .m3u8, including relative paths like index.m3u8
-          // We check inside quotes first
-          let match = scriptContent.match(/(?:["'])([^"']*\.m3u8[^"']*)/);
-          
-          if (!match) {
-            // Fallback: look for generic URL or path strings without quotes
-            match = scriptContent.match(/([a-zA-Z0-9_.\-\/\\\\:]+\.m3u8[^\s"'<>\\]*)/);
-          }
-          
-          if (match && match[1]) {
-            let extracted = match[1].replace(/\\\//g, '/');
-            try {
-              m3u8Url = new URL(extracted, url).href;
-            } catch (e) {
-              m3u8Url = extracted;
-            }
-          }
-        }
-      });
+    if (!canchaId || !vmsUrl || !vmsPort) {
+      return NextResponse.json(
+        { error: 'No se pudo obtener la información del servidor de video', vodBlock },
+        { status: 500 }
+      );
     }
 
-    // Mock fallback for MVP if we couldn't scrape an actual m3u8
-    // Since Sportsreel might block scraping or require auth
-    if (!m3u8Url) {
-      m3u8Url = 'https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8';
+    // Step 2: Get camera name from canchaId
+    const { data: camaraData } = await axios.get(
+      `https://servicios.sportsreel.com.ar/camara/getByCanchaId/${canchaId}`,
+      { headers: { 'User-Agent': 'Mozilla/5.0' } }
+    );
+
+    const cameraName = camaraData.camaras?.[0]?.Nombre;
+    if (!cameraName) {
+      return NextResponse.json(
+        { error: 'No se pudo obtener el nombre de la cámara', camaraData },
+        { status: 500 }
+      );
     }
 
-    return NextResponse.json({ m3u8Url });
+    // Step 3: Construct the M3U8 URL
+    const m3u8Url = `https://${vmsUrl}:${vmsPort}/vod/${cameraName}/vodBlock/${videoId}/index.m3u8`;
+
+    return NextResponse.json({ m3u8Url, videoId, cameraName });
   } catch (error: any) {
     console.error('Error scraping video:', error.message);
     return NextResponse.json(
-      { error: 'Error processing the request', details: error.message },
+      { error: 'Error al procesar la solicitud', details: error.message },
       { status: 500 }
     );
   }
