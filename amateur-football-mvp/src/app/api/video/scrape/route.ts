@@ -25,7 +25,11 @@ export async function POST(request: Request) {
     $('source').each((_, element) => {
       const src = $(element).attr('src');
       if (src && src.includes('.m3u8')) {
-        m3u8Url = src;
+        try {
+          m3u8Url = new URL(src, url).href;
+        } catch (e) {
+          m3u8Url = src;
+        }
       }
     });
 
@@ -34,16 +38,22 @@ export async function POST(request: Request) {
       $('script').each((_, element) => {
         const scriptContent = $(element).html();
         if (scriptContent && scriptContent.includes('.m3u8')) {
-          // Try to match standard URL first
-          let match = scriptContent.match(/(https?:\/\/[^\s"'<>]+\.m3u8[^\s"'<>]*)/);
+          // Look for any string ending in .m3u8, including relative paths like index.m3u8
+          // We check inside quotes first
+          let match = scriptContent.match(/(?:["'])([^"']*\.m3u8[^"']*)/);
           
           if (!match) {
-            // Try to match JSON escaped URL (e.g., https:\/\/...)
-            match = scriptContent.match(/(https?:\\\/\\\/[^\s"'<>\\]+\.m3u8[^\s"'<>\\]*)/);
+            // Fallback: look for generic URL or path strings without quotes
+            match = scriptContent.match(/([a-zA-Z0-9_.\-\/\\\\:]+\.m3u8[^\s"'<>\\]*)/);
           }
           
           if (match && match[1]) {
-            m3u8Url = match[1].replace(/\\\//g, '/');
+            let extracted = match[1].replace(/\\\//g, '/');
+            try {
+              m3u8Url = new URL(extracted, url).href;
+            } catch (e) {
+              m3u8Url = extracted;
+            }
           }
         }
       });
