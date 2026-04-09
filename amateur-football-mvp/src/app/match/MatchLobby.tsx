@@ -691,32 +691,9 @@ function MatchLobbyContent() {
                 )}
               </div>
               {isCompleted ? (
-                <div className="flex items-center gap-12 py-8">
-                   <div className="text-center group/score">
-                      <div className="text-[8rem] md:text-[11rem] font-black italic tracking-tighter text-foreground leading-[0.7] drop-shadow-[0_25px_50px_rgba(255,255,255,0.1)] group-hover/score:scale-110 transition-transform duration-700">{match.team_a_score ?? 0}</div>
-                      <div className="text-[10px] font-black uppercase tracking-[0.5em] text-primary mt-8 flex items-center justify-center gap-2">
-                         <span className="w-1.5 h-1.5 rounded-full bg-primary" /> LOCAL (A)
-                      </div>
-                   </div>
-                   
-                   <div className="flex flex-col items-center gap-4">
-                      <div className="px-6 py-2 rounded-full bg-foreground/[0.05] border border-foreground/10 backdrop-blur-md">
-                         <span className="text-[11px] font-black uppercase tracking-[0.4em] text-foreground/40 italic">FINAL SCORE</span>
-                      </div>
-                      <div className="flex flex-col items-center gap-2">
-                        <div className="w-[1px] h-16 bg-gradient-to-b from-transparent via-foreground/20 to-transparent" />
-                        <div className="w-2 h-2 bg-primary rounded-full animate-ping" />
-                        <div className="w-[1px] h-16 bg-gradient-to-t from-transparent via-foreground/20 to-transparent" />
-                      </div>
-                   </div>
-
-                   <div className="text-center group/score">
-                      <div className="text-[8rem] md:text-[11rem] font-black italic tracking-tighter text-foreground leading-[0.7] drop-shadow-[0_25px_50px_rgba(255,255,255,0.1)] group-hover/score:scale-110 transition-transform duration-700">{match.team_b_score ?? 0}</div>
-                      <div className="text-[10px] font-black uppercase tracking-[0.5em] text-rose-500 mt-8 flex items-center justify-center gap-2">
-                         VISITA (B) <span className="w-1.5 h-1.5 rounded-full bg-rose-500" />
-                      </div>
-                   </div>
-                </div>
+                <h1 className="text-4xl md:text-6xl font-black italic uppercase tracking-tighter text-foreground leading-[0.9]">
+                  {venueInfo?.name || match.location}
+                </h1>
               ) : (
                 <h1 className="text-4xl md:text-6xl font-black italic uppercase tracking-tighter text-foreground leading-[0.9]">
                   {venueInfo?.name || match.location}
