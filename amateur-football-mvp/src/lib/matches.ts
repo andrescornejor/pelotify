@@ -581,7 +581,7 @@ export async function getMatchStats(matchId: string) {
   if (mvpError) throw mvpError;
 
   // Use persisted goal_scorers if match is completed and they exist
-  let goalScorers = [];
+  let goalScorers: any[] = [];
   if (
     match.is_completed &&
     match.goal_scorers &&
@@ -593,7 +593,7 @@ export async function getMatchStats(matchId: string) {
     // Fallback to reports if not yet persisted
     const { data: reports, error: reportsError } = await supabase
       .from('match_reports')
-      .select('reporter_id, personal_goals, team, profiles:reporter_id(name)')
+      .select('reporter_id, personal_goals, team, profiles:reporter_id(name, avatar_url)')
       .eq('match_id', matchId);
 
     if (reportsError) throw reportsError;
@@ -605,7 +605,30 @@ export async function getMatchStats(matchId: string) {
         name: ((r.profiles as any)?.name || 'Jugador') as string,
         goals: (r.personal_goals || 0) as number,
         team: (r.team || 'A') as 'A' | 'B',
+        profiles: {
+          name: (r.profiles as any)?.name || 'Jugador',
+          avatar_url: (r.profiles as any)?.avatar_url || null,
+        }
       }));
+  }
+
+  // 3. Enrich goalScorers with profiles if they don't have avatar_url data
+  if (goalScorers.length > 0) {
+    const scorersToFetch = goalScorers.filter(gs => !gs.profiles?.avatar_url).map(gs => gs.id);
+    if (scorersToFetch.length > 0) {
+      const { data: profiles } = await supabase
+        .from('profiles')
+        .select('id, name, avatar_url')
+        .in('id', scorersToFetch);
+      
+      if (profiles) {
+        const profileMap = Object.fromEntries(profiles.map(p => [p.id, p]));
+        goalScorers = goalScorers.map(gs => ({
+          ...gs,
+          profiles: profileMap[gs.id] || gs.profiles || { name: gs.name, avatar_url: null }
+        }));
+      }
+    }
   }
 
   // Calculate MVP (Candidate logic with tiebreaker)
@@ -626,7 +649,7 @@ export async function getMatchStats(matchId: string) {
       .map(([id]) => id);
 
     if (candidates.length > 1) {
-      // Tiebreaker: Goles (as defined by user)
+      // Tiebreaker: Goles
       let topScorerId = candidates[0];
       let maxGoals = -1;
 
