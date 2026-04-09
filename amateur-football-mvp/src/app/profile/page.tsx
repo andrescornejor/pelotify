@@ -1419,7 +1419,7 @@ function ProfileContent() {
                         </div>
 
                         {/* Match Grid */}
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full">
+                        <div className="grid grid-cols-1 gap-6 w-full">
                           {completedMatches.map((m, i) => {
                             const scoreA = m.team_a_score ?? 0;
                             const scoreB = m.team_b_score ?? 0;

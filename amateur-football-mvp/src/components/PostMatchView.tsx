@@ -14,14 +14,11 @@ import {
   Crown,
   Shield,
   Check,
-  Target,
   User2,
   Swords,
-  Flame,
 } from 'lucide-react';
 import { Match, MatchParticipant } from '@/lib/matches';
 import { cn } from '@/lib/utils';
-import PlayerSlot from './PlayerSlot';
 import { findVenueByLocation } from '@/lib/venues';
 import dynamic from 'next/dynamic';
 import { Loader2 } from 'lucide-react';
@@ -72,252 +69,206 @@ export default function PostMatchView({ match, participants, stats }: PostMatchV
   const teamBName = (match as any).team_b_name || 'Visitante';
 
   return (
-    <div className="space-y-8 pb-20">
+    <div className="space-y-10 pb-20">
 
       {/* ═══════════════════════════════════════════════════════════════════
-          HERO SCOREBOARD — THE BIG RESULT
+          CINEMATIC HERO SCOREBOARD
           ═══════════════════════════════════════════════════════════════════ */}
       <motion.div
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-        className="relative rounded-[3.5rem] overflow-hidden border border-foreground/10"
+        className="relative rounded-[3.5rem] sm:rounded-[4rem] overflow-hidden border border-white/5 shadow-2xl group/hero"
       >
-        {/* Layered Background */}
-        <div className="absolute inset-0 bg-gradient-to-br from-zinc-950 via-zinc-900 to-zinc-950" />
-        <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre-v2.png')] opacity-20" />
-        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/60" />
+        {/* Stadium Background */}
+        <div className="absolute inset-0 bg-black" />
+        <img 
+          src="https://images.unsplash.com/photo-1543326727-cf6c39e8f84c?q=80&w=2000&auto=format&fit=crop" 
+          alt="Stadium"
+          className="absolute inset-0 w-full h-full object-cover opacity-40 grayscale mix-blend-luminosity group-hover/hero:scale-105 group-hover/hero:opacity-50 transition-all duration-[3s]"
+        />
+        <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre-v2.png')] opacity-30 mix-blend-overlay" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black via-black/80 to-transparent" />
 
-        {/* Diagonal team color wash */}
-        <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          <div className="absolute -left-20 -top-20 w-[60%] h-[120%] bg-gradient-to-br from-indigo-600/15 via-transparent to-transparent rotate-[-5deg]" />
-          <div className="absolute -right-20 -top-20 w-[60%] h-[120%] bg-gradient-to-bl from-rose-600/15 via-transparent to-transparent rotate-[5deg]" />
+        {/* Dynamic Light Rays */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none mix-blend-screen opacity-60">
+          <div className="absolute -left-1/4 -top-1/4 w-[150%] h-[150%] bg-gradient-to-br from-indigo-500/20 via-transparent to-transparent rotate-[-15deg] blur-2xl group-hover/hero:rotate-[5deg] transition-all duration-[5s]" />
+          <div className="absolute -right-1/4 -top-1/4 w-[150%] h-[150%] bg-gradient-to-bl from-rose-500/20 via-transparent to-transparent rotate-[15deg] blur-2xl group-hover/hero:rotate-[-5deg] transition-all duration-[5s]" />
         </div>
 
-        {/* Winner glow */}
+        {/* Winner Highlight */}
         {winner !== 'Draw' && (
           <div className={cn(
-            "absolute inset-0 pointer-events-none",
-            winner === 'A'
-              ? "bg-[radial-gradient(ellipse_at_30%_50%,rgba(79,70,229,0.12),transparent_60%)]"
-              : "bg-[radial-gradient(ellipse_at_70%_50%,rgba(225,29,72,0.12),transparent_60%)]"
+            "absolute bottom-0 w-1/2 h-1/2 blur-[100px] pointer-events-none opacity-50",
+            winner === 'A' ? "left-0 bg-indigo-500" : "right-0 bg-rose-500"
           )} />
         )}
 
-        <div className="relative z-10 px-6 sm:px-10 md:px-16 py-10 sm:py-14 md:py-20">
-
-          {/* Top Badge */}
+        <div className="relative z-10 px-4 sm:px-10 md:px-16 py-12 sm:py-16 md:py-24">
+          
+          {/* Top Pill */}
           <motion.div
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: 0.3 }}
-            className="flex justify-center mb-8 sm:mb-12"
+            className="flex justify-center mb-10 sm:mb-16"
           >
-            <div className="flex items-center gap-3 px-6 py-2.5 rounded-full bg-white/[0.04] border border-white/10 backdrop-blur-xl">
-              <div className="w-2 h-2 bg-primary rounded-full animate-pulse" />
-              <span className="text-[10px] sm:text-[11px] font-black uppercase tracking-[0.4em] text-white/50">
-                Resultado Final
+            <div className="flex items-center gap-4 px-8 py-3 rounded-full bg-black/40 border border-white/10 backdrop-blur-2xl shadow-[0_10px_30px_rgba(0,0,0,0.5)]">
+              <div className="w-2.5 h-2.5 bg-primary rounded-full animate-pulse shadow-[0_0_15px_rgba(44,252,125,0.8)]" />
+              <span className="text-[11px] sm:text-xs font-black uppercase tracking-[0.5em] text-white/80">
+                Resultado Oficial
               </span>
-              <div className="w-2 h-2 bg-primary rounded-full animate-pulse" />
+              <div className="w-2.5 h-2.5 bg-primary rounded-full animate-pulse shadow-[0_0_15px_rgba(44,252,125,0.8)]" />
             </div>
           </motion.div>
 
-          {/* ── THE SCOREBOARD ── */}
-          <div className="flex items-center justify-center gap-4 sm:gap-8 md:gap-14">
-
-            {/* TEAM A SIDE */}
+          {/* MAIN SCORE SECTION */}
+          <div className="flex items-center justify-between xl:justify-center gap-2 sm:gap-6 md:gap-16">
+            
+            {/* TEAM A */}
             <motion.div
               initial={{ opacity: 0, x: -50 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.2, duration: 0.7 }}
-              className="flex-1 flex flex-col items-center gap-4 sm:gap-6"
+              className="flex flex-col items-center gap-6 flex-1 xl:flex-none xl:w-72"
             >
-              {/* Team Badge */}
               <div className={cn(
-                "w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 rounded-[1.5rem] sm:rounded-[2rem] flex items-center justify-center shadow-2xl border-2 transition-all",
-                winner === 'A'
-                  ? "bg-indigo-600 border-indigo-400 shadow-indigo-600/30"
-                  : "bg-indigo-600/40 border-indigo-500/20"
+                "w-20 h-20 sm:w-28 sm:h-28 md:w-36 md:h-36 rounded-[2rem] sm:rounded-[2.5rem] flex items-center justify-center shadow-2xl relative overflow-hidden group/badge",
+                winner === 'A' || winner === 'Draw' 
+                  ? "bg-gradient-to-br from-indigo-500 to-indigo-800 border-2 border-indigo-400 shadow-[0_0_50px_rgba(79,70,229,0.4)]"
+                  : "bg-indigo-950/50 border-2 border-indigo-500/20"
               )}>
+                <div className="absolute inset-0 bg-[url('/noise.png')] opacity-10 mix-blend-overlay" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
                 <Shield className={cn(
-                  "w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12",
-                  winner === 'A' ? "text-white" : "text-white/60"
+                  "w-10 h-10 sm:w-14 sm:h-14 md:w-20 md:h-20 relative z-10 transition-transform duration-700 group-hover/badge:scale-110",
+                  winner === 'A' || winner === 'Draw' ? "text-white" : "text-white/40"
                 )} />
               </div>
-
-              {/* Team Name */}
-              <div className="text-center">
+              
+              <div className="text-center space-y-2">
                 <h3 className={cn(
-                  "text-sm sm:text-lg md:text-xl font-black italic uppercase tracking-tighter leading-none",
-                  winner === 'A' ? "text-white" : "text-white/50"
+                  "text-lg sm:text-2xl md:text-3xl font-black italic uppercase tracking-tighter leading-none px-2 text-center",
+                  winner === 'A' || winner === 'Draw' ? "text-white text-shadow-sm" : "text-white/50"
                 )}>
                   {teamAName}
                 </h3>
                 {winner === 'A' && (
-                  <motion.div
-                    initial={{ opacity: 0, scale: 0 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    transition={{ delay: 0.8, type: 'spring' }}
-                    className="flex items-center justify-center gap-1.5 mt-2"
-                  >
+                  <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-yellow-500/10 border border-yellow-500/30">
                     <Crown className="w-3.5 h-3.5 text-yellow-400 fill-yellow-400" />
-                    <span className="text-[9px] sm:text-[10px] font-black uppercase tracking-[0.3em] text-yellow-400">
-                      Victoria
-                    </span>
-                  </motion.div>
+                    <span className="text-[10px] font-black uppercase tracking-[0.3em] text-yellow-400 leading-none">Victor</span>
+                  </div>
                 )}
               </div>
+            </motion.div>
 
-              {/* SCORE A — The Big Number */}
+            {/* THE SCORES */}
+            <div className="flex items-center gap-3 sm:gap-6 md:gap-10 shrink-0">
               <motion.div
                 initial={{ opacity: 0, scale: 0.5 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ delay: 0.4, type: 'spring', stiffness: 200, damping: 15 }}
-                className="relative group/score"
+                className="relative"
               >
-                {winner === 'A' && (
-                  <div className="absolute inset-0 bg-indigo-500 blur-[60px] opacity-30 rounded-full animate-pulse" />
-                )}
+                {winner === 'A' && <div className="absolute inset-0 bg-indigo-500 blur-[80px] opacity-40 animate-pulse rounded-full" />}
                 <span className={cn(
-                  "text-[6rem] sm:text-[8rem] md:text-[11rem] font-black italic tracking-tighter leading-[0.7] transition-transform duration-700 group-hover/score:scale-110 select-none block",
-                  winner === 'A'
-                    ? "text-white drop-shadow-[0_0_60px_rgba(79,70,229,0.6)]"
-                    : winner === 'Draw'
-                      ? "text-white/80"
-                      : "text-white/30"
+                  "text-[5.5rem] sm:text-[9rem] md:text-[13rem] font-black italic tracking-tighter leading-[0.7] block relative z-10",
+                  winner === 'A' ? "text-transparent bg-clip-text bg-gradient-to-b from-white to-indigo-200 drop-shadow-[0_0_30px_rgba(79,70,229,0.5)]" 
+                  : winner === 'Draw' ? "text-white drop-shadow-xl" 
+                  : "text-white/30"
                 )}>
                   {scoreA}
                 </span>
               </motion.div>
-            </motion.div>
 
-            {/* ── CENTER DIVIDER ── */}
-            <motion.div
-              initial={{ opacity: 0, scaleY: 0 }}
-              animate={{ opacity: 1, scaleY: 1 }}
-              transition={{ delay: 0.5, duration: 0.6 }}
-              className="flex flex-col items-center gap-3 sm:gap-4 py-4"
-            >
-              <div className="w-[2px] h-10 sm:h-16 bg-gradient-to-b from-transparent via-white/20 to-transparent" />
-              <div className="relative">
-                <div className="absolute inset-0 bg-primary/20 blur-xl rounded-full" />
-                <div className="relative w-10 h-10 sm:w-14 sm:h-14 rounded-full bg-white/[0.05] border border-white/10 flex items-center justify-center backdrop-blur-xl">
-                  <Swords className="w-4 h-4 sm:w-6 sm:h-6 text-white/40" />
-                </div>
-              </div>
-              <div className="w-[2px] h-10 sm:h-16 bg-gradient-to-t from-transparent via-white/20 to-transparent" />
-            </motion.div>
+              <motion.div
+                initial={{ opacity: 0, scale: 0 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 0.5 }}
+                className="flex flex-col items-center gap-4 sm:gap-6 opacity-30"
+              >
+                <div className="w-2 sm:w-3 h-2 sm:h-3 rounded-full bg-white shadow-[0_0_15px_rgba(255,255,255,0.8)]" />
+                <div className="w-2 sm:w-3 h-2 sm:h-3 rounded-full bg-white shadow-[0_0_15px_rgba(255,255,255,0.8)]" />
+              </motion.div>
 
-            {/* TEAM B SIDE */}
-            <motion.div
-              initial={{ opacity: 0, x: 50 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.2, duration: 0.7 }}
-              className="flex-1 flex flex-col items-center gap-4 sm:gap-6"
-            >
-              {/* Team Badge */}
-              <div className={cn(
-                "w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 rounded-[1.5rem] sm:rounded-[2rem] flex items-center justify-center shadow-2xl border-2 transition-all",
-                winner === 'B'
-                  ? "bg-rose-600 border-rose-400 shadow-rose-600/30"
-                  : "bg-rose-600/40 border-rose-500/20"
-              )}>
-                <Shield className={cn(
-                  "w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12",
-                  winner === 'B' ? "text-white" : "text-white/60"
-                )} />
-              </div>
-
-              {/* Team Name */}
-              <div className="text-center">
-                <h3 className={cn(
-                  "text-sm sm:text-lg md:text-xl font-black italic uppercase tracking-tighter leading-none",
-                  winner === 'B' ? "text-white" : "text-white/50"
-                )}>
-                  {teamBName}
-                </h3>
-                {winner === 'B' && (
-                  <motion.div
-                    initial={{ opacity: 0, scale: 0 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    transition={{ delay: 0.8, type: 'spring' }}
-                    className="flex items-center justify-center gap-1.5 mt-2"
-                  >
-                    <Crown className="w-3.5 h-3.5 text-yellow-400 fill-yellow-400" />
-                    <span className="text-[9px] sm:text-[10px] font-black uppercase tracking-[0.3em] text-yellow-400">
-                      Victoria
-                    </span>
-                  </motion.div>
-                )}
-              </div>
-
-              {/* SCORE B — The Big Number */}
               <motion.div
                 initial={{ opacity: 0, scale: 0.5 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ delay: 0.4, type: 'spring', stiffness: 200, damping: 15 }}
-                className="relative group/score"
+                className="relative"
               >
-                {winner === 'B' && (
-                  <div className="absolute inset-0 bg-rose-500 blur-[60px] opacity-30 rounded-full animate-pulse" />
-                )}
+                {winner === 'B' && <div className="absolute inset-0 bg-rose-500 blur-[80px] opacity-40 animate-pulse rounded-full" />}
                 <span className={cn(
-                  "text-[6rem] sm:text-[8rem] md:text-[11rem] font-black italic tracking-tighter leading-[0.7] transition-transform duration-700 group-hover/score:scale-110 select-none block",
-                  winner === 'B'
-                    ? "text-white drop-shadow-[0_0_60px_rgba(225,29,72,0.6)]"
-                    : winner === 'Draw'
-                      ? "text-white/80"
-                      : "text-white/30"
+                  "text-[5.5rem] sm:text-[9rem] md:text-[13rem] font-black italic tracking-tighter leading-[0.7] block relative z-10",
+                  winner === 'B' ? "text-transparent bg-clip-text bg-gradient-to-b from-white to-rose-200 drop-shadow-[0_0_30px_rgba(225,29,72,0.5)]" 
+                  : winner === 'Draw' ? "text-white drop-shadow-xl" 
+                  : "text-white/30"
                 )}>
                   {scoreB}
                 </span>
               </motion.div>
+            </div>
+
+            {/* TEAM B */}
+            <motion.div
+              initial={{ opacity: 0, x: 50 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.2, duration: 0.7 }}
+              className="flex flex-col items-center gap-6 flex-1 xl:flex-none xl:w-72"
+            >
+              <div className={cn(
+                "w-20 h-20 sm:w-28 sm:h-28 md:w-36 md:h-36 rounded-[2rem] sm:rounded-[2.5rem] flex items-center justify-center shadow-2xl relative overflow-hidden group/badge",
+                winner === 'B' || winner === 'Draw' 
+                  ? "bg-gradient-to-br from-rose-500 to-rose-800 border-2 border-rose-400 shadow-[0_0_50px_rgba(225,29,72,0.4)]"
+                  : "bg-rose-950/50 border-2 border-rose-500/20"
+              )}>
+                <div className="absolute inset-0 bg-[url('/noise.png')] opacity-10 mix-blend-overlay" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
+                <Shield className={cn(
+                  "w-10 h-10 sm:w-14 sm:h-14 md:w-20 md:h-20 relative z-10 transition-transform duration-700 group-hover/badge:scale-110",
+                  winner === 'B' || winner === 'Draw' ? "text-white" : "text-white/40"
+                )} />
+              </div>
+              
+              <div className="text-center space-y-2">
+                <h3 className={cn(
+                  "text-lg sm:text-2xl md:text-3xl font-black italic uppercase tracking-tighter leading-none px-2 text-center",
+                  winner === 'B' || winner === 'Draw' ? "text-white text-shadow-sm" : "text-white/50"
+                )}>
+                  {teamBName}
+                </h3>
+                {winner === 'B' && (
+                  <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-yellow-500/10 border border-yellow-500/30">
+                    <Crown className="w-3.5 h-3.5 text-yellow-400 fill-yellow-400" />
+                    <span className="text-[10px] font-black uppercase tracking-[0.3em] text-yellow-400 leading-none">Victor</span>
+                  </div>
+                )}
+              </div>
             </motion.div>
           </div>
 
-          {/* Draw state special */}
-          {winner === 'Draw' && (
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.9 }}
-              className="flex justify-center mt-6"
-            >
-              <div className="flex items-center gap-3 px-6 py-2.5 rounded-full bg-amber-500/10 border border-amber-500/20">
-                <Swords className="w-4 h-4 text-amber-400" />
-                <span className="text-[11px] font-black uppercase tracking-[0.3em] text-amber-400">
-                  Empate
+          {/* Bottom Footnote Ribbon */}
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.8 }}
+            className="mt-12 sm:mt-16 flex justify-center"
+          >
+            <div className="flex flex-wrap items-center justify-center gap-4 sm:gap-8 px-8 py-4 rounded-[2rem] bg-white/[0.03] border border-white/5 backdrop-blur-md">
+              <div className="flex items-center gap-2 text-white/50">
+                <MapPin className="w-4 h-4 text-primary" />
+                <span className="text-[10px] sm:text-xs font-black uppercase tracking-[0.2em]">
+                  {(() => { const v = findVenueByLocation(match.location); return v?.displayName || v?.name || match.location; })()}
                 </span>
               </div>
-            </motion.div>
-          )}
-
-          {/* Bottom venue & date strip */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.7 }}
-            className="flex items-center justify-center gap-6 sm:gap-8 mt-8 sm:mt-12 text-white/25 text-[10px] sm:text-[11px] font-black uppercase tracking-[0.2em]"
-          >
-            <div className="flex items-center gap-2">
-              <MapPin className="w-3.5 h-3.5" />
-              <span>{(() => { const v = findVenueByLocation(match.location); return v?.displayName || v?.name || match.location; })()}</span>
+              <div className="w-1.5 h-1.5 rounded-full bg-white/10" />
+              <div className="flex items-center gap-2 text-white/50">
+                <Calendar className="w-4 h-4 text-primary" />
+                <span className="text-[10px] sm:text-xs font-black uppercase tracking-[0.2em]">{formatDate(match.date)}</span>
+              </div>
             </div>
-            <div className="w-1 h-1 rounded-full bg-white/10" />
-            <div className="flex items-center gap-2">
-              <Calendar className="w-3.5 h-3.5" />
-              <span>{formatDate(match.date)}</span>
-            </div>
-            {match.time && (
-              <>
-                <div className="w-1 h-1 rounded-full bg-white/10" />
-                <div className="flex items-center gap-2">
-                  <Clock className="w-3.5 h-3.5" />
-                  <span>{match.time?.slice(0, 5)}</span>
-                </div>
-              </>
-            )}
           </motion.div>
+
         </div>
       </motion.div>
 
@@ -325,8 +276,8 @@ export default function PostMatchView({ match, participants, stats }: PostMatchV
       <motion.div
         initial={{ opacity: 0, scale: 0.9 }}
         animate={{ opacity: 1, scale: 1 }}
-        transition={{ delay: 0.8 }}
-        className="flex justify-center relative z-20"
+        transition={{ delay: 0.9 }}
+        className="flex justify-center -mt-8 relative z-20"
       >
         <ShareStory
           type="match"
@@ -341,217 +292,172 @@ export default function PostMatchView({ match, participants, stats }: PostMatchV
             mvp: stats.mvp,
             scorers: stats.goalScorers
           }}
-          className="h-16 sm:h-20 px-10 sm:px-12 rounded-[2.5rem] text-sm shadow-[0_20px_50px_rgba(16,185,129,0.3)] hover:scale-105"
+          className="h-16 sm:h-20 px-12 sm:px-16 rounded-[2.5rem] text-sm sm:text-base font-black italic shadow-[0_20px_50px_rgba(16,185,129,0.3)] hover:scale-105"
         />
       </motion.div>
 
       {/* ── SPORTSREEL VIDEO ── */}
       {match.sportsreel_url && (
-        <div className="max-w-4xl mx-auto w-full">
+        <div className="max-w-4xl mx-auto w-full pt-8">
            <SportsreelPlayer url={match.sportsreel_url} />
         </div>
       )}
 
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12">
-        {/* ── MAIN CONTENT (STATS & TEAMS) ── */}
-        <div className="lg:col-span-8 space-y-8">
-          {/* GOAL SCORERS SECTION */}
+      {/* ── SPLIT LAYOUT FOR STATS & MVP ── */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 pt-4">
+        
+        {/* GOAL SCORERS */}
+        <div className="lg:col-span-7 space-y-8">
           <motion.div
             initial={{ opacity: 0, x: -30 }}
             animate={{ opacity: 1, x: 0 }}
-            className="glass-premium rounded-[3.5rem] p-6 sm:p-8 md:p-10 border border-foreground/10 relative overflow-hidden"
+            className="glass-premium rounded-[3rem] p-6 sm:p-8 md:p-10 border border-white/5 relative overflow-hidden"
           >
-            <div className="flex items-center justify-between mb-8 sm:mb-10 px-2">
-              <div className="flex items-center gap-4 sm:gap-5">
-                <div className="p-3 sm:p-4 bg-primary/10 rounded-2xl border border-primary/20">
-                  <Trophy className="w-6 h-6 sm:w-7 sm:h-7 text-primary" />
+            <div className="absolute top-0 right-0 p-10 opacity-[0.03] group-hover:opacity-[0.08] transition-opacity pointer-events-none">
+              <Goal className="w-64 h-64 -rotate-12" />
+            </div>
+
+            <div className="flex items-center justify-between mb-8 relative z-10">
+              <div className="flex items-center gap-4">
+                <div className="p-3 bg-primary/10 rounded-2xl border border-primary/20">
+                  <Trophy className="w-6 h-6 text-primary" />
                 </div>
-                <div className="space-y-1">
-                  <h2 className="text-xl sm:text-2xl font-black text-foreground italic uppercase tracking-tighter">
-                    Artilleros
-                  </h2>
-                  <p className="text-[9px] sm:text-[10px] font-black uppercase tracking-[0.3em] text-foreground/40 italic">
-                    Goles oficiales validados
-                  </p>
+                <div>
+                  <h2 className="text-2xl font-black text-foreground italic uppercase tracking-tighter">Artilleros</h2>
+                  <p className="text-[10px] font-black uppercase tracking-[0.3em] text-foreground/40 italic">Goles Oficiales</p>
                 </div>
               </div>
-              <div className="text-[9px] sm:text-[10px] font-black text-foreground/20 uppercase tracking-widest border border-foreground/5 px-3 sm:px-4 py-2 rounded-xl">
-                TOTAL: {stats.goalScorers.reduce((acc, curr) => acc + curr.goals, 0)} GOLES
+              <div className="px-4 py-2 rounded-xl bg-foreground/5 border border-foreground/10 flex items-center gap-2">
+                <Goal className="w-4 h-4 text-primary" />
+                <span className="text-[11px] font-black uppercase tracking-widest">{stats.goalScorers.reduce((a, b) => a + b.goals, 0)} TOTAL</span>
               </div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 relative z-10">
               {stats.goalScorers.length > 0 ? (
                 stats.goalScorers.map((scorer, i) => (
                   <motion.div
                     key={i}
-                    whileHover={{ scale: 1.02 }}
-                    className="group/scorer flex items-center justify-between p-4 sm:p-5 rounded-[2rem] sm:rounded-[2.5rem] bg-gradient-to-r from-foreground/[0.02] to-transparent border border-white/5 transition-all hover:border-primary/30 hover:shadow-[0_0_30px_rgba(44,252,125,0.1)] relative overflow-hidden"
+                    whileHover={{ y: -5 }}
+                    className="flex items-center justify-between p-4 bg-black/40 rounded-[2rem] border border-white/5 shadow-inner hover:border-primary/30 transition-colors group/scorer"
                   >
-                    <div className="absolute inset-0 bg-primary/5 opacity-0 group-hover/scorer:opacity-100 transition-opacity" />
-                    <div className="flex items-center gap-4 sm:gap-5 relative z-10">
-                      <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-[1.2rem] sm:rounded-[1.5rem] bg-zinc-950 border border-white/10 flex items-center justify-center overflow-hidden shadow-xl group-hover/scorer:scale-110 group-hover/scorer:border-primary/50 transition-all duration-500">
+                    <div className="flex items-center gap-4 min-w-0">
+                      <div className="w-12 h-12 rounded-[1.2rem] bg-zinc-900 border border-white/10 flex items-center justify-center overflow-hidden shrink-0 group-hover/scorer:border-primary/50 transition-colors">
                         {scorer.profiles?.avatar_url ? (
-                          <img
-                            src={scorer.profiles.avatar_url}
-                            alt=""
-                            className="w-full h-full object-cover"
-                          />
+                          <img src={scorer.profiles.avatar_url} alt="" className="w-full h-full object-cover" />
                         ) : (
-                          <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-zinc-800 to-zinc-900 group-hover/scorer:from-primary/20 group-hover:to-primary/5 transition-colors">
-                             <User2 className="w-5 h-5 sm:w-6 sm:h-6 text-white/20 group-hover/scorer:text-primary transition-colors" />
-                          </div>
+                          <User2 className="w-5 h-5 text-white/20 group-hover/scorer:text-primary transition-colors" />
                         )}
                       </div>
-                      <div className="flex flex-col min-w-0">
-                        <span className="text-xs sm:text-sm font-black text-foreground uppercase italic tracking-tighter group-hover/scorer:text-primary transition-colors truncate">
+                      <div className="min-w-0 truncate">
+                        <div className="text-sm font-black italic uppercase tracking-tighter text-foreground group-hover/scorer:text-primary transition-colors truncate">
                           {scorer.profiles?.name || scorer.name || 'Jugador'}
-                        </span>
-                        <span className="text-[8px] sm:text-[9px] font-black text-foreground/30 uppercase tracking-[0.2em]">
+                        </div>
+                        <div className="text-[9px] font-black uppercase tracking-[0.2em] text-foreground/30 truncate">
                           {scorer.team === 'A' ? teamAName : teamBName}
-                        </span>
+                        </div>
                       </div>
                     </div>
-                    <div className="flex items-center gap-3 sm:gap-4 bg-black/40 px-4 sm:px-6 py-3 sm:py-4 rounded-2xl sm:rounded-3xl border border-white/5 shadow-inner relative z-10 group-hover/scorer:bg-primary/10 transition-colors">
-                      <span className="text-3xl sm:text-4xl font-black text-primary italic leading-none drop-shadow-[0_0_10px_rgba(44,252,125,0.5)]">
-                        {scorer.goals}
-                      </span>
-                      <Goal className="w-5 h-5 sm:w-6 sm:h-6 text-primary/40 shrink-0 group-hover/scorer:text-primary group-hover/scorer:animate-bounce transition-colors" />
+                    <div className="flex items-center gap-2 px-4 py-2 bg-foreground/5 rounded-2xl border border-white/5 shrink-0">
+                      <span className="text-2xl font-black italic text-primary">{scorer.goals}</span>
                     </div>
                   </motion.div>
                 ))
               ) : (
-                <div className="col-span-2 flex flex-col items-center justify-center py-16 sm:py-20 gap-4 opacity-30 group/empty">
-                   <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full border-2 border-dashed border-foreground/20 flex items-center justify-center group-hover/empty:rotate-45 transition-transform duration-700">
-                     <Goal className="w-8 h-8 sm:w-10 sm:h-10" />
+                <div className="col-span-full py-16 flex flex-col items-center gap-4 opacity-50">
+                   <div className="w-16 h-16 rounded-full border-2 border-dashed border-foreground/20 flex items-center justify-center">
+                     <Goal className="w-8 h-8" />
                    </div>
-                   <p className="text-[11px] sm:text-[12px] font-black uppercase tracking-[0.6em] italic text-foreground/40">
-                     RED EN CERO
-                   </p>
+                   <p className="text-[10px] font-black uppercase tracking-[0.4em] italic text-foreground/50">RED EN CERO</p>
                 </div>
               )}
             </div>
           </motion.div>
         </div>
 
-        {/* ── SIDEBAR: MVP & MATCH INFO ── */}
-        <div className="lg:col-span-4 space-y-8 lg:space-y-12">
-          {/* MVP PRESTIGE CARD */}
+        {/* MVP CARD */}
+        <div className="lg:col-span-5 h-full">
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="group/mvp relative overflow-hidden rounded-[3.5rem] p-1 border-[3px] border-transparent"
+            className="group/mvp relative h-full min-h-[400px] overflow-hidden rounded-[3rem] p-1 shadow-[0_30px_60px_rgba(250,204,21,0.2)] transition-transform hover:-translate-y-2 duration-500"
             style={{
-              background: 'linear-gradient(145deg, rgba(250,204,21,0.5) 0%, rgba(16,185,129,0.5) 50%, rgba(59,130,246,0.5) 100%)',
-              backgroundClip: 'padding-box',
+              background: 'linear-gradient(135deg, #fbbf24 0%, #ea580c 50%, #e11d48 100%)',
             }}
           >
-            {/* Inner holographic wrapper */}
-            <div className="absolute inset-0 bg-gradient-to-br from-yellow-500/20 via-primary/20 to-blue-500/20 mix-blend-overlay group-hover/mvp:animate-shimmer pointer-events-none" />
-            <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10 mix-blend-overlay pointer-events-none" />
+            {/* Inner dynamic content */}
+            <div className="absolute inset-0 bg-gradient-to-tr from-yellow-300 via-transparent to-transparent opacity-0 group-hover/mvp:opacity-50 transition-opacity duration-1000 mix-blend-overlay pointer-events-none" />
+            <div className="w-full h-full bg-zinc-950/95 backdrop-blur-xl rounded-[2.8rem] relative overflow-hidden flex flex-col p-8 md:p-10">
+              
+              {/* Background Art */}
+              <div className="absolute -top-20 -right-20 w-64 h-64 bg-yellow-500/20 blur-[60px] rounded-full animate-pulse pointer-events-none" />
+              <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] opacity-20 pointer-events-none" />
 
-            <div className="glass-premium w-full h-full rounded-[3.2rem] p-6 sm:p-8 md:p-10 bg-background/90 backdrop-blur-3xl relative overflow-hidden shadow-[0_40px_80px_rgba(16,185,129,0.3)]">
-              {/* Animated Aura */}
-              <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(250,204,21,0.15),transparent_60%)] animate-pulse" />
-
-              <div className="absolute top-0 right-0 p-8 sm:p-10 opacity-20 group-hover/mvp:scale-150 transition-transform duration-1000 group-hover/mvp:rotate-180">
-                <Star className="w-28 h-28 sm:w-40 sm:h-40 text-yellow-400 fill-yellow-400 drop-shadow-[0_0_20px_rgba(250,204,21,0.5)]" />
-              </div>
-
-            <div className="relative z-10 space-y-6 sm:space-y-8">
-              <div className="flex items-center gap-4">
-                <div className="p-3 bg-primary rounded-2xl">
-                  <Medal className="w-5 h-5 sm:w-6 sm:h-6 text-black" />
+              <div className="flex items-center gap-4 relative z-10 mb-auto">
+                <div className="p-3 bg-gradient-to-br from-yellow-400 to-yellow-600 rounded-2xl shadow-[0_0_15px_rgba(250,204,21,0.5)]">
+                  <Star className="w-6 h-6 text-black fill-black" />
                 </div>
-                <div className="space-y-0.5">
-                  <h2 className="text-xl sm:text-2xl font-black text-foreground italic uppercase tracking-tighter text-primary">
-                    Man of Match
+                <div>
+                  <h2 className="text-xl md:text-2xl font-black text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 to-yellow-500 italic uppercase tracking-tighter">
+                    TOTS MVP
                   </h2>
-                  <p className="text-[9px] sm:text-[10px] font-black uppercase tracking-[0.3em] text-foreground/40 italic">
-                    Votación popular
+                  <p className="text-[9px] font-black uppercase tracking-[0.3em] text-yellow-500/50 italic">
+                    Elegido por los jugadores
                   </p>
                 </div>
               </div>
 
               {stats.mvp ? (
-                <div className="flex flex-col items-center gap-8 sm:gap-10 py-4 sm:py-6">
-                  <div className="relative group/avatar">
-                    {/* Golden Frame */}
-                    <div className="absolute -inset-6 bg-gradient-to-br from-yellow-300 via-yellow-500 to-amber-700 rounded-[3rem] blur-2xl opacity-60 group-hover/avatar:opacity-100 transition-opacity duration-700 animate-pulse" />
+                <div className="flex flex-col items-center gap-6 mt-8 relative z-10 w-full">
+                  <div className="relative group/avatar w-full flex justify-center">
+                    {/* Golden Backing */}
+                    <div className="absolute inset-0 max-w-[200px] mx-auto bg-gradient-to-b from-yellow-400 via-amber-600 to-zinc-900 rounded-[2rem] blur-xl opacity-30 group-hover/avatar:opacity-60 transition-opacity duration-500" />
                     
-                    {/* Spinning border effect */}
-                    <div className="absolute -inset-1 bg-gradient-to-r from-yellow-400 via-emerald-400 to-yellow-400 rounded-[3rem] animate-spin-slow opacity-0 group-hover/avatar:opacity-100 transition-opacity duration-1000" />
-
-                    <div className="w-36 h-36 sm:w-44 sm:h-44 rounded-[2.5rem] sm:rounded-[2.8rem] bg-zinc-950 border-[4px] border-yellow-400 relative z-10 shadow-2xl group-hover/avatar:scale-105 transition-all duration-700 overflow-hidden">
+                    <div className="w-40 h-48 sm:w-48 sm:h-56 relative z-10 rounded-[2rem] bg-gradient-to-br from-zinc-800 to-zinc-950 border-[3px] border-yellow-500/50 shadow-2xl overflow-hidden group-hover/avatar:border-yellow-400 group-hover/avatar:shadow-[0_0_40px_rgba(250,204,21,0.4)] transition-all duration-500">
                       {stats.mvp.avatar_url ? (
-                        <img
-                          src={stats.mvp.avatar_url}
-                          alt=""
-                          className="w-full h-full object-cover group-hover/avatar:scale-110 transition-transform duration-[3s]"
-                        />
+                        <img src={stats.mvp.avatar_url} alt="" className="w-full h-full object-cover group-hover/avatar:scale-110 transition-transform duration-[3s]" />
                       ) : (
-                        <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-zinc-800 to-zinc-950">
-                          <Star className="w-12 h-12 sm:w-16 sm:h-16 text-yellow-500/40 fill-yellow-500/10" />
+                        <div className="w-full h-full flex items-center justify-center">
+                          <User2 className="w-16 h-16 text-white/10" />
                         </div>
                       )}
-                      <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-80" />
-
-                      <div className="absolute bottom-3 sm:bottom-4 left-0 right-0 flex justify-center">
-                        <div className="px-4 sm:px-5 py-1.5 sm:py-2 bg-gradient-to-r from-yellow-400 to-yellow-600 rounded-[1rem] shadow-[0_10px_20px_rgba(250,204,21,0.5)] border border-yellow-300 transform group-hover/avatar:-translate-y-2 transition-transform duration-500">
-                          <span className="text-[10px] sm:text-[11px] font-black text-black uppercase tracking-widest leading-none flex items-center gap-2">
-                            <Check className="w-3 h-3" /> {stats.mvp.votes} Votos
-                          </span>
-                        </div>
+                      <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black via-black/80 to-transparent flex flex-col justify-end items-center pb-4">
+                         <span className="text-3xl font-black italic uppercase tracking-tighter text-transparent bg-clip-text bg-gradient-to-b from-yellow-100 to-yellow-500 drop-shadow-md">
+                           {stats.mvp.name}
+                         </span>
                       </div>
                     </div>
-
-                    {/* Floating Badge */}
-                    <div className="absolute -top-5 -right-5 sm:-top-6 sm:-right-6 w-14 h-14 sm:w-16 sm:h-16 bg-yellow-500 rounded-2xl flex items-center justify-center shadow-2xl border-4 border-zinc-950 z-20 group-hover:rotate-12 transition-transform duration-500">
-                      <Trophy className="w-6 h-6 sm:w-7 sm:h-7 text-black" />
-                    </div>
-                  </div>
-
-                  <div className="text-center space-y-2 relative z-10">
-                    <h4 className="text-3xl sm:text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 via-yellow-500 to-yellow-600 italic uppercase tracking-tighter leading-none drop-shadow-[0_2px_10px_rgba(250,204,21,0.5)]">
-                      {stats.mvp.name}
-                    </h4>
-                    <div className="flex items-center justify-center gap-3">
-                      <div className="h-[1px] w-8 bg-yellow-500/30" />
-                      <p className="text-[10px] sm:text-[11px] font-black uppercase tracking-[0.4em] text-yellow-500 italic drop-shadow-[0_0_5px_rgba(250,204,21,0.8)]">
-                        Figura Absoluta
-                      </p>
-                      <div className="h-[1px] w-8 bg-yellow-500/30" />
+                    {/* Votes Badge */}
+                    <div className="absolute -bottom-4 right-[10%] sm:right-[15%] w-16 h-16 bg-gradient-to-br from-yellow-400 to-amber-600 rounded-full flex flex-col items-center justify-center border-4 border-zinc-950 shadow-xl group-hover/avatar:scale-110 transition-transform">
+                       <span className="text-xl font-black text-black leading-none">{stats.mvp.votes}</span>
+                       <span className="text-[7px] font-black uppercase text-black/80 tracking-widest leading-none">Votos</span>
                     </div>
                   </div>
                 </div>
               ) : (
-                <div className="py-12 sm:py-16 flex flex-col items-center gap-6 text-center relative z-10">
-                  <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-[2rem] bg-foreground/5 flex items-center justify-center border-2 border-dashed border-foreground/10 group-hover:rotate-45 transition-transform duration-700">
-                    <Star className="w-8 h-8 sm:w-10 sm:h-10 text-foreground/20" />
-                  </div>
-                  <p className="text-[10px] sm:text-xs font-black uppercase text-foreground/30 italic tracking-[0.4em]">
-                    Escrutinio Vacío
-                  </p>
+                <div className="flex-1 flex flex-col items-center justify-center py-12">
+                   <Star className="w-16 h-16 text-yellow-500/20" />
+                   <p className="mt-4 text-[10px] font-black uppercase text-yellow-500/30 italic tracking-[0.4em]">Sin Escrutinio</p>
                 </div>
               )}
             </div>
-            </div>
           </motion.div>
-
-          {/* BACK TO TOP ACTION */}
-          <div className="px-4">
-            <button
-              onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-              className="w-full flex items-center justify-center gap-4 py-6 sm:py-8 text-[10px] sm:text-[11px] font-black uppercase tracking-[0.5em] text-foreground/20 hover:text-primary transition-all group/scroll"
-            >
-              <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full border border-white/5 flex items-center justify-center group-hover/scroll:border-primary/30 transition-colors">
-                <ArrowRight className="w-3.5 h-3.5 sm:w-4 sm:h-4 -rotate-90 group-hover/scroll:-translate-y-1 transition-transform" />
-              </div>
-              VOLVER AL TOP
-            </button>
-          </div>
         </div>
+
       </div>
+
+      <div className="px-4 pt-10">
+        <button
+          onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+          className="w-full flex items-center justify-center gap-4 py-6 text-[10px] sm:text-[11px] font-black uppercase tracking-[0.5em] text-foreground/20 hover:text-primary transition-all group/scroll"
+        >
+          <div className="w-10 h-10 rounded-full border border-white/5 flex items-center justify-center group-hover/scroll:border-primary/30 transition-colors">
+            <ArrowRight className="w-4 h-4 -rotate-90 group-hover/scroll:-translate-y-1 transition-transform" />
+          </div>
+          VOLVER AL INICIO
+        </button>
+      </div>
+
     </div>
   );
 }
@@ -559,19 +465,6 @@ export default function PostMatchView({ match, participants, stats }: PostMatchV
 function formatDate(dateStr: string) {
   if (!dateStr) return '';
   const [, month, day] = dateStr.split('-');
-  const months = [
-    'Ene',
-    'Feb',
-    'Mar',
-    'Abr',
-    'May',
-    'Jun',
-    'Jul',
-    'Ago',
-    'Sep',
-    'Oct',
-    'Nov',
-    'Dic',
-  ];
+  const months = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
   return `${parseInt(day)} ${months[parseInt(month) - 1]}`;
 }
