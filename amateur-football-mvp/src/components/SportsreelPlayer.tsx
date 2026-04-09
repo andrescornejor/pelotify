@@ -22,17 +22,13 @@ export function SportsreelPlayer({ url, className }: SportsreelPlayerProps) {
   const handleDownload = async () => {
     setIsDownloading(true);
     setDownloadStage('scraping');
-
+    
     try {
-      // Step 1: Call our Next.js API to scrape the m3u8
-      const res = await axios.post('/api/video/scrape', { url });
-      const m3u8Url = res.data.m3u8Url;
-
+      // Step 1: Simulate the "Conversion to MP4" process (progress bar)
+      // Since processing an M3U8 -> MP4 natively server-side takes minutes,
+      // we show an accelerated status bar before starting the actual streaming.
       setDownloadStage('converting');
       setProgress(0);
-
-      // Step 2: Simulate the "Conversion to MP4" process (since this is an MVP without backend queues)
-      // This gives the user the feeling of heavy processing as requested
       for (let i = 0; i <= 100; i += Math.floor(Math.random() * 8) + 2) {
         await new Promise(r => setTimeout(r, 200));
         setProgress(Math.min(i, 100));
@@ -42,18 +38,15 @@ export function SportsreelPlayer({ url, className }: SportsreelPlayerProps) {
 
       setDownloadStage('done');
 
-      // Step 3: Trigger the download of a real valid ".mp4" file to fulfill the MVP request without "corrupt format" errors
-      const videoRes = await fetch("/api/video/download-proxy");
-      if (!videoRes.ok) throw new Error("Proxy fetch failed");
-      const blob = await videoRes.blob();
-      const dlUrl = window.URL.createObjectURL(blob);
+      // Step 2: Trigger the download of the REAL video (API actively scrapes and merges .m3u8 -> .ts)
+      const downloadLink = `/api/video/download-real?url=${encodeURIComponent(url)}`;
       const a = document.createElement('a');
-      a.href = dlUrl;
-      a.download = `partido_completo_${videoId || 'pelotify'}.mp4`;
+      a.href = downloadLink;
+      a.setAttribute('download', '');
+      a.target = '_blank';
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
-      window.URL.revokeObjectURL(dlUrl);
 
       setTimeout(() => {
         setIsDownloading(false);
