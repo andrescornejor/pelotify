@@ -260,8 +260,8 @@ function MatchLobbyContent() {
   }, [match?.team_a_name, match?.team_b_name]);
 
   // Derived check for effect
-  const participantsTemp = match?.participants || [];
-  const myEntryTemp = participantsTemp.find((p) => p.user_id === user?.id);
+  const participantsTemp = (match?.participants || []) as MatchParticipant[];
+  const myEntryTemp = participantsTemp.find((p: MatchParticipant) => p.user_id === user?.id);
   
   useEffect(() => {
     if (isChronologicallyFinished && !match?.is_completed && !hasReported && !!myEntryTemp && !isPostMatchModalOpen) {
