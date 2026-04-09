@@ -14,6 +14,8 @@ import {
   Crown,
   Shield,
   Check,
+  Target,
+  User2,
 } from 'lucide-react';
 import { Match, MatchParticipant } from '@/lib/matches';
 import { cn } from '@/lib/utils';
@@ -131,9 +133,6 @@ export default function PostMatchView({ match, participants, stats }: PostMatchV
                     className="flex items-center justify-between p-5 rounded-[2rem] bg-foreground/[0.02] border border-white/5 transition-all"
                   >
                     <div className="flex items-center gap-5">
-                      <div
-                        className={cn(
-                          'w-12 h-12 rounded-2xl flex items-center justify-center font-black text-white italic text-lg shadow-xl relative overflow-hidden',
                       <div className="w-14 h-14 rounded-2xl bg-zinc-950 border border-white/10 flex items-center justify-center overflow-hidden shadow-xl group-hover/scorer:scale-105 transition-transform">
                         {scorer.profiles?.avatar_url ? (
                           <img
@@ -338,8 +337,9 @@ export default function PostMatchView({ match, participants, stats }: PostMatchV
               <ArrowRight className="w-4 h-4 -rotate-90 group-hover/scroll:-translate-y-1 transition-transform" />
             </button>
           </div>
+          </div>
         </div>
-      </motion.div>
+      </div>
   );
 }
 
