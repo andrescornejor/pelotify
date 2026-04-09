@@ -40,6 +40,7 @@ import {
   useRespondToInvitation,
   useUpdateMatch,
   useMatchStats,
+  useMatchReports,
   useBulkUpdateParticipants
 } from '@/hooks/useMatchQueries';
 import {
