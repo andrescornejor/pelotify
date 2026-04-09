@@ -1,103 +1,123 @@
 import { NextResponse } from 'next/server';
 import axios from 'axios';
 
+// Helper: Make relative URLs absolute
+function makeAbsolute(url: string, baseUrl: string) {
+  if (url.startsWith('http')) return url;
+  if (url.startsWith('/')) {
+    const urlObj = new URL(baseUrl);
+    return `${urlObj.origin}${url}`;
+  }
+  return baseUrl + url;
+}
+
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const targetUrl = searchParams.get('url');
+  const customId = searchParams.get('id') || 'pelotify';
 
   if (!targetUrl) {
     return NextResponse.json({ error: 'URL is required' }, { status: 400 });
   }
 
   try {
-    // 1. Fetch the raw HTML of the requested match video page
-    const { data: html } = await axios.get(targetUrl, {
+    let m3u8Url = targetUrl;
+
+    // 1. If it's not a direct media link, try to scrape the page
+    if (!targetUrl.includes('.m3u8') && !targetUrl.includes('.mp4')) {
+      const { data: html } = await axios.get(targetUrl, {
+        headers: { 'User-Agent': 'Mozilla/5.0' },
+      });
+      const m3u8Match = html.match(/https?:\/\/[^\s"'<>\\]+\.m3u8[^\s"'<>\\]*/);
+      const mp4Match = html.match(/https?:\/\/[^\s"'<>\\]+\.mp4[^\s"'<>\\]*/);
+
+      if (mp4Match) {
+         const response = await fetch(mp4Match[0]);
+         return new NextResponse(response.body, {
+           headers: {
+             'Content-Type': 'video/mp4',
+             'Content-Disposition': `attachment; filename="partido_${customId}.mp4"`,
+           },
+         });
+      }
+      
+      m3u8Url = m3u8Match ? m3u8Match[0] : null;
+      if (!m3u8Url) {
+        return NextResponse.json({ error: 'No se encontraron medios en la página' }, { status: 404 });
+      }
+    }
+
+    // 2. We now have an m3u8Url. Let's fetch it.
+    let manifestRes = await fetch(m3u8Url);
+    let manifestText = await manifestRes.text();
+    let currentBaseUrl = m3u8Url.substring(0, m3u8Url.lastIndexOf('/') + 1);
+
+    // 3. Is it a Master Playlist (contains other m3u8s instead of ts)?
+    if (manifestText.includes('.m3u8')) {
+       const lines = manifestText.split('\n');
+       // Find the first variant playlist (or highest quality if we parsed properly)
+       const variantLines = lines.filter(line => line.trim() && !line.startsWith('#') && line.includes('.m3u8'));
+       if (variantLines.length > 0) {
+          // Follow the variant
+          m3u8Url = makeAbsolute(variantLines[variantLines.length - 1], currentBaseUrl);
+          manifestRes = await fetch(m3u8Url);
+          manifestText = await manifestRes.text();
+          currentBaseUrl = m3u8Url.substring(0, m3u8Url.lastIndexOf('/') + 1);
+       }
+    }
+
+    // 4. Now we should have a chunklist with .ts files
+    const lines = manifestText.split('\n');
+    const tsUrls = lines.filter(line => line.trim() && !line.startsWith('#'));
+
+    // If still no chunks, export a fixed raw M3U8 where we make all relative paths absolute
+    // so VLC can play it seamlessly from the saved file.
+    if (tsUrls.length === 0) {
+       const absoluteManifest = lines.map(line => {
+          if (line.startsWith('#')) return line;
+          if (line.trim().length === 0) return line;
+          return makeAbsolute(line, currentBaseUrl);
+       }).join('\n');
+       
+       return new NextResponse(absoluteManifest, {
+           headers: {
+               'Content-Type': 'application/vnd.apple.mpegurl',
+               'Content-Disposition': `attachment; filename="partido_${customId}.m3u8"`
+           }
+       });
+    }
+
+    // 5. Download and stream the .ts chunks as a single concatenated file
+    const readableStream = new ReadableStream({
+      async start(controller) {
+        try {
+           for (const segment of tsUrls) {
+              const segUrl = makeAbsolute(segment, currentBaseUrl);
+              const segRes = await fetch(segUrl);
+              if (segRes.ok) {
+                 const arrayBuffer = await segRes.arrayBuffer();
+                 controller.enqueue(new Uint8Array(arrayBuffer));
+              }
+           }
+           controller.close();
+        } catch(e) {
+           controller.close();
+        }
+      }
+    });
+
+    // Serving concatenated .ts segments as video/mp2t.
+    // Changing the extension to .ts (Transport Stream) is critical because .mp4 headers won't match,
+    // which causes the "Corrupt or format not supported" error in strict players. VLC plays .ts perfectly.
+    return new NextResponse(readableStream, {
       headers: {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)',
+        'Content-Type': 'video/mp2t',
+        'Content-Disposition': `attachment; filename="partido_${customId}_fusion.ts"`,
       },
     });
 
-    // 2. Extremely aggressive regex to find any real media files in the source code
-    const m3u8Match = html.match(/https?:\/\/[^\s"'<>\\]+\.m3u8[^\s"'<>\\]*/);
-    const mp4Match = html.match(/https?:\/\/[^\s"'<>\\]+\.mp4[^\s"'<>\\]*/);
-
-    const m3u8Url = m3u8Match ? m3u8Match[0] : null;
-    const mp4Url = mp4Match ? mp4Match[0] : null;
-
-    // 3. Fallback: If no direct media link found in raw HTML,
-    // it likely uses an encrypted or obfuscated player. We return an error.
-    if (!m3u8Url && !mp4Url) {
-      return NextResponse.json({ 
-        error: 'No se encontró un enlace descifrado de MP4 o M3U8 en el código fuente (posible renderizado por servidor o ofuscación DRM).' 
-      }, { status: 404 });
-    }
-
-    // 4. If we found an MP4, proxy it directly!
-    if (mp4Url) {
-      const response = await fetch(mp4Url);
-      return new NextResponse(response.body, {
-        headers: {
-          'Content-Type': 'video/mp4',
-          'Content-Disposition': 'attachment; filename="partido_completo.mp4"',
-        },
-      });
-    }
-
-    // 5. If we found an M3U8, we fetch its segments and merge them smoothly
-    if (m3u8Url) {
-      const manifestRes = await fetch(m3u8Url);
-      const manifest = await manifestRes.text();
-
-      // Simple parsing: getting all valid .ts chunks
-      const lines = manifest.split('\n');
-      const tsUrls = lines.filter(line => line.trim() && !line.startsWith('#'));
-
-      if (tsUrls.length === 0) {
-        // Might be a master playlist containing other playlists instead of direct .ts segments.
-        // Proxying the master playlist itself isn't a direct MP4, but it's the raw video file.
-        const masterRes = await fetch(m3u8Url);
-        return new NextResponse(masterRes.body, {
-             headers: {
-                 'Content-Type': 'application/vnd.apple.mpegurl',
-                 'Content-Disposition': 'attachment; filename="partido_lista.m3u8"'
-             }
-        });
-      }
-
-      // Merge sequence: Read chunks one by one
-      const baseUrl = m3u8Url.substring(0, m3u8Url.lastIndexOf('/') + 1);
-      
-      const readableStream = new ReadableStream({
-        async start(controller) {
-          try {
-             // For the MVP, we merge max 100 chunks to prevent memory/timeout max outs on free plans.
-             const segmentsToFix = tsUrls.slice(0, 100);
-             for (const segment of segmentsToFix) {
-                const segUrl = segment.startsWith('http') ? segment : baseUrl + segment;
-                const segRes = await fetch(segUrl);
-                if (segRes.ok) {
-                   const arrayBuffer = await segRes.arrayBuffer();
-                   controller.enqueue(new Uint8Array(arrayBuffer));
-                }
-             }
-             controller.close();
-          } catch(e) {
-             controller.close();
-          }
-        }
-      });
-
-      // Serving concatenated .ts segments masquerading as .mp4 can often play seamlessly in VLC.
-      return new NextResponse(readableStream, {
-        headers: {
-          'Content-Type': 'video/mp4',
-          'Content-Disposition': 'attachment; filename="partido_completo_fusionado.mp4"',
-        },
-      });
-    }
-
   } catch (error: any) {
-    console.error('Download extraction error:', error.message);
-    return NextResponse.json({ error: 'Falló la conexión al servidor de Sportsreel.' }, { status: 500 });
+    console.error('Download error:', error.message);
+    return NextResponse.json({ error: 'Fallo critico al procesar el stream.' }, { status: 500 });
   }
 }
