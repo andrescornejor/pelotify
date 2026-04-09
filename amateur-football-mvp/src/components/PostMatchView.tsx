@@ -67,7 +67,7 @@ export default function PostMatchView({ match, participants, stats }: PostMatchV
   const winner = scoreA > scoreB ? 'A' : scoreB > scoreA ? 'B' : 'Draw';
 
   return (
-    <div className="max-w-6xl mx-auto px-4 md:px-0 space-y-12 pb-20">
+    <div className="space-y-12 pb-20">
 
       {/* ── SHARE ACTION ── */}
       <motion.div
@@ -102,7 +102,7 @@ export default function PostMatchView({ match, participants, stats }: PostMatchV
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
         {/* ── MAIN CONTENT (STATS & TEAMS) ── */}
-        <div className="lg:col-span-8 space-y-12">
+        <div className="lg:col-span-7 space-y-12">
           {/* GOAL SCORERS SECTION */}
           <motion.div
             initial={{ opacity: 0, x: -30 }}
@@ -182,7 +182,7 @@ export default function PostMatchView({ match, participants, stats }: PostMatchV
         </div>
 
         {/* ── SIDEBAR: MVP & MATCH INFO ── */}
-        <div className="lg:col-span-4 space-y-12">
+        <div className="lg:col-span-5 space-y-12">
           {/* MVP PRESTIGE CARD */}
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
