@@ -102,7 +102,7 @@ export default function PostMatchView({ match, participants, stats }: PostMatchV
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
         {/* ── MAIN CONTENT (STATS & TEAMS) ── */}
-        <div className="lg:col-span-7 space-y-12">
+        <div className="lg:col-span-8 space-y-12">
           {/* GOAL SCORERS SECTION */}
           <motion.div
             initial={{ opacity: 0, x: -30 }}
@@ -133,11 +133,12 @@ export default function PostMatchView({ match, participants, stats }: PostMatchV
                 stats.goalScorers.map((scorer, i) => (
                   <motion.div
                     key={i}
-                    whileHover={{ scale: 1.02, backgroundColor: 'rgba(255,255,255,0.03)' }}
-                    className="flex items-center justify-between p-5 rounded-[2rem] bg-foreground/[0.02] border border-white/5 transition-all"
+                    whileHover={{ scale: 1.02 }}
+                    className="group/scorer flex items-center justify-between p-5 rounded-[2.5rem] bg-gradient-to-r from-foreground/[0.02] to-transparent border border-white/5 transition-all hover:border-primary/30 hover:shadow-[0_0_30px_rgba(44,252,125,0.1)] relative overflow-hidden"
                   >
-                    <div className="flex items-center gap-5">
-                      <div className="w-14 h-14 rounded-2xl bg-zinc-950 border border-white/10 flex items-center justify-center overflow-hidden shadow-xl group-hover/scorer:scale-105 transition-transform">
+                    <div className="absolute inset-0 bg-primary/5 opacity-0 group-hover/scorer:opacity-100 transition-opacity" />
+                    <div className="flex items-center gap-5 relative z-10">
+                      <div className="w-14 h-14 rounded-[1.5rem] bg-zinc-950 border border-white/10 flex items-center justify-center overflow-hidden shadow-xl group-hover/scorer:scale-110 group-hover/scorer:border-primary/50 transition-all duration-500">
                         {scorer.profiles?.avatar_url ? (
                           <img
                             src={scorer.profiles.avatar_url}
@@ -145,13 +146,13 @@ export default function PostMatchView({ match, participants, stats }: PostMatchV
                             className="w-full h-full object-cover"
                           />
                         ) : (
-                          <div className="w-full h-full flex items-center justify-center">
-                             <User2 className="w-6 h-6 text-white/20" />
+                          <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-zinc-800 to-zinc-900 group-hover/scorer:from-primary/20 group-hover:to-primary/5 transition-colors">
+                             <User2 className="w-6 h-6 text-white/20 group-hover/scorer:text-primary transition-colors" />
                           </div>
                         )}
                       </div>
                       <div className="flex flex-col">
-                        <span className="text-sm font-black text-foreground uppercase italic tracking-tighter">
+                        <span className="text-sm font-black text-foreground uppercase italic tracking-tighter group-hover/scorer:text-primary transition-colors">
                           {scorer.profiles?.name || scorer.name || 'Jugador'}
                         </span>
                         <span className="text-[9px] font-black text-foreground/30 uppercase tracking-[0.2em]">
@@ -159,11 +160,11 @@ export default function PostMatchView({ match, participants, stats }: PostMatchV
                         </span>
                       </div>
                     </div>
-                    <div className="flex items-center gap-3 bg-zinc-900 px-5 py-3 rounded-2xl border border-white/5 shadow-inner">
-                      <span className="text-3xl font-black text-primary italic leading-none">
+                    <div className="flex items-center gap-4 bg-black/40 px-6 py-4 rounded-3xl border border-white/5 shadow-inner relative z-10 group-hover/scorer:bg-primary/10 transition-colors">
+                      <span className="text-4xl font-black text-primary italic leading-none drop-shadow-[0_0_10px_rgba(44,252,125,0.5)]">
                         {scorer.goals}
                       </span>
-                      <Goal className="w-5 h-5 text-primary/40 shrink-0" />
+                      <Goal className="w-6 h-6 text-primary/40 shrink-0 group-hover/scorer:text-primary group-hover/scorer:animate-bounce transition-colors" />
                     </div>
                   </motion.div>
                 ))
@@ -182,19 +183,28 @@ export default function PostMatchView({ match, participants, stats }: PostMatchV
         </div>
 
         {/* ── SIDEBAR: MVP & MATCH INFO ── */}
-        <div className="lg:col-span-5 space-y-12">
+        <div className="lg:col-span-4 space-y-12">
           {/* MVP PRESTIGE CARD */}
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="glass-premium rounded-[3.5rem] p-8 md:p-10 border border-primary/30 bg-primary/5 relative overflow-hidden group shadow-[0_40px_80px_rgba(16,185,129,0.15)]"
+            className="group/mvp relative overflow-hidden rounded-[3.5rem] p-1 border-[3px] border-transparent"
+            style={{
+              background: 'linear-gradient(145deg, rgba(250,204,21,0.5) 0%, rgba(16,185,129,0.5) 50%, rgba(59,130,246,0.5) 100%)',
+              backgroundClip: 'padding-box',
+            }}
           >
-            {/* Animated Aura */}
-            <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(16,185,129,0.15),transparent_70%)] animate-pulse" />
+            {/* Inner holographic wrapper */}
+            <div className="absolute inset-0 bg-gradient-to-br from-yellow-500/20 via-primary/20 to-blue-500/20 mix-blend-overlay group-hover/mvp:animate-shimmer pointer-events-none" />
+            <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10 mix-blend-overlay pointer-events-none" />
 
-            <div className="absolute top-0 right-0 p-10 opacity-10 group-hover:scale-150 transition-transform duration-1000 group-hover:rotate-12">
-              <Star className="w-40 h-40 text-primary fill-primary" />
-            </div>
+            <div className="glass-premium w-full h-full rounded-[3.2rem] p-8 md:p-10 bg-background/90 backdrop-blur-3xl relative overflow-hidden shadow-[0_40px_80px_rgba(16,185,129,0.3)]">
+              {/* Animated Aura */}
+              <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(250,204,21,0.15),transparent_60%)] animate-pulse" />
+
+              <div className="absolute top-0 right-0 p-10 opacity-20 group-hover/mvp:scale-150 transition-transform duration-1000 group-hover/mvp:rotate-180">
+                <Star className="w-40 h-40 text-yellow-400 fill-yellow-400 drop-shadow-[0_0_20px_rgba(250,204,21,0.5)]" />
+              </div>
 
             <div className="relative z-10 space-y-8">
               <div className="flex items-center gap-4">
@@ -213,26 +223,29 @@ export default function PostMatchView({ match, participants, stats }: PostMatchV
 
               {stats.mvp ? (
                 <div className="flex flex-col items-center gap-10 py-6">
-                  <div className="relative">
+                  <div className="relative group/avatar">
                     {/* Golden Frame */}
-                    <div className="absolute -inset-4 bg-gradient-to-br from-yellow-500 via-primary to-emerald-500 rounded-[3rem] blur-2xl opacity-40 group-hover:opacity-70 transition-opacity duration-700" />
+                    <div className="absolute -inset-6 bg-gradient-to-br from-yellow-300 via-yellow-500 to-amber-700 rounded-[3rem] blur-2xl opacity-60 group-hover/avatar:opacity-100 transition-opacity duration-700 animate-pulse" />
+                    
+                    {/* Spinning border effect */}
+                    <div className="absolute -inset-1 bg-gradient-to-r from-yellow-400 via-emerald-400 to-yellow-400 rounded-[3rem] animate-spin-slow opacity-0 group-hover/avatar:opacity-100 transition-opacity duration-1000" />
 
-                    <div className="w-44 h-44 rounded-[2.8rem] bg-zinc-950 border-4 border-primary relative z-10 shadow-2xl group-hover:scale-105 transition-all duration-700 overflow-hidden">
+                    <div className="w-44 h-44 rounded-[2.8rem] bg-zinc-950 border-[4px] border-yellow-400 relative z-10 shadow-2xl group-hover/avatar:scale-105 transition-all duration-700 overflow-hidden">
                       {stats.mvp.avatar_url ? (
                         <img
                           src={stats.mvp.avatar_url}
                           alt=""
-                          className="w-full h-full object-cover"
+                          className="w-full h-full object-cover group-hover/avatar:scale-110 transition-transform duration-[3s]"
                         />
                       ) : (
-                        <div className="w-full h-full flex items-center justify-center">
-                          <Star className="w-16 h-16 text-primary/40 fill-primary/10" />
+                        <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-zinc-800 to-zinc-950">
+                          <Star className="w-16 h-16 text-yellow-500/40 fill-yellow-500/10" />
                         </div>
                       )}
-                      <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-60" />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-80" />
 
                       <div className="absolute bottom-4 left-0 right-0 flex justify-center">
-                        <div className="px-5 py-2 bg-primary rounded-[1rem] shadow-[0_10px_20px_rgba(16,185,129,0.4)]">
+                        <div className="px-5 py-2 bg-gradient-to-r from-yellow-400 to-yellow-600 rounded-[1rem] shadow-[0_10px_20px_rgba(250,204,21,0.5)] border border-yellow-300 transform group-hover/avatar:-translate-y-2 transition-transform duration-500">
                           <span className="text-[11px] font-black text-black uppercase tracking-widest leading-none flex items-center gap-2">
                             <Check className="w-3 h-3" /> {stats.mvp.votes} Votos
                           </span>
@@ -246,21 +259,21 @@ export default function PostMatchView({ match, participants, stats }: PostMatchV
                     </div>
                   </div>
 
-                  <div className="text-center space-y-2">
-                    <h4 className="text-4xl font-black text-foreground italic uppercase tracking-tighter leading-none">
+                  <div className="text-center space-y-2 relative z-10">
+                    <h4 className="text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 via-yellow-500 to-yellow-600 italic uppercase tracking-tighter leading-none drop-shadow-[0_2px_10px_rgba(250,204,21,0.5)]">
                       {stats.mvp.name}
                     </h4>
                     <div className="flex items-center justify-center gap-3">
-                      <div className="h-[1px] w-8 bg-primary/30" />
-                      <p className="text-[11px] font-black uppercase tracking-[0.4em] text-primary italic">
+                      <div className="h-[1px] w-8 bg-yellow-500/30" />
+                      <p className="text-[11px] font-black uppercase tracking-[0.4em] text-yellow-500 italic drop-shadow-[0_0_5px_rgba(250,204,21,0.8)]">
                         Figura Absoluta
                       </p>
-                      <div className="h-[1px] w-8 bg-primary/30" />
+                      <div className="h-[1px] w-8 bg-yellow-500/30" />
                     </div>
                   </div>
                 </div>
               ) : (
-                <div className="py-16 flex flex-col items-center gap-6 text-center">
+                <div className="py-16 flex flex-col items-center gap-6 text-center relative z-10">
                   <div className="w-24 h-24 rounded-[2rem] bg-foreground/5 flex items-center justify-center border-2 border-dashed border-foreground/10 group-hover:rotate-45 transition-transform duration-700">
                     <Star className="w-10 h-10 text-foreground/20" />
                   </div>
@@ -269,6 +282,7 @@ export default function PostMatchView({ match, participants, stats }: PostMatchV
                   </p>
                 </div>
               )}
+            </div>
             </div>
           </motion.div>
 

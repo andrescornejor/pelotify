@@ -499,14 +499,12 @@ function MatchLobbyContent() {
             <div className="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent" />
           </div>
 
-          <div className="absolute top-16 left-4 md:left-10 z-50">
-            <button
-              onClick={() => router.back()}
-              className="w-14 h-14 rounded-2xl glass-premium flex items-center justify-center hover:scale-110 active:scale-95 transition-all text-foreground/50 hover:text-primary shadow-2xl"
-            >
-              <ArrowLeft className="w-7 h-7" />
-            </button>
-          </div>
+          <Link
+            href="/"
+            className="absolute top-8 left-4 md:left-8 w-12 h-12 rounded-2xl glass-premium flex items-center justify-center hover:scale-110 active:scale-95 transition-all text-foreground/50 hover:text-primary z-30"
+          >
+            <ArrowLeft className="w-6 h-6" />
+          </Link>
 
           <div className="relative z-10 max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-10 xl:px-14 2xl:px-16 h-full flex flex-col justify-end pb-16">
 

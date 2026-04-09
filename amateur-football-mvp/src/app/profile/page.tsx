@@ -1401,12 +1401,12 @@ function ProfileContent() {
 
                                 <div className="flex items-center gap-6 sm:gap-8 w-full md:w-auto relative z-10 pl-2">
                                   {/* Date Ticket Block */}
-                                  <div className="w-20 h-20 rounded-[1.8rem] bg-background/80 border border-white/10 flex flex-col items-center justify-center shrink-0 shadow-inner group-hover:border-primary/30 group-hover:bg-primary/5 group-hover:scale-105 transition-all duration-500 overflow-hidden relative">
-                                    <div className="absolute inset-x-0 top-0 h-1/2 bg-gradient-to-b from-white/5 to-transparent pointer-events-none" />
-                                    <span className="text-3xl font-black italic tracking-tighter text-foreground group-hover:text-primary transition-colors leading-none drop-shadow-md z-10 mt-1">
+                                  <div className="w-20 h-20 rounded-[1.8rem] bg-gradient-to-b from-background/90 to-background/50 border-t border-white/20 flex flex-col items-center justify-center shrink-0 shadow-2xl group-hover:border-primary/50 group-hover:from-primary/20 group-hover:to-background/50 group-hover:scale-110 transition-all duration-500 overflow-hidden relative backdrop-blur-md">
+                                    <div className="absolute inset-0 bg-[linear-gradient(to_bottom,rgba(255,255,255,0.1),transparent)] pointer-events-none" />
+                                    <span className="text-3xl font-black italic tracking-tighter text-foreground group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-br group-hover:from-white group-hover:to-primary transition-all duration-300 leading-none drop-shadow-md z-10 mt-1">
                                       {m.date.split('-')[2]}
                                     </span>
-                                    <span className="text-[10px] font-black uppercase tracking-[0.4em] text-foreground/40 italic mt-1 group-hover:text-primary/70 transition-colors z-10">
+                                    <span className="text-[9px] font-black uppercase tracking-[0.5em] text-foreground/50 italic mt-1 group-hover:text-primary transition-colors z-10">
                                       {
                                         [
                                           'ENE',
@@ -1469,27 +1469,28 @@ function ProfileContent() {
                                 <div className="flex items-center gap-6 w-full md:w-auto justify-end relative z-10 mt-4 md:mt-0">
                                   <div
                                     className={cn(
-                                      'flex items-center justify-center gap-4 w-full sm:w-auto px-8 sm:px-10 py-5 sm:py-6 rounded-[2rem] border overflow-hidden transition-all duration-700 relative shadow-2xl',
+                                      'flex items-center justify-center gap-4 w-full sm:w-auto px-8 sm:px-10 py-5 sm:py-6 rounded-[2rem] border overflow-hidden transition-all duration-700 relative shadow-2xl group/scorecard',
                                       result === 'win'
-                                        ? 'bg-primary/10 border-primary/20 shadow-[0_0_40px_rgba(44,252,125,0.1)]'
+                                        ? 'bg-gradient-to-br from-primary/20 to-primary/5 border-primary/30 shadow-[0_0_40px_rgba(44,252,125,0.2)]'
                                         : result === 'loss'
-                                          ? 'bg-red-500/10 border-red-500/20 shadow-[0_0_40px_rgba(239,68,68,0.1)]'
+                                          ? 'bg-gradient-to-br from-red-500/20 to-red-500/5 border-red-500/30 shadow-[0_0_40px_rgba(239,68,68,0.2)]'
                                           : result === 'draw'
-                                            ? 'bg-amber-500/10 border-amber-500/20 shadow-[0_0_40px_rgba(251,191,36,0.1)]'
+                                            ? 'bg-gradient-to-br from-amber-500/20 to-amber-500/5 border-amber-500/30 shadow-[0_0_40px_rgba(251,191,36,0.2)]'
                                             : 'bg-black/40 border-white/5'
                                     )}
                                   >
+                                    <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] opacity-10 mix-blend-overlay" />
                                     {/* Shine effect inside score box */}
                                     <div className="absolute top-0 left-[-100%] w-[50%] h-full bg-gradient-to-r from-transparent via-white/10 to-transparent group-hover:animate-shimmer pointer-events-none" />
 
                                     <span
                                       className={cn(
-                                        'text-5xl sm:text-6xl font-black italic tracking-tighter leading-none transition-all duration-300 drop-shadow-[0_4px_15px_rgba(0,0,0,0.5)]',
+                                        'text-5xl sm:text-6xl font-black italic tracking-tighter leading-none transition-all duration-500 drop-shadow-[0_4px_15px_rgba(0,0,0,0.5)] group-hover/scorecard:scale-110 content-visibility-auto',
                                         result === 'win' && userTeam === 'A'
-                                          ? 'text-primary'
+                                          ? 'text-transparent bg-clip-text bg-gradient-to-b from-white to-primary drop-shadow-[0_0_15px_rgba(44,252,125,0.8)]'
                                           : result === 'loss' && userTeam === 'A'
-                                            ? 'text-red-500'
-                                            : 'text-foreground'
+                                            ? 'text-transparent bg-clip-text bg-gradient-to-b from-white to-red-500 drop-shadow-[0_0_15px_rgba(239,68,68,0.8)]'
+                                            : 'text-transparent bg-clip-text bg-gradient-to-b from-white to-foreground/50'
                                       )}
                                     >
                                       {scoreA}
@@ -1500,12 +1501,12 @@ function ProfileContent() {
                                     </div>
                                     <span
                                       className={cn(
-                                        'text-5xl sm:text-6xl font-black italic tracking-tighter leading-none transition-all duration-300 drop-shadow-[0_4px_15px_rgba(0,0,0,0.5)]',
+                                        'text-5xl sm:text-6xl font-black italic tracking-tighter leading-none transition-all duration-500 drop-shadow-[0_4px_15px_rgba(0,0,0,0.5)] group-hover/scorecard:scale-110 content-visibility-auto',
                                         result === 'win' && userTeam === 'B'
-                                          ? 'text-primary'
+                                          ? 'text-transparent bg-clip-text bg-gradient-to-b from-white to-primary drop-shadow-[0_0_15px_rgba(44,252,125,0.8)]'
                                           : result === 'loss' && userTeam === 'B'
-                                            ? 'text-red-500'
-                                            : 'text-foreground'
+                                            ? 'text-transparent bg-clip-text bg-gradient-to-b from-white to-red-500 drop-shadow-[0_0_15px_rgba(239,68,68,0.8)]'
+                                            : 'text-transparent bg-clip-text bg-gradient-to-b from-white to-foreground/50'
                                       )}
                                     >
                                       {scoreB}
