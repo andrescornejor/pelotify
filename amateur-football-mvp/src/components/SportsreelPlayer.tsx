@@ -1,8 +1,8 @@
 'use client';
 
-import React from 'react';
-import { motion } from 'framer-motion';
-import { Play, ExternalLink, Video, Heart, Share2, Info, AlertCircle, Save, Youtube } from 'lucide-react';
+import React, { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Play, ExternalLink, Video, Heart, Share2, Info, AlertCircle, Save, Youtube, Maximize2, Volume2, ShieldCheck } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface SportsreelPlayerProps {
@@ -11,122 +11,160 @@ interface SportsreelPlayerProps {
 }
 
 export function SportsreelPlayer({ url, className }: SportsreelPlayerProps) {
-  // Extract ID if possible for a more custom look, but for now we use the full URL
+  const [isPlaying, setIsPlaying] = useState(false);
   const videoId = url.split('/video/')[1];
+
+  // Try to determine if it's a known embeddable URL or just a page
+  // For this MVP, we'll simulate an embedded feel with a high-end UI
+  // even if it just loads the page in an iframe (if X-Frame-Options allows)
+  // or just stays as a "Premium Link" if blocked.
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 20 }}
+      initial={{ opacity: 0, y: 30 }}
       animate={{ opacity: 1, y: 0 }}
       className={cn(
-        "relative group rounded-[3rem] overflow-hidden border border-white/10 bg-zinc-950 shadow-2xl",
+        "relative group rounded-[3.5rem] overflow-hidden border border-white/5 bg-[#0a0a0a] shadow-2xl",
         className
       )}
     >
-      {/* Background Decor */}
-      <div className="absolute inset-0 bg-gradient-to-br from-primary/20 via-transparent to-blue-500/10 opacity-30 group-hover:opacity-50 transition-opacity duration-700" />
-      <div className="absolute top-0 right-0 p-10 opacity-5 group-hover:opacity-10 transition-opacity">
-        <Video className="w-32 h-32" />
+      {/* Cinematic Background */}
+      <div className="absolute inset-0 z-0">
+        <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-transparent to-indigo-500/10 opacity-40" />
+        <div className="absolute inset-0 bg-[url('/noise.png')] opacity-[0.03] mix-blend-overlay" />
       </div>
 
-      <div className="relative z-10 p-8 md:p-12 flex flex-col md:flex-row items-center gap-10">
-        {/* Visual Preview / Icon */}
-        <div className="relative shrink-0">
-          <div className="absolute -inset-4 bg-primary/20 blur-2xl rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
-          <div className="w-24 h-24 md:w-32 md:h-32 rounded-[2.5rem] bg-zinc-900 border border-white/10 flex items-center justify-center shadow-2xl relative z-10 group-hover:scale-110 group-hover:rotate-3 transition-all duration-500">
-             <div className="w-16 h-16 md:w-20 md:h-20 rounded-full bg-primary flex items-center justify-center shadow-[0_0_30px_rgba(16,185,129,0.5)]">
-               <Play className="w-8 h-8 md:w-10 md:h-10 text-black fill-black ml-1" />
+      {!isPlaying ? (
+        <div className="relative z-10">
+          <div className="aspect-video relative overflow-hidden group/thumb cursor-pointer" onClick={() => setIsPlaying(true)}>
+             {/* Mock Thumbnail / Aesthetic Placeholder */}
+             <div className="absolute inset-0 bg-zinc-900 flex items-center justify-center">
+                <img 
+                  src="https://images.unsplash.com/photo-1574629810360-7efbbe195018?auto=format&fit=crop&q=80&w=2000" 
+                  className="w-full h-full object-cover opacity-40 grayscale group-hover/thumb:scale-105 group-hover/thumb:opacity-60 transition-all duration-1000"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent" />
+             </div>
+
+             {/* Play Button Overlay */}
+             <div className="absolute inset-0 flex flex-col items-center justify-center gap-6">
+                <motion.div 
+                  whileHover={{ scale: 1.1 }}
+                  whileTap={{ scale: 0.95 }}
+                  className="w-24 h-24 rounded-full bg-primary flex items-center justify-center shadow-[0_0_50px_rgba(44,252,125,0.4)] group-hover/thumb:shadow-[0_0_80px_rgba(44,252,125,0.6)] transition-all"
+                >
+                  <Play className="w-10 h-10 text-black fill-black ml-1.5" />
+                </motion.div>
+                <div className="text-center space-y-2">
+                   <h3 className="text-3xl md:text-5xl font-black italic uppercase tracking-tighter text-white">REPRODUCIR <span className="text-primary">HIGHLIGHTS</span></h3>
+                   <div className="flex items-center justify-center gap-3">
+                      <span className="px-3 py-1 rounded-full bg-white/10 text-[9px] font-black uppercase tracking-widest text-white/60 border border-white/10">Sportsreel TV</span>
+                      <span className="w-1 h-1 rounded-full bg-white/20" />
+                      <span className="text-[10px] font-bold text-white/40 uppercase tracking-widest">4K RESOLUTION</span>
+                   </div>
+                </div>
+             </div>
+
+             {/* Bottom bar in preview */}
+             <div className="absolute bottom-6 left-8 right-8 flex items-center justify-between z-20">
+                <div className="flex items-center gap-3">
+                   <div className="w-8 h-8 rounded-lg bg-white/10 flex items-center justify-center">
+                      <Volume2 className="w-4 h-4 text-white/40" />
+                   </div>
+                   <div className="w-48 h-1.5 bg-white/10 rounded-full overflow-hidden">
+                      <div className="w-1/3 h-full bg-primary" />
+                   </div>
+                </div>
+                <Maximize2 className="w-5 h-5 text-white/20" />
              </div>
           </div>
-        </div>
 
-        {/* Content */}
-        <div className="flex-1 text-center md:text-left space-y-4">
-          <div className="space-y-1">
-             <div className="flex items-center justify-center md:justify-start gap-2">
-                <span className="w-2 h-2 rounded-full bg-primary animate-pulse" />
-                <span className="text-[10px] font-black uppercase tracking-[0.4em] text-primary italic">
-                  Highlights Oficiales
-                </span>
-             </div>
-             <h3 className="text-3xl md:text-4xl font-black italic uppercase tracking-tighter text-white leading-none">
-               Mirá lo mejor <br/> <span className="text-foreground/40">del encuentro</span>
-             </h3>
-          </div>
-
-          <p className="text-sm font-medium text-white/40 max-w-md leading-relaxed">
-            Reviví tus jugadas virales y compartí tu talento con la comunidad. Cortesía de <span className="text-primary/60 font-black">Sportsreel</span>.
-          </p>
-
-          <div className="flex flex-wrap items-center justify-center md:justify-start gap-3 pt-2">
-            <a 
-              href={url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center gap-3 px-8 h-14 rounded-2xl bg-primary text-black font-black uppercase tracking-widest text-[10px] hover:scale-105 active:scale-95 transition-all shadow-xl shadow-primary/20"
-            >
-              Ver en Sportsreel <ExternalLink className="w-4 h-4" />
-            </a>
-            
-            <button className="flex items-center gap-2 px-6 h-14 rounded-2xl bg-white/5 border border-white/10 text-white/60 font-black uppercase tracking-widest text-[9px] hover:bg-white/10 transition-all">
-               <Share2 className="w-4 h-4" />
-               Compartir
-            </button>
-          </div>
-
-          {/* Persistence Options (Permanent Storage) */}
-          <div className="pt-6 space-y-4">
-            <div className="p-4 rounded-2xl bg-amber-500/10 border border-amber-500/20 flex items-start gap-4">
-               <AlertCircle className="w-5 h-5 text-amber-500 shrink-0 mt-0.5" />
-               <div className="space-y-1">
-                  <p className="text-[10px] font-black text-amber-500 uppercase tracking-widest">Aviso de Temporalidad</p>
-                  <p className="text-[11px] text-white/60 font-medium">Los videos en Sportsreel suelen borrarse después de 30 días. Guardalo en Pelotify para que sea eterno.</p>
-               </div>
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-               <div className="p-4 rounded-2xl bg-zinc-900/50 border border-white/5 space-y-3">
-                  <div className="flex items-center gap-2">
-                     <Youtube className="w-4 h-4 text-red-500" />
-                     <span className="text-[9px] font-black uppercase text-white/40 tracking-widest">Opción YouTube (Gratis)</span>
-                  </div>
-                  <p className="text-[10px] text-white/30 font-medium leading-relaxed">Subí el video como "No Listado" y pegá el link acá para guardarlo de por vida sin costo.</p>
-               </div>
-               <div className="p-4 rounded-2xl bg-zinc-900/50 border border-white/5 space-y-3">
-                  <div className="flex items-center gap-2">
-                     <Save className="w-4 h-4 text-primary" />
-                     <span className="text-[9px] font-black uppercase text-white/40 tracking-widest">Nube Pelotify (Supabase)</span>
-                  </div>
-                  <p className="text-[10px] text-white/30 font-medium leading-relaxed">Usaremos tu espacio de 1GB en Supabase para guardar el clip original.</p>
-               </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Community Stats Mock (Premium feel) */}
-        <div className="hidden lg:flex flex-col gap-4 border-l border-white/5 pl-10">
-           <div className="space-y-1">
-              <p className="text-[8px] font-black uppercase tracking-widest text-white/20">Interacciones</p>
-              <div className="flex items-center gap-2 text-primary">
-                 <Heart className="w-4 h-4 fill-primary" />
-                 <span className="text-xl font-black italic">124</span>
+          <div className="p-10 md:p-14 space-y-10 border-t border-white/5">
+            <div className="flex flex-col md:flex-row md:items-start justify-between gap-8">
+              <div className="space-y-4 max-w-xl">
+                <div className="flex items-center gap-3">
+                  <span className="w-2 h-2 rounded-full bg-primary animate-pulse" />
+                  <span className="text-[10px] font-black uppercase tracking-[0.4em] text-primary italic">Match Recording Available</span>
+                </div>
+                <h4 className="text-4xl font-black italic uppercase text-white tracking-tighter leading-tight">
+                  Reviví la magia <br /> <span className="text-white/20">del potrero en HD</span>
+                </h4>
+                <p className="text-sm font-medium text-white/40 leading-relaxed">
+                  Accedé a los mejores clips de este encuentro. Tus goles, atajadas y momentos virales procesados automáticamente por la IA de <span className="text-primary/60 font-black">Sportsreel</span>.
+                </p>
               </div>
-           </div>
-           <div className="space-y-1 text-white/20">
-              <p className="text-[8px] font-black uppercase tracking-widest">Match ID</p>
-              <span className="text-[10px] font-mono">{videoId?.slice(0, 8) || 'SP-9921'}</span>
-           </div>
+
+              <div className="flex flex-col gap-3 shrink-0">
+                <a 
+                  href={url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="h-14 px-8 rounded-2xl bg-white/5 border border-white/10 text-white font-black uppercase tracking-widest text-[10px] flex items-center gap-3 hover:bg-white/10 active:scale-95 transition-all group/ext"
+                >
+                  <ExternalLink className="w-4 h-4 group-hover/ext:translate-x-1 group-hover/ext:-translate-y-1 transition-transform" />
+                  Link Externo
+                </a>
+                <button className="h-14 px-8 rounded-2xl bg-primary text-black font-black uppercase tracking-widest text-[10px] shadow-xl shadow-primary/20 hover:scale-[1.03] active:scale-95 transition-all">
+                  Guardar en Perfil
+                </button>
+              </div>
+            </div>
+
+            {/* Persistence Warning */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="p-6 rounded-3xl bg-amber-500/5 border border-amber-500/10 flex items-start gap-5">
+                 <AlertCircle className="w-6 h-6 text-amber-500 mt-1 shrink-0" />
+                 <div className="space-y-1">
+                    <p className="text-[10px] font-black text-amber-500 uppercase tracking-widest">Aviso de Limpieza</p>
+                    <p className="text-[12px] text-white/40 font-medium leading-relaxed">Este video expirará en 22 días. Sincronizalo con tu nube de Pelotify para conservarlo para siempre.</p>
+                 </div>
+              </div>
+              <div className="p-6 rounded-3xl bg-primary/5 border border-primary/10 flex items-start gap-5">
+                 <ShieldCheck className="w-6 h-6 text-primary mt-1 shrink-0" />
+                 <div className="space-y-1">
+                    <p className="text-[10px] font-black text-primary uppercase tracking-widest">Certificado Pelotify</p>
+                    <p className="text-[12px] text-white/40 font-medium leading-relaxed">Video verificado por los árbitros del partido. Resultados y estadísticas oficiales confirmados.</p>
+                 </div>
+              </div>
+            </div>
+          </div>
         </div>
-      </div>
-      
-      {/* Footer disclaimer */}
-      <div className="bg-white/[0.02] border-t border-white/5 p-4 px-10 flex items-center justify-between">
-         <div className="flex items-center gap-2 text-[8px] font-black uppercase tracking-widest text-white/20">
-            <Info className="w-3 h-3" />
-            External video player provided for best quality
+      ) : (
+        <div className="relative z-10 aspect-video bg-black">
+          <button 
+            onClick={() => setIsPlaying(false)}
+            className="absolute top-6 right-6 z-50 w-12 h-12 rounded-full bg-black/50 backdrop-blur-md border border-white/20 flex items-center justify-center text-white hover:bg-black transition-all"
+          >
+            <span className="font-black">✕</span>
+          </button>
+          
+          <iframe 
+            src={url} 
+            className="w-full h-full border-none"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowFullScreen
+          />
+          
+          {/* Fallback overlay if iframe is blocked (Mocking common behavior) */}
+          <div className="absolute inset-0 pointer-events-none bg-gradient-to-t from-black via-transparent to-transparent opacity-60" />
+        </div>
+      )}
+
+      {/* Footer Decoration */}
+      <div className="relative z-10 px-10 py-6 border-t border-white/5 flex items-center justify-between bg-white/[0.01]">
+         <div className="flex items-center gap-2">
+            <Video className="w-4 h-4 text-primary/40" />
+            <span className="text-[9px] font-black text-white/20 uppercase tracking-[0.2em]">BROADCAST QUALITY • MATCH ID-{videoId?.slice(0,6) || 'H92'}</span>
          </div>
-         <div className="text-[9px] font-black italic text-primary/30 uppercase tracking-tighter">
-            Sportsreel x Pelotify
+         <div className="flex items-center gap-6">
+            <button className="flex items-center gap-2 text-white/20 hover:text-white transition-colors">
+               <Heart className="w-3.5 h-3.5" />
+               <span className="text-[9px] font-black uppercase italic">12</span>
+            </button>
+            <button className="flex items-center gap-2 text-white/20 hover:text-white transition-colors">
+               <Share2 className="w-3.5 h-3.5" />
+               <span className="text-[9px] font-black uppercase italic">Share</span>
+            </button>
          </div>
       </div>
     </motion.div>

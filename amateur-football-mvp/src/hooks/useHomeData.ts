@@ -27,6 +27,7 @@ async function fetchHomeData(userId: string): Promise<HomeData> {
         .from('match_participants')
         .select('matches:matches!inner(*)')
         .eq('user_id', userId)
+        .eq('matches.is_completed', false)
         .gte('matches.date', (() => { 
             const d = new Date(); 
             return `${d.getFullYear()}-${(d.getMonth() + 1).toString().padStart(2, '0')}-${d.getDate().toString().padStart(2, '0')}`;

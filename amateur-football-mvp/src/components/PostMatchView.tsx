@@ -62,138 +62,6 @@ export default function PostMatchView({ match, participants, stats }: PostMatchV
 
   return (
     <div className="space-y-12 pb-20">
-      {/* ── CINEMATIC SCOREBOARD ── */}
-      <motion.div
-        initial={{ opacity: 0, y: 40 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="relative group"
-      >
-        {/* Background Effects */}
-        <div className="absolute inset-x-0 -top-20 h-64 bg-primary/10 blur-[120px] rounded-full pointer-events-none opacity-50 group-hover:opacity-100 transition-opacity duration-1000" />
-
-        <div className="glass-premium rounded-[4rem] p-16 border border-white/10 relative overflow-hidden shadow-[0_40px_100px_rgba(0,0,0,0.5)] transition-all hover:border-primary/20">
-          <div className="absolute top-0 right-0 w-full h-full bg-gradient-to-br from-primary/5 via-transparent to-blue-500/5 pointer-events-none" />
-
-          <div className="flex flex-col md:flex-row items-center justify-between gap-16 relative z-10">
-            {/* Team A */}
-            <div className="flex flex-col items-center md:items-start gap-6 group/team">
-              <div
-                className={cn(
-                  'w-28 h-28 rounded-[2.5rem] flex items-center justify-center text-4xl font-black italic shadow-2xl transition-all duration-500 group-hover/team:scale-110 relative',
-                  winner === 'A'
-                    ? 'bg-indigo-600 scale-105'
-                    : 'bg-zinc-800 scale-100 grayscale opacity-60'
-                )}
-              >
-                {winner === 'A' && (
-                  <div className="absolute -top-4 -right-4 bg-yellow-500 p-2 rounded-2xl shadow-xl animate-bounce">
-                    <Crown className="w-6 h-6 text-black" />
-                  </div>
-                )}
-                <span className="text-white">A</span>
-                <div className="absolute inset-0 rounded-[2.5rem] border-2 border-white/20" />
-              </div>
-              <div className="space-y-1 text-center md:text-left">
-                <h3 className="text-3xl font-black text-foreground italic uppercase tracking-tighter leading-none">
-                  Local
-                </h3>
-                <div className="flex items-center gap-2">
-                    <div
-                      className={cn(
-                        'w-2 h-2 rounded-full',
-                        winner === 'A' ? 'bg-indigo-500 animate-pulse' : 'bg-foreground/20'
-                      )}
-                    />
-                  <p
-                    className={cn(
-                      'text-[10px] font-black uppercase tracking-[0.3em]',
-                      winner === 'A' ? 'text-indigo-500' : 'text-foreground/40'
-                    )}
-                  >
-                    {winner === 'A' ? 'EQUIPO GANADOR' : 'SQUAD LOCAL'}
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            {/* Score Center */}
-            <div className="flex flex-col items-center gap-6">
-              <div className="flex items-center gap-10">
-                <motion.span
-                  initial={{ scale: 0.5, opacity: 0 }}
-                  animate={{ scale: 1, opacity: 1 }}
-                  transition={{ delay: 0.3, type: 'spring', damping: 15 }}
-                  className="text-8xl md:text-[8rem] lg:text-[10rem] font-black text-foreground italic tracking-tighter leading-none drop-shadow-[0_20px_50px_rgba(255,255,255,0.15)]"
-                >
-                  {scoreA}
-                </motion.span>
-                <div className="flex flex-col items-center gap-2">
-                  <div className="w-1.5 h-12 bg-gradient-to-b from-transparent via-foreground/20 to-transparent rounded-full" />
-                  <div className="w-2 h-2 bg-primary rounded-full animate-ping shadow-[0_0_20px_rgba(16,185,129,0.5)]" />
-                  <div className="w-1.5 h-12 bg-gradient-to-t from-transparent via-foreground/20 to-transparent rounded-full" />
-                </div>
-                <motion.span
-                  initial={{ scale: 0.5, opacity: 0 }}
-                  animate={{ scale: 1, opacity: 1 }}
-                  transition={{ delay: 0.4, type: 'spring', damping: 15 }}
-                  className="text-8xl md:text-[8rem] lg:text-[10rem] font-black text-foreground italic tracking-tighter leading-none drop-shadow-[0_20px_50px_rgba(255,255,255,0.15)]"
-                >
-                  {scoreB}
-                </motion.span>
-              </div>
-              <div className="relative">
-                <div className="absolute inset-0 bg-primary/20 blur-xl rounded-full" />
-                <div className="relative px-10 py-3 bg-zinc-900/80 md: border border-primary/30 rounded-[2rem] shadow-2xl">
-                  <span className="text-[12px] font-black uppercase tracking-[0.5em] text-primary italic">
-                    FIN DEL ENCUENTRO
-                  </span>
-                </div>
-              </div>
-            </div>
-
-            {/* Team B */}
-            <div className="flex flex-col items-center md:items-end gap-6 group/team">
-              <div
-                className={cn(
-                  'w-28 h-28 rounded-[2.5rem] flex items-center justify-center text-4xl font-black italic shadow-2xl transition-all duration-500 group-hover/team:scale-110 relative',
-                  winner === 'B'
-                    ? 'bg-rose-600 scale-105'
-                    : 'bg-zinc-800 scale-100 grayscale opacity-60'
-                )}
-              >
-                {winner === 'B' && (
-                  <div className="absolute -top-4 -left-4 bg-yellow-500 p-2 rounded-2xl shadow-xl animate-bounce">
-                    <Crown className="w-6 h-6 text-black" />
-                  </div>
-                )}
-                <span className="text-white">B</span>
-                <div className="absolute inset-0 rounded-[2.5rem] border-2 border-white/20" />
-              </div>
-              <div className="space-y-1 text-center md:text-right">
-                <h3 className="text-3xl font-black text-foreground italic uppercase tracking-tighter leading-none">
-                  Visita
-                </h3>
-                <div className="flex items-center gap-2 justify-center md:justify-end">
-                  <p
-                    className={cn(
-                      'text-[10px] font-black uppercase tracking-[0.3em]',
-                      winner === 'B' ? 'text-rose-500' : 'text-foreground/40'
-                    )}
-                  >
-                    {winner === 'B' ? 'EQUIPO GANADOR' : 'SQUAD VISITANTE'}
-                  </p>
-                  <div
-                    className={cn(
-                      'w-2 h-2 rounded-full',
-                      winner === 'B' ? 'bg-rose-500 animate-pulse' : 'bg-foreground/20'
-                    )}
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </motion.div>
 
       {/* ── SHARE ACTION ── */}
       <motion.div
@@ -266,110 +134,48 @@ export default function PostMatchView({ match, participants, stats }: PostMatchV
                       <div
                         className={cn(
                           'w-12 h-12 rounded-2xl flex items-center justify-center font-black text-white italic text-lg shadow-xl relative overflow-hidden',
-                          scorer.team === 'A' ? 'bg-indigo-600' : 'bg-rose-600'
-                        )}
-                      >
-                        <div className="absolute inset-0 bg-gradient-to-br from-white/20 to-transparent" />
-                        <span className="relative z-10">{scorer.team}</span>
-                      </div>
-                      <div className="space-y-0.5">
-                        <span className="font-black text-foreground uppercase italic tracking-tighter text-lg leading-none">
-                          {scorer.name}
-                        </span>
-                        <p className="text-[9px] font-black text-foreground/30 uppercase tracking-widest">
-                          Killer de Area
-                        </p>
-                      </div>
-                    </div>
-                    <div className="flex items-center gap-3 bg-zinc-900 p-3 rounded-2xl border border-white/5">
-                      <span className="text-3xl font-black text-primary italic leading-none">
-                        {scorer.goals}
-                      </span>
-                      <Goal className="w-5 h-5 text-primary/40" />
-                    </div>
-                  </motion.div>
-                ))
-              ) : (
-                <div className="col-span-2 flex flex-col items-center justify-center py-16 gap-4 opacity-20 group/empty">
-                  <div className="w-16 h-16 rounded-full border-2 border-dashed border-foreground flex items-center justify-center group-hover/empty:scale-110 transition-transform duration-500">
-                    <Goal className="w-8 h-8" />
-                  </div>
-                  <p className="text-sm font-black uppercase tracking-[0.4em] italic">
-                    Red en Cero · Sin Reportes
-                  </p>
-                </div>
-              )}
-            </div>
-          </motion.div>
-
-          {/* TEAMS LINEUPS RECAP */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {(['A', 'B'] as const).map((team) => (
-              <div
-                key={team}
-                className={cn(
-                  'glass-premium rounded-[3rem] p-8 md:p-10 border border-foreground/10 relative overflow-hidden transition-all duration-500 group/squad',
-                  team === 'A' ? 'hover:border-indigo-500/30 shadow-[0_20px_50px_rgba(79,70,229,0.05)]' : 'hover:border-rose-500/30 shadow-[0_20px_50px_rgba(225,29,72,0.05)]'
-                )}
-              >
-                <div className="absolute top-0 right-0 p-8 opacity-5 group-hover/squad:opacity-10 transition-opacity">
-                  <Users className="w-24 h-24" />
-                </div>
-
-                <div className="flex items-center justify-between mb-10 relative z-10">
-                  <div className="space-y-1">
-                    <h3 className="text-xl font-black text-foreground italic uppercase tracking-tighter">
-                      Escuadra {team}
-                    </h3>
-                    <p className="text-[10px] font-black uppercase tracking-widest text-foreground/40">
-                      {team === 'A' ? teamA.length : teamB.length} Convocados
-                    </p>
-                  </div>
-                  <div
-                    className={cn(
-                      'w-12 h-12 rounded-2xl flex items-center justify-center font-black text-white italic',
-                    team === 'A'
-                      ? 'bg-indigo-600/20 text-indigo-500 border border-indigo-500/30 shadow-[0_0_20px_rgba(79,70,229,0.2)]'
-                      : 'bg-rose-600/20 text-rose-500 border border-rose-500/30 shadow-[0_0_20px_rgba(225,29,72,0.2)]'
-                  )}
-                  >
-                    {team}
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-2 gap-4 relative z-10">
-                  {(team === 'A' ? teamA : teamB).map((p, idx) => (
-                    <div
-                      key={idx}
-                      className="flex items-center gap-4 p-3 rounded-2xl bg-foreground/[0.02] border border-white/5 hover:bg-foreground/[0.05] transition-all"
-                    >
-                      <div className="w-10 h-10 rounded-xl bg-zinc-900 border border-white/10 flex items-center justify-center overflow-hidden shrink-0 shadow-lg">
-                        {p.profiles?.avatar_url ? (
+                      <div className="w-14 h-14 rounded-2xl bg-zinc-950 border border-white/10 flex items-center justify-center overflow-hidden shadow-xl group-hover/scorer:scale-105 transition-transform">
+                        {scorer.profiles?.avatar_url ? (
                           <img
-                            src={p.profiles.avatar_url}
+                            src={scorer.profiles.avatar_url}
                             alt=""
                             className="w-full h-full object-cover"
                           />
                         ) : (
-                          <span className="text-xs font-black text-foreground/20 italic">
-                            {p.profiles?.name?.[0]?.toUpperCase() || 'P'}
-                          </span>
+                          <div className="w-full h-full flex items-center justify-center">
+                             <User2 className="w-6 h-6 text-white/20" />
+                          </div>
                         )}
                       </div>
-                      <div className="flex flex-col min-w-0">
-                        <span className="text-[11px] font-black text-foreground uppercase italic tracking-tighter truncate">
-                          {p.profiles?.name?.split(' ')[0] || 'Jugador'}
+                      <div className="flex flex-col">
+                        <span className="text-sm font-black text-foreground uppercase italic tracking-tighter">
+                          {scorer.profiles?.name || 'Jugador'}
                         </span>
-                        <span className="text-[8px] font-black text-foreground/30 uppercase tracking-[0.2em]">
-                          {p.profiles?.position || 'Convocado'}
+                        <span className="text-[9px] font-black text-foreground/30 uppercase tracking-[0.2em]">
+                          Artillero Pelotify
                         </span>
                       </div>
                     </div>
-                  ))}
+                    <div className="flex items-center gap-3 bg-zinc-900 px-5 py-3 rounded-2xl border border-white/5 shadow-inner">
+                      <span className="text-3xl font-black text-primary italic leading-none">
+                        {scorer.goals}
+                      </span>
+                      <Goal className="w-5 h-5 text-primary/40 shrink-0" />
+                    </div>
+                  </motion.div>
+                ))
+              ) : (
+                <div className="col-span-2 flex flex-col items-center justify-center py-20 gap-4 opacity-30 group/empty">
+                   <div className="w-20 h-20 rounded-full border-2 border-dashed border-foreground/20 flex items-center justify-center group-hover/empty:rotate-45 transition-transform duration-700">
+                     <Goal className="w-10 h-10" />
+                   </div>
+                   <p className="text-[12px] font-black uppercase tracking-[0.6em] italic text-foreground/40">
+                     RED EN CERO
+                   </p>
                 </div>
-              </div>
-            ))}
-          </div>
+              )}
+            </div>
+          </motion.div>
         </div>
 
         {/* ── SIDEBAR: MVP & MATCH INFO ── */}
@@ -533,8 +339,7 @@ export default function PostMatchView({ match, participants, stats }: PostMatchV
             </button>
           </div>
         </div>
-      </div>
-    </div>
+      </motion.div>
   );
 }
 
