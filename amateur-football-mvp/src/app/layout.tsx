@@ -1,3 +1,4 @@
+import type { Metadata } from 'next';
 import { Kanit, Outfit } from 'next/font/google';
 import './globals.css';
 import { AuthProvider } from '@/contexts/AuthContext';
@@ -7,6 +8,7 @@ import { QueryProvider } from '@/providers/QueryProvider';
 import ClientLayout from '@/components/layout/ClientLayout';
 import PostMatchManager from '@/components/PostMatchManager';
 import PWARegistration from '@/components/PWARegistration';
+import { SettingsProvider } from '@/contexts/SettingsContext';
 
 const kanit = Kanit({
   subsets: ['latin'],
@@ -59,9 +61,6 @@ export const viewport = {
   viewportFit: 'cover',
   themeColor: '#09090b',
 };
-
-import type { Metadata } from 'next';
-import { SettingsProvider } from '@/contexts/SettingsContext';
 
 export default function RootLayout({
   children,
