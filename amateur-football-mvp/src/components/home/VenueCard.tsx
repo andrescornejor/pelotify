@@ -14,74 +14,62 @@ export const VenueCard = ({ venue, performanceMode }: VenueCardProps) => {
   return (
     <Link href={`/establecimientos/${venue.id}`} className="block h-full">
       <motion.div
-        whileHover={performanceMode ? {} : { scale: 1.02, y: -8 }}
-        className="group relative h-full glass-premium rounded-[3rem] p-4 border-foreground/20 hover:border-primary/40 transition-all duration-500 overflow-hidden flex flex-col shadow-xl"
+        whileHover={performanceMode ? {} : { scale: 1.01, y: -4 }}
+        className="group relative h-full card-stadium rounded-2xl p-3 transition-all duration-500 flex flex-col"
       >
-        {/* Background Ambient Glow */}
-        {!performanceMode && (
-          <div className="absolute -top-24 -right-24 w-48 h-48 bg-primary/10 blur-[80px] rounded-full group-hover:bg-primary/20 transition-colors duration-700" />
-        )}
-
         {/* Image Container */}
-        <div className="relative h-64 sm:h-72 rounded-[2.5rem] overflow-hidden mb-6 shadow-inner border border-foreground/20">
+        <div className="relative h-56 sm:h-64 rounded-xl overflow-hidden mb-4 border border-foreground/[0.04]">
           <img 
             src={venue.image_url || "https://images.unsplash.com/photo-1574629810360-7efbbe195018?q=80&w=1200&auto=format&fit=crop"} 
             className={cn(
-              "w-full h-full object-cover transition-all duration-1000",
-              !performanceMode && "grayscale group-hover:grayscale-0 group-hover:scale-110"
+              "w-full h-full object-cover transition-all duration-700",
+              !performanceMode && "group-hover:scale-105"
             )} 
             alt={venue.name}
           />
           
-          {/* Status Badge */}
-          <div className="absolute top-4 left-4 flex gap-2">
+          {/* Verified Badge */}
+          <div className="absolute top-3 right-3">
+            <div className="ticker-badge text-[8px] py-1 bg-primary/15 text-primary border-primary/20">
+              <ShieldCheck className="w-3 h-3" />
+              VERIFICADO
+            </div>
           </div>
 
-          <div className="absolute top-4 right-4">
-             <div className="px-3 py-1.5 bg-primary text-background rounded-xl font-black text-[9px] uppercase tracking-widest shadow-[0_0_20px_rgba(44,252,125,0.4)]">
-                VERIFICADO
-             </div>
-          </div>
-
-          {/* Hover Overlay */}
-          <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end justify-center p-8">
-             <motion.span 
-               initial={{ y: 20, opacity: 0 }}
-               whileHover={{ y: 0, opacity: 1 }}
-               className="text-[10px] font-black uppercase text-primary tracking-[0.3em] flex items-center gap-2 drop-shadow-lg"
-             >
-               Reservar Ahora <ArrowRight className="w-4 h-4" />
-             </motion.span>
+          {/* Bottom gradient */}
+          <div className="absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-black/40 to-transparent" />
+          
+          {/* Hover CTA */}
+          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end justify-center pb-5">
+            <span className="text-[10px] font-bold uppercase text-white tracking-wider flex items-center gap-1.5">
+              Ver sede <ArrowRight className="w-3.5 h-3.5" />
+            </span>
           </div>
         </div>
 
         {/* Content */}
-        <div className="px-5 pb-4 space-y-4 flex-1 flex flex-col">
-          <div className="space-y-2">
-             <div className="flex items-center gap-2">
-                <h3 className="text-2xl font-black font-kanit italic uppercase tracking-tighter group-hover:text-primary transition-colors leading-tight">
-                  {venue.name}
-                </h3>
-             </div>
-             <p className="text-[11px] font-bold text-foreground/40 uppercase flex items-center gap-2 tracking-wide">
-                <MapPin className="w-3.5 h-3.5 text-primary/60" />
-                {venue.address || "Rosario, Argentina"}
-             </p>
+        <div className="px-2 pb-2 space-y-3 flex-1 flex flex-col">
+          <div className="space-y-1">
+            <h3 className="text-xl font-bold text-foreground group-hover:text-primary transition-colors leading-tight tracking-tight">
+              {venue.name}
+            </h3>
+            <p className="text-[11px] font-medium text-foreground/35 flex items-center gap-1.5">
+              <MapPin className="w-3 h-3 text-primary/50" />
+              {venue.address || "Rosario, Argentina"}
+            </p>
           </div>
 
           <div className="flex-1" />
 
-          {/* Features / Footer */}
-          <div className="pt-6 flex items-center justify-between mt-auto">
-             <div className="flex items-center gap-3">
-                <div className="w-9 h-9 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center">
-                   <Zap className="w-4 h-4 text-primary" />
-                </div>
-                <div className="flex flex-col">
-                   <span className="text-[10px] font-black uppercase tracking-widest text-foreground font-kanit italic">Premium</span>
-                   <span className="text-[8px] font-bold text-foreground/30 uppercase tracking-[0.1em]">Césped PRO</span>
-                </div>
-             </div>
+          {/* Footer */}
+          <div className="pt-3 border-t border-foreground/[0.04] flex items-center gap-2.5">
+            <div className="w-8 h-8 rounded-lg bg-primary/8 flex items-center justify-center">
+              <Zap className="w-4 h-4 text-primary" />
+            </div>
+            <div className="flex flex-col">
+              <span className="text-[11px] font-bold text-foreground">Premium</span>
+              <span className="text-[8px] font-medium text-foreground/25 uppercase tracking-wider">Césped PRO</span>
+            </div>
           </div>
         </div>
       </motion.div>

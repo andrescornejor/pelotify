@@ -272,15 +272,15 @@ export default function HomePage() {
       <button
         onClick={() => setPerformanceMode(!performanceMode)}
         className={cn(
-          'fixed bottom-24 right-6 z-[100] w-12 h-12 rounded-2xl md:hidden flex flex-col items-center justify-center transition-all active:scale-90 border',
+          'fixed bottom-24 right-6 z-[100] w-11 h-11 rounded-xl md:hidden flex flex-col items-center justify-center transition-all active:scale-90',
           performanceMode
-            ? 'bg-primary text-black border-primary shadow-[0_0_20px_rgba(44,252,125,0.4)]'
-            : 'glass border-foreground/20 text-primary shadow-lg shadow-primary/10'
+            ? 'bg-primary text-black border border-primary/50 shadow-[0_0_16px_rgba(44,252,125,0.3)]'
+            : 'bg-foreground/[0.04] border border-foreground/[0.06] text-primary shadow-lg'
         )}
       >
-        <Zap className={cn('w-5 h-5', performanceMode && 'fill-current')} />
-        <span className="text-[7px] font-black uppercase mt-0.5 tracking-tighter">
-          {performanceMode ? 'LITE ON' : 'FX ON'}
+        <Zap className={cn('w-4 h-4', performanceMode && 'fill-current')} />
+        <span className="text-[6px] font-bold uppercase mt-0.5 tracking-wider">
+          {performanceMode ? 'LITE' : 'FX'}
         </span>
       </button>
 
@@ -545,44 +545,46 @@ export default function HomePage() {
                 className="lg:shrink-0 w-full lg:w-[400px] space-y-4"
               >
                 {/* Rank Progress Card */}
-                <div className="glass-premium p-6 rounded-[2.5rem] border-foreground/15 space-y-6 relative overflow-hidden group">
+                <div className="card-stadium p-5 rounded-2xl space-y-5 relative overflow-hidden group">
                   {/* Background Rank Glow */}
-                  <div
-                    className="absolute -top-20 -right-20 w-40 h-40 blur-[80px] opacity-20 transition-opacity group-hover:opacity-40"
-                    style={{ backgroundColor: rankCalculation.info.color }}
-                  />
+                  {!performanceMode && (
+                    <div
+                      className="absolute -top-16 -right-16 w-36 h-36 blur-[60px] opacity-15 transition-opacity group-hover:opacity-25"
+                      style={{ backgroundColor: rankCalculation.info.color }}
+                    />
+                  )}
 
-                  <div className="flex items-center gap-6 relative z-10">
+                  <div className="flex items-center gap-5 relative z-10">
                     <RankBadgeInline rankName={rankCalculation.info.name} size="lg" />
-                    <div className="flex-1 space-y-2">
-                      <p className="text-[10px] font-semibold text-foreground/40 tracking-wide leading-none font-kanit">
+                    <div className="flex-1 space-y-1.5">
+                      <p className="text-[9px] font-bold text-foreground/30 tracking-wider uppercase">
                         Progreso de liga
                       </p>
                       <div className="flex items-center gap-2">
-                        <h3 className="text-2xl font-black italic text-foreground leading-none font-kanit uppercase tracking-tighter">
+                        <h3 className="text-xl font-black text-foreground leading-none font-kanit uppercase tracking-tight">
                           {rankCalculation.info.name}
                         </h3>
-                        <rankCalculation.rank.icon className="w-5 h-5" style={{ color: rankCalculation.rank.hex }} />
+                        <rankCalculation.rank.icon className="w-4 h-4" style={{ color: rankCalculation.rank.hex }} />
                       </div>
-                      <span className="text-[9px] font-semibold text-foreground/40 tracking-wide font-kanit">
+                      <span className="text-[9px] font-medium text-foreground/30">
                         Estado de temporada
                       </span>
                     </div>
                     <div className="text-right flex flex-col items-end">
-                      <div className="flex items-center gap-2">
-                        <span className="text-3xl font-black text-foreground italic font-kanit leading-none">
+                      <div className="flex items-center gap-1.5">
+                        <span className="text-2xl font-black text-foreground font-kanit leading-none scoreboard-num">
                           {Math.round(rankCalculation.progress)}%
                         </span>
-                        <rankCalculation.nextRank.icon className="w-6 h-6 opacity-20" style={{ color: rankCalculation.nextRank.color }} />
+                        <rankCalculation.nextRank.icon className="w-5 h-5 opacity-15" style={{ color: rankCalculation.nextRank.color }} />
                       </div>
-                      <p className="text-[8px] font-black text-foreground/30 uppercase mt-1">
+                      <p className="text-[8px] font-bold text-foreground/25 uppercase mt-0.5">
                         PARA {rankCalculation.nextRank.name}
                       </p>
                     </div>
                   </div>
 
-                  <div className="space-y-3 relative z-10">
-                    <div className="relative h-3 bg-foreground/5 rounded-full p-0.5 overflow-hidden border border-foreground/15">
+                  <div className="space-y-2 relative z-10">
+                    <div className="relative h-2 bg-foreground/[0.04] rounded-full overflow-hidden border border-foreground/[0.06]">
                       <motion.div
                         initial={{ width: 0 }}
                         animate={{ width: `${rankCalculation.progress}%` }}
@@ -590,58 +592,47 @@ export default function HomePage() {
                         className="h-full rounded-full relative"
                         style={{
                           background: `linear-gradient(90deg, ${rankCalculation.info.color}, #5dfd9d)`,
-                          boxShadow: `0 0 10px ${rankCalculation.info.color}30`,
+                          boxShadow: `0 0 8px ${rankCalculation.info.color}20`,
                         }}
                       >
-                        <div className="absolute inset-0 animate-shimmer opacity-30 bg-gradient-to-r from-transparent via-white/40 to-transparent" />
+                        <div className="absolute inset-0 animate-shimmer opacity-20 bg-gradient-to-r from-transparent via-white/40 to-transparent" />
                       </motion.div>
                     </div>
 
-                    <div className="flex justify-between text-[8px] font-medium text-foreground/30 tracking-wide">
-                      <span>Progreso de temporada</span>
+                    <div className="flex justify-between text-[8px] font-medium text-foreground/25 tracking-wide">
+                      <span>Progreso</span>
                       <span>Siguiente nivel</span>
                     </div>
                   </div>
                 </div>
 
-                <div className="grid grid-cols-3 gap-3">
+                <div className="grid grid-cols-3 gap-2.5">
                   <Link href="/create" className="col-span-3">
                     <motion.button
-                      whileHover={{ scale: 1.015, y: -4 }}
-                      whileTap={{ scale: 0.98 }}
-                      className="w-full h-16 rounded-[2rem] bg-gradient-to-r from-primary to-primary-dark text-background text-[11px] font-black uppercase tracking-widest italic shadow-[0_20px_40px_rgba(44,252,125,0.25)] flex items-center justify-center gap-3 relative overflow-hidden group border border-foreground/20 leading-none"
+                      whileTap={{ scale: 0.97 }}
+                      className="w-full btn-hero h-14 text-[11px] gap-2.5"
                     >
-                      <div className="absolute inset-x-0 top-0 h-1/2 bg-foreground/10 group-hover:h-full transition-all duration-700" />
-                      <div className="absolute inset-0 bg-gradient-to-b from-white/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-                      <PlusCircle className="w-6 h-6 relative z-10 group-hover:rotate-180 transition-transform duration-700" />
-                      <span className="relative z-10 drop-shadow-sm">ARMAR PARTIDO</span>
+                      <PlusCircle className="w-5 h-5" />
+                      ARMAR PARTIDO
                     </motion.button>
                   </Link>
 
                   <Link href="/search" className="col-span-2">
                     <motion.button
-                      whileHover={{ scale: 1.015, y: -4 }}
-                      whileTap={{ scale: 0.98 }}
-                      className="w-full h-16 rounded-[2rem] glass-premium border-foreground/15 text-foreground text-[11px] font-black uppercase tracking-widest italic flex items-center justify-center gap-3 relative overflow-hidden group shadow-xl transition-all duration-500 leading-none"
+                      whileTap={{ scale: 0.97 }}
+                      className="w-full btn-glass h-14 text-[11px] gap-2.5"
                     >
-                      <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                      <Search className="w-5 h-5 relative z-10 text-primary group-hover:scale-110 transition-transform duration-500" />
-                      <span className="relative z-10 group-hover:text-primary transition-colors">BUSCAR PARTIDO</span>
-
-                      <div className="absolute top-2.5 right-4 flex items-center gap-1.5 z-20">
-                        <div className="w-1.5 h-1.5 bg-primary/40 rounded-full animate-pulse" />
-                      </div>
+                      <Search className="w-4 h-4 text-primary" />
+                      BUSCAR PARTIDO
                     </motion.button>
                   </Link>
 
                   <Link href="/highlights" className="col-span-1">
                     <motion.button
-                      whileHover={{ scale: 1.02, y: -4 }}
-                      whileTap={{ scale: 0.98 }}
-                      className="w-full h-16 rounded-[2rem] glass-premium border-foreground/15 text-orange-500/50 hover:text-orange-500 font-black uppercase text-[10px] tracking-[0.2em] flex items-center justify-center transition-all duration-500 shadow-xl relative overflow-hidden group"
+                      whileTap={{ scale: 0.97 }}
+                      className="w-full btn-glass h-14 text-orange-500/50 hover:text-orange-500"
                     >
-                      <div className="absolute inset-0 bg-gradient-to-br from-orange-500/5 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                      <Flame className="w-6 h-6 relative z-10 transition-transform group-hover:scale-125 group-hover:rotate-12 duration-500" />
+                      <Flame className="w-5 h-5" />
                     </motion.button>
                   </Link>
                 </div>
@@ -653,11 +644,8 @@ export default function HomePage() {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
           <div className="lg:col-span-8 xl:col-span-8 space-y-6 order-2 lg:order-1">
             {/* --- DASHBOARD TAB CONTROLLER --- */}
-            <section className="sticky top-20 lg:top-4 z-40 bg-background/80 md: py-2 -mx-2 px-2 lg:bg-transparent lg:static lg:pb-6">
-              <div className="w-full p-1.5 rounded-[2rem] glass-premium border-foreground/20 flex items-center gap-1 shadow-2xl relative overflow-hidden">
-                {!performanceMode && (
-                  <div className="absolute inset-0 bg-gradient-to-r from-primary/5 via-transparent to-primary/5 pointer-events-none" />
-                )}
+            <section className="sticky top-16 lg:top-4 z-40 bg-background/80 backdrop-blur-xl py-2 -mx-2 px-2 lg:bg-transparent lg:static lg:pb-6">
+              <div className="w-full p-1 rounded-2xl card-stadium flex items-center gap-0.5 relative overflow-hidden">
                 {[
                   { id: 'activity', label: 'Feed', icon: Activity },
                   { id: 'teams', label: 'Equipos', icon: Users },
@@ -670,22 +658,22 @@ export default function HomePage() {
                       key={tab.id}
                       onClick={() => setActiveTab(tab.id as any)}
                       className={cn(
-                        "relative flex-1 px-5 py-2.5 rounded-full flex items-center justify-center gap-2.5 transition-all duration-500 group",
-                        isSelected ? "text-background" : "text-foreground/40 hover:text-foreground/70"
+                        "relative flex-1 px-4 py-2.5 rounded-xl flex items-center justify-center gap-2 transition-all duration-300 group",
+                        isSelected ? "text-background" : "text-foreground/35 hover:text-foreground/60"
                       )}
                     >
                       {isSelected && (
                         <motion.div
                           layoutId="active-dashboard-pill"
-                          className="absolute inset-0 bg-gradient-to-br from-primary to-primary-dark rounded-full shadow-[0_4px_20px_rgba(44,252,125,0.4)]"
+                          className="absolute inset-0 bg-gradient-to-br from-primary to-primary-dark rounded-xl shadow-[0_4px_16px_rgba(44,252,125,0.3)]"
                           transition={{ type: "spring", stiffness: 400, damping: 35 }}
                         />
                       )}
                       <tab.icon className={cn(
-                        "w-4 h-4 relative z-10 transition-transform duration-500",
-                        isSelected ? "scale-110 text-background" : "group-hover:scale-110"
+                        "w-4 h-4 relative z-10 transition-transform duration-300",
+                        isSelected ? "text-background" : "group-hover:scale-110"
                       )} />
-                      <span className="text-[11px] font-black uppercase tracking-widest italic relative z-10 leading-none">
+                      <span className="text-[10px] font-bold uppercase tracking-wider relative z-10 leading-none">
                         {tab.label}
                       </span>
                     </button>
