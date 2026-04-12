@@ -24,9 +24,6 @@ import dynamic from 'next/dynamic';
 import { Loader2 } from 'lucide-react';
 import { ShareStory } from './ShareStory';
 import { SportsreelPlayer } from './SportsreelPlayer';
-import confetti from 'canvas-confetti';
-import { useAuth } from '@/contexts/AuthContext';
-import { useEffect } from 'react';
 
 const VenueMap = dynamic(() => import('./VenueMap'), {
   ssr: false,
@@ -61,8 +58,6 @@ interface PostMatchViewProps {
 }
 
 export default function PostMatchView({ match, participants, stats }: PostMatchViewProps) {
-  const { user } = useAuth();
-  
   const teamA = participants.filter((p) => p.team === 'A');
   const teamB = participants.filter((p) => p.team === 'B');
 
@@ -72,43 +67,6 @@ export default function PostMatchView({ match, participants, stats }: PostMatchV
 
   const teamAName = (match as any).team_a_name || 'Local';
   const teamBName = (match as any).team_b_name || 'Visitante';
-
-  useEffect(() => {
-    if (!user || winner === 'Draw') return;
-
-    const myEntry = participants.find(p => p.user_id === user.id);
-    const myTeam = myEntry?.team;
-
-    if (!myTeam) return;
-
-    const didIWin = myTeam === winner;
-
-    const duration = 3000;
-    const end = Date.now() + duration;
-
-    const colors = didIWin ? ['#2cfc7d', '#10b981', '#ffffff'] : ['#f43f5e', '#ef4444', '#000000'];
-
-    (function frame() {
-      confetti({
-        particleCount: 5,
-        angle: 60,
-        spread: 55,
-        origin: { x: 0 },
-        colors: colors
-      });
-      confetti({
-        particleCount: 5,
-        angle: 120,
-        spread: 55,
-        origin: { x: 1 },
-        colors: colors
-      });
-
-      if (Date.now() < end) {
-        requestAnimationFrame(frame);
-      }
-    }());
-  }, [user, participants, winner]);
 
   return (
     <div className="space-y-10 pb-20">

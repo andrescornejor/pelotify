@@ -57,7 +57,6 @@ import { getUserHighlights, Highlight } from '@/lib/highlights';
 import confetti from 'canvas-confetti';
 import { SkillPointAllocator } from '@/components/SkillPointAllocator';
 import { RadarChart } from '@/components/RadarChart';
-import { TrophyCabinet } from '@/components/profile/TrophyCabinet';
 
 interface PlayerStats {
   pac: number;
@@ -1133,11 +1132,6 @@ function ProfileContent() {
                         )}
                       </div>
                   </div>
-
-                  {/* Trophy Cabinet Section */}
-                  {!isEditing && (
-                    <TrophyCabinet />
-                  )}
 
                   {/* Advanced Stats (Pro Feature) */}
                   {!isEditing && (

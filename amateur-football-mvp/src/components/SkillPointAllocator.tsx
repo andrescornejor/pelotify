@@ -262,17 +262,6 @@ export function SkillPointAllocator({ stats, skillPoints, onStatsChange, onSkill
   const animTimeout = useRef<NodeJS.Timeout | null>(null);
 
   const overall = Math.round(Object.values(stats).reduce((a, b) => a + b, 0) / 6);
-  const previousOverall = useRef(overall);
-  const [showLevelUp, setShowLevelUp] = useState(false);
-
-  useEffect(() => {
-    if (overall > previousOverall.current) {
-      setShowLevelUp(true);
-      setTimeout(() => setShowLevelUp(false), 2500);
-    }
-    previousOverall.current = overall;
-  }, [overall]);
-
   const totalPointsSpent = Object.keys(stats).reduce((acc, key) => {
     const k = key as keyof PlayerStats;
     return acc + Math.max(0, stats[k] - initialStats[k]);
@@ -455,46 +444,6 @@ export function SkillPointAllocator({ stats, skillPoints, onStatsChange, onSkill
           Mantené presionado para ajustar rápidamente
         </motion.p>
       )}
-
-      {/* Level Up Celebration */}
-      <AnimatePresence>
-        {showLevelUp && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[100] flex items-center justify-center pointer-events-none"
-          >
-             <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
-             
-             {/* Big glow burst */}
-             <motion.div 
-               initial={{ scale: 0, opacity: 1 }}
-               animate={{ scale: 3, opacity: 0 }}
-               transition={{ duration: 1, ease: 'easeOut' }}
-               className="absolute w-64 h-64 rounded-full bg-primary/40 blur-3xl"
-             />
-
-             <motion.div
-               initial={{ scale: 0.5, opacity: 0, y: 50 }}
-               animate={{ scale: [1.2, 1], opacity: 1, y: 0 }}
-               exit={{ scale: 0.8, opacity: 0, y: -50 }}
-               transition={{ type: 'spring', damping: 12, stiffness: 200 }}
-               className="relative z-10 flex flex-col items-center"
-             >
-                <span className="text-[12px] font-black uppercase tracking-[0.5em] text-primary mb-2 shadow-2xl">
-                  LEVEL UP
-                </span>
-                <span className="text-8xl font-black italic text-white drop-shadow-[0_0_30px_rgba(44,252,125,0.6)] font-kanit leading-none">
-                  {overall}
-                </span>
-                <span className="text-[10px] text-white/50 tracking-widest uppercase mt-4">
-                  NUEVO OVERALL GLOBAL
-                </span>
-             </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
     </div>
   );
 }

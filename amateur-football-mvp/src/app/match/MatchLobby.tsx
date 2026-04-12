@@ -57,7 +57,6 @@ import MercadoPagoButton from '@/components/payments/MercadoPagoButton';
 import EntryQRModal from '@/components/EntryQRModal';
 import JoinQRModal from '@/components/JoinQRModal';
 import { WeatherWidget, CalendarButton } from '@/components/home';
-import { MatchIntroBroadcast } from '@/components/match/MatchIntroBroadcast';
 
 const VenueMap = dynamic(() => import('@/components/VenueMap'), {
   ssr: false,
@@ -231,7 +230,6 @@ function MatchLobbyContent() {
   const updateMatchMutation = useUpdateMatch();
   const [teamAName, setTeamAName] = useState('Local');
   const [teamBName, setTeamBName] = useState('Visitante');
-  const [isIntroOpen, setIsIntroOpen] = useState(false);
 
   // 3. MEMOS & DERIVED STATE (hooks)
   const isChronologicallyFinished = useMemo(() => {
@@ -728,16 +726,6 @@ function MatchLobbyContent() {
                       )}
                       
                       <CalendarButton match={match} className="h-14 !px-6 rounded-2xl glass-premium" />
-                      
-                      {participants.length === teamSize * 2 && (
-                        <button
-                          onClick={() => setIsIntroOpen(true)}
-                          className="h-14 px-8 rounded-2xl bg-indigo-600 text-white font-black italic uppercase text-xs flex items-center gap-3 hover:scale-105 active:scale-95 transition-all shadow-[0_0_20px_rgba(79,70,229,0.4)] animate-pulse"
-                        >
-                          <Zap className="w-5 h-5 fill-current" /> Intro TV
-                        </button>
-                      )}
-
                       <button
                         onClick={() => setIsQRModalOpen(true)}
                         className="h-14 px-8 rounded-2xl glass-premium border-white/5 font-black italic uppercase text-xs flex items-center gap-3 hover:scale-105 active:scale-95 transition-all text-foreground"
@@ -1482,15 +1470,6 @@ function MatchLobbyContent() {
           </div>
         )}
       </AnimatePresence>
-      <MatchIntroBroadcast
-        isOpen={isIntroOpen}
-        onClose={() => setIsIntroOpen(false)}
-        teamA={teamA}
-        teamB={teamB}
-        teamAName={teamAName}
-        teamBName={teamBName}
-        venueName={venueInfo?.name || match.location}
-      />
     </div>
   );
 }

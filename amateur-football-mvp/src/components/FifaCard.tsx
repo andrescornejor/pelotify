@@ -127,7 +127,7 @@ export function FifaCard({ player }: FifaCardProps) {
 
         {/* Holographic glare */}
         <motion.div
-          className="absolute inset-0 pointer-events-none mix-blend-overlay opacity-0 hover:opacity-100 transition-opacity duration-300 z-40"
+          className="absolute inset-0 pointer-events-none mix-blend-overlay opacity-0 hover:opacity-100 transition-opacity duration-300"
           style={
             {
               background: `radial-gradient(ellipse at ${glareX} ${glareY}, rgba(255,255,255,0.12) 0%, transparent 60%)`,
@@ -135,18 +135,6 @@ export function FifaCard({ player }: FifaCardProps) {
             } as any
           }
         />
-
-        {/* Dynamic Foil Shader for Premium Ranks */}
-        {(rank.name === 'DIAMANTE' || rank.name === 'ELITE' || rank.name === 'LEYENDA') && (
-          <motion.div
-            className="absolute inset-0 z-40 pointer-events-none mix-blend-color-dodge opacity-0 group-hover:opacity-100 transition-opacity duration-700"
-            style={{
-              background: 'linear-gradient(115deg, transparent 20%, rgba(255,255,255,0.3) 30%, rgba(255,20,147,0.4) 40%, rgba(0,255,255,0.4) 50%, rgba(255,255,255,0.3) 60%, transparent 80%)',
-              backgroundSize: '300% 300%',
-              backgroundPosition: useTransform(x, [-0.5, 0.5], ['0% 0%', '100% 100%']),
-            } as any}
-          />
-        )}
 
         {/* Shimmer scan */}
         <div className="absolute inset-0 pointer-events-none overflow-hidden opacity-20">
