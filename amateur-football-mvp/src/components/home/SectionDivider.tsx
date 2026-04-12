@@ -1,7 +1,7 @@
 'use client';
 
+import { motion } from 'framer-motion';
+
 export const SectionDivider = () => (
-  <div className="divider-dot select-none pointer-events-none">
-    <span />
-  </div>
+  <div className="py-2 select-none pointer-events-none" />
 );

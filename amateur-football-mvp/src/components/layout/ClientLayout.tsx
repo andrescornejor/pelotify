@@ -80,10 +80,10 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
                 pathname === '/profile' ||
                 pathname.startsWith('/profile/') ||
                 pathname.startsWith('/messages')
-                ? 'pb-20 lg:pb-0'
+                ? 'pb-24 lg:pb-0'
                 : isFeedOrPostPage
-                ? 'pt-[76px] pb-0 lg:pt-20 lg:pb-0'
-                : 'pt-20 pb-20 lg:pb-0'
+                ? 'pt-[84px] pb-0 lg:pt-24 lg:pb-0'
+                : 'pt-24 pb-24 lg:pb-0'
               : ''
           )}
         >
