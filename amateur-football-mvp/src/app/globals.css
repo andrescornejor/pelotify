@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Kanit:ital,wght@1,900&family=Outfit:wght@400;700;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700;800&display=swap');
 @import 'leaflet/dist/leaflet.css';
 @import 'tailwindcss';
 
@@ -7,97 +7,77 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
-  /* Elite Emerald Palette - HSL for precision */
-
-  --primary-h: 144;
-  --primary-s: 97%;
-  --primary-l: 58%;
-  --primary: hsl(var(--primary-h), var(--primary-s), var(--primary-l));
-  --primary-light: hsl(var(--primary-h), var(--primary-s), 75%);
-  --primary-dark: hsl(var(--primary-h), var(--primary-s), 40%);
+  /* Elite Emerald Palette - Futuristic Refinement */
+  --primary: #2cfc7d;
   --primary-rgb: 44, 252, 125;
-
+  --primary-soft: rgba(44, 252, 125, 0.1);
+  
   --accent: #f59e0b;
   --accent-rgb: 245, 158, 11;
 
-  --success: #2cfc7d;
+  --success: #10b981;
   --warning: #f59e0b;
-  --danger: #f43f5e;
+  --danger: #ef4444;
 
-  /* LIGHT THEME: Ultra-Premium Refinement */
-  --background: #f8fafc;
-  --foreground: #020617;
-  --foreground-rgb: 2, 6, 23;
+  /* LIGHT THEME: Futuristic Clean */
+  --background: #ffffff;
+  --foreground: #0a0a0b;
+  --foreground-rgb: 10, 10, 11;
 
-  --surface: #ffffff;
+  --surface: #f8fafc;
   --surface-elevated: #f1f5f9;
   --surface-bright: #ffffff;
 
-  --muted: #475569;
-  --muted-foreground: #64748b;
+  --muted: #64748b;
+  --muted-foreground: #94a3b8;
 
-  --border: rgba(2, 6, 23, 0.08);
-  --input: #ffffff;
+  --border: rgba(10, 10, 11, 0.06);
+  --input: #fcfdfe;
   --ring: var(--primary);
 
-  --radius-xl: 1.5rem;
-  --radius-2xl: 2.5rem;
+  --radius-xl: 1.25rem;
+  --radius-2xl: 2rem;
 
-  --glass-bg: rgba(255, 255, 255, 0.7);
-  --glass-border: rgba(2, 6, 23, 0.05);
-
-  /* Elevation Shadows for Light Mode */
-  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.07), 0 2px 4px -2px rgb(0 0 0 / 0.05);
-  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.07), 0 4px 6px -4px rgb(0 0 0 / 0.05);
-  --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.07), 0 8px 10px -6px rgb(0 0 0 / 0.05);
-  --shadow-2xl: 0 25px 50px -12px rgb(0 0 0 / 0.15);
+  --glass-bg: rgba(255, 255, 255, 0.8);
+  --glass-border: rgba(10, 10, 11, 0.04);
 }
 
 :root.dark {
-  /* DEEP NEON THEME */
-  --background: #020205;
-  --foreground: #f8fafc;
-  --foreground-rgb: 248, 250, 252;
+  /* DARK THEME: Deep Space Tech */
+  --background: #050505;
+  --foreground: #fcfdfe;
+  --foreground-rgb: 252, 253, 254;
 
-  --surface: #0a0a0f;
-  --surface-elevated: #11111a;
-  --surface-bright: #151525;
+  --surface: #0c0c0e;
+  --surface-elevated: #121215;
+  --surface-bright: #1a1a1e;
 
   --muted: #94a3b8;
   --muted-foreground: #475569;
 
-  --border: rgba(248, 250, 252, 0.15);
-  --input: #0c0c14;
+  --border: rgba(252, 253, 254, 0.08);
+  --input: #0a0a0c;
   --ring: var(--primary);
 
-  --glass-bg: rgba(10, 10, 15, 0.85);
-  --glass-border: rgba(248, 250, 252, 0.08);
-
-  /* Elevation Shadows for Dark Mode - Deep and subtle */
-  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.3);
-  --shadow-md: 0 4px 12px -1px rgb(0 0 0 / 0.5), 0 2px 8px -2px rgb(0 0 0 / 0.3);
-  --shadow-lg: 0 12px 24px -3px rgb(0 0 0 / 0.6), 0 8px 16px -4px rgb(0 0 0 / 0.4);
-  --shadow-xl: 0 25px 50px -12px rgb(0 0 0 / 0.8);
-  --shadow-2xl: 0 35px 70px -15px rgb(0 0 0 / 0.9);
+  --glass-bg: rgba(5, 5, 5, 0.8);
+  --glass-border: rgba(252, 253, 254, 0.06);
 }
 
 @theme {
   --font-sans:
-    var(--font-kanit), ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI',
+    'Inter', var(--font-kanit), ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI',
     Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif;
-  --font-outfit: var(--font-kanit), ui-sans-serif, system-ui;
-  --font-kanit: var(--font-kanit), ui-sans-serif, system-ui;
+  --font-space: 'Space Grotesk', system-ui;
+  --font-inter: 'Inter', system-ui;
+  --font-kanit: var(--font-kanit), ui-sans-serif; /* Keep as fallback */
 
   --color-background: var(--background);
   --color-foreground: var(--foreground);
 
   --color-primary: var(--primary);
-  --color-primary-light: var(--primary-light);
-  --color-primary-dark: var(--primary-dark);
+  --color-primary-soft: var(--primary-soft);
 
   --color-accent: var(--accent);
-  --color-accent-light: var(--accent-light);
 
   --color-surface: var(--surface);
   --color-surface-elevated: var(--surface-elevated);
@@ -114,13 +94,7 @@
   --color-muted: var(--muted);
   --color-muted-foreground: var(--muted-foreground);
 
-  --shadow-sm: var(--shadow-sm);
-  --shadow-md: var(--shadow-md);
-  --shadow-lg: var(--shadow-lg);
-  --shadow-xl: var(--shadow-xl);
-  --shadow-2xl: var(--shadow-2xl);
-
-  --radius-2xl: 1.5rem;
+  --radius-2xl: 2rem;
   --radius-xl: 1.25rem;
   --radius-lg: 1rem;
   --radius-md: 0.75rem;

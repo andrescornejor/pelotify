@@ -24,7 +24,7 @@ export const StatCard = ({ stat, i, performanceMode, fadeUp }: StatCardProps) =>
     custom={i}
     whileHover={performanceMode ? {} : { y: -8, scale: 1.02, rotate: 1 }}
     className={cn(
-      'group relative overflow-hidden p-6 rounded-[2.5rem] glass-premium transition-all duration-500 border-foreground/15 shadow-xl',
+      'group relative overflow-hidden p-6 rounded-[2rem] glass border-border shadow-sm transition-all duration-500',
       performanceMode && 'bg-surface shadow-none'
     )}
   >
@@ -38,17 +38,16 @@ export const StatCard = ({ stat, i, performanceMode, fadeUp }: StatCardProps) =>
 
     <div className="relative z-10 space-y-4">
       <div
-        className="w-12 h-12 rounded-2xl flex items-center justify-center glass border-foreground/20 shadow-inner group-hover:rotate-12 transition-transform duration-500"
-        style={{ backgroundColor: `${stat.color}15` }}
+        className="w-12 h-12 rounded-xl flex items-center justify-center bg-surface border border-border shadow-inner group-hover:border-primary/30 transition-all duration-500"
       >
         <stat.icon className="w-6 h-6" style={{ color: stat.color }} />
       </div>
       <div>
-        <p className="text-[10px] font-semibold text-foreground/40 uppercase tracking-[0.2em] font-kanit">
+        <p className="text-[10px] font-bold text-foreground/40 uppercase tracking-[0.25em] font-space">
           {stat.label}
         </p>
-        <div className="flex items-end gap-1.5 mt-1">
-          <h3 className="text-3xl font-black italic tracking-tighter text-foreground font-kanit leading-none">
+        <div className="flex items-end gap-1.5 mt-0.5">
+          <h3 className="text-3xl font-bold tracking-tight text-foreground font-space leading-none">
             {stat.value}
           </h3>
           {!performanceMode && (

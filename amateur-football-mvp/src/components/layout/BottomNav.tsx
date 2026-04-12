@@ -94,10 +94,10 @@ export function BottomNav() {
 
         <nav
           className={cn(
-            'relative p-1.5 rounded-[2.5rem] border transition-all duration-700 flex items-center shadow-[0_25px_60px_-15px_rgba(0,0,0,0.5)]',
+            'relative p-1 rounded-3xl border transition-all duration-700 flex items-center shadow-2xl',
             performanceMode 
               ? 'bg-surface border-border' 
-              : 'bg-background/40 backdrop-blur-[35px] border-white/10 dark:border-white/5'
+              : 'bg-background/60 backdrop-blur-2xl border-white/5 dark:border-white/5'
           )}
         >
           <div className="relative z-10 flex w-full h-[70px] items-center justify-around">
@@ -116,19 +116,15 @@ export function BottomNav() {
                     className="relative flex items-center justify-center -mt-8"
                   >
                     <motion.div
-                      whileHover={{ scale: 1.1, rotate: 90 }}
-                      whileTap={{ scale: 0.9, rotate: 180 }}
-                      transition={{ type: "spring", stiffness: 400, damping: 15 }}
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
                       className={cn(
-                        "w-16 h-16 rounded-[2rem] flex items-center justify-center shadow-[0_15px_30px_rgba(44,252,125,0.3)] relative z-20 group overflow-hidden border-2 border-white/20",
-                        "bg-gradient-to-br", item.color
+                        "w-14 h-14 rounded-2xl flex items-center justify-center shadow-xl shadow-primary/20 relative z-20 group overflow-hidden border border-white/20",
+                        "bg-gradient-to-br from-primary to-primary-dark"
                       )}
                     >
-                      <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-500" />
-                      <Icon className="w-9 h-9 text-black stroke-[3] relative z-10" />
-                      
-                      {/* Inner Shine */}
-                      <div className="absolute top-0 left-0 right-0 h-1/2 bg-gradient-to-b from-white/30 to-transparent pointer-events-none" />
+                      <Icon className="w-8 h-8 text-black relative z-10" />
+                      <div className="absolute inset-x-0 bottom-0 h-1/2 bg-white/10" />
                     </motion.div>
                     
                     {/* Pulsing Aura */}
@@ -175,8 +171,8 @@ export function BottomNav() {
 
                     <span
                       className={cn(
-                        "text-[8px] font-black tracking-[0.1em] transition-all duration-300 uppercase italic",
-                        isActive ? "text-primary opacity-100" : "text-foreground/20 opacity-0 group-hover:opacity-100 scale-90"
+                        "text-[9px] font-bold tracking-[0.2em] transition-all duration-300 uppercase font-space",
+                        isActive ? "text-primary opacity-100" : "text-foreground/20 opacity-0 group-hover:opacity-100 translate-y-1 group-hover:translate-y-0"
                       )}
                     >
                       {item.label}
