@@ -636,12 +636,16 @@ export default function FeedClient({ standalonePostId }: { standalonePostId?: st
       {/* AMBIENT BACKGROUND */}
       <div className="fixed inset-0 pointer-events-none -z-10 overflow-hidden">
         <div
-          className="absolute top-[-5%] right-[-5%] w-[40%] h-[40%] opacity-[0.03]"
-          style={{ background: 'radial-gradient(circle, #2cfc7d 0%, transparent 70%)' }}
+          className="absolute top-[-10%] right-[-10%] w-[50%] h-[50%] opacity-[0.1]"
+          style={{ background: 'radial-gradient(circle, rgba(var(--primary-rgb), 0.15) 0%, transparent 70%)' }}
         />
         <div
-          className="absolute bottom-[-5%] left-[-5%] w-[40%] h-[40%] opacity-[0.02]"
-          style={{ background: 'radial-gradient(circle, #f59e0b 0%, transparent 70%)' }}
+          className="absolute bottom-[-10%] left-[-10%] w-[50%] h-[50%] opacity-[0.08]"
+          style={{ background: 'radial-gradient(circle, rgba(var(--secondary-rgb), 0.1) 0%, transparent 70%)' }}
+        />
+        <div 
+          className="absolute top-[20%] left-[20%] w-[30%] h-[30%] opacity-[0.05]"
+          style={{ background: 'radial-gradient(circle, rgba(var(--accent-rgb), 0.05) 0%, transparent 70%)' }}
         />
       </div>
       {/* Hidden file input */}
@@ -663,25 +667,26 @@ export default function FeedClient({ standalonePostId }: { standalonePostId?: st
 
               {/* ── PERFIL CARD ── */}
               {user && (
-                <div className="mb-4 rounded-[1.5rem] bg-foreground/[0.03] border border-foreground/[0.06] overflow-hidden">
-                  {/* Cover strip */}
-                  <div className="h-16 bg-gradient-to-r from-primary/20 via-primary/5 to-transparent relative">
-                    <div className="absolute -bottom-5 left-4">
-                      <Link href={`/feed/profile?id=${user.id}`} className="block w-12 h-12 rounded-full overflow-hidden border-2 border-background shadow-lg hover:opacity-90 transition-opacity">
+                <div className="mb-6 premium-card group/pcard border-white/5 overflow-hidden">
+                  {/* Cover strip with premium animated gradient */}
+                  <div className="h-20 bg-gradient-to-r from-primary/10 via-secondary/10 to-transparent relative">
+                    <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-10" />
+                    <div className="absolute -bottom-6 left-5">
+                      <Link href={`/feed/profile?id=${user.id}`} className="block w-14 h-14 rounded-2xl overflow-hidden border-2 border-background shadow-2xl hover:scale-105 transition-transform">
                         {user?.avatar_url ? (
                           <img src={user.avatar_url} className="w-full h-full object-cover" alt="" />
                         ) : (
-                          <div className="w-full h-full bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center font-bold text-primary text-[15px]">
+                          <div className="w-full h-full bg-surface-elevated flex items-center justify-center font-bold text-primary text-xl">
                             {user?.name?.charAt(0) || '?'}
                           </div>
                         )}
                       </Link>
                     </div>
                   </div>
-                  <div className="pt-7 pb-4 px-4">
+                  <div className="pt-8 pb-5 px-5">
                     {/* Name */}
                     <Link href={`/feed/profile?id=${user.id}`} className="block">
-                      <div className="font-bold text-[15px] text-foreground truncate hover:underline leading-tight">{user.name}</div>
+                      <div className="font-display text-lg text-foreground truncate hover:text-primary transition-colors leading-none">{user.name}</div>
                     </Link>
                     {/* Handle - editable */}
                     <button
@@ -690,67 +695,60 @@ export default function FeedClient({ standalonePostId }: { standalonePostId?: st
                         setHandleError('');
                         setShowHandleModal(true);
                       }}
-                      className="flex items-center gap-1 mt-0.5 text-[13px] text-foreground/40 hover:text-primary transition-colors group/handle cursor-pointer"
-                      title="Editar tu @"
+                      className="flex items-center gap-1.5 mt-1.5 text-[12px] font-bold text-foreground/40 hover:text-primary transition-colors group/edit"
                     >
-                      <span>@{currentUserHandle || user.name.toLowerCase().replace(/\s+/g, '')}</span>
-                      <Pencil className="w-3 h-3 opacity-0 group-hover/handle:opacity-100 transition-opacity" />
+                      <span className="font-outfit italic tracking-wide">@{currentUserHandle || user.name.toLowerCase().replace(/\s+/g, '')}</span>
+                      <Pencil className="w-2.5 h-2.5 opacity-0 group-hover/edit:opacity-100 transition-opacity" />
                     </button>
-                    {/* Quick stats */}
-                    <div className="flex items-center gap-4 mt-3 pt-3 border-t border-foreground/[0.06]">
-                      <Link href={`/feed/profile?id=${user.id}`} className="text-center group/stat hover:text-primary transition-colors">
-                        <div className="text-sm font-black text-foreground group-hover/stat:text-primary leading-none">{user.user_metadata?.matches || 0}</div>
-                        <div className="text-[9px] font-bold text-foreground/30 uppercase tracking-wider mt-0.5">Partidos</div>
+                    {/* Quick stats with more breathing room and premium font */}
+                    <div className="flex items-center justify-between mt-5 pt-4 border-t border-white/5">
+                      <Link href={`/feed/profile?id=${user.id}`} className="flex flex-col items-center group/stat">
+                        <span className="text-sm font-black text-foreground group-hover/stat:text-primary transition-colors leading-none">{user.user_metadata?.matches || 0}</span>
+                        <span className="text-[9px] font-black text-foreground/20 uppercase tracking-[0.2em] mt-1.5">Matches</span>
                       </Link>
-                      <Link href={`/feed/profile?id=${user.id}`} className="text-center group/stat hover:text-primary transition-colors">
-                        <div className="text-sm font-black text-foreground group-hover/stat:text-primary leading-none">{user.user_metadata?.elo || 0}</div>
-                        <div className="text-[9px] font-bold text-foreground/30 uppercase tracking-wider mt-0.5">ELO</div>
+                      <Link href={`/feed/profile?id=${user.id}`} className="flex flex-col items-center group/stat">
+                        <span className="text-sm font-black text-primary transition-colors leading-none">{user.user_metadata?.elo || 0}</span>
+                        <span className="text-[9px] font-black text-foreground/20 uppercase tracking-[0.2em] mt-1.5">ELO</span>
                       </Link>
-                      <Link href={`/feed/profile?id=${user.id}`} className="text-center group/stat hover:text-primary transition-colors">
-                        <div className="text-sm font-black text-foreground group-hover/stat:text-primary leading-none">{user.user_metadata?.goals || 0}</div>
-                        <div className="text-[9px] font-bold text-foreground/30 uppercase tracking-wider mt-0.5">Goles</div>
+                      <Link href={`/feed/profile?id=${user.id}`} className="flex flex-col items-center group/stat">
+                        <span className="text-sm font-black text-foreground group-hover/stat:text-primary transition-colors leading-none">{user.user_metadata?.goals || 0}</span>
+                        <span className="text-[9px] font-black text-foreground/20 uppercase tracking-[0.2em] mt-1.5">Goles</span>
                       </Link>
                     </div>
                   </div>
                 </div>
               )}
 
-              {/* Navigation Links - Twitter Style */}
+              {/* Navigation Links - Sports Style */}
               <nav className="flex flex-col gap-1 w-full">
                 {[
-                  { href: '/feed', icon: Zap, label: '3erTiempo', color: 'text-primary' },
-                  { href: '/search', icon: Search, label: 'Buscar', color: 'text-foreground' },
-                  { href: '/friends', icon: Users, label: 'Social', color: 'text-foreground' },
-                  { href: '/teams', icon: Trophy, label: 'Equipos', color: 'text-foreground' },
-                  { href: '/highlights', icon: Flame, label: 'FutTok', color: 'text-foreground' },
+                  { href: '/feed', icon: Zap, label: '3erTiempo', active: true },
+                  { href: '/search', icon: Search, label: 'Descubrir' },
+                  { href: '/friends', icon: Users, label: 'Comunidad' },
+                  { href: '/teams', icon: Trophy, label: 'Ligas' },
+                  { href: '/highlights', icon: Flame, label: 'FutTok' },
                 ].map(item => (
                   <Link
                     key={item.href}
                     href={item.href}
-                    className="flex items-center gap-4 px-5 py-3.5 rounded-full text-foreground hover:bg-foreground/[0.08] transition-all duration-200 group w-fit"
+                    className={cn(
+                        "flex items-center gap-5 px-6 py-4 rounded-2xl transition-all duration-300 group w-full",
+                        item.active 
+                            ? "bg-primary/5 text-primary border border-primary/10 shadow-[0_0_20px_rgba(var(--primary-rgb),0.05)]" 
+                            : "text-foreground/40 hover:text-foreground/80 hover:bg-white/[0.03] border border-transparent"
+                    )}
                   >
-                    <item.icon className={cn("w-6 h-6 xl:w-7 xl:h-7 transition-transform group-hover:scale-110", item.color)} />
-                    <span className={cn("text-xl xl:text-2xl font-black italic uppercase font-kanit tracking-tight leading-none pt-1 pr-2", item.color === 'text-primary' ? 'text-primary' : '')}>{item.label}</span>
+                    <item.icon className={cn("w-6 h-6 transition-transform group-hover:scale-110", item.active ? "text-primary drop-shadow-[0_0_8px_rgba(var(--primary-rgb),0.5)]" : "")} strokeWidth={item.active ? 3 : 2} />
+                    <span className="text-xl font-display tracking-tight pt-1">{item.label}</span>
                   </Link>
                 ))}
-
-                <Link
-                  href="/pro"
-                  className="mt-2 flex items-center gap-4 px-5 py-3.5 rounded-full text-foreground hover:bg-yellow-500/10 transition-all duration-200 group w-fit"
-                >
-                  <div className="relative">
-                    <Zap className="w-6 h-6 xl:w-7 xl:h-7 text-yellow-500 fill-yellow-500 transition-transform group-hover:scale-110" />
-                    <div className="absolute inset-0 bg-yellow-500 blur-md opacity-40 group-hover:opacity-60 transition-opacity" />
-                  </div>
-                  <span className="text-xl xl:text-2xl font-black italic uppercase font-kanit text-yellow-500 tracking-tight leading-none pt-1 pr-2">Pelotify Pro</span>
-                </Link>
 
                 <button
                   onClick={() => {
                     window.scrollTo({ top: 0, behavior: 'smooth' });
                     setTimeout(() => document.querySelector('textarea')?.focus(), 500);
                   }}
-                  className="mt-6 w-[90%] py-4 rounded-full bg-primary text-background text-lg xl:text-xl font-black italic uppercase font-kanit tracking-wide hover:opacity-90 transition-all shadow-[0_0_20px_rgba(44,252,125,0.2)] hover:shadow-[0_0_30px_rgba(44,252,125,0.4)] flex items-center justify-center pt-[18px] press-effect"
+                  className="mt-8 w-full py-4.5 rounded-[1.5rem] bg-primary text-black text-xl font-display tracking-wide hover:shadow-[0_0_40px_rgba(var(--primary-rgb),0.4)] transition-all shadow-[0_20px_40px_rgba(var(--primary-rgb),0.2)] flex items-center justify-center press-effect"
                 >
                   Postear
                 </button>
@@ -849,87 +847,86 @@ export default function FeedClient({ standalonePostId }: { standalonePostId?: st
               <>
                 {/* CREATE POST BOX */}
                 {user && (
-                  <div className="p-4 sm:px-5 sm:py-5 border-b border-foreground/[0.05] flex gap-3 sm:gap-4 bg-background">
-                    <div className="w-12 h-12 rounded-full bg-surface-elevated overflow-hidden shrink-0 transition-opacity hover:opacity-90 cursor-pointer">
+                  <div className="p-6 border-b border-white/5 flex gap-4 bg-transparent group/create-box">
+                    <div className="w-13 h-13 rounded-2xl bg-surface-elevated overflow-hidden shrink-0 border border-white/10 shadow-xl group-hover/create-box:border-primary/30 transition-colors">
                       {user?.avatar_url ? (
                         <img src={user.avatar_url} className="w-full h-full object-cover" alt="" />
                       ) : (
-                        <div className="w-full h-full bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center font-bold text-primary text-[17px]">
+                        <div className="w-full h-full bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center font-display text-primary text-xl">
                           {user?.user_metadata?.name?.charAt(0) || '?'}
                         </div>
                       )}
                     </div>
-                    <div className="flex-1 flex flex-col relative min-h-[50px]">
-                      <div className="absolute inset-0 pointer-events-none whitespace-pre-wrap break-words text-lg font-medium leading-relaxed p-0 border-none select-none text-foreground z-0 overflow-hidden">
+                    <div className="flex-1 flex flex-col relative min-h-[60px]">
+                      <div className="absolute inset-0 pointer-events-none whitespace-pre-wrap break-words text-lg font-outfit leading-relaxed p-0 border-none select-none text-foreground z-0 overflow-hidden">
                         {newPostContent.split(/(#[\w\u00C0-\u024FáéíóúñÁÉÍÓÚÑ]+)/g).map((part, i) => (
-                          part.startsWith('#') ? <span key={i} className="text-primary font-bold">{part}</span> : part
+                          part.startsWith('#') ? <span key={i} className="text-primary font-black italic">{part}</span> : part
                         ))}
                         {newPostContent.endsWith('\n') ? '\n' : ''}
                       </div>
                       <textarea
                         value={newPostContent}
                         onChange={(e) => setNewPostContent(e.target.value)}
-                        placeholder="¡Habla, crack! ¿Qué está pasando?"
-                        className="w-full bg-transparent border-none resize-none focus:outline-none text-transparent text-lg placeholder:text-foreground/35 min-h-[50px] font-medium leading-relaxed relative z-10 selection:bg-primary/20 caret-foreground p-0 m-0 overflow-hidden"
+                        placeholder="¿Qué está pasando en la cancha?"
+                        className="w-full bg-transparent border-none resize-none focus:outline-none text-transparent text-lg placeholder:text-foreground/20 min-h-[60px] font-outfit font-medium leading-relaxed relative z-10 selection:bg-primary/20 caret-primary p-0 m-0 overflow-hidden"
                         maxLength={500}
                       />
 
                       {/* Image Preview */}
                       {imagePreview && (
-                        <div className="relative mt-3 rounded-2xl overflow-hidden border border-foreground/10 shadow-lg">
-                          <img src={imagePreview} alt="Preview" className="w-full max-h-[300px] object-cover" />
+                        <div className="relative mt-4 rounded-[2rem] overflow-hidden border border-white/10 shadow-2xl ring-1 ring-white/5 group/preview">
+                          <img src={imagePreview} alt="Preview" className="w-full max-h-[400px] object-cover" />
                           <button
                             onClick={clearImage}
-                            className="absolute top-2 right-2 w-8 h-8 bg-black/70 text-white rounded-full flex items-center justify-center hover:bg-black/90 transition-all backdrop-blur-sm hover:scale-110 active:scale-95 z-20"
+                            className="absolute top-4 right-4 w-10 h-10 bg-black/60 text-white rounded-full flex items-center justify-center hover:bg-red-500 transition-all backdrop-blur-md z-20 group-hover/preview:scale-105"
                           >
-                            <X className="w-4 h-4" />
+                            <X className="w-5 h-5" />
                           </button>
                           {isUploadingImage && (
-                            <div className="absolute inset-0 bg-black/40 flex items-center justify-center backdrop-blur-sm z-10">
-                              <Loader2 className="w-8 h-8 animate-spin text-white" />
+                            <div className="absolute inset-0 bg-black/60 flex items-center justify-center backdrop-blur-sm z-10">
+                              <Loader2 className="w-10 h-10 animate-spin text-primary" />
                             </div>
                           )}
                         </div>
                       )}
 
-                      <div className="flex items-center justify-between mt-4 pt-3 border-t border-foreground/[0.04]">
-                        <div className="flex items-center gap-0.5">
+                      <div className="flex items-center justify-between mt-6 pt-4 border-t border-white/5">
+                        <div className="flex items-center gap-1">
                           <button
                             onClick={() => fileInputRef.current?.click()}
-                            className="p-2 text-primary hover:bg-primary/10 rounded-full transition-colors flex items-center justify-center group"
+                            className="p-2.5 text-foreground/40 hover:text-primary hover:bg-primary/10 rounded-xl transition-all flex items-center justify-center group"
                             title="Subir imagen"
                           >
-                            <ImageIcon className="w-5 h-5 group-hover:scale-105 transition-transform" />
+                            <ImageIcon className="w-5 h-5 group-hover:scale-110 transition-transform" />
                           </button>
                           <button
                             onClick={() => {
                               setNewPostContent(prev => prev + (prev.length > 0 && !prev.endsWith(' ') ? ' #' : '#'));
                               setTimeout(() => document.querySelector('textarea')?.focus(), 10);
                             }}
-                            className="p-2 text-primary hover:bg-primary/10 rounded-full transition-colors flex items-center justify-center group"
+                            className="p-2.5 text-foreground/40 hover:text-primary hover:bg-primary/10 rounded-xl transition-all flex items-center justify-center group"
                             title="Hashtag"
                           >
-                            <Hash className="w-5 h-5 group-hover:scale-105 transition-transform" />
+                            <Hash className="w-5 h-5 group-hover:scale-110 transition-transform" />
                           </button>
                         </div>
-                        <div className="flex items-center gap-3">
+                        <div className="flex items-center gap-4">
                           {newPostContent.length > 0 && (
-                            <div className="flex items-center gap-2 mt-1">
+                            <div className="flex items-center gap-3">
                               <div className="relative w-6 h-6">
                                 <svg className="w-6 h-6 -rotate-90" viewBox="0 0 28 28">
-                                  <circle cx="14" cy="14" r="11" fill="none" stroke="currentColor" className="text-foreground/[0.06]" strokeWidth="2.5" />
-                                  <circle cx="14" cy="14" r="11" fill="none" stroke="currentColor" className={cn(newPostContent.length > 450 ? "text-amber-500" : newPostContent.length > 480 ? "text-red-500" : "text-primary")} strokeWidth="2.5" strokeDasharray={`${(newPostContent.length / 500) * 69.1} 69.1`} strokeLinecap="round" />
+                                  <circle cx="14" cy="14" r="11" fill="none" stroke="currentColor" className="text-white/5" strokeWidth="3" />
+                                  <circle cx="14" cy="14" r="11" fill="none" stroke="currentColor" className={cn(newPostContent.length > 450 ? "text-amber-500" : newPostContent.length > 480 ? "text-red-500" : "text-primary")} strokeWidth="3" strokeDasharray={`${(newPostContent.length / 500) * 69.1} 69.1`} strokeLinecap="round" />
                                 </svg>
                               </div>
-                              <div className="h-6 w-px bg-foreground/10" />
                             </div>
                           )}
                           <button
                             onClick={handlePost}
                             disabled={isPosting || (!newPostContent.trim() && !selectedImage)}
-                            className="px-5 py-1.5 rounded-full bg-primary text-background font-bold text-[15px] tracking-wide disabled:opacity-50 disabled:cursor-not-allowed hover:bg-primary/90 active:scale-[0.96] transition-all duration-200 mt-1"
+                            className="px-8 py-2.5 rounded-xl bg-primary text-black font-display text-sm tracking-wide disabled:opacity-30 disabled:grayscale transition-all hover:shadow-[0_0_20px_rgba(var(--primary-rgb),0.3)] press-effect"
                           >
-                            {isPosting ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Postear'}
+                            {isPosting ? <Loader2 className="w-4 h-4 animate-spin" /> : 'POSTEAR'}
                           </button>
                         </div>
                       </div>
@@ -940,11 +937,11 @@ export default function FeedClient({ standalonePostId }: { standalonePostId?: st
             )}
 
             {/* POSTS FEED */}
-            <div className="flex flex-col pb-20">
+            <div className="flex flex-col pb-24">
               {filteredPosts.map((post, index) => (
                 <div
                   key={post.id}
-                  style={{ animationDelay: `${index < 10 ? index * 0.03 : 0}s`, animationFillMode: 'both' }}
+                  style={{ animationDelay: `${index < 10 ? index * 0.05 : 0}s`, animationFillMode: 'both' }}
                   onClick={(e) => {
                     if ((e.target as HTMLElement).closest('a, button, input')) return;
                     if (!standalonePostId) {
@@ -952,19 +949,19 @@ export default function FeedClient({ standalonePostId }: { standalonePostId?: st
                     }
                   }}
                   className={cn(
-                    "p-4 sm:px-5 sm:py-4 border-b border-foreground/[0.06] transition-colors duration-200 relative flex gap-3 sm:gap-4 group/post animate-in fade-in slide-in-from-bottom-2",
-                    !standalonePostId && "hover:bg-foreground/[0.03] cursor-pointer",
-                    standalonePostId && "bg-background py-8 sm:py-10 border-b-2",
-                    post.author.is_pro ? "bg-gradient-to-r from-yellow-500/[0.03] to-transparent" : ""
+                    "p-5 border-b border-white/5 transition-all duration-300 relative flex gap-4 group/post animate-in fade-in slide-in-from-bottom-3",
+                    !standalonePostId && "hover:bg-white/[0.02] cursor-pointer",
+                    standalonePostId && "bg-transparent py-10 sm:py-14 border-b-2 border-primary/10",
+                    post.author.is_pro ? "bg-gradient-to-r from-primary/[0.02] to-transparent" : ""
                   )}
                 >
                   {/* LEFTSIDE AVATAR */}
                   <div className="shrink-0 flex flex-col items-center">
-                    <Link href={`/feed/profile?id=${post.author.id}`} className={cn("w-12 h-12 rounded-full overflow-hidden shrink-0 relative hover:opacity-90 transition-opacity duration-200 z-10", post.author.is_pro ? "ring-2 ring-yellow-500/40" : "")}>
+                    <Link href={`/feed/profile?id=${post.author.id}`} className={cn("w-12 h-12 rounded-2xl overflow-hidden shrink-0 relative hover:scale-105 transition-transform duration-300 z-10", post.author.is_pro ? "ring-2 ring-primary shadow-[0_0_15px_rgba(var(--primary-rgb),0.3)]" : "ring-1 ring-white/10")}>
                       {post.author.avatar_url ? (
                         <img src={post.author.avatar_url} loading="lazy" className="w-full h-full object-cover" alt="" />
                       ) : (
-                        <div className="w-full h-full bg-gradient-to-br from-primary/15 to-primary/5 flex items-center justify-center font-bold text-primary text-[15px]">
+                        <div className="w-full h-full bg-surface-elevated flex items-center justify-center font-display text-primary text-lg">
                           {post.author.name.charAt(0)}
                         </div>
                       )}
@@ -972,36 +969,38 @@ export default function FeedClient({ standalonePostId }: { standalonePostId?: st
                   </div>
 
                   {/* RIGHTSIDE CONTENT */}
-                  <div className="flex-1 min-w-0 mt-0.5">
+                  <div className="flex-1 min-w-0">
                     {/* Header */}
                     <div className="flex justify-between items-start">
-                      <div className="flex items-center gap-1.5 flex-wrap leading-tight">
-                        <Link href={`/feed/profile?id=${post.author.id}`} className="group flex items-center gap-1 min-w-0">
-                          <span className={cn("font-bold text-[15px] truncate group-hover:underline", post.author.is_pro ? "text-yellow-500" : "text-foreground")}>
+                      <div className="flex items-center gap-2 flex-wrap leading-tight">
+                        <Link href={`/feed/profile?id=${post.author.id}`} className="group flex items-center gap-1.5 min-w-0">
+                          <span className={cn("font-display text-[16px] truncate group-hover:text-primary transition-colors", post.author.is_pro ? "text-primary italic" : "text-foreground")}>
                             {post.author.name}
                           </span>
                           {post.author.is_pro && (
-                            <Zap className="w-3.5 h-3.5 text-yellow-500 fill-yellow-500 shrink-0" />
+                            <div className="w-3.5 h-3.5 bg-primary rounded-sm flex items-center justify-center">
+                              <Zap className="w-2.5 h-2.5 text-black fill-current" />
+                            </div>
                           )}
-                          <span className="text-foreground/40 text-[15px] truncate ml-0.5">
+                          <span className="text-foreground/30 text-[14px] font-outfit truncate">
                             @{post.author.handle || post.author.name.toLowerCase().replace(/\s+/g, '')}
                           </span>
                         </Link>
-                        <span className="text-foreground/40 text-[15px]">·</span>
-                        <span className="text-foreground/40 text-[15px] hover:underline cursor-pointer">
+                        <span className="text-foreground/20 text-[14px]">·</span>
+                        <span className="text-foreground/30 text-[13px] font-bold uppercase tracking-tight hover:text-foreground/60 transition-colors">
                           {timeAgo(post.created_at)}
                         </span>
                       </div>
 
                       {post.author_id === user?.id && (
                         <div className="relative group/menu shrink-0">
-                          <button className="text-foreground/40 hover:text-blue-500 p-1.5 hover:bg-blue-500/10 rounded-full transition-colors mt-[-4px]">
+                          <button className="text-foreground/30 hover:text-primary p-2 hover:bg-primary/10 rounded-xl transition-all">
                             <MoreHorizontal className="w-4 h-4" />
                           </button>
-                          <div className="absolute right-0 top-full mt-1 w-32 bg-surface-elevated border border-foreground/10 rounded-xl shadow-xl flex flex-col opacity-0 group-hover/menu:opacity-100 pointer-events-none group-hover/menu:pointer-events-auto transition-all z-20 overflow-hidden">
+                          <div className="absolute right-0 top-full mt-2 w-40 glass border-white/10 rounded-2xl shadow-2xl flex flex-col opacity-0 group-hover/menu:opacity-100 pointer-events-none group-hover/menu:pointer-events-auto transition-all z-20 overflow-hidden">
                             <button
                               onClick={(e) => { e.stopPropagation(); handleDeletePost(post.id); }}
-                              className="w-full text-left px-4 py-3 text-sm font-bold text-red-500 hover:bg-white/5 flex items-center gap-2"
+                              className="w-full text-left px-5 py-3.5 text-xs font-black uppercase tracking-widest text-red-500 hover:bg-red-500/10 flex items-center gap-2.5 italic"
                             >
                               <Trash2 className="w-4 h-4" /> Eliminar
                             </button>
@@ -1010,9 +1009,9 @@ export default function FeedClient({ standalonePostId }: { standalonePostId?: st
                       )}
                     </div>
 
-                    {/* Content with clickable hashtags */}
-                    <div className={cn("mt-1 mb-2.5", standalonePostId ? "mt-4 mb-5" : "")}>
-                      <p className={cn("text-foreground whitespace-pre-wrap", standalonePostId ? "text-xl sm:text-[22px] font-medium leading-relaxed font-kanit tracking-tight" : "text-[15px] leading-snug")}>
+                    {/* Content */}
+                    <div className={cn("mt-2 mb-3", standalonePostId ? "mt-6 mb-8" : "")}>
+                      <div className={cn("text-foreground/90 whitespace-pre-wrap leading-relaxed", standalonePostId ? "text-2xl sm:text-3xl font-display tracking-tight text-white" : "text-[15px] font-medium")}>
                         {(() => {
                           let content = post.content;
                           const hasMatchCard = post.content.match(/[?&]id=([0-9a-fA-F-]{36})/);
@@ -1026,7 +1025,7 @@ export default function FeedClient({ standalonePostId }: { standalonePostId?: st
                                 <button
                                   key={i}
                                   onClick={(e) => { e.stopPropagation(); handleHashtagClick(part.slice(1)); }}
-                                  className="text-primary hover:underline font-semibold"
+                                  className="text-primary hover:text-primary-dark font-black italic uppercase tracking-tight transition-colors"
                                 >
                                   {part}
                                 </button>
@@ -1035,7 +1034,7 @@ export default function FeedClient({ standalonePostId }: { standalonePostId?: st
                             return part;
                           });
                         })()}
-                      </p>
+                      </div>
                       {/* Detect and render Match Card */}
                       {(() => {
                         const matchIdMatch = post.content.match(/[?&]id=([0-9a-fA-F-]{36})/);
@@ -1047,19 +1046,19 @@ export default function FeedClient({ standalonePostId }: { standalonePostId?: st
                       {/* Post Image */}
                       {post.image_url && (
                         <div
-                          className="mt-3 rounded-2xl overflow-hidden border border-foreground/[0.08] shadow-sm cursor-pointer hover:opacity-95 transition-opacity"
+                          className="mt-4 rounded-3xl overflow-hidden border border-white/5 shadow-2xl cursor-pointer ring-1 ring-white/5 transition-transform active:scale-[0.98]"
                           onClick={(e) => {
                             e.stopPropagation();
                             setExpandedImage(post.image_url);
                           }}
                         >
-                          <img src={post.image_url} alt="" loading="lazy" className="w-full max-h-[500px] object-cover" />
+                          <img src={post.image_url} alt="" loading="lazy" className="w-full max-h-[600px] object-cover" />
                         </div>
                       )}
                     </div>
 
                     {/* Actions */}
-                    <div className="flex items-center justify-between text-foreground/40 max-w-[425px] pr-2 -ml-2 pb-1">
+                    <div className="flex items-center justify-between text-foreground/30 max-w-sm mt-2">
                       <button
                         onClick={(e) => {
                           e.stopPropagation();
@@ -1072,52 +1071,41 @@ export default function FeedClient({ standalonePostId }: { standalonePostId?: st
                             }
                           }
                         }}
-                        className={cn("flex items-center gap-1.5 text-[13px] group/btn transition-colors", expandedPostId === post.id ? "text-blue-500" : "hover:text-blue-500")}
+                        className={cn("flex items-center gap-2 group/btn transition-all px-2.5 py-1.5 rounded-xl hover:bg-secondary/10", expandedPostId === post.id ? "text-secondary" : "hover:text-secondary")}
                       >
-                        <div className={cn("p-2 rounded-full transition-colors", expandedPostId === post.id ? "bg-blue-500/10" : "group-hover/btn:bg-blue-500/10")}>
-                          <MessageSquare className="w-4.5 h-4.5" />
-                        </div>
-                        <span className="font-medium -ml-0.5">{post.comments_count > 0 ? post.comments_count : ''}</span>
+                        <MessageSquare className={cn("w-4.5 h-4.5 group-hover/btn:scale-110 transition-transform", expandedPostId === post.id && "fill-current")} />
+                        <span className="text-[12px] font-black italic">{post.comments_count || ''}</span>
                       </button>
 
-                      {/* Bookmark */}
                       <button
                         onClick={(e) => { e.stopPropagation(); handleBookmark(post.id); }}
-                        className={cn("flex items-center gap-1.5 text-[13px] group/btn transition-colors", bookmarkedPosts.has(post.id) ? "text-green-500" : "hover:text-green-500")}
-                        title={bookmarkedPosts.has(post.id) ? 'Quitar de guardados' : 'Guardar'}
+                        className={cn("flex items-center gap-2 group/btn transition-all px-2.5 py-1.5 rounded-xl hover:bg-amber-500/10", bookmarkedPosts.has(post.id) ? "text-amber-500" : "hover:text-amber-500")}
                       >
-                        <div className={cn("p-2 rounded-full transition-colors", bookmarkedPosts.has(post.id) ? "bg-green-500/10" : "group-hover/btn:bg-green-500/10")}>
-                          {bookmarkedPosts.has(post.id) ? (
-                            <BookmarkCheck className="w-4.5 h-4.5 fill-green-500" />
-                          ) : (
-                            <Bookmark className="w-4.5 h-4.5" />
-                          )}
-                        </div>
+                        {bookmarkedPosts.has(post.id) ? (
+                          <BookmarkCheck className="w-4.5 h-4.5 fill-current group-hover/btn:scale-110 transition-transform" />
+                        ) : (
+                          <Bookmark className="w-4.5 h-4.5 group-hover/btn:scale-110 transition-transform" />
+                        )}
+                        <span className="text-[12px] font-black italic">{bookmarkedPosts.has(post.id) ? 'Saved' : ''}</span>
                       </button>
 
                       <button
                         onClick={(e) => { e.stopPropagation(); handleLike(post.id, post.user_has_liked); }}
-                        className={cn("flex items-center gap-1.5 text-[13px] group/btn transition-colors", post.user_has_liked ? "text-pink-600" : "hover:text-pink-600")}
-                        title="Me gusta"
+                        className={cn("flex items-center gap-2 group/btn transition-all px-2.5 py-1.5 rounded-xl hover:bg-primary/10", post.user_has_liked ? "text-primary" : "hover:text-primary")}
                       >
-                        <div className={cn("p-2 rounded-full transition-colors", post.user_has_liked ? "bg-pink-600/10" : "group-hover/btn:bg-pink-600/10")}>
-                          <Heart className={cn("w-4.5 h-4.5", post.user_has_liked && "fill-pink-600")} />
-                        </div>
-                        <span className="font-medium -ml-0.5">{post.likes_count > 0 ? post.likes_count : ''}</span>
+                        <Heart className={cn("w-4.5 h-4.5 group-hover/btn:scale-110 transition-transform", post.user_has_liked && "fill-current")} />
+                        <span className="text-[12px] font-black italic">{post.likes_count || ''}</span>
                       </button>
 
                       <button
                         onClick={(e) => { e.stopPropagation(); handleShare(post); }}
-                        className={cn("flex items-center gap-1.5 text-[13px] group/btn transition-colors hover:text-primary")}
-                        title="Compartir"
+                        className="flex items-center gap-2 group/btn transition-all px-2.5 py-1.5 rounded-xl hover:bg-white/10 hover:text-white"
                       >
-                        <div className="p-2 rounded-full group-hover/btn:bg-primary/10 transition-colors relative">
-                          {copiedPostId === post.id ? (
-                            <Check className="w-4.5 h-4.5 text-primary animate-in zoom-in duration-300" />
-                          ) : (
-                            <Share2 className="w-4.5 h-4.5" />
-                          )}
-                        </div>
+                        {copiedPostId === post.id ? (
+                          <Check className="w-4.5 h-4.5 text-primary animate-in zoom-in" />
+                        ) : (
+                          <Share2 className="w-4.5 h-4.5 transition-transform group-hover:rotate-12" />
+                        )}
                       </button>
                     </div>
 

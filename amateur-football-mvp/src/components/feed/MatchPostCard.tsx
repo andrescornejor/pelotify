@@ -91,63 +91,77 @@ export default function MatchPostCard({ matchId }: MatchPostCardProps) {
     <motion.div
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
-      className="w-full glass-premium rounded-[2.5rem] border border-primary/20 flex flex-col sm:flex-row overflow-hidden my-4 group hover:border-primary/40 transition-all shadow-2xl"
+      className="w-full premium-card flex flex-col sm:flex-row overflow-hidden my-6 group"
     >
       {/* Visual Side */}
-      <div className="w-full sm:w-40 h-32 sm:h-auto relative overflow-hidden shrink-0">
+      <div className="w-full sm:w-48 h-40 sm:h-auto relative overflow-hidden shrink-0">
         <img 
-          src="https://images.unsplash.com/photo-1574629810360-7efbbe195018?auto=format&fit=crop&q=60&w=400" 
+          src="https://images.unsplash.com/photo-1574629810360-7efbbe195018?auto=format&fit=crop&q=80&w=600" 
           alt="" 
-          className="w-full h-full object-cover grayscale opacity-50 group-hover:grayscale-0 group-hover:opacity-80 transition-all duration-700"
+          className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
         />
-        <div className="absolute inset-0 bg-gradient-to-r from-transparent to-surface/90 sm:hidden" />
-        <div className="absolute inset-0 bg-gradient-to-b from-transparent to-surface/90 hidden sm:block" />
-        <div className="absolute inset-0 flex items-center justify-center">
-          <div className="w-12 h-12 rounded-full glass border border-primary/20 flex items-center justify-center">
-            <Zap className="w-6 h-6 text-primary animate-pulse" />
+        <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent sm:bg-gradient-to-r" />
+        <div className="absolute top-4 left-4 z-10">
+          <div className="px-3 py-1.5 rounded-xl bg-black/60 backdrop-blur-md border border-white/10 text-primary text-[10px] font-black uppercase tracking-[0.2em] font-display">
+            {match.type}
           </div>
+        </div>
+        <div className="absolute inset-x-0 bottom-4 px-4 sm:hidden">
+             <div className="text-2xl font-black italic uppercase text-white font-display drop-shadow-[0_2px_10px_rgba(0,0,0,0.5)]">
+               {match.location}
+             </div>
         </div>
       </div>
 
       {/* Content Side */}
-      <div className="flex-1 p-6 flex flex-col gap-4">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <div className="px-2.5 py-1 rounded-lg bg-primary/10 text-primary text-[9px] font-black uppercase tracking-widest border border-primary/20">
-              {match.type}
-            </div>
+      <div className="flex-1 p-6 flex flex-col justify-between gap-6">
+        <div className="space-y-4">
+          <div className="flex items-center justify-between">
             <div className={cn(
-              "px-2.5 py-1 rounded-lg text-[9px] font-black uppercase tracking-widest border flex items-center gap-1.5",
-              missing > 0 ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/10" : "bg-white/5 text-white/40 border-white/5"
+              "px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-[0.1em] border flex items-center gap-2",
+              missing > 0 ? "bg-primary/10 text-primary border-primary/20" : "bg-white/5 text-white/40 border-white/5"
             )}>
-              {missing > 0 && <div className="w-1 h-1 rounded-full bg-emerald-400 animate-pulse" />}
-              {missing > 0 ? `${missing} Disponibles` : 'Completo'}
+              {missing > 0 && <div className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />}
+              {missing > 0 ? `${missing} lugares` : 'Partido Completo'}
+            </div>
+            
+            <div className="text-xl font-display text-primary italic">
+              <span className="text-[10px] font-bold text-white/20 mr-1 not-italic">AR$</span>
+              {match.price}
             </div>
           </div>
-          <div className="text-sm font-black text-primary italic uppercase tracking-tighter">
-            ${match.price}
-          </div>
-        </div>
 
-        <div className="space-y-1.5">
-          <h3 className="text-xl lg:text-2xl font-black italic uppercase tracking-tighter text-foreground leading-none group-hover:text-primary transition-colors truncate">
-            {match.location}
-          </h3>
-          <div className="flex flex-wrap items-center gap-4 text-[10px] font-bold text-foreground/40 uppercase tracking-widest">
-            <div className="flex items-center gap-2">
-              <Calendar className="w-3.5 h-3.5 text-primary/60" />
-              {dateLabel}
+          <div className="hidden sm:block">
+            <h3 className="text-2xl lg:text-3xl font-display text-foreground leading-tight group-hover:text-primary transition-colors truncate">
+              {match.location}
+            </h3>
+          </div>
+
+          <div className="grid grid-cols-2 gap-4">
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-8 rounded-xl bg-white/[0.03] border border-white/5 flex items-center justify-center">
+                <Calendar className="w-4 h-4 text-primary/60" />
+              </div>
+              <div className="flex flex-col">
+                <span className="text-[9px] font-black text-white/20 uppercase tracking-widest font-display">Fecha</span>
+                <span className="text-xs font-bold text-white/80 uppercase">{dateLabel}</span>
+              </div>
             </div>
-            <div className="flex items-center gap-2">
-              <Clock className="w-3.5 h-3.5 text-primary/60" />
-              {match.time} HS
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-8 rounded-xl bg-white/[0.03] border border-white/5 flex items-center justify-center">
+                <Clock className="w-4 h-4 text-primary/60" />
+              </div>
+              <div className="flex flex-col">
+                <span className="text-[9px] font-black text-white/20 uppercase tracking-widest font-display">Horario</span>
+                <span className="text-xs font-bold text-white/80 uppercase">{match.time} HS</span>
+              </div>
             </div>
           </div>
         </div>
 
         <Link
           href={`/match?id=${match.id}`}
-          className="w-full h-14 rounded-2xl bg-primary text-black font-black italic uppercase text-xs tracking-widest flex items-center justify-center gap-3 hover:scale-[1.02] active:scale-95 transition-all shadow-xl shadow-primary/20"
+          className="w-full h-14 rounded-2xl bg-primary text-black font-display text-sm tracking-wide flex items-center justify-center gap-3 hover:shadow-[0_0_30px_rgba(var(--primary-rgb),0.3)] transition-all press-effect"
         >
           <Zap className="w-4 h-4 fill-current" />
           Unirme al Partido

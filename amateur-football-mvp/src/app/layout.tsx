@@ -1,5 +1,4 @@
-import type { Metadata } from 'next';
-import { Kanit } from 'next/font/google';
+import { Kanit, Outfit } from 'next/font/google';
 import './globals.css';
 import { AuthProvider } from '@/contexts/AuthContext';
 import { SidebarProvider } from '@/contexts/SidebarContext';
@@ -13,6 +12,12 @@ const kanit = Kanit({
   subsets: ['latin'],
   weight: ['400', '700', '900'],
   variable: '--font-kanit',
+});
+
+const outfit = Outfit({
+  subsets: ['latin'],
+  weight: ['300', '400', '500', '600', '700', '800'],
+  variable: '--font-outfit',
 });
 
 export const metadata: Metadata = {
@@ -55,6 +60,7 @@ export const viewport = {
   themeColor: '#09090b',
 };
 
+import type { Metadata } from 'next';
 import { SettingsProvider } from '@/contexts/SettingsContext';
 
 export default function RootLayout({
@@ -65,8 +71,11 @@ export default function RootLayout({
   return (
     <html lang="es" className="dark">
       <body
-        className={`${kanit.variable} font-sans antialiased bg-background text-foreground min-h-[100dvh] flex flex-col selection:bg-primary/30`}
+        className={`${kanit.variable} ${outfit.variable} font-sans antialiased bg-background text-foreground min-h-[100dvh] flex flex-col selection:bg-primary/30 relative`}
       >
+        {/* Global Noise Overlay */}
+        <div className="fixed inset-0 pointer-events-none z-[9999] opacity-[0.03] bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] mix-blend-overlay" />
+        
         <QueryProvider>
           <SettingsProvider>
             <ThemeProvider>
