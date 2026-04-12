@@ -84,6 +84,7 @@
   --color-foreground: var(--foreground);
 
   --color-primary: var(--primary);
+  --color-primary-dark: color-mix(in srgb, var(--primary), black 15%);
   --color-secondary: var(--secondary);
   --color-accent: var(--accent);
 
