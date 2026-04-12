@@ -215,7 +215,7 @@ export function MatchIntroBroadcast({
                             <Shield className="w-8 h-8 text-indigo-300" />
                          </div>
                          <div className="flex flex-col">
-                           <span className="text-3xl font-black uppercase text-white shadow-xl">{player.user?.name || `Jugador ${idx + 1}`}</span>
+                           <span className="text-3xl font-black uppercase text-white shadow-xl">{player.profiles?.name || `Jugador ${idx + 1}`}</span>
                          </div>
                        </motion.div>
                      ))}
@@ -263,7 +263,7 @@ export function MatchIntroBroadcast({
                             <Shield className="w-8 h-8 text-rose-300" />
                          </div>
                          <div className="flex flex-col items-end">
-                           <span className="text-3xl font-black uppercase text-white shadow-xl">{player.user?.name || `Jugador ${idx + 1}`}</span>
+                           <span className="text-3xl font-black uppercase text-white shadow-xl">{player.profiles?.name || `Jugador ${idx + 1}`}</span>
                          </div>
                        </motion.div>
                      ))}
