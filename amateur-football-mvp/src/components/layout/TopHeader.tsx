@@ -118,29 +118,29 @@ export const TopHeader = memo(function TopHeader() {
 
   return (
     <>
-    <header className="fixed top-0 left-0 right-0 z-[60] pt-[calc(0.75rem+env(safe-area-inset-top,0px))] sm:pt-6 lg:pt-4 px-3 sm:px-5 lg:px-10 xl:px-16 pointer-events-none">
+      <header className="fixed top-0 left-0 right-0 z-[60] pt-[calc(0.75rem+env(safe-area-inset-top,0px))] sm:pt-6 lg:pt-4 px-3 sm:px-5 lg:px-10 xl:px-16 pointer-events-none">
         <div className="max-w-full mx-auto w-full pointer-events-auto">
           <motion.div
             initial={{ y: -24, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ type: 'spring', stiffness: 300, damping: 26, delay: 0.05 }}
-            className="overflow-hidden rounded-[1.5rem] lg:rounded-[2rem]"
+            className="overflow-hidden rounded-[1.25rem] lg:rounded-[1.75rem]"
             style={{
               background: performanceMode
                 ? 'var(--surface-elevated)'
-                : 'rgba(var(--background-rgb), 0.7)',
-              backdropFilter: performanceMode ? 'none' : 'blur(24px) saturate(180%)',
-              WebkitBackdropFilter: performanceMode ? 'none' : 'blur(24px) saturate(180%)',
-              border: '1px solid rgba(255, 255, 255, 0.08)',
-              boxShadow: 'var(--shadow-premium)',
+                : 'rgba(var(--foreground-rgb), 0.09)',
+              backdropFilter: performanceMode ? 'none' : 'blur(16px) saturate(200%)',
+              WebkitBackdropFilter: performanceMode ? 'none' : 'blur(16px) saturate(200%)',
+              border: '1px solid rgba(var(--foreground-rgb), 0.12)',
+              boxShadow: performanceMode
+                ? '0 10px 30px rgba(0,0,0,0.2)'
+                : '0 4px 32px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.08)',
             }}
           >
             {/* Background subtle light beam */}
-            <div className="absolute top-0 left-[-10%] w-[40%] h-full bg-gradient-to-r from-primary/10 via-transparent to-transparent -skew-x-12 pointer-events-none" />
+            <div className="absolute top-0 left-[-10%] w-[40%] h-full bg-gradient-to-r from-primary/5 via-transparent to-transparent -skew-x-12 pointer-events-none" />
 
-            <div className="grid grid-cols-[1fr_auto_1fr] items-center h-[76px] sm:h-[84px] lg:h-[80px] px-4 sm:px-6 lg:px-8 w-full relative">
-              {/* Scanline effect */}
-              <div className="absolute inset-0 bg-[linear-gradient(rgba(18,16,16,0)_50%,rgba(0,0,0,0.15)_50%),linear-gradient(90deg,rgba(255,0,0,0.03),rgba(0,255,0,0.01),rgba(0,0,255,0.03))] bg-[length:100%_2px,3px_100%] pointer-events-none opacity-20" />
+            <div className="grid grid-cols-[1fr_auto_1fr] items-center h-[72px] sm:h-[80px] lg:h-[76px] px-4 sm:px-6 lg:px-8 w-full">
               {/* Left: Menu + Logo */}
               <div className="flex items-center gap-3 sm:gap-4 lg:gap-3 xl:gap-6 min-w-0">
                 <motion.button
@@ -175,41 +175,41 @@ export const TopHeader = memo(function TopHeader() {
 
                 <Link
                   href="/"
-                  className="flex items-center gap-3 select-none hover:opacity-90 transition-all group/logo"
+                  className="flex items-center gap-2 select-none hover:opacity-90 transition-all group/logo"
                 >
-                  <div className="w-14 h-14 sm:w-16 sm:h-16 lg:w-12 lg:h-12 2xl:w-16 2xl:h-16 flex items-center justify-center relative transition-transform duration-500 group-hover/logo:scale-110 shrink-0">
-                    <div className="absolute inset-x-0 bottom-0 h-1/2 bg-primary/20 blur-[15px] rounded-full opacity-60" />
+                  <div className="w-16 h-16 sm:w-18 sm:h-18 lg:w-14 lg:h-14 xl:w-20 xl:h-20 flex items-center justify-center relative transition-transform duration-500 group-hover/logo:scale-110 shrink-0">
+                    <div className="absolute inset-0 bg-primary/15 blur-[20px] rounded-full opacity-40 shrink-0" />
                     <img
                       src="/logo_pelotify.png"
                       alt="Logo"
-                      className="w-full h-full object-contain relative z-10 drop-shadow-[0_0_12px_rgba(var(--primary-rgb),0.3)]"
+                      className="w-full h-full object-contain relative z-10 drop-shadow-[0_0_15px_rgba(44,252,125,0.2)]"
                     />
                   </div>
-                  <div className="flex-1 min-w-0 flex flex-col">
-                    <div className="flex items-center">
-                      <span className="hidden min-[450px]:flex text-[22px] sm:text-[28px] lg:text-[24px] 2xl:text-[34px] font-[900] tracking-[-0.03em] font-display uppercase italic leading-none items-center">
+                  <div className="flex-1 min-w-0 flex flex-col lg:gap-0.5">
+                    <div className="flex items-center gap-2">
+                      <span className="hidden min-[400px]:flex text-[20px] sm:text-[24px] lg:text-[24px] 2xl:text-[32px] font-[900] tracking-[-0.02em] font-kanit uppercase italic leading-tight items-center gap-0 pr-4">
                         <span className="text-foreground">PELOTI</span>
                         <span
-                          className="bg-clip-text text-transparent italic"
+                          className="bg-clip-text text-transparent px-2 -mx-2"
                           style={{
                             backgroundImage:
-                              'linear-gradient(135deg, #10ef74 0%, #0dbb5b 100%)',
-                            filter: 'drop-shadow(0 0 15px rgba(var(--primary-rgb),0.3))',
+                              'linear-gradient(135deg, #5dfd9d 0%, #2cfc7d 40%, #1db95a 100%)',
+                            filter: 'drop-shadow(0 0 20px rgba(44,252,125,0.45))',
                           }}
                         >
                           FY
                         </span>
                       </span>
                     </div>
-                    <span className="hidden sm:block lg:hidden 2xl:block text-[8px] lg:text-[10px] font-black uppercase italic tracking-[0.3em] text-primary/40 leading-none mt-0.5 transition-all duration-500 font-display">
-                      DOMINÁ <span className="text-foreground/20">EL POTRERO</span>
+                    <span className="hidden sm:block lg:hidden 2xl:block text-[7px] sm:text-[9px] lg:text-[10px] font-black uppercase italic tracking-[0.25em] text-foreground/30 leading-none mt-1 transition-all duration-500 font-kanit">
+                      DOMINÁ <span className="text-primary">EL POTRERO</span>
                     </span>
                   </div>
                 </Link>
               </div>
 
               {/* Middle: Desktop Nav */}
-              <nav className="hidden lg:flex items-center gap-1.5 bg-white/[0.03] p-1.5 rounded-2xl border border-white/5">
+              <nav className="hidden lg:flex items-center gap-1.5 bg-foreground/[0.03] p-1.5 rounded-[1.25rem] border border-foreground/[0.05] md:">
                 {DESKTOP_NAV.map((item) => {
                   const cleanPath = pathname.replace(/\/$/, '') || '/';
                   const cleanHref = item.href.replace(/\/$/, '') || '/';
@@ -224,34 +224,32 @@ export const TopHeader = memo(function TopHeader() {
                       <motion.div
                         whileHover={{ y: -1 }}
                         className={cn(
-                          'relative px-5 py-2.5 rounded-xl flex items-center gap-3 transition-all duration-300 group overflow-hidden',
+                          'relative px-4 py-2 rounded-xl flex items-center gap-2.5 transition-all duration-300 group',
                           isActive
-                            ? 'text-primary'
-                            : 'text-foreground/40 hover:text-foreground/70 hover:bg-white/[0.04]'
+                            ? 'bg-primary/10 text-primary'
+                            : 'text-foreground/45 hover:text-foreground/70 hover:bg-foreground/[0.04]'
                         )}
                       >
                         {isActive && (
                           <motion.div
                             layoutId="nav-glow"
-                            className="absolute inset-0 rounded-xl bg-primary/5"
+                            className="absolute inset-0 rounded-xl bg-primary/[0.08]"
                             initial={false}
                             transition={{ type: 'spring', stiffness: 380, damping: 30 }}
-                          >
-                             <div className="absolute inset-x-0 bottom-0 h-[2px] bg-primary shadow-[0_0_10px_rgba(16,239,116,0.6)]" />
-                          </motion.div>
+                          />
                         )}
 
                         <item.icon
                           className={cn(
-                            'w-4 h-4 transition-all duration-300',
-                            isActive ? 'scale-110 drop-shadow-[0_0_8px_rgba(16,239,116,0.5)]' : 'group-hover:scale-110'
+                            'w-4 h-4 transition-transform duration-300',
+                            isActive ? 'scale-110' : 'group-hover:scale-110'
                           )}
-                          strokeWidth={isActive ? 3 : 2}
+                          strokeWidth={isActive ? 2.5 : 2}
                         />
 
                         <span
                           className={cn(
-                            'hidden xl:block text-[11px] font-black uppercase tracking-[0.05em] font-display',
+                            'hidden 2xl:block text-[12px] font-black uppercase tracking-wider',
                             isActive ? 'opacity-100' : 'opacity-80'
                           )}
                         >
@@ -259,22 +257,25 @@ export const TopHeader = memo(function TopHeader() {
                         </span>
 
                         {hasBadge && (
-                          <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse shadow-[0_0_8px_rgba(16,239,116,0.8)] ml-0.5" />
+                          <span className="w-1.5 h-1.5 rounded-full bg-primary shadow-[0_0_8px_rgba(16,185,129,0.8)] ml-0.5" />
                         )}
                       </motion.div>
                     </Link>
                   );
                 })}
               </nav>
-              {/* Right: Actions */}
+
+              {/* Right: Actions */}
               <div className="flex items-center justify-end gap-1.5 sm:gap-4 lg:gap-2.5 xl:gap-4 col-start-3">
+                {/* Create Match Button - Only Desktop */}
+
                 <div className="flex items-center gap-1.5 sm:gap-2.5">
                   {/* Theme Toggle */}
                   <motion.button
                     whileHover={{ scale: 1.08 }}
                     whileTap={{ scale: 0.88, rotate: 20 }}
                     onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
-                    className="w-12 h-12 lg:w-11 lg:h-11 flex items-center justify-center rounded-2xl bg-white/[0.04] hover:bg-white/[0.08] text-foreground/40 hover:text-foreground/70 transition-all border border-white/5"
+                    className="w-12 h-12 lg:w-11 lg:h-11 flex items-center justify-center rounded-2xl bg-foreground/[0.04] hover:bg-foreground/[0.08] text-foreground/45 hover:text-foreground/70 transition-all border border-foreground/[0.04]"
                     title="Cambiar Tema"
                   >
                     <AnimatePresence mode="wait">
@@ -293,7 +294,7 @@ export const TopHeader = memo(function TopHeader() {
                       </motion.div>
                     </AnimatePresence>
                   </motion.button>
-                  {/* Notification Bell */}
+                  {/* Notification Bell */}
                   <motion.button
                     whileHover={{ scale: 1.08 }}
                     whileTap={{ scale: 0.88 }}
@@ -305,7 +306,7 @@ export const TopHeader = memo(function TopHeader() {
                       setNotificationsOpen(true);
                       setNotifCount(0);
                     }}
-                    className="relative w-12 h-12 lg:w-11 lg:h-11 flex items-center justify-center rounded-2xl bg-white/[0.04] hover:bg-white/[0.08] text-foreground/40 hover:text-foreground/70 transition-all border border-white/5"
+                    className="relative w-12 h-12 lg:w-11 lg:h-11 flex items-center justify-center rounded-2xl bg-foreground/[0.04] hover:bg-foreground/[0.08] text-foreground/45 hover:text-foreground/70 transition-all border border-foreground/[0.04]"
                   >
                     <Bell className="w-4 h-4 sm:w-[1.1rem] sm:h-[1.1rem]" />
                     <AnimatePresence>
@@ -315,7 +316,7 @@ export const TopHeader = memo(function TopHeader() {
                           animate={{ scale: 1, y: 0 }}
                           exit={{ scale: 0 }}
                           transition={{ type: 'spring', stiffness: 500, damping: 25 }}
-                          className="absolute -top-1 -right-1 min-w-[20px] h-[20px] px-1 bg-primary text-black text-[10px] font-black rounded-full flex items-center justify-center shadow-[0_0_15px_rgba(var(--primary-rgb),0.5)] border-2 border-background"
+                          className="absolute -top-1 -right-1 min-w-[19px] h-[19px] px-1 bg-primary text-background text-[10px] font-black rounded-full flex items-center justify-center shadow-[0_0_15px_rgba(16,185,129,0.5)] border-2 border-background"
                         >
                           {notifCount > 9 ? '9+' : notifCount}
                         </motion.span>
@@ -326,17 +327,17 @@ export const TopHeader = memo(function TopHeader() {
                    {/* Profile Avatar or Login Button */}
                   <Link href={user ? "/profile/me" : "/login"}>
                     <motion.div
-                      whileHover={{ scale: 1.05 }}
-                      whileTap={{ scale: 0.95 }}
+                      whileHover={{ scale: 1.08 }}
+                      whileTap={{ scale: 0.92 }}
                       className={cn(
-                        "w-12 h-12 lg:w-11 lg:h-11 rounded-2xl p-0.5 transition-all flex items-center justify-center overflow-hidden",
+                        "w-12 h-12 lg:w-11 lg:h-11 rounded-2xl p-0.5 transition-all flex items-center justify-center",
                         user 
-                          ? "bg-white/[0.04] border border-white/10 hover:border-primary/40 shadow-lg" 
-                          : "bg-primary text-black font-black text-[10px] uppercase shadow-[0_0_20px_rgba(var(--primary-rgb),0.4)]"
+                          ? "bg-foreground/[0.04] border border-foreground/[0.08] hover:border-primary/30" 
+                          : "bg-primary text-background font-black text-[10px] uppercase shadow-[0_0_20px_rgba(16,185,129,0.4)]"
                       )}
                     >
                       {user ? (
-                        <div className="w-full h-full rounded-[0.9rem] overflow-hidden bg-primary/10 flex items-center justify-center">
+                        <div className="w-full h-full rounded-[0.85rem] overflow-hidden bg-primary/5 flex items-center justify-center">
                           {user.avatar_url ? (
                             <img
                               src={user.avatar_url}
@@ -349,15 +350,14 @@ export const TopHeader = memo(function TopHeader() {
                         </div>
                       ) : (
                         <div className="flex flex-col items-center leading-none gap-0.5">
-                          <User2 className="w-4 h-4 stroke-[3]" />
-                          <span className="text-[7.5px] font-black tracking-tighter">ENTRAR</span>
+                          <User2 className="w-4 h-4" />
+                          <span className="text-[7px] font-black tracking-tighter">ENTRAR</span>
                         </div>
                       )}
                     </motion.div>
                   </Link>
                 </div>
               </div>
-
             </div>
           </motion.div>
         </div>
