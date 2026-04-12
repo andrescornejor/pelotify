@@ -35,7 +35,7 @@ import { OnboardingTour } from '@/components/OnboardingTour';
 import { JerseyVisualizer } from '@/components/JerseyVisualizer';
 import { getHighlights, Highlight } from '@/lib/highlights';
 import LandingPage from '@/components/LandingPage';
-import { StatCard, TeamCard, RankBadgeInline, EmptyState, SectionDivider, LazyVideo, HomePageSkeleton, VenueCard, RANKS, getRankByElo, WeatherWidget, CalendarButton } from '@/components/home';
+import { StatCard, TeamCard, RankBadgeInline, EmptyState, SectionDivider, LazyVideo, HomePageSkeleton, VenueCard, RANKS, getRankByElo, WeatherWidget, CalendarButton, WeatherEffects, MatchOfTheWeekSpotlight, StoriesRow } from '@/components/home';
 import { useHomeData } from '@/hooks/useHomeData';
 import { useEffect, useMemo, useState } from 'react';
 
@@ -254,19 +254,8 @@ export default function HomePage() {
     >
       <OnboardingTour />
 
-      {/*  AMBIENT  Simplified for Performance  */}
-      {!performanceMode && (
-        <div className="fixed inset-0 pointer-events-none -z-10 overflow-hidden hidden md:block">
-          <div
-            className="absolute top-[-5%] right-[-5%] w-[40%] h-[40%] opacity-[0.05]"
-            style={{ background: 'radial-gradient(circle, #2cfc7d 0%, transparent 70%)' }}
-          />
-          <div
-            className="absolute bottom-[-5%] left-[-5%] w-[40%] h-[40%] opacity-[0.03]"
-            style={{ background: 'radial-gradient(circle, #f59e0b 0%, transparent 70%)' }}
-          />
-        </div>
-      )}
+      {/*  AMBIENT EFFECTS  */}
+      <WeatherEffects />
 
       {/*  MOBILE PERF TOGGLE  */}
       <button
@@ -704,6 +693,10 @@ export default function HomePage() {
                   variants={tabContentVariants}
                   className="space-y-6"
                 >
+                  <StoriesRow />
+                  
+                  <MatchOfTheWeekSpotlight />
+                  
                   <motion.section
                     id="stat-cards"
                     initial="hidden"

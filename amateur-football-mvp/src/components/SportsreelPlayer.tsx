@@ -5,6 +5,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Play, ExternalLink, Video, Heart, Share2, Info, AlertCircle, Save, Youtube, Maximize2, Volume2, ShieldCheck, Loader2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import axios from 'axios';
+import Hls from 'hls.js';
+import { useRef, useEffect } from 'react';
 
 interface SportsreelPlayerProps {
   url: string;
@@ -17,7 +19,54 @@ export function SportsreelPlayer({ url, className }: SportsreelPlayerProps) {
   const [downloadStage, setDownloadStage] = useState<'idle' | 'scraping' | 'converting' | 'done'>('idle');
   const [progress, setProgress] = useState(0);
 
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const [streamUrl, setStreamUrl] = useState<string | null>(null);
+  const [isInitializingStream, setIsInitializingStream] = useState(false);
+
   const videoId = url.split('/video/')[1];
+
+  const initStream = async () => {
+    setIsPlaying(true);
+    if (streamUrl) return;
+    setIsInitializingStream(true);
+    try {
+      const scrapeRes = await axios.post('/api/video/scrape', { url });
+      const m3u8Url = scrapeRes.data.m3u8Url;
+      setStreamUrl(m3u8Url);
+    } catch (err) {
+      console.error("Failed to init stream", err);
+      alert('Error cargando el video. Es posible que el enlace no sea válido.');
+      setIsPlaying(false);
+    } finally {
+      setIsInitializingStream(false);
+    }
+  };
+
+  useEffect(() => {
+    if (!isPlaying || !streamUrl || !videoRef.current) return;
+
+    if (Hls.isSupported()) {
+      const hls = new Hls({
+        maxBufferLength: 30,
+        maxMaxBufferLength: 60,   // Optimización para iOS y redes móviles
+        backBufferLength: 30,     // Para repeticiones rápidas (retroceder goles)
+      });
+      hls.loadSource(streamUrl);
+      hls.attachMedia(videoRef.current);
+      hls.on(Hls.Events.MANIFEST_PARSED, () => {
+        videoRef.current?.play().catch(() => {});
+      });
+      return () => {
+        hls.destroy();
+      };
+    } else if (videoRef.current.canPlayType('application/vnd.apple.mpegurl')) {
+      // Safari / iOS Nivo Support
+      videoRef.current.src = streamUrl;
+      videoRef.current.addEventListener('loadedmetadata', () => {
+        videoRef.current?.play().catch(() => {});
+      });
+    }
+  }, [isPlaying, streamUrl]);
 
   const handleDownload = async () => {
     setIsDownloading(true);
@@ -87,7 +136,7 @@ export function SportsreelPlayer({ url, className }: SportsreelPlayerProps) {
 
       {!isPlaying ? (
         <div className="relative z-10">
-          <div className="aspect-video relative overflow-hidden group/thumb cursor-pointer" onClick={() => setIsPlaying(true)}>
+          <div className="aspect-video relative overflow-hidden group/thumb cursor-pointer" onClick={initStream}>
             {/* Mock Thumbnail / Aesthetic Placeholder */}
             <div className="absolute inset-0 bg-zinc-900 flex items-center justify-center">
               <img
@@ -203,7 +252,7 @@ export function SportsreelPlayer({ url, className }: SportsreelPlayerProps) {
           </div>
         </div>
       ) : (
-        <div className="relative z-10 aspect-video bg-black">
+        <div className="relative z-10 aspect-video bg-black flex items-center justify-center">
           <button
             onClick={() => setIsPlaying(false)}
             className="absolute top-6 right-6 z-50 w-12 h-12 rounded-full bg-black/50 backdrop-blur-md border border-white/20 flex items-center justify-center text-white hover:bg-black transition-all"
@@ -211,15 +260,19 @@ export function SportsreelPlayer({ url, className }: SportsreelPlayerProps) {
             <span className="font-black">✕</span>
           </button>
 
-          <iframe
-            src={url}
-            className="w-full h-full border-none"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-            allowFullScreen
-          />
-
-          {/* Fallback overlay if iframe is blocked (Mocking common behavior) */}
-          <div className="absolute inset-0 pointer-events-none bg-gradient-to-t from-black via-transparent to-transparent opacity-60" />
+          {isInitializingStream ? (
+            <div className="flex flex-col items-center justify-center gap-4 text-white/50">
+              <Loader2 className="w-8 h-8 animate-spin text-primary" />
+              <span className="text-xs font-black uppercase tracking-widest animate-pulse">Conectando al VMS...</span>
+            </div>
+          ) : (
+            <video
+              ref={videoRef}
+              controls
+              playsInline
+              className="w-full h-full object-contain"
+            />
+          )}
         </div>
       )}
 

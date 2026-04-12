@@ -83,8 +83,8 @@ const MessageItem = memo(
             className={cn(
               'relative transition-all duration-300 group/bubble overflow-hidden flex flex-col',
               isMine
-                ? 'bg-gradient-to-br from-[#2CFC7D] directly to-[#1bba58] text-black rounded-[1.3rem] rounded-br-[0.3rem] shadow-[0_5px_20px_rgba(44,252,125,0.15)]'
-                : 'bg-[#1C1C1E] border border-white/5 text-white/90 rounded-[1.3rem] rounded-bl-[0.3rem] shadow-md',
+                ? 'glass-premium border-primary/20 text-foreground rounded-[1.3rem] rounded-br-[0.3rem] shadow-[0_5px_20px_rgba(44,252,125,0.15)] bg-gradient-to-br from-primary/20 to-primary/5'
+                : 'glass border-white/5 text-white/90 rounded-[1.3rem] rounded-bl-[0.3rem] shadow-md bg-white/5',
               sameAuthorAsPrev && (isMine ? 'rounded-tr-[1.3rem]' : 'rounded-tl-[1.3rem]'),
               sameAuthorAsNext && (isMine ? 'rounded-br-[1.3rem]' : 'rounded-bl-[1.3rem]')
             )}
@@ -106,7 +106,7 @@ const MessageItem = memo(
             <div
               className={cn(
                 'px-4 pb-2 pt-0.5 text-[10px] font-medium flex items-center gap-1 opacity-0 group-hover/bubble:opacity-100 transition-opacity absolute bottom-0 right-0 left-0 bg-gradient-to-t via-current/10 to-transparent',
-                isMine ? 'text-black/60 justify-end from-[#1bba58]' : 'text-white/40 justify-start from-[#1C1C1E]'
+                isMine ? 'text-foreground/60 justify-end from-primary/20' : 'text-white/40 justify-start from-white/10'
               )}
             >
               <Clock className="w-3 h-3" />
@@ -118,6 +118,22 @@ const MessageItem = memo(
               )}
             </div>
           </motion.div>
+
+          {/* Reacciones Futboleras Exclusivas */}
+          <div className={cn(
+            "flex items-center gap-1 mt-1 opacity-0 transition-opacity group-hover:opacity-100",
+            isMine ? "flex-row-reverse mr-1" : "ml-1"
+          )}>
+            {['⚽️', '🟥', '🍻', '🔥'].map((emoji) => (
+              <button
+                key={emoji}
+                className="w-6 h-6 rounded-full glass border-white/10 flex items-center justify-center text-xs hover:scale-125 transition-transform bg-white/5 hover:bg-white/20"
+                onClick={() => {/* Mock reaction */}}
+              >
+                {emoji}
+              </button>
+            ))}
+          </div>
         </div>
       </motion.div>
     );

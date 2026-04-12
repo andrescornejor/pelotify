@@ -32,6 +32,7 @@ import Link from 'next/link';
 import ChatModal from '@/components/ChatModal';
 import { queryKeys } from '@/lib/queryKeys';
 import { useQueryClient } from '@tanstack/react-query';
+import { ScoutSwipeCard } from '@/components/recruitment/ScoutSwipeCard';
 
 // Simple helper to format date
 const formatDate = (dateStr: string) => {
@@ -152,7 +153,8 @@ export default function RecruitmentMarketplace() {
   const [filterPos, setFilterPos] = useState<string | null>(null);
   const [showTutorial, setShowTutorial] = useState(false);
   const [activeChat, setActiveChat] = useState<{ id: string; name: string } | null>(null);
-  const [activeTab, setActiveTab] = useState<'market' | 'my-posts'>('market');
+  const [activeTab, setActiveTab] = useState<'market' | 'swipe' | 'my-posts'>('swipe');
+  const [swipedCards, setSwipedCards] = useState<Record<string, boolean>>({});
 
   useEffect(() => {
     const hasSeenTutorial = localStorage.getItem('recruitment_tutorial_seen_v3');
@@ -227,8 +229,10 @@ export default function RecruitmentMarketplace() {
     if (activeTab === 'my-posts') {
       if (m.creator_id !== user?.id) return false;
     } else {
-      // Global market: everyone else's posts
+      // Global market & swipe: everyone else's posts
       if (m.creator_id === user?.id) return false;
+      // also if we just swiped it left/right, it's hidden locally or joined
+      if (m.slots?.some(s => s.user_id === user?.id)) return false; 
     }
 
     // Position filter logic
@@ -277,6 +281,15 @@ export default function RecruitmentMarketplace() {
 
               {/* TAB SELECTOR */}
               <div className="flex items-center p-1 bg-surface-elevated border border-white/5 rounded-2xl shadow-2xl mt-4 w-fit">
+                 <button 
+                  onClick={() => setActiveTab('swipe')}
+                  className={cn(
+                    "px-6 h-10 rounded-xl text-[9px] font-black uppercase tracking-widest transition-all",
+                    activeTab === 'swipe' ? "bg-primary text-black shadow-glow-primary" : "text-foreground/40 hover:text-foreground/70"
+                  )}
+                 >
+                   Scouter (Tinder)
+                 </button>
                  <button 
                   onClick={() => setActiveTab('market')}
                   className={cn(
@@ -367,6 +380,34 @@ export default function RecruitmentMarketplace() {
                  </div>
               </div>
             ))}
+          </div>
+        ) : activeTab === 'swipe' ? (
+          <div className="relative h-[600px] w-full max-w-md mx-auto flex items-center justify-center">
+             <AnimatePresence>
+               {filteredMatches?.filter(m => !swipedCards[m.id]).map((match, i) => (
+                  <ScoutSwipeCard
+                    key={match.id}
+                    cardItem={match}
+                    style={{ zIndex: filteredMatches.length - i }}
+                    onSwipeLeft={(id) => setSwipedCards(prev => ({ ...prev, [id]: true }))}
+                    onSwipeRight={(slotId, matchId, creatorId) => {
+                      handleJoinSlot(slotId, matchId, creatorId);
+                      setSwipedCards(prev => ({ ...prev, [matchId]: true }));
+                    }}
+                  />
+               ))}
+               {filteredMatches?.filter(m => !swipedCards[m.id]).length === 0 && (
+                  <motion.div 
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    className="absolute inset-0 flex flex-col items-center justify-center text-center glass-premium border border-white/10 rounded-[3rem]"
+                  >
+                    <Target className="w-16 h-16 text-primary/40 mb-4" />
+                    <h3 className="text-3xl font-black italic uppercase font-kanit tracking-tighter">Fin de la Lista</h3>
+                    <p className="text-foreground/50 text-sm max-w-[200px] mt-2">No hay más cupos activos para tu filtro o ya exploraste todo.</p>
+                  </motion.div>
+               )}
+             </AnimatePresence>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
