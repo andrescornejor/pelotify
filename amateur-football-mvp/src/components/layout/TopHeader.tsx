@@ -124,15 +124,17 @@ export const TopHeader = memo(function TopHeader() {
             initial={{ y: -24, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ type: 'spring', stiffness: 300, damping: 26, delay: 0.05 }}
-            className="overflow-hidden rounded-2xl lg:rounded-[2rem] relative"
+            className="overflow-hidden rounded-[1.25rem] lg:rounded-[1.75rem]"
             style={{
               background: performanceMode
                 ? 'var(--surface-elevated)'
-                : 'var(--glass-bg)',
-              backdropFilter: performanceMode ? 'none' : 'blur(20px) saturate(180%)',
-              WebkitBackdropFilter: performanceMode ? 'none' : 'blur(20px) saturate(180%)',
-              border: '1px solid var(--glass-border)',
-              boxShadow: '0 8px 32px -8px rgba(0,0,0,0.1)',
+                : 'rgba(var(--foreground-rgb), 0.09)',
+              backdropFilter: performanceMode ? 'none' : 'blur(16px) saturate(200%)',
+              WebkitBackdropFilter: performanceMode ? 'none' : 'blur(16px) saturate(200%)',
+              border: '1px solid rgba(var(--foreground-rgb), 0.12)',
+              boxShadow: performanceMode
+                ? '0 10px 30px rgba(0,0,0,0.2)'
+                : '0 4px 32px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.08)',
             }}
           >
             {/* Background subtle light beam */}
@@ -185,21 +187,22 @@ export const TopHeader = memo(function TopHeader() {
                   </div>
                   <div className="flex-1 min-w-0 flex flex-col lg:gap-0.5">
                     <div className="flex items-center gap-2">
-                      <span className="hidden min-[400px]:flex text-[20px] sm:text-[24px] lg:text-[24px] 2xl:text-[28px] font-bold tracking-[-0.03em] font-space uppercase italic leading-tight items-center gap-0 pr-4">
+                      <span className="hidden min-[400px]:flex text-[20px] sm:text-[24px] lg:text-[24px] 2xl:text-[32px] font-[900] tracking-[-0.02em] font-kanit uppercase italic leading-tight items-center gap-0 pr-4">
                         <span className="text-foreground">PELOTI</span>
                         <span
-                          className="bg-clip-text text-transparent"
+                          className="bg-clip-text text-transparent px-2 -mx-2"
                           style={{
                             backgroundImage:
-                              'linear-gradient(135deg, #5dfd9d 0%, #2cfc7d 100%)',
+                              'linear-gradient(135deg, #5dfd9d 0%, #2cfc7d 40%, #1db95a 100%)',
+                            filter: 'drop-shadow(0 0 20px rgba(44,252,125,0.45))',
                           }}
                         >
                           FY
                         </span>
                       </span>
                     </div>
-                    <span className="hidden sm:block lg:hidden 2xl:block text-[8px] font-bold uppercase tracking-[0.4em] text-foreground/30 leading-none mt-1 font-space">
-                      DOMINÁ <span className="text-primary italic">LA CANCHA</span>
+                    <span className="hidden sm:block lg:hidden 2xl:block text-[7px] sm:text-[9px] lg:text-[10px] font-black uppercase italic tracking-[0.25em] text-foreground/30 leading-none mt-1 transition-all duration-500 font-kanit">
+                      DOMINÁ <span className="text-primary">EL POTRERO</span>
                     </span>
                   </div>
                 </Link>
@@ -246,8 +249,8 @@ export const TopHeader = memo(function TopHeader() {
 
                         <span
                           className={cn(
-                            'hidden 2xl:block text-[11px] font-semibold uppercase tracking-[0.15em] font-space',
-                            isActive ? 'opacity-100' : 'opacity-60 group-hover:opacity-100'
+                            'hidden 2xl:block text-[12px] font-black uppercase tracking-wider',
+                            isActive ? 'opacity-100' : 'opacity-80'
                           )}
                         >
                           {item.label}
@@ -269,10 +272,10 @@ export const TopHeader = memo(function TopHeader() {
                 <div className="flex items-center gap-1.5 sm:gap-2.5">
                   {/* Theme Toggle */}
                   <motion.button
-                    whileHover={{ scale: 1.05, y: -2 }}
-                    whileTap={{ scale: 0.95 }}
+                    whileHover={{ scale: 1.08 }}
+                    whileTap={{ scale: 0.88, rotate: 20 }}
                     onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
-                    className="w-12 h-12 lg:w-11 lg:h-11 flex items-center justify-center rounded-2xl bg-surface border border-border shadow-sm text-foreground/50 hover:text-foreground hover:border-primary/30 transition-all"
+                    className="w-12 h-12 lg:w-11 lg:h-11 flex items-center justify-center rounded-2xl bg-foreground/[0.04] hover:bg-foreground/[0.08] text-foreground/45 hover:text-foreground/70 transition-all border border-foreground/[0.04]"
                     title="Cambiar Tema"
                   >
                     <AnimatePresence mode="wait">
@@ -293,8 +296,8 @@ export const TopHeader = memo(function TopHeader() {
                   </motion.button>
                   {/* Notification Bell */}
                   <motion.button
-                    whileHover={{ scale: 1.05, y: -2 }}
-                    whileTap={{ scale: 0.95 }}
+                    whileHover={{ scale: 1.08 }}
+                    whileTap={{ scale: 0.88 }}
                     onClick={() => {
                       if (!user) {
                         window.location.href = '/login';
@@ -303,7 +306,7 @@ export const TopHeader = memo(function TopHeader() {
                       setNotificationsOpen(true);
                       setNotifCount(0);
                     }}
-                    className="relative w-12 h-12 lg:w-11 lg:h-11 flex items-center justify-center rounded-2xl bg-surface border border-border shadow-sm text-foreground/50 hover:text-foreground hover:border-primary/30 transition-all"
+                    className="relative w-12 h-12 lg:w-11 lg:h-11 flex items-center justify-center rounded-2xl bg-foreground/[0.04] hover:bg-foreground/[0.08] text-foreground/45 hover:text-foreground/70 transition-all border border-foreground/[0.04]"
                   >
                     <Bell className="w-4 h-4 sm:w-[1.1rem] sm:h-[1.1rem]" />
                     <AnimatePresence>
