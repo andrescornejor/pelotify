@@ -39,6 +39,7 @@ import { uploadPostImage } from '@/lib/storage';
 import { compressImage, blobToFile } from '@/lib/imageUtils';
 import { sendFriendRequest } from '@/lib/friends';
 import ShareModal from '@/components/ShareModal';
+import { SkeletonPremium } from '@/components/Skeletons';
 
 function timeAgo(dateString: string) {
   const date = new Date(dateString);
@@ -596,7 +597,7 @@ export default function FeedClient({ standalonePostId }: { standalonePostId?: st
         <div className="flex gap-0 lg:gap-6 xl:gap-8 grow">
           {/* LEFT SIDEBAR SKELETON */}
           <aside className="hidden lg:flex flex-col w-[280px] xl:w-[320px] shrink-0 gap-4">
-            <div className="h-[300px] w-full rounded-[2rem] bg-foreground/[0.03] animate-pulse border border-foreground/[0.06]" />
+            <SkeletonPremium className="h-[300px] w-full rounded-[2rem]" />
           </aside>
 
 
@@ -604,26 +605,26 @@ export default function FeedClient({ standalonePostId }: { standalonePostId?: st
 
           {/* MAIN FEED SKELETON */}
           <div className="w-full lg:flex-1 border-x-0 sm:border-x border-foreground/[0.06] flex flex-col gap-6 px-4 sm:px-5 py-4">
-            <div className="h-20 w-full rounded-2xl bg-foreground/[0.03] animate-pulse" />
+            <SkeletonPremium className="h-20 w-full rounded-2xl" />
             {[1, 2, 3].map(i => (
               <div key={i} className="space-y-4">
                 <div className="flex gap-3">
-                  <div className="w-11 h-11 rounded-full bg-foreground/[0.03] animate-pulse" />
+                  <SkeletonPremium className="w-11 h-11 rounded-full shrink-0" />
                   <div className="space-y-2 flex-1 pt-1">
-                    <div className="h-4 w-[40%] rounded bg-foreground/[0.03] animate-pulse" />
-                    <div className="h-3 w-[20%] rounded bg-foreground/[0.03] animate-pulse" />
+                    <SkeletonPremium className="h-4 w-[40%] rounded" />
+                    <SkeletonPremium className="h-3 w-[20%] rounded" />
                   </div>
                 </div>
-                <div className="h-32 w-full rounded-2xl bg-foreground/[0.03] animate-pulse" />
+                <SkeletonPremium className="h-32 w-full rounded-2xl" />
               </div>
             ))}
           </div>
 
           {/* RIGHT SIDEBAR SKELETON */}
           <aside className="hidden lg:flex flex-col w-[280px] xl:w-[340px] shrink-0 gap-4">
-            <div className="h-12 w-full rounded-2xl bg-foreground/[0.03] animate-pulse" />
-            <div className="h-[200px] w-full rounded-[2rem] bg-foreground/[0.03] animate-pulse" />
-            <div className="h-[300px] w-full rounded-[2rem] bg-foreground/[0.03] animate-pulse" />
+            <SkeletonPremium className="h-12 w-full rounded-2xl" />
+            <SkeletonPremium className="h-[200px] w-full rounded-[2rem]" />
+            <SkeletonPremium className="h-[300px] w-full rounded-[2rem]" />
           </aside>
         </div>
       </div>
@@ -749,7 +750,7 @@ export default function FeedClient({ standalonePostId }: { standalonePostId?: st
                     window.scrollTo({ top: 0, behavior: 'smooth' });
                     setTimeout(() => document.querySelector('textarea')?.focus(), 500);
                   }}
-                  className="mt-6 w-[90%] py-4 rounded-full bg-primary text-background text-lg xl:text-xl font-black italic uppercase font-kanit tracking-wide hover:opacity-90 transition-all shadow-[0_0_20px_rgba(44,252,125,0.2)] hover:shadow-[0_0_30px_rgba(44,252,125,0.4)] flex items-center justify-center pt-[18px]"
+                  className="mt-6 w-[90%] py-4 rounded-full bg-primary text-background text-lg xl:text-xl font-black italic uppercase font-kanit tracking-wide hover:opacity-90 transition-all shadow-[0_0_20px_rgba(44,252,125,0.2)] hover:shadow-[0_0_30px_rgba(44,252,125,0.4)] flex items-center justify-center pt-[18px] press-effect"
                 >
                   Postear
                 </button>
@@ -783,6 +784,9 @@ export default function FeedClient({ standalonePostId }: { standalonePostId?: st
                 </div>
               </div>
             )}
+
+
+
 
             {/* MOBILE PROFILE BAR (Perfil section for handle editing) */}
             {!standalonePostId && user && (
@@ -937,272 +941,272 @@ export default function FeedClient({ standalonePostId }: { standalonePostId?: st
 
             {/* POSTS FEED */}
             <div className="flex flex-col pb-20">
-                {filteredPosts.map((post, index) => (
-                  <div
-                    key={post.id}
-                    style={{ animationDelay: `${index < 10 ? index * 0.03 : 0}s`, animationFillMode: 'both' }}
-                    onClick={(e) => {
-                      if ((e.target as HTMLElement).closest('a, button, input')) return;
-                      if (!standalonePostId) {
-                        router.push(`/post/${post.id}`);
-                      }
-                    }}
-                    className={cn(
-                      "p-4 sm:px-5 sm:py-4 border-b border-foreground/[0.06] transition-colors duration-200 relative flex gap-3 sm:gap-4 group/post animate-in fade-in slide-in-from-bottom-2",
-                      !standalonePostId && "hover:bg-foreground/[0.03] cursor-pointer",
-                      standalonePostId && "bg-background py-8 sm:py-10 border-b-2",
-                      post.author.is_pro ? "bg-gradient-to-r from-yellow-500/[0.03] to-transparent" : ""
-                    )}
-                  >
-                    {/* LEFTSIDE AVATAR */}
-                    <div className="shrink-0 flex flex-col items-center">
-                      <Link href={`/feed/profile?id=${post.author.id}`} className={cn("w-12 h-12 rounded-full overflow-hidden shrink-0 relative hover:opacity-90 transition-opacity duration-200 z-10", post.author.is_pro ? "ring-2 ring-yellow-500/40" : "")}>
-                        {post.author.avatar_url ? (
-                          <img src={post.author.avatar_url} loading="lazy" className="w-full h-full object-cover" alt="" />
-                        ) : (
-                          <div className="w-full h-full bg-gradient-to-br from-primary/15 to-primary/5 flex items-center justify-center font-bold text-primary text-[15px]">
-                            {post.author.name.charAt(0)}
+              {filteredPosts.map((post, index) => (
+                <div
+                  key={post.id}
+                  style={{ animationDelay: `${index < 10 ? index * 0.03 : 0}s`, animationFillMode: 'both' }}
+                  onClick={(e) => {
+                    if ((e.target as HTMLElement).closest('a, button, input')) return;
+                    if (!standalonePostId) {
+                      router.push(`/post/${post.id}`);
+                    }
+                  }}
+                  className={cn(
+                    "p-4 sm:px-5 sm:py-4 border-b border-foreground/[0.06] transition-colors duration-200 relative flex gap-3 sm:gap-4 group/post animate-in fade-in slide-in-from-bottom-2",
+                    !standalonePostId && "hover:bg-foreground/[0.03] cursor-pointer",
+                    standalonePostId && "bg-background py-8 sm:py-10 border-b-2",
+                    post.author.is_pro ? "bg-gradient-to-r from-yellow-500/[0.03] to-transparent" : ""
+                  )}
+                >
+                  {/* LEFTSIDE AVATAR */}
+                  <div className="shrink-0 flex flex-col items-center">
+                    <Link href={`/feed/profile?id=${post.author.id}`} className={cn("w-12 h-12 rounded-full overflow-hidden shrink-0 relative hover:opacity-90 transition-opacity duration-200 z-10", post.author.is_pro ? "ring-2 ring-yellow-500/40" : "")}>
+                      {post.author.avatar_url ? (
+                        <img src={post.author.avatar_url} loading="lazy" className="w-full h-full object-cover" alt="" />
+                      ) : (
+                        <div className="w-full h-full bg-gradient-to-br from-primary/15 to-primary/5 flex items-center justify-center font-bold text-primary text-[15px]">
+                          {post.author.name.charAt(0)}
+                        </div>
+                      )}
+                    </Link>
+                  </div>
+
+                  {/* RIGHTSIDE CONTENT */}
+                  <div className="flex-1 min-w-0 mt-0.5">
+                    {/* Header */}
+                    <div className="flex justify-between items-start">
+                      <div className="flex items-center gap-1.5 flex-wrap leading-tight">
+                        <Link href={`/feed/profile?id=${post.author.id}`} className="group flex items-center gap-1 min-w-0">
+                          <span className={cn("font-bold text-[15px] truncate group-hover:underline", post.author.is_pro ? "text-yellow-500" : "text-foreground")}>
+                            {post.author.name}
+                          </span>
+                          {post.author.is_pro && (
+                            <Zap className="w-3.5 h-3.5 text-yellow-500 fill-yellow-500 shrink-0" />
+                          )}
+                          <span className="text-foreground/40 text-[15px] truncate ml-0.5">
+                            @{post.author.handle || post.author.name.toLowerCase().replace(/\s+/g, '')}
+                          </span>
+                        </Link>
+                        <span className="text-foreground/40 text-[15px]">·</span>
+                        <span className="text-foreground/40 text-[15px] hover:underline cursor-pointer">
+                          {timeAgo(post.created_at)}
+                        </span>
+                      </div>
+
+                      {post.author_id === user?.id && (
+                        <div className="relative group/menu shrink-0">
+                          <button className="text-foreground/40 hover:text-blue-500 p-1.5 hover:bg-blue-500/10 rounded-full transition-colors mt-[-4px]">
+                            <MoreHorizontal className="w-4 h-4" />
+                          </button>
+                          <div className="absolute right-0 top-full mt-1 w-32 bg-surface-elevated border border-foreground/10 rounded-xl shadow-xl flex flex-col opacity-0 group-hover/menu:opacity-100 pointer-events-none group-hover/menu:pointer-events-auto transition-all z-20 overflow-hidden">
+                            <button
+                              onClick={(e) => { e.stopPropagation(); handleDeletePost(post.id); }}
+                              className="w-full text-left px-4 py-3 text-sm font-bold text-red-500 hover:bg-white/5 flex items-center gap-2"
+                            >
+                              <Trash2 className="w-4 h-4" /> Eliminar
+                            </button>
                           </div>
-                        )}
-                      </Link>
+                        </div>
+                      )}
                     </div>
 
-                    {/* RIGHTSIDE CONTENT */}
-                    <div className="flex-1 min-w-0 mt-0.5">
-                      {/* Header */}
-                      <div className="flex justify-between items-start">
-                        <div className="flex items-center gap-1.5 flex-wrap leading-tight">
-                          <Link href={`/feed/profile?id=${post.author.id}`} className="group flex items-center gap-1 min-w-0">
-                            <span className={cn("font-bold text-[15px] truncate group-hover:underline", post.author.is_pro ? "text-yellow-500" : "text-foreground")}>
-                              {post.author.name}
-                            </span>
-                            {post.author.is_pro && (
-                              <Zap className="w-3.5 h-3.5 text-yellow-500 fill-yellow-500 shrink-0" />
-                            )}
-                            <span className="text-foreground/40 text-[15px] truncate ml-0.5">
-                              @{post.author.handle || post.author.name.toLowerCase().replace(/\s+/g, '')}
-                            </span>
-                          </Link>
-                          <span className="text-foreground/40 text-[15px]">·</span>
-                          <span className="text-foreground/40 text-[15px] hover:underline cursor-pointer">
-                            {timeAgo(post.created_at)}
-                          </span>
-                        </div>
-
-                        {post.author_id === user?.id && (
-                          <div className="relative group/menu shrink-0">
-                            <button className="text-foreground/40 hover:text-blue-500 p-1.5 hover:bg-blue-500/10 rounded-full transition-colors mt-[-4px]">
-                              <MoreHorizontal className="w-4 h-4" />
-                            </button>
-                            <div className="absolute right-0 top-full mt-1 w-32 bg-surface-elevated border border-foreground/10 rounded-xl shadow-xl flex flex-col opacity-0 group-hover/menu:opacity-100 pointer-events-none group-hover/menu:pointer-events-auto transition-all z-20 overflow-hidden">
-                              <button
-                                onClick={(e) => { e.stopPropagation(); handleDeletePost(post.id); }}
-                                className="w-full text-left px-4 py-3 text-sm font-bold text-red-500 hover:bg-white/5 flex items-center gap-2"
-                              >
-                                <Trash2 className="w-4 h-4" /> Eliminar
-                              </button>
-                            </div>
-                          </div>
-                        )}
-                      </div>
-
-                      {/* Content with clickable hashtags */}
-                      <div className={cn("mt-1 mb-2.5", standalonePostId ? "mt-4 mb-5" : "")}>
-                        <p className={cn("text-foreground whitespace-pre-wrap", standalonePostId ? "text-xl sm:text-[22px] font-medium leading-relaxed font-kanit tracking-tight" : "text-[15px] leading-snug")}>
-                          {(() => {
-                            let content = post.content;
-                            const hasMatchCard = post.content.match(/[?&]id=([0-9a-fA-F-]{36})/);
-                            if (hasMatchCard) {
-                              content = content.replace(/\n?https?:\/\/[^\s]+match\?id=[0-9a-fA-F-]{36}[^\s]*/g, '');
-                            }
-
-                            return content.split(/(#[\w\u00C0-\u024FáéíóúñÁÉÍÓÚÑ]+)/g).map((part, i) => {
-                              if (part.startsWith('#')) {
-                                return (
-                                  <button
-                                    key={i}
-                                    onClick={(e) => { e.stopPropagation(); handleHashtagClick(part.slice(1)); }}
-                                    className="text-primary hover:underline font-semibold"
-                                  >
-                                    {part}
-                                  </button>
-                                );
-                              }
-                              return part;
-                            });
-                          })()}
-                        </p>
-                        {/* Detect and render Match Card */}
+                    {/* Content with clickable hashtags */}
+                    <div className={cn("mt-1 mb-2.5", standalonePostId ? "mt-4 mb-5" : "")}>
+                      <p className={cn("text-foreground whitespace-pre-wrap", standalonePostId ? "text-xl sm:text-[22px] font-medium leading-relaxed font-kanit tracking-tight" : "text-[15px] leading-snug")}>
                         {(() => {
-                           const matchIdMatch = post.content.match(/[?&]id=([0-9a-fA-F-]{36})/);
-                           if (matchIdMatch) {
-                             return <MatchPostCard matchId={matchIdMatch[1]} />;
-                           }
-                           return null;
-                        })()}
-                        {/* Post Image */}
-                        {post.image_url && (
-                          <div
-                            className="mt-3 rounded-2xl overflow-hidden border border-foreground/[0.08] shadow-sm cursor-pointer hover:opacity-95 transition-opacity"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              setExpandedImage(post.image_url);
-                            }}
-                          >
-                            <img src={post.image_url} alt="" loading="lazy" className="w-full max-h-[500px] object-cover" />
-                          </div>
-                        )}
-                      </div>
+                          let content = post.content;
+                          const hasMatchCard = post.content.match(/[?&]id=([0-9a-fA-F-]{36})/);
+                          if (hasMatchCard) {
+                            content = content.replace(/\n?https?:\/\/[^\s]+match\?id=[0-9a-fA-F-]{36}[^\s]*/g, '');
+                          }
 
-                      {/* Actions */}
-                      <div className="flex items-center justify-between text-foreground/40 max-w-[425px] pr-2 -ml-2 pb-1">
-                        <button
+                          return content.split(/(#[\w\u00C0-\u024FáéíóúñÁÉÍÓÚÑ]+)/g).map((part, i) => {
+                            if (part.startsWith('#')) {
+                              return (
+                                <button
+                                  key={i}
+                                  onClick={(e) => { e.stopPropagation(); handleHashtagClick(part.slice(1)); }}
+                                  className="text-primary hover:underline font-semibold"
+                                >
+                                  {part}
+                                </button>
+                              );
+                            }
+                            return part;
+                          });
+                        })()}
+                      </p>
+                      {/* Detect and render Match Card */}
+                      {(() => {
+                        const matchIdMatch = post.content.match(/[?&]id=([0-9a-fA-F-]{36})/);
+                        if (matchIdMatch) {
+                          return <MatchPostCard matchId={matchIdMatch[1]} />;
+                        }
+                        return null;
+                      })()}
+                      {/* Post Image */}
+                      {post.image_url && (
+                        <div
+                          className="mt-3 rounded-2xl overflow-hidden border border-foreground/[0.08] shadow-sm cursor-pointer hover:opacity-95 transition-opacity"
                           onClick={(e) => {
                             e.stopPropagation();
-                            if (!standalonePostId) {
-                              if (expandedPostId === post.id) {
-                                setExpandedPostId(null);
-                              } else {
-                                setExpandedPostId(post.id);
-                                loadComments(post.id);
-                              }
-                            }
+                            setExpandedImage(post.image_url);
                           }}
-                          className={cn("flex items-center gap-1.5 text-[13px] group/btn transition-colors", expandedPostId === post.id ? "text-blue-500" : "hover:text-blue-500")}
                         >
-                          <div className={cn("p-2 rounded-full transition-colors", expandedPostId === post.id ? "bg-blue-500/10" : "group-hover/btn:bg-blue-500/10")}>
-                            <MessageSquare className="w-4.5 h-4.5" />
-                          </div>
-                          <span className="font-medium -ml-0.5">{post.comments_count > 0 ? post.comments_count : ''}</span>
-                        </button>
+                          <img src={post.image_url} alt="" loading="lazy" className="w-full max-h-[500px] object-cover" />
+                        </div>
+                      )}
+                    </div>
 
-                        {/* Bookmark */}
-                        <button
-                          onClick={(e) => { e.stopPropagation(); handleBookmark(post.id); }}
-                          className={cn("flex items-center gap-1.5 text-[13px] group/btn transition-colors", bookmarkedPosts.has(post.id) ? "text-green-500" : "hover:text-green-500")}
-                          title={bookmarkedPosts.has(post.id) ? 'Quitar de guardados' : 'Guardar'}
-                        >
-                          <div className={cn("p-2 rounded-full transition-colors", bookmarkedPosts.has(post.id) ? "bg-green-500/10" : "group-hover/btn:bg-green-500/10")}>
-                            {bookmarkedPosts.has(post.id) ? (
-                              <BookmarkCheck className="w-4.5 h-4.5 fill-green-500" />
+                    {/* Actions */}
+                    <div className="flex items-center justify-between text-foreground/40 max-w-[425px] pr-2 -ml-2 pb-1">
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          if (!standalonePostId) {
+                            if (expandedPostId === post.id) {
+                              setExpandedPostId(null);
+                            } else {
+                              setExpandedPostId(post.id);
+                              loadComments(post.id);
+                            }
+                          }
+                        }}
+                        className={cn("flex items-center gap-1.5 text-[13px] group/btn transition-colors", expandedPostId === post.id ? "text-blue-500" : "hover:text-blue-500")}
+                      >
+                        <div className={cn("p-2 rounded-full transition-colors", expandedPostId === post.id ? "bg-blue-500/10" : "group-hover/btn:bg-blue-500/10")}>
+                          <MessageSquare className="w-4.5 h-4.5" />
+                        </div>
+                        <span className="font-medium -ml-0.5">{post.comments_count > 0 ? post.comments_count : ''}</span>
+                      </button>
+
+                      {/* Bookmark */}
+                      <button
+                        onClick={(e) => { e.stopPropagation(); handleBookmark(post.id); }}
+                        className={cn("flex items-center gap-1.5 text-[13px] group/btn transition-colors", bookmarkedPosts.has(post.id) ? "text-green-500" : "hover:text-green-500")}
+                        title={bookmarkedPosts.has(post.id) ? 'Quitar de guardados' : 'Guardar'}
+                      >
+                        <div className={cn("p-2 rounded-full transition-colors", bookmarkedPosts.has(post.id) ? "bg-green-500/10" : "group-hover/btn:bg-green-500/10")}>
+                          {bookmarkedPosts.has(post.id) ? (
+                            <BookmarkCheck className="w-4.5 h-4.5 fill-green-500" />
+                          ) : (
+                            <Bookmark className="w-4.5 h-4.5" />
+                          )}
+                        </div>
+                      </button>
+
+                      <button
+                        onClick={(e) => { e.stopPropagation(); handleLike(post.id, post.user_has_liked); }}
+                        className={cn("flex items-center gap-1.5 text-[13px] group/btn transition-colors", post.user_has_liked ? "text-pink-600" : "hover:text-pink-600")}
+                        title="Me gusta"
+                      >
+                        <div className={cn("p-2 rounded-full transition-colors", post.user_has_liked ? "bg-pink-600/10" : "group-hover/btn:bg-pink-600/10")}>
+                          <Heart className={cn("w-4.5 h-4.5", post.user_has_liked && "fill-pink-600")} />
+                        </div>
+                        <span className="font-medium -ml-0.5">{post.likes_count > 0 ? post.likes_count : ''}</span>
+                      </button>
+
+                      <button
+                        onClick={(e) => { e.stopPropagation(); handleShare(post); }}
+                        className={cn("flex items-center gap-1.5 text-[13px] group/btn transition-colors hover:text-primary")}
+                        title="Compartir"
+                      >
+                        <div className="p-2 rounded-full group-hover/btn:bg-primary/10 transition-colors relative">
+                          {copiedPostId === post.id ? (
+                            <Check className="w-4.5 h-4.5 text-primary animate-in zoom-in duration-300" />
+                          ) : (
+                            <Share2 className="w-4.5 h-4.5" />
+                          )}
+                        </div>
+                      </button>
+                    </div>
+
+                    {/* Expanded Comments */}
+                    {expandedPostId === post.id && (
+                      <div
+                        className="mt-4 border-t border-foreground/[0.04] pt-4 overflow-hidden animate-in fade-in duration-300"
+                      >
+                        {/* Comment Input */}
+                        <div className="flex gap-3 mb-4">
+                          <div className="w-8 h-8 rounded-full bg-surface-elevated overflow-hidden shrink-0 mt-1">
+                            {user?.avatar_url ? (
+                              <img src={user.avatar_url} className="w-full h-full object-cover" alt="" />
                             ) : (
-                              <Bookmark className="w-4.5 h-4.5" />
+                              <div className="w-full h-full bg-primary/10 flex items-center justify-center font-bold text-primary text-xs">
+                                {user?.user_metadata?.name?.charAt(0) || '?'}
+                              </div>
                             )}
                           </div>
-                        </button>
-
-                        <button
-                          onClick={(e) => { e.stopPropagation(); handleLike(post.id, post.user_has_liked); }}
-                          className={cn("flex items-center gap-1.5 text-[13px] group/btn transition-colors", post.user_has_liked ? "text-pink-600" : "hover:text-pink-600")}
-                          title="Me gusta"
-                        >
-                          <div className={cn("p-2 rounded-full transition-colors", post.user_has_liked ? "bg-pink-600/10" : "group-hover/btn:bg-pink-600/10")}>
-                            <Heart className={cn("w-4.5 h-4.5", post.user_has_liked && "fill-pink-600")} />
+                          <div className="flex-1 relative">
+                            <input
+                              value={newCommentContent}
+                              onChange={(e) => setNewCommentContent(e.target.value)}
+                              onKeyDown={(e) => e.key === 'Enter' && handleComment(post.id)}
+                              placeholder="Escribí tu comentario..."
+                              className="w-full bg-foreground/[0.03] border-none rounded-2xl px-4 py-2 text-sm focus:ring-1 focus:ring-primary/30 outline-none pr-10"
+                            />
+                            <button
+                              onClick={() => handleComment(post.id)}
+                              disabled={!newCommentContent.trim() || isCommenting === post.id}
+                              className="absolute right-2 top-1/2 -translate-y-1/2 text-primary disabled:opacity-30 p-1"
+                            >
+                              {isCommenting === post.id ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
+                            </button>
                           </div>
-                          <span className="font-medium -ml-0.5">{post.likes_count > 0 ? post.likes_count : ''}</span>
-                        </button>
+                        </div>
 
-                        <button
-                          onClick={(e) => { e.stopPropagation(); handleShare(post); }}
-                          className={cn("flex items-center gap-1.5 text-[13px] group/btn transition-colors hover:text-primary")}
-                          title="Compartir"
-                        >
-                          <div className="p-2 rounded-full group-hover/btn:bg-primary/10 transition-colors relative">
-                            {copiedPostId === post.id ? (
-                              <Check className="w-4.5 h-4.5 text-primary animate-in zoom-in duration-300" />
-                            ) : (
-                              <Share2 className="w-4.5 h-4.5" />
-                            )}
-                          </div>
-                        </button>
-                      </div>
-
-                      {/* Expanded Comments */}
-                        {expandedPostId === post.id && (
-                          <div
-                            className="mt-4 border-t border-foreground/[0.04] pt-4 overflow-hidden animate-in fade-in duration-300"
-                          >
-                            {/* Comment Input */}
-                            <div className="flex gap-3 mb-4">
-                              <div className="w-8 h-8 rounded-full bg-surface-elevated overflow-hidden shrink-0 mt-1">
-                                {user?.avatar_url ? (
-                                  <img src={user.avatar_url} className="w-full h-full object-cover" alt="" />
+                        {/* Comment List */}
+                        <div className="space-y-4 px-1">
+                          {comments[post.id]?.map(comment => (
+                            <div key={comment.id} className="flex gap-3">
+                              <Link href={`/feed/profile?id=${comment.author.id}`} className={cn("w-8 h-8 rounded-full overflow-hidden shrink-0 ring-1", comment.author.is_pro ? "ring-yellow-500/20" : "ring-foreground/[0.06]")}>
+                                {comment.author.avatar_url ? (
+                                  <img src={comment.author.avatar_url} loading="lazy" className="w-full h-full object-cover" alt="" />
                                 ) : (
-                                  <div className="w-full h-full bg-primary/10 flex items-center justify-center font-bold text-primary text-xs">
-                                    {user?.user_metadata?.name?.charAt(0) || '?'}
+                                  <div className="w-full h-full bg-foreground/5 flex items-center justify-center font-bold text-foreground/40 text-[10px]">
+                                    {comment.author.name.charAt(0)}
                                   </div>
                                 )}
-                              </div>
-                              <div className="flex-1 relative">
-                                <input
-                                  value={newCommentContent}
-                                  onChange={(e) => setNewCommentContent(e.target.value)}
-                                  onKeyDown={(e) => e.key === 'Enter' && handleComment(post.id)}
-                                  placeholder="Escribí tu comentario..."
-                                  className="w-full bg-foreground/[0.03] border-none rounded-2xl px-4 py-2 text-sm focus:ring-1 focus:ring-primary/30 outline-none pr-10"
-                                />
-                                <button
-                                  onClick={() => handleComment(post.id)}
-                                  disabled={!newCommentContent.trim() || isCommenting === post.id}
-                                  className="absolute right-2 top-1/2 -translate-y-1/2 text-primary disabled:opacity-30 p-1"
-                                >
-                                  {isCommenting === post.id ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
-                                </button>
+                              </Link>
+                              <div className="flex-1 bg-foreground/[0.015] rounded-2xl px-4 py-2.5">
+                                <div className="flex items-center gap-2 mb-0.5">
+                                  <span className={cn("font-bold text-xs", comment.author.is_pro ? "text-yellow-600" : "text-foreground")}>{comment.author.name}</span>
+                                  <span className="text-[10px] text-foreground/40">{timeAgo(comment.created_at)}</span>
+                                </div>
+                                <p className="text-sm text-foreground/80 leading-relaxed">{comment.content}</p>
                               </div>
                             </div>
-
-                            {/* Comment List */}
-                            <div className="space-y-4 px-1">
-                              {comments[post.id]?.map(comment => (
-                                <div key={comment.id} className="flex gap-3">
-                                  <Link href={`/feed/profile?id=${comment.author.id}`} className={cn("w-8 h-8 rounded-full overflow-hidden shrink-0 ring-1", comment.author.is_pro ? "ring-yellow-500/20" : "ring-foreground/[0.06]")}>
-                                    {comment.author.avatar_url ? (
-                                      <img src={comment.author.avatar_url} loading="lazy" className="w-full h-full object-cover" alt="" />
-                                    ) : (
-                                      <div className="w-full h-full bg-foreground/5 flex items-center justify-center font-bold text-foreground/40 text-[10px]">
-                                        {comment.author.name.charAt(0)}
-                                      </div>
-                                    )}
-                                  </Link>
-                                  <div className="flex-1 bg-foreground/[0.015] rounded-2xl px-4 py-2.5">
-                                    <div className="flex items-center gap-2 mb-0.5">
-                                      <span className={cn("font-bold text-xs", comment.author.is_pro ? "text-yellow-600" : "text-foreground")}>{comment.author.name}</span>
-                                      <span className="text-[10px] text-foreground/40">{timeAgo(comment.created_at)}</span>
-                                    </div>
-                                    <p className="text-sm text-foreground/80 leading-relaxed">{comment.content}</p>
-                                  </div>
-                                </div>
-                              ))}
-                              {comments[post.id]?.length === 0 && (
-                                <div className="py-6 text-center text-foreground/30 text-xs italic">
-                                  Sé el primero en comentar...
-                                </div>
-                              )}
+                          ))}
+                          {comments[post.id]?.length === 0 && (
+                            <div className="py-6 text-center text-foreground/30 text-xs italic">
+                              Sé el primero en comentar...
                             </div>
-                          </div>
-                        )}
-                    </div>
-                  </div>
-                ))}
-
-                {filteredPosts.length === 0 && (
-                  <div className="flex flex-col items-center justify-center py-20 px-4 text-center">
-                    <div className="w-20 h-20 rounded-[2rem] bg-foreground/[0.02] border border-foreground/[0.06] flex items-center justify-center mb-6 relative group overflow-hidden">
-                      <div className="absolute inset-0 bg-gradient-to-br from-primary/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                      <Search className="w-8 h-8 text-foreground/10 group-hover:text-primary/40 transition-colors duration-500" />
-                    </div>
-                    <h3 className="text-xl font-black italic uppercase font-kanit text-foreground tracking-tighter mb-2">No se encontró nada</h3>
-                    <p className="text-foreground/40 text-sm max-w-xs">{searchQuery ? `No hay resultados para "${searchQuery}". Intentá con otra palabra o hashtag.` : "El muro está vacío. ¡Sé el primero en dominar la cancha con un post!"}</p>
-                    {searchQuery && (
-                      <button
-                        onClick={() => setSearchQuery('')}
-                        className="mt-6 px-6 py-2 rounded-full bg-foreground/5 border border-foreground/10 text-foreground/60 text-xs font-bold hover:bg-foreground/10 transition-all"
-                      >
-                        Ver todo el feed
-                      </button>
+                          )}
+                        </div>
+                      </div>
                     )}
                   </div>
-                )}
+                </div>
+              ))}
+
+              {filteredPosts.length === 0 && (
+                <div className="flex flex-col items-center justify-center py-20 px-4 text-center">
+                  <div className="w-20 h-20 rounded-[2rem] bg-foreground/[0.02] border border-foreground/[0.06] flex items-center justify-center mb-6 relative group overflow-hidden">
+                    <div className="absolute inset-0 bg-gradient-to-br from-primary/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                    <Search className="w-8 h-8 text-foreground/10 group-hover:text-primary/40 transition-colors duration-500" />
+                  </div>
+                  <h3 className="text-xl font-black italic uppercase font-kanit text-foreground tracking-tighter mb-2">No se encontró nada</h3>
+                  <p className="text-foreground/40 text-sm max-w-xs">{searchQuery ? `No hay resultados para "${searchQuery}". Intentá con otra palabra o hashtag.` : "El muro está vacío. ¡Sé el primero en dominar la cancha con un post!"}</p>
+                  {searchQuery && (
+                    <button
+                      onClick={() => setSearchQuery('')}
+                      className="mt-6 px-6 py-2 rounded-full bg-foreground/5 border border-foreground/10 text-foreground/60 text-xs font-bold hover:bg-foreground/10 transition-all"
+                    >
+                      Ver todo el feed
+                    </button>
+                  )}
+                </div>
+              )}
             </div>
           </div>
 
