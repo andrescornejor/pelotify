@@ -721,10 +721,6 @@ export default function HomePage() {
                       />
                     )}
                     <div className="flex items-center gap-5 relative z-10">
-                      <div className="w-14 h-14 rounded-2xl flex items-center justify-center shrink-0 glass shadow-inner border-foreground/15">
-                        <Users className="w-7 h-7 text-primary" />
-                      </div>
-                    <div className="flex items-center gap-5 relative z-10">
                       <div className="w-14 h-14 rounded-xl flex items-center justify-center shrink-0 bg-surface border border-border shadow-inner">
                         <Users className="w-7 h-7 text-primary" />
                       </div>
@@ -782,7 +778,7 @@ export default function HomePage() {
                             initial={{ width: 0 }}
                             whileInView={{ width: '100%' }}
                             transition={{ duration: 2, ease: 'circOut' }}
-                            className="absolute left-0 h-1 bg-gradient-to-r from-primary/20 via-primary to-primary-light top-1/2 -translate-y-1/2"
+                            className="absolute left-0 h-1 bg-gradient-to-r from-primary/20 via-primary to-primary top-1/2 -translate-y-1/2"
                             style={{
                               width: `${(RANKS.findIndex((rank) => rank.name === rankCalculation.info.name) / (RANKS.length - 1)) * 100}%`,
                             }}

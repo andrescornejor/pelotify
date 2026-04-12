@@ -11,6 +11,8 @@
   --primary: #2cfc7d;
   --primary-rgb: 44, 252, 125;
   --primary-soft: rgba(44, 252, 125, 0.1);
+  --primary-light: #5dfd9d;
+  --primary-dark: #159c4b;
   
   --accent: #f59e0b;
   --accent-rgb: 245, 158, 11;
@@ -76,6 +78,8 @@
 
   --color-primary: var(--primary);
   --color-primary-soft: var(--primary-soft);
+  --color-primary-light: var(--primary-light);
+  --color-primary-dark: var(--primary-dark);
 
   --color-accent: var(--accent);
 
