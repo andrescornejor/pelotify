@@ -1787,7 +1787,7 @@ function ProfileContent() {
                                 {(isMe || user?.id === comment.author_id) && (
                                   <button
                                     onClick={() => handleDeleteComment(comment.id)}
-                                    className="text-foreground/20 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-all p-2 rounded-full hover:bg-red-500/10"
+                                    className="text-foreground/30 hover:text-red-500 transition-all p-2 rounded-full hover:bg-red-500/10 flex-shrink-0"
                                     title="Eliminar comentario"
                                   >
                                     <Trash2 className="w-4 h-4" />
