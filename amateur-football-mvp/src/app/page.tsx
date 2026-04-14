@@ -26,6 +26,7 @@ import {
   Crown,
   Play,
   Heart,
+  Globe,
 } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useSettings } from '@/contexts/SettingsContext';
