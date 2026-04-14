@@ -719,7 +719,7 @@ export default function HomePage() {
                            <Link href={`/match/${nextMatch.id}`} className="p-3 bg-primary/20 text-primary rounded-xl shrink-0"><ArrowRight className="w-5 h-5"/></Link>
                         </div>
                      </div>
-                  ) : <EmptyState type="matches" message="No tienes partidos cerca" />}
+                  ) : <EmptyState icon={Calendar} title="Sin partidos" description="No tienes partidos cerca" />}
                </div>
           </div>
         </div>
