@@ -1678,7 +1678,7 @@ function ProfileContent() {
                   exit={{ opacity: 0 }}
                   className="w-full max-w-2xl mx-auto border-x border-foreground/10 relative"
                 >
-                  <FeedClient authorId={id === 'me' || !id ? (user?.id || undefined) : (id as string)} />
+                  <FeedClient authorId={id === 'me' || !id ? (user?.id || undefined) : (id as string)} profileMode={true} />
                 </motion.div>
               )}
               {activeTab === 'wall' && (
@@ -1687,173 +1687,106 @@ function ProfileContent() {
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0 }}
-                  className="w-full max-w-2xl mx-auto pb-20 border-x border-foreground/10 min-h-screen relative"
+                  className="w-full max-w-2xl mx-auto pb-20 border-x border-foreground/10 min-h-screen relative bg-[#1b2838]"
                 >
-                  <div className="sticky top-0 z-50 backdrop-blur-xl bg-background/80 border-b border-foreground/10 px-4 py-3 flex items-center justify-between cursor-pointer">
-                    <h3 className="text-xl font-bold text-foreground">Posteos</h3>
-                    <div className="text-[13px] font-medium text-foreground/50">
-                      {comments.length} tweets
+                  <div className="p-6 text-white h-full relative">
+                    <div className="flex justify-between items-end border-b border-[#2a475e] pb-2 mb-6 pointer-events-none">
+                      <h3 className="text-xl font-normal text-[#66c0f4]">Comentarios</h3>
+                      <span className="text-sm text-[#4f94bc]">{comments.length} comentarios</span>
                     </div>
-                  </div>
 
-                  {user && (
-                    <form
-                      onSubmit={handlePostComment}
-                      className="p-4 border-b border-foreground/10 flex gap-4 hidden sm:flex"
-                    >
-                      <div className="w-10 h-10 rounded-full bg-surface-elevated overflow-hidden shrink-0">
-                        {user.user_metadata?.avatar_url ? (
-                          <img
-                            src={user.user_metadata.avatar_url}
-                            className="w-full h-full object-cover"
+                    {user && (
+                      <form onSubmit={handlePostComment} className="bg-[#101822] p-4 flex gap-4 mb-8 border border-[#2a475e]">
+                        <div className="w-16 h-16 bg-[#171a21] shrink-0 border border-[#2a475e]">
+                          {user.user_metadata?.avatar_url ? (
+                            <img
+                              src={user.user_metadata.avatar_url}
+                              className="w-full h-full object-cover"
+                            />
+                          ) : (
+                            <div className="w-full h-full flex items-center justify-center font-bold text-[#66c0f4] text-xl">
+                              {user.name?.slice(0, 1).toUpperCase() || '?'}
+                            </div>
+                          )}
+                        </div>
+                        <div className="flex-1 flex flex-col gap-3">
+                          <textarea
+                            value={newComment}
+                            onChange={(e) => setNewComment(e.target.value)}
+                            className="w-full bg-[#1b2838] border border-[#2a475e] text-[#acb2b8] p-3 text-sm focus:outline-none focus:border-[#66c0f4] min-h-[70px] resize-y"
+                            placeholder="Añada un comentario"
+                            disabled={isPostingComment}
                           />
-                        ) : (
-                          <div className="w-full h-full flex items-center justify-center font-bold text-primary">
-                            {user.name?.slice(0, 1).toUpperCase() || '?'}
-                          </div>
-                        )}
-                      </div>
-                      <div className="flex-1 flex flex-col">
-                        <textarea
-                          value={newComment}
-                          onChange={(e) => setNewComment(e.target.value)}
-                          placeholder="¿Qué le querés decir a este crack?"
-                          className="w-full bg-transparent border-none resize-none focus:outline-none text-foreground text-lg placeholder:text-foreground/50 min-h-[50px] font-medium"
-                          maxLength={500}
-                          disabled={isPostingComment}
-                        />
-                        <div className="flex items-center justify-between mt-2 pt-2">
-                          <div className="flex items-center gap-1">
-                            <button type="button" className="p-2 text-blue-500 hover:bg-blue-500/10 rounded-full transition-colors flex items-center justify-center">
-                              <ImageIcon className="w-5 h-5" />
-                            </button>
-                          </div>
-                          <div className="flex items-center gap-3">
-                            <span className="text-xs font-medium text-foreground/40">{newComment.length}/500</span>
+                          <div className="flex justify-end">
                             <button
                               type="submit"
                               disabled={isPostingComment || !newComment.trim()}
-                              className="px-5 py-1.5 rounded-full bg-blue-500 text-white font-bold text-[15px] tracking-wide disabled:opacity-50 disabled:cursor-not-allowed hover:bg-blue-600 active:scale-95 transition-all shadow-sm"
+                              className="px-4 py-1.5 bg-gradient-to-r from-[#47bfff] to-[#1a44c2] hover:from-[#4cb3ff] hover:to-[#2255d6] text-white text-sm shadow rounded-sm disabled:opacity-50 font-normal transition-all"
                             >
-                              {isPostingComment ? (
-                                <Loader2 className="w-4 h-4 animate-spin" />
-                              ) : (
-                                'Postear'
-                              )}
+                              {isPostingComment ? <Loader2 className="w-4 h-4 animate-spin inline mr-2" /> : ''}
+                              Publicar comentario
                             </button>
                           </div>
                         </div>
-                      </div>
-                    </form>
-                  )}
+                      </form>
+                    )}
 
-                  <div className="flex flex-col">
-                    {isLoadingComments ? (
-                      <div className="flex justify-center py-20">
-                        <Loader2 className="w-6 h-6 animate-spin text-blue-500" />
-                      </div>
-                    ) : comments.length > 0 ? (
-                      comments.map((comment, i) => (
-                        <motion.div
-                          key={comment.id}
-                          initial={{ opacity: 0 }}
-                          animate={{ opacity: 1 }}
-                          transition={{ delay: i * 0.05 }}
-                          className="p-4 border-b border-foreground/10 hover:bg-foreground/[0.02] transition-colors relative flex gap-3 cursor-pointer"
-                        >
-                          {/* LEFTSIDE AVATAR */}
-                          <div className="shrink-0 flex flex-col items-center">
-                            <Link href={`/profile?id=${comment.author_id}`} className="w-10 h-10 rounded-full overflow-hidden shrink-0 border border-foreground/10 relative hover:opacity-90 transition-opacity">
-                              {comment.author?.avatar_url ? (
-                                <img
-                                  src={comment.author.avatar_url}
-                                  className="w-full h-full object-cover"
-                                />
-                              ) : (
-                                <div className="w-full h-full flex items-center justify-center font-bold text-primary text-sm bg-foreground/5">
-                                  {comment.author?.name?.slice(0, 1).toUpperCase() || 'P'}
-                                </div>
-                              )}
-                            </Link>
-                          </div>
+                    <div className="flex flex-col gap-6">
+                      {isLoadingComments ? (
+                        <div className="flex justify-center py-10">
+                          <Loader2 className="w-6 h-6 animate-spin text-[#66c0f4]" />
+                        </div>
+                      ) : comments.length > 0 ? (
+                        comments.map((comment) => (
+                          <div key={comment.id} className="flex gap-4 group">
+                            {/* Avatar */}
+                            <div className="w-12 h-12 shrink-0 border border-[#2a475e] bg-[#171a21]">
+                              <Link href={`/profile?id=${comment.author_id}`}>
+                                {comment.author?.avatar_url ? (
+                                  <img src={comment.author.avatar_url} className="w-full h-full object-cover" />
+                                ) : (
+                                  <div className="w-full h-full flex items-center justify-center font-bold text-[#66c0f4] text-lg">
+                                    {comment.author?.name?.slice(0, 1).toUpperCase() || 'P'}
+                                  </div>
+                                )}
+                              </Link>
+                            </div>
 
-                          {/* RIGHTSIDE CONTENT */}
-                          <div className="flex-1 min-w-0">
-                            {/* Header */}
-                            <div className="flex justify-between items-start">
-                              <div className="flex items-center gap-1.5 flex-wrap">
-                                <Link href={`/profile?id=${comment.author_id}`} className="group flex items-center gap-1.5 min-w-0">
-                                  <span className="font-bold text-[15px] truncate group-hover:underline text-foreground">
+                            {/* Content area */}
+                            <div className="flex-1 bg-transparent min-w-0">
+                              <div className="flex justify-between items-start">
+                                <div className="flex items-center gap-2 flex-wrap text-[13px] leading-tight">
+                                  <Link href={`/profile?id=${comment.author_id}`} className="font-bold text-[#e1e1e1] hover:text-[#66c0f4] hover:underline transition-colors truncate max-w-[200px]">
                                     {comment.author?.name || 'Veterano'}
+                                  </Link>
+                                  <span className="text-[#626366] text-xs">
+                                    {new Date(comment.created_at).toLocaleDateString('es-ES', { day: 'numeric', month: 'short' })}{' '}
+                                    a las {new Date(comment.created_at).toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' })}
                                   </span>
-                                  <span className="text-foreground/50 text-[15px] truncate">
-                                    @{(comment.author?.name || 'user').toLowerCase().replace(/\s+/g, '')}
-                                  </span>
-                                </Link>
-                                <span className="text-foreground/50 text-[15px]">·</span>
-                                <span className="text-foreground/50 text-[15px] hover:underline cursor-pointer">
-                                  {new Date(comment.created_at).toLocaleDateString('es-ES', {
-                                    day: 'numeric',
-                                    month: 'short',
-                                  })}
-                                </span>
+                                </div>
+                                {(isMe || user?.id === comment.author_id) && (
+                                  <button
+                                    onClick={() => handleDeleteComment(comment.id)}
+                                    className="text-[#626366] hover:text-[#e1e1e1] opacity-0 group-hover:opacity-100 transition-opacity p-1"
+                                    title="Eliminar comentario"
+                                  >
+                                    <Trash2 className="w-4 h-4" />
+                                  </button>
+                                )}
                               </div>
 
-                              {(isMe || user?.id === comment.author_id) && (
-                                <div className="relative group/menu shrink-0">
-                                  <button className="text-foreground/40 hover:text-blue-500 p-1.5 hover:bg-blue-500/10 rounded-full transition-colors mt-[-4px]">
-                                    <MoreHorizontal className="w-4 h-4" />
-                                  </button>
-                                  <div className="absolute right-0 top-full mt-1 w-32 bg-surface-elevated border border-foreground/10 rounded-xl shadow-xl flex flex-col opacity-0 group-hover/menu:opacity-100 pointer-events-none group-hover/menu:pointer-events-auto transition-all z-20 overflow-hidden">
-                                     <button 
-                                       onClick={(e) => { e.stopPropagation(); handleDeleteComment(comment.id); }}
-                                       className="w-full text-left px-4 py-3 text-sm font-bold text-red-500 hover:bg-white/5 flex items-center gap-2"
-                                     >
-                                        <Trash className="w-4 h-4" /> Eliminar
-                                     </button>
-                                  </div>
-                                </div>
-                              )}
-                            </div>
-
-                            {/* Content */}
-                            <div className="mt-1 mb-3">
-                              <p className="text-foreground text-[15px] leading-relaxed whitespace-pre-wrap">
+                              <div className="mt-1.5 text-[#acb2b8] text-[13px] whitespace-pre-wrap break-words leading-relaxed">
                                 {comment.content}
-                              </p>
-                            </div>
-
-                            {/* Actions mock for aesthetics */}
-                            <div className="flex items-center justify-between text-foreground/50 max-w-md pr-4">
-                              <button className="flex items-center gap-1.5 text-[13px] group/btn hover:text-blue-500 transition-colors">
-                                <div className="p-2 rounded-full group-hover/btn:bg-blue-500/10 transition-colors">
-                                  <MessageSquare className="w-4 h-4" />
-                                </div>
-                              </button>
-                              <button className="flex items-center gap-1.5 text-[13px] group/btn hover:text-green-500 transition-colors">
-                                <div className="p-2 rounded-full group-hover/btn:bg-green-500/10 transition-colors">
-                                  <Zap className="w-4 h-4" />
-                                </div>
-                              </button>
-                              <button className="flex items-center gap-1.5 text-[13px] group/btn hover:text-pink-600 transition-colors">
-                                <div className="p-2 rounded-full group-hover/btn:bg-pink-600/10 transition-colors">
-                                  <Heart className="w-4 h-4" />
-                                </div>
-                              </button>
-                              <button className="flex items-center gap-1.5 text-[13px] group/btn hover:text-blue-500 transition-colors">
-                                <div className="p-2 rounded-full group-hover/btn:bg-blue-500/10 transition-colors">
-                                  <Share2 className="w-4 h-4" />
-                                </div>
-                              </button>
+                              </div>
                             </div>
                           </div>
-                        </motion.div>
-                      ))
-                    ) : (
-                      <div className="text-center py-20 text-foreground/50 font-medium text-lg border-t border-foreground/10">
-                        Aún no hay publicaciones. ¡Sé el primero en twittear a este jugador!
-                      </div>
-                    )}
+                        ))
+                      ) : (
+                        <div className="text-center py-10 text-[#626366] text-[13px]">
+                          Aún no hay comentarios.
+                        </div>
+                      )}
+                    </div>
                   </div>
                 </motion.div>
               )}
