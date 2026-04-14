@@ -6,7 +6,7 @@ import {
   Home, 
   Plus, 
   Search,
-  Shield,
+  Globe,
   User,
   MessageSquare,
   PenSquare
@@ -48,9 +48,9 @@ export function BottomNav() {
       color: 'from-primary via-[#3dfc8d] to-primary-dark'
     },
     { 
-      label: 'Logros', 
-      href: '/teams', 
-      icon: Shield,
+      label: 'Feed', 
+      href: '/feed', 
+      icon: Globe,
       color: 'from-orange-400 to-red-500'
     },
     { 
@@ -97,7 +97,7 @@ export function BottomNav() {
                 </Link>
                 <button onClick={() => {
                   setIsMenuOpen(false);
-                  if (pathname !== '/') router.push('/');
+                  if (pathname !== '/feed') router.push('/feed');
                   setTimeout(() => {
                     window.scrollTo({ top: 0, behavior: 'smooth' });
                     document.querySelector('textarea')?.focus();
@@ -135,7 +135,7 @@ export function BottomNav() {
                      "absolute -top-12 left-1/2 -translate-x-1/2 w-48 h-24 blur-[60px] rounded-full pointer-events-none z-0",
                      item.href === '/' ? "bg-[#2cfc7d]" : 
                      item.href === '/search' ? "bg-blue-500" :
-                     item.href === '/teams' ? "bg-orange-500" : "bg-purple-500"
+                     item.href === '/feed' ? "bg-orange-500" : "bg-purple-500"
                    )}
                  />
                );
