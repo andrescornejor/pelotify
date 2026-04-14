@@ -1687,65 +1687,85 @@ function ProfileContent() {
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0 }}
-                  className="w-full max-w-2xl mx-auto pb-20 border-x border-foreground/10 min-h-screen relative bg-[#1b2838]"
+                  className="w-full max-w-2xl mx-auto pb-20 border-x border-foreground/10 min-h-screen relative"
                 >
-                  <div className="p-6 text-white h-full relative">
-                    <div className="flex justify-between items-end border-b border-[#2a475e] pb-2 mb-6 pointer-events-none">
-                      <h3 className="text-xl font-normal text-[#66c0f4]">Comentarios</h3>
-                      <span className="text-sm text-[#4f94bc]">{comments.length} comentarios</span>
+                  <div className="p-4 sm:p-6 h-full relative">
+                    {/* Header y Explicación */}
+                    <div className="flex flex-col gap-3 border-b border-foreground/10 pb-6 mb-8">
+                       <div className="flex items-center gap-3">
+                         <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center border border-primary/20">
+                            <MessageSquare className="w-5 h-5 text-primary" />
+                         </div>
+                         <h3 className="text-2xl sm:text-3xl font-black italic uppercase tracking-tighter text-foreground leading-none">Muro Social</h3>
+                       </div>
+                       <p className="text-sm font-medium text-foreground/60 leading-relaxed max-w-lg">
+                         El Muro Social es el espacio público de <span className="text-foreground font-bold">{displayPlayer.name}</span>. ¡Dejale un mensaje, una dedicatoria o un buen desafío! Todo lo que firmes acá quedará a la vista de la comunidad.
+                       </p>
+                       <span className="text-[10px] font-black uppercase tracking-[0.3em] text-primary mt-2">
+                         {comments.length} FIRMAS EN EL MURO
+                       </span>
                     </div>
 
+                    {/* Caja de Comentar */}
                     {user && (
-                      <form onSubmit={handlePostComment} className="bg-[#101822] p-4 flex gap-4 mb-8 border border-[#2a475e]">
-                        <div className="w-16 h-16 bg-[#171a21] shrink-0 border border-[#2a475e]">
+                      <form onSubmit={handlePostComment} className="glass-premium p-4 sm:p-5 rounded-3xl flex flex-col sm:flex-row gap-4 mb-8 border border-white/5 shadow-2xl relative overflow-hidden group">
+                        <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 blur-[50px] opacity-0 group-hover:opacity-100 transition-opacity duration-1000 pointer-events-none" />
+                        <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-background overflow-hidden shrink-0 border border-foreground/10 z-10">
                           {user.user_metadata?.avatar_url ? (
                             <img
                               src={user.user_metadata.avatar_url}
                               className="w-full h-full object-cover"
                             />
                           ) : (
-                            <div className="w-full h-full flex items-center justify-center font-bold text-[#66c0f4] text-xl">
+                            <div className="w-full h-full flex items-center justify-center font-bold text-primary text-xl bg-primary/5">
                               {user.name?.slice(0, 1).toUpperCase() || '?'}
                             </div>
                           )}
                         </div>
-                        <div className="flex-1 flex flex-col gap-3">
+                        <div className="flex-1 flex flex-col gap-3 z-10">
                           <textarea
                             value={newComment}
                             onChange={(e) => setNewComment(e.target.value)}
-                            className="w-full bg-[#1b2838] border border-[#2a475e] text-[#acb2b8] p-3 text-sm focus:outline-none focus:border-[#66c0f4] min-h-[70px] resize-y"
-                            placeholder="Añada un comentario"
+                            className="w-full bg-foreground/[0.03] border border-foreground/10 text-foreground p-4 rounded-xl text-sm font-medium focus:outline-none focus:border-primary/50 focus:bg-foreground/[0.05] min-h-[90px] resize-y transition-all shadow-inner placeholder:text-foreground/30"
+                            placeholder={`Dejá tu firma en el muro de ${displayPlayer.name.split(' ')[0]}...`}
                             disabled={isPostingComment}
                           />
                           <div className="flex justify-end">
                             <button
                               type="submit"
                               disabled={isPostingComment || !newComment.trim()}
-                              className="px-4 py-1.5 bg-gradient-to-r from-[#47bfff] to-[#1a44c2] hover:from-[#4cb3ff] hover:to-[#2255d6] text-white text-sm shadow rounded-sm disabled:opacity-50 font-normal transition-all"
+                              className="px-6 py-3 bg-primary hover:bg-primary/90 text-black text-[10px] sm:text-[11px] font-black uppercase tracking-widest shadow-xl shadow-primary/20 rounded-xl disabled:opacity-50 disabled:shadow-none transition-all flex items-center gap-2 active:scale-95"
                             >
-                              {isPostingComment ? <Loader2 className="w-4 h-4 animate-spin inline mr-2" /> : ''}
-                              Publicar comentario
+                              {isPostingComment ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
+                              Firmar Muro
                             </button>
                           </div>
                         </div>
                       </form>
                     )}
 
-                    <div className="flex flex-col gap-6">
+                    {/* Lista de Comentarios */}
+                    <div className="flex flex-col gap-3">
                       {isLoadingComments ? (
                         <div className="flex justify-center py-10">
-                          <Loader2 className="w-6 h-6 animate-spin text-[#66c0f4]" />
+                          <Loader2 className="w-8 h-8 animate-spin text-primary" />
                         </div>
                       ) : comments.length > 0 ? (
-                        comments.map((comment) => (
-                          <div key={comment.id} className="flex gap-4 group">
+                        comments.map((comment, i) => (
+                          <motion.div
+                            initial={{ opacity: 0, y: 10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: i * 0.05 }}
+                            key={comment.id} 
+                            className="flex gap-3 sm:gap-4 group p-4 rounded-[2rem] hover:bg-foreground/[0.02] transition-colors border border-transparent hover:border-foreground/5 relative"
+                          >
                             {/* Avatar */}
-                            <div className="w-12 h-12 shrink-0 border border-[#2a475e] bg-[#171a21]">
+                            <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full shrink-0 border border-foreground/10 bg-foreground/5 overflow-hidden ring-2 ring-transparent group-hover:ring-primary/20 transition-all">
                               <Link href={`/profile?id=${comment.author_id}`}>
                                 {comment.author?.avatar_url ? (
-                                  <img src={comment.author.avatar_url} className="w-full h-full object-cover" />
+                                  <img src={comment.author.avatar_url} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
                                 ) : (
-                                  <div className="w-full h-full flex items-center justify-center font-bold text-[#66c0f4] text-lg">
+                                  <div className="w-full h-full flex items-center justify-center font-bold text-primary text-lg bg-primary/5">
                                     {comment.author?.name?.slice(0, 1).toUpperCase() || 'P'}
                                   </div>
                                 )}
@@ -1753,21 +1773,21 @@ function ProfileContent() {
                             </div>
 
                             {/* Content area */}
-                            <div className="flex-1 bg-transparent min-w-0">
+                            <div className="flex-1 bg-transparent min-w-0 pt-0.5">
                               <div className="flex justify-between items-start">
-                                <div className="flex items-center gap-2 flex-wrap text-[13px] leading-tight">
-                                  <Link href={`/profile?id=${comment.author_id}`} className="font-bold text-[#e1e1e1] hover:text-[#66c0f4] hover:underline transition-colors truncate max-w-[200px]">
+                                <div className="flex items-center gap-2 flex-wrap leading-tight relative top-1">
+                                  <Link href={`/profile?id=${comment.author_id}`} className="font-bold text-foreground text-[14px] sm:text-[15px] hover:text-primary transition-colors truncate max-w-[150px] sm:max-w-[200px]">
                                     {comment.author?.name || 'Veterano'}
                                   </Link>
-                                  <span className="text-[#626366] text-xs">
+                                  <span className="text-foreground/40 text-[10px] font-bold uppercase tracking-wider relative top-[1px]">
                                     {new Date(comment.created_at).toLocaleDateString('es-ES', { day: 'numeric', month: 'short' })}{' '}
-                                    a las {new Date(comment.created_at).toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' })}
+                                    • {new Date(comment.created_at).toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' })}
                                   </span>
                                 </div>
                                 {(isMe || user?.id === comment.author_id) && (
                                   <button
                                     onClick={() => handleDeleteComment(comment.id)}
-                                    className="text-[#626366] hover:text-[#e1e1e1] opacity-0 group-hover:opacity-100 transition-opacity p-1"
+                                    className="text-foreground/20 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-all p-2 rounded-full hover:bg-red-500/10"
                                     title="Eliminar comentario"
                                   >
                                     <Trash2 className="w-4 h-4" />
@@ -1775,15 +1795,20 @@ function ProfileContent() {
                                 )}
                               </div>
 
-                              <div className="mt-1.5 text-[#acb2b8] text-[13px] whitespace-pre-wrap break-words leading-relaxed">
+                              <div className="mt-2.5 text-foreground/80 text-[14px] sm:text-[15px] whitespace-pre-wrap break-words leading-relaxed font-medium">
                                 {comment.content}
                               </div>
                             </div>
-                          </div>
+                          </motion.div>
                         ))
                       ) : (
-                        <div className="text-center py-10 text-[#626366] text-[13px]">
-                          Aún no hay comentarios.
+                        <div className="text-center py-20 flex flex-col items-center justify-center gap-4">
+                          <div className="w-20 h-20 rounded-[2rem] bg-foreground/5 flex items-center justify-center border border-foreground/10 shadow-inner">
+                             <MessageSquare className="w-10 h-10 text-foreground/20" />
+                          </div>
+                          <p className="text-foreground/40 text-[12px] font-black uppercase tracking-[0.3em] max-w-[250px] leading-relaxed">
+                            Nadie ha firmado este muro todavía.
+                          </p>
                         </div>
                       )}
                     </div>
