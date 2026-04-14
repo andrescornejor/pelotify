@@ -852,6 +852,7 @@ export default function FeedClient({ standalonePostId, authorId, profileMode }: 
                   <Zap className="w-5 h-5 text-foreground/40 group-hover:text-yellow-500 transition-colors" />
                 </Link>
               </div>
+            </div>
             )}
 
             {!standalonePostId && !profileMode && (
