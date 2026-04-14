@@ -92,7 +92,7 @@ interface Comment {
   };
 }
 
-export default function FeedClient({ standalonePostId, authorId }: { standalonePostId?: string, authorId?: string } = {}) {
+export default function FeedClient({ standalonePostId, authorId, profileMode }: { standalonePostId?: string, authorId?: string, profileMode?: boolean } = {}) {
   const { user } = useAuth();
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -598,11 +598,13 @@ export default function FeedClient({ standalonePostId, authorId }: { standaloneP
           <div className="absolute top-[-5%] right-[-5%] w-[40%] h-[40%] opacity-[0.03]" style={{ background: 'radial-gradient(circle, #2cfc7d 0%, transparent 70%)' }} />
         </div>
 
-        <div className="flex gap-0 lg:gap-6 xl:gap-8 grow">
+        <div className={cn("flex gap-0", profileMode ? "w-full" : "lg:gap-6 xl:gap-8 grow")}>
           {/* LEFT SIDEBAR SKELETON */}
-          <aside className="hidden lg:flex flex-col w-[280px] xl:w-[320px] shrink-0 gap-4">
-            <SkeletonPremium className="h-[300px] w-full rounded-[2rem]" />
-          </aside>
+          {!profileMode && (
+            <aside className="hidden lg:flex flex-col w-[280px] xl:w-[320px] shrink-0 gap-4">
+              <SkeletonPremium className="h-[300px] w-full rounded-[2rem]" />
+            </aside>
+          )}
 
 
 
@@ -625,11 +627,13 @@ export default function FeedClient({ standalonePostId, authorId }: { standaloneP
           </div>
 
           {/* RIGHT SIDEBAR SKELETON */}
-          <aside className="hidden lg:flex flex-col w-[280px] xl:w-[340px] shrink-0 gap-4">
-            <SkeletonPremium className="h-12 w-full rounded-2xl" />
-            <SkeletonPremium className="h-[200px] w-full rounded-[2rem]" />
-            <SkeletonPremium className="h-[300px] w-full rounded-[2rem]" />
-          </aside>
+          {!profileMode && (
+            <aside className="hidden lg:flex flex-col w-[280px] xl:w-[340px] shrink-0 gap-4">
+              <SkeletonPremium className="h-12 w-full rounded-2xl" />
+              <SkeletonPremium className="h-[200px] w-full rounded-[2rem]" />
+              <SkeletonPremium className="h-[300px] w-full rounded-[2rem]" />
+            </aside>
+          )}
         </div>
       </div>
     );
@@ -658,11 +662,11 @@ export default function FeedClient({ standalonePostId, authorId }: { standaloneP
       />
 
       {/* 3-column layout matching TopHeader padding exactly */}
-      <div className="w-full px-0 sm:px-5 lg:px-10 xl:px-16 pt-0 sm:pt-[25px] lg:pt-[30px]">
-        <div className={cn("flex gap-0", standalonePostId ? "justify-center max-w-2xl mx-auto" : "lg:gap-6 xl:gap-8")}>
+      <div className={cn("w-full", profileMode ? "px-0 pt-2" : "px-0 sm:px-5 lg:px-10 xl:px-16 pt-0 sm:pt-[25px] lg:pt-[30px]")}>
+        <div className={cn("flex gap-0", standalonePostId || profileMode ? "justify-center w-full mx-auto" : "lg:gap-6 xl:gap-8")}>
 
           {/* ── LEFT SIDEBAR (desktop only) ── */}
-          {!standalonePostId && (
+          {!standalonePostId && !profileMode && (
             <aside className="hidden lg:flex flex-col w-[280px] xl:w-[320px] shrink-0 sticky top-[40px] lg:top-[45px] xl:top-[45px] self-start pb-8 pt-0 xl:pl-4">
 
               {/* ── PERFIL CARD ── */}
@@ -763,8 +767,8 @@ export default function FeedClient({ standalonePostId, authorId }: { standaloneP
           )}
 
           {/* ── MAIN FEED (center column) ── */}
-          <div className="w-full lg:flex-1 border-x-0 sm:border-x border-foreground/[0.08] min-h-screen flex flex-col relative z-20">
-            {!standalonePostId && (
+          <div className={cn("flex flex-col relative z-20 min-h-screen", profileMode ? "w-full" : "w-full lg:flex-1 border-x-0 sm:border-x border-foreground/[0.08]")}>
+            {!standalonePostId && !profileMode && (
               <div className="lg:hidden p-3 sm:p-4 border-b border-foreground/[0.08] bg-background">
                 <div className="relative group">
                   <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-[18px] h-[18px] text-foreground/30 group-focus-within:text-primary transition-colors" />
@@ -793,7 +797,7 @@ export default function FeedClient({ standalonePostId, authorId }: { standaloneP
 
 
             {/* MOBILE PROFILE BAR (Perfil section for handle editing) */}
-            {!standalonePostId && user && (
+            {!standalonePostId && !profileMode && user && (
               <div className="lg:hidden border-b border-foreground/[0.06] bg-foreground/[0.02]">
                 <div className="flex items-center gap-3 px-4 py-3">
                   <Link href={`/feed/profile?id=${user.id}`} className="w-9 h-9 rounded-full overflow-hidden shrink-0 border border-foreground/10">
@@ -831,7 +835,8 @@ export default function FeedClient({ standalonePostId, authorId }: { standaloneP
             )}
 
             {/* STICKY HEADER */}
-            <div
+            {!profileMode && (
+              <div
               onClick={() => {
                 if (standalonePostId) router.back();
                 else window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -847,9 +852,9 @@ export default function FeedClient({ standalonePostId, authorId }: { standaloneP
                   <Zap className="w-5 h-5 text-foreground/40 group-hover:text-yellow-500 transition-colors" />
                 </Link>
               </div>
-            </div>
+            )}
 
-            {!standalonePostId && (
+            {!standalonePostId && !profileMode && (
               <>
                 {/* CREATE POST BOX */}
                 {user && (
@@ -1214,8 +1219,8 @@ export default function FeedClient({ standalonePostId, authorId }: { standaloneP
             </div>
           </div>
 
-          {/* ── RIGHT SIDEBAR (desktop only) ── */}
-          {!standalonePostId && (
+          {/* ── RIGHT SIDEBAR ── */}
+          {!standalonePostId && !profileMode && (
             <aside className="hidden lg:flex flex-col w-[280px] xl:w-[340px] shrink-0 sticky top-[52px] self-start gap-4 pb-8">
 
               {/* Search Bar - functional */}
