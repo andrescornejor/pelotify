@@ -10,9 +10,7 @@ import {
   Search,
   Flame,
   LayoutGrid,
-  Globe,
-  Shield,
-  User2
+  Globe
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -30,7 +28,7 @@ export function BottomNav() {
 
   const navItems = useMemo(() => [
     { 
-      label: 'Inicio', 
+      label: 'Home', 
       href: '/', 
       icon: Home,
       color: 'from-[#2cfc7d] to-[#10b981]'
@@ -49,15 +47,15 @@ export function BottomNav() {
       color: 'from-primary via-[#3dfc8d] to-primary-dark'
     },
     { 
-      label: 'Equipos', 
-      href: '/teams', 
-      icon: Shield,
-      color: 'from-emerald-400 to-teal-500'
+      label: 'Muro', 
+      href: '/feed', 
+      icon: Globe,
+      color: 'from-blue-400 to-indigo-500'
     },
     { 
-      label: 'Perfil', 
-      href: '/profile/me', 
-      icon: User2,
+      label: 'Chats', 
+      href: '/messages', 
+      icon: MessageSquare,
       color: 'from-purple-400 to-pink-500'
     }
   ], []);
@@ -86,7 +84,7 @@ export function BottomNav() {
                      item.href === '/' ? "bg-[#2cfc7d]" : 
                      item.href === '/search' ? "bg-blue-500" :
                      item.href === '/create' ? "bg-primary" :
-                     item.href === '/teams' ? "bg-emerald-500" : "bg-purple-500"
+                     item.href === '/feed' ? "bg-indigo-500" : "bg-purple-500"
                    )}
                  />
                );

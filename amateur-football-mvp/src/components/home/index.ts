@@ -8,4 +8,3 @@ export { HomePageSkeleton } from './HomePageSkeleton';
 export { VenueCard } from './VenueCard';
 export { WeatherWidget } from './WeatherWidget';
 export { CalendarButton } from './CalendarButton';
-export { StoryCarousel } from './StoryCarousel';

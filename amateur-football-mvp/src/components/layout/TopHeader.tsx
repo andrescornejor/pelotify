@@ -32,11 +32,12 @@ import { supabase } from '@/lib/supabase';
 import { useSettings } from '@/contexts/SettingsContext';
 
 const DESKTOP_NAV = [
-  { href: '/', icon: Home, label: 'Inicio' },
-  { href: '/search', icon: Search, label: 'Explorar' },
-  { href: '/create', icon: PlusCircle, label: 'Organizar' },
-  { href: '/teams', icon: Shield, label: 'Equipos' },
+  { href: '/highlights', icon: Play, label: 'FutTok' },
+  { href: '/feed', icon: Globe, label: '3erTiempo' },
+  { href: '/search', icon: Search, label: 'Buscar' },
   { href: '/friends', icon: Users, label: 'Amigos', id: 'friends' },
+  { href: '/messages', icon: MessageSquare, label: 'Mensajes' },
+  { href: '/teams', icon: Shield, label: 'Equipos' },
 ];
 
 export const TopHeader = memo(function TopHeader() {
@@ -293,31 +294,7 @@ export const TopHeader = memo(function TopHeader() {
                       </motion.div>
                     </AnimatePresence>
                   </motion.button>
-                  {/* Messages Button */}
-                  <Link href="/messages">
-                    <motion.button
-                      whileHover={{ scale: 1.08 }}
-                      whileTap={{ scale: 0.88 }}
-                      className="relative w-12 h-12 lg:w-11 lg:h-11 flex items-center justify-center rounded-2xl bg-foreground/[0.04] hover:bg-foreground/[0.08] text-foreground/45 hover:text-foreground/70 transition-all border border-foreground/[0.04]"
-                    >
-                      <MessageSquare className="w-4 h-4 sm:w-[1.1rem] sm:h-[1.1rem]" />
-                      <AnimatePresence>
-                        {unreadChatCount > 0 && (
-                          <motion.span
-                            initial={{ scale: 0, y: 4 }}
-                            animate={{ scale: 1, y: 0 }}
-                            exit={{ scale: 0 }}
-                            transition={{ type: 'spring', stiffness: 500, damping: 25 }}
-                            className="absolute -top-1 -right-1 min-w-[19px] h-[19px] px-1 bg-red-500 text-background text-[10px] font-black rounded-full flex items-center justify-center shadow-[0_0_15px_rgba(239,68,68,0.5)] border-2 border-background"
-                          >
-                            {unreadChatCount > 9 ? '9+' : unreadChatCount}
-                          </motion.span>
-                        )}
-                      </AnimatePresence>
-                    </motion.button>
-                  </Link>
-
-                  {/* Notification Bell */}
+                  {/* Notification Bell */}
                   <motion.button
                     whileHover={{ scale: 1.08 }}
                     whileTap={{ scale: 0.88 }}
