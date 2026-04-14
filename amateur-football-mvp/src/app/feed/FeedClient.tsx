@@ -92,7 +92,7 @@ interface Comment {
   };
 }
 
-export default function FeedClient({ standalonePostId, authorId, profileMode }: { standalonePostId?: string, authorId?: string, profileMode?: boolean } = {}) {
+export default function FeedClient({ standalonePostId }: { standalonePostId?: string } = {}) {
   const { user } = useAuth();
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -311,10 +311,6 @@ export default function FeedClient({ standalonePostId, authorId, profileMode }: 
 
       if (standalonePostId) {
         query = query.eq('id', standalonePostId);
-      }
-      
-      if (authorId) {
-        query = query.eq('author_id', authorId);
       }
 
       const { data, error } = await query;
@@ -598,13 +594,11 @@ export default function FeedClient({ standalonePostId, authorId, profileMode }: 
           <div className="absolute top-[-5%] right-[-5%] w-[40%] h-[40%] opacity-[0.03]" style={{ background: 'radial-gradient(circle, #2cfc7d 0%, transparent 70%)' }} />
         </div>
 
-        <div className={cn("flex gap-0", profileMode ? "w-full" : "lg:gap-6 xl:gap-8 grow")}>
+        <div className="flex gap-0 lg:gap-6 xl:gap-8 grow">
           {/* LEFT SIDEBAR SKELETON */}
-          {!profileMode && (
-            <aside className="hidden lg:flex flex-col w-[280px] xl:w-[320px] shrink-0 gap-4">
-              <SkeletonPremium className="h-[300px] w-full rounded-[2rem]" />
-            </aside>
-          )}
+          <aside className="hidden lg:flex flex-col w-[280px] xl:w-[320px] shrink-0 gap-4">
+            <SkeletonPremium className="h-[300px] w-full rounded-[2rem]" />
+          </aside>
 
 
 
@@ -627,13 +621,11 @@ export default function FeedClient({ standalonePostId, authorId, profileMode }: 
           </div>
 
           {/* RIGHT SIDEBAR SKELETON */}
-          {!profileMode && (
-            <aside className="hidden lg:flex flex-col w-[280px] xl:w-[340px] shrink-0 gap-4">
-              <SkeletonPremium className="h-12 w-full rounded-2xl" />
-              <SkeletonPremium className="h-[200px] w-full rounded-[2rem]" />
-              <SkeletonPremium className="h-[300px] w-full rounded-[2rem]" />
-            </aside>
-          )}
+          <aside className="hidden lg:flex flex-col w-[280px] xl:w-[340px] shrink-0 gap-4">
+            <SkeletonPremium className="h-12 w-full rounded-2xl" />
+            <SkeletonPremium className="h-[200px] w-full rounded-[2rem]" />
+            <SkeletonPremium className="h-[300px] w-full rounded-[2rem]" />
+          </aside>
         </div>
       </div>
     );
@@ -662,11 +654,11 @@ export default function FeedClient({ standalonePostId, authorId, profileMode }: 
       />
 
       {/* 3-column layout matching TopHeader padding exactly */}
-      <div className={cn("w-full", profileMode ? "px-0 pt-2" : "px-0 sm:px-5 lg:px-10 xl:px-16 pt-0 sm:pt-[25px] lg:pt-[30px]")}>
-        <div className={cn("flex gap-0", standalonePostId || profileMode ? "justify-center w-full mx-auto" : "lg:gap-6 xl:gap-8")}>
+      <div className="w-full px-0 sm:px-5 lg:px-10 xl:px-16 pt-0 sm:pt-[25px] lg:pt-[30px]">
+        <div className={cn("flex gap-0", standalonePostId ? "justify-center max-w-2xl mx-auto" : "lg:gap-6 xl:gap-8")}>
 
           {/* ── LEFT SIDEBAR (desktop only) ── */}
-          {!standalonePostId && !profileMode && (
+          {!standalonePostId && (
             <aside className="hidden lg:flex flex-col w-[280px] xl:w-[320px] shrink-0 sticky top-[40px] lg:top-[45px] xl:top-[45px] self-start pb-8 pt-0 xl:pl-4">
 
               {/* ── PERFIL CARD ── */}
@@ -767,8 +759,8 @@ export default function FeedClient({ standalonePostId, authorId, profileMode }: 
           )}
 
           {/* ── MAIN FEED (center column) ── */}
-          <div className={cn("flex flex-col relative z-20 min-h-screen", profileMode ? "w-full" : "w-full lg:flex-1 border-x-0 sm:border-x border-foreground/[0.08]")}>
-            {!standalonePostId && !profileMode && (
+          <div className="w-full lg:flex-1 border-x-0 sm:border-x border-foreground/[0.08] min-h-screen flex flex-col relative z-20">
+            {!standalonePostId && (
               <div className="lg:hidden p-3 sm:p-4 border-b border-foreground/[0.08] bg-background">
                 <div className="relative group">
                   <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-[18px] h-[18px] text-foreground/30 group-focus-within:text-primary transition-colors" />
@@ -797,7 +789,7 @@ export default function FeedClient({ standalonePostId, authorId, profileMode }: 
 
 
             {/* MOBILE PROFILE BAR (Perfil section for handle editing) */}
-            {!standalonePostId && !profileMode && user && (
+            {!standalonePostId && user && (
               <div className="lg:hidden border-b border-foreground/[0.06] bg-foreground/[0.02]">
                 <div className="flex items-center gap-3 px-4 py-3">
                   <Link href={`/feed/profile?id=${user.id}`} className="w-9 h-9 rounded-full overflow-hidden shrink-0 border border-foreground/10">
@@ -835,8 +827,7 @@ export default function FeedClient({ standalonePostId, authorId, profileMode }: 
             )}
 
             {/* STICKY HEADER */}
-            {!profileMode && (
-              <div
+            <div
               onClick={() => {
                 if (standalonePostId) router.back();
                 else window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -853,9 +844,8 @@ export default function FeedClient({ standalonePostId, authorId, profileMode }: 
                 </Link>
               </div>
             </div>
-            )}
 
-            {!standalonePostId && !profileMode && (
+            {!standalonePostId && (
               <>
                 {/* CREATE POST BOX */}
                 {user && (
@@ -1220,8 +1210,8 @@ export default function FeedClient({ standalonePostId, authorId, profileMode }: 
             </div>
           </div>
 
-          {/* ── RIGHT SIDEBAR ── */}
-          {!standalonePostId && !profileMode && (
+          {/* ── RIGHT SIDEBAR (desktop only) ── */}
+          {!standalonePostId && (
             <aside className="hidden lg:flex flex-col w-[280px] xl:w-[340px] shrink-0 sticky top-[52px] self-start gap-4 pb-8">
 
               {/* Search Bar - functional */}

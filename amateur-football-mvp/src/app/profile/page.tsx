@@ -36,7 +36,6 @@ import {
   Heart,
   Share2,
   MoreHorizontal,
-  Globe,
 } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useSearchParams, useRouter } from 'next/navigation';
@@ -58,7 +57,6 @@ import { getUserHighlights, Highlight } from '@/lib/highlights';
 import confetti from 'canvas-confetti';
 import { SkillPointAllocator } from '@/components/SkillPointAllocator';
 import { RadarChart } from '@/components/RadarChart';
-import FeedClient from '@/app/feed/FeedClient';
 
 interface PlayerStats {
   pac: number;
@@ -93,8 +91,8 @@ function ProfileContent() {
   const isMe = id === 'me' || id === user?.id || (!id && user?.id);
 
   const initialTab = (searchParams.get('tab') as any) || 'overview';
-  const [activeTab, setActiveTab] = useState<'overview' | 'history' | 'futtok' | 'wall' | 'feed' | 'wallet'>(
-    ['overview', 'history', 'futtok', 'wall', 'feed', 'wallet'].includes(initialTab) ? initialTab : 'overview'
+  const [activeTab, setActiveTab] = useState<'overview' | 'history' | 'futtok' | 'wall' | 'wallet'>(
+    ['overview', 'history', 'futtok', 'wall', 'wallet'].includes(initialTab) ? initialTab : 'overview'
   );
 
   // Edit state
@@ -813,7 +811,6 @@ function ProfileContent() {
               {[
                 { id: 'overview', icon: Info, label: 'Bio & Stats' },
                 { id: 'history', icon: History, label: 'Historial' },
-                { id: 'feed', icon: Globe, label: '3erTiempo' },
                 { id: 'futtok', icon: Play, label: 'FutTok' },
                 { id: 'wall', icon: MessageSquare, label: 'Muro Social' },
                 ...(isMe ? [{ id: 'wallet', icon: Wallet, label: 'Finanzas' }] : []),
@@ -1670,17 +1667,6 @@ function ProfileContent() {
                   )}
                 </motion.div>
               )}
-              {activeTab === 'feed' && (
-                <motion.div
-                  key="feed"
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0 }}
-                  className="w-full max-w-2xl mx-auto border-x border-foreground/10 relative"
-                >
-                  <FeedClient authorId={id === 'me' || !id ? (user?.id || undefined) : (id as string)} profileMode={true} />
-                </motion.div>
-              )}
               {activeTab === 'wall' && (
                 <motion.div
                   key="wall"
@@ -1689,129 +1675,171 @@ function ProfileContent() {
                   exit={{ opacity: 0 }}
                   className="w-full max-w-2xl mx-auto pb-20 border-x border-foreground/10 min-h-screen relative"
                 >
-                  <div className="p-4 sm:p-6 h-full relative">
-                    {/* Header y Explicación */}
-                    <div className="flex flex-col gap-3 border-b border-foreground/10 pb-6 mb-8">
-                       <div className="flex items-center gap-3">
-                         <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center border border-primary/20">
-                            <MessageSquare className="w-5 h-5 text-primary" />
-                         </div>
-                         <h3 className="text-2xl sm:text-3xl font-black italic uppercase tracking-tighter text-foreground leading-none">Muro Social</h3>
-                       </div>
-                       <p className="text-sm font-medium text-foreground/60 leading-relaxed max-w-lg">
-                         El Muro Social es el espacio público de <span className="text-foreground font-bold">{displayPlayer.name}</span>. ¡Dejale un mensaje, una dedicatoria o un buen desafío! Todo lo que firmes acá quedará a la vista de la comunidad.
-                       </p>
-                       <span className="text-[10px] font-black uppercase tracking-[0.3em] text-primary mt-2">
-                         {comments.length} FIRMAS EN EL MURO
-                       </span>
+                  <div className="sticky top-0 z-50 backdrop-blur-xl bg-background/80 border-b border-foreground/10 px-4 py-3 flex items-center justify-between cursor-pointer">
+                    <h3 className="text-xl font-bold text-foreground">Posteos</h3>
+                    <div className="text-[13px] font-medium text-foreground/50">
+                      {comments.length} tweets
                     </div>
+                  </div>
 
-                    {/* Caja de Comentar */}
-                    {user && (
-                      <form onSubmit={handlePostComment} className="glass-premium p-4 sm:p-5 rounded-3xl flex flex-col sm:flex-row gap-4 mb-8 border border-white/5 shadow-2xl relative overflow-hidden group">
-                        <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 blur-[50px] opacity-0 group-hover:opacity-100 transition-opacity duration-1000 pointer-events-none" />
-                        <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-background overflow-hidden shrink-0 border border-foreground/10 z-10">
-                          {user.user_metadata?.avatar_url ? (
-                            <img
-                              src={user.user_metadata.avatar_url}
-                              className="w-full h-full object-cover"
-                            />
-                          ) : (
-                            <div className="w-full h-full flex items-center justify-center font-bold text-primary text-xl bg-primary/5">
-                              {user.name?.slice(0, 1).toUpperCase() || '?'}
-                            </div>
-                          )}
-                        </div>
-                        <div className="flex-1 flex flex-col gap-3 z-10">
-                          <textarea
-                            value={newComment}
-                            onChange={(e) => setNewComment(e.target.value)}
-                            className="w-full bg-foreground/[0.03] border border-foreground/10 text-foreground p-4 rounded-xl text-sm font-medium focus:outline-none focus:border-primary/50 focus:bg-foreground/[0.05] min-h-[90px] resize-y transition-all shadow-inner placeholder:text-foreground/30"
-                            placeholder={`Dejá tu firma en el muro de ${displayPlayer.name.split(' ')[0]}...`}
-                            disabled={isPostingComment}
+                  {user && (
+                    <form
+                      onSubmit={handlePostComment}
+                      className="p-4 border-b border-foreground/10 flex gap-4 hidden sm:flex"
+                    >
+                      <div className="w-10 h-10 rounded-full bg-surface-elevated overflow-hidden shrink-0">
+                        {user.user_metadata?.avatar_url ? (
+                          <img
+                            src={user.user_metadata.avatar_url}
+                            className="w-full h-full object-cover"
                           />
-                          <div className="flex justify-end">
+                        ) : (
+                          <div className="w-full h-full flex items-center justify-center font-bold text-primary">
+                            {user.name?.slice(0, 1).toUpperCase() || '?'}
+                          </div>
+                        )}
+                      </div>
+                      <div className="flex-1 flex flex-col">
+                        <textarea
+                          value={newComment}
+                          onChange={(e) => setNewComment(e.target.value)}
+                          placeholder="¿Qué le querés decir a este crack?"
+                          className="w-full bg-transparent border-none resize-none focus:outline-none text-foreground text-lg placeholder:text-foreground/50 min-h-[50px] font-medium"
+                          maxLength={500}
+                          disabled={isPostingComment}
+                        />
+                        <div className="flex items-center justify-between mt-2 pt-2">
+                          <div className="flex items-center gap-1">
+                            <button type="button" className="p-2 text-blue-500 hover:bg-blue-500/10 rounded-full transition-colors flex items-center justify-center">
+                              <ImageIcon className="w-5 h-5" />
+                            </button>
+                          </div>
+                          <div className="flex items-center gap-3">
+                            <span className="text-xs font-medium text-foreground/40">{newComment.length}/500</span>
                             <button
                               type="submit"
                               disabled={isPostingComment || !newComment.trim()}
-                              className="px-6 py-3 bg-primary hover:bg-primary/90 text-black text-[10px] sm:text-[11px] font-black uppercase tracking-widest shadow-xl shadow-primary/20 rounded-xl disabled:opacity-50 disabled:shadow-none transition-all flex items-center gap-2 active:scale-95"
+                              className="px-5 py-1.5 rounded-full bg-blue-500 text-white font-bold text-[15px] tracking-wide disabled:opacity-50 disabled:cursor-not-allowed hover:bg-blue-600 active:scale-95 transition-all shadow-sm"
                             >
-                              {isPostingComment ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
-                              Firmar Muro
+                              {isPostingComment ? (
+                                <Loader2 className="w-4 h-4 animate-spin" />
+                              ) : (
+                                'Postear'
+                              )}
                             </button>
                           </div>
                         </div>
-                      </form>
-                    )}
+                      </div>
+                    </form>
+                  )}
 
-                    {/* Lista de Comentarios */}
-                    <div className="flex flex-col gap-3">
-                      {isLoadingComments ? (
-                        <div className="flex justify-center py-10">
-                          <Loader2 className="w-8 h-8 animate-spin text-primary" />
-                        </div>
-                      ) : comments.length > 0 ? (
-                        comments.map((comment, i) => (
-                          <motion.div
-                            initial={{ opacity: 0, y: 10 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ delay: i * 0.05 }}
-                            key={comment.id} 
-                            className="flex gap-3 sm:gap-4 group p-4 rounded-[2rem] hover:bg-foreground/[0.02] transition-colors border border-transparent hover:border-foreground/5 relative"
-                          >
-                            {/* Avatar */}
-                            <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full shrink-0 border border-foreground/10 bg-foreground/5 overflow-hidden ring-2 ring-transparent group-hover:ring-primary/20 transition-all">
-                              <Link href={`/profile?id=${comment.author_id}`}>
-                                {comment.author?.avatar_url ? (
-                                  <img src={comment.author.avatar_url} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
-                                ) : (
-                                  <div className="w-full h-full flex items-center justify-center font-bold text-primary text-lg bg-primary/5">
-                                    {comment.author?.name?.slice(0, 1).toUpperCase() || 'P'}
-                                  </div>
-                                )}
-                              </Link>
-                            </div>
-
-                            {/* Content area */}
-                            <div className="flex-1 bg-transparent min-w-0 pt-0.5">
-                              <div className="flex justify-between items-start">
-                                <div className="flex items-center gap-2 flex-wrap leading-tight relative top-1">
-                                  <Link href={`/profile?id=${comment.author_id}`} className="font-bold text-foreground text-[14px] sm:text-[15px] hover:text-primary transition-colors truncate max-w-[150px] sm:max-w-[200px]">
-                                    {comment.author?.name || 'Veterano'}
-                                  </Link>
-                                  <span className="text-foreground/40 text-[10px] font-bold uppercase tracking-wider relative top-[1px]">
-                                    {new Date(comment.created_at).toLocaleDateString('es-ES', { day: 'numeric', month: 'short' })}{' '}
-                                    • {new Date(comment.created_at).toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' })}
-                                  </span>
+                  <div className="flex flex-col">
+                    {isLoadingComments ? (
+                      <div className="flex justify-center py-20">
+                        <Loader2 className="w-6 h-6 animate-spin text-blue-500" />
+                      </div>
+                    ) : comments.length > 0 ? (
+                      comments.map((comment, i) => (
+                        <motion.div
+                          key={comment.id}
+                          initial={{ opacity: 0 }}
+                          animate={{ opacity: 1 }}
+                          transition={{ delay: i * 0.05 }}
+                          className="p-4 border-b border-foreground/10 hover:bg-foreground/[0.02] transition-colors relative flex gap-3 cursor-pointer"
+                        >
+                          {/* LEFTSIDE AVATAR */}
+                          <div className="shrink-0 flex flex-col items-center">
+                            <Link href={`/profile?id=${comment.author_id}`} className="w-10 h-10 rounded-full overflow-hidden shrink-0 border border-foreground/10 relative hover:opacity-90 transition-opacity">
+                              {comment.author?.avatar_url ? (
+                                <img
+                                  src={comment.author.avatar_url}
+                                  className="w-full h-full object-cover"
+                                />
+                              ) : (
+                                <div className="w-full h-full flex items-center justify-center font-bold text-primary text-sm bg-foreground/5">
+                                  {comment.author?.name?.slice(0, 1).toUpperCase() || 'P'}
                                 </div>
-                                {(isMe || user?.id === comment.author_id) && (
-                                  <button
-                                    onClick={() => handleDeleteComment(comment.id)}
-                                    className="text-foreground/30 hover:text-red-500 transition-all p-2 rounded-full hover:bg-red-500/10 flex-shrink-0"
-                                    title="Eliminar comentario"
-                                  >
-                                    <Trash2 className="w-4 h-4" />
-                                  </button>
-                                )}
+                              )}
+                            </Link>
+                          </div>
+
+                          {/* RIGHTSIDE CONTENT */}
+                          <div className="flex-1 min-w-0">
+                            {/* Header */}
+                            <div className="flex justify-between items-start">
+                              <div className="flex items-center gap-1.5 flex-wrap">
+                                <Link href={`/profile?id=${comment.author_id}`} className="group flex items-center gap-1.5 min-w-0">
+                                  <span className="font-bold text-[15px] truncate group-hover:underline text-foreground">
+                                    {comment.author?.name || 'Veterano'}
+                                  </span>
+                                  <span className="text-foreground/50 text-[15px] truncate">
+                                    @{(comment.author?.name || 'user').toLowerCase().replace(/\s+/g, '')}
+                                  </span>
+                                </Link>
+                                <span className="text-foreground/50 text-[15px]">·</span>
+                                <span className="text-foreground/50 text-[15px] hover:underline cursor-pointer">
+                                  {new Date(comment.created_at).toLocaleDateString('es-ES', {
+                                    day: 'numeric',
+                                    month: 'short',
+                                  })}
+                                </span>
                               </div>
 
-                              <div className="mt-2.5 text-foreground/80 text-[14px] sm:text-[15px] whitespace-pre-wrap break-words leading-relaxed font-medium">
-                                {comment.content}
-                              </div>
+                              {(isMe || user?.id === comment.author_id) && (
+                                <div className="relative group/menu shrink-0">
+                                  <button className="text-foreground/40 hover:text-blue-500 p-1.5 hover:bg-blue-500/10 rounded-full transition-colors mt-[-4px]">
+                                    <MoreHorizontal className="w-4 h-4" />
+                                  </button>
+                                  <div className="absolute right-0 top-full mt-1 w-32 bg-surface-elevated border border-foreground/10 rounded-xl shadow-xl flex flex-col opacity-0 group-hover/menu:opacity-100 pointer-events-none group-hover/menu:pointer-events-auto transition-all z-20 overflow-hidden">
+                                     <button 
+                                       onClick={(e) => { e.stopPropagation(); handleDeleteComment(comment.id); }}
+                                       className="w-full text-left px-4 py-3 text-sm font-bold text-red-500 hover:bg-white/5 flex items-center gap-2"
+                                     >
+                                        <Trash className="w-4 h-4" /> Eliminar
+                                     </button>
+                                  </div>
+                                </div>
+                              )}
                             </div>
-                          </motion.div>
-                        ))
-                      ) : (
-                        <div className="text-center py-20 flex flex-col items-center justify-center gap-4">
-                          <div className="w-20 h-20 rounded-[2rem] bg-foreground/5 flex items-center justify-center border border-foreground/10 shadow-inner">
-                             <MessageSquare className="w-10 h-10 text-foreground/20" />
+
+                            {/* Content */}
+                            <div className="mt-1 mb-3">
+                              <p className="text-foreground text-[15px] leading-relaxed whitespace-pre-wrap">
+                                {comment.content}
+                              </p>
+                            </div>
+
+                            {/* Actions mock for aesthetics */}
+                            <div className="flex items-center justify-between text-foreground/50 max-w-md pr-4">
+                              <button className="flex items-center gap-1.5 text-[13px] group/btn hover:text-blue-500 transition-colors">
+                                <div className="p-2 rounded-full group-hover/btn:bg-blue-500/10 transition-colors">
+                                  <MessageSquare className="w-4 h-4" />
+                                </div>
+                              </button>
+                              <button className="flex items-center gap-1.5 text-[13px] group/btn hover:text-green-500 transition-colors">
+                                <div className="p-2 rounded-full group-hover/btn:bg-green-500/10 transition-colors">
+                                  <Zap className="w-4 h-4" />
+                                </div>
+                              </button>
+                              <button className="flex items-center gap-1.5 text-[13px] group/btn hover:text-pink-600 transition-colors">
+                                <div className="p-2 rounded-full group-hover/btn:bg-pink-600/10 transition-colors">
+                                  <Heart className="w-4 h-4" />
+                                </div>
+                              </button>
+                              <button className="flex items-center gap-1.5 text-[13px] group/btn hover:text-blue-500 transition-colors">
+                                <div className="p-2 rounded-full group-hover/btn:bg-blue-500/10 transition-colors">
+                                  <Share2 className="w-4 h-4" />
+                                </div>
+                              </button>
+                            </div>
                           </div>
-                          <p className="text-foreground/40 text-[12px] font-black uppercase tracking-[0.3em] max-w-[250px] leading-relaxed">
-                            Nadie ha firmado este muro todavía.
-                          </p>
-                        </div>
-                      )}
-                    </div>
+                        </motion.div>
+                      ))
+                    ) : (
+                      <div className="text-center py-20 text-foreground/50 font-medium text-lg border-t border-foreground/10">
+                        Aún no hay publicaciones. ¡Sé el primero en twittear a este jugador!
+                      </div>
+                    )}
                   </div>
                 </motion.div>
               )}
