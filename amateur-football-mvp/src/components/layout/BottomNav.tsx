@@ -1,20 +1,19 @@
 'use client';
 
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { 
   Home, 
   Plus, 
-  UserPlus, 
-  MessageSquare,
   Search,
-  Flame,
-  LayoutGrid,
-  Globe
+  Shield,
+  User,
+  MessageSquare,
+  PenSquare
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { useSettings } from '@/contexts/SettingsContext';
 
 /**
@@ -24,7 +23,9 @@ import { useSettings } from '@/contexts/SettingsContext';
 
 export function BottomNav() {
   const pathname = usePathname();
+  const router = useRouter();
   const { performanceMode } = useSettings();
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const navItems = useMemo(() => [
     { 
@@ -41,21 +42,21 @@ export function BottomNav() {
     },
     { 
       label: 'Crear', 
-      href: '/create', 
+      onClick: () => setIsMenuOpen(prev => !prev), 
       icon: Plus, 
       isPrimary: true,
       color: 'from-primary via-[#3dfc8d] to-primary-dark'
     },
     { 
-      label: 'Muro', 
-      href: '/feed', 
-      icon: Globe,
-      color: 'from-blue-400 to-indigo-500'
+      label: 'Logros', 
+      href: '/teams', 
+      icon: Shield,
+      color: 'from-orange-400 to-red-500'
     },
     { 
-      label: 'Chats', 
-      href: '/messages', 
-      icon: MessageSquare,
+      label: 'Perfil', 
+      href: '/profile/me', 
+      icon: User,
       color: 'from-purple-400 to-pink-500'
     }
   ], []);
@@ -66,16 +67,67 @@ export function BottomNav() {
 
   return (
     <div className="fixed bottom-0 left-0 right-0 z-[100] lg:hidden pb-6 px-6 pointer-events-none">
-      <div className="max-w-[440px] mx-auto pointer-events-auto relative">
+      
+      {/* Create Menu Popup Options */}
+      <AnimatePresence>
+        {isMenuOpen && (
+          <>
+            <motion.div 
+              initial={{ opacity: 0 }} 
+              animate={{ opacity: 1 }} 
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 bg-background/60 backdrop-blur-sm z-40 pointer-events-auto"
+              onClick={() => setIsMenuOpen(false)}
+            />
+            <div className="max-w-[440px] mx-auto w-full relative z-50">
+              <motion.div 
+                initial={{ y: 20, opacity: 0, scale: 0.9, x: '-50%' }}
+                animate={{ y: 0, opacity: 1, scale: 1, x: '-50%' }}
+                exit={{ y: 20, opacity: 0, scale: 0.9, x: '-50%' }}
+                className="absolute bottom-28 left-1/2 bg-surface/90 backdrop-blur-xl border border-foreground/10 rounded-[2rem] p-3 flex flex-col gap-2 shadow-2xl pointer-events-auto w-[220px]"
+              >
+                <Link href="/create" onClick={() => setIsMenuOpen(false)} className="flex items-center gap-3 p-3 rounded-2xl hover:bg-foreground/5 transition-colors active:scale-95">
+                  <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center text-primary shadow-inner">
+                    <PenSquare className="w-5 h-5"/>
+                  </div>
+                  <div className="flex flex-col">
+                    <span className="text-xs font-black italic uppercase tracking-wider text-foreground">Armar Partido</span>
+                    <span className="text-[9px] text-foreground/50 tracking-wide font-medium">Invita a la comunidad</span>
+                  </div>
+                </Link>
+                <button onClick={() => {
+                  setIsMenuOpen(false);
+                  if (pathname !== '/') router.push('/');
+                  setTimeout(() => {
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                    document.querySelector('textarea')?.focus();
+                  }, 300);
+                }} className="flex items-center gap-3 p-3 rounded-2xl hover:bg-foreground/5 transition-colors active:scale-95 text-left">
+                  <div className="w-10 h-10 rounded-full bg-blue-500/20 flex items-center justify-center text-blue-400 shadow-inner">
+                    <MessageSquare className="w-5 h-5"/>
+                  </div>
+                  <div className="flex flex-col">
+                    <span className="text-xs font-black italic uppercase tracking-wider text-foreground">Crear Post</span>
+                    <span className="text-[9px] text-foreground/50 tracking-wide font-medium">Comparte con el muro</span>
+                  </div>
+                </button>
+              </motion.div>
+            </div>
+          </>
+        )}
+      </AnimatePresence>
+
+      <div className="max-w-[440px] mx-auto pointer-events-auto relative z-50">
         {/* Dynamic Background Glow based on active item */}
         {!performanceMode && (
            <AnimatePresence mode="wait">
-             {navItems.map((item) => {
-               const isActive = item.href === '/' ? pathname === '/' : (pathname + '/').startsWith(item.href + '/');
+             {navItems.map((item, idx) => {
+               if (item.onClick) return null;
+               const isActive = item.href === '/' ? pathname === '/' : pathname.startsWith(item.href as string);
                if (!isActive) return null;
                return (
                  <motion.div
-                   key={item.href}
+                   key={item.href || idx}
                    initial={{ opacity: 0, scale: 0.8 }}
                    animate={{ opacity: 0.5, scale: 1 }}
                    exit={{ opacity: 0, scale: 0.8 }}
@@ -83,8 +135,7 @@ export function BottomNav() {
                      "absolute -top-12 left-1/2 -translate-x-1/2 w-48 h-24 blur-[60px] rounded-full pointer-events-none z-0",
                      item.href === '/' ? "bg-[#2cfc7d]" : 
                      item.href === '/search' ? "bg-blue-500" :
-                     item.href === '/create' ? "bg-primary" :
-                     item.href === '/feed' ? "bg-indigo-500" : "bg-purple-500"
+                     item.href === '/teams' ? "bg-orange-500" : "bg-purple-500"
                    )}
                  />
                );
@@ -101,23 +152,24 @@ export function BottomNav() {
           )}
         >
           <div className="relative z-10 flex w-full h-[70px] items-center justify-around">
-            {navItems.map((item) => {
+            {navItems.map((item, idx) => {
               const isActive = item.href === '/' 
                 ? pathname === '/' 
-                : (pathname + '/').startsWith(item.href + '/');
+                : item.href ? pathname.startsWith(item.href) : false;
               
               const Icon = item.icon;
 
               if (item.isPrimary) {
                 return (
-                  <Link
-                    key={item.href}
-                    href={item.href}
-                    className="relative flex items-center justify-center -mt-8"
+                  <button
+                    key="primary-btn"
+                    onClick={item.onClick}
+                    className="relative flex items-center justify-center -mt-8 outline-none"
                   >
                     <motion.div
-                      whileHover={{ scale: 1.1, rotate: 90 }}
-                      whileTap={{ scale: 0.9, rotate: 180 }}
+                      whileHover={{ scale: 1.1, rotate: isMenuOpen ? 45 : 90 }}
+                      whileTap={{ scale: 0.9, rotate: isMenuOpen ? 180 : 180 }}
+                      animate={isMenuOpen ? { rotate: 45 } : { rotate: 0 }}
                       transition={{ type: "spring", stiffness: 400, damping: 15 }}
                       className={cn(
                         "w-16 h-16 rounded-[2rem] flex items-center justify-center shadow-[0_15px_30px_rgba(44,252,125,0.3)] relative z-20 group overflow-hidden border-2 border-white/20",
@@ -139,15 +191,15 @@ export function BottomNav() {
                         className="absolute inset-0 bg-primary/20 blur-2xl rounded-full -z-10"
                       />
                     )}
-                  </Link>
+                  </button>
                 );
               }
 
               return (
                 <Link
-                  key={item.href}
-                  href={item.href}
-                  className="relative flex flex-col items-center justify-center h-full px-4 group"
+                  key={item.href || idx}
+                  href={item.href as string}
+                  className="relative flex flex-col items-center justify-center h-full px-4 group outline-none"
                 >
                   <motion.div
                     className="relative flex flex-col items-center gap-1"

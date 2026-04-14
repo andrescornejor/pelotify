@@ -32,9 +32,9 @@ import { supabase } from '@/lib/supabase';
 import { useSettings } from '@/contexts/SettingsContext';
 
 const DESKTOP_NAV = [
-  { href: '/highlights', icon: Play, label: 'FutTok' },
-  { href: '/feed', icon: Globe, label: '3erTiempo' },
+  { href: '/', icon: Home, label: 'Home' },
   { href: '/search', icon: Search, label: 'Buscar' },
+  { href: '/highlights', icon: Play, label: 'FutTok' },
   { href: '/friends', icon: Users, label: 'Amigos', id: 'friends' },
   { href: '/messages', icon: MessageSquare, label: 'Mensajes' },
   { href: '/teams', icon: Shield, label: 'Equipos' },
