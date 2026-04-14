@@ -36,6 +36,7 @@ import {
   Heart,
   Share2,
   MoreHorizontal,
+  Globe,
 } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useSearchParams, useRouter } from 'next/navigation';
@@ -57,6 +58,7 @@ import { getUserHighlights, Highlight } from '@/lib/highlights';
 import confetti from 'canvas-confetti';
 import { SkillPointAllocator } from '@/components/SkillPointAllocator';
 import { RadarChart } from '@/components/RadarChart';
+import FeedClient from '@/app/feed/FeedClient';
 
 interface PlayerStats {
   pac: number;
@@ -91,8 +93,8 @@ function ProfileContent() {
   const isMe = id === 'me' || id === user?.id || (!id && user?.id);
 
   const initialTab = (searchParams.get('tab') as any) || 'overview';
-  const [activeTab, setActiveTab] = useState<'overview' | 'history' | 'futtok' | 'wall' | 'wallet'>(
-    ['overview', 'history', 'futtok', 'wall', 'wallet'].includes(initialTab) ? initialTab : 'overview'
+  const [activeTab, setActiveTab] = useState<'overview' | 'history' | 'futtok' | 'wall' | 'feed' | 'wallet'>(
+    ['overview', 'history', 'futtok', 'wall', 'feed', 'wallet'].includes(initialTab) ? initialTab : 'overview'
   );
 
   // Edit state
@@ -811,6 +813,7 @@ function ProfileContent() {
               {[
                 { id: 'overview', icon: Info, label: 'Bio & Stats' },
                 { id: 'history', icon: History, label: 'Historial' },
+                { id: 'feed', icon: Globe, label: '3erTiempo' },
                 { id: 'futtok', icon: Play, label: 'FutTok' },
                 { id: 'wall', icon: MessageSquare, label: 'Muro Social' },
                 ...(isMe ? [{ id: 'wallet', icon: Wallet, label: 'Finanzas' }] : []),
@@ -1665,6 +1668,17 @@ function ProfileContent() {
                       )}
                     </div>
                   )}
+                </motion.div>
+              )}
+              {activeTab === 'feed' && (
+                <motion.div
+                  key="feed"
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0 }}
+                  className="w-full max-w-2xl mx-auto border-x border-foreground/10 relative"
+                >
+                  <FeedClient authorId={id === 'me' || !id ? (user?.id || undefined) : (id as string)} />
                 </motion.div>
               )}
               {activeTab === 'wall' && (

@@ -92,7 +92,7 @@ interface Comment {
   };
 }
 
-export default function FeedClient({ standalonePostId }: { standalonePostId?: string } = {}) {
+export default function FeedClient({ standalonePostId, authorId }: { standalonePostId?: string, authorId?: string } = {}) {
   const { user } = useAuth();
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -311,6 +311,10 @@ export default function FeedClient({ standalonePostId }: { standalonePostId?: st
 
       if (standalonePostId) {
         query = query.eq('id', standalonePostId);
+      }
+      
+      if (authorId) {
+        query = query.eq('author_id', authorId);
       }
 
       const { data, error } = await query;
