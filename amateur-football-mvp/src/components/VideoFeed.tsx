@@ -3,7 +3,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import VideoPlayer from './VideoPlayer';
-import VideoUploadModal from './VideoUploadModal';
 import { getHighlights, Highlight, getFriendsHighlights } from '@/lib/highlights';
 import { useAuth } from '@/contexts/AuthContext';
 import { Loader2, ArrowLeft, Plus, Play, Sparkles, Flame } from 'lucide-react';
@@ -17,7 +16,7 @@ export default function VideoFeed() {
   const [highlights, setHighlights] = useState<Highlight[]>([]);
   const [loading, setLoading] = useState(true);
   const [activeId, setActiveId] = useState<string | null>(null);
-  const [isUploadOpen, setIsUploadOpen] = useState(false);
+
   const [activeTab, setActiveTab] = useState<'for-you' | 'friends'>('for-you');
   const { user } = useAuth();
   const feedRef = useRef<HTMLDivElement>(null);
@@ -76,17 +75,7 @@ export default function VideoFeed() {
 
   return (
     <div className="relative h-[100dvh] bg-black overflow-hidden">
-      <AnimatePresence>
-        {isUploadOpen && (
-          <VideoUploadModal 
-            onClose={() => setIsUploadOpen(false)} 
-            onSuccess={() => {
-              setIsUploadOpen(false);
-              fetchHighlights();
-            }}
-          />
-        )}
-      </AnimatePresence>
+
 
       {/* Global Navigation Controls */}
       <div className="fixed top-0 left-0 right-0 z-[100] px-6 pt-6 sm:pt-8 pb-4 bg-gradient-to-b from-black/80 via-black/40 to-transparent pointer-events-none flex items-center justify-between">
@@ -137,12 +126,12 @@ export default function VideoFeed() {
         {user && (
           <div className="pointer-events-auto relative group">
             <div className="absolute -inset-2 bg-emerald-500/20 rounded-full blur-xl opacity-0 group-hover:opacity-100 transition-opacity" />
-            <button 
-              onClick={() => setIsUploadOpen(true)}
-              className="relative p-3 sm:p-3.5 bg-gradient-to-tr from-emerald-600 to-emerald-400 rounded-2xl text-background shadow-[0_0_30px_rgba(16,185,129,0.3)] hover:shadow-[0_0_40px_rgba(16,185,129,0.5)] hover:scale-105 active:scale-95 transition-all border border-emerald-300/30"
+            <Link 
+              href="/highlights/upload"
+              className="relative flex items-center justify-center p-3 sm:p-3.5 bg-gradient-to-tr from-emerald-600 to-emerald-400 rounded-2xl text-background shadow-[0_0_30px_rgba(16,185,129,0.3)] hover:shadow-[0_0_40px_rgba(16,185,129,0.5)] hover:scale-105 active:scale-95 transition-all border border-emerald-300/30"
             >
               <Plus className="w-5 h-5 sm:w-6 sm:h-6 stroke-[3]" />
-            </button>
+            </Link>
           </div>
         )}
       </div>
@@ -190,15 +179,13 @@ export default function VideoFeed() {
                 </p>
               </div>
 
-              <motion.button 
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-                onClick={() => setIsUploadOpen(true)}
-                className="w-full h-16 bg-white text-background font-black uppercase text-sm tracking-[0.2em] rounded-2xl hover:bg-emerald-400 transition-all shadow-[0_0_40px_rgba(255,255,255,0.1)] hover:shadow-[0_0_40px_rgba(16,185,129,0.3)] relative overflow-hidden group"
+              <Link 
+                href="/highlights/upload"
+                className="w-full flex items-center justify-center h-16 bg-white text-background font-black uppercase text-sm tracking-[0.2em] rounded-2xl hover:bg-emerald-400 transition-all shadow-[0_0_40px_rgba(255,255,255,0.1)] hover:shadow-[0_0_40px_rgba(16,185,129,0.3)] relative overflow-hidden group"
               >
                 <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/50 to-transparent -translate-x-full group-hover:animate-[shimmer_1.5s_infinite]" />
                 SUBIR MI PRIMER CLIP
-              </motion.button>
+              </Link>
             </div>
           </div>
         ) : (

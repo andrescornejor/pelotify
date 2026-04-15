@@ -99,7 +99,7 @@ export function BottomNav() {
                 {[
                   { label: "Armar Partido", icon: Target, href: "/create", color: "text-[#2cfc7d]" },
                   { label: "Post en 3erTiempo", icon: MessageSquare, href: "/feed", color: "text-blue-400" },
-                  { label: "Subir FutTok", icon: Flame, href: "/highlights", color: "text-orange-500" }
+                  { label: "Subir FutTok", icon: Flame, href: "/highlights/upload", color: "text-orange-500" }
                 ].map((action, i) => (
                   <Link 
                     key={i}
