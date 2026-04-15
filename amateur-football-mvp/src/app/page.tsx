@@ -458,45 +458,50 @@ export default function HomePage() {
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: 0.3, duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
                     className="font-black italic uppercase font-kanit tracking-tighter text-foreground"
-                    style={{ fontSize: 'clamp(3rem, 10vw, 7.5rem)', lineHeight: '0.85' }}
+                    style={{ fontSize: 'clamp(2.5rem, 8vw, 6rem)', lineHeight: '0.85' }}
                   >
                     DOMINÁ <br /> <span className="text-primary italic">LA CANCHA</span>
                   </motion.h1>
                 </div>
 
                 <motion.div
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ delay: 0.5 }}
-                  className="flex items-center gap-4 py-2"
+                  initial={{ opacity: 0, y: 15 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.5, type: "spring", stiffness: 200 }}
+                  className="flex items-stretch gap-0 mt-4 rounded-2xl w-fit relative group cursor-pointer"
                 >
-                  <div className="h-[2px] w-12 bg-primary/30" />
-                  {/* Avatar with rank glow */}
-                  <div id="hero-avatar" className="relative group/avatar">
-                    <div
-                      className="absolute -inset-4 blur-3xl rounded-full opacity-25 group-hover/avatar:opacity-45 transition-opacity"
-                      style={{ backgroundColor: rankCalculation.rank.glow }}
-                    />
-                    <div
-                      className="relative w-12 h-12 rounded-full border-2 overflow-hidden flex items-center justify-center bg-surface shadow-2xl"
-                      style={{ borderColor: rankCalculation.info.color }}
-                    >
-                      {metadata?.avatar_url ? (
-                        <img src={metadata.avatar_url} alt="" className="w-full h-full object-cover" />
-                      ) : (
-                        <User2 className="w-6 h-6 text-foreground/40" />
-                      )}
-
-                      {/* Floating Rank Icon */}
-                      <div className="absolute -top-1 -right-1 w-5 h-5 rounded-full bg-background border border-foreground/20 flex items-center justify-center shadow-lg">
-                        <rankCalculation.rank.icon className="w-3 h-3" style={{ color: rankCalculation.rank.hex }} />
+                  <div className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-10 transition-opacity duration-500 blur-xl" style={{ backgroundColor: rankCalculation.info.color }} />
+                  
+                  {/* VIP ID Side Bar */}
+                  <div className="w-2 rounded-l-[1rem] shadow-[0_0_10px_rgba(0,0,0,0.5)] z-10" style={{ backgroundColor: rankCalculation.info.color, boxShadow: `0 0 15px ${rankCalculation.info.color}80` }} />
+                  
+                  {/* VIP ID Main Body */}
+                  <div className="glass-premium border-y border-r border-foreground/15 rounded-r-[1rem] py-2 px-4 shadow-xl flex items-center gap-4 relative z-10 overflow-hidden">
+                    <div className="absolute inset-0 bg-gradient-to-r from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                    
+                    {/* Avatar Block */}
+                    <div className="relative">
+                      <div className="w-12 h-12 rounded-xl overflow-hidden flex items-center justify-center bg-surface border border-foreground/20 shadow-inner">
+                        {metadata?.avatar_url ? (
+                          <img src={metadata.avatar_url} alt="" className="w-full h-full object-cover" />
+                        ) : (
+                          <User2 className="w-6 h-6 text-foreground/40" />
+                        )}
+                      </div>
+                      <div className="absolute -bottom-2 -right-2 w-6 h-6 rounded-lg bg-surface border border-foreground/20 flex items-center justify-center shadow-lg rotate-12 group-hover:rotate-0 transition-transform" style={{ borderColor: `${rankCalculation.info.color}50` }}>
+                         <rankCalculation.rank.icon className="w-3.5 h-3.5 drop-shadow-md" style={{ color: rankCalculation.info.color }} />
                       </div>
                     </div>
+
+                    {/* Data Block */}
+                    <div className="flex flex-col py-1">
+                      <div className="flex items-center gap-2">
+                        <span className="text-[9px] font-black tracking-[0.2em] uppercase text-foreground/40">JUGADOR REGISTRADO</span>
+                        <Shield className="w-3 h-3 opacity-30 text-primary" />
+                      </div>
+                      <h3 className="text-xl font-black italic uppercase leading-none font-kanit tracking-tighter text-foreground mt-0.5">{userName}</h3>
+                    </div>
                   </div>
-                  <p className="text-foreground/60 text-lg font-medium font-kanit">
-                    Bienvenido,{' '}
-                    <span className="text-foreground font-black uppercase">{userName}</span>
-                  </p>
                 </motion.div>
 
                 {/* Stats / Rank Summary */}
@@ -793,18 +798,28 @@ export default function HomePage() {
                       </div>
 
                       <div className="relative z-10 space-y-10">
-                        <div className="relative flex items-center justify-between px-4 sm:px-10">
-                          <div className="absolute left-0 right-0 h-1 bg-foreground/5 top-1/2 -translate-y-1/2" />
-                          <motion.div
-                            initial={{ width: 0 }}
-                            whileInView={{ width: '100%' }}
-                            transition={{ duration: 2, ease: 'circOut' }}
-                            className="absolute left-0 h-1 bg-gradient-to-r from-primary/20 via-primary to-primary-light top-1/2 -translate-y-1/2"
-                            style={{
-                              width: `${(RANKS.findIndex((rank) => rank.name === rankCalculation.info.name) / (RANKS.length - 1)) * 100}%`,
-                            }}
-                          />
+                        <div className="relative flex items-center justify-between px-2 sm:px-8 mt-4">
+                          {/* Dotted/Dashed subtle background baseline */}
+                          <div className="absolute left-0 right-0 h-1.5 rounded-full top-1/2 -translate-y-1/2 bg-surface border border-foreground/10 overflow-hidden">
+                             <div className="absolute inset-0 bg-[url('/noise.png')] opacity-20 mix-blend-overlay" />
+                          </div>
+                          
+                          {/* Neon Active Track */}
+                          <div className="absolute left-0 h-1.5 rounded-full top-1/2 -translate-y-1/2 overflow-visible">
+                            <motion.div
+                              initial={{ width: 0 }}
+                              whileInView={{ width: '100%' }}
+                              transition={{ duration: 1.5, ease: 'easeOut' }}
+                              className="h-full bg-gradient-to-r from-primary-dark via-primary to-primary-light relative shadow-[0_0_20px_rgba(44,252,125,0.6)]"
+                              style={{
+                                width: `calc(${(RANKS.findIndex((rank) => rank.name === rankCalculation.info.name) / (RANKS.length - 1)) * 100}% + 20px)`,
+                              }}
+                            >
+                              <div className="absolute -right-2 top-1/2 -translate-y-1/2 w-4 h-4 bg-white rounded-full shadow-[0_0_25px_rgba(44,252,125,1)] animate-pulse" />
+                            </motion.div>
+                          </div>
 
+                          {/* Nodes */}
                           {RANKS.map((rankItem, i) => {
                             const isReached = statsSummary.elo >= rankItem.minElo;
                             const isCurrent = rankCalculation.info.name === rankItem.name;
@@ -812,27 +827,32 @@ export default function HomePage() {
                             return (
                               <div
                                 key={rankItem.name}
-                                className="relative flex flex-col items-center group"
+                                className="relative flex flex-col items-center group z-10"
                               >
+                                {isReached && (
+                                  <div className="absolute inset-0 bg-primary/20 blur-xl rounded-full scale-150 animate-pulse" />
+                                )}
                                 <motion.div
-                                  whileHover={{ scale: 1.2 }}
+                                  whileHover={{ scale: 1.15, y: -5 }}
                                   className={cn(
-                                    'w-10 h-10 rounded-xl flex items-center justify-center border-2 transition-all duration-500',
+                                    'w-12 h-12 rounded-[1rem] flex items-center justify-center border-2 transition-all duration-500 relative backdrop-blur-md',
                                     isReached
-                                      ? 'bg-background border-primary shadow-[0_0_15px_rgba(44,252,125,0.3)]'
-                                      : 'bg-surface/50 border-foreground/15 opacity-40 group-hover:opacity-100'
+                                      ? 'bg-surface shadow-[0_10px_20px_rgba(0,0,0,0.5),inset_0_0_15px_rgba(44,252,125,0.2)] border-primary hover:border-primary-light'
+                                      : 'bg-surface/40 border-foreground/10 opacity-50 group-hover:opacity-100 grayscale'
                                   )}
                                 >
-                                  <RankBadgeInline rankName={rankItem.name} size="sm" className="scale-75" />
+                                  {isReached && <div className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-primary rounded-full shadow-[0_0_10px_rgba(44,252,125,0.8)]" />}
+                                  <RankBadgeInline rankName={rankItem.name} size="sm" className="scale-[0.85] drop-shadow-lg" />
                                 </motion.div>
+                                
                                 {isCurrent && (
                                   <motion.div
                                     layoutId="current-rank-indicator"
-                                    className="absolute -top-12"
+                                    className="absolute -top-10"
                                   >
-                                    <div className="px-2 py-1 rounded bg-primary text-background text-[7px] font-black uppercase tracking-widest whitespace-nowrap relative">
-                                      TU RANGO
-                                      <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-2 h-2 bg-primary rotate-45" />
+                                    <div className="px-3 py-1 rounded-lg bg-foreground text-background text-[8px] font-black uppercase tracking-widest whitespace-nowrap relative shadow-xl shadow-foreground/20">
+                                      PASO ACTUAL
+                                      <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-2 h-2 bg-foreground rotate-45" />
                                     </div>
                                   </motion.div>
                                 )}
@@ -1247,13 +1267,14 @@ export default function HomePage() {
                     </div>
                   </div>
                 ) : (
-                  <div className="relative group/agenda overflow-hidden rounded-[2.5rem] p-10 flex flex-col items-center text-center gap-8 border border-dashed border-foreground/20 bg-surface/30 backdrop-blur-sm transition-colors duration-500 hover:border-primary/30 hover:bg-surface/50">
+                  <div className="relative group/agenda overflow-hidden rounded-[2.5rem] p-10 flex flex-col items-center text-center gap-8 glass-premium border-primary/20 bg-surface/40 hover:bg-surface/50 transition-colors duration-500 shadow-2xl">
                     {/* Minimalist Tech Background */}
-                    <div className="absolute inset-0 bg-[url('/grid.svg')] bg-center opacity-[0.02]" />
+                    <div className="absolute inset-0 bg-[url('/grid.svg')] bg-center opacity-[0.03] mix-blend-overlay" />
+                    <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-transparent opacity-0 group-hover/agenda:opacity-100 transition-opacity duration-700" />
                     
-                    <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[80%] h-32 bg-primary/5 blur-[80px] rounded-full pointer-events-none opacity-0 group-hover/agenda:opacity-100 transition-opacity duration-1000" />
+                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-48 h-48 bg-primary/10 blur-[60px] rounded-full pointer-events-none opacity-50 group-hover/agenda:opacity-100 group-hover/agenda:scale-125 transition-all duration-1000" />
 
-                    <div className="relative group-hover/agenda:-translate-y-2 transition-transform duration-500">
+                    <div className="relative group-hover/agenda:-translate-y-2 transition-transform duration-500 z-10">
                       <div className="absolute inset-0 bg-primary/20 blur-2xl rounded-full scale-0 group-hover/agenda:scale-150 transition-transform duration-1000 opacity-30" />
                       <div className="w-20 h-20 rounded-3xl bg-foreground/[0.03] border border-foreground/10 flex items-center justify-center relative z-10 shadow-xl group-hover/agenda:border-primary/30 overflow-hidden">
                         <div className="absolute inset-0 bg-gradient-to-br from-primary/10 to-transparent opacity-0 group-hover/agenda:opacity-100 transition-opacity" />
