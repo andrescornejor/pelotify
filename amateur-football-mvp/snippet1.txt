@@ -1,0 +1,119 @@
+{/* Profile Header Block */}
+        <div className="flex flex-col lg:flex-row items-center lg:items-start gap-8 lg:gap-12 mb-12 relative z-20">
+            {/* The FIFA Card (Avatar Replacement) */}
+            <div className={cn(
+              "relative transition-all duration-700 perspective-1000 group/card shrink-0 mx-auto lg:mx-0",
+              isEditing && "z-50 scale-105"
+            )}>
+               <div className={cn("absolute -inset-10 blur-[80px] rounded-full opacity-0 group-hover/card:opacity-100 transition-opacity", getField('is_pro', false) ? "bg-yellow-500/20" : "bg-primary/20")} />
+               <FifaCard
+                  player={{
+                    ...displayPlayer,
+                    name: (isEditing ? editedData.name : displayPlayer.name) as string,
+                    position: (isEditing ? editedData.position : displayPlayer.position) as string,
+                    image: avatarPreview || (getField('avatar_url', undefined) as string | undefined),
+                    mvpTrophies: displayMvpCount,
+                    badges: userBadges.map((b) => b.badge_type as string),
+                    pendingPoints: skillPoints,
+                  }}
+                />
+                {isEditing && (
+                  <label className="absolute inset-0 z-30 flex flex-col items-center justify-center bg-black/60 cursor-pointer rounded-[2rem] border-2 border-dashed border-primary/40 m-2 transition-all hover:bg-black/40">
+                    <Camera className="w-10 h-10 text-primary mb-2" />
+                    <span className="text-[10px] font-black uppercase tracking-widest text-center px-4">Cambiar<br/>Foto</span>
+                    <input type="file" className="hidden" onChange={handleAvatarChange} />
+                  </label>
+                )}
+            </div>
+
+            {/* Basic Info & Social Stats */}
+            <div className="flex-1 w-full space-y-6 lg:pt-8 text-center lg:text-left">
+               <div className="flex flex-col sm:flex-row items-center lg:items-start gap-4 sm:gap-8 justify-between">
+                  <div className="space-y-4">
+                    <motion.div 
+                      initial={{ opacity: 0, x: -20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      className="flex flex-wrap items-center justify-center lg:justify-start gap-4"
+                    >
+                      <h1 className="text-4xl sm:text-6xl lg:text-7xl font-black italic text-white uppercase tracking-tighter leading-none text-shadow-md">
+                        {isEditing ? (editedData.name || 'JUGADOR') : displayPlayer.name}
+                      </h1>
+                      {!isEditing && getField('is_pro', false) && (
+                        <div className="group/badge relative">
+                          <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-yellow-400 to-yellow-600 flex items-center justify-center border border-yellow-300 shadow-[0_0_15px_rgba(250,204,21,0.5)] cursor-default">
+                             <BadgeCheck className="w-5 h-5 text-black" />
+                          </div>
+                          <div className="absolute -top-10 left-1/2 -translate-x-1/2 opacity-0 group-hover/badge:opacity-100 transition-opacity bg-black text-yellow-400 text-[10px] font-black uppercase tracking-widest px-3 py-1 rounded-full whitespace-nowrap pointer-events-none">
+                            Pelotify PRO
+                          </div>
+                        </div>
+                      )}
+                    </motion.div>
+                    <div className="flex items-center justify-center lg:justify-start gap-3">
+                       <span className="px-3 py-1 rounded-full bg-primary/20 border border-primary/30 text-xs font-black text-primary uppercase tracking-[0.4em] italic drop-shadow-md">{displayPlayer.position}</span>
+                       <span className="px-3 py-1 rounded-full bg-foreground/10 border border-foreground/20 text-xs font-black text-white/70 uppercase tracking-[0.4em] drop-shadow-md">{teamName}</span>
+                    </div>
+                  </div>
+
+                  {/* Desktop Action Buttons */}
+                  <div className="flex items-center gap-3 mt-4 sm:mt-0 shrink-0">
+                    {isMe ? (
+                       isEditing && (
+                        <div className="flex flex-col sm:flex-row gap-3">
+                           <button onClick={() => setIsEditing(false)} className="h-12 px-6 rounded-[1.25rem] bg-foreground/5 border border-foreground/10 text-[10px] font-black uppercase tracking-widest hover:bg-foreground/10 transition-all">Cancelar</button>
+                           <button onClick={handleSaveProfile} disabled={isSaving} className="h-12 px-8 rounded-[1.25rem] bg-primary text-black text-[10px] font-black uppercase tracking-widest shadow-xl shadow-primary/20 flex items-center justify-center gap-3 active:scale-95 disabled:opacity-50 transition-all">
+                             {isSaving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
+                             Guardar Perfil
+                           </button>
+                        </div>
+                       )
+                    ) : (
+                      <div className="flex gap-3">
+                         <button 
+                           onClick={() => router.push(`/messages?user=${id}`)}
+                           className="h-12 px-8 rounded-[1.25rem] bg-primary text-black text-[10px] font-black uppercase tracking-widest shadow-xl shadow-primary/20 hover:scale-105 active:scale-95 transition-all flex items-center justify-center gap-3"
+                         >
+                            <MessageSquare className="w-4 h-4" /> Enviar Mensaje
+                         </button>
+                      </div>
+                    )}
+                  </div>
+               </div>
+
+               {/* Bio Section */}
+               <div className="max-w-2xl mx-auto lg:mx-0">
+                  {getField('bio', '') && !isEditing && (
+                    <p className="text-sm border-l-4 border-primary/40 pl-4 py-1 text-foreground/80 dark:text-white/60 font-medium leading-relaxed italic">
+                      "{displayPlayer.bio || getField('bio', '')}"
+                    </p>
+                  )}
+                  {isEditing && (
+                    <p className="text-sm text-primary/60 italic font-black uppercase tracking-widest">
+                      Completando información de perfil...
+                    </p>
+                  )}
+               </div>
+
+               {/* Modern Social Stats Hub */}
+               {!isEditing && (
+                   <div className="flex flex-wrap items-center justify-center lg:justify-start gap-4 pt-4">
+                      {[
+                        { label: 'Partidos', value: displayMatches, color: 'text-foreground' },
+                        { label: 'E.L.O.', value: displayElo, color: getField('is_pro', false) ? 'text-yellow-400' : 'text-primary' },
+                        { label: 'Goles', value: displayGoals, color: 'text-foreground' },
+                        { label: 'M.V.P.', value: displayMvpCount, color: 'text-accent' },
+                      ].map((stat, i) => (
+                        <div key={i} className="flex-1 min-w-[100px] max-w-[140px] bg-foreground/[0.02] border border-foreground/10 p-4 rounded-[1.5rem] flex flex-col items-center justify-center gap-1 group/stat cursor-default hover:bg-foreground/[0.05] hover:border-primary/20 transition-all text-center">
+                           <span className={cn("text-3xl font-black italic tracking-tighter leading-none group-hover/stat:scale-110 transition-transform origin-center", stat.color)}>{stat.value}</span>
+                           <span className="text-[9px] font-black text-foreground/40 uppercase tracking-[0.3em] overflow-hidden whitespace-nowrap text-ellipsis max-w-full">{stat.label}</span>
+                        </div>
+                      ))}
+                   </div>
+               )}
+            </div>
+        </div>
+
+        {/* Navigation Tabs (Social Style) */}
+        {/* We place this inside !isEditing */}
+        {!isEditing && (
+          <div className="sticky top-0

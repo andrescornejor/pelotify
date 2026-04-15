@@ -1,0 +1,194 @@
+{activeTab === 'overview' && !isEditing && (
+                <motion.div
+                  key="overview"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -20 }}
+                  className="space-y-8 mt-2"
+                >
+                  {/* Personal Data Bento */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {/* Biometrics */}
+                    <div className="lg:col-span-1 p-6 sm:p-8 rounded-[3rem] border border-foreground/10 space-y-8 bg-surface/50 dark:bg-foreground/[0.02] shadow-[0_20px_60px_-15px_rgba(0,0,0,0.05)] hover:bg-foreground/[0.04] transition-all">
+                       <div className="flex flex-col gap-1 border-b border-foreground/5 pb-4">
+                          <h3 className="text-xl font-black uppercase tracking-tighter text-foreground italic leading-none flex items-center gap-3">
+                             <Target className="w-5 h-5 text-primary" /> Biometría
+                          </h3>
+                          <span className="text-[8px] font-black text-foreground/40 uppercase tracking-[0.3em]">Ficha Técnica</span>
+                       </div>
+                       
+                       <div className="grid grid-cols-2 gap-4">
+                         {[
+                            { label: 'Estatura', value: displayHeight, unit: 'cm', dot: 'bg-primary' },
+                            { label: 'Ciclos', value: displayAge, unit: 'Años', dot: 'bg-blue-400' },
+                            { label: 'Pie Hábil', value: displayFoot, unit: '', dot: 'bg-emerald-400' },
+                            { label: 'Alianza', value: teamName, unit: '', dot: 'bg-purple-400', isTeam: true },
+                         ].map((item, idx) => (
+                           <div key={idx} className="flex flex-col gap-1 p-3 sm:p-4 rounded-[1.5rem] bg-foreground/[0.03] border border-foreground/5 shadow-inner group/bio relative overflow-hidden">
+                             <div className="absolute top-0 right-0 w-12 h-12 opacity-0 group-hover/bio:opacity-100 transition-opacity blur-xl rounded-full" style={{ backgroundColor: item.dot.replace('bg-', '') }} />
+                             <div className="flex items-center gap-2 relative z-10 w-full min-w-0">
+                               <div className={cn('w-2 h-2 shrink-0 rounded-full shadow-[0_0_8px_currentColor]', item.dot.replace('bg-', 'text-'))} />
+                               <span className="text-[8px] font-black uppercase text-foreground/40 tracking-[0.2em] truncate relative top-px">{item.label}</span>
+                             </div>
+                             <div className="flex items-baseline gap-1 relative z-10 min-w-0 w-full mt-1">
+                               <span className={cn("text-[17px] sm:text-2xl font-black italic uppercase tracking-tighter truncate leading-none relative z-10", item.isTeam ? "text-primary" : "text-foreground")}>{item.value}</span>
+                               {item.unit && <span className="text-[8px] font-black text-foreground/30 uppercase shrink-0">{item.unit}</span>}
+                             </div>
+                           </div>
+                         ))}
+                       </div>
+
+                       <div className="pt-2 border-t border-foreground/5">
+                          <div className="flex items-center justify-between mb-4">
+                            <span className="text-[9px] font-black uppercase tracking-[0.3em] text-foreground/50 italic flex items-center gap-2">
+                               <Zap className="w-3 h-3 text-primary" /> Atributos Base
+                            </span>
+                            {skillPoints > 0 && isMe && (
+                              <span className="text-[8px] font-black bg-primary/20 text-primary px-2 py-0.5 rounded-full ring-1 ring-primary/40 shadow-[0_0_10px_rgba(16,185,129,0.3)] animate-pulse">{skillPoints} Pts Disp.</span>
+                            )}
+                          </div>
+                          <div className="grid grid-cols-2 lg:grid-cols-3 gap-x-4 gap-y-5">
+                             {[
+                               { label: 'PAC', val: playerStats.pac, color: '#3b82f6' },
+                               { label: 'SHO', val: playerStats.sho, color: '#ef4444' },
+                               { label: 'PAS', val: playerStats.pas, color: '#8b5cf6' },
+                               { label: 'DRI', val: playerStats.dri, color: '#f59e0b' },
+                               { label: 'DEF', val: playerStats.def, color: '#10b981' },
+                               { label: 'PHY', val: playerStats.phy, color: '#f97316' },
+                             ].map((stat) => (
+                               <div key={stat.label} className="flex flex-col gap-1.5 group/stat">
+                                 <div className="flex justify-between items-end">
+                                   <span className="text-[9px] font-black text-foreground/30 uppercase tracking-[0.2em] leading-none group-hover/stat:text-foreground/60 transition-colors">{stat.label}</span>
+                                   <span className="text-[11px] font-black italic text-foreground leading-none">{stat.val}</span>
+                                 </div>
+                                 <div className="h-1.5 bg-foreground/[0.04] rounded-full overflow-hidden shadow-inner">
+                                   <div className="h-full rounded-full transition-all duration-1000" style={{ width: `${(stat.val/99)*100}%`, backgroundColor: stat.color, boxShadow: `0 0 10px ${stat.color}` }} />
+                                 </div>
+                               </div>
+                             ))}
+                          </div>
+                       </div>
+                    </div>
+
+                    {/* Rendimiento & Radar (merge into 1 block across 2 columns) */}
+                    <div className="lg:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-6">
+                       {/* Performance Stats */}
+                       <div className="p-6 sm:p-8 rounded-[3rem] border border-foreground/10 bg-gradient-to-br from-surface/50 to-foreground/[0.02] flex flex-col justify-between group/perf shadow-[0_20px_60px_-15px_rgba(0,0,0,0.05)] hover:bg-foreground/[0.04] transition-all relative overflow-hidden">
+                         <div className="absolute -right-20 -bottom-20 w-64 h-64 bg-accent/5 blur-[80px] pointer-events-none rounded-full" />
+                         <div className="flex flex-col gap-1 border-b border-foreground/5 pb-4 mb-8 relative z-10">
+                            <h3 className="text-xl font-black uppercase tracking-tighter text-foreground italic leading-none flex items-center gap-3">
+                               <Trophy className="w-5 h-5 text-accent" /> Rendimiento
+                            </h3>
+                            <span className="text-[8px] font-black text-foreground/40 uppercase tracking-[0.3em]">Métricas de Juego Oficial</span>
+                         </div>
+                         
+                         <div className="flex flex-col justify-center h-full gap-5 relative z-10">
+                            {[
+                                { label: 'Victorias Netas', value: displayMatchesWon, color: 'text-foreground' },
+                                { label: 'Win Rate Global', value: `${displayMatches > 0 ? Math.min(100, Math.round((displayMatchesWon / displayMatches) * 100)) : 0}%`, color: 'text-emerald-500' },
+                                { label: 'MVP Frecuencia', value: `${displayMatches > 0 ? Math.min(100, (displayMvpCount / displayMatches) * 100).toFixed(1) : '0.0'}%`, color: 'text-accent', lg: true },
+                            ].map((stat, i) => (
+                               <div key={i} className="flex items-center justify-between p-4 sm:p-5 rounded-[1.5rem] bg-background/40 border border-foreground/[0.03] hover:border-foreground/10 transition-colors group/item">
+                                 <div className="flex items-center gap-2 sm:gap-3">
+                                    <div className="font-mono text-[9px] font-bold text-foreground/20 italic group-hover/item:text-foreground/40 transition-colors">0{i+1}</div>
+                                    <span className="text-[8px] sm:text-[9px] font-black uppercase text-foreground/50 tracking-[0.2em]">{stat.label}</span>
+                                 </div>
+                                 <span className={cn("font-black italic tracking-tighter leading-none group-hover/item:scale-105 transition-transform origin-right text-right shrink-0", stat.lg ? "text-3xl sm:text-4xl drop-shadow-[0_0_15px_rgba(245,158,11,0.3)]" : "text-2xl sm:text-3xl", stat.color)}>{stat.value}</span>
+                               </div>
+                            ))}
+                         </div>
+                       </div>
+
+                       {/* Pro Radar Chart */}
+                       <div className={cn(
+                          "relative p-8 rounded-[3rem] border flex flex-col items-center justify-center overflow-hidden shadow-[0_20px_60px_-15px_rgba(0,0,0,0.05)]",
+                          getField('is_pro', false) ? 'border-yellow-500/20 bg-gradient-to-br from-yellow-500/5 to-transparent' : 'border-foreground/5 bg-foreground/[0.02]'
+                       )}>
+                          {getField('is_pro', false) && <div className="absolute top-0 right-0 w-48 h-48 bg-yellow-500/10 blur-3xl rounded-full" />}
+                          <div className={cn("absolute top-6 left-6 z-20 flex gap-2 items-center", !getField('is_pro', false) && "opacity-50")}>
+                            <Star className={cn("w-4 h-4", getField('is_pro', false) ? "text-yellow-400" : "text-foreground/30")} fill="currentColor" />
+                            <h3 className="text-[10px] font-black italic uppercase tracking-[0.3em] text-foreground/70">Radiografía</h3>
+                          </div>
+                          
+                          <div className={cn("relative z-10 w-full flex items-center justify-center pt-8", !getField('is_pro', false) && "grayscale opacity-30 select-none")}>
+                            <RadarChart stats={playerStats} size={240} color={getField('is_pro', false) ? "#facc15" : "#64748b"} />
+                          </div>
+                          
+                          {!getField('is_pro', false) && (
+                            <div className="absolute inset-0 backdrop-blur-sm flex flex-col items-center justify-center text-center p-6 gap-3 z-30">
+                               <Lock className="w-8 h-8 text-foreground/30" />
+                               <span className="text-[9px] font-black uppercase tracking-widest text-foreground/50 max-w-[150px] leading-relaxed">Radar Analítico Exclusivo para PROs</span>
+                               <button onClick={() => router.push('/pro')} className="mt-2 text-[8px] font-black uppercase tracking-[0.2em] text-yellow-500 bg-yellow-500/10 px-5 py-2.5 rounded-full hover:bg-yellow-500/20 active:scale-95 transition-all ring-1 ring-yellow-500/30">
+                                  Obtener PRO
+                               </button>
+                            </div>
+                          )}
+                       </div>
+                    </div>
+                  </div>
+
+                  {/* Team Section Banner */}
+                  {userTeam && (
+                    <div className="p-6 sm:p-8 lg:p-12 rounded-[3.5rem] border border-foreground/10 bg-gradient-to-br from-surface to-background shadow-xl flex flex-col md:flex-row items-center gap-8 md:gap-12 relative overflow-hidden group/team cursor-default transition-all duration-700 w-full">
+                       <div className="absolute top-0 right-0 w-[150%] h-[150%] bg-gradient-radial from-primary/10 via-transparent to-transparent -translate-y-1/2 translate-x-1/4 opacity-0 group-hover/team:opacity-100 transition-opacity duration-1000 blur-3xl pointer-events-none" />
+                       <div className="absolute inset-x-0 bottom-0 h-1 bg-gradient-to-r from-transparent via-primary/50 to-transparent opacity-0 group-hover/team:opacity-100 transition-opacity duration-1000 pointer-events-none" />
+
+                       <div className="relative shrink-0 perspective-1000">
+                         <div className="absolute inset-0 bg-primary/20 blur-[40px] rounded-full scale-110 group-hover/team:scale-150 transition-transform duration-1000 pointer-events-none" />
+                         <div className="w-32 h-32 md:w-48 md:h-48 rounded-[3rem] bg-background/80 border border-foreground/10 flex items-center justify-center overflow-hidden relative shadow-2xl group-hover/team:border-primary/50 transition-all duration-700 md: group-hover/team:-translate-y-2 group-hover/team:rotate-y-12">
+                           <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent opacity-0 group-hover/team:opacity-100 transition-opacity pointer-events-none" />
+                           {userTeam.logo_url ? (
+                             <img src={userTeam.logo_url} alt={userTeam.name} className="w-full h-full object-cover group-hover/team:scale-110 group-hover/team:rotate-3 transition-all duration-1000" />
+                           ) : (
+                             <Shield className="w-20 h-20 md:w-28 md:h-28 text-foreground/20 group-hover/team:text-primary transition-colors duration-700 drop-shadow-md" />
+                           )}
+                         </div>
+                       </div>
+
+                       <div className="flex-1 space-y-6 text-center lg:text-left w-full relative z-10">
+                         <div className="space-y-2">
+                           <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-3">
+                             <div className="px-3 py-1 bg-primary/10 border border-primary/20 rounded-full flex items-center gap-2">
+                               <div className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
+                               <span className="text-[9px] font-black text-primary uppercase tracking-[0.3em] italic">Afiliación Confirmada</span>
+                             </div>
+                             <span className="text-[9px] font-black text-foreground/30 italic tracking-[0.2em] uppercase">NODE #{userTeam.id.slice(0, 8)}</span>
+                           </div>
+                           <h2 className="text-4xl md:text-6xl font-black italic text-foreground uppercase tracking-tighter leading-none group-hover/team:text-transparent group-hover/team:bg-clip-text group-hover/team:bg-gradient-to-r group-hover/team:from-foreground group-hover/team:to-primary transition-all duration-700 py-1">
+                             {userTeam.name}
+                           </h2>
+                         </div>
+
+                         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 bg-background/40 p-5 rounded-[2rem] border border-foreground/[0.03] shadow-inner w-full">
+                           {[
+                             { icon: Trophy, label: 'ELO', value: userTeam.elo, color: 'text-primary' },
+                             { icon: Users, label: 'Squad', value: userTeam.members_count, color: 'text-blue-500' },
+                             { icon: Shield, label: 'Tier', value: userTeam.level || 1, color: 'text-accent' },
+                             { icon: Zap, label: 'Win %', value: userTeam.wins + userTeam.losses > 0 ? ((userTeam.wins / (userTeam.wins + userTeam.losses + userTeam.draws)) * 100).toFixed(0) + '%' : '--', color: 'text-purple-500' },
+                           ].map((stat, i) => (
+                             <div key={i} className="flex flex-col items-center lg:items-start gap-1 group/stat2">
+                               <div className="flex items-center gap-1.5">
+                                 <stat.icon className={cn('w-3 h-3 opacity-50 group-hover/stat2:opacity-100 transition-opacity', stat.color)} />
+                                 <span className="text-[8px] font-black text-foreground/40 uppercase tracking-[0.2em]">{stat.label}</span>
+                               </div>
+                               <p className="text-2xl font-black text-foreground italic tracking-tighter uppercase group-hover/stat2:scale-105 transition-transform origin-left">{stat.value}</p>
+                             </div>
+                           ))}
+                         </div>
+
+                         <div className="flex flex-wrap justify-center lg:justify-start gap-3 w-full">
+                           <Link href={`/team?id=${userTeam.id}`} className="w-full sm:w-auto h-12 px-8 rounded-2xl bg-foreground hover:bg-white text-background font-black text-[10px] uppercase tracking-[0.3em] flex items-center justify-center gap-2 transition-all shadow-xl hover:shadow-2xl hover:scale-105 active:scale-95 group/link">
+                             Acceder Sede <ExternalLink className="w-4 h-4 group-hover/link:rotate-12 transition-transform" />
+                           </Link>
+                           {userTeam.captain_id === (id === 'me' || !id ? user?.id : id) && (
+                             <div className="w-full sm:w-auto h-12 px-6 rounded-2xl border border-primary bg-primary/10 flex items-center justify-center gap-2 shadow-[0_0_15px_rgba(16,185,129,0.1)]">
+                               <Star className="w-4 h-4 text-primary fill-primary animate-pulse" />
+                               <span className="text-[9px] font-black text-primary uppercase tracking-[0.2em]">Capitán</span>
+                             </div>
+                           )}
+                         </div>
+                       </div>
+                    </div>
+                  )}
+                </motion.div>
+              )}

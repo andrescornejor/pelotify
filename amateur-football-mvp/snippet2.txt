@@ -1,0 +1,154 @@
+          </div>
+        )}
+
+        {/* Edit Mode OR Tabs */}
+        {isEditing ? (
+  <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-8 mt-8 pb-20">
+    <div className="flex items-center justify-between border-b border-foreground/10 pb-6 mb-8">
+      <div className="flex items-center gap-4">
+        <div className="w-12 h-12 rounded-2xl bg-primary/10 border border-primary/20 flex items-center justify-center">
+          <Edit2 className="w-6 h-6 text-primary" />
+        </div>
+        <div>
+          <h2 className="text-2xl lg:text-3xl font-black italic uppercase text-foreground tracking-tighter leading-none">Modo <span className="text-primary">Edición</span></h2>
+          <p className="text-[10px] font-black text-foreground/50 uppercase tracking-[0.3em] mt-1">Modifica tu identidad en la red táctica</p>
+        </div>
+      </div>
+    </div>
+    
+    <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+      {/* Col 1 - Personal Data */}
+      <div className="lg:col-span-5 space-y-8">
+        <div className="glass-premium p-8 rounded-[2.5rem] border border-foreground/10 space-y-6 shadow-xl">
+           <div className="flex items-center gap-3 border-b border-foreground/10 pb-4">
+             <div className="w-8 h-8 rounded-xl bg-foreground/5 flex items-center justify-center">
+               <Info className="w-4 h-4 text-foreground/40" />
+             </div>
+             <h3 className="text-[11px] font-black uppercase text-foreground/50 tracking-[0.3em]">Datos Generales</h3>
+           </div>
+           
+           <div className="space-y-5">
+             <div className="space-y-2">
+               <label className="text-[9px] font-black uppercase text-foreground/40 tracking-[0.2em] ml-2">Nombre en Cancha</label>
+               <input 
+                 value={editedData.name} 
+                 onChange={e => setEditedData({...editedData, name: e.target.value})}
+                 className="w-full bg-foreground/[0.03] border border-foreground/10 rounded-2xl p-4 text-sm font-bold text-foreground outline-none focus:border-primary/50 transition-all shadow-inner"
+                 placeholder="Ej. El 10"
+               />
+             </div>
+             <div className="space-y-2">
+               <label className="text-[9px] font-black uppercase text-foreground/40 tracking-[0.2em] ml-2">Biografía</label>
+               <textarea 
+                 value={editedData.bio}
+                 onChange={e => setEditedData({...editedData, bio: e.target.value})}
+                 placeholder="¿Cómo juegas? ¿De qué club eres?"
+                 className="w-full bg-foreground/[0.03] border border-foreground/10 rounded-2xl p-4 text-sm font-medium text-foreground/80 outline-none focus:border-primary/50 h-32 resize-none shadow-inner"
+               />
+             </div>
+             <div className="space-y-2">
+               <div className="flex justify-between items-center ml-2">
+                 <label className="text-[9px] font-black uppercase text-foreground/40 tracking-[0.2em]">URL Portada (Banner)</label>
+               </div>
+               <div className="relative group/cover-input">
+                 <input 
+                   value={editedData.cover_url}
+                   onChange={e => setEditedData({...editedData, cover_url: e.target.value})}
+                   placeholder="https://..."
+                   disabled={!getField('is_pro', false)}
+                   className={cn(
+                     "w-full bg-foreground/[0.03] border border-foreground/10 rounded-2xl p-4 text-xs font-medium text-foreground/70 outline-none focus:border-primary/50 shadow-inner",
+                     !getField('is_pro', false) && "opacity-50 cursor-not-allowed group-hover/cover-input:border-yellow-500/30 transition-colors"
+                   )}
+                 />
+                 {!getField('is_pro', false) && (
+                   <div className="absolute inset-0 z-10 cursor-pointer flex items-center justify-end pr-4" onClick={() => router.push('/pro')} title="Hazte PRO">
+                      <span className="text-[8px] font-black uppercase text-yellow-500 bg-yellow-500/10 px-2 py-0.5 rounded flex items-center gap-1">
+                        <Star className="w-2 h-2" fill="currentColor" /> Pro Only
+                      </span>
+                   </div>
+                 )}
+               </div>
+             </div>
+           </div>
+        </div>
+
+        <div className="glass-premium p-8 rounded-[2.5rem] border border-foreground/10 space-y-6 shadow-xl">
+           <div className="flex items-center gap-3 border-b border-foreground/10 pb-4">
+             <div className="w-8 h-8 rounded-xl bg-foreground/5 flex items-center justify-center">
+               <Target className="w-4 h-4 text-foreground/40" />
+             </div>
+             <h3 className="text-[11px] font-black uppercase text-foreground/50 tracking-[0.3em]">Físico & Táctica</h3>
+           </div>
+           
+           <div className="grid grid-cols-2 gap-4">
+             <div className="space-y-2">
+               <label className="text-[9px] font-black uppercase text-foreground/40 tracking-[0.2em] ml-2">Posición</label>
+               <input 
+                 value={editedData.position}
+                 onChange={e => setEditedData({...editedData, position: e.target.value.toUpperCase()})}
+                 maxLength={3}
+                 className="w-full bg-foreground/[0.03] border border-foreground/10 rounded-2xl p-4 text-lg font-black italic uppercase text-primary outline-none focus:border-primary/50 shadow-inner"
+                 placeholder="DC"
+               />
+             </div>
+             <div className="space-y-2">
+               <label className="text-[9px] font-black uppercase text-foreground/40 tracking-[0.2em] ml-2">Pie Hábil</label>
+               <select
+                 value={editedData.preferredFoot}
+                 onChange={e => setEditedData({...editedData, preferredFoot: e.target.value})}
+                 className="w-full bg-foreground/[0.03] border border-foreground/10 rounded-2xl p-4 text-sm font-bold text-foreground outline-none focus:border-primary/50 shadow-inner appearance-none cursor-pointer"
+               >
+                 <option value="Derecha">Derecha</option>
+                 <option value="Zurda">Zurda</option>
+                 <option value="Ambidiestro">Ambos</option>
+               </select>
+             </div>
+             <div className="space-y-2">
+               <label className="text-[9px] font-black uppercase text-foreground/40 tracking-[0.2em] ml-2">Edad</label>
+               <input 
+                 type="number"
+                 value={editedData.age}
+                 onChange={e => setEditedData({...editedData, age: e.target.value})}
+                 className="w-full bg-foreground/[0.03] border border-foreground/10 rounded-2xl p-4 text-lg font-bold text-foreground outline-none focus:border-primary/50 shadow-inner"
+               />
+             </div>
+             <div className="space-y-2">
+               <label className="text-[9px] font-black uppercase text-foreground/40 tracking-[0.2em] ml-2">Altura (cm)</label>
+               <input 
+                 type="number"
+                 value={editedData.height}
+                 onChange={e => setEditedData({...editedData, height: e.target.value})}
+                 className="w-full bg-foreground/[0.03] border border-foreground/10 rounded-2xl p-4 text-lg font-bold text-foreground outline-none focus:border-primary/50 shadow-inner"
+               />
+             </div>
+           </div>
+        </div>
+      </div>
+
+      {/* Col 2 - Stats Allocation */}
+      <div className="lg:col-span-7">
+        <div className="glass-premium p-8 rounded-[2.5rem] border-2 border-primary/20 space-y-6 shadow-[0_0_50px_rgba(16,185,129,0.05)] h-full">
+           <div className="flex flex-col gap-1 border-b border-foreground/10 pb-6">
+             <h3 className="text-xl font-black italic uppercase tracking-tighter text-foreground flex items-center gap-3">
+                <Zap className="w-5 h-5 text-primary" /> Atributos FIFA
+             </h3>
+             <p className="text-[9px] font-black uppercase text-foreground/50 tracking-[0.3em]">Distribuye tus puntos de habilidad ganados en la cancha</p>
+           </div>
+           
+           <div className="pt-2">
+             <SkillPointAllocator
+                stats={editedStats}
+                skillPoints={skillPoints}
+                onStatsChange={setEditedStats}
+                onSkillPointsChange={setSkillPoints}
+             />
+           </div>
+        </div>
+      </div>
+    </div>
+  </motion.div>
+        ) : (
+          <>
+            {/* Main Tab View */}
+            <div className="min-h-[600px]">
