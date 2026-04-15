@@ -398,7 +398,8 @@ function ProfileContent() {
     position: getField('position', DEFAULT_PLAYER.position) as string,
     overall: playerOverall as number,
     stats: playerStats,
-  }), [isMe, user?.name, editedData.name, dbProfile.name, playerOverall, playerStats]);
+    bio: getField('bio', '') as string,
+  }), [isMe, user?.name, editedData.name, dbProfile.name, playerOverall, playerStats, targetProfile, authMetadata]);
 
   const displayAge = useMemo(() => getField('age', '18'), [dbProfile, authMetadata]);
   const displayHeight = useMemo(() => getField('height', '170'), [dbProfile, authMetadata]);
