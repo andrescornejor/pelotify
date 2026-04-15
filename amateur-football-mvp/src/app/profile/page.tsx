@@ -863,13 +863,10 @@ function ProfileContent() {
                                  <span className="text-[10px] font-black uppercase tracking-[0.3em]">Habilidades</span>
                               </div>
                               <SkillPointAllocator 
-                                initialStats={playerStats}
-                                availablePoints={skillPoints}
-                                isEditable={isEditing}
-                                onSave={(newStats, newPoints) => {
-                                  setEditedStats(newStats);
-                                  setSkillPoints(newPoints);
-                                }}
+                                stats={isEditing ? editedStats : playerStats}
+                                skillPoints={skillPoints}
+                                onStatsChange={(newStats) => isEditing && setEditedStats(newStats)}
+                                onSkillPointsChange={(newPoints) => isEditing && setSkillPoints(newPoints)}
                               />
                            </div>
                            <div className="glass-premium p-8 rounded-[2.5rem] border border-foreground/5 flex flex-col items-center justify-center min-h-[300px]">
@@ -926,13 +923,13 @@ function ProfileContent() {
                                  </div>
                                  <span className={cn(
                                    "px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest",
-                                   match.status === 'completed' ? "bg-emerald-500/10 text-emerald-500" : "bg-primary/10 text-primary"
+                                   match.is_completed ? "bg-emerald-500/10 text-emerald-500" : "bg-primary/10 text-primary"
                                  )}>
-                                   {match.status === 'completed' ? 'Finalizado' : 'Pendiente'}
+                                   {match.is_completed ? 'Finalizado' : 'Pendiente'}
                                  </span>
                               </div>
                               <div className="flex items-center gap-4 py-4 border-y border-foreground/5">
-                                 <div className="flex-1 text-center font-black italic uppercase tracking-tighter text-sm truncate">{match.venue_name || 'Estadio Pelotify'}</div>
+                                 <div className="flex-1 text-center font-black italic uppercase tracking-tighter text-sm truncate">{match.location || 'Estadio Pelotify'}</div>
                                  <div className="px-4 py-1 bg-foreground/5 rounded-lg font-black italic text-foreground">VS</div>
                                  <div className="flex-1 text-center font-black italic uppercase tracking-tighter text-sm truncate">Rival</div>
                               </div>
@@ -978,7 +975,7 @@ function ProfileContent() {
                             />
                             <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
                             <div className="absolute bottom-4 left-4 right-4">
-                               <p className="text-xs font-black uppercase italic text-white truncate drop-shadow-lg">{highlight.caption || 'Sin título'}</p>
+                               <p className="text-xs font-black uppercase italic text-white truncate drop-shadow-lg">{highlight.description || 'Sin título'}</p>
                                <div className="flex items-center gap-3 mt-1 opacity-60">
                                   <div className="flex items-center gap-1">
                                      <Heart className="w-3 h-3 fill-primary text-primary" />
