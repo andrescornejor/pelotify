@@ -1096,7 +1096,7 @@ export default function HomePage() {
           </div>
 
           <aside className={cn(
-            "lg:col-span-4 xl:col-span-4 lg:col-start-9 space-y-8",
+            "lg:col-span-4 xl:col-span-4 lg:col-start-9 space-y-8 lg:sticky lg:top-24",
             nextMatch ? "order-1 lg:order-2" : "order-3 lg:order-2"
           )}>
             <div id="featured-match" className="relative group/match overflow-hidden rounded-[3rem] glass-premium border-primary/20 shadow-[0_20px_50px_rgba(0,0,0,0.3)]">
