@@ -329,7 +329,7 @@ export default function FriendsPage() {
   }
 
   return (
-    <div className="flex flex-col min-h-[90vh] bg-background p-3 sm:p-5 lg:px-10 lg:pt-4 xl:px-16 max-w-full mx-auto space-y-8 relative overflow-hidden">
+    <div className="flex flex-col min-h-[90vh] bg-background p-4 sm:p-6 lg:px-10 lg:pt-4 xl:px-16 max-w-full mx-auto space-y-8 relative overflow-hidden">
       {/* ── AMBIENT GLOWS ── */}
       <div className="absolute top-0 right-[-10%] w-[40%] h-[40%] bg-primary/5 blur-[120px] rounded-full pointer-events-none" />
       <div className="absolute bottom-[-10%] left-[-10%] w-[50%] h-[50%] bg-primary/3 blur-[120px] rounded-full pointer-events-none" />
@@ -352,7 +352,7 @@ export default function FriendsPage() {
       </div>
 
       {/* ── QUICK STATS ── */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 px-4 w-full max-w-full relative z-20">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 px-4 w-full max-w-7xl mx-auto relative z-20">
         <div className="glass-premium p-4 md:p-6 rounded-[2rem] border border-foreground/5 flex flex-col items-center justify-center gap-2 group hover:border-primary/20 transition-all">
           <Users className="w-5 h-5 text-primary opacity-60 group-hover:opacity-100 transition-opacity" />
           <div className="text-2xl font-black text-foreground italic uppercase tracking-tighter leading-none">
@@ -392,7 +392,7 @@ export default function FriendsPage() {
       </div>
 
       {/* ── TABS ── */}
-      <div className="relative z-20 px-4 w-full max-w-full">
+      <div className="relative z-20 px-4 w-full max-w-7xl mx-auto">
         <div className="flex p-2 bg-foreground/[0.02] md: rounded-[2.5rem] border border-foreground/[0.05] relative shadow-2xl">
           <button
             onClick={() => setActiveTab('friends')}
@@ -469,7 +469,7 @@ export default function FriendsPage() {
           >
             {/* ── FRIENDS TAB ── */}
             {activeTab === 'friends' && (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 px-4 w-full">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 px-4 max-w-full mx-auto">
                 <AnimatePresence mode="popLayout">
                   {friends.length === 0 ? (
                     <motion.div
@@ -598,7 +598,7 @@ export default function FriendsPage() {
 
             {/* ── REQUESTS TAB ── */}
             {activeTab === 'requests' && (
-              <div className="space-y-16 px-4 w-full">
+              <div className="space-y-16 px-4 max-w-4xl mx-auto">
                 {/* ── FRIEND REQUESTS ── */}
                 <div className="space-y-6">
                   <div className="flex items-center justify-between px-2">
