@@ -79,7 +79,7 @@ export default function SearchPage() {
   return (
     <div
       className={cn(
-        'flex flex-col gap-8 p-3 sm:p-5 lg:px-10 lg:pt-4 xl:px-16 max-w-full mx-auto h-full bg-background relative overflow-hidden min-h-screen snap-y snap-proximity overflow-y-auto',
+        'min-h-screen bg-background pt-4 pb-32 px-3 sm:px-5 lg:px-10 xl:px-16 relative overflow-hidden flex flex-col gap-8',
         isPerfMode && 'perf-mode'
       )}
     >
@@ -98,7 +98,7 @@ export default function SearchPage() {
           isPerfMode ? 'bg-background' : 'bg-background/80 md:'
         )}
       >
-        <div className="flex flex-col gap-8 relative z-10 text-center lg:text-left max-w-full mx-auto">
+        <div className="flex flex-col gap-8 relative z-10 text-center lg:text-left w-full">
           <div className="flex flex-col gap-2 relative">
             {/* Radar Sweep Animation behind title */}
             {!isPerfMode && (
