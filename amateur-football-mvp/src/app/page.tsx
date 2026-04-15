@@ -666,7 +666,6 @@ export default function HomePage() {
                 {[
                   { id: 'activity', label: 'Feed', icon: Activity },
                   { id: 'teams', label: 'Equipos', icon: Users },
-                  { id: 'social', label: '3erTiempo', icon: MessageSquare },
                   { id: 'futtok', label: 'FutTok', icon: Flame },
                 ].map((tab) => {
                   const isSelected = activeTab === tab.id;
