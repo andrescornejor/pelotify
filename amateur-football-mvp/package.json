@@ -16,6 +16,8 @@
     "@capacitor/filesystem": "^7.1.8",
     "@capacitor/ios": "^7.1.0",
     "@capacitor/share": "^7.0.4",
+    "@imgly/background-removal": "^1.7.0",
+    "@mediapipe/face_detection": "^0.4.1646425229",
     "@mercadopago/sdk-react": "^1.0.7",
     "@react-google-maps/api": "^2.20.8",
     "@supabase/auth-helpers-nextjs": "^0.10.0",
