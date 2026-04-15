@@ -466,6 +466,7 @@ export default function FriendsPage() {
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: -10 }}
             transition={{ duration: 0.2 }}
+            className="w-full"
           >
             {/* ── FRIENDS TAB ── */}
             {activeTab === 'friends' && (
@@ -598,7 +599,7 @@ export default function FriendsPage() {
 
             {/* ── REQUESTS TAB ── */}
             {activeTab === 'requests' && (
-              <div className="space-y-16 max-w-full mx-auto">
+              <div className="space-y-16 w-full">
                 {/* ── FRIEND REQUESTS ── */}
                 <div className="space-y-6">
                   <div className="flex items-center justify-between px-2">
@@ -622,7 +623,7 @@ export default function FriendsPage() {
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                     {requests.length === 0 ? (
                       <div className="col-span-full text-center py-20 glass-premium rounded-[3rem] border-dashed border-2 border-foreground/5 opacity-40 bg-foreground/[0.01]">
                         <p className="text-[10px] font-black uppercase tracking-[0.3em] text-foreground/70 italic">
@@ -720,7 +721,7 @@ export default function FriendsPage() {
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                     {matchInvites.length === 0 ? (
                       <div className="col-span-full text-center py-20 glass-premium rounded-[3rem] border-dashed border-2 border-foreground/5 opacity-40 bg-foreground/[0.01]">
                         <p className="text-[10px] font-black uppercase tracking-[0.3em] text-foreground/70 italic">
@@ -810,7 +811,7 @@ export default function FriendsPage() {
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                     {teamInvites.length === 0 ? (
                       <div className="col-span-full text-center py-20 glass-premium rounded-[3rem] border-dashed border-2 border-foreground/5 opacity-40 bg-foreground/[0.01]">
                         <p className="text-[10px] font-black uppercase tracking-[0.3em] text-foreground/70 italic">
