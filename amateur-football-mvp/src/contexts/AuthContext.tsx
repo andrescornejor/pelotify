@@ -25,6 +25,7 @@ interface AuthContextType {
   logout: () => Promise<void>;
   deleteAccount: () => Promise<void>;
   completeTour: () => Promise<void>;
+  refreshUser: () => Promise<void>;
   isLoading: boolean;
 }
 
@@ -36,79 +37,80 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const router = useRouter();
   const pathname = usePathname();
 
-  useEffect(() => {
-    // Shared logic to fetch profile and normalize user state
-    const handleUserSession = async (session: any) => {
-      if (!session?.user) {
-        setUser(null);
-        setIsLoading(false);
-        return;
+  // Shared logic to fetch profile and normalize user state
+  const handleUserSession = async (session: any) => {
+    if (!session?.user) {
+      setUser(null);
+      setIsLoading(false);
+      return;
+    }
+
+    const { user: authUser } = session;
+    const metadata = authUser.user_metadata || {};
+
+    try {
+      // 1. Fetch profile from public schema (source of truth)
+      let { data: profile, error: profileError } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('id', authUser.id)
+        .maybeSingle();
+
+      if (profileError) {
+        console.error('Error fetching profile:', profileError);
       }
 
-      const { user: authUser } = session;
-      const metadata = authUser.user_metadata || {};
+      // 1.5. Check if user is a business owner (Venue Admin)
+      // We check both the database and the auth metadata for faster/more reliable detection
+      const { data: business } = await supabase
+        .from('canchas_businesses')
+        .select('id')
+        .eq('owner_id', authUser.id)
+        .maybeSingle();
 
-      try {
-        // 1. Fetch profile from public schema (source of truth)
-        let { data: profile, error: profileError } = await supabase
+      const isBusiness = !!business || metadata.role === 'venue_admin';
+
+      // 2. Ensure profile exists (especially for new Google users)
+      // Skip for business owners as they don't necessarily need a player profile
+      // and we want to avoid creating accidental player records for them
+      if (!profile && !isBusiness && metadata.role !== 'venue_admin') {
+        console.log('Ensuring profile for user:', authUser.id);
+        const { data: newProfile, error: insertError } = await supabase
           .from('profiles')
-          .select('*')
-          .eq('id', authUser.id)
+          .upsert({
+            id: authUser.id,
+            name:
+              metadata.name || metadata.full_name || authUser.email?.split('@')[0] || 'Jugador',
+            avatar_url: metadata.avatar_url,
+            position: metadata.position || 'DC',
+            age: parseInt(metadata.age) || 23,
+            height: parseInt(metadata.height) || 175,
+            preferred_foot: metadata.preferredFoot || metadata.preferred_foot || 'Derecha',
+            updated_at: new Date().toISOString(),
+          })
+          .select()
           .maybeSingle();
 
-        if (profileError) {
-          console.error('Error fetching profile:', profileError);
-        }
-
-        // 1.5. Check if user is a business owner (Venue Admin)
-        // We check both the database and the auth metadata for faster/more reliable detection
-        const { data: business } = await supabase
-          .from('canchas_businesses')
-          .select('id')
-          .eq('owner_id', authUser.id)
-          .maybeSingle();
-
-        const isBusiness = !!business || metadata.role === 'venue_admin';
-
-        // 2. Ensure profile exists (especially for new Google users)
-        // Skip for business owners as they don't necessarily need a player profile
-        // and we want to avoid creating accidental player records for them
-        if (!profile && !isBusiness && metadata.role !== 'venue_admin') {
-          console.log('Ensuring profile for user:', authUser.id);
-          const { data: newProfile, error: insertError } = await supabase
-            .from('profiles')
-            .upsert({
-              id: authUser.id,
-              name:
-                metadata.name || metadata.full_name || authUser.email?.split('@')[0] || 'Jugador',
-              avatar_url: metadata.avatar_url,
-              position: metadata.position || 'DC',
-              age: parseInt(metadata.age) || 23,
-              height: parseInt(metadata.height) || 175,
-              preferred_foot: metadata.preferredFoot || metadata.preferred_foot || 'Derecha',
-              updated_at: new Date().toISOString(),
-            })
-            .select()
-            .maybeSingle();
-
-          if (!insertError) profile = newProfile;
-        }
-
-        // 3. Normalize user state for the app
-        setUser({
-          id: authUser.id,
-          email: authUser.email || '',
-          name: profile?.name || metadata.name || metadata.full_name || 'Jugador',
-          avatar_url: profile?.avatar_url || metadata.avatar_url,
-          user_metadata: { ...metadata, ...(profile || {}) },
-          is_business: isBusiness,
-        });
-      } catch (err) {
-        console.error('Critical error in auth session sync:', err);
-      } finally {
-        setIsLoading(false);
+        if (!insertError) profile = newProfile;
       }
-    };
+
+      // 3. Normalize user state for the app
+      setUser({
+        id: authUser.id,
+        email: authUser.email || '',
+        name: profile?.name || metadata.name || metadata.full_name || 'Jugador',
+        avatar_url: profile?.avatar_url || metadata.avatar_url,
+        user_metadata: { ...metadata, ...(profile || {}) },
+        is_business: isBusiness,
+      });
+    } catch (err) {
+      console.error('Critical error in auth session sync:', err);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
 
     // Initial session check
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -411,6 +413,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
               user_metadata: { ...user.user_metadata, tour_completed: true }
             });
           }
+        },
+        refreshUser: async () => {
+          const { data: { session } } = await supabase.auth.getSession();
+          if (session) await handleUserSession(session);
         },
         isLoading,
       }}
