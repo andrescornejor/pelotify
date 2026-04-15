@@ -79,7 +79,7 @@ export default function SearchPage() {
   return (
     <div
       className={cn(
-        'flex flex-col gap-8 p-3 sm:p-5 lg:px-10 lg:pt-4 xl:px-16 max-w-full mx-auto h-full bg-background relative overflow-hidden min-h-screen snap-y snap-proximity overflow-y-auto',
+        'flex flex-col gap-8 p-3 sm:p-5 lg:px-6 lg:pt-4 xl:px-10 max-w-full mx-auto h-full bg-background relative overflow-hidden min-h-screen snap-y snap-proximity overflow-y-auto',
         isPerfMode && 'perf-mode'
       )}
     >
@@ -94,7 +94,7 @@ export default function SearchPage() {
       {/* ── HEADER & RADAR SCANNER ── */}
       <div
         className={cn(
-          'sticky top-0 z-30 pt-4 pb-6 -mx-3 px-3 sm:-mx-5 sm:px-5 lg:-mx-10 lg:px-10 xl:-mx-16 xl:px-16 border-b border-foreground/5 shadow-2xl shadow-black/5',
+          'sticky top-0 z-30 pt-4 pb-6 -mx-3 px-3 sm:-mx-5 sm:px-5 lg:-mx-6 lg:px-6 xl:-mx-10 xl:px-10 border-b border-foreground/5 shadow-2xl shadow-black/5',
           isPerfMode ? 'bg-background' : 'bg-background/80 md:'
         )}
       >
