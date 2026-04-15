@@ -43,6 +43,8 @@ export async function compressImage(
       // Draw and compress
       ctx.drawImage(img, 0, 0, width, height);
 
+      const mimeType = file.type || 'image/jpeg';
+      
       canvas.toBlob(
         (blob) => {
           if (blob) {
@@ -51,7 +53,7 @@ export async function compressImage(
             reject(new Error('Canvas toBlob failed'));
           }
         },
-        'image/jpeg',
+        mimeType,
         quality
       );
     };
