@@ -1,8 +1,8 @@
 'use client';
 
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useRef } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
-import { getRecentChats, subscribeToDirectMessages } from '@/lib/chat';
+import { getRecentChats, subscribeToDirectMessages, markDirectMessagesAsRead } from '@/lib/chat';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   MessageSquare, 
@@ -31,6 +31,8 @@ export function FloatingChat() {
   const [activeChats, setActiveChats] = useState<any[]>([]); 
   const [minimizedChats, setMinimizedChats] = useState<string[]>([]);
   const [isRailOpen, setIsRailOpen] = useState(true);
+  // Track which conversations have been read in this session to prevent re-fetch flicker
+  const readChatsRef = useRef<Set<string>>(new Set());
 
   const fetchChats = async () => {
     if (!user) return;
@@ -45,35 +47,57 @@ export function FloatingChat() {
   useEffect(() => {
     if (!user) return;
     fetchChats();
-    const channel = subscribeToDirectMessages(user.id, () => fetchChats());
+    const channel = subscribeToDirectMessages(user.id, (msg) => {
+      // If the incoming message is for an active (non-minimized) chat, mark as read immediately
+      if (msg.sender_id !== user.id) {
+        const isActiveAndOpen = activeChats.some(
+          ac => ac.userId === msg.sender_id && !minimizedChats.includes(msg.sender_id)
+        );
+        if (isActiveAndOpen) {
+          markDirectMessagesAsRead(msg.sender_id, user.id);
+          readChatsRef.current.add(msg.sender_id);
+        } else {
+          // Chat is closed or minimized — allow unread dot to reappear
+          readChatsRef.current.delete(msg.sender_id);
+        }
+      }
+      fetchChats();
+    });
     return () => {
       supabase.removeChannel(channel);
     };
-  }, [user]);
+  }, [user, activeChats, minimizedChats]);
 
   // Derived processed chats list
   const processedChats = useMemo(() => {
     return chats.map(chat => {
       const isActive = activeChats.some(ac => ac.userId === chat.userId && !minimizedChats.includes(chat.userId));
-      return isActive ? { ...chat, isUnread: false } : chat;
+      // Also check our session-level read tracker to prevent flicker from re-fetches
+      const wasReadInSession = readChatsRef.current.has(chat.userId);
+      return (isActive || wasReadInSession) ? { ...chat, isUnread: false } : chat;
     });
   }, [chats, activeChats, minimizedChats]);
 
   const totalUnread = processedChats.filter(c => c.isUnread).length;
 
-  const openChat = (chat: any) => {
+  const openChat = async (chat: any) => {
     if (!activeChats.find(c => c.userId === chat.userId)) {
       setActiveChats(prev => [chat, ...prev].slice(0, 3));
     }
     // Remove from minimized if present
     setMinimizedChats(prev => prev.filter(id => id !== chat.userId));
     
-    // Optimistically mark as read in UI to remove !
+    // Optimistically mark as read in UI
     setChats(prev => prev.map(c => c.userId === chat.userId ? { ...c, isUnread: false } : c));
+    // Track in session so re-fetches don't bring back the dot
+    readChatsRef.current.add(chat.userId);
     
-    // Actual mark as read is handled in ChatRoom component, 
-    // but we can also trigger a fetch shortly after
-    setTimeout(fetchChats, 1000);
+    // Mark as read in DB
+    if (user) {
+      await markDirectMessagesAsRead(chat.userId, user.id);
+    }
+    // Re-fetch to sync
+    setTimeout(fetchChats, 500);
   };
 
   const closeChat = (userId: string) => {
@@ -131,15 +155,14 @@ export function FloatingChat() {
                             <User className="w-5 h-5 text-white/40" />
                           )}
                        </div>
-                       <div className="absolute -bottom-1 -right-1 w-4 h-4 rounded-full bg-[#2CFC7D] border-[3px] border-[#0A0A0A] shadow-lg shadow-[#2CFC7D]/20" />
                     </div>
                     <div className="flex flex-col">
                       <h4 className="text-[14px] font-bold text-white leading-tight">
                         {chat.name}
                       </h4>
                       <div className="flex items-center gap-1.5 mt-0.5">
-                        <span className="w-1.5 h-1.5 rounded-full bg-[#2CFC7D] animate-pulse" />
-                        <span className="text-[10px] font-semibold text-[#2CFC7D] uppercase tracking-wider">En Línea</span>
+                        <span className="w-1.5 h-1.5 rounded-full bg-white/30" />
+                        <span className="text-[10px] font-semibold text-white/40 uppercase tracking-wider">Chat Directo</span>
                       </div>
                     </div>
                   </div>
@@ -238,8 +261,7 @@ export function FloatingChat() {
                           <div className="absolute -top-1 -right-1 w-3.5 h-3.5 bg-[#2CFC7D] rounded-full flex items-center justify-center border-2 border-[#121212] shadow-lg animate-pulse" />
                         )}
 
-                        {/* Presence Dot */}
-                        <div className="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 rounded-full bg-[#2CFC7D] border-[2.5px] border-[#121212]" />
+
 
                         {/* Premium Tooltip */}
                         <div className="absolute right-full mr-4 top-1/2 -translate-y-1/2 px-4 py-2.5 rounded-2xl bg-white text-black font-semibold text-[13px] opacity-0 group-hover:opacity-100 pointer-events-none transition-all duration-300 translate-x-4 group-hover:translate-x-0 whitespace-nowrap shadow-2xl z-50">

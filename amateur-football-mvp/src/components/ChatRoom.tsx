@@ -137,6 +137,7 @@ export default function ChatRoom({ matchId, recipientId, className, title }: Cha
   const [selectedImage, setSelectedImage] = useState<{ file: File; preview: string } | null>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const isInitialLoadRef = useRef(true);
 
   const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -169,6 +170,7 @@ export default function ChatRoom({ matchId, recipientId, className, title }: Cha
 
     const loadMessages = async () => {
       setIsLoading(true);
+      isInitialLoadRef.current = true;
       try {
         let msgs;
         if (matchId) {
@@ -235,7 +237,15 @@ export default function ChatRoom({ matchId, recipientId, className, title }: Cha
   };
 
   useEffect(() => {
-    setTimeout(() => scrollToBottom('smooth'), 100);
+    // Use instant scroll on initial load, smooth for subsequent messages
+    const behavior: ScrollBehavior = isInitialLoadRef.current ? 'instant' : 'smooth';
+    // Use a longer delay on initial load to ensure DOM is fully rendered
+    const delay = isInitialLoadRef.current ? 200 : 100;
+    const timer = setTimeout(() => {
+      scrollToBottom(behavior);
+      isInitialLoadRef.current = false;
+    }, delay);
+    return () => clearTimeout(timer);
   }, [messages, selectedImage]);
 
   const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
