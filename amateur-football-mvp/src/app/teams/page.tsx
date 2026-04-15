@@ -157,7 +157,7 @@ export default function TeamsPage() {
   return (
     <div
       className={cn(
-        'flex flex-col gap-8 p-4 sm:p-6 lg:px-10 lg:pt-4 xl:px-14 2xl:px-16 max-w-full mx-auto min-h-screen bg-background relative overflow-hidden',
+        'min-h-screen bg-background pt-4 pb-32 px-3 sm:px-5 lg:px-10 xl:px-16 relative overflow-hidden flex flex-col gap-8',
         isPerfMode && 'perf-mode'
       )}
     >
@@ -172,7 +172,7 @@ export default function TeamsPage() {
       {/* Header & Tabs */}
       <div
         className={cn(
-          'sticky top-0 z-30 pt-4 pb-6 -mx-4 sm:-mx-6 lg:-mx-10 xl:-mx-14 2xl:-mx-16 px-4 sm:px-6 lg:px-10 xl:px-14 2xl:px-16 border-b border-foreground/5 shadow-2xl shadow-black/5',
+          'sticky top-0 z-30 pt-4 pb-6 -mx-3 px-3 sm:-mx-5 sm:px-5 lg:-mx-10 lg:px-10 xl:-mx-16 xl:px-16 border-b border-foreground/5 shadow-2xl shadow-black/5',
           isPerfMode ? 'bg-background' : 'bg-background/80 md:backdrop-blur-xl'
         )}
       >
