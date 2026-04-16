@@ -36,6 +36,7 @@ import {
   Heart,
   Share2,
   MoreHorizontal,
+  Sparkles,
 } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useSearchParams, useRouter } from 'next/navigation';
@@ -57,6 +58,8 @@ import { getUserHighlights, Highlight } from '@/lib/highlights';
 import confetti from 'canvas-confetti';
 import { SkillPointAllocator } from '@/components/SkillPointAllocator';
 import { RadarChart } from '@/components/RadarChart';
+import { detectFace } from '@/lib/faceDetection';
+import { removeBackgroundFromFile } from '@/lib/backgroundRemoval';
 
 interface PlayerStats {
   pac: number;
@@ -140,6 +143,11 @@ function ProfileContent() {
   // Avatar Upload State
   const [avatarFile, setAvatarFile] = useState<File | null>(null);
   const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
+
+  // AI Feature States
+  const [isDetectingFace, setIsDetectingFace] = useState(false);
+  const [isRemovingBackground, setIsRemovingBackground] = useState(false);
+  const [hasFaceDetected, setHasFaceDetected] = useState(false);
   
   // Sync tab with URL
   useEffect(() => {
@@ -519,7 +527,7 @@ function ProfileContent() {
     }
   };
 
-  const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleAvatarChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       const file = e.target.files[0];
       setAvatarFile(file);
@@ -530,6 +538,45 @@ function ProfileContent() {
       getDominantColor(previewUrl).then((color) => {
         if (color) setAmbientColor(color);
       });
+
+      // AI Face Detection
+      setIsDetectingFace(true);
+      setHasFaceDetected(false);
+      try {
+        const found = await detectFace(file);
+        setHasFaceDetected(found);
+      } catch (err) {
+        console.warn('Error en detección de rostro:', err);
+      } finally {
+        setIsDetectingFace(false);
+      }
+    }
+  };
+
+  const handleRemoveBackground = async () => {
+    if (!avatarFile) return;
+    
+    setIsRemovingBackground(true);
+    try {
+      const transparentBlob = await removeBackgroundFromFile(avatarFile);
+      const transparentFile = blobToFile(transparentBlob, `transparent-${avatarFile.name}`);
+      
+      setAvatarFile(transparentFile);
+      const previewUrl = URL.createObjectURL(transparentBlob);
+      setAvatarPreview(previewUrl);
+      setHasFaceDetected(false); // No need to detect again
+      
+      confetti({
+        particleCount: 100,
+        spread: 70,
+        origin: { y: 0.6 },
+        colors: ['#2cfc7d', '#ffffff']
+      });
+    } catch (err) {
+      console.error('Error al quitar fondo:', err);
+      alert('No se pudo quitar el fondo por IA. Intenta con otra foto.');
+    } finally {
+      setIsRemovingBackground(false);
     }
   };
 
@@ -598,48 +645,10 @@ function ProfileContent() {
              )}
           </div>
         )}
-
-        {/* Floating Rank Badge */}
-        {!isEditing && (
-          <div className="absolute top-28 right-6 sm:top-auto sm:bottom-10 sm:right-12 lg:right-20 z-20 flex flex-col items-end gap-1">
-             <RankBadge rankName={getRankByElo(displayElo).name} size="lg" className="drop-shadow-[0_0_30px_rgba(44,252,125,0.4)]" />
-             <span className="text-[10px] font-black text-primary uppercase tracking-[0.4em] drop-shadow-lg italic">
-               RANGO {getRankByElo(displayElo).name}
-             </span>
-          </div>
-        )}
       </div>
 
-      {/* Main Content Container */}
-      <div className="max-w-full mx-auto w-full px-3 sm:px-5 lg:px-10 xl:px-16 -mt-14 sm:-mt-48 lg:-mt-64 relative z-20 pb-20">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-24 sm:-mt-40 lg:-mt-48 relative z-20 pb-20">
         
-        {/* Pelotify Pro Banner */}
-        {isMe && !getField('is_pro', false) && (
-          <div className="mb-8 w-full w-full mx-auto animate-in fade-in slide-in-from-bottom-4 duration-1000">
-            <div className="relative p-6 sm:p-8 rounded-[2rem] overflow-hidden group">
-              <div className="absolute inset-0 bg-gradient-to-r from-yellow-500/20 via-yellow-400/10 to-transparent border border-yellow-500/30 rounded-[2rem]" />
-              <div className="relative z-10 flex flex-col sm:flex-row items-center gap-6 sm:justify-between">
-                <div className="flex items-center gap-4 text-center sm:text-left">
-                  <div className="w-12 h-12 rounded-full bg-yellow-500/20 flex items-center justify-center shrink-0 border border-yellow-500/40">
-                    <Star className="w-6 h-6 text-yellow-400 drop-shadow-[0_0_10px_rgba(250,204,21,0.8)]" />
-                  </div>
-                  <div>
-                    <h3 className="text-lg font-black uppercase tracking-tighter italic text-yellow-400 leading-none drop-shadow-md">Únete a Pelotify Pro</h3>
-                    <p className="text-xs text-foreground/80 font-medium mt-1">Verificado ✓ • Radares Avanzados • Descuentos en Canchas • Prioridad en Partidos.</p>
-                  </div>
-                </div>
-                <button 
-                  onClick={() => router.push('/pro')}
-                  className="px-6 h-12 shrink-0 rounded-2xl bg-gradient-to-r from-yellow-400 to-yellow-600 text-black text-[10px] font-black uppercase tracking-widest shadow-xl shadow-yellow-500/30 hover:scale-105 active:scale-95 transition-all w-full sm:w-auto flex items-center justify-center gap-2"
-                >
-                  <Star className="w-4 h-4" fill="currentColor" />
-                  Suscribirme
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
-
         {/* Profile Header Block */}
         <div className="flex flex-col lg:flex-row items-center lg:items-start gap-8 lg:gap-12 mb-12 relative z-20">
             {/* The FIFA Card (Avatar Replacement) */}
@@ -659,12 +668,46 @@ function ProfileContent() {
                     pendingPoints: skillPoints,
                   }}
                 />
+                
                 {isEditing && (
-                  <label className="absolute inset-0 z-30 flex flex-col items-center justify-center bg-black/60 cursor-pointer rounded-[2rem] border-2 border-dashed border-primary/40 m-2 transition-all hover:bg-black/40">
-                    <Camera className="w-10 h-10 text-primary mb-2" />
-                    <span className="text-[10px] font-black uppercase tracking-widest text-center px-4">Cambiar<br/>Foto</span>
-                    <input type="file" className="hidden" onChange={handleAvatarChange} />
-                  </label>
+                  <div className="absolute inset-0 z-30 flex flex-col items-center justify-center p-2 rounded-[2rem] gap-2">
+                    <label className="flex flex-col items-center justify-center bg-black/60 cursor-pointer rounded-[1.5rem] border-2 border-dashed border-primary/40 w-full h-full transition-all hover:bg-black/40 group/photo">
+                      <Camera className="w-10 h-10 text-primary mb-2 transition-transform group-hover:scale-110" />
+                      <span className="text-[10px] font-black uppercase tracking-widest text-center px-4">Cambiar<br/>Foto</span>
+                      <input type="file" className="hidden" onChange={handleAvatarChange} accept="image/*" />
+                    </label>
+
+                    <AnimatePresence>
+                      {(isDetectingFace || hasFaceDetected || isRemovingBackground) && (
+                        <motion.div 
+                          initial={{ opacity: 0, y: 10 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          exit={{ opacity: 0, y: 10 }}
+                          className="absolute bottom-4 left-4 right-4 z-40"
+                        >
+                          {isRemovingBackground ? (
+                            <div className="flex items-center gap-2 bg-black/80 backdrop-blur-md p-3 rounded-xl border border-primary/30 w-full justify-center">
+                              <Loader2 className="w-4 h-4 text-primary animate-spin" />
+                              <span className="text-[9px] font-black uppercase tracking-widest text-primary animate-pulse">Quitando Fondo...</span>
+                            </div>
+                          ) : isDetectingFace ? (
+                            <div className="flex items-center gap-2 bg-black/80 backdrop-blur-md p-3 rounded-xl border border-white/10 w-full justify-center">
+                              <Loader2 className="w-4 h-4 text-white/50 animate-spin" />
+                              <span className="text-[9px] font-black uppercase tracking-widest text-white/50">Analizando...</span>
+                            </div>
+                          ) : hasFaceDetected && (
+                            <button 
+                              onClick={handleRemoveBackground}
+                              className="w-full h-12 rounded-xl bg-gradient-to-r from-emerald-500 to-primary text-black font-black text-[9px] uppercase tracking-[0.2em] shadow-lg shadow-primary/20 hover:scale-105 active:scale-95 transition-all flex items-center justify-center gap-2"
+                            >
+                              <Sparkles className="w-4 h-4" />
+                              Mágia: Quitar Fondo
+                            </button>
+                          )}
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  </div>
                 )}
             </div>
 
@@ -726,12 +769,12 @@ function ProfileContent() {
                <div className="max-w-2xl mx-auto lg:mx-0">
                   {getField('bio', '') && !isEditing && (
                     <p className="text-sm border-l-4 border-primary/40 pl-4 py-1 text-foreground/80 dark:text-white/60 font-medium leading-relaxed italic">
-                      "{getField('bio', '')}"
+                      "{displayPlayer.bio || getField('bio', '')}"
                     </p>
                   )}
                   {isEditing && (
                     <p className="text-sm text-primary/60 italic font-black uppercase tracking-widest">
-                      Completando información de perfil...
+                      {isDetectingFace ? "Detectando rostro humano..." : hasFaceDetected ? "¡Es un crack! Podes usar la IA para el fondo." : "Completando información de perfil..."}
                     </p>
                   )}
                </div>
@@ -754,36 +797,6 @@ function ProfileContent() {
                )}
             </div>
         </div>
-
-        {/* Navigation Tabs (Social Style) */}
-        {!isEditing && (
-          <div className="sticky top-0 z-40 bg-background/80 md:border-y border-foreground/10 mb-10 -mx-4 px-4 sm:mx-0">
-           <div className="flex items-center justify-center sm:justify-start gap-10 py-5 overflow-x-auto no-scrollbar max-w-full mx-auto px-3 sm:px-5 lg:px-10 xl:px-16">
-              {[
-                { id: 'overview', icon: Info, label: 'Bio & Stats' },
-                { id: 'history', icon: History, label: 'Historial' },
-                { id: 'futtok', icon: Play, label: 'FutTok' },
-                { id: 'wall', icon: MessageSquare, label: 'Muro Social' },
-                ...(isMe ? [{ id: 'wallet', icon: Wallet, label: 'Finanzas' }] : []),
-              ].map((tab) => (
-                <button
-                  key={tab.id}
-                  onClick={() => setActiveTab(tab.id as any)}
-                  className={cn(
-                    "flex items-center gap-2.5 text-[10px] font-black uppercase tracking-[0.3em] h-10 px-1 transition-all relative group/tab",
-                    activeTab === tab.id ? "text-primary" : "text-foreground/40 hover:text-foreground/80"
-                  )}
-                >
-                  <tab.icon className={cn("w-4 h-4 transition-transform group-hover/tab:scale-110", activeTab === tab.id ? "text-primary" : "text-foreground/40")} />
-                  <span className="italic">{tab.label}</span>
-                  {activeTab === tab.id && (
-                    <motion.div layoutId="social-tab" className="absolute bottom-[-1px] left-0 right-0 h-[3px] bg-primary shadow-[0_0_15px_rgba(44,252,125,0.6)] rounded-full" />
-                  )}
-                </button>
-              ))}
-           </div>
-        </div>
-        )}
 
         {/* Edit Mode OR Tabs */}
         {isEditing ? (
@@ -934,11 +947,47 @@ function ProfileContent() {
   </motion.div>
         ) : (
           <>
+            {/* Navigation Tabs (Social Style) */}
+            <div className="sticky top-0 z-40 bg-background/80 backdrop-blur-xl border-b border-foreground/10 mb-8 -mx-4 px-4 sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8">
+              <div className="flex items-center justify-center lg:justify-start gap-2 sm:gap-6 overflow-x-auto no-scrollbar scroll-smooth">
+                {[
+                  { id: 'overview', label: 'Biografía', icon: Target },
+                  { id: 'history', label: 'Historial', icon: History },
+                  { id: 'futtok', label: 'Galeria', icon: Flame },
+                  { id: 'wall', label: 'Muro', icon: MessageSquare },
+                  { id: 'wallet', label: 'Billetera', icon: Wallet, isMeOnly: true },
+                ].map((tab) => {
+                  if (tab.isMeOnly && !isMe) return null;
+                  const Icon = tab.icon;
+                  return (
+                    <button
+                      key={tab.id}
+                      onClick={() => setActiveTab(tab.id as any)}
+                      className={cn(
+                        'relative py-6 px-4 flex items-center gap-2 transition-all whitespace-nowrap group',
+                        activeTab === tab.id
+                          ? 'text-primary'
+                          : 'text-foreground/40 hover:text-foreground/60'
+                      )}
+                    >
+                      <Icon className={cn('w-4 h-4', activeTab === tab.id ? 'animate-pulse' : 'group-hover:scale-110 transition-transform')} />
+                      <span className="text-[10px] font-black uppercase tracking-[0.4em] italic leading-none">{tab.label}</span>
+                      {activeTab === tab.id && (
+                        <motion.div
+                          layoutId="activeTabProfile"
+                          className="absolute bottom-0 left-0 right-0 h-1 bg-primary shadow-[0_-4px_10px_rgba(16,185,129,0.3)]"
+                        />
+                      )}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
             {/* Main Tab View */}
             <div className="min-h-[600px]">
-
-          <AnimatePresence mode="wait">
-              {activeTab === 'overview' && !isEditing && (
+              <AnimatePresence mode="wait">
+                {activeTab === 'overview' && !isEditing && (
                 <motion.div
                   key="overview"
                   initial={{ opacity: 0, y: 20 }}
@@ -1132,7 +1181,7 @@ function ProfileContent() {
                   )}
                 </motion.div>
               )}
-              {activeTab === 'history' && !isEditing && (
+                {activeTab === 'history' && !isEditing && (
                 <motion.div
                   key="history"
                   initial={{ opacity: 0, y: 20 }}
@@ -1378,7 +1427,7 @@ function ProfileContent() {
                   })()}
                 </motion.div>
               )}
-              {activeTab === 'futtok' && (
+                {activeTab === 'futtok' && (
                 <motion.div
                   key="futtok"
                   initial={{ opacity: 0, x: 50 }}
@@ -1478,7 +1527,7 @@ function ProfileContent() {
                   )}
                 </motion.div>
               )}
-              {activeTab === 'wall' && (
+                {activeTab === 'wall' && (
                 <motion.div
                   key="wall"
                   initial={{ opacity: 0, y: 30 }}
@@ -1726,7 +1775,7 @@ function ProfileContent() {
 
       {/* FOOTER ACTIONS SECTION */}
       {isMe && (
-        <div className="relative z-10 border-t border-foreground/10 pt-8 pb-8 flex flex-wrap gap-8 items-center">
+        <div className="relative z-10 border-t border-foreground/10 pt-8 pb-8 flex flex-wrap gap-8 items-center px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
           <button
             onClick={() => setShowPasswordModal(true)}
             className="flex items-center gap-3 text-foreground/30 hover:text-primary transition-colors text-[11px] font-black uppercase tracking-widest group"
@@ -1792,7 +1841,7 @@ function ProfileContent() {
       {/* PASSWORD MODAL */}
       <AnimatePresence>
         {showPasswordModal && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-background/80 md:">
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-background/80 backdrop-blur-sm">
             <motion.div
               initial={{ opacity: 0, scale: 0.95, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}

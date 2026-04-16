@@ -43,7 +43,10 @@ export async function compressImage(
       // Draw and compress
       ctx.drawImage(img, 0, 0, width, height);
 
-      const mimeType = file.type || 'image/jpeg';
+      // Important: Use PNG if the source is PNG to preserve transparency
+      // Otherwise, use JPEG for better compression
+      const isPng = file.type === 'image/png' || file.name.toLowerCase().endsWith('.png');
+      const mimeType = isPng ? 'image/png' : 'image/jpeg';
       
       canvas.toBlob(
         (blob) => {
@@ -54,7 +57,7 @@ export async function compressImage(
           }
         },
         mimeType,
-        quality
+        isPng ? undefined : quality // PNG doesn't support quality in toBlob
       );
     };
 
