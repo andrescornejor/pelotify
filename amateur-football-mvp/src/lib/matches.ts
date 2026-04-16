@@ -24,6 +24,7 @@ export interface Match {
   team_a_name?: string;
   team_b_name?: string;
   is_private?: boolean;
+  venue_name?: string;
 
   payment_method?: 'mercado_pago' | 'cash';
   field_id?: string;
