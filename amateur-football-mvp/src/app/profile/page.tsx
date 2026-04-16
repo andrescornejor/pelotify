@@ -648,7 +648,7 @@ function ProfileContent() {
         )}
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-24 sm:-mt-40 lg:-mt-48 relative z-20 pb-20">
+      <div className="max-w-full mx-auto px-3 sm:px-5 lg:px-10 xl:px-16 -mt-24 sm:-mt-40 lg:-mt-48 relative z-20 pb-20">
         
         {/* Profile Header Block */}
         <div className="flex flex-col lg:flex-row items-center lg:items-start gap-8 lg:gap-12 mb-12 relative z-20">
