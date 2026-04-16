@@ -1,4 +1,4 @@
-import { FaceDetection } from '@mediapipe/face_detection';
+import type { FaceDetection as FaceDetectionType } from '@mediapipe/face_detection';
 
 /**
  * Detects if there is at least one human face in the given File.
@@ -6,6 +6,9 @@ import { FaceDetection } from '@mediapipe/face_detection';
  * @returns Promise<boolean> True if a face is detected with > 0.5 confidence.
  */
 export async function detectFace(file: File): Promise<boolean> {
+  // Dynamic import to avoid Turbopack build issues
+  const { FaceDetection } = await import('@mediapipe/face_detection');
+  
   return new Promise((resolve) => {
     const img = new Image();
     img.src = URL.createObjectURL(file);
@@ -18,7 +21,7 @@ export async function detectFace(file: File): Promise<boolean> {
           locateFile: (file) => {
             return `https://cdn.jsdelivr.net/npm/@mediapipe/face_detection/${file}`;
           },
-        });
+        }) as FaceDetectionType;
 
         faceDetection.setOptions({
           model: 'short',

@@ -1,19 +1,21 @@
+import type { Config } from '@imgly/background-removal';
+
 /**
  * Removes the background from a File using AI.
  * @param file The image file to process.
  * @returns Promise<Blob> The resulting transparent PNG blob.
  */
 export async function removeBackgroundFromFile(file: File): Promise<Blob> {
-  const { removeBackground, Config } = await import('@imgly/background-removal');
+  const { removeBackground } = await import('@imgly/background-removal');
 
-  const config: typeof Config = {
+  const config: Config = {
     progress: (key, current, total) => {
       console.log(`Downloading ${key}: ${Math.round((current / total) * 100)}%`);
     },
     // We use default CDN for WASM and models for simplicity in the MVP.
     // fetchArgs: { mode: 'no-cors' },
     output: {
-      type: 'image/png',
+      format: 'image/png',
       quality: 0.8
     }
   };
