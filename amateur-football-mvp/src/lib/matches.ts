@@ -9,7 +9,7 @@ export interface Match {
   type: 'F5' | 'F7' | 'F11';
   level: string;
   missing_players: number;
-  status: 'published' | 'waiting_deposit';
+  status: 'published' | 'waiting_deposit' | 'completed' | 'cancelled';
   price: number;
   creator_id: string;
   created_at: string;
