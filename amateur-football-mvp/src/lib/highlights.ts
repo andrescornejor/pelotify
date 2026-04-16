@@ -8,6 +8,7 @@ export interface Highlight {
   video_url: string;
   thumbnail_url?: string;
   description?: string;
+  caption?: string;
   views_count: number;
   likes_count: number;
   comments_count: number;
