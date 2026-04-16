@@ -44,7 +44,7 @@ export function ProfileSkeleton() {
       </div>
 
       {/* Main Content Container */}
-      <div className="max-w-full mx-auto w-full px-4 sm:px-6 lg:px-8 xl:px-8 -mt-14 sm:-mt-48 lg:-mt-64 relative z-20 pb-20">
+      <div className="max-w-full mx-auto w-full px-3 sm:px-5 lg:px-10 xl:px-16 -mt-14 sm:-mt-48 lg:-mt-64 relative z-20 pb-20">
 
         {/* Profile Header Block */}
         <div className="flex flex-col lg:flex-row items-center lg:items-start gap-8 lg:gap-12 mb-12 relative z-20">
@@ -77,8 +77,8 @@ export function ProfileSkeleton() {
         </div>
 
         {/* Tab Navigation */}
-        <div className="bg-background/80 border-y border-foreground/10 mb-10 -mx-4 px-4 sm:mx-0">
-          <div className="flex items-center justify-center sm:justify-start gap-10 py-5 max-w-full mx-auto px-3 sm:px-5 lg:px-10 xl:px-16">
+        <div className="bg-background/80 border-y border-foreground/10 mb-10 -mx-3 px-3 sm:-mx-5 sm:px-5 lg:-mx-10 lg:px-10 xl:-mx-16 xl:px-16">
+          <div className="flex items-center justify-center sm:justify-start gap-10 py-5 max-w-full mx-auto">
             {[...Array(5)].map((_, i) => (
               <SkeletonPremium key={i} className="w-24 h-8 rounded-full" />
             ))}
