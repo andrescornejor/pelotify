@@ -59,7 +59,7 @@ import confetti from 'canvas-confetti';
 import { SkillPointAllocator } from '@/components/SkillPointAllocator';
 import { RadarChart } from '@/components/RadarChart';
 import { detectFace } from '@/lib/faceDetection';
-import { removeBackgroundFromFile } from '@/lib/backgroundRemoval';
+import { removeBackgroundFromFile, type RemovalProgressInfo } from '@/lib/backgroundRemoval';
 
 interface PlayerStats {
   pac: number;
@@ -148,7 +148,7 @@ function ProfileContent() {
   const [isDetectingFace, setIsDetectingFace] = useState(false);
   const [isRemovingBackground, setIsRemovingBackground] = useState(false);
   const [hasFaceDetected, setHasFaceDetected] = useState(false);
-  const [removalProgress, setRemovalProgress] = useState(0);
+  const [removalProgress, setRemovalProgress] = useState<RemovalProgressInfo | null>(null);
   
   // Sync tab with URL
   useEffect(() => {
@@ -559,10 +559,10 @@ function ProfileContent() {
     if (!avatarFile) return;
     
     setIsRemovingBackground(true);
-    setRemovalProgress(0);
+    setRemovalProgress({ overall: 0, phaseLabel: 'Iniciando...', phaseProgress: 0, currentStep: 0, totalSteps: 3 });
     try {
-      const transparentBlob = await removeBackgroundFromFile(avatarFile, (percent) => {
-        setRemovalProgress(percent);
+      const transparentBlob = await removeBackgroundFromFile(avatarFile, (info) => {
+        setRemovalProgress(info);
       });
       const transparentFile = blobToFile(transparentBlob, `transparent-${avatarFile.name}`);
       
@@ -577,12 +577,15 @@ function ProfileContent() {
         origin: { y: 0.6 },
         colors: ['#2cfc7d', '#ffffff']
       });
+
+      // Give it a moment to show "100%" and "Listo"
+      await new Promise(resolve => setTimeout(resolve, 800));
     } catch (err) {
       console.error('Error al quitar fondo:', err);
       alert('No se pudo quitar el fondo por IA. Intenta con otra foto.');
     } finally {
       setIsRemovingBackground(false);
-      setRemovalProgress(0);
+      setRemovalProgress(null);
     }
   };
 
@@ -691,10 +694,51 @@ function ProfileContent() {
                           exit={{ opacity: 0, y: 10 }}
                           className="absolute bottom-4 left-4 right-4 z-40"
                         >
-                          {isRemovingBackground ? (
-                            <div className="flex items-center gap-2 bg-black/80 backdrop-blur-md p-3 rounded-xl border border-primary/30 w-full justify-center">
-                              <Loader2 className="w-4 h-4 text-primary animate-spin" />
-                              <span className="text-[9px] font-black uppercase tracking-widest text-primary animate-pulse">Quitando Fondo... {removalProgress}%</span>
+                          {isRemovingBackground && removalProgress ? (
+                            <div className="bg-black/85 backdrop-blur-xl p-4 rounded-2xl border border-primary/20 w-full space-y-3 shadow-[0_0_30px_rgba(16,185,129,0.15)]">
+                              {/* Phase label + percentage */}
+                              <div className="flex items-center justify-between">
+                                <div className="flex items-center gap-2">
+                                  <div className="relative w-5 h-5">
+                                    <Loader2 className="w-5 h-5 text-primary animate-spin" />
+                                    <div className="absolute inset-0 w-5 h-5 rounded-full bg-primary/20 animate-ping" />
+                                  </div>
+                                  <span className="text-[9px] font-black uppercase tracking-widest text-white/90">{removalProgress.phaseLabel}</span>
+                                </div>
+                                <span className="text-[11px] font-black text-primary tabular-nums">{removalProgress.overall}%</span>
+                              </div>
+
+                              {/* Overall progress bar */}
+                              <div className="relative w-full h-1.5 bg-white/10 rounded-full overflow-hidden">
+                                <motion.div
+                                  className="absolute inset-y-0 left-0 bg-gradient-to-r from-emerald-500 via-primary to-emerald-400 rounded-full"
+                                  initial={{ width: '0%' }}
+                                  animate={{ width: `${removalProgress.overall}%` }}
+                                  transition={{ duration: 0.5, ease: 'easeOut' }}
+                                />
+                                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent rounded-full animate-[shimmer_1.5s_ease-in-out_infinite]" style={{ backgroundSize: '200% 100%' }} />
+                              </div>
+
+                              {/* Step indicators */}
+                              <div className="flex items-center justify-between px-1">
+                                {['Modelo IA', 'Motor', 'Procesando'].map((label, i) => {
+                                  const stepNum = i + 1;
+                                  const isActive = removalProgress.currentStep === stepNum;
+                                  const isDone = removalProgress.currentStep > stepNum || removalProgress.overall === 100;
+                                  return (
+                                    <div key={label} className="flex items-center gap-1.5">
+                                      <div className={`w-2 h-2 rounded-full transition-all duration-500 ${
+                                        isDone ? 'bg-primary shadow-[0_0_6px_rgba(16,185,129,0.6)]' :
+                                        isActive ? 'bg-primary/60 animate-pulse shadow-[0_0_8px_rgba(16,185,129,0.3)]' :
+                                        'bg-white/15'
+                                      }`} />
+                                      <span className={`text-[7px] font-bold uppercase tracking-wider transition-colors duration-300 ${
+                                        isDone ? 'text-primary/80' : isActive ? 'text-white/70' : 'text-white/25'
+                                      }`}>{label}</span>
+                                    </div>
+                                  );
+                                })}
+                              </div>
                             </div>
                           ) : isDetectingFace ? (
                             <div className="flex items-center gap-2 bg-black/80 backdrop-blur-md p-3 rounded-xl border border-white/10 w-full justify-center">
