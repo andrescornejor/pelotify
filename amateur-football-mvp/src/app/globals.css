@@ -192,7 +192,7 @@
    ══════════════════════════════════════════ */
 @layer utilities {
   .main-container {
-    @apply max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8;
+    @apply max-w-full mx-auto w-full px-4 sm:px-6 lg:px-8;
   }
 
   /* ── Enhanced Glassmorphism ── */
