@@ -653,7 +653,7 @@ function ProfileContent() {
         )}
       </div>
 
-      <div className="max-w-full mx-auto px-3 sm:px-5 lg:px-10 xl:px-16 -mt-14 sm:-mt-48 lg:-mt-64 relative z-20 pb-20">
+      <div className="max-w-full mx-auto px-4 sm:px-6 lg:px-8 xl:px-8 -mt-14 sm:-mt-48 lg:-mt-64 relative z-20 pb-20">
         
         {/* Profile Header Block */}
         <div className="flex flex-col lg:flex-row items-center lg:items-start gap-8 lg:gap-12 mb-12 relative z-20">
@@ -954,7 +954,7 @@ function ProfileContent() {
         ) : (
           <>
             {/* Navigation Tabs (Social Style) */}
-            <div className="sticky top-0 z-40 bg-background/80 backdrop-blur-xl border-b border-foreground/10 mb-8 -mx-4 px-4 sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8">
+            <div className="sticky top-0 z-40 bg-background/80 backdrop-blur-xl border-b border-foreground/10 mb-8 -mx-4 px-4 sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8 xl:-mx-8 xl:px-8">
               <div className="flex items-center justify-center lg:justify-start gap-2 sm:gap-6 overflow-x-auto no-scrollbar scroll-smooth">
                 {[
                   { id: 'overview', label: 'Biografía', icon: Target },
@@ -1781,7 +1781,7 @@ function ProfileContent() {
 
       {/* FOOTER ACTIONS SECTION */}
       {isMe && (
-        <div className="relative z-10 border-t border-foreground/10 pt-8 pb-8 flex flex-wrap gap-8 items-center px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+        <div className="relative z-10 border-t border-foreground/10 pt-8 pb-8 flex flex-wrap gap-8 items-center px-4 sm:px-6 lg:px-8 xl:px-8 max-w-full mx-auto">
           <button
             onClick={() => setShowPasswordModal(true)}
             className="flex items-center gap-3 text-foreground/30 hover:text-primary transition-colors text-[11px] font-black uppercase tracking-widest group"
