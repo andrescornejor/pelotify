@@ -228,7 +228,7 @@ export default function HomePage() {
       {
         icon: TrendingUp,
         label: 'Win Rate',
-        value: '0%',
+        value: `${statsSummary.winRate}%`,
         color: '#f43f5e',
         glow: 'rgba(244,63,94,0.2)',
         tooltip: 'Tu efectividad de victoria',
