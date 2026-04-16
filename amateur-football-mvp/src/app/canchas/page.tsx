@@ -1263,6 +1263,21 @@ const SettingsTab = React.memo(function SettingsTab({ business, fields, setField
     return prices;
   });
 
+  const [fieldTimePricing, setFieldTimePricing] = useState<Record<string, any[]>>(() => {
+    const pricing: Record<string, any[]> = {};
+    (fields || []).forEach((f: any) => { pricing[f.id] = f.time_pricing || []; });
+    return pricing;
+  });
+
+  const [editingPricingField, setEditingPricingField] = useState<any>(null);
+
+  const getDynamicPrice = (fieldId: string, time: string, basePrice: number) => {
+    const pricing = fieldTimePricing[fieldId] || [];
+    const selectedTime = time.substring(0, 5);
+    const range = pricing.find((p: any) => selectedTime >= p.startTime && selectedTime <= p.endTime);
+    return range ? range.price : basePrice;
+  };
+
   const handleSavePrices = async () => {
     if (!business) return;
     setIsSavingPrices(true);
@@ -1270,9 +1285,14 @@ const SettingsTab = React.memo(function SettingsTab({ business, fields, setField
       // 1. Actualizar porcentaje de seña y precio de cada cancha
       for (const field of (fields || [])) {
         const price = fieldPrices[field.id] ?? field.price_per_match;
+        const timePricing = fieldTimePricing[field.id] || [];
         const { error: fieldErr } = await supabase
           .from('canchas_fields')
-          .update({ down_payment_percentage: deposit, price_per_match: price })
+          .update({ 
+            down_payment_percentage: deposit, 
+            price_per_match: price,
+            time_pricing: timePricing 
+          })
           .eq('id', field.id);
         if (fieldErr) {
           alert(`Error actualizando ${field.name}: ${fieldErr.message}`);
@@ -1322,7 +1342,8 @@ const SettingsTab = React.memo(function SettingsTab({ business, fields, setField
       setFields((prev: any) => prev.map((f: any) => ({
         ...f,
         down_payment_percentage: deposit,
-        price_per_match: fieldPrices[f.id] ?? f.price_per_match
+        price_per_match: fieldPrices[f.id] ?? f.price_per_match,
+        time_pricing: fieldTimePricing[f.id] || []
       })));
       alert("✅ Configuración guardada correctamente.");
     } catch (err: any) {
@@ -1558,21 +1579,115 @@ const SettingsTab = React.memo(function SettingsTab({ business, fields, setField
                 <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground mb-4 block">Precios por Cancha (1 Hora)</label>
                 <div className="space-y-3">
                   {fields.map((f: any) => (
-                    <div key={f.id} className="flex items-center justify-between p-4 rounded-2xl bg-foreground/[0.03] border border-border/40">
-                      <span className="text-xs font-black uppercase tracking-tighter">{f.name}</span>
-                      <div className="flex items-center gap-2">
-                        <span className="text-sm font-black text-muted-foreground">$</span>
-                        <input
-                          type="number"
-                          value={fieldPrices[f.id] || 0}
-                          onChange={(e) => setFieldPrices({ ...fieldPrices, [f.id]: Number(e.target.value) })}
-                          className="w-24 bg-transparent text-right font-black italic font-kanit text-lg outline-none"
-                        />
+                    <div key={f.id} className="p-4 rounded-2xl bg-foreground/[0.03] border border-border/40">
+                      <div className="flex items-center justify-between mb-4">
+                        <span className="text-xs font-black uppercase tracking-tighter">{f.name}</span>
+                        <div className="flex items-center gap-2">
+                          <span className="text-sm font-black text-muted-foreground">$</span>
+                          <input
+                            type="number"
+                            value={fieldPrices[f.id] || 0}
+                            onChange={(e) => setFieldPrices({ ...fieldPrices, [f.id]: Number(e.target.value) })}
+                            className="w-24 bg-transparent text-right font-black italic font-kanit text-lg outline-none"
+                          />
+                        </div>
+                      </div>
+                      
+                      <div className="pt-4 border-t border-border/20">
+                        <div className="flex items-center justify-between mb-3">
+                          <p className="text-[9px] font-black uppercase tracking-widest text-primary/70">Precios por Horario (Dinámicos)</p>
+                          <button 
+                            onClick={() => setEditingPricingField(f)}
+                            className="text-[8px] font-black uppercase tracking-[0.2em] px-3 py-1.5 rounded-lg bg-primary/10 text-primary border border-primary/20 hover:bg-primary/20 transition-all"
+                          >
+                            + Agregar Rango
+                          </button>
+                        </div>
+                        
+                        <div className="flex flex-wrap gap-2">
+                          {(fieldTimePricing[f.id] || []).length === 0 && (
+                            <p className="text-[9px] text-muted-foreground italic">No hay precios dinámicos configurados.</p>
+                          )}
+                          {(fieldTimePricing[f.id] || []).map((p, idx) => (
+                            <div key={idx} className="flex items-center gap-2 px-3 py-2 rounded-xl bg-background border border-border/50 group relative">
+                              <span className="text-[9px] font-black text-foreground">{p.startTime}-{p.endTime}</span>
+                              <div className="w-px h-3 bg-border/50"></div>
+                              <span className="text-[10px] font-black text-primary italic font-kanit">${p.price}</span>
+                              <button 
+                                onClick={() => {
+                                  setFieldTimePricing({
+                                    ...fieldTimePricing,
+                                    [f.id]: fieldTimePricing[f.id].filter((_, i) => i !== idx)
+                                  });
+                                }}
+                                className="ml-1 text-danger opacity-40 hover:opacity-100 transition-opacity"
+                              >
+                                <Trash2 className="w-3 h-3" />
+                              </button>
+                            </div>
+                          ))}
+                        </div>
                       </div>
                     </div>
                   ))}
                 </div>
               </div>
+
+              {/* Dynamic Pricing Modal */}
+              <AnimatePresence>
+                {editingPricingField && (
+                  <div className="fixed inset-0 z-[110] flex items-center justify-center p-4 bg-background/80 backdrop-blur-sm">
+                    <motion.div 
+                      initial={{ scale: 0.9, opacity: 0 }}
+                      animate={{ scale: 1, opacity: 1 }}
+                      className="glass-card p-8 w-full max-w-sm rounded-[2.5rem]"
+                    >
+                      <h3 className="text-xl font-black font-kanit italic uppercase mb-6">Nuevo Rango - {editingPricingField.name}</h3>
+                      <div className="space-y-4">
+                        <div className="grid grid-cols-2 gap-3">
+                          <div>
+                            <label className="text-[9px] font-black uppercase tracking-widest text-muted-foreground mb-1 block">Desde</label>
+                            <input id="new-start" type="time" defaultValue="18:00" className="w-full bg-surface-elevated border border-border/50 rounded-xl p-3 text-xs outline-none focus:border-primary" />
+                          </div>
+                          <div>
+                            <label className="text-[9px] font-black uppercase tracking-widest text-muted-foreground mb-1 block">Hasta</label>
+                            <input id="new-end" type="time" defaultValue="23:00" className="w-full bg-surface-elevated border border-border/50 rounded-xl p-3 text-xs outline-none focus:border-primary" />
+                          </div>
+                        </div>
+                        <div>
+                          <label className="text-[9px] font-black uppercase tracking-widest text-muted-foreground mb-1 block">Precio Especial ($)</label>
+                          <input id="new-price" type="number" placeholder="Ej: 18000" className="w-full bg-surface-elevated border border-border/50 rounded-xl p-3 text-xs outline-none focus:border-primary" />
+                        </div>
+                        <div className="flex gap-3 pt-4">
+                          <button 
+                            onClick={() => setEditingPricingField(null)}
+                            className="flex-1 py-3 rounded-xl bg-foreground/5 text-muted-foreground font-black uppercase text-[10px] tracking-widest hover:text-foreground transition-all"
+                          >
+                            Cancelar
+                          </button>
+                          <button 
+                            onClick={() => {
+                              const start = (document.getElementById('new-start') as HTMLInputElement).value;
+                              const end = (document.getElementById('new-end') as HTMLInputElement).value;
+                              const price = parseInt((document.getElementById('new-price') as HTMLInputElement).value);
+                              if (!start || !end || isNaN(price)) return;
+                              
+                              setFieldTimePricing({
+                                ...fieldTimePricing,
+                                [editingPricingField.id]: [...(fieldTimePricing[editingPricingField.id] || []), { startTime: start, endTime: end, price }]
+                              });
+                              setEditingPricingField(null);
+                            }}
+                            className="flex-1 py-3 rounded-xl bg-primary text-black font-black uppercase text-[10px] tracking-widest hover:bg-white transition-all"
+                          >
+                            Agregar
+                          </button>
+                        </div>
+                      </div>
+                    </motion.div>
+                  </div>
+                )}
+              </AnimatePresence>
 
               <div>
                 <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground mb-2 block">Alias / CBU para Transferencia</label>
@@ -1736,7 +1851,10 @@ function NewBookingModal({ onClose, fields, selectedSlot, onBooked, selectedDate
       setLoading(false);
       return;
     }
-    const price = selectedFieldObj.price_per_match || 15000;
+    const pricing = selectedFieldObj.time_pricing || [];
+    const selectedTime = formData.time.substring(0, 5);
+    const range = pricing.find((p: any) => selectedTime >= p.startTime && selectedTime <= p.endTime);
+    const price = range ? range.price : (selectedFieldObj.price_per_match || 15000);
 
     // Calculate end time (assuming 1 hour matches)
     const [hours, minutes] = formData.time.split(':');

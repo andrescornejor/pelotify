@@ -147,6 +147,24 @@ export default function EstablecimientoProfile() {
     return !bookings.some(b => b.field_id === fieldId && b.start_time.startsWith(time));
   };
 
+  const getCurrentPrice = (field: any, time: string | null) => {
+    if (!field) return 0;
+    let basePrice = field.price_per_match || 0;
+    
+    // Check dynamic pricing
+    if (time) {
+      const selectedTime = time.substring(0, 5);
+      const pricing = field.time_pricing || [];
+      const range = pricing.find((p: any) => selectedTime >= p.startTime && selectedTime <= p.endTime);
+      if (range) basePrice = range.price;
+    }
+
+    // Apply Pro discount if applicable
+    if (isPro) basePrice = basePrice * 0.9;
+    
+    return Math.round(basePrice);
+  };
+
   
   const handlePostReview = async () => {
     if (!user) {
@@ -183,6 +201,9 @@ const handleBooking = async () => {
 
     try {
       setIsBooking(true);
+      const totalPrice = getCurrentPrice(selectedField, selectedSlot);
+      const downPayment = Math.round(totalPrice * (selectedField.down_payment_percentage || 30) / 100);
+
       const response = await fetch('/api/bookings/checkout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -192,8 +213,8 @@ const handleBooking = async () => {
           date: selectedDate,
           time: selectedSlot,
           userId: user.id,
-          totalPrice: isPro ? selectedField.price_per_match * 0.9 : selectedField.price_per_match,
-          downPayment: Math.round((isPro ? selectedField.price_per_match * 0.9 : selectedField.price_per_match) * (selectedField.down_payment_percentage || 30) / 100)
+          totalPrice,
+          downPayment
         }),
       });
 
@@ -499,7 +520,7 @@ const handleBooking = async () => {
                               <p className="text-[8px] font-bold text-muted-foreground uppercase tracking-widest">({selectedField?.down_payment_percentage || 30}% del valor total)</p>
                            </div>
                            <p className="text-4xl font-black font-kanit italic tracking-tighter text-white">
-                              ${selectedField ? new Intl.NumberFormat('es-AR').format(Math.round((isPro ? selectedField.price_per_match * 0.9 : selectedField.price_per_match) * (selectedField.down_payment_percentage || 30) / 100)) : "0"}
+                              ${selectedField ? new Intl.NumberFormat('es-AR').format(Math.round(getCurrentPrice(selectedField, selectedSlot) * (selectedField.down_payment_percentage || 30) / 100)) : "0"}
                            </p>
                         </div>
                      </div>
