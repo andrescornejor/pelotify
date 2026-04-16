@@ -148,6 +148,7 @@ function ProfileContent() {
   const [isDetectingFace, setIsDetectingFace] = useState(false);
   const [isRemovingBackground, setIsRemovingBackground] = useState(false);
   const [hasFaceDetected, setHasFaceDetected] = useState(false);
+  const [removalProgress, setRemovalProgress] = useState(0);
   
   // Sync tab with URL
   useEffect(() => {
@@ -558,8 +559,11 @@ function ProfileContent() {
     if (!avatarFile) return;
     
     setIsRemovingBackground(true);
+    setRemovalProgress(0);
     try {
-      const transparentBlob = await removeBackgroundFromFile(avatarFile);
+      const transparentBlob = await removeBackgroundFromFile(avatarFile, (percent) => {
+        setRemovalProgress(percent);
+      });
       const transparentFile = blobToFile(transparentBlob, `transparent-${avatarFile.name}`);
       
       setAvatarFile(transparentFile);
@@ -578,6 +582,7 @@ function ProfileContent() {
       alert('No se pudo quitar el fondo por IA. Intenta con otra foto.');
     } finally {
       setIsRemovingBackground(false);
+      setRemovalProgress(0);
     }
   };
 
@@ -648,7 +653,7 @@ function ProfileContent() {
         )}
       </div>
 
-      <div className="max-w-full mx-auto px-3 sm:px-5 lg:px-10 xl:px-16 -mt-24 sm:-mt-40 lg:-mt-48 relative z-20 pb-20">
+      <div className="max-w-full mx-auto px-3 sm:px-5 lg:px-10 xl:px-16 -mt-14 sm:-mt-48 lg:-mt-64 relative z-20 pb-20">
         
         {/* Profile Header Block */}
         <div className="flex flex-col lg:flex-row items-center lg:items-start gap-8 lg:gap-12 mb-12 relative z-20">
@@ -689,7 +694,7 @@ function ProfileContent() {
                           {isRemovingBackground ? (
                             <div className="flex items-center gap-2 bg-black/80 backdrop-blur-md p-3 rounded-xl border border-primary/30 w-full justify-center">
                               <Loader2 className="w-4 h-4 text-primary animate-spin" />
-                              <span className="text-[9px] font-black uppercase tracking-widest text-primary animate-pulse">Quitando Fondo...</span>
+                              <span className="text-[9px] font-black uppercase tracking-widest text-primary animate-pulse">Quitando Fondo... {removalProgress}%</span>
                             </div>
                           ) : isDetectingFace ? (
                             <div className="flex items-center gap-2 bg-black/80 backdrop-blur-md p-3 rounded-xl border border-white/10 w-full justify-center">
