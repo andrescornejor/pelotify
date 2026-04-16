@@ -329,7 +329,7 @@ export default function FriendsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-background pt-4 pb-32 px-2 sm:px-4 lg:px-6 xl:px-8 relative space-y-8 overflow-hidden">
+    <div className="min-h-screen bg-background pt-4 pb-32 px-3 sm:px-5 lg:px-10 xl:px-16 relative space-y-8 overflow-hidden">
       {/* ── AMBIENT GLOWS ── */}
       <div className="absolute top-0 right-[-10%] w-[40%] h-[40%] bg-primary/5 blur-[120px] rounded-full pointer-events-none" />
       <div className="absolute bottom-[-10%] left-[-10%] w-[50%] h-[50%] bg-primary/3 blur-[120px] rounded-full pointer-events-none" />

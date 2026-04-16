@@ -52,6 +52,21 @@
   --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.07), 0 4px 6px -4px rgb(0 0 0 / 0.05);
   --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.07), 0 8px 10px -6px rgb(0 0 0 / 0.05);
   --shadow-2xl: 0 25px 50px -12px rgb(0 0 0 / 0.15);
+
+  /* Layout Alignment Constants */
+  --header-logo-offset: 0px;
+}
+
+@media (min-width: 1024px) {
+  :root {
+    --header-logo-offset: calc(44px + 1rem + 0.75rem); /* w-11 + px-4 + gap-3 */
+  }
+}
+
+@media (min-width: 1280px) {
+  :root {
+    --header-logo-offset: calc(44px + 1rem + 1.5rem); /* w-11 + px-4 + gap-6 */
+  }
 }
 
 :root.dark {
@@ -174,8 +189,11 @@
 
 /* ══════════════════════════════════════════
    UTILITIES
-══════════════════════════════════════════ */
+   ══════════════════════════════════════════ */
 @layer utilities {
+  .main-container {
+    @apply max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8;
+  }
 
   /* ── Enhanced Glassmorphism ── */
   .glass {

@@ -118,13 +118,13 @@ export const TopHeader = memo(function TopHeader() {
 
   return (
     <>
-      <header className="fixed top-0 left-0 right-0 z-[60] pt-[calc(0.75rem+env(safe-area-inset-top,0px))] sm:pt-6 lg:pt-4 px-2 sm:px-4 lg:px-6 xl:px-8 pointer-events-none">
-        <div className="max-w-full mx-auto w-full pointer-events-auto">
+      <header className="fixed top-0 left-0 right-0 z-[60] pt-[calc(0.75rem+env(safe-area-inset-top,0px))] sm:pt-6 lg:pt-4 pointer-events-none">
+        <div className="main-container pointer-events-auto">
           <motion.div
             initial={{ y: -24, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ type: 'spring', stiffness: 300, damping: 26, delay: 0.05 }}
-            className="overflow-hidden rounded-[1.25rem] lg:rounded-[1.75rem]"
+            className="overflow-hidden rounded-[1.25rem] lg:rounded-[1.75rem] relative"
             style={{
               background: performanceMode
                 ? 'var(--surface-elevated)'
@@ -140,7 +140,7 @@ export const TopHeader = memo(function TopHeader() {
             {/* Background subtle light beam */}
             <div className="absolute top-0 left-[-10%] w-[40%] h-full bg-gradient-to-r from-primary/5 via-transparent to-transparent -skew-x-12 pointer-events-none" />
 
-            <div className="grid grid-cols-[1fr_auto_1fr] items-center h-[72px] sm:h-[80px] lg:h-[76px] px-4 sm:px-6 lg:px-8 w-full">
+            <div className="grid grid-cols-[1fr_auto_1fr] items-center h-[72px] sm:h-[80px] lg:h-[76px] px-4 w-full">
               {/* Left: Menu + Logo */}
               <div className="flex items-center gap-3 sm:gap-4 lg:gap-3 xl:gap-6 min-w-0">
                 <motion.button

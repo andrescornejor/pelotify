@@ -82,7 +82,7 @@ export default function EstablecimientosList() {
     <div className="min-h-screen bg-background text-foreground font-kanit pb-20">
       
       {/* CINEMATIC HERO */}
-      <div className="relative pt-20 pb-16 px-2 sm:px-4 lg:px-6 xl:px-8 overflow-hidden">
+      <div className="relative pt-20 pb-16 px-3 sm:px-5 lg:px-10 xl:px-16 overflow-hidden">
          {/* Background decoration */}
          {!performanceMode && (
            <>
@@ -194,7 +194,7 @@ export default function EstablecimientosList() {
       </div>
 
       {/* RESULTS HEADER */}
-      <div className="max-w-full mx-auto px-2 sm:px-4 lg:px-6 xl:px-8 mb-8">
+      <div className="max-w-full mx-auto px-3 sm:px-5 lg:px-10 xl:px-16 mb-8">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="h-px w-8 bg-primary/40" />
@@ -206,7 +206,7 @@ export default function EstablecimientosList() {
       </div>
 
       {/* VENUES GRID */}
-      <div className="max-w-full mx-auto px-2 sm:px-4 lg:px-6 xl:px-8">
+      <div className="max-w-full mx-auto px-3 sm:px-5 lg:px-10 xl:px-16">
          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             <AnimatePresence mode="popLayout">
                {loading ? (

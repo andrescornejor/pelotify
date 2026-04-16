@@ -343,7 +343,7 @@ export default function MessagesPage() {
   if (!user) return null;
 
   return (
-    <div className="min-h-screen bg-background pt-22 lg:pt-28 pb-32 px-2 sm:px-4 lg:px-6 xl:px-8 relative">
+    <div className="min-h-screen bg-background pt-22 lg:pt-28 pb-32 px-3 sm:px-5 lg:px-10 xl:px-16 relative">
       {/* Animated Background Blobs */}
       <div className="absolute inset-0 overflow-x-hidden pointer-events-none">
         {/* Superior blending glow */}
