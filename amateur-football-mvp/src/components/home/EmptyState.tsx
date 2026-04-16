@@ -18,7 +18,7 @@ export const EmptyState = ({ icon: Icon, title, description, actionText, actionH
     initial={{ opacity: 0, scale: 0.95 }}
     whileInView={{ opacity: 1, scale: 1 }}
     viewport={{ once: true }}
-    className="w-full py-16 px-8 rounded-[2.5rem] flex flex-col items-center justify-center text-center gap-6 glass-premium border-primary/20 bg-surface/40 relative overflow-hidden group shadow-2xl"
+    className="w-full py-12 px-8 rounded-[2.5rem] flex flex-col items-center justify-center text-center gap-6 glass-premium border-primary/20 bg-surface/40 relative overflow-hidden group shadow-2xl"
   >
     {/* Base Grid & Shimmer */}
     <div className="absolute inset-0 bg-[url('/grid.svg')] opacity-[0.03] mix-blend-overlay pointer-events-none" />
