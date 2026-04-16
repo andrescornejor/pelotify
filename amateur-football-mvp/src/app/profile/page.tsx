@@ -632,41 +632,42 @@ function ProfileContent() {
         />
 
         {isMe && (
-          <div className="absolute top-34 sm:top-32 left-1/2 -translate-x-1/2 sm:left-auto sm:translate-x-0 sm:right-12 z-30 flex gap-3 w-fit">
-             <button 
-              onClick={() => setIsEditing(!isEditing)}
-              className="px-6 h-12 rounded-2xl glass-premium border-white/10 hover:border-primary/40 text-[10px] font-black uppercase tracking-[0.2em] transition-all flex items-center gap-2 group/btn md:"
-             >
-                <Edit2 className="w-4 h-4 text-primary group-hover/btn:rotate-12 transition-transform" />
-                <span>{isEditing ? 'Cerrar Editor' : 'Personalizar'}</span>
-             </button>
-             {!isEditing && (
-              <ShareStory
-                type="profile"
-                data={{
-                  ...displayPlayer,
-                  image: getField('avatar_url', undefined) as string | undefined,
-                }}
-              />
-             )}
+          <div className="absolute inset-0 z-30 pointer-events-none">
+            <div className="max-w-full mx-auto px-3 sm:px-5 lg:px-10 xl:px-16 h-full w-full">
+              <div className="app-container-inner h-full w-full relative">
+                <div className="absolute top-34 sm:top-32 right-0 flex gap-3 w-fit pointer-events-auto">
+                   <button 
+                    onClick={() => setIsEditing(!isEditing)}
+                    className="px-6 h-12 rounded-2xl glass-premium border-white/10 hover:border-primary/40 text-[10px] font-black uppercase tracking-[0.2em] transition-all flex items-center gap-2 group/btn md:"
+                   >
+                      <Edit2 className="w-4 h-4 text-primary group-hover/btn:rotate-12 transition-transform" />
+                      <span>{isEditing ? 'Cerrar Editor' : 'Personalizar'}</span>
+                   </button>
+                   {!isEditing && (
+                    <ShareStory
+                      type="profile"
+                      data={{
+                        ...displayPlayer,
+                        image: getField('avatar_url', undefined) as string | undefined,
+                      }}
+                    />
+                   )}
+                </div>
+              </div>
+            </div>
           </div>
         )}
       </div>
 
-      <div className="main-container -mt-14 sm:-mt-48 lg:-mt-64 relative z-20 pb-20">
+      <div className="max-w-full mx-auto px-3 sm:px-5 lg:px-10 xl:px-16 -mt-14 sm:-mt-48 lg:-mt-64 relative z-20 pb-20 app-container-inner">
         
-        <div 
-          className="flex flex-col lg:flex-row items-center lg:items-start gap-8 lg:gap-12 mb-12 relative z-20"
-          style={{ paddingRight: '1rem' }}
-        >
+        {/* Profile Header Block */}
+        <div className="flex flex-col lg:flex-row items-start gap-8 lg:gap-12 mb-12 relative z-20">
             {/* The FIFA Card (Avatar Replacement) */}
-            <div 
-              className={cn(
-                "relative transition-all duration-700 perspective-1000 group/card shrink-0 mx-auto lg:mx-0",
-                isEditing && "z-50 scale-105"
-              )}
-              style={{ marginLeft: 'var(--header-logo-offset)' }}
-            >
+            <div className={cn(
+              "relative transition-all duration-700 perspective-1000 group/card shrink-0 mx-0",
+              isEditing && "z-50 scale-105"
+            )}>
                <div className={cn("absolute -inset-10 blur-[80px] rounded-full opacity-0 group-hover/card:opacity-100 transition-opacity", getField('is_pro', false) ? "bg-yellow-500/20" : "bg-primary/20")} />
                <FifaCard
                   player={{
@@ -723,13 +724,13 @@ function ProfileContent() {
             </div>
 
             {/* Basic Info & Social Stats */}
-            <div className="flex-1 w-full space-y-6 lg:pt-8 text-center lg:text-left">
-               <div className="flex flex-col sm:flex-row items-center lg:items-start gap-4 sm:gap-8 justify-between">
+            <div className="flex-1 w-full space-y-6 lg:pt-8 text-left">
+               <div className="flex flex-col sm:flex-row items-start gap-4 sm:gap-8 justify-between">
                   <div className="space-y-4">
                     <motion.div 
                       initial={{ opacity: 0, x: -20 }}
                       animate={{ opacity: 1, x: 0 }}
-                      className="flex flex-wrap items-center justify-center lg:justify-start gap-4"
+                      className="flex flex-wrap items-center justify-start gap-4"
                     >
                       <h1 className="text-4xl sm:text-6xl lg:text-7xl font-black italic text-white uppercase tracking-tighter leading-none text-shadow-md">
                         {isEditing ? (editedData.name || 'JUGADOR') : displayPlayer.name}
@@ -745,7 +746,7 @@ function ProfileContent() {
                         </div>
                       )}
                     </motion.div>
-                    <div className="flex items-center justify-center lg:justify-start gap-3">
+                    <div className="flex items-center justify-start gap-3">
                        <span className="px-3 py-1 rounded-full bg-primary/20 border border-primary/30 text-xs font-black text-primary uppercase tracking-[0.4em] italic drop-shadow-md">{displayPlayer.position}</span>
                        <span className="px-3 py-1 rounded-full bg-foreground/10 border border-foreground/20 text-xs font-black text-white/70 uppercase tracking-[0.4em] drop-shadow-md">{teamName}</span>
                     </div>
@@ -777,7 +778,7 @@ function ProfileContent() {
                </div>
 
                {/* Bio Section */}
-               <div className="max-w-2xl mx-auto lg:mx-0">
+               <div className="max-w-2xl lg:mx-0">
                   {getField('bio', '') && !isEditing && (
                     <p className="text-sm border-l-4 border-primary/40 pl-4 py-1 text-foreground/80 dark:text-white/60 font-medium leading-relaxed italic">
                       "{displayPlayer.bio || getField('bio', '')}"
@@ -792,7 +793,7 @@ function ProfileContent() {
 
                {/* Modern Social Stats Hub */}
                {!isEditing && (
-                   <div className="flex flex-wrap items-center justify-center lg:justify-start gap-4 pt-4">
+                   <div className="flex flex-wrap items-center justify-start gap-4 pt-4">
                       {[
                         { label: 'Partidos', value: displayMatches, color: 'text-foreground' },
                         { label: 'E.L.O.', value: displayElo, color: getField('is_pro', false) ? 'text-yellow-400' : 'text-primary' },
@@ -959,8 +960,8 @@ function ProfileContent() {
         ) : (
           <>
             {/* Navigation Tabs (Social Style) */}
-            <div className="sticky top-0 z-40 bg-background/80 backdrop-blur-xl border-b border-foreground/10 mb-8 -mx-3 px-3 sm:-mx-5 sm:px-5 lg:-mx-10 lg:px-10 xl:-mx-16 xl:px-16">
-              <div className="flex items-center justify-center lg:justify-start gap-2 sm:gap-6 overflow-x-auto no-scrollbar scroll-smooth">
+            <div className="sticky top-0 z-40 bg-background/80 backdrop-blur-xl border-b border-foreground/10 mb-8 pt-2">
+              <div className="flex items-center justify-start gap-2 sm:gap-6 overflow-x-auto no-scrollbar scroll-smooth">
                 {[
                   { id: 'overview', label: 'Biografía', icon: Target },
                   { id: 'history', label: 'Historial', icon: History },

@@ -44,17 +44,12 @@ export function ProfileSkeleton() {
       </div>
 
       {/* Main Content Container */}
-      <div className="main-container -mt-14 sm:-mt-48 lg:-mt-64 relative z-20 pb-20">
+      <div className="max-w-full mx-auto w-full px-3 sm:px-5 lg:px-10 xl:px-16 -mt-14 sm:-mt-48 lg:-mt-64 relative z-20 pb-20">
 
         {/* Profile Header Block */}
-        <div 
-          className="flex flex-col lg:flex-row items-center lg:items-start gap-8 lg:gap-12 mb-12 relative z-20"
-        >
-            {/* FIFA Card Skeleton */}
-            <div 
-              className="relative shrink-0 mx-auto lg:mx-0"
-              style={{ marginLeft: 'var(--header-logo-offset)' }}
-            >
+        <div className="flex flex-col lg:flex-row items-center lg:items-start gap-8 lg:gap-12 mb-12 relative z-20">
+          {/* FIFA Card Skeleton */}
+          <div className="relative shrink-0 mx-auto lg:mx-0">
             <SkeletonPremium className="w-[240px] sm:w-[280px] lg:w-[300px] aspect-[2/3] rounded-[2rem] shadow-2xl" />
           </div>
 
@@ -240,7 +235,7 @@ export function GridListSkeleton({ count = 8 }: { count?: number }) {
  */
 export function SocialHubSkeleton() {
   return (
-    <div className="min-h-screen bg-background pt-4 pb-32 main-container relative space-y-8 overflow-hidden">
+    <div className="min-h-screen bg-background pt-4 pb-32 px-3 sm:px-5 lg:px-10 xl:px-16 relative space-y-8 overflow-hidden">
       {/* Ambient Glows */}
       <div className="absolute top-0 right-[-10%] w-[40%] h-[40%] bg-primary/5 blur-[120px] rounded-full pointer-events-none" />
       <div className="absolute bottom-[-10%] left-[-10%] w-[50%] h-[50%] bg-primary/3 blur-[120px] rounded-full pointer-events-none" />
@@ -321,7 +316,7 @@ export function SocialHubSkeleton() {
  */
 export function TeamsSkeleton() {
   return (
-    <div className="min-h-screen bg-background pt-4 pb-32 main-container relative overflow-hidden flex flex-col gap-8">
+    <div className="min-h-screen bg-background pt-4 pb-32 px-3 sm:px-5 lg:px-10 xl:px-16 relative overflow-hidden flex flex-col gap-8">
       {/* Ambient Effects */}
       <div className="absolute top-0 right-[-10%] w-[40%] h-[40%] bg-primary/5 blur-[120px] rounded-full pointer-events-none" />
       <div className="absolute bottom-[-10%] left-[-10%] w-[50%] h-[50%] bg-accent/3 blur-[120px] rounded-full pointer-events-none" />
