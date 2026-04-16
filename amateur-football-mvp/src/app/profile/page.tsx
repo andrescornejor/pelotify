@@ -635,7 +635,7 @@ function ProfileContent() {
           <div className="absolute inset-0 z-30 pointer-events-none">
             <div className="max-w-full mx-auto px-3 sm:px-5 lg:px-10 xl:px-16 h-full w-full">
               <div className="app-container-inner h-full w-full relative">
-                <div className="absolute top-34 sm:top-32 right-0 flex gap-3 w-fit pointer-events-auto">
+                <div className="absolute top-34 sm:top-32 right-0 flex gap-3 w-fit pointer-events-auto items-center">
                    <button 
                     onClick={() => setIsEditing(!isEditing)}
                     className="px-6 h-12 rounded-2xl glass-premium border-white/10 hover:border-primary/40 text-[10px] font-black uppercase tracking-[0.2em] transition-all flex items-center gap-2 group/btn md:"
@@ -659,7 +659,8 @@ function ProfileContent() {
         )}
       </div>
 
-      <div className="max-w-full mx-auto px-3 sm:px-5 lg:px-10 xl:px-16 -mt-14 sm:-mt-48 lg:-mt-64 relative z-20 pb-20 app-container-inner">
+      <div className="max-w-full mx-auto px-3 sm:px-5 lg:px-10 xl:px-16 -mt-14 sm:-mt-48 lg:-mt-64 relative z-20 pb-20">
+        <div className="app-container-inner w-full h-full">
         
         {/* Profile Header Block */}
         <div className="flex flex-col lg:flex-row items-start gap-8 lg:gap-12 mb-12 relative z-20">
@@ -800,9 +801,9 @@ function ProfileContent() {
                         { label: 'Goles', value: displayGoals, color: 'text-foreground' },
                         { label: 'M.V.P.', value: displayMvpCount, color: 'text-accent' },
                       ].map((stat, i) => (
-                        <div key={i} className="flex-1 min-w-[100px] max-w-[140px] bg-foreground/[0.02] border border-foreground/10 p-4 rounded-[1.5rem] flex flex-col items-center justify-center gap-1 group/stat cursor-default hover:bg-foreground/[0.05] hover:border-primary/20 transition-all text-center">
-                           <span className={cn("text-3xl font-black italic tracking-tighter leading-none group-hover/stat:scale-110 transition-transform origin-center", stat.color)}>{stat.value}</span>
-                           <span className="text-[9px] font-black text-foreground/40 uppercase tracking-[0.3em] overflow-hidden whitespace-nowrap text-ellipsis max-w-full">{stat.label}</span>
+                        <div key={i} className="flex-1 min-w-[120px] bg-foreground/[0.02] border border-foreground/10 p-5 rounded-[1.5rem] flex flex-col items-center justify-center gap-1.5 group/stat cursor-default hover:bg-foreground/[0.05] hover:border-primary/20 transition-all text-center">
+                           <span className={cn("text-4xl font-black italic tracking-tighter leading-none group-hover/stat:scale-110 transition-transform origin-center", stat.color)}>{stat.value}</span>
+                           <span className="text-[10px] font-black text-foreground/40 uppercase tracking-[0.3em] overflow-hidden whitespace-nowrap text-ellipsis max-w-full">{stat.label}</span>
                         </div>
                       ))}
                    </div>
@@ -1781,13 +1782,14 @@ function ProfileContent() {
           </>
         )}
         </div>
+      </div>
 
 
       <div className="pb-32 lg:pb-12" />
 
       {/* FOOTER ACTIONS SECTION */}
       {isMe && (
-        <div className="relative z-10 border-t border-foreground/10 pt-8 pb-8 flex flex-wrap gap-8 items-center px-3 sm:px-5 lg:px-10 xl:px-16 max-w-full mx-auto">
+        <div className="relative z-10 border-t border-foreground/10 pt-8 pb-8 flex flex-wrap gap-8 items-center px-3 sm:px-5 lg:px-10 xl:px-16 max-w-full mx-auto app-container-inner">
           <button
             onClick={() => setShowPasswordModal(true)}
             className="flex items-center gap-3 text-foreground/30 hover:text-primary transition-colors text-[11px] font-black uppercase tracking-widest group"
