@@ -247,7 +247,7 @@ export default function RecruitmentMarketplace() {
       </div>
 
       {/* Hero Section */}
-      <div className="relative pt-12 pb-8 px-3 sm:px-5 lg:px-10 xl:px-16">
+      <div className="relative pt-12 pb-8 px-2 sm:px-4 lg:px-6 xl:px-8">
         <div className="max-w-full mx-auto">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
@@ -303,7 +303,7 @@ export default function RecruitmentMarketplace() {
 
       {/* Modern Filter Dock */}
       <div className="sticky top-0 z-40 md: bg-background/60 border-y border-white/5 py-4">
-        <div className="max-w-full mx-auto px-3 sm:px-5 lg:px-10 xl:px-16">
+        <div className="max-w-full mx-auto px-2 sm:px-4 lg:px-6 xl:px-8">
           <div className="flex flex-wrap items-center gap-4">
             <h4 className="text-[10px] font-black uppercase tracking-[0.3em] text-foreground/30 mr-2">FILTRAR POR PUESTO</h4>
             <div className="flex bg-surface-elevated/50 p-2 rounded-3xl border border-white/5 shadow-2xl overflow-x-auto no-scrollbar max-w-full">
@@ -350,7 +350,7 @@ export default function RecruitmentMarketplace() {
       </div>
 
       {/* Mercado Grid */}
-      <div className="max-w-full mx-auto px-3 sm:px-5 lg:px-10 xl:px-16 mt-16">
+      <div className="max-w-full mx-auto px-2 sm:px-4 lg:px-6 xl:px-8 mt-16">
         {isLoading ? (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             {[1, 2, 3, 4].map((i) => (

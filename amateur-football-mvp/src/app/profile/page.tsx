@@ -653,13 +653,13 @@ function ProfileContent() {
         )}
       </div>
 
-      <div className="max-w-full mx-auto px-3 sm:px-5 lg:px-10 xl:px-16 -mt-14 sm:-mt-48 lg:-mt-64 relative z-20 pb-20">
+      <div className="max-w-full mx-auto px-2 sm:px-4 lg:px-6 xl:px-8 -mt-14 sm:-mt-48 lg:-mt-64 relative z-20 pb-20">
         
         {/* Profile Header Block */}
-        <div className="flex flex-col lg:flex-row items-center lg:items-start gap-8 lg:gap-12 mb-12 relative z-20">
+        <div className="flex flex-col lg:flex-row items-start lg:items-start gap-8 lg:gap-12 mb-12 relative z-20">
             {/* The FIFA Card (Avatar Replacement) */}
             <div className={cn(
-              "relative transition-all duration-700 perspective-1000 group/card shrink-0 mx-auto lg:mx-0",
+              "relative transition-all duration-700 perspective-1000 group/card shrink-0 mx-0 lg:mx-0",
               isEditing && "z-50 scale-105"
             )}>
                <div className={cn("absolute -inset-10 blur-[80px] rounded-full opacity-0 group-hover/card:opacity-100 transition-opacity", getField('is_pro', false) ? "bg-yellow-500/20" : "bg-primary/20")} />
@@ -718,13 +718,13 @@ function ProfileContent() {
             </div>
 
             {/* Basic Info & Social Stats */}
-            <div className="flex-1 w-full space-y-6 lg:pt-8 text-center lg:text-left">
-               <div className="flex flex-col sm:flex-row items-center lg:items-start gap-4 sm:gap-8 justify-between">
+            <div className="flex-1 w-full space-y-6 lg:pt-8 text-left">
+               <div className="flex flex-col sm:flex-row items-start lg:items-start gap-4 sm:gap-8 justify-between">
                   <div className="space-y-4">
                     <motion.div 
                       initial={{ opacity: 0, x: -20 }}
                       animate={{ opacity: 1, x: 0 }}
-                      className="flex flex-wrap items-center justify-center lg:justify-start gap-4"
+                      className="flex flex-wrap items-center justify-start lg:justify-start gap-4"
                     >
                       <h1 className="text-4xl sm:text-6xl lg:text-7xl font-black italic text-white uppercase tracking-tighter leading-none text-shadow-md">
                         {isEditing ? (editedData.name || 'JUGADOR') : displayPlayer.name}
@@ -740,7 +740,7 @@ function ProfileContent() {
                         </div>
                       )}
                     </motion.div>
-                    <div className="flex items-center justify-center lg:justify-start gap-3">
+                    <div className="flex items-center justify-start lg:justify-start gap-3">
                        <span className="px-3 py-1 rounded-full bg-primary/20 border border-primary/30 text-xs font-black text-primary uppercase tracking-[0.4em] italic drop-shadow-md">{displayPlayer.position}</span>
                        <span className="px-3 py-1 rounded-full bg-foreground/10 border border-foreground/20 text-xs font-black text-white/70 uppercase tracking-[0.4em] drop-shadow-md">{teamName}</span>
                     </div>
@@ -772,7 +772,7 @@ function ProfileContent() {
                </div>
 
                {/* Bio Section */}
-               <div className="max-w-2xl mx-auto lg:mx-0">
+               <div className="max-w-2xl mx-0 lg:mx-0">
                   {getField('bio', '') && !isEditing && (
                     <p className="text-sm border-l-4 border-primary/40 pl-4 py-1 text-foreground/80 dark:text-white/60 font-medium leading-relaxed italic">
                       "{displayPlayer.bio || getField('bio', '')}"
@@ -787,7 +787,7 @@ function ProfileContent() {
 
                {/* Modern Social Stats Hub */}
                {!isEditing && (
-                   <div className="flex flex-wrap items-center justify-center lg:justify-start gap-4 pt-4">
+                   <div className="flex flex-wrap items-center justify-start lg:justify-start gap-4 pt-4">
                       {[
                         { label: 'Partidos', value: displayMatches, color: 'text-foreground' },
                         { label: 'E.L.O.', value: displayElo, color: getField('is_pro', false) ? 'text-yellow-400' : 'text-primary' },
@@ -954,8 +954,8 @@ function ProfileContent() {
         ) : (
           <>
             {/* Navigation Tabs (Social Style) */}
-            <div className="sticky top-0 z-40 bg-background/80 backdrop-blur-xl border-b border-foreground/10 mb-8 -mx-3 px-3 sm:-mx-5 sm:px-5 lg:-mx-10 lg:px-10 xl:-mx-16 xl:px-16">
-              <div className="flex items-center justify-center lg:justify-start gap-2 sm:gap-6 overflow-x-auto no-scrollbar scroll-smooth">
+            <div className="sticky top-0 z-40 bg-background/80 backdrop-blur-xl border-b border-foreground/10 mb-8 -mx-2 px-2 sm:-mx-4 sm:px-4 lg:-mx-6 lg:px-6 xl:-mx-8 xl:px-8">
+              <div className="flex items-center justify-start lg:justify-start gap-2 sm:gap-6 overflow-x-auto no-scrollbar scroll-smooth">
                 {[
                   { id: 'overview', label: 'Biografía', icon: Target },
                   { id: 'history', label: 'Historial', icon: History },
@@ -1140,9 +1140,9 @@ function ProfileContent() {
                          </div>
                        </div>
 
-                       <div className="flex-1 space-y-6 text-center lg:text-left w-full relative z-10">
+                       <div className="flex-1 space-y-6 text-left w-full relative z-10">
                          <div className="space-y-2">
-                           <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-3">
+                           <div className="flex flex-col sm:flex-row items-start justify-start lg:justify-start gap-3">
                              <div className="px-3 py-1 bg-primary/10 border border-primary/20 rounded-full flex items-center gap-2">
                                <div className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
                                <span className="text-[9px] font-black text-primary uppercase tracking-[0.3em] italic">Afiliación Confirmada</span>
@@ -1161,7 +1161,7 @@ function ProfileContent() {
                              { icon: Shield, label: 'Tier', value: userTeam.level || 1, color: 'text-accent' },
                              { icon: Zap, label: 'Win %', value: userTeam.wins + userTeam.losses > 0 ? ((userTeam.wins / (userTeam.wins + userTeam.losses + userTeam.draws)) * 100).toFixed(0) + '%' : '--', color: 'text-purple-500' },
                            ].map((stat, i) => (
-                             <div key={i} className="flex flex-col items-center lg:items-start gap-1 group/stat2">
+                             <div key={i} className="flex flex-col items-start lg:items-start gap-1 group/stat2">
                                <div className="flex items-center gap-1.5">
                                  <stat.icon className={cn('w-3 h-3 opacity-50 group-hover/stat2:opacity-100 transition-opacity', stat.color)} />
                                  <span className="text-[8px] font-black text-foreground/40 uppercase tracking-[0.2em]">{stat.label}</span>
@@ -1171,7 +1171,7 @@ function ProfileContent() {
                            ))}
                          </div>
 
-                         <div className="flex flex-wrap justify-center lg:justify-start gap-3 w-full">
+                         <div className="flex flex-wrap justify-start lg:justify-start gap-3 w-full">
                            <Link href={`/team?id=${userTeam.id}`} className="w-full sm:w-auto h-12 px-8 rounded-2xl bg-foreground hover:bg-white text-background font-black text-[10px] uppercase tracking-[0.3em] flex items-center justify-center gap-2 transition-all shadow-xl hover:shadow-2xl hover:scale-105 active:scale-95 group/link">
                              Acceder Sede <ExternalLink className="w-4 h-4 group-hover/link:rotate-12 transition-transform" />
                            </Link>
@@ -1243,7 +1243,7 @@ function ProfileContent() {
                         {/* Form Guide Header */}
                         <div className="flex flex-col sm:flex-row items-center justify-between p-6 sm:p-8 rounded-[2.5rem] bg-background/40 border border-white/5 backdrop-blur-md shadow-2xl gap-6 relative overflow-hidden">
                           <div className="absolute top-0 right-0 w-64 h-64 bg-primary/5 blur-[80px] pointer-events-none rounded-full" />
-                          <div className="flex flex-col relative z-10 text-center sm:text-left">
+                          <div className="flex flex-col relative z-10 text-left sm:text-left">
                             <h3 className="text-2xl sm:text-3xl font-black text-foreground italic uppercase tracking-tighter flex items-center justify-center sm:justify-start gap-3">
                               Registro Oficial <BadgeCheck className="w-6 h-6 text-primary" />
                             </h3>
@@ -1252,7 +1252,7 @@ function ProfileContent() {
                             </p>
                           </div>
 
-                          <div className="flex flex-col items-center sm:items-end gap-3 relative z-10">
+                          <div className="flex flex-col items-start sm:items-end gap-3 relative z-10">
                             <span className="text-[10px] font-black text-foreground/50 uppercase tracking-[0.3em]">
                               Forma Reciente
                             </span>

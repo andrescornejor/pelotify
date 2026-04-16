@@ -157,7 +157,7 @@ export default function TeamsPage() {
   return (
     <div
       className={cn(
-        'min-h-screen bg-background pt-4 pb-32 px-3 sm:px-5 lg:px-10 xl:px-16 relative overflow-hidden flex flex-col gap-8',
+        'min-h-screen bg-background pt-4 pb-32 px-2 sm:px-4 lg:px-6 xl:px-8 relative overflow-hidden flex flex-col gap-8',
         isPerfMode && 'perf-mode'
       )}
     >
