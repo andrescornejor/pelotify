@@ -15,26 +15,11 @@ interface PlayerStats {
 }
 
 interface SkillPointAllocatorProps {
-  stats?: PlayerStats;
-  skillPoints?: number;
-  onStatsChange?: (stats: PlayerStats) => void;
-  onSkillPointsChange?: (points: number) => void;
-  
-  // Aliases used in reconstructed profile page
-  initialStats?: PlayerStats;
-  availablePoints?: number;
-  isEditable?: boolean;
-  onSave?: (stats: PlayerStats, points: number) => void;
+  stats: PlayerStats;
+  skillPoints: number;
+  onStatsChange: (stats: PlayerStats) => void;
+  onSkillPointsChange: (points: number) => void;
 }
-
-const DEFAULT_STATS: PlayerStats = {
-  pac: 60,
-  sho: 60,
-  pas: 60,
-  dri: 60,
-  def: 60,
-  phy: 60,
-};
 
 const STAT_CONFIG: Record<keyof PlayerStats, { label: string; fullName: string; icon: string; color: string; glowColor: string }> = {
   pac: { label: 'PAC', fullName: 'Ritmo', icon: '⚡', color: '#3b82f6', glowColor: 'rgba(59,130,246,0.4)' },
@@ -271,18 +256,15 @@ function StatCard({
   );
 }
 
-export function SkillPointAllocator(props: SkillPointAllocatorProps) {
-  const stats = props.stats || props.initialStats || DEFAULT_STATS;
-  const skillPoints = props.skillPoints ?? props.availablePoints ?? 0;
-  
+export function SkillPointAllocator({ stats, skillPoints, onStatsChange, onSkillPointsChange }: SkillPointAllocatorProps) {
   const [animatingStat, setAnimatingStat] = useState<keyof PlayerStats | null>(null);
-  const [baseStats] = useState<PlayerStats>({ ...stats });
+  const [initialStats] = useState<PlayerStats>({ ...stats });
   const animTimeout = useRef<NodeJS.Timeout | null>(null);
 
   const overall = Math.round(Object.values(stats).reduce((a, b) => a + b, 0) / 6);
   const totalPointsSpent = Object.keys(stats).reduce((acc, key) => {
     const k = key as keyof PlayerStats;
-    return acc + Math.max(0, stats[k] - baseStats[k]);
+    return acc + Math.max(0, stats[k] - initialStats[k]);
   }, 0);
 
   const triggerAnimation = (stat: keyof PlayerStats) => {
@@ -293,26 +275,16 @@ export function SkillPointAllocator(props: SkillPointAllocatorProps) {
 
   const handleIncrement = (stat: keyof PlayerStats) => {
     if (skillPoints > 0 && stats[stat] < 99) {
-      const newStats = { ...stats, [stat]: stats[stat] + 1 };
-      const newPoints = skillPoints - 1;
-      
-      if (props.onStatsChange) props.onStatsChange(newStats);
-      if (props.onSkillPointsChange) props.onSkillPointsChange(newPoints);
-      if (props.onSave) props.onSave(newStats, newPoints);
-      
+      onStatsChange({ ...stats, [stat]: stats[stat] + 1 });
+      onSkillPointsChange(skillPoints - 1);
       triggerAnimation(stat);
     }
   };
 
   const handleDecrement = (stat: keyof PlayerStats) => {
     if (stats[stat] > 0) {
-      const newStats = { ...stats, [stat]: stats[stat] - 1 };
-      const newPoints = skillPoints + 1;
-      
-      if (props.onStatsChange) props.onStatsChange(newStats);
-      if (props.onSkillPointsChange) props.onSkillPointsChange(newPoints);
-      if (props.onSave) props.onSave(newStats, newPoints);
-      
+      onStatsChange({ ...stats, [stat]: stats[stat] - 1 });
+      onSkillPointsChange(skillPoints + 1);
       triggerAnimation(stat);
     }
   };
@@ -320,12 +292,10 @@ export function SkillPointAllocator(props: SkillPointAllocatorProps) {
   const handleReset = () => {
     const totalReturn = Object.keys(stats).reduce((acc, key) => {
       const k = key as keyof PlayerStats;
-      return acc + Math.max(0, stats[k] - baseStats[k]);
+      return acc + Math.max(0, stats[k] - initialStats[k]);
     }, 0);
-    
-    if (props.onStatsChange) props.onStatsChange({ ...baseStats });
-    if (props.onSkillPointsChange) props.onSkillPointsChange(skillPoints + totalReturn);
-    if (props.onSave) props.onSave({ ...baseStats }, skillPoints + totalReturn);
+    onStatsChange({ ...initialStats });
+    onSkillPointsChange(skillPoints + totalReturn);
   };
 
   return (

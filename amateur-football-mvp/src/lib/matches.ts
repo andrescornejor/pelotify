@@ -9,7 +9,7 @@ export interface Match {
   type: 'F5' | 'F7' | 'F11';
   level: string;
   missing_players: number;
-  status: 'published' | 'waiting_deposit' | 'completed' | 'cancelled';
+  status: 'published' | 'waiting_deposit';
   price: number;
   creator_id: string;
   created_at: string;
@@ -24,7 +24,6 @@ export interface Match {
   team_a_name?: string;
   team_b_name?: string;
   is_private?: boolean;
-  venue_name?: string;
 
   payment_method?: 'mercado_pago' | 'cash';
   field_id?: string;

@@ -57,7 +57,6 @@ import { getUserHighlights, Highlight } from '@/lib/highlights';
 import confetti from 'canvas-confetti';
 import { SkillPointAllocator } from '@/components/SkillPointAllocator';
 import { RadarChart } from '@/components/RadarChart';
-import { detectFace, removeImageBackground } from '@/lib/aiUtils';
 
 interface PlayerStats {
   pac: number;
@@ -142,12 +141,6 @@ function ProfileContent() {
   const [avatarFile, setAvatarFile] = useState<File | null>(null);
   const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
   
-  // AI States
-  const [isFaceDetected, setIsFaceDetected] = useState(false);
-  const [isRemovingBackground, setIsRemovingBackground] = useState(false);
-  const [aiProgress, setAiProgress] = useState<string | null>(null);
-  const [originalFileBeforeAI, setOriginalFileBeforeAI] = useState<File | null>(null);
-
   // Sync tab with URL
   useEffect(() => {
     const tabParam = searchParams.get('tab');
@@ -227,6 +220,7 @@ function ProfileContent() {
         if (teamRes.data?.teams) setUserTeam(teamRes.data.teams);
 
         // IMPORTANT: Calculate MVP using the aggregated count from the profile table, not counting individual votes
+        // targetProfile is our DB record fetched above
         const actualMvpCount = targetProfile?.mvp_count || 0;
         setMvpCount(actualMvpCount);
 
@@ -305,7 +299,7 @@ function ProfileContent() {
           },
         ])
         .select(
-            `
+          `
                     *,
                     author:author_id (
                         name,
@@ -398,8 +392,7 @@ function ProfileContent() {
     position: getField('position', DEFAULT_PLAYER.position) as string,
     overall: playerOverall as number,
     stats: playerStats,
-    bio: getField('bio', '') as string,
-  }), [isMe, user?.name, editedData.name, dbProfile.name, playerOverall, playerStats, targetProfile, authMetadata]);
+  }), [isMe, user?.name, editedData.name, dbProfile.name, playerOverall, playerStats]);
 
   const displayAge = useMemo(() => getField('age', '18'), [dbProfile, authMetadata]);
   const displayHeight = useMemo(() => getField('height', '170'), [dbProfile, authMetadata]);
@@ -426,10 +419,14 @@ function ProfileContent() {
       if (avatarFile) {
         console.log('Subiendo nuevo avatar...');
 
+        // Compress the image before uploading
         try {
           console.log('Comprimiendo imagen...');
           const compressedBlob = await compressImage(avatarFile, 800, 0.8);
           const compressedFile = blobToFile(compressedBlob, avatarFile.name);
+          console.log(
+            `Imagen comprimida: de ${Math.round(avatarFile.size / 1024)}KB a ${Math.round(compressedFile.size / 1024)}KB`
+          );
           newAvatarUrl = await uploadUserAvatar(compressedFile, user.id);
         } catch (compressionError) {
           console.error('Error comprimiendo imagen, intentando subir original:', compressionError);
@@ -439,6 +436,8 @@ function ProfileContent() {
         console.log('Avatar subido:', newAvatarUrl);
       }
 
+      // 1. Update Public Profile (Source of Truth) FIRST
+      console.log('Actualizando tabla de perfiles...');
       const { error: profileError } = await supabase.from('profiles').upsert({
         id: user.id,
         name: editedData.name,
@@ -455,13 +454,21 @@ function ProfileContent() {
         updated_at: new Date().toISOString(),
       });
 
-      if (profileError) throw profileError;
+      if (profileError) {
+        console.error('Error en tabla de perfiles:', profileError);
+        throw new Error(`Error en el perfil público: ${profileError.message}`);
+      }
 
+      // SUCCESS!
+      // We stop the spinner and close the editor immediately after DB success
       setIsSaving(false);
       setIsEditing(false);
       setAvatarFile(null);
       setAvatarPreview(null);
-      
+      router.refresh();
+
+      // 2. Update Auth Metadata (for the current session)
+      console.log('Actualizando metadata de auth...');
       await supabase.auth.updateUser({
         data: {
           name: editedData.name,
@@ -479,13 +486,18 @@ function ProfileContent() {
         },
       });
 
+      // 3. Final Sync
       router.refresh();
+      // Optional: If we want absolute certainty, we'd trigger the fetchProfileData again
+      // fetchProfileData is already in useEffect [user], and updateUser SHOULD trigger it.
 
     } catch (error: any) {
-      console.error('Error guardando perfil:', error);
+      console.error('Error crítico en handleSaveProfile:', error);
       alert(`Error guardando perfil: ${error.message || 'Error desconocido'}`);
-    } finally {
       setIsSaving(false);
+    } finally {
+      // Safe fallback
+      setTimeout(() => setIsSaving(false), 500);
     }
   };
 
@@ -507,56 +519,17 @@ function ProfileContent() {
     }
   };
 
-  const handleAvatarChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       const file = e.target.files[0];
       setAvatarFile(file);
-      setOriginalFileBeforeAI(file);
       const previewUrl = URL.createObjectURL(file);
       setAvatarPreview(previewUrl);
 
+      // Extract color from preview immediately
       getDominantColor(previewUrl).then((color) => {
         if (color) setAmbientColor(color);
       });
-
-      try {
-        const hasFace = await detectFace(file);
-        setIsFaceDetected(hasFace);
-      } catch (err) {
-        console.warn('Error detectando rostro:', err);
-      }
-    }
-  };
-
-  const handleRemoveBackground = async () => {
-    if (!avatarFile) return;
-    
-    setIsRemovingBackground(true);
-    setAiProgress('Iniciando...');
-    
-    try {
-      const resultBlob = await removeImageBackground(avatarFile, (progress) => {
-        setAiProgress(progress);
-      });
-      
-      const newFile = blobToFile(resultBlob, `nobg-${avatarFile.name}`);
-      setAvatarFile(newFile);
-      setAvatarPreview(URL.createObjectURL(resultBlob));
-      setIsFaceDetected(false);
-    } catch (err) {
-      console.error('Error al remover fondo:', err);
-      alert('No se pudo remover el fondo.');
-    } finally {
-      setIsRemovingBackground(false);
-      setAiProgress(null);
-    }
-  };
-
-  const handleRestoreOriginal = () => {
-    if (originalFileBeforeAI) {
-      setAvatarFile(originalFileBeforeAI);
-      setAvatarPreview(URL.createObjectURL(originalFileBeforeAI));
-      setIsFaceDetected(true);
     }
   };
 
@@ -588,12 +561,14 @@ function ProfileContent() {
 
       {/* Hero Banner Section */}
       <div className="relative w-full h-[280px] sm:h-[450px] lg:h-[500px] overflow-hidden group/banner bg-background">
+        {/* Layered gradients for deep cinematic transition */}
         <div className="absolute inset-x-0 bottom-0 h-full z-10 bg-gradient-to-t from-background via-background/70 to-transparent opacity-100" />
         <div className="absolute inset-x-0 bottom-0 h-1/2 z-10 bg-gradient-to-t from-background to-transparent opacity-100" />
         <div className="absolute inset-x-0 top-0 h-[60%] z-10 bg-gradient-to-b from-black/40 via-transparent to-transparent opacity-100" />
         <div className="absolute inset-0 z-10 backdrop-blur-[1px] opacity-30 mix-blend-overlay" />
         <div className="absolute inset-0 z-10 bg-gradient-to-br from-primary/5 via-transparent to-accent/5 opacity-50" />
         
+        {/* Placeholder or User Cover */}
         <motion.img 
           initial={{ scale: 1.1, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
@@ -624,6 +599,7 @@ function ProfileContent() {
           </div>
         )}
 
+        {/* Floating Rank Badge */}
         {!isEditing && (
           <div className="absolute top-28 right-6 sm:top-auto sm:bottom-10 sm:right-12 lg:right-20 z-20 flex flex-col items-end gap-1">
              <RankBadge rankName={getRankByElo(displayElo).name} size="lg" className="drop-shadow-[0_0_30px_rgba(44,252,125,0.4)]" />
@@ -634,7 +610,10 @@ function ProfileContent() {
         )}
       </div>
 
+      {/* Main Content Container */}
       <div className="max-w-full mx-auto w-full px-3 sm:px-5 lg:px-10 xl:px-16 -mt-14 sm:-mt-48 lg:-mt-64 relative z-20 pb-20">
+        
+        {/* Pelotify Pro Banner */}
         {isMe && !getField('is_pro', false) && (
           <div className="mb-8 w-full w-full mx-auto animate-in fade-in slide-in-from-bottom-4 duration-1000">
             <div className="relative p-6 sm:p-8 rounded-[2rem] overflow-hidden group">
@@ -661,7 +640,9 @@ function ProfileContent() {
           </div>
         )}
 
+        {/* Profile Header Block */}
         <div className="flex flex-col lg:flex-row items-center lg:items-start gap-8 lg:gap-12 mb-12 relative z-20">
+            {/* The FIFA Card (Avatar Replacement) */}
             <div className={cn(
               "relative transition-all duration-700 perspective-1000 group/card shrink-0 mx-auto lg:mx-0",
               isEditing && "z-50 scale-105"
@@ -679,57 +660,15 @@ function ProfileContent() {
                   }}
                 />
                 {isEditing && (
-                  <div className="absolute inset-0 z-30 flex flex-col items-center justify-center pointer-events-none">
-                    <label className="w-full h-full flex flex-col items-center justify-center bg-black/60 cursor-pointer rounded-[2rem] border-2 border-dashed border-primary/40 m-2 transition-all hover:bg-black/40 pointer-events-auto">
-                      <Camera className="w-10 h-10 text-primary mb-2" />
-                      <span className="text-[10px] font-black uppercase tracking-widest text-center px-4">Cambiar<br/>Foto</span>
-                      <input type="file" className="hidden" onChange={handleAvatarChange} />
-                    </label>
-                    
-                    <AnimatePresence>
-                      {isFaceDetected && !isRemovingBackground && (
-                        <motion.button
-                          initial={{ opacity: 0, y: 10 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          exit={{ opacity: 0, scale: 0.9 }}
-                          onClick={(e) => {
-                            e.preventDefault();
-                            handleRemoveBackground();
-                          }}
-                          className="absolute -bottom-16 left-1/2 -translate-x-1/2 flex items-center gap-2 px-4 py-2 rounded-full bg-primary text-black text-[9px] font-black uppercase tracking-widest shadow-xl shadow-primary/20 hover:scale-105 active:scale-95 transition-all pointer-events-auto whitespace-nowrap z-50"
-                        >
-                          <Zap className="w-3 h-3 fill-current" />
-                          Quitar fondo estilo Pro
-                        </motion.button>
-                      )}
-                      
-                      {isRemovingBackground && (
-                        <motion.div
-                          initial={{ opacity: 0 }}
-                          animate={{ opacity: 1 }}
-                          className="absolute inset-0 z-50 flex flex-col items-center justify-center bg-black/80 rounded-[2rem] backdrop-blur-sm m-2 pointer-events-auto"
-                        >
-                          <Loader2 className="w-8 h-8 text-primary animate-spin mb-3" />
-                          <span className="text-[10px] font-black uppercase tracking-[0.2em] text-primary animate-pulse">Procesando IA...</span>
-                          {aiProgress && <span className="text-[8px] text-white/40 mt-2 font-medium">{aiProgress}</span>}
-                        </motion.div>
-                      )}
-
-                      {!isFaceDetected && !isRemovingBackground && originalFileBeforeAI && avatarFile !== originalFileBeforeAI && (
-                        <motion.button
-                          initial={{ opacity: 0 }}
-                          animate={{ opacity: 1 }}
-                          onClick={handleRestoreOriginal}
-                          className="absolute -bottom-12 left-1/2 -translate-x-1/2 text-[10px] font-bold text-white/40 hover:text-white transition-colors pointer-events-auto underline"
-                        >
-                          Restaurar original
-                        </motion.button>
-                      )}
-                    </AnimatePresence>
-                  </div>
+                  <label className="absolute inset-0 z-30 flex flex-col items-center justify-center bg-black/60 cursor-pointer rounded-[2rem] border-2 border-dashed border-primary/40 m-2 transition-all hover:bg-black/40">
+                    <Camera className="w-10 h-10 text-primary mb-2" />
+                    <span className="text-[10px] font-black uppercase tracking-widest text-center px-4">Cambiar<br/>Foto</span>
+                    <input type="file" className="hidden" onChange={handleAvatarChange} />
+                  </label>
                 )}
             </div>
 
+            {/* Basic Info & Social Stats */}
             <div className="flex-1 w-full space-y-6 lg:pt-8 text-center lg:text-left">
                <div className="flex flex-col sm:flex-row items-center lg:items-start gap-4 sm:gap-8 justify-between">
                   <div className="space-y-4">
@@ -758,6 +697,7 @@ function ProfileContent() {
                     </div>
                   </div>
 
+                  {/* Desktop Action Buttons */}
                   <div className="flex items-center gap-3 mt-4 sm:mt-0 shrink-0">
                     {isMe ? (
                        isEditing && (
@@ -782,10 +722,11 @@ function ProfileContent() {
                   </div>
                </div>
 
+               {/* Bio Section */}
                <div className="max-w-2xl mx-auto lg:mx-0">
                   {getField('bio', '') && !isEditing && (
                     <p className="text-sm border-l-4 border-primary/40 pl-4 py-1 text-foreground/80 dark:text-white/60 font-medium leading-relaxed italic">
-                      "{displayPlayer.bio || getField('bio', '')}"
+                      "{getField('bio', '')}"
                     </p>
                   )}
                   {isEditing && (
@@ -795,6 +736,7 @@ function ProfileContent() {
                   )}
                </div>
 
+               {/* Modern Social Stats Hub */}
                {!isEditing && (
                    <div className="flex flex-wrap items-center justify-center lg:justify-start gap-4 pt-4">
                       {[
@@ -813,197 +755,706 @@ function ProfileContent() {
             </div>
         </div>
 
+        {/* Navigation Tabs (Social Style) */}
         {!isEditing && (
-          <>
-          <div className="sticky top-0 z-30 bg-background/80 backdrop-blur-xl border-b border-foreground/5 -mx-4 px-4 py-2 mb-8 overflow-x-auto">
-            <div className="flex items-center justify-start sm:justify-center gap-2 min-w-max">
+          <div className="sticky top-0 z-40 bg-background/80 md:border-y border-foreground/10 mb-10 -mx-4 px-4 sm:mx-0">
+           <div className="flex items-center justify-center sm:justify-start gap-10 py-5 overflow-x-auto no-scrollbar max-w-full mx-auto px-3 sm:px-5 lg:px-10 xl:px-16">
               {[
-                { id: 'overview', icon: Award, label: 'Resumen' },
-                { id: 'history', icon: History, label: 'Partidos' },
-                { id: 'futtok', icon: Play, label: 'Highlights' },
+                { id: 'overview', icon: Info, label: 'Bio & Stats' },
+                { id: 'history', icon: History, label: 'Historial' },
+                { id: 'futtok', icon: Play, label: 'FutTok' },
                 { id: 'wall', icon: MessageSquare, label: 'Muro Social' },
-                ...(isMe ? [{ id: 'wallet', icon: Wallet, label: 'Billetera' }] : []),
+                ...(isMe ? [{ id: 'wallet', icon: Wallet, label: 'Finanzas' }] : []),
               ].map((tab) => (
                 <button
                   key={tab.id}
-                  onClick={() => {
-                    setActiveTab(tab.id as any);
-                    router.push(`/profile?id=${id || 'me'}&tab=${tab.id}`, { scroll: false });
-                  }}
+                  onClick={() => setActiveTab(tab.id as any)}
                   className={cn(
-                    "flex items-center gap-2 px-6 py-3 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all whitespace-nowrap",
-                    activeTab === tab.id
-                      ? "bg-primary text-black shadow-lg shadow-primary/20"
-                      : "text-foreground/40 hover:text-foreground hover:bg-foreground/5"
+                    "flex items-center gap-2.5 text-[10px] font-black uppercase tracking-[0.3em] h-10 px-1 transition-all relative group/tab",
+                    activeTab === tab.id ? "text-primary" : "text-foreground/40 hover:text-foreground/80"
                   )}
                 >
-                  <tab.icon className="w-4 h-4" />
-                  {tab.label}
+                  <tab.icon className={cn("w-4 h-4 transition-transform group-hover/tab:scale-110", activeTab === tab.id ? "text-primary" : "text-foreground/40")} />
+                  <span className="italic">{tab.label}</span>
+                  {activeTab === tab.id && (
+                    <motion.div layoutId="social-tab" className="absolute bottom-[-1px] left-0 right-0 h-[3px] bg-primary shadow-[0_0_15px_rgba(44,252,125,0.6)] rounded-full" />
+                  )}
                 </button>
               ))}
-            </div>
-          </div>
+           </div>
+        </div>
+        )}
 
-          <div className="relative min-h-[600px]">
-            <AnimatePresence mode="wait">
-              {activeTab === 'overview' && (
+        {/* Edit Mode OR Tabs */}
+        {isEditing ? (
+  <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-8 mt-8 pb-20">
+    <div className="flex items-center justify-between border-b border-foreground/10 pb-6 mb-8">
+      <div className="flex items-center gap-4">
+        <div className="w-12 h-12 rounded-2xl bg-primary/10 border border-primary/20 flex items-center justify-center">
+          <Edit2 className="w-6 h-6 text-primary" />
+        </div>
+        <div>
+          <h2 className="text-2xl lg:text-3xl font-black italic uppercase text-foreground tracking-tighter leading-none">Modo <span className="text-primary">Edición</span></h2>
+          <p className="text-[10px] font-black text-foreground/50 uppercase tracking-[0.3em] mt-1">Modifica tu identidad en la red táctica</p>
+        </div>
+      </div>
+    </div>
+    
+    <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+      {/* Col 1 - Personal Data */}
+      <div className="lg:col-span-5 space-y-8">
+        <div className="glass-premium p-8 rounded-[2.5rem] border border-foreground/10 space-y-6 shadow-xl">
+           <div className="flex items-center gap-3 border-b border-foreground/10 pb-4">
+             <div className="w-8 h-8 rounded-xl bg-foreground/5 flex items-center justify-center">
+               <Info className="w-4 h-4 text-foreground/40" />
+             </div>
+             <h3 className="text-[11px] font-black uppercase text-foreground/50 tracking-[0.3em]">Datos Generales</h3>
+           </div>
+           
+           <div className="space-y-5">
+             <div className="space-y-2">
+               <label className="text-[9px] font-black uppercase text-foreground/40 tracking-[0.2em] ml-2">Nombre en Cancha</label>
+               <input 
+                 value={editedData.name} 
+                 onChange={e => setEditedData({...editedData, name: e.target.value})}
+                 className="w-full bg-foreground/[0.03] border border-foreground/10 rounded-2xl p-4 text-sm font-bold text-foreground outline-none focus:border-primary/50 transition-all shadow-inner"
+                 placeholder="Ej. El 10"
+               />
+             </div>
+             <div className="space-y-2">
+               <label className="text-[9px] font-black uppercase text-foreground/40 tracking-[0.2em] ml-2">Biografía</label>
+               <textarea 
+                 value={editedData.bio}
+                 onChange={e => setEditedData({...editedData, bio: e.target.value})}
+                 placeholder="¿Cómo juegas? ¿De qué club eres?"
+                 className="w-full bg-foreground/[0.03] border border-foreground/10 rounded-2xl p-4 text-sm font-medium text-foreground/80 outline-none focus:border-primary/50 h-32 resize-none shadow-inner"
+               />
+             </div>
+             <div className="space-y-2">
+               <div className="flex justify-between items-center ml-2">
+                 <label className="text-[9px] font-black uppercase text-foreground/40 tracking-[0.2em]">URL Portada (Banner)</label>
+               </div>
+               <div className="relative group/cover-input">
+                 <input 
+                   value={editedData.cover_url}
+                   onChange={e => setEditedData({...editedData, cover_url: e.target.value})}
+                   placeholder="https://..."
+                   disabled={!getField('is_pro', false)}
+                   className={cn(
+                     "w-full bg-foreground/[0.03] border border-foreground/10 rounded-2xl p-4 text-xs font-medium text-foreground/70 outline-none focus:border-primary/50 shadow-inner",
+                     !getField('is_pro', false) && "opacity-50 cursor-not-allowed group-hover/cover-input:border-yellow-500/30 transition-colors"
+                   )}
+                 />
+                 {!getField('is_pro', false) && (
+                   <div className="absolute inset-0 z-10 cursor-pointer flex items-center justify-end pr-4" onClick={() => router.push('/pro')} title="Hazte PRO">
+                      <span className="text-[8px] font-black uppercase text-yellow-500 bg-yellow-500/10 px-2 py-0.5 rounded flex items-center gap-1">
+                        <Star className="w-2 h-2" fill="currentColor" /> Pro Only
+                      </span>
+                   </div>
+                 )}
+               </div>
+             </div>
+           </div>
+        </div>
+
+        <div className="glass-premium p-8 rounded-[2.5rem] border border-foreground/10 space-y-6 shadow-xl">
+           <div className="flex items-center gap-3 border-b border-foreground/10 pb-4">
+             <div className="w-8 h-8 rounded-xl bg-foreground/5 flex items-center justify-center">
+               <Target className="w-4 h-4 text-foreground/40" />
+             </div>
+             <h3 className="text-[11px] font-black uppercase text-foreground/50 tracking-[0.3em]">Físico & Táctica</h3>
+           </div>
+           
+           <div className="grid grid-cols-2 gap-4">
+             <div className="space-y-2">
+               <label className="text-[9px] font-black uppercase text-foreground/40 tracking-[0.2em] ml-2">Posición</label>
+               <input 
+                 value={editedData.position}
+                 onChange={e => setEditedData({...editedData, position: e.target.value.toUpperCase()})}
+                 maxLength={3}
+                 className="w-full bg-foreground/[0.03] border border-foreground/10 rounded-2xl p-4 text-lg font-black italic uppercase text-primary outline-none focus:border-primary/50 shadow-inner"
+                 placeholder="DC"
+               />
+             </div>
+             <div className="space-y-2">
+               <label className="text-[9px] font-black uppercase text-foreground/40 tracking-[0.2em] ml-2">Pie Hábil</label>
+               <select
+                 value={editedData.preferredFoot}
+                 onChange={e => setEditedData({...editedData, preferredFoot: e.target.value})}
+                 className="w-full bg-foreground/[0.03] border border-foreground/10 rounded-2xl p-4 text-sm font-bold text-foreground outline-none focus:border-primary/50 shadow-inner appearance-none cursor-pointer"
+               >
+                 <option value="Derecha">Derecha</option>
+                 <option value="Zurda">Zurda</option>
+                 <option value="Ambidiestro">Ambos</option>
+               </select>
+             </div>
+             <div className="space-y-2">
+               <label className="text-[9px] font-black uppercase text-foreground/40 tracking-[0.2em] ml-2">Edad</label>
+               <input 
+                 type="number"
+                 value={editedData.age}
+                 onChange={e => setEditedData({...editedData, age: e.target.value})}
+                 className="w-full bg-foreground/[0.03] border border-foreground/10 rounded-2xl p-4 text-lg font-bold text-foreground outline-none focus:border-primary/50 shadow-inner"
+               />
+             </div>
+             <div className="space-y-2">
+               <label className="text-[9px] font-black uppercase text-foreground/40 tracking-[0.2em] ml-2">Altura (cm)</label>
+               <input 
+                 type="number"
+                 value={editedData.height}
+                 onChange={e => setEditedData({...editedData, height: e.target.value})}
+                 className="w-full bg-foreground/[0.03] border border-foreground/10 rounded-2xl p-4 text-lg font-bold text-foreground outline-none focus:border-primary/50 shadow-inner"
+               />
+             </div>
+           </div>
+        </div>
+      </div>
+
+      {/* Col 2 - Stats Allocation */}
+      <div className="lg:col-span-7">
+        <div className="glass-premium p-8 rounded-[2.5rem] border-2 border-primary/20 space-y-6 shadow-[0_0_50px_rgba(16,185,129,0.05)] h-full">
+           <div className="flex flex-col gap-1 border-b border-foreground/10 pb-6">
+             <h3 className="text-xl font-black italic uppercase tracking-tighter text-foreground flex items-center gap-3">
+                <Zap className="w-5 h-5 text-primary" /> Atributos FIFA
+             </h3>
+             <p className="text-[9px] font-black uppercase text-foreground/50 tracking-[0.3em]">Distribuye tus puntos de habilidad ganados en la cancha</p>
+           </div>
+           
+           <div className="pt-2">
+             <SkillPointAllocator
+                stats={editedStats}
+                skillPoints={skillPoints}
+                onStatsChange={setEditedStats}
+                onSkillPointsChange={setSkillPoints}
+             />
+           </div>
+        </div>
+      </div>
+    </div>
+  </motion.div>
+        ) : (
+          <>
+            {/* Main Tab View */}
+            <div className="min-h-[600px]">
+
+          <AnimatePresence mode="wait">
+              {activeTab === 'overview' && !isEditing && (
                 <motion.div
                   key="overview"
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -20 }}
-                  className="space-y-12"
+                  className="space-y-8 mt-2"
                 >
-                  <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                     <div className="lg:col-span-2 space-y-8">
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                           <div className="glass-premium p-8 rounded-[2.5rem] border border-foreground/5 space-y-4">
-                              <div className="flex items-center gap-3 opacity-30">
-                                 <Shield className="w-5 h-5" />
-                                 <span className="text-[10px] font-black uppercase tracking-[0.3em]">Habilidades</span>
-                              </div>
-                              <SkillPointAllocator 
-                                initialStats={playerStats}
-                                availablePoints={skillPoints}
-                                isEditable={isEditing}
-                                onSave={(newStats, newPoints) => {
-                                  setEditedStats(newStats);
-                                  setSkillPoints(newPoints);
-                                }}
-                              />
+                  {/* Personal Data Bento */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {/* Biometrics */}
+                    <div className="lg:col-span-1 p-6 sm:p-8 rounded-[3rem] border border-foreground/10 space-y-8 bg-surface/50 dark:bg-foreground/[0.02] shadow-[0_20px_60px_-15px_rgba(0,0,0,0.05)] hover:bg-foreground/[0.04] transition-all">
+                       <div className="flex flex-col gap-1 border-b border-foreground/5 pb-4">
+                          <h3 className="text-xl font-black uppercase tracking-tighter text-foreground italic leading-none flex items-center gap-3">
+                             <Target className="w-5 h-5 text-primary" /> Biometría
+                          </h3>
+                          <span className="text-[8px] font-black text-foreground/40 uppercase tracking-[0.3em]">Ficha Técnica</span>
+                       </div>
+                       
+                       <div className="grid grid-cols-2 gap-4">
+                         {[
+                            { label: 'Estatura', value: displayHeight, unit: 'cm', dot: 'bg-primary' },
+                            { label: 'Ciclos', value: displayAge, unit: 'Años', dot: 'bg-blue-400' },
+                            { label: 'Pie Hábil', value: displayFoot, unit: '', dot: 'bg-emerald-400' },
+                            { label: 'Alianza', value: teamName, unit: '', dot: 'bg-purple-400', isTeam: true },
+                         ].map((item, idx) => (
+                           <div key={idx} className="flex flex-col gap-1 p-3 sm:p-4 rounded-[1.5rem] bg-foreground/[0.03] border border-foreground/5 shadow-inner group/bio relative overflow-hidden">
+                             <div className="absolute top-0 right-0 w-12 h-12 opacity-0 group-hover/bio:opacity-100 transition-opacity blur-xl rounded-full" style={{ backgroundColor: item.dot.replace('bg-', '') }} />
+                             <div className="flex items-center gap-2 relative z-10 w-full min-w-0">
+                               <div className={cn('w-2 h-2 shrink-0 rounded-full shadow-[0_0_8px_currentColor]', item.dot.replace('bg-', 'text-'))} />
+                               <span className="text-[8px] font-black uppercase text-foreground/40 tracking-[0.2em] truncate relative top-px">{item.label}</span>
+                             </div>
+                             <div className="flex items-baseline gap-1 relative z-10 min-w-0 w-full mt-1">
+                               <span className={cn("text-[17px] sm:text-2xl font-black italic uppercase tracking-tighter truncate leading-none relative z-10", item.isTeam ? "text-primary" : "text-foreground")}>{item.value}</span>
+                               {item.unit && <span className="text-[8px] font-black text-foreground/30 uppercase shrink-0">{item.unit}</span>}
+                             </div>
                            </div>
-                           <div className="glass-premium p-8 rounded-[2.5rem] border border-foreground/5 flex flex-col items-center justify-center min-h-[300px]">
-                              <RadarChart stats={playerStats} />
-                           </div>
-                        </div>
-                     </div>
-                     <div className="space-y-6">
-                        <div className="glass-premium p-8 rounded-[2.5rem] border border-foreground/5 space-y-6">
-                           <div className="flex items-center gap-3 opacity-30">
-                              <Info className="w-5 h-5" />
-                              <span className="text-[10px] font-black uppercase tracking-[0.3em]">Detalles</span>
-                           </div>
-                           <div className="space-y-4">
-                              {[
-                                { label: 'Edad', value: `${displayAge} Años` },
-                                { label: 'Altura', value: `${displayHeight} cm` },
-                                { label: 'Pie Hábil', value: displayFoot },
-                              ].map((item, i) => (
-                                <div key={i} className="flex items-center justify-between py-3 border-b border-foreground/5">
-                                   <span className="text-[10px] font-black uppercase text-foreground/30 tracking-widest">{item.label}</span>
-                                   <span className="text-sm font-black italic text-foreground uppercase tracking-tight">{item.value}</span>
-                                </div>
-                              ))}
-                           </div>
-                        </div>
-                     </div>
+                         ))}
+                       </div>
+
+                       <div className="pt-2 border-t border-foreground/5">
+                          <div className="flex items-center justify-between mb-4">
+                            <span className="text-[9px] font-black uppercase tracking-[0.3em] text-foreground/50 italic flex items-center gap-2">
+                               <Zap className="w-3 h-3 text-primary" /> Atributos Base
+                            </span>
+                            {skillPoints > 0 && isMe && (
+                              <span className="text-[8px] font-black bg-primary/20 text-primary px-2 py-0.5 rounded-full ring-1 ring-primary/40 shadow-[0_0_10px_rgba(16,185,129,0.3)] animate-pulse">{skillPoints} Pts Disp.</span>
+                            )}
+                          </div>
+                          <div className="grid grid-cols-2 lg:grid-cols-3 gap-x-4 gap-y-5">
+                             {[
+                               { label: 'PAC', val: playerStats.pac, color: '#3b82f6' },
+                               { label: 'SHO', val: playerStats.sho, color: '#ef4444' },
+                               { label: 'PAS', val: playerStats.pas, color: '#8b5cf6' },
+                               { label: 'DRI', val: playerStats.dri, color: '#f59e0b' },
+                               { label: 'DEF', val: playerStats.def, color: '#10b981' },
+                               { label: 'PHY', val: playerStats.phy, color: '#f97316' },
+                             ].map((stat) => (
+                               <div key={stat.label} className="flex flex-col gap-1.5 group/stat">
+                                 <div className="flex justify-between items-end">
+                                   <span className="text-[9px] font-black text-foreground/30 uppercase tracking-[0.2em] leading-none group-hover/stat:text-foreground/60 transition-colors">{stat.label}</span>
+                                   <span className="text-[11px] font-black italic text-foreground leading-none">{stat.val}</span>
+                                 </div>
+                                 <div className="h-1.5 bg-foreground/[0.04] rounded-full overflow-hidden shadow-inner">
+                                   <div className="h-full rounded-full transition-all duration-1000" style={{ width: `${(stat.val/99)*100}%`, backgroundColor: stat.color, boxShadow: `0 0 10px ${stat.color}` }} />
+                                 </div>
+                               </div>
+                             ))}
+                          </div>
+                       </div>
+                    </div>
+
+                    {/* Rendimiento & Radar (merge into 1 block across 2 columns) */}
+                    <div className="lg:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-6">
+                       {/* Performance Stats */}
+                       <div className="p-6 sm:p-8 rounded-[3rem] border border-foreground/10 bg-gradient-to-br from-surface/50 to-foreground/[0.02] flex flex-col justify-between group/perf shadow-[0_20px_60px_-15px_rgba(0,0,0,0.05)] hover:bg-foreground/[0.04] transition-all relative overflow-hidden">
+                         <div className="absolute -right-20 -bottom-20 w-64 h-64 bg-accent/5 blur-[80px] pointer-events-none rounded-full" />
+                         <div className="flex flex-col gap-1 border-b border-foreground/5 pb-4 mb-8 relative z-10">
+                            <h3 className="text-xl font-black uppercase tracking-tighter text-foreground italic leading-none flex items-center gap-3">
+                               <Trophy className="w-5 h-5 text-accent" /> Rendimiento
+                            </h3>
+                            <span className="text-[8px] font-black text-foreground/40 uppercase tracking-[0.3em]">Métricas de Juego Oficial</span>
+                         </div>
+                         
+                         <div className="flex flex-col justify-center h-full gap-5 relative z-10">
+                            {[
+                                { label: 'Victorias Netas', value: displayMatchesWon, color: 'text-foreground' },
+                                { label: 'Win Rate Global', value: `${displayMatches > 0 ? Math.min(100, Math.round((displayMatchesWon / displayMatches) * 100)) : 0}%`, color: 'text-emerald-500' },
+                                { label: 'MVP Frecuencia', value: `${displayMatches > 0 ? Math.min(100, (displayMvpCount / displayMatches) * 100).toFixed(1) : '0.0'}%`, color: 'text-accent', lg: true },
+                            ].map((stat, i) => (
+                               <div key={i} className="flex items-center justify-between p-4 sm:p-5 rounded-[1.5rem] bg-background/40 border border-foreground/[0.03] hover:border-foreground/10 transition-colors group/item">
+                                 <div className="flex items-center gap-2 sm:gap-3">
+                                    <div className="font-mono text-[9px] font-bold text-foreground/20 italic group-hover/item:text-foreground/40 transition-colors">0{i+1}</div>
+                                    <span className="text-[8px] sm:text-[9px] font-black uppercase text-foreground/50 tracking-[0.2em]">{stat.label}</span>
+                                 </div>
+                                 <span className={cn("font-black italic tracking-tighter leading-none group-hover/item:scale-105 transition-transform origin-right text-right shrink-0", stat.lg ? "text-3xl sm:text-4xl drop-shadow-[0_0_15px_rgba(245,158,11,0.3)]" : "text-2xl sm:text-3xl", stat.color)}>{stat.value}</span>
+                               </div>
+                            ))}
+                         </div>
+                       </div>
+
+                       {/* Pro Radar Chart */}
+                       <div className={cn(
+                          "relative p-8 rounded-[3rem] border flex flex-col items-center justify-center overflow-hidden shadow-[0_20px_60px_-15px_rgba(0,0,0,0.05)]",
+                          getField('is_pro', false) ? 'border-yellow-500/20 bg-gradient-to-br from-yellow-500/5 to-transparent' : 'border-foreground/5 bg-foreground/[0.02]'
+                       )}>
+                          {getField('is_pro', false) && <div className="absolute top-0 right-0 w-48 h-48 bg-yellow-500/10 blur-3xl rounded-full" />}
+                          <div className={cn("absolute top-6 left-6 z-20 flex gap-2 items-center", !getField('is_pro', false) && "opacity-50")}>
+                            <Star className={cn("w-4 h-4", getField('is_pro', false) ? "text-yellow-400" : "text-foreground/30")} fill="currentColor" />
+                            <h3 className="text-[10px] font-black italic uppercase tracking-[0.3em] text-foreground/70">Radiografía</h3>
+                          </div>
+                          
+                          <div className={cn("relative z-10 w-full flex items-center justify-center pt-8", !getField('is_pro', false) && "grayscale opacity-30 select-none")}>
+                            <RadarChart stats={playerStats} size={240} color={getField('is_pro', false) ? "#facc15" : "#64748b"} />
+                          </div>
+                          
+                          {!getField('is_pro', false) && (
+                            <div className="absolute inset-0 backdrop-blur-sm flex flex-col items-center justify-center text-center p-6 gap-3 z-30">
+                               <Lock className="w-8 h-8 text-foreground/30" />
+                               <span className="text-[9px] font-black uppercase tracking-widest text-foreground/50 max-w-[150px] leading-relaxed">Radar Analítico Exclusivo para PROs</span>
+                               <button onClick={() => router.push('/pro')} className="mt-2 text-[8px] font-black uppercase tracking-[0.2em] text-yellow-500 bg-yellow-500/10 px-5 py-2.5 rounded-full hover:bg-yellow-500/20 active:scale-95 transition-all ring-1 ring-yellow-500/30">
+                                  Obtener PRO
+                               </button>
+                            </div>
+                          )}
+                       </div>
+                    </div>
                   </div>
+
+                  {/* Team Section Banner */}
+                  {userTeam && (
+                    <div className="p-6 sm:p-8 lg:p-12 rounded-[3.5rem] border border-foreground/10 bg-gradient-to-br from-surface to-background shadow-xl flex flex-col md:flex-row items-center gap-8 md:gap-12 relative overflow-hidden group/team cursor-default transition-all duration-700 w-full">
+                       <div className="absolute top-0 right-0 w-[150%] h-[150%] bg-gradient-radial from-primary/10 via-transparent to-transparent -translate-y-1/2 translate-x-1/4 opacity-0 group-hover/team:opacity-100 transition-opacity duration-1000 blur-3xl pointer-events-none" />
+                       <div className="absolute inset-x-0 bottom-0 h-1 bg-gradient-to-r from-transparent via-primary/50 to-transparent opacity-0 group-hover/team:opacity-100 transition-opacity duration-1000 pointer-events-none" />
+
+                       <div className="relative shrink-0 perspective-1000">
+                         <div className="absolute inset-0 bg-primary/20 blur-[40px] rounded-full scale-110 group-hover/team:scale-150 transition-transform duration-1000 pointer-events-none" />
+                         <div className="w-32 h-32 md:w-48 md:h-48 rounded-[3rem] bg-background/80 border border-foreground/10 flex items-center justify-center overflow-hidden relative shadow-2xl group-hover/team:border-primary/50 transition-all duration-700 md: group-hover/team:-translate-y-2 group-hover/team:rotate-y-12">
+                           <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent opacity-0 group-hover/team:opacity-100 transition-opacity pointer-events-none" />
+                           {userTeam.logo_url ? (
+                             <img src={userTeam.logo_url} alt={userTeam.name} className="w-full h-full object-cover group-hover/team:scale-110 group-hover/team:rotate-3 transition-all duration-1000" />
+                           ) : (
+                             <Shield className="w-20 h-20 md:w-28 md:h-28 text-foreground/20 group-hover/team:text-primary transition-colors duration-700 drop-shadow-md" />
+                           )}
+                         </div>
+                       </div>
+
+                       <div className="flex-1 space-y-6 text-center lg:text-left w-full relative z-10">
+                         <div className="space-y-2">
+                           <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-3">
+                             <div className="px-3 py-1 bg-primary/10 border border-primary/20 rounded-full flex items-center gap-2">
+                               <div className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
+                               <span className="text-[9px] font-black text-primary uppercase tracking-[0.3em] italic">Afiliación Confirmada</span>
+                             </div>
+                             <span className="text-[9px] font-black text-foreground/30 italic tracking-[0.2em] uppercase">NODE #{userTeam.id.slice(0, 8)}</span>
+                           </div>
+                           <h2 className="text-4xl md:text-6xl font-black italic text-foreground uppercase tracking-tighter leading-none group-hover/team:text-transparent group-hover/team:bg-clip-text group-hover/team:bg-gradient-to-r group-hover/team:from-foreground group-hover/team:to-primary transition-all duration-700 py-1">
+                             {userTeam.name}
+                           </h2>
+                         </div>
+
+                         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 bg-background/40 p-5 rounded-[2rem] border border-foreground/[0.03] shadow-inner w-full">
+                           {[
+                             { icon: Trophy, label: 'ELO', value: userTeam.elo, color: 'text-primary' },
+                             { icon: Users, label: 'Squad', value: userTeam.members_count, color: 'text-blue-500' },
+                             { icon: Shield, label: 'Tier', value: userTeam.level || 1, color: 'text-accent' },
+                             { icon: Zap, label: 'Win %', value: userTeam.wins + userTeam.losses > 0 ? ((userTeam.wins / (userTeam.wins + userTeam.losses + userTeam.draws)) * 100).toFixed(0) + '%' : '--', color: 'text-purple-500' },
+                           ].map((stat, i) => (
+                             <div key={i} className="flex flex-col items-center lg:items-start gap-1 group/stat2">
+                               <div className="flex items-center gap-1.5">
+                                 <stat.icon className={cn('w-3 h-3 opacity-50 group-hover/stat2:opacity-100 transition-opacity', stat.color)} />
+                                 <span className="text-[8px] font-black text-foreground/40 uppercase tracking-[0.2em]">{stat.label}</span>
+                               </div>
+                               <p className="text-2xl font-black text-foreground italic tracking-tighter uppercase group-hover/stat2:scale-105 transition-transform origin-left">{stat.value}</p>
+                             </div>
+                           ))}
+                         </div>
+
+                         <div className="flex flex-wrap justify-center lg:justify-start gap-3 w-full">
+                           <Link href={`/team?id=${userTeam.id}`} className="w-full sm:w-auto h-12 px-8 rounded-2xl bg-foreground hover:bg-white text-background font-black text-[10px] uppercase tracking-[0.3em] flex items-center justify-center gap-2 transition-all shadow-xl hover:shadow-2xl hover:scale-105 active:scale-95 group/link">
+                             Acceder Sede <ExternalLink className="w-4 h-4 group-hover/link:rotate-12 transition-transform" />
+                           </Link>
+                           {userTeam.captain_id === (id === 'me' || !id ? user?.id : id) && (
+                             <div className="w-full sm:w-auto h-12 px-6 rounded-2xl border border-primary bg-primary/10 flex items-center justify-center gap-2 shadow-[0_0_15px_rgba(16,185,129,0.1)]">
+                               <Star className="w-4 h-4 text-primary fill-primary animate-pulse" />
+                               <span className="text-[9px] font-black text-primary uppercase tracking-[0.2em]">Capitán</span>
+                             </div>
+                           )}
+                         </div>
+                       </div>
+                    </div>
+                  )}
                 </motion.div>
               )}
-
-              {activeTab === 'history' && (
+              {activeTab === 'history' && !isEditing && (
                 <motion.div
                   key="history"
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -20 }}
-                  className="space-y-6"
+                  className="space-y-10"
                 >
-                  {userMatches.length > 0 ? (
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pb-20">
-                      {userMatches.map((match) => (
-                        <Link key={match.id} href={`/matches/${match.id}`}>
-                           <div className="glass-premium p-6 rounded-[2rem] border border-foreground/5 hover:border-primary/30 transition-all group cursor-pointer bg-surface/30">
-                              <div className="flex items-center justify-between mb-4">
-                                 <div className="flex items-center gap-3">
-                                    <div className="w-10 h-10 rounded-xl bg-foreground/5 flex items-center justify-center">
-                                       <Calendar className="w-5 h-5 text-foreground/40" />
+                  {(() => {
+                    const completedMatches = userMatches.filter((m) => {
+                      if (m.is_completed) return true;
+                      const matchStart = new Date(`${m.date}T${m.time}`);
+                      const matchEnd = new Date(matchStart.getTime() + 60 * 60 * 1000);
+                      return new Date() > matchEnd;
+                    });
+
+                    if (completedMatches.length === 0) {
+                      return (
+                        <div className="glass-premium p-20 rounded-[4rem] flex flex-col items-center justify-center text-center gap-10 border-dashed border-2 border-foreground/10 bg-foreground/[0.01]">
+                          <div className="w-24 h-24 rounded-[2.5rem] bg-foreground/5 border border-foreground/10 flex items-center justify-center shadow-2xl">
+                            <History className="w-10 h-10 text-foreground/10" />
+                          </div>
+                          <div className="space-y-3">
+                            <p className="text-2xl font-black text-foreground italic uppercase tracking-tighter">
+                              Sin Partidos Finalizados
+                            </p>
+                            <p className="text-[10px] font-black uppercase text-foreground/20 tracking-[0.3em]">
+                              {isMe
+                                ? 'Tu historial de partidos está listo para ser escrito.'
+                                : 'Este jugador aún no tiene partidos registrados.'}
+                            </p>
+                          </div>
+                          <Link href="/search">
+                            <button className="h-14 px-10 bg-primary/5 hover:bg-primary text-primary hover:text-black font-black text-[10px] uppercase tracking-[0.3em] rounded-xl border border-primary/20 transition-all active:scale-95">
+                              BUSCAR PARTIDOS
+                            </button>
+                          </Link>
+                        </div>
+                      );
+                    }
+
+                    const recentForm = completedMatches.slice(0, 5).map(m => {
+                      const scoreA = m.team_a_score ?? 0;
+                      const scoreB = m.team_b_score ?? 0;
+                      if (!m.user_team) return 'D';
+                      if (scoreA === scoreB) return 'D';
+                      if (m.user_team === 'A' && scoreA > scoreB) return 'W';
+                      if (m.user_team === 'B' && scoreB > scoreA) return 'W';
+                      return 'L';
+                    });
+
+                    return (
+                      <div className="flex flex-col gap-8 w-full animate-in fade-in slide-in-from-bottom-4 duration-700">
+                        {/* Form Guide Header */}
+                        <div className="flex flex-col sm:flex-row items-center justify-between p-6 sm:p-8 rounded-[2.5rem] bg-background/40 border border-white/5 backdrop-blur-md shadow-2xl gap-6 relative overflow-hidden">
+                          <div className="absolute top-0 right-0 w-64 h-64 bg-primary/5 blur-[80px] pointer-events-none rounded-full" />
+                          <div className="flex flex-col relative z-10 text-center sm:text-left">
+                            <h3 className="text-2xl sm:text-3xl font-black text-foreground italic uppercase tracking-tighter flex items-center justify-center sm:justify-start gap-3">
+                              Registro Oficial <BadgeCheck className="w-6 h-6 text-primary" />
+                            </h3>
+                            <p className="text-[11px] font-bold text-foreground/40 uppercase tracking-widest mt-1">
+                              Análisis de rendimiento reciente
+                            </p>
+                          </div>
+
+                          <div className="flex flex-col items-center sm:items-end gap-3 relative z-10">
+                            <span className="text-[10px] font-black text-foreground/50 uppercase tracking-[0.3em]">
+                              Forma Reciente
+                            </span>
+                            <div className="flex items-center gap-2">
+                              {[...recentForm].reverse().map((result, idx) => (
+                                <motion.div
+                                  key={idx}
+                                  initial={{ opacity: 0, scale: 0.5 }}
+                                  animate={{ opacity: 1, scale: 1 }}
+                                  transition={{ delay: idx * 0.1 }}
+                                  className={cn(
+                                    "w-10 h-10 rounded-xl flex items-center justify-center text-[13px] font-black uppercase ring-1 ring-inset shadow-xl cursor-default transition-transform hover:scale-110",
+                                    result === 'W' 
+                                      ? 'bg-primary text-black ring-primary/40 shadow-primary/20' 
+                                      : result === 'L' 
+                                        ? 'bg-red-500 text-white ring-red-500/40 shadow-red-500/20' 
+                                        : 'bg-amber-500 text-white ring-amber-500/40 shadow-amber-500/20'
+                                  )}
+                                >
+                                  {result}
+                                </motion.div>
+                              ))}
+                              {recentForm.length < 5 && (
+                                Array.from({ length: 5 - recentForm.length }).map((_, i) => (
+                                  <div key={`empty-${i}`} className="w-10 h-10 rounded-xl bg-foreground/5 border border-white/5 flex items-center justify-center text-[13px] font-black uppercase text-foreground/20">
+                                    -
+                                  </div>
+                                ))
+                              )}
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Match Grid */}
+                        <div className="grid grid-cols-1 gap-6 w-full">
+                          {completedMatches.map((m, i) => {
+                            const scoreA = m.team_a_score ?? 0;
+                            const scoreB = m.team_b_score ?? 0;
+                            const userTeam = m.user_team;
+
+                            let result: 'win' | 'loss' | 'draw' | null = null;
+                            if (userTeam) {
+                              if (scoreA === scoreB) result = 'draw';
+                              else if (userTeam === 'A' && scoreA > scoreB) result = 'win';
+                              else if (userTeam === 'B' && scoreB > scoreA) result = 'win';
+                              else result = 'loss';
+                            }
+
+                            const venue = findVenueByLocation(m.location);
+                            const locationName = venue?.displayName || venue?.name || m.location;
+
+                            const dateParts = m.date.split('-');
+                            const dayNum = dateParts[2];
+                            const monthIndex = parseInt(dateParts[1], 10) - 1;
+                            const monthNames = ['ENE', 'FEB', 'MAR', 'ABR', 'MAY', 'JUN', 'JUL', 'AGO', 'SEP', 'OCT', 'NOV', 'DIC'];
+                            const monthName = monthNames[monthIndex] || '---';
+
+                            return (
+                              <Link
+                                key={m.id}
+                                href={`/match?id=${m.id}`}
+                                className="block group relative"
+                              >
+                                <div className={cn(
+                                  "absolute inset-0 blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-700 rounded-[2.5rem]",
+                                  result === 'win' ? 'bg-primary/20' : result === 'loss' ? 'bg-red-500/20' : result === 'draw' ? 'bg-amber-500/20' : 'bg-foreground/10'
+                                )} />
+                                
+                                <div className={cn(
+                                  "relative z-10 glass-premium p-6 sm:p-8 rounded-[2.5rem] border flex flex-col gap-6 overflow-hidden transition-all duration-500 group-hover:-translate-y-1 group-hover:shadow-2xl h-full",
+                                  result === 'win' 
+                                    ? 'border-primary/20 hover:border-primary/50' 
+                                    : result === 'loss' 
+                                      ? 'border-red-500/20 hover:border-red-500/50' 
+                                      : result === 'draw'
+                                        ? 'border-amber-500/20 hover:border-amber-500/50'
+                                        : 'border-white/5 hover:border-white/20'
+                                )}>
+                                  {/* Background Decor */}
+                                  <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 p-4 opacity-[0.02] group-hover:opacity-[0.05] transition-opacity pointer-events-none">
+                                    <Trophy className="w-48 h-48 sm:w-64 sm:h-64" />
+                                  </div>
+
+                                  {/* Date & Mode Header */}
+                                  <div className="flex items-center justify-between pb-4 border-b border-foreground/5 relative z-10 w-full">
+                                    <div className="flex items-center gap-3">
+                                      <div className="bg-background/80 px-3 py-1.5 rounded-xl border border-white/5 flex items-center justify-center shadow-inner">
+                                        <span className="text-lg font-black text-foreground uppercase italic leading-none">{dayNum}</span>
+                                        <span className="text-[10px] font-black text-primary ml-1 uppercase">{monthName}</span>
+                                      </div>
+                                      <p className="text-[10px] font-black text-foreground/40 uppercase tracking-[0.2em] max-w-[100px] sm:max-w-none truncate">{m.type} • {m.level || 'General'}</p>
                                     </div>
-                                    <div className="flex flex-col">
-                                       <span className="text-[10px] font-black uppercase text-foreground/30 tracking-widest">{new Date(match.date).toLocaleDateString('es-ES', { weekday: 'long', day: 'numeric', month: 'long' })}</span>
-                                       <span className="text-xs font-black uppercase italic text-foreground tracking-tighter">{match.time} HS</span>
+                                    {result && (
+                                      <div className={cn(
+                                        "px-3 py-1 rounded-full border text-[9px] font-black uppercase tracking-[0.3em] shadow-sm shrink-0",
+                                        result === 'win' ? 'bg-primary/10 border-primary/30 text-primary' : result === 'loss' ? 'bg-red-500/10 border-red-500/30 text-red-500' : 'bg-amber-500/10 border-amber-500/30 text-amber-500'
+                                      )}>
+                                        {result === 'win' ? 'VICTORIA' : result === 'loss' ? 'DERROTA' : 'EMPATE'}
+                                      </div>
+                                    )}
+                                  </div>
+
+                                  {/* Score and Teams Center */}
+                                  <div className="flex items-center justify-center w-full relative z-10 py-2 sm:py-6 flex-1">
+                                    <div className="flex items-center gap-3 sm:gap-6 bg-background/50 rounded-[2rem] p-4 sm:p-6 border border-white/5 shadow-inner backdrop-blur-md w-full justify-between">
+                                      
+                                      {/* Team A */}
+                                      <div className="flex flex-col items-center gap-2 w-16 sm:w-20">
+                                        <div className={cn(
+                                          "w-10 h-10 sm:w-12 sm:h-12 rounded-full border flex items-center justify-center text-[10px] sm:text-xs font-black uppercase shadow-lg transition-transform group-hover:scale-105 shrink-0",
+                                          userTeam === 'A' ? 'bg-primary/10 border-primary/30 text-primary' : 'bg-foreground/5 border-white/10 text-foreground/50'
+                                        )}>
+                                          {userTeam === 'A' ? (displayPlayer.name ? displayPlayer.name.charAt(0) : 'U') : 'A'}
+                                        </div>
+                                        <span className={cn(
+                                          "text-[9px] sm:text-[10px] font-black uppercase tracking-widest text-center truncate w-full", 
+                                          userTeam === 'A' ? 'text-primary' : 'text-foreground/40'
+                                        )}>
+                                          {userTeam === 'A' ? 'Mi Equipo' : 'Equipo A'}
+                                        </span>
+                                      </div>
+
+                                      {/* Score */}
+                                      <div className="flex items-center gap-3 sm:gap-4 shrink-0">
+                                        <span className={cn(
+                                          "text-4xl sm:text-6xl font-black italic tracking-tighter drop-shadow-md", 
+                                          userTeam === 'A' && result === 'win' ? 'text-primary' : userTeam === 'A' && result === 'loss' ? 'text-red-500' : 'text-foreground'
+                                        )}>{scoreA}</span>
+                                        
+                                        <div className="flex flex-col gap-1.5 opacity-30 mt-1">
+                                          <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-foreground" />
+                                          <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-foreground" />
+                                        </div>
+                                        
+                                        <span className={cn(
+                                          "text-4xl sm:text-6xl font-black italic tracking-tighter drop-shadow-md",
+                                          userTeam === 'B' && result === 'win' ? 'text-primary' : userTeam === 'B' && result === 'loss' ? 'text-red-500' : 'text-foreground'
+                                        )}>{scoreB}</span>
+                                      </div>
+
+                                      {/* Team B */}
+                                      <div className="flex flex-col items-center gap-2 w-16 sm:w-20">
+                                        <div className={cn(
+                                          "w-10 h-10 sm:w-12 sm:h-12 rounded-full border flex items-center justify-center text-[10px] sm:text-xs font-black uppercase shadow-lg transition-transform group-hover:scale-105 shrink-0",
+                                          userTeam === 'B' ? 'bg-primary/10 border-primary/30 text-primary' : 'bg-foreground/5 border-white/10 text-foreground/50'
+                                        )}>
+                                          {userTeam === 'B' ? (displayPlayer.name ? displayPlayer.name.charAt(0) : 'U') : 'B'}
+                                        </div>
+                                        <span className={cn(
+                                          "text-[9px] sm:text-[10px] font-black uppercase tracking-widest text-center truncate w-full", 
+                                          userTeam === 'B' ? 'text-primary' : 'text-foreground/40'
+                                        )}>
+                                          {userTeam === 'B' ? 'Mi Equipo' : 'Equipo B'}
+                                        </span>
+                                      </div>
+
                                     </div>
-                                 </div>
-                                 <span className={cn(
-                                   "px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest",
-                                   match.status === 'completed' ? "bg-emerald-500/10 text-emerald-500" : "bg-primary/10 text-primary"
-                                 )}>
-                                   {match.status === 'completed' ? 'Finalizado' : 'Pendiente'}
-                                 </span>
-                              </div>
-                              <div className="flex items-center gap-4 py-4 border-y border-foreground/5">
-                                 <div className="flex-1 text-center font-black italic uppercase tracking-tighter text-sm truncate">{match.venue_name || 'Estadio Pelotify'}</div>
-                                 <div className="px-4 py-1 bg-foreground/5 rounded-lg font-black italic text-foreground">VS</div>
-                                 <div className="flex-1 text-center font-black italic uppercase tracking-tighter text-sm truncate">Rival</div>
-                              </div>
-                           </div>
-                        </Link>
-                      ))}
-                    </div>
-                  ) : (
-                    <div className="flex flex-col items-center justify-center py-32 text-center space-y-6">
-                       <div className="w-20 h-20 rounded-full bg-foreground/5 flex items-center justify-center">
-                          <History className="w-10 h-10 text-foreground/20" />
-                       </div>
-                       <p className="text-xl font-black italic uppercase tracking-tighter text-foreground/40">No hay partidos registrados</p>
-                    </div>
-                  )}
+                                  </div>
+
+                                  {/* Footer / Location */}
+                                  <div className="pt-4 border-t border-foreground/5 flex items-center justify-between relative z-10 mt-auto">
+                                    <div className="flex items-center gap-2 text-foreground/60 group-hover:text-foreground transition-colors min-w-0 pr-4">
+                                      <MapPin className="w-4 h-4 text-primary shrink-0" />
+                                      <span className="text-xs sm:text-sm font-bold truncate">{locationName}</span>
+                                    </div>
+                                    <div className="w-8 h-8 rounded-full bg-foreground/5 flex items-center justify-center group-hover:bg-primary group-hover:text-black transition-colors shrink-0">
+                                      <ChevronRight className="w-4 h-4 transition-transform group-hover:translate-x-0.5" />
+                                    </div>
+                                  </div>
+
+                                </div>
+                              </Link>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    );
+                  })()}
                 </motion.div>
               )}
-
               {activeTab === 'futtok' && (
                 <motion.div
                   key="futtok"
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -20 }}
-                  className="space-y-8 pb-20"
+                  initial={{ opacity: 0, x: 50 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -50 }}
+                  className="space-y-6"
                 >
+                  <div className="flex items-center justify-between px-1 mb-6">
+                    <div className="flex flex-col gap-1">
+                      <h3 className="text-xl lg:text-2xl font-black italic text-foreground uppercase tracking-tighter font-kanit">
+                        Highlights
+                      </h3>
+                      <span className="text-[9px] font-black text-primary uppercase tracking-[0.4em]">
+                        GALERÍA FutTok
+                      </span>
+                    </div>
+                    <Flame className="w-6 h-6 text-emerald-500 animate-pulse" />
+                  </div>
+
                   {isLoadingHighlights ? (
-                     <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                        {[1, 2, 3, 4].map((i) => (
-                           <div key={i} className="aspect-[9/16] rounded-3xl bg-foreground/5 animate-pulse" />
-                        ))}
-                     </div>
+                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 sm:gap-4">
+                      {[1, 2, 3, 4, 5, 6].map((i) => (
+                        <div key={i} className="aspect-[9/16] rounded-2xl bg-foreground/[0.03] animate-pulse border border-white/5" />
+                      ))}
+                    </div>
                   ) : userHighlights.length > 0 ? (
-                    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                      {userHighlights.map((highlight) => (
-                        <Link key={highlight.id} href={`/futtok?id=${highlight.id}`}>
-                          <div className="aspect-[9/16] rounded-3xl overflow-hidden relative group cursor-pointer bg-black">
-                            <video
-                              src={highlight.video_url}
-                              className="w-full h-full object-cover opacity-60 group-hover:opacity-100 group-hover:scale-110 transition-all duration-700"
-                              muted
-                              playsInline
-                            />
-                            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
-                            <div className="absolute bottom-4 left-4 right-4">
-                               <p className="text-xs font-black uppercase italic text-white truncate drop-shadow-lg">{highlight.caption || 'Sin título'}</p>
-                               <div className="flex items-center gap-3 mt-1 opacity-60">
-                                  <div className="flex items-center gap-1">
-                                     <Heart className="w-3 h-3 fill-primary text-primary" />
-                                     <span className="text-[9px] font-black">{highlight.likes_count}</span>
-                                  </div>
-                               </div>
+                    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2 sm:gap-4">
+                      {userHighlights.map((h, i) => (
+                        <Link 
+                          key={h.id} 
+                          href={`/highlights?v=${h.id}`}
+                          className="group relative aspect-[9/16] rounded-[1.5rem] sm:rounded-[2rem] overflow-hidden border border-white/5 bg-surface transition-all duration-500 hover:scale-[1.03] hover:shadow-[0_0_30px_rgba(16,185,129,0.3)] hover:border-emerald-500/50"
+                        >
+                          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent z-10" />
+                          <video 
+                            src={h.video_url} 
+                            className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 opacity-80 group-hover:opacity-100"
+                            muted
+                            playsInline
+                            loop
+                            // onMouseOver={(e) => (e.target as HTMLVideoElement).play()}
+                            // onMouseOut={(e) => (e.target as HTMLVideoElement).pause()}
+                          />
+                          
+                          <div className="absolute top-3 left-3 z-20 flex gap-2">
+                            <div className="px-2 py-0.5 rounded-full bg-black/50 md: border border-white/10 flex items-center gap-1.5">
+                              <Play className="w-2.5 h-2.5 text-white" />
+                              <span className="text-[8px] font-black italic text-white">{h.views_count || 0}</span>
                             </div>
-                            <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                               <div className="w-12 h-12 rounded-full bg-primary/20 backdrop-blur-xl border border-primary flex items-center justify-center scale-50 group-hover:scale-100 transition-transform duration-500">
-                                  <Play className="w-6 h-6 text-primary fill-current" />
-                               </div>
+                          </div>
+
+                          <div className="absolute bottom-3 left-3 right-3 z-20">
+                            <h4 className="text-[10px] font-black italic text-white uppercase tracking-wider line-clamp-1 drop-shadow-md">
+                              {h.description || 'HIGHLIGHT'}
+                            </h4>
+                            <div className="flex items-center gap-1 mt-1 opacity-70">
+                              <Flame className="w-2.5 h-2.5 text-emerald-400" />
+                              <span className="text-[8px] font-black text-white">{h.likes_count || 0} likes</span>
                             </div>
                           </div>
                         </Link>
                       ))}
+                      
+                      {isMe && (
+                        <Link href="/highlights" className="aspect-[9/16] rounded-[1.5rem] sm:rounded-[2rem] border-2 border-dashed border-white/10 flex flex-col items-center justify-center gap-3 hover:border-emerald-500/50 hover:bg-emerald-500/5 transition-colors group">
+                           <div className="w-12 h-12 rounded-full bg-surface border border-white/5 flex items-center justify-center group-hover:scale-110 transition-transform">
+                             <Plus className="w-6 h-6 text-emerald-500" />
+                           </div>
+                           <span className="text-[9px] font-black uppercase text-foreground/40 group-hover:text-emerald-500 tracking-widest px-4 text-center">SUBIR JUGADA</span>
+                        </Link>
+                      )}
                     </div>
                   ) : (
-                    <div className="glass-premium p-12 sm:p-20 rounded-[3rem] border border-dashed border-foreground/10 flex flex-col items-center justify-center text-center gap-8 bg-foreground/[0.02] mt-8">
-                      <div className="relative">
-                        <div className="w-24 h-24 rounded-[2.5rem] bg-foreground/5 flex items-center justify-center shadow-inner border border-foreground/10">
-                          <Play className="w-10 h-10 text-foreground/20" />
-                        </div>
-                        <div className="absolute -top-2 -right-2 w-8 h-8 rounded-2xl bg-primary flex items-center justify-center animate-bounce shadow-lg shadow-primary/40">
-                          <Zap className="w-4 h-4 text-black fill-current" />
-                        </div>
+                    <div className="glass-premium p-16 sm:p-20 rounded-[4rem] flex flex-col items-center justify-center text-center gap-8 border-dashed border-2 border-foreground/10 bg-foreground/[0.01]">
+                      <div className="w-24 h-24 rounded-[2.5rem] bg-foreground/5 border border-foreground/10 flex items-center justify-center shadow-xl">
+                        <Flame className="w-10 h-10 text-foreground/10" />
                       </div>
                       <div className="space-y-3">
                         <p className="text-2xl font-black text-foreground italic uppercase tracking-tighter">
@@ -1016,13 +1467,12 @@ function ProfileContent() {
                         </p>
                       </div>
                       {isMe && (
-                        <button 
-                          onClick={() => router.push('/highlights')}
-                          className="h-14 px-10 bg-primary hover:bg-white text-black font-black text-[10px] uppercase tracking-[0.3em] rounded-2xl shadow-xl shadow-primary/20 transition-all active:scale-95 flex items-center gap-3"
-                        >
-                          <Plus className="w-4 h-4" />
-                          SUBIR VIDEO
-                        </button>
+                        <Link href="/highlights">
+                          <button className="h-14 px-10 bg-emerald-500/10 hover:bg-emerald-500 text-emerald-500 hover:text-black font-black text-[10px] uppercase tracking-[0.3em] rounded-2xl border border-emerald-500/20 transition-all active:scale-95 flex items-center gap-3">
+                            <Plus className="w-4 h-4" />
+                            SUBIR VIDEO
+                          </button>
+                        </Link>
                       )}
                     </div>
                   )}
@@ -1036,6 +1486,7 @@ function ProfileContent() {
                   exit={{ opacity: 0, y: -20 }}
                   className="w-full space-y-10 pb-20"
                 >
+                  {/* Title & Description */}
                   <div className="glass-premium p-10 lg:p-12 rounded-[3.5rem] border border-foreground/10 bg-gradient-to-br from-surface to-background relative overflow-hidden group/wall-header mt-8">
                     <div className="absolute top-0 right-0 w-[150%] h-[150%] bg-gradient-radial from-blue-500/10 via-transparent to-transparent -translate-y-1/2 translate-x-1/4 opacity-0 group-hover/wall-header:opacity-100 transition-opacity duration-1000 blur-3xl pointer-events-none" />
                     <div className="flex flex-col md:flex-row items-center md:items-start gap-8 relative z-10 text-center md:text-left">
@@ -1090,11 +1541,11 @@ function ProfileContent() {
                            className="h-12 px-8 rounded-[1.5rem] bg-blue-500 hover:bg-blue-600 text-white font-black text-[10px] uppercase tracking-[0.3em] transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-[0_0_20px_rgba(59,130,246,0.3)] hover:shadow-[0_0_30px_rgba(59,130,246,0.5)] active:scale-95 flex items-center gap-2 relative overflow-hidden group/btn"
                          >
                            {isPostingComment ? (
-                             <Loader2 className="w-4 h-4 animate-spin text-white" />
+                             <svg className="w-4 h-4 animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
                            ) : (
                              <>
                                <span className="relative z-10">Firmar Muro</span>
-                               <MessageSquare className="w-4 h-4 relative z-10 group-hover/btn:-rotate-12 transition-transform" />
+                               <svg className="w-4 h-4 relative z-10 group-hover/btn:-rotate-12 transition-transform" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
                              </>
                            )}
                          </button>
@@ -1102,10 +1553,11 @@ function ProfileContent() {
                     </form>
                   )}
 
+                  {/* Comments List */}
                   <div className="space-y-6 pt-4">
                     <div className="flex items-center justify-between pb-4 border-b border-foreground/5">
                        <h3 className="text-[11px] font-black uppercase text-foreground/60 tracking-[0.3em] flex items-center gap-2">
-                         <MessageSquare className="w-4 h-4" /> 
+                         <svg className="w-4 h-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg> 
                          Firmas Recientes
                        </h3>
                        <span className="px-3 py-1 bg-foreground/5 rounded-full text-[10px] font-black text-foreground/50 tracking-widest border border-foreground/10">{comments.length} Mensajes</span>
@@ -1113,7 +1565,7 @@ function ProfileContent() {
 
                     {isLoadingComments ? (
                       <div className="flex justify-center py-20">
-                         <Loader2 className="w-8 h-8 animate-spin text-blue-500" />
+                         <svg className="w-8 h-8 animate-spin text-blue-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
                       </div>
                     ) : comments.length > 0 ? (
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -1125,10 +1577,12 @@ function ProfileContent() {
                             transition={{ delay: i * 0.05 }}
                             className="glass-premium p-6 rounded-[2.5rem] border border-foreground/5 relative group/comment hover:border-blue-500/30 transition-all hover:shadow-[0_20px_50px_rgba(59,130,246,0.1)] flex flex-col gap-4 bg-gradient-to-br from-surface to-background/50 hover:bg-gradient-to-br hover:from-surface hover:to-blue-500/5 hover:-translate-y-1"
                           >
+                             {/* Decorative Quote Icon */}
                              <div className="absolute top-6 right-6 text-foreground/5 group-hover/comment:text-blue-500/10 transition-colors pointer-events-none group-hover/comment:scale-110">
-                                <MessageSquare className="w-16 h-16" />
+                                <svg className="w-16 h-16" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
                              </div>
 
+                             {/* Comment Header */}
                              <div className="flex items-center gap-4 relative z-10">
                                 <Link href={`/profile?id=${comment.author_id}`} className="w-12 h-12 rounded-[1.2rem] overflow-hidden shrink-0 border border-foreground/10 hover:border-primary/50 transition-colors shadow-sm">
                                   {comment.author?.avatar_url ? (
@@ -1155,16 +1609,19 @@ function ProfileContent() {
                                    </span>
                                 </div>
                                 
+                                {/* Delete Button */}
                                 {(isMe || user?.id === comment.author_id) && (
                                   <button 
                                      onClick={() => handleDeleteComment(comment.id)}
                                      className="ml-auto p-2 bg-red-500/5 hover:bg-red-500 border border-red-500/10 hover:border-red-500 text-red-500 hover:text-white rounded-[1rem] transition-all opacity-0 group-hover/comment:opacity-100 shadow-sm"
+                                     title="Eliminar Firma"
                                   >
-                                    <Trash className="w-4 h-4" />
+                                    <svg className="w-4 h-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
                                   </button>
                                 )}
                              </div>
 
+                             {/* Comment Body */}
                              <div className="relative z-10 pl-3 border-l-[3px] border-blue-500/20 group-hover/comment:border-blue-500 transition-colors mt-2">
                                 <p className="text-[15px] md:text-base text-foreground/80 font-medium leading-relaxed italic whitespace-pre-wrap">
                                   "{comment.content}"
@@ -1176,7 +1633,7 @@ function ProfileContent() {
                     ) : (
                       <div className="glass-premium p-16 rounded-[3rem] border border-dashed border-foreground/10 flex flex-col items-center justify-center text-center gap-6 bg-foreground/[0.02]">
                         <div className="w-24 h-24 rounded-[2.5rem] bg-foreground/5 flex items-center justify-center shadow-inner border border-foreground/10">
-                           <MessageSquare className="w-10 h-10 text-foreground/20" />
+                           <svg className="w-10 h-10 text-foreground/20" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
                         </div>
                         <div className="space-y-2">
                            <p className="text-2xl md:text-3xl font-black italic uppercase tracking-tighter text-foreground">El vestuario está en silencio</p>
@@ -1262,139 +1719,146 @@ function ProfileContent() {
           </div>
           </>
         )}
+        </div>
 
-        <div className="pb-32 lg:pb-12" />
 
-        {isMe && (
-          <div className="relative z-10 border-t border-foreground/10 pt-8 pb-8 flex flex-wrap gap-8 items-center">
+      <div className="pb-32 lg:pb-12" />
+
+      {/* FOOTER ACTIONS SECTION */}
+      {isMe && (
+        <div className="relative z-10 border-t border-foreground/10 pt-8 pb-8 flex flex-wrap gap-8 items-center">
+          <button
+            onClick={() => setShowPasswordModal(true)}
+            className="flex items-center gap-3 text-foreground/30 hover:text-primary transition-colors text-[11px] font-black uppercase tracking-widest group"
+          >
+            <Lock className="w-4 h-4 group-hover:scale-110 transition-transform" />
+            Cambiar Contraseña
+          </button>
+
+          {!showDeleteConfirm ? (
             <button
-              onClick={() => setShowPasswordModal(true)}
-              className="flex items-center gap-3 text-foreground/30 hover:text-primary transition-colors text-[11px] font-black uppercase tracking-widest group"
+              onClick={() => setShowDeleteConfirm(true)}
+              className="flex items-center gap-3 text-foreground/30 hover:text-red-500 transition-colors text-[11px] font-black uppercase tracking-widest group"
             >
-              <Lock className="w-4 h-4 group-hover:scale-110 transition-transform" />
-              Cambiar Contraseña
+              <Trash2 className="w-4 h-4 group-hover:scale-110 transition-transform" />
+              Eliminar Cuenta
             </button>
+          ) : (
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="p-6 rounded-2xl bg-red-500/5 border border-red-500/20 space-y-4 max-w-md w-full"
+            >
+              <div className="flex items-center gap-3 text-red-500">
+                <AlertTriangle className="w-5 h-5" />
+                <h3 className="text-sm font-black uppercase tracking-widest">¿Estás seguro?</h3>
+              </div>
+              <p className="text-xs text-foreground/40 leading-relaxed">
+                Esta acción es irreversible. Se van a borrar todos tus datos: partidos, equipos,
+                amigos y estadísticas.
+              </p>
+              <div className="flex gap-3">
+                <button
+                  onClick={() => setShowDeleteConfirm(false)}
+                  className="h-10 px-6 rounded-xl bg-foreground/5 border border-foreground/10 text-xs font-bold text-foreground/40 hover:text-foreground transition-all"
+                >
+                  No, cancelar
+                </button>
+                <button
+                  onClick={async () => {
+                    setIsDeleting(true);
+                    try {
+                      await deleteAccount();
+                    } catch (e) {
+                      setIsDeleting(false);
+                    }
+                  }}
+                  disabled={isDeleting}
+                  className="h-10 px-6 rounded-xl bg-red-600 hover:bg-red-500 text-white text-xs font-bold uppercase tracking-widest transition-all disabled:opacity-50 flex items-center gap-2"
+                >
+                  {isDeleting ? (
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                  ) : (
+                    <Trash2 className="w-4 h-4" />
+                  )}
+                  Sí, eliminar todo
+                </button>
+              </div>
+            </motion.div>
+          )}
+        </div>
+      )}
 
-            {!showDeleteConfirm ? (
-              <button
-                onClick={() => setShowDeleteConfirm(true)}
-                className="flex items-center gap-3 text-foreground/30 hover:text-red-500 transition-colors text-[11px] font-black uppercase tracking-widest group"
-              >
-                <Trash2 className="w-4 h-4 group-hover:scale-110 transition-transform" />
-                Eliminar Cuenta
-              </button>
-            ) : (
-              <motion.div
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="p-6 rounded-2xl bg-red-500/5 border border-red-500/20 space-y-4 max-w-md w-full"
-              >
-                <div className="flex items-center gap-3 text-red-500">
-                  <AlertTriangle className="w-5 h-5" />
-                  <h3 className="text-sm font-black uppercase tracking-widest">¿Estás seguro?</h3>
+      {/* PASSWORD MODAL */}
+      <AnimatePresence>
+        {showPasswordModal && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-background/80 md:">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 20 }}
+              className="w-full max-w-md glass-premium rounded-[2.5rem] p-8 lg:p-10 border border-foreground/10 shadow-[0_50px_100px_rgba(0,0,0,0.5)] relative overflow-hidden bg-surface"
+            >
+              <div className="absolute top-0 right-0 w-32 h-32 bg-primary/10 blur-[50px] -mr-16 -mt-16 rounded-full" />
+
+              <form onSubmit={handleUpdatePassword} className="space-y-8 relative z-10">
+                <div className="space-y-2">
+                  <h2 className="text-3xl font-black italic text-foreground uppercase tracking-tighter">
+                    Nueva <span className="text-primary">Clave</span>
+                  </h2>
+                  <p className="text-[10px] font-black text-foreground/40 uppercase tracking-[0.4em] italic">
+                    Seguridad de Jugador
+                  </p>
                 </div>
-                <p className="text-xs text-foreground/40 leading-relaxed">
-                  Esta acción es irreversible. Se van a borrar todos tus datos.
-                </p>
-                <div className="flex gap-3">
+
+                <div className="space-y-3">
+                  <label className="text-[10px] font-black uppercase text-foreground/40 tracking-[0.3em] ml-1">
+                    Escribí tu nueva contraseña
+                  </label>
+                  <div className="relative group/input">
+                    <div className="absolute inset-y-0 left-5 flex items-center pointer-events-none">
+                      <Lock className="w-5 h-5 text-foreground/20 group-focus-within/input:text-primary transition-colors" />
+                    </div>
+                    <input
+                      type="password"
+                      className="w-full h-14 pl-14 pr-6 bg-foreground/[0.02] border border-foreground/5 rounded-2xl text-foreground text-sm font-black outline-none focus:border-primary/50 transition-all placeholder:text-foreground/20"
+                      placeholder="••••••••"
+                      value={newPassword}
+                      onChange={(e) => setNewPassword(e.target.value)}
+                      required
+                      minLength={6}
+                    />
+                  </div>
+                  <p className="text-[9px] font-black text-foreground/20 uppercase tracking-widest ml-1">
+                    Mínimo 6 caracteres
+                  </p>
+                </div>
+
+                <div className="flex gap-4">
                   <button
-                    onClick={() => setShowDeleteConfirm(false)}
-                    className="h-10 px-6 rounded-xl bg-foreground/5 border border-foreground/10 text-xs font-bold text-foreground/40 hover:text-foreground transition-all"
+                    type="button"
+                    onClick={() => setShowPasswordModal(false)}
+                    className="flex-1 h-14 rounded-2xl bg-foreground/5 border border-foreground/5 text-[10px] font-black uppercase tracking-[0.2em] text-foreground/40 hover:text-foreground transition-all active:scale-95 flex items-center justify-center"
                   >
-                    No, cancelar
+                    CANCELAR
                   </button>
                   <button
-                    onClick={async () => {
-                      setIsDeleting(true);
-                      try {
-                        await deleteAccount();
-                      } catch (e) {
-                        setIsDeleting(false);
-                      }
-                    }}
-                    disabled={isDeleting}
-                    className="h-10 px-6 rounded-xl bg-red-600 hover:bg-red-500 text-white text-xs font-bold uppercase tracking-widest transition-all disabled:opacity-50 flex items-center gap-2"
+                    type="submit"
+                    disabled={isUpdatingPassword}
+                    className="flex-[2] h-14 bg-primary text-background font-black text-[10px] uppercase tracking-[0.3em] rounded-2xl flex items-center justify-center gap-2 hover:bg-foreground hover:text-background transition-all active:scale-95 disabled:opacity-50 shadow-xl shadow-primary/20"
                   >
-                    {isDeleting ? (
+                    {isUpdatingPassword ? (
                       <Loader2 className="w-4 h-4 animate-spin" />
                     ) : (
-                      <Trash2 className="w-4 h-4" />
+                      'ACTUALIZAR'
                     )}
-                    Sí, eliminar todo
                   </button>
                 </div>
-              </motion.div>
-            )}
+              </form>
+            </motion.div>
           </div>
         )}
-
-        <AnimatePresence>
-          {showPasswordModal && (
-            <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-background/80">
-              <motion.div
-                initial={{ opacity: 0, scale: 0.95, y: 20 }}
-                animate={{ opacity: 1, scale: 1, y: 0 }}
-                exit={{ opacity: 0, scale: 0.95, y: 20 }}
-                className="w-full max-w-md glass-premium rounded-[2.5rem] p-8 lg:p-10 border border-foreground/10 shadow-[0_50px_100px_rgba(0,0,0,0.5)] relative overflow-hidden bg-surface"
-              >
-                <div className="absolute top-0 right-0 w-32 h-32 bg-primary/10 blur-[50px] -mr-16 -mt-16 rounded-full" />
-
-                <form onSubmit={handleUpdatePassword} className="space-y-8 relative z-10">
-                  <div className="space-y-2">
-                    <h2 className="text-3xl font-black italic text-foreground uppercase tracking-tighter">
-                      Nueva <span className="text-primary">Clave</span>
-                    </h2>
-                    <p className="text-[10px] font-black text-foreground/40 uppercase tracking-[0.4em] italic">
-                      Seguridad de Jugador
-                    </p>
-                  </div>
-
-                  <div className="space-y-3">
-                    <label className="text-[10px] font-black uppercase text-foreground/40 tracking-[0.3em] ml-1">
-                      Escribí tu nueva contraseña
-                    </label>
-                    <div className="relative group/input">
-                      <div className="absolute inset-y-0 left-5 flex items-center pointer-events-none">
-                        <Lock className="w-5 h-5 text-foreground/20 group-focus-within/input:text-primary transition-colors" />
-                      </div>
-                      <input
-                        type="password"
-                        className="w-full h-14 pl-14 pr-6 bg-foreground/[0.02] border border-foreground/5 rounded-2xl text-foreground text-sm font-black outline-none focus:border-primary/50 transition-all placeholder:text-foreground/20"
-                        placeholder="••••••••"
-                        value={newPassword}
-                        onChange={(e) => setNewPassword(e.target.value)}
-                        required
-                        minLength={6}
-                      />
-                    </div>
-                  </div>
-
-                  <div className="flex gap-4">
-                    <button
-                      type="button"
-                      onClick={() => setShowPasswordModal(false)}
-                      className="flex-1 h-14 rounded-2xl bg-foreground/5 border border-foreground/5 text-[10px] font-black uppercase tracking-[0.2em] text-foreground/40 hover:text-foreground transition-all active:scale-95 flex items-center justify-center"
-                    >
-                      CANCELAR
-                    </button>
-                    <button
-                      type="submit"
-                      disabled={isUpdatingPassword}
-                      className="flex-[2] h-14 bg-primary text-background font-black text-[10px] uppercase tracking-[0.3em] rounded-2xl flex items-center justify-center gap-2 hover:bg-foreground hover:text-background transition-all active:scale-95 disabled:opacity-50 shadow-xl shadow-primary/20"
-                    >
-                      {isUpdatingPassword ? (
-                        <Loader2 className="w-4 h-4 animate-spin" />
-                      ) : (
-                        'ACTUALIZAR'
-                      )}
-                    </button>
-                  </div>
-                </form>
-              </motion.div>
-            </div>
-          )}
-        </AnimatePresence>
-      </div>
+      </AnimatePresence>
     </div>
   );
 }
