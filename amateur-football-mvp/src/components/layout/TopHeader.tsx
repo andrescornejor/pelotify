@@ -118,11 +118,11 @@ export const TopHeader = memo(function TopHeader() {
 
   return (
     <>
-      <header className="absolute top-0 left-0 right-0 z-[60] pt-[calc(0.75rem+env(safe-area-inset-top,0px))] sm:pt-6 lg:pt-4 px-3 sm:px-5 lg:px-10 xl:px-16 pointer-events-none lg:fixed">
+      <header className="relative z-[60] pt-[calc(0.75rem+env(safe-area-inset-top,0px))] sm:pt-6 lg:fixed lg:top-0 lg:left-0 lg:right-0 lg:pt-4 px-3 sm:px-5 lg:px-10 xl:px-16 pointer-events-none w-full">
         <div className="max-w-full mx-auto w-full flex items-center justify-between lg:block">
           
-          {/* MOBILE MINIMAL ACTIONS (Scrolls with page) */}
-          <div className="flex lg:hidden items-center justify-between w-full pointer-events-none">
+          {/* MOBILE MINIMAL ACTIONS (Inline with flow) */}
+          <div className="flex lg:hidden items-center justify-between w-full pointer-events-none pb-4">
             <div className="flex items-center gap-3 pointer-events-auto">
               {/* Hamburger / Menu */}
               <motion.button

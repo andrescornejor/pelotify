@@ -82,8 +82,8 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
                 pathname.startsWith('/messages')
                 ? 'pb-24 lg:pb-0'
                 : isFeedOrPostPage
-                ? 'pt-[76px] pb-0 lg:pt-24 lg:pb-0' // Perfectly balanced top padding for mobile
-                : 'pt-[76px] pb-24 lg:pb-0' // Perfectly balanced top padding for mobile
+                ? 'pb-0 lg:pt-24 lg:pb-0' 
+                : 'pb-24 lg:pb-0' 
               : ''
           )}
         >

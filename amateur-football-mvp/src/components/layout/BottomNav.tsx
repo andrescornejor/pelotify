@@ -154,13 +154,13 @@ export function BottomNav() {
 
           <nav
             className={cn(
-              'relative transition-all duration-700 flex items-center w-full border-t pb-[env(safe-area-inset-bottom,0px)]',
+              'relative transition-all duration-700 flex items-center w-full border-t',
               performanceMode 
                 ? 'bg-surface border-border' 
-                : 'bg-background/80 backdrop-blur-[25px] border-white/5 dark:border-white/5'
+                : 'bg-background/95 backdrop-blur-[20px] border-white/5 dark:border-white/5'
             )}
           >
-            <div className="relative z-10 flex w-full h-[70px] items-center justify-around">
+            <div className="relative z-10 flex w-full h-[64px] items-center justify-around pb-[calc(env(safe-area-inset-bottom,0px)*0.5)]">
               {navItems.map((item) => {
                 const isActive = item.href === '/' 
                   ? pathname === '/' 
