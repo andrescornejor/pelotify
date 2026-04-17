@@ -62,14 +62,13 @@ const ConversationItem = memo(
   }) => (
     <motion.button
       variants={itemVariants}
-      whileHover={{ x: 8, scale: 1.02 }}
-      whileTap={{ scale: 0.98 }}
+      whileTap={{ scale: 0.97 }}
       onClick={() => onClick(chat)}
       className={cn(
-        'w-full p-4 sm:p-5 rounded-[2rem] border transition-all duration-500 flex items-center gap-4 group text-left relative overflow-hidden',
+        'w-full p-4 rounded-[1.75rem] border transition-all duration-300 flex items-center gap-3.5 group text-left relative overflow-hidden',
         isSelected
-          ? 'bg-primary text-black border-primary shadow-[0_20px_50px_rgba(85,250,134,0.3)]'
-          : 'bg-surface/40 md: border-foreground/5 hover:border-primary/30 hover:bg-foreground/[0.04] shadow-sm'
+          ? 'bg-primary text-black border-primary shadow-xl shadow-primary/10'
+          : 'bg-surface/30 border-foreground/[0.03] active:bg-foreground/[0.05]'
       )}
     >
       {isSelected && (
@@ -343,7 +342,7 @@ export default function MessagesPage() {
   if (!user) return null;
 
   return (
-    <div className="min-h-screen bg-background pt-22 lg:pt-28 pb-32 px-3 sm:px-5 lg:px-10 xl:px-16 relative">
+    <div className="min-h-[100dvh] bg-background lg:pt-28 pb-32 lg:pb-0 px-0 sm:px-5 lg:px-10 xl:px-16 relative flex flex-col">
       {/* Animated Background Blobs */}
       <div className="absolute inset-0 overflow-x-hidden pointer-events-none">
         {/* Superior blending glow */}
@@ -373,20 +372,20 @@ export default function MessagesPage() {
         {/* Conversations List */}
         <div
           className={cn(
-            'lg:col-span-4 flex flex-col gap-2 transition-all h-full overflow-hidden pt-8 lg:pt-0',
+            'lg:col-span-4 flex flex-col gap-2 transition-all h-full overflow-hidden px-4 lg:px-0 pt-4 lg:pt-0',
             selectedChat ? 'hidden lg:flex' : 'flex'
           )}
         >
-          <div className="flex flex-col gap-2">
+          <div className="flex flex-col gap-4 mb-4">
             <div className="flex items-center justify-between">
-              <div className="flex flex-col gap-1">
-                <h1 className="text-5xl font-black text-foreground italic uppercase tracking-tighter leading-none text-gradient drop-shadow-sm">
+              <div className="flex flex-col">
+                <h1 className="text-4xl lg:text-5xl font-black text-foreground italic uppercase tracking-tighter leading-none text-gradient drop-shadow-sm">
                   Inbox
                 </h1>
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 mt-1">
                   <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
-                  <span className="text-[10px] font-black text-primary uppercase tracking-[0.4em] drop-shadow-[0_0_8px_rgba(85,250,134,0.3)]">
-                    Directo / {conversations.length}
+                  <span className="text-[9px] font-black text-primary uppercase tracking-[0.3em] opacity-80">
+                    Directo • {conversations.length}
                   </span>
                 </div>
               </div>
@@ -394,7 +393,7 @@ export default function MessagesPage() {
                 whileHover={{ scale: 1.05, rotate: 90 }}
                 whileTap={{ scale: 0.95 }}
                 onClick={() => setIsSearchOpen(true)}
-                className="w-12 h-12 rounded-[1.25rem] bg-primary text-black flex items-center justify-center shadow-lg shadow-primary/20 transition-all hover:shadow-primary/40"
+                className="w-11 h-11 rounded-2xl bg-primary text-black flex items-center justify-center shadow-lg shadow-primary/20"
               >
                 <Plus className="w-6 h-6" />
               </motion.button>
@@ -542,54 +541,36 @@ export default function MessagesPage() {
               initial={{ opacity: 0, y: 10, scale: 0.99 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
               className="flex flex-col h-full bg-surface/30 dark:bg-foreground/[0.02] md: border border-foreground/10 rounded-[3.5rem] overflow-hidden relative shadow-[0_40px_100px_-20px_rgba(0,0,0,0.1)] dark:shadow-[0_50px_120px_rgba(0,0,0,0.6)]"
-            >
-              {/* Chat Header */}
-              <div className="px-6 sm:px-10 py-3 bg-foreground/[0.03] md: border-b border-foreground/5 flex items-center justify-between relative z-20">
-                <div className="flex items-center gap-4">
+                        {/* Chat Header */}
+              <div className="px-5 py-3.5 bg-background/50 backdrop-blur-xl border-b border-foreground/5 flex items-center justify-between relative z-20">
+                <div className="flex items-center gap-3">
                   <button
                     onClick={() => setSelectedChat(null)}
-                    className="lg:hidden p-3 bg-foreground/5 rounded-2xl hover:bg-foreground/10 transition-colors"
+                    className="lg:hidden w-10 h-10 flex items-center justify-center bg-foreground/5 rounded-xl active:bg-foreground/10 transition-colors"
                   >
-                    <X className="w-4 h-4" />
+                    <X className="w-5 h-5 opacity-40" />
                   </button>
-                  <div className="flex items-center gap-4">
-                    <motion.div
-                      whileHover={{ scale: 1.05 }}
-                      className="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl overflow-hidden border-2 border-primary/20 shadow-xl shadow-primary/5"
-                    >
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-xl overflow-hidden border border-primary/20 bg-primary/5">
                       {selectedChat.avatar_url ? (
-                        <img
-                          src={selectedChat.avatar_url}
-                          alt=""
-                          className="w-full h-full object-cover"
-                        />
+                        <img src={selectedChat.avatar_url} alt="" className="w-full h-full object-cover" />
                       ) : (
-                        <div className="w-full h-full bg-primary/5 flex items-center justify-center text-primary">
+                        <div className="w-full h-full flex items-center justify-center text-primary/40">
                           <UserIcon className="w-5 h-5" />
                         </div>
                       )}
-                    </motion.div>
+                    </div>
                     <div>
-                      <h3 className="font-black uppercase italic tracking-tighter text-foreground leading-none text-lg">
+                      <h3 className="font-black uppercase italic tracking-tighter text-foreground text-sm leading-none">
                         {selectedChat.name}
                       </h3>
-                      <div className="flex items-center gap-2 mt-1">
-                        <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
-                        <span className="text-[8px] font-black uppercase tracking-[0.3em] text-primary">
-                          Conexión Segura
+                      <div className="flex items-center gap-1.5 mt-1">
+                        <span className="w-1 h-1 rounded-full bg-primary animate-pulse" />
+                        <span className="text-[7px] font-black uppercase tracking-[0.2em] text-primary/80">
+                          Encriptado • Online
                         </span>
                       </div>
                     </div>
-                  </div>
-                </div>
-                <div className="flex items-center gap-3">
-                  <div className="hidden sm:flex flex-col items-end">
-                    <span className="text-[9px] font-black text-foreground uppercase tracking-[0.2em]">
-                      Activo Ahora
-                    </span>
-                    <span className="text-[7px] font-black text-primary/60 uppercase tracking-[0.1em]">
-                      Línea Encriptada
-                    </span>
                   </div>
                 </div>
               </div>

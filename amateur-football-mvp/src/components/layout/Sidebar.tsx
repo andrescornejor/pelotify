@@ -90,11 +90,7 @@ const SidebarGroup = ({
                 )}
               >
                 {isActive && (
-                  <motion.div
-                    layoutId="active-indicator"
-                    className="absolute left-0 top-3 bottom-3 w-1 rounded-full bg-primary"
-                    transition={{ type: "spring", stiffness: 300, damping: 30 }}
-                  />
+                  <div className="absolute left-0 top-3 bottom-3 w-1 rounded-full bg-primary" />
                 )}
 
                 <div className="flex items-center gap-3 relative z-10 transition-transform duration-300 group-hover:translate-x-1">
@@ -237,7 +233,7 @@ export const SidebarContent = memo(function SidebarContent({
   return (
     <div className="flex flex-col h-full overflow-hidden relative bg-background/50">
       {/* ── Visual Backdrop ── */}
-      {!performanceMode && (
+      {!performanceMode && !isMobile && (
         <div className="absolute inset-0 pointer-events-none opacity-30">
           <div className="absolute top-[-10%] right-[-20%] w-[80%] h-[40%] bg-primary/20 blur-[100px] rounded-full" />
           <div className="absolute bottom-[-5%] left-[-10%] w-[60%] h-[30%] bg-blue-500/10 blur-[80px] rounded-full" />
@@ -283,9 +279,9 @@ export const SidebarContent = memo(function SidebarContent({
       {user && (
         <div className="relative z-10 px-4 mb-6 shrink-0 group">
           <Link href="/profile/me" onClick={() => isMobile && onClose && onClose()}>
-            <div className="relative overflow-hidden rounded-3xl p-4 border border-foreground/10 shadow-xl transition-all duration-500 hover:scale-[1.02] active:scale-[0.98]">
+            <div className="relative overflow-hidden rounded-3xl p-4 border border-foreground/10 shadow-lg transition-all duration-300 active:scale-[0.98]">
               {/* Card Surface */}
-              <div className="absolute inset-0 bg-gradient-to-br from-foreground/[0.05] to-transparent md:" />
+              <div className="absolute inset-0 bg-background/40" />
 
               {/* Dynamic Glow */}
               <div className="absolute -top-12 -right-12 w-32 h-32 bg-primary/10 blur-[40px] rounded-full group-hover:bg-primary/20 transition-all duration-700" />
@@ -438,25 +434,26 @@ export function Sidebar() {
 
           {/* Panel */}
           <motion.div
-            initial={{ x: '-100%', opacity: 0.5 }}
-            animate={{ x: 0, opacity: 1 }}
-            exit={{ x: '-100%', opacity: 0.5 }}
+            initial={{ x: '-100%' }}
+            animate={{ x: 0 }}
+            exit={{ x: '-100%' }}
             transition={{
               type: 'spring',
-              stiffness: 400,
-              damping: 40,
-              opacity: { duration: 0.2 }
+              stiffness: 350,
+              damping: 35,
             }}
             className="absolute inset-y-0 left-0 w-[310px] flex flex-col shadow-2xl sidebar-container will-change-transform"
             style={{
               backgroundColor: 'var(--surface-elevated)',
-              backdropFilter: performanceMode ? 'none' : 'blur(20px) saturate(160%)',
+              backdropFilter: performanceMode || isMobile ? 'none' : 'blur(16px)',
               borderRight: '1px solid var(--border)',
               boxShadow: performanceMode ? 'none' : 'var(--shadow-xl)',
             }}
           >
             {/* Header ambient glow */}
-            <div className="absolute top-0 left-0 right-0 h-40 bg-gradient-to-b from-primary/5 to-transparent pointer-events-none" />
+            {!performanceMode && (
+              <div className="absolute top-0 left-0 right-0 h-40 bg-gradient-to-b from-primary/5 to-transparent pointer-events-none" />
+            )}
 
             <SidebarContent isMobile onClose={onClose} />
 
