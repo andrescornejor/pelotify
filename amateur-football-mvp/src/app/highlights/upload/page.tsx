@@ -8,9 +8,16 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 
+import { useTheme } from '@/contexts/ThemeContext';
+import { useSettings } from '@/contexts/SettingsContext';
+import { cn } from '@/lib/utils';
+
 export default function UploadFuttokPage() {
   const { user } = useAuth();
   const router = useRouter();
+  const { theme } = useTheme();
+  const { performanceMode } = useSettings();
+  const isDark = theme === 'dark';
   
   const [file, setFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
@@ -152,29 +159,40 @@ export default function UploadFuttokPage() {
   };
 
   return (
-    <main className="min-h-[100dvh] w-full bg-black overflow-y-auto pb-24 lg:pb-8 selection:bg-emerald-500/30">
+    <main className={cn(
+      "min-h-[100dvh] w-full overflow-y-auto pb-24 lg:pb-8 selection:bg-emerald-500/30",
+      "bg-background text-foreground transition-colors duration-500"
+    )}>
       {/* Background Ambience */}
-      <div className="fixed inset-0 pointer-events-none z-0">
-        <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-emerald-500/10 rounded-full blur-[120px] -translate-y-1/2 translate-x-1/3 mix-blend-screen" />
-        <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-emerald-900/20 rounded-full blur-[150px] translate-y-1/3 -translate-x-1/4 mix-blend-screen" />
-      </div>
+      {!performanceMode && (
+        <div className="fixed inset-0 pointer-events-none z-0">
+          <div className={cn(
+            "absolute top-0 right-0 w-[500px] h-[500px] rounded-full blur-[120px] -translate-y-1/2 translate-x-1/3 mix-blend-multiply opacity-50 dark:opacity-100 dark:mix-blend-screen",
+            "bg-emerald-500/10 dark:bg-emerald-500/10"
+          )} />
+          <div className={cn(
+            "absolute bottom-0 left-0 w-[600px] h-[600px] rounded-full blur-[150px] translate-y-1/3 -translate-x-1/4 mix-blend-multiply opacity-50 dark:opacity-100 dark:mix-blend-screen",
+            "bg-emerald-900/10 dark:bg-emerald-900/20"
+          )} />
+        </div>
+      )}
 
       <div className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 pt-6 sm:pt-10">
         
         {/* Header */}
         <div className="flex items-center justify-between mb-8 sm:mb-12">
-          <Link href="/highlights" className="p-3 bg-white/5 backdrop-blur-xl rounded-2xl border border-white/10 text-white hover:bg-white/10 hover:border-white/20 transition-all shadow-xl group">
+          <Link href="/highlights" className="p-3 bg-foreground/5 backdrop-blur-xl rounded-2xl border border-foreground/10 text-foreground hover:bg-foreground/10 hover:border-foreground/20 transition-all shadow-xl group">
             <ArrowLeft className="w-5 h-5 sm:w-6 sm:h-6 group-hover:-translate-x-1 transition-transform" />
           </Link>
 
           <div className="flex flex-col items-end sm:items-center">
             <div className="flex items-center gap-2">
-              <Flame className="w-5 h-5 sm:w-6 sm:h-6 text-emerald-400 fill-emerald-500/20 drop-shadow-[0_0_10px_rgba(16,185,129,0.8)]" />
-              <h1 className="text-xl sm:text-2xl font-black italic tracking-tighter text-white font-kanit drop-shadow-lg leading-none">
+              <Flame className="w-5 h-5 sm:w-6 sm:h-6 text-emerald-500 fill-emerald-500/20 drop-shadow-[0_0_10px_rgba(16,185,129,0.8)]" />
+              <h1 className="text-xl sm:text-2xl font-black italic tracking-tighter text-foreground font-kanit drop-shadow-lg leading-none">
                 SUBIR FUTTOK
               </h1>
             </div>
-            <p className="text-[10px] sm:text-xs text-white/40 uppercase tracking-widest font-black mt-1">
+            <p className="text-[10px] sm:text-xs text-foreground/40 uppercase tracking-widest font-black mt-1">
               Inmortaliza tu jugada
             </p>
           </div>
@@ -191,25 +209,25 @@ export default function UploadFuttokPage() {
             animate={{ opacity: 1, y: 0 }}
             className="lg:col-span-5 w-full flex flex-col gap-4"
           >
-            <div className="bg-zinc-900/40 backdrop-blur-2xl border border-white/10 rounded-[2.5rem] p-2 shadow-2xl relative overflow-hidden group/upload">
+            <div className="bg-foreground/[0.03] backdrop-blur-2xl border border-foreground/10 rounded-[2.5rem] p-2 shadow-2xl relative overflow-hidden group/upload">
               
               {!previewUrl ? (
-                <label className="flex flex-col items-center justify-center w-full aspect-[9/16] max-h-[60vh] border-2 border-dashed border-white/10 rounded-[2rem] hover:border-emerald-500/50 hover:bg-emerald-500/5 transition-all cursor-pointer overflow-hidden relative">
+                <label className="flex flex-col items-center justify-center w-full aspect-[9/16] max-h-[60vh] border-2 border-dashed border-foreground/10 rounded-[2rem] hover:border-emerald-500/50 hover:bg-emerald-500/5 transition-all cursor-pointer overflow-hidden relative">
                   <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/5 to-transparent opacity-0 group-hover/upload:opacity-100 transition-opacity" />
                   <div className="flex flex-col items-center justify-center pt-8 pb-8 z-10 text-center px-4">
                     <motion.div 
                       whileHover={{ scale: 1.1, rotate: 5 }}
-                      className="p-5 bg-gradient-to-tr from-emerald-600/20 to-emerald-400/10 rounded-[1.5rem] mb-6 shadow-[0_0_30px_rgba(16,185,129,0.1)] border border-emerald-500/20"
+                      className="p-5 bg-gradient-to-tr from-emerald-500/10 to-emerald-500/5 rounded-[1.5rem] mb-6 shadow-[0_0_30px_rgba(16,185,129,0.1)] border border-emerald-500/20"
                     >
-                      <Upload className="w-10 h-10 text-emerald-400" />
+                      <Upload className="w-10 h-10 text-emerald-500" />
                     </motion.div>
-                    <h3 className="text-lg font-black text-white mb-2 font-kanit italic tracking-wide">SELECCIONA UN VIDEO</h3>
-                    <p className="text-white/50 text-sm mb-6 max-w-[200px] font-medium leading-relaxed">
+                    <h3 className="text-lg font-black text-foreground mb-2 font-kanit italic tracking-wide">SELECCIONA UN VIDEO</h3>
+                    <p className="text-foreground/50 text-sm mb-6 max-w-[200px] font-medium leading-relaxed">
                       Arrastra y suelta tu jugada aquí o haz clic para buscar.
                     </p>
-                    <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-white/5 border border-white/10">
-                      <Film className="w-3.5 h-3.5 text-emerald-400" />
-                      <span className="text-[10px] text-white/50 uppercase tracking-widest font-black">Max 15 Segundos</span>
+                    <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-foreground/5 border border-foreground/10">
+                      <Film className="w-3.5 h-3.5 text-emerald-500" />
+                      <span className="text-[10px] text-foreground/50 uppercase tracking-widest font-black">Max 15 Segundos</span>
                     </div>
                   </div>
                   <input type="file" className="hidden" accept="video/*" onChange={handleFileChange} />
@@ -246,31 +264,31 @@ export default function UploadFuttokPage() {
             className="lg:col-span-7 flex flex-col gap-6"
           >
             {/* Description Card */}
-            <div className="bg-zinc-900/40 backdrop-blur-2xl border border-white/10 rounded-[2.5rem] p-6 sm:p-8 shadow-2xl relative overflow-hidden flex-1 flex flex-col">
+            <div className="bg-foreground/[0.03] backdrop-blur-2xl border border-foreground/10 rounded-[2.5rem] p-6 sm:p-8 shadow-2xl relative overflow-hidden flex-1 flex flex-col">
               <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-500/5 rounded-full blur-3xl" />
               
               <div className="mb-6 flex items-center justify-between">
                 <div>
-                  <h2 className="text-xl font-black text-white font-kanit italic uppercase tracking-wider flex items-center gap-2">
+                  <h2 className="text-xl font-black text-foreground font-kanit italic uppercase tracking-wider flex items-center gap-2">
                     Detalles del Clip
-                    <Sparkles className="w-5 h-5 text-emerald-400" />
+                    <Sparkles className="w-5 h-5 text-emerald-500" />
                   </h2>
-                  <p className="text-white/40 text-sm mt-1">Dale contexto a tu jugada épica.</p>
+                  <p className="text-foreground/40 text-sm mt-1">Dale contexto a tu jugada épica.</p>
                 </div>
               </div>
 
               <div className="space-y-4 flex-1">
                 <div className="relative group">
-                  <label className="absolute -top-2.5 left-4 px-2 bg-zinc-950 text-[10px] font-black text-emerald-400 uppercase tracking-widest z-10 rounded-full">
+                  <label className="absolute -top-2.5 left-4 px-2 bg-background border border-foreground/5 text-[10px] font-black text-emerald-500 uppercase tracking-widest z-10 rounded-full">
                     Descripción
                   </label>
                   <textarea 
                     value={description}
                     onChange={(e) => setDescription(e.target.value)}
                     placeholder="Escribe aquí... (Ej: ¡Golazo de tiro libre en el último minuto! 🚀⚽️)"
-                    className="w-full bg-black/20 border border-white/10 rounded-3xl p-5 pt-6 text-white sm:text-lg focus:outline-none focus:border-emerald-500/50 focus:bg-emerald-500/5 transition-all placeholder:text-white/20 h-40 resize-none font-kanit relative z-0 shadow-inner group-hover:border-white/20"
+                    className="w-full bg-foreground/[0.03] border border-foreground/10 rounded-3xl p-5 pt-6 text-foreground sm:text-lg focus:outline-none focus:border-emerald-500/30 focus:bg-emerald-500/5 transition-all placeholder:text-foreground/20 h-40 resize-none font-kanit relative z-0 shadow-inner group-hover:border-foreground/20"
                   />
-                  <div className="absolute bottom-4 right-4 text-xs font-bold text-white/20">
+                  <div className="absolute bottom-4 right-4 text-xs font-bold text-foreground/20">
                     {description.length}/100
                   </div>
                 </div>
@@ -295,11 +313,11 @@ export default function UploadFuttokPage() {
             </div>
 
             {/* Submit Action Card */}
-            <div className="bg-zinc-900/40 backdrop-blur-2xl border border-white/10 rounded-[2rem] p-4 sm:p-6 shadow-2xl relative overflow-hidden">
+            <div className="bg-foreground/[0.03] backdrop-blur-2xl border border-foreground/10 rounded-[2rem] p-4 sm:p-6 shadow-2xl relative overflow-hidden">
               <button 
                 disabled={!file || isUploading || uploadState === 'success'}
                 onClick={handleUpload}
-                className="w-full h-16 sm:h-20 rounded-2xl sm:rounded-[1.5rem] bg-emerald-500 disabled:bg-white/5 disabled:text-white/20 text-background font-black uppercase tracking-[0.2em] transition-all shadow-[0_15px_40px_rgba(16,185,129,0.3)] disabled:shadow-none flex items-center justify-center gap-3 group overflow-hidden relative"
+                className="w-full h-16 sm:h-20 rounded-2xl sm:rounded-[1.5rem] bg-emerald-500 disabled:bg-foreground/5 disabled:text-foreground/20 text-black font-black uppercase tracking-[0.2em] transition-all shadow-[0_15px_40px_rgba(16,185,129,0.3)] disabled:shadow-none flex items-center justify-center gap-3 group overflow-hidden relative"
               >
                 {/* Button Inner Shine */}
                 <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent -translate-x-full group-hover:animate-[shimmer_1.5s_infinite] opacity-0 group-hover:opacity-100" />
