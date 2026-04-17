@@ -74,7 +74,7 @@ const ConversationItem = memo(
       {isSelected && (
         <motion.div
           layoutId="chat-active-glow"
-          className="absolute inset-0 bg-gradient-to-r from-primary/20 via-transparent to-transparent pointer-events-none"
+          className="absolute inset-0 bg-gradient-to-r from-primary/10 via-transparent to-transparent pointer-events-none"
         />
       )}
       <div
@@ -343,10 +343,10 @@ export default function MessagesPage() {
 
   return (
     <div className="min-h-[100dvh] bg-background lg:pt-28 pb-32 lg:pb-0 px-0 sm:px-5 lg:px-10 xl:px-16 relative flex flex-col">
-      {/* Animated Background Blobs */}
-      <div className="absolute inset-0 overflow-x-hidden pointer-events-none">
+      {/* Animated Background Blobs - Hidden on mobile for cleaner professional look */}
+      <div className="absolute inset-0 overflow-x-hidden pointer-events-none hidden md:block">
         {/* Superior blending glow */}
-        <div className="absolute top-0 left-0 right-0 h-[300px] bg-gradient-to-b from-primary/10 to-transparent pointer-events-none" />
+        <div className="absolute top-0 left-0 right-0 h-[300px] bg-gradient-to-b from-primary/5 to-transparent pointer-events-none" />
         
         <motion.div
           animate={{
@@ -355,7 +355,7 @@ export default function MessagesPage() {
             y: [0, 30, 0],
           }}
           transition={{ duration: 20, repeat: Infinity, ease: 'linear' }}
-          className="absolute -top-[15%] -left-[10%] w-[50%] h-[50%] bg-primary/15 blur-[120px] rounded-full"
+          className="absolute -top-[15%] -left-[10%] w-[50%] h-[50%] bg-primary/5 blur-[120px] rounded-full"
         />
         <motion.div
           animate={{
@@ -364,7 +364,7 @@ export default function MessagesPage() {
             y: [0, 50, 0],
           }}
           transition={{ duration: 25, repeat: Infinity, ease: 'linear' }}
-          className="absolute top-[5%] -right-[15%] w-[60%] h-[60%] bg-primary/10 blur-[150px] rounded-full"
+          className="absolute top-[5%] -right-[15%] w-[60%] h-[60%] bg-primary/5 blur-[150px] rounded-full"
         />
       </div>
 
@@ -584,11 +584,7 @@ export default function MessagesPage() {
           ) : (
             <div className="flex-1 flex flex-col items-center justify-center text-center space-y-12 glass-premium border border-foreground/5 rounded-[3rem] relative overflow-hidden group shadow-2xl">
               <div
-                className="absolute inset-0 bg-primary/5 opacity-0 group-hover:opacity-100 transition-all duration-1000"
-                style={{
-                  background:
-                    'radial-gradient(circle at 50% 50%, rgba(85,250,134,0.1) 0%, transparent 70%)',
-                }}
+                className="absolute inset-0 bg-primary/5 opacity-0 group-hover:opacity-10 pointer-events-none"
               />
 
               {/* Decorative background elements */}
@@ -604,7 +600,7 @@ export default function MessagesPage() {
                   transition={{ duration: 10, repeat: Infinity, ease: 'easeInOut' }}
                   className="w-48 h-48 rounded-[4rem] bg-foreground/[0.02] border border-foreground/5 flex items-center justify-center relative shadow-2xl md:"
                 >
-                  <MessageSquare className="w-20 h-20 text-primary drop-shadow-[0_0_20px_rgba(85,250,134,0.4)]" />
+                  <MessageSquare className="w-20 h-20 text-primary" />
                   <motion.div
                     animate={{ y: [0, -10, 0] }}
                     transition={{ duration: 4, repeat: Infinity }}
