@@ -342,7 +342,10 @@ export default function MessagesPage() {
   if (!user) return null;
 
   return (
-    <div className="min-h-[100dvh] bg-background lg:pt-28 pb-32 lg:pb-0 px-0 sm:px-5 lg:px-10 xl:px-16 relative flex flex-col">
+    <div className={cn(
+      "min-h-[100dvh] bg-background relative flex flex-col",
+      selectedChat ? "lg:pt-28" : "lg:pt-28 pb-32 lg:pb-0 px-0 sm:px-5 lg:px-10 xl:px-16"
+    )}>
       {/* Animated Background Blobs - Hidden on mobile for cleaner professional look */}
       <div className="absolute inset-0 overflow-x-hidden pointer-events-none hidden md:block">
         {/* Superior blending glow */}
@@ -368,7 +371,10 @@ export default function MessagesPage() {
         />
       </div>
 
-      <div className="max-w-full mx-auto h-[80vh] grid grid-cols-1 lg:grid-cols-12 gap-8 relative z-10 w-full">
+      <div className={cn(
+        "max-w-full mx-auto relative z-10 w-full",
+        selectedChat ? "h-[100dvh] lg:h-[80vh] grid grid-cols-1 lg:grid-cols-12 lg:gap-8" : "h-[80vh] grid grid-cols-1 lg:grid-cols-12 gap-8"
+      )}>
         {/* Conversations List */}
         <div
           className={cn(
@@ -540,10 +546,10 @@ export default function MessagesPage() {
             <motion.div
               initial={{ opacity: 0, y: 10, scale: 0.99 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
-              className="flex flex-col h-full bg-surface/30 dark:bg-foreground/[0.02] md: border border-foreground/10 rounded-[3.5rem] overflow-hidden relative shadow-[0_40px_100px_-20px_rgba(0,0,0,0.1)] dark:shadow-[0_50px_120px_rgba(0,0,0,0.6)]"
+              className="flex flex-col h-full bg-surface/30 dark:bg-foreground/[0.02] lg:border border-foreground/10 lg:rounded-[3.5rem] overflow-hidden relative shadow-[0_40px_100px_-20px_rgba(0,0,0,0.1)] dark:shadow-[0_50px_120px_rgba(0,0,0,0.6)]"
             >
               {/* Chat Header */}
-              <div className="px-5 py-3.5 bg-background/50 backdrop-blur-xl border-b border-foreground/5 flex items-center justify-between relative z-20">
+              <div className="px-5 py-3 lg:py-3.5 bg-background/50 backdrop-blur-xl border-b border-foreground/5 flex items-center justify-between relative z-20">
                 <div className="flex items-center gap-3">
                   <button
                     onClick={() => setSelectedChat(null)}
