@@ -304,12 +304,12 @@ export default function HomePage() {
                 </h1>
               </div>
               <div className="flex items-center gap-3">
-                 <Link href="/settings" className="w-10 h-10 rounded-xl glass border-foreground/10 flex items-center justify-center text-foreground/40 hover:text-primary transition-colors">
+                 <Link href="/settings" className="w-10 h-10 rounded-full glass border-foreground/10 flex items-center justify-center text-foreground/40 hover:text-primary transition-colors">
                     <Target className="w-5 h-5" />
                  </Link>
                  <Link href="/profile/me">
-                   <div className="w-12 h-12 rounded-2xl p-0.5 bg-gradient-to-br from-primary/30 to-transparent border border-primary/20">
-                     <div className="w-full h-full rounded-[0.85rem] overflow-hidden bg-surface relative">
+                   <div className="w-12 h-12 rounded-full p-0.5 bg-gradient-to-br from-primary/30 to-transparent border border-primary/20">
+                     <div className="w-full h-full rounded-full overflow-hidden bg-surface relative">
                         {metadata?.avatar_url ? (
                           <img src={metadata.avatar_url} alt="" className="w-full h-full object-cover" />
                         ) : (
@@ -606,14 +606,14 @@ export default function HomePage() {
                     
                     {/* Avatar Block */}
                     <div className="relative">
-                      <div className="w-12 h-12 rounded-xl overflow-hidden flex items-center justify-center bg-surface border border-foreground/20 shadow-inner">
+                      <div className="w-12 h-12 rounded-full overflow-hidden flex items-center justify-center bg-surface border border-foreground/20 shadow-inner">
                         {metadata?.avatar_url ? (
                           <img src={metadata.avatar_url} alt="" className="w-full h-full object-cover" />
                         ) : (
                           <User2 className="w-6 h-6 text-foreground/40" />
                         )}
                       </div>
-                      <div className="absolute -bottom-2 -right-2 w-6 h-6 rounded-lg bg-surface border border-foreground/20 flex items-center justify-center shadow-lg rotate-12 group-hover:rotate-0 transition-transform" style={{ borderColor: `${rankCalculation.info.color}50` }}>
+                      <div className="absolute -bottom-2 -right-2 w-6 h-6 rounded-full bg-surface border border-foreground/20 flex items-center justify-center shadow-lg rotate-12 group-hover:rotate-0 transition-transform" style={{ borderColor: `${rankCalculation.info.color}50` }}>
                          <rankCalculation.rank.icon className="w-3.5 h-3.5 drop-shadow-md" style={{ color: rankCalculation.info.color }} />
                       </div>
                     </div>
