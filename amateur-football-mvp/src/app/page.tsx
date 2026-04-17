@@ -292,7 +292,7 @@ export default function HomePage() {
             MOBILE APP-LIKE HERO & QUICK ACTIONS
          */}
         {isMobile ? (
-          <section className="space-y-6 pt-2">
+          <section className="space-y-6 pt-4">
             {/* Minimalist Greeting & Profile Access */}
             <div className="flex items-center justify-between px-1">
               <div className="flex flex-col">

@@ -119,12 +119,68 @@ export const TopHeader = memo(function TopHeader() {
   return (
     <>
       <header className="fixed top-0 left-0 right-0 z-[60] pt-[calc(0.75rem+env(safe-area-inset-top,0px))] sm:pt-6 lg:pt-4 px-3 sm:px-5 lg:px-10 xl:px-16 pointer-events-none">
-        <div className="max-w-full mx-auto w-full pointer-events-auto">
+        <div className="max-w-full mx-auto w-full flex items-center justify-between lg:block">
+          
+          {/* MOBILE MINIMAL ACTIONS (Floating Style) */}
+          <div className="flex lg:hidden items-center justify-between w-full pointer-events-none">
+            {/* Hamburger / Menu */}
+            <motion.button
+              onClick={toggleSidebar}
+              whileTap={{ scale: 0.9 }}
+              className="pointer-events-auto w-12 h-12 flex items-center justify-center rounded-2xl bg-background/60 backdrop-blur-xl border border-white/10 shadow-lg"
+              aria-label="Menu"
+            >
+              <div className="flex flex-col gap-[4.5px] w-[20px] items-center">
+                <motion.span
+                  animate={useSidebar().isOpen ? { rotate: 45, y: 6.5 } : { rotate: 0, y: 0 }}
+                  className="h-[2px] w-full bg-foreground rounded-full block origin-center transition-all"
+                />
+                <motion.span
+                  animate={useSidebar().isOpen ? { opacity: 0, x: -5 } : { opacity: 1, x: 0 }}
+                  className="h-[2px] w-[70%] bg-primary rounded-full block transition-all"
+                />
+                <motion.span
+                  animate={useSidebar().isOpen ? { rotate: -45, y: -6.5 } : { rotate: 0, y: 0 }}
+                  className="h-[2px] w-full bg-foreground rounded-full block origin-center transition-all"
+                />
+              </div>
+            </motion.button>
+
+            {/* Notification Bell (Floating) */}
+            <motion.button
+              whileTap={{ scale: 0.9 }}
+              onClick={() => {
+                if (!user) {
+                  window.location.href = '/login';
+                  return;
+                }
+                setNotificationsOpen(true);
+                setNotifCount(0);
+              }}
+              className="pointer-events-auto relative w-12 h-12 flex items-center justify-center rounded-2xl bg-background/60 backdrop-blur-xl border border-white/10 shadow-lg text-foreground/60"
+            >
+              <Bell className="w-5 h-5 text-foreground" />
+              <AnimatePresence>
+                {notifCount > 0 && (
+                  <motion.span
+                    initial={{ scale: 0 }}
+                    animate={{ scale: 1 }}
+                    exit={{ scale: 0 }}
+                    className="absolute -top-1 -right-1 min-w-[18px] h-[18px] px-1 bg-primary text-black text-[9px] font-black rounded-full flex items-center justify-center border-2 border-background"
+                  >
+                    {notifCount > 9 ? '9+' : notifCount}
+                  </motion.span>
+                )}
+              </AnimatePresence>
+            </motion.button>
+          </div>
+
+          {/* DESKTOP HEADER (Bulky Row) */}
           <motion.div
             initial={{ y: -24, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ type: 'spring', stiffness: 300, damping: 26, delay: 0.05 }}
-            className="overflow-hidden rounded-[1.25rem] lg:rounded-[1.75rem]"
+            className="hidden lg:block overflow-hidden rounded-[2.5rem] lg:rounded-[1.75rem] pointer-events-auto"
             style={{
               background: performanceMode
                 ? 'var(--surface-elevated)'
@@ -209,7 +265,7 @@ export const TopHeader = memo(function TopHeader() {
               </div>
 
               {/* Middle: Desktop Nav */}
-              <nav className="hidden lg:flex items-center gap-1.5 bg-foreground/[0.03] p-1.5 rounded-[1.25rem] border border-foreground/[0.05] md:">
+              <nav className="hidden lg:flex items-center gap-1.5 bg-foreground/[0.03] p-1.5 rounded-[1.25rem] border border-foreground/[0.05]">
                 {DESKTOP_NAV.map((item) => {
                   const cleanPath = pathname.replace(/\/$/, '') || '/';
                   const cleanHref = item.href.replace(/\/$/, '') || '/';
@@ -267,8 +323,6 @@ export const TopHeader = memo(function TopHeader() {
 
               {/* Right: Actions */}
               <div className="flex items-center justify-end gap-1.5 sm:gap-4 lg:gap-2.5 xl:gap-4 col-start-3">
-                {/* Create Match Button - Only Desktop */}
-
                 <div className="flex items-center gap-1.5 sm:gap-2.5">
                   {/* Theme Toggle */}
                   <motion.button
@@ -294,7 +348,7 @@ export const TopHeader = memo(function TopHeader() {
                       </motion.div>
                     </AnimatePresence>
                   </motion.button>
-                  {/* Notification Bell */}
+                  {/* Notification Bell */}
                   <motion.button
                     whileHover={{ scale: 1.08 }}
                     whileTap={{ scale: 0.88 }}
@@ -362,6 +416,7 @@ export const TopHeader = memo(function TopHeader() {
           </motion.div>
         </div>
       </header>
+
     </>
   );
 });
