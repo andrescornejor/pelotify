@@ -3,7 +3,7 @@
 import { motion } from 'framer-motion';
 import { Calendar, Clock, MapPin, Users, Zap, ChevronRight, AlertCircle } from 'lucide-react';
 import Link from 'next/link';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, memo } from 'react';
 import { supabase } from '@/lib/supabase';
 import { cn } from '@/lib/utils';
 
@@ -11,7 +11,7 @@ interface MatchPostCardProps {
   matchId: string;
 }
 
-export default function MatchPostCard({ matchId }: MatchPostCardProps) {
+const MatchPostCard = memo(function MatchPostCard({ matchId }: MatchPostCardProps) {
   const [match, setMatch] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [errorStatus, setErrorStatus] = useState<string | null>(null);
@@ -98,6 +98,8 @@ export default function MatchPostCard({ matchId }: MatchPostCardProps) {
         <img 
           src="https://images.unsplash.com/photo-1574629810360-7efbbe195018?auto=format&fit=crop&q=60&w=400" 
           alt="" 
+          loading="lazy"
+          decoding="async"
           className="w-full h-full object-cover grayscale opacity-50 group-hover:grayscale-0 group-hover:opacity-80 transition-all duration-700"
         />
         <div className="absolute inset-0 bg-gradient-to-r from-transparent to-surface/90 sm:hidden" />
@@ -155,4 +157,6 @@ export default function MatchPostCard({ matchId }: MatchPostCardProps) {
       </div>
     </motion.div>
   );
-}
+});
+
+export default MatchPostCard;

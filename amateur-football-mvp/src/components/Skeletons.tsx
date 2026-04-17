@@ -10,14 +10,7 @@ const shimmer = {
 
 export function SkeletonPremium({ className = '' }: { className?: string }) {
   return (
-    <div className={`relative overflow-hidden bg-foreground/5 rounded-2xl ${className}`}>
-      <motion.div
-        className="absolute inset-0 bg-gradient-to-r from-transparent via-foreground/[0.05] to-transparent w-[200%]"
-        initial={shimmer.initial}
-        animate={shimmer.animate}
-        transition={shimmer.transition}
-      />
-    </div>
+    <div className={`relative overflow-hidden bg-foreground/5 rounded-2xl skeleton-shimmer ${className}`} />
   );
 }
 
