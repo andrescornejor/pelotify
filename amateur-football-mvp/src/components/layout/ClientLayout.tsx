@@ -74,7 +74,7 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
 
         <main
           className={cn(
-            'flex-1 w-full relative',
+            'flex-1 flex flex-col w-full relative min-h-0',
             showNav
               ? pathname.startsWith('/match') ||
                 pathname === '/profile' ||

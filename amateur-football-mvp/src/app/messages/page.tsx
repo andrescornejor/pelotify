@@ -361,7 +361,7 @@ export default function MessagesPage() {
 
   return (
     <div className={cn(
-      "min-h-[100dvh] bg-background relative flex flex-col pt-0 lg:pt-28",
+      "flex-1 w-full lg:min-h-[100dvh] lg:h-auto bg-background relative flex flex-col pt-0 lg:pt-28 overflow-hidden",
       selectedChat ? "pb-0 lg:pb-0" : "pb-32 lg:pb-0 px-0 sm:px-5 lg:px-10 xl:px-16"
     )}>
       {/* Animated Background Blobs - Hidden on mobile for cleaner professional look */}
@@ -390,8 +390,8 @@ export default function MessagesPage() {
       </div>
 
       <div className={cn(
-        "max-w-full mx-auto relative z-10 w-full",
-        selectedChat ? "h-[100dvh] lg:h-[80vh] grid grid-cols-1 lg:grid-cols-12 lg:gap-8" : "h-[80vh] grid grid-cols-1 lg:grid-cols-12 gap-8"
+        "max-w-full mx-auto relative z-10 w-full flex-1 min-h-0",
+        selectedChat ? "flex-1 lg:h-[80vh] grid grid-cols-1 lg:grid-cols-12 lg:gap-8" : "flex-1 lg:h-[80vh] grid grid-cols-1 lg:grid-cols-12 gap-8"
       )}>
         {/* Conversations List */}
         <div
