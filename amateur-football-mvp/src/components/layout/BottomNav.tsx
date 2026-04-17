@@ -82,11 +82,11 @@ export function BottomNav() {
         )}
       </AnimatePresence>
 
-      {/* Main Bottom Nav Area */}
-      <div className="fixed bottom-0 left-0 right-0 z-[100] lg:hidden pb-6 px-6 pointer-events-none">
+      {/* Main Bottom Nav Area - Pegged to Bottom */}
+      <div className="fixed bottom-0 left-0 right-0 z-[100] lg:hidden pointer-events-none">
         
         {/* Expanded Menu Actions */}
-        <div className="max-w-[440px] mx-auto relative pointer-events-auto w-full">
+        <div className="relative pointer-events-auto w-full">
           <AnimatePresence>
             {isCreateMenuOpen && (
               <motion.div 
@@ -94,7 +94,7 @@ export function BottomNav() {
                 animate={{ opacity: 1, y: 0, scale: 1 }}
                 exit={{ opacity: 0, y: 20, scale: 0.9 }}
                 transition={{ type: "spring", stiffness: 400, damping: 25 }}
-                className="absolute bottom-[80px] left-1/2 -translate-x-1/2 w-[280px] flex flex-col gap-3 py-4"
+                className="absolute bottom-[90px] left-1/2 -translate-x-1/2 w-[280px] flex flex-col gap-3 py-4"
               >
                 {[
                   { label: "Armar Partido", icon: Target, href: "/create", color: "text-[#2cfc7d]" },
@@ -154,10 +154,10 @@ export function BottomNav() {
 
           <nav
             className={cn(
-              'relative p-1.5 rounded-[2.5rem] border transition-all duration-700 flex items-center shadow-[0_25px_60px_-15px_rgba(0,0,0,0.5)] w-full',
+              'relative transition-all duration-700 flex items-center w-full border-t pb-[env(safe-area-inset-bottom,0px)]',
               performanceMode 
                 ? 'bg-surface border-border' 
-                : 'bg-background/40 backdrop-blur-[35px] border-white/10 dark:border-white/5'
+                : 'bg-background/80 backdrop-blur-[25px] border-white/5 dark:border-white/5'
             )}
           >
             <div className="relative z-10 flex w-full h-[70px] items-center justify-around">
