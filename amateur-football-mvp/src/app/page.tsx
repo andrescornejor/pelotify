@@ -272,21 +272,7 @@ export default function HomePage() {
         </div>
       )}
 
-      {/* MOBILE PERF TOGGLE  */}
-      <button
-        onClick={() => setPerformanceMode(!performanceMode)}
-        className={cn(
-          'absolute top-[80dvh] right-4 z-[50] w-10 h-10 rounded-xl md:hidden flex flex-col items-center justify-center transition-all active:scale-90 border',
-          performanceMode
-            ? 'bg-primary text-black border-primary shadow-[0_0_15px_rgba(44,252,125,0.3)]'
-            : 'glass border-foreground/10 text-primary shadow-sm shadow-primary/5'
-        )}
-      >
-        <Zap className={cn('w-4 h-4', performanceMode && 'fill-current')} />
-        <span className="text-[6px] font-black uppercase mt-0.5 tracking-tighter">
-          {performanceMode ? 'LITE' : 'FX'}
-        </span>
-      </button>
+
 
       <div className="max-w-full mx-auto px-4 sm:px-6 lg:px-10 xl:px-14 2xl:px-16 py-4 lg:py-6 space-y-4 lg:space-y-6">
         {/* 
