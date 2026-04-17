@@ -122,7 +122,10 @@ export const TopHeader = memo(function TopHeader() {
         <div className="max-w-full mx-auto w-full flex items-center justify-between lg:block">
           
           {/* MOBILE MINIMAL ACTIONS (Inline with flow) */}
-          <div className="flex lg:hidden items-center justify-between w-full pointer-events-none pb-0">
+          <div className={cn(
+            "lg:hidden items-center justify-between w-full pointer-events-none pb-0",
+            pathname === '/' ? 'hidden' : 'flex'
+          )}>
             <div className="flex items-center gap-3 pointer-events-auto">
               {/* Hamburger / Menu */}
               <motion.button
