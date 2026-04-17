@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useRef, useMemo, useCallback, Fragment } from 'react';
+import { useEffect, useState, useRef, useMemo, useCallback } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/lib/supabase';
@@ -28,13 +28,9 @@ import {
   UserPlus,
   Bookmark,
   BookmarkCheck,
-  Copy,
   Check,
-  Globe,
-  LinkIcon,
 } from 'lucide-react';
 import Link from 'next/link';
-import MatchPostCard from '@/components/feed/MatchPostCard';
 import { uploadPostImage } from '@/lib/storage';
 import { compressImage, blobToFile } from '@/lib/imageUtils';
 import { sendFriendRequest } from '@/lib/friends';
@@ -109,19 +105,13 @@ export default function FeedClient({ standalonePostId }: { standalonePostId?: st
   const [topPlayers, setTopPlayers] = useState<any[]>([]);
   const [suggestedUsers, setSuggestedUsers] = useState<any[]>([]);
 
-  // Sidebar data
-  const [topPlayers, setTopPlayers] = useState<any[]>([]);
-  const [suggestedUsers, setSuggestedUsers] = useState<any[]>([]);
-
   // Search state
   const [searchQuery, setSearchQuery] = useState('');
-  const [isSearchFocused, setIsSearchFocused] = useState(false);
 
   // Bookmark state
   const [bookmarkedPosts, setBookmarkedPosts] = useState<Set<string>>(new Set());
 
   // Share state
-  const [copiedPostId, setCopiedPostId] = useState<string | null>(null);
   const [shareModalPost, setShareModalPost] = useState<Post | null>(null);
 
   // Fullscreen Image state
@@ -134,7 +124,6 @@ export default function FeedClient({ standalonePostId }: { standalonePostId?: st
   const [isCommenting, setIsCommenting] = useState<string | null>(null);
 
   // Friend request state
-  const [pendingFriendRequests, setPendingFriendRequests] = useState<Set<string>>(new Set());
   const [sentFriendRequests, setSentFriendRequests] = useState<Set<string>>(new Set());
   const [existingFriends, setExistingFriends] = useState<Set<string>>(new Set());
 
