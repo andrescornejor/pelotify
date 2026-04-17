@@ -107,6 +107,7 @@ export default function FeedClient({ standalonePostId }: { standalonePostId?: st
 
   // Search state
   const [searchQuery, setSearchQuery] = useState('');
+  const [isSearchFocused, setIsSearchFocused] = useState(false);
 
   // Bookmark state
   const [bookmarkedPosts, setBookmarkedPosts] = useState<Set<string>>(new Set());
