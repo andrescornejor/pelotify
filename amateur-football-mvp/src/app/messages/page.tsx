@@ -343,8 +343,8 @@ export default function MessagesPage() {
 
   return (
     <div className={cn(
-      "min-h-[100dvh] bg-background lg:pt-28 relative flex flex-col transition-all",
-      selectedChat ? "pb-0 lg:pb-0" : "pb-32 lg:pb-0 px-0 sm:px-5 lg:px-10 xl:px-16"
+      "flex-1 bg-background lg:pt-28 relative flex flex-col transition-all min-h-0",
+      selectedChat ? "overflow-hidden" : "px-0 sm:px-5 lg:px-10 xl:px-16"
     )}>
       {/* Animated Background Blobs - Hidden on mobile for cleaner professional look */}
       <div className="absolute inset-0 overflow-x-hidden pointer-events-none hidden md:block">
@@ -372,8 +372,8 @@ export default function MessagesPage() {
       </div>
 
       <div className={cn(
-        "max-w-full mx-auto relative z-10 w-full flex-1",
-        selectedChat ? "h-[100dvh] lg:h-[80vh] lg:grid lg:grid-cols-12 lg:gap-8" : "h-[80vh] grid grid-cols-1 lg:grid-cols-12 gap-8"
+        "max-w-full mx-auto relative z-10 w-full flex-1 flex flex-col min-h-0",
+        selectedChat ? "lg:h-[80vh] lg:grid lg:grid-cols-12 lg:gap-8" : "lg:grid lg:grid-cols-12 lg:gap-8"
       )}>
         {/* Conversations List */}
         <div
@@ -547,7 +547,7 @@ export default function MessagesPage() {
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
               className={cn(
-                "flex flex-col h-full bg-white dark:bg-[#0A0A0A] relative z-50",
+                "flex-1 flex flex-col min-h-0 bg-white dark:bg-[#0A0A0A] relative z-50",
                 "lg:bg-surface/30 lg:dark:bg-foreground/[0.02] lg:border lg:border-foreground/10 lg:rounded-[3.5rem] lg:overflow-hidden lg:shadow-[0_40px_100px_-20px_rgba(0,0,0,0.1)] lg:dark:shadow-[0_50px_120px_rgba(0,0,0,0.6)]"
               )}
             >
