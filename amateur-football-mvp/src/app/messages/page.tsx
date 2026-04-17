@@ -215,6 +215,24 @@ export default function MessagesPage() {
   const userIdParam = searchParams.get('user');
 
   useEffect(() => {
+    if (selectedChat && window.innerWidth < 1024) {
+      document.body.style.overflow = 'hidden';
+      // Prevent scrolling on the main content container if necessary
+      const mainContent = document.querySelector('main');
+      if (mainContent) mainContent.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+      const mainContent = document.querySelector('main');
+      if (mainContent) mainContent.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+      const mainContent = document.querySelector('main');
+      if (mainContent) mainContent.style.overflow = '';
+    };
+  }, [selectedChat]);
+
+  useEffect(() => {
     if (!user) return;
 
     const markAll = async () => {
