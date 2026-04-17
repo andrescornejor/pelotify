@@ -342,7 +342,10 @@ export default function MessagesPage() {
   if (!user) return null;
 
   return (
-    <div className="min-h-[100dvh] bg-background lg:pt-28 pb-32 lg:pb-0 px-0 sm:px-5 lg:px-10 xl:px-16 relative flex flex-col">
+    <div className={cn(
+      "min-h-[100dvh] bg-background lg:pt-28 relative flex flex-col transition-all",
+      selectedChat ? "pb-0 lg:pb-0" : "pb-32 lg:pb-0 px-0 sm:px-5 lg:px-10 xl:px-16"
+    )}>
       {/* Animated Background Blobs - Hidden on mobile for cleaner professional look */}
       <div className="absolute inset-0 overflow-x-hidden pointer-events-none hidden md:block">
         {/* Superior blending glow */}
@@ -368,7 +371,10 @@ export default function MessagesPage() {
         />
       </div>
 
-      <div className="max-w-full mx-auto h-[80vh] grid grid-cols-1 lg:grid-cols-12 gap-8 relative z-10 w-full">
+      <div className={cn(
+        "max-w-full mx-auto relative z-10 w-full flex-1",
+        selectedChat ? "h-[100dvh] lg:h-[80vh] lg:grid lg:grid-cols-12 lg:gap-8" : "h-[80vh] grid grid-cols-1 lg:grid-cols-12 gap-8"
+      )}>
         {/* Conversations List */}
         <div
           className={cn(
@@ -529,44 +535,51 @@ export default function MessagesPage() {
           </div>
         </div>
 
+        {/* Chat Area */}
         <div
           className={cn(
-            'lg:col-span-8 h-full flex flex-col min-h-0 bg-white dark:bg-[#0b141a]',
+            'lg:col-span-8 h-full flex flex-col min-h-0',
             !selectedChat ? 'hidden lg:flex' : 'flex'
           )}
         >
           {selectedChat ? (
             <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              className="flex flex-col h-full relative"
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              className={cn(
+                "flex flex-col h-full bg-white dark:bg-[#0A0A0A] relative z-50",
+                "lg:bg-surface/30 lg:dark:bg-foreground/[0.02] lg:border lg:border-foreground/10 lg:rounded-[3.5rem] lg:overflow-hidden lg:shadow-[0_40px_100px_-20px_rgba(0,0,0,0.1)] lg:dark:shadow-[0_50px_120px_rgba(0,0,0,0.6)]"
+              )}
             >
-              {/* Chat Header - Pelotify Style */}
-              <div className="px-4 py-3 bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl border-b border-black/5 dark:border-white/5 flex items-center justify-between relative z-20">
+              {/* Chat Header - Sticky on mobile */}
+              <div className="safe-top px-5 py-4 lg:py-3.5 bg-white/80 dark:bg-background/50 backdrop-blur-xl border-b border-foreground/5 flex items-center justify-between relative z-20">
                 <div className="flex items-center gap-3">
                   <button
                     onClick={() => setSelectedChat(null)}
-                    className="lg:hidden w-8 h-8 flex items-center justify-center text-slate-500 active:bg-black/5 rounded-full transition-colors"
+                    className="lg:hidden w-10 h-10 flex items-center justify-center bg-foreground/5 rounded-xl active:bg-foreground/10 transition-colors"
                   >
-                    <ChevronRight className="w-6 h-6 rotate-180" />
+                    <X className="w-5 h-5 opacity-40" />
                   </button>
-                  <div className="flex items-center gap-3 cursor-pointer">
-                    <div className="w-10 h-10 rounded-full overflow-hidden bg-slate-200 dark:bg-slate-700">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-xl overflow-hidden border border-primary/20 bg-primary/5">
                       {selectedChat.avatar_url ? (
                         <img src={selectedChat.avatar_url} alt="" className="w-full h-full object-cover" />
                       ) : (
-                        <div className="w-full h-full flex items-center justify-center text-slate-400">
-                          <UserIcon className="w-6 h-6" />
+                        <div className="w-full h-full flex items-center justify-center text-primary/40">
+                          <UserIcon className="w-5 h-5" />
                         </div>
                       )}
                     </div>
                     <div>
-                      <h3 className="font-bold text-slate-800 dark:text-slate-100 text-[15px] leading-tight">
+                      <h3 className="font-black uppercase italic tracking-tighter text-foreground text-sm leading-none">
                         {selectedChat.name}
                       </h3>
-                      <p className="text-[11px] text-slate-500 dark:text-slate-400">
-                        {selectedChat.isOnline ? 'en línea' : 'visto por última vez recientemente'}
-                      </p>
+                      <div className="flex items-center gap-1.5 mt-1">
+                        <span className="w-1 h-1 rounded-full bg-primary animate-pulse" />
+                        <span className="text-[7px] font-black uppercase tracking-[0.2em] text-primary/80">
+                          Encriptado • Online
+                        </span>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -578,24 +591,53 @@ export default function MessagesPage() {
               />
             </motion.div>
           ) : (
-            <div className="flex-1 flex flex-col items-center justify-center text-center p-10 bg-[#f0f2f5] dark:bg-[#222e35] border-l border-black/5 dark:border-white/5">
-              <div className="max-w-md space-y-6">
-                <div className="w-56 h-56 mx-auto bg-slate-200 dark:bg-slate-700/50 rounded-full flex items-center justify-center opacity-40">
-                  <MessageSquare className="w-24 h-24" />
-                </div>
-                <div className="space-y-2">
-                  <h3 className="text-3xl font-light text-slate-800 dark:text-slate-200">Pelotify para Escritorio</h3>
-                  <p className="text-sm text-slate-500 dark:text-slate-400 leading-relaxed">
-                    Envía y recibe mensajes sin necesidad de mantener tu teléfono conectado. <br/>
-                    Usa Pelotify en hasta 4 dispositivos vinculados y 1 teléfono a la vez.
-                  </p>
-                </div>
-                <div className="pt-10 border-t border-slate-300 dark:border-slate-700">
-                  <p className="text-[12px] text-slate-400 flex items-center justify-center gap-1.5 uppercase tracking-widest font-bold">
-                    <Shield className="w-3.5 h-3.5" /> Encriptado de extremo a extremo
-                  </p>
-                </div>
+            <div className="flex-1 flex flex-col items-center justify-center text-center space-y-12 glass-premium border border-foreground/5 rounded-[3rem] relative overflow-hidden group shadow-2xl">
+              <div
+                className="absolute inset-0 bg-primary/5 opacity-0 group-hover:opacity-10 pointer-events-none"
+              />
+
+              {/* Decorative background elements */}
+              <div className="absolute top-10 left-10 w-32 h-32 bg-primary/5 blur-3xl rounded-full" />
+              <div className="absolute bottom-10 right-10 w-40 h-40 bg-primary/5 blur-3xl rounded-full" />
+
+              <div className="relative">
+                <motion.div
+                  animate={{
+                    scale: [1, 1.05, 1],
+                    rotate: [0, 5, -5, 0],
+                  }}
+                  transition={{ duration: 10, repeat: Infinity, ease: 'easeInOut' }}
+                  className="w-48 h-48 rounded-[4rem] bg-foreground/[0.02] border border-foreground/5 flex items-center justify-center relative shadow-2xl md:"
+                >
+                  <MessageSquare className="w-20 h-20 text-primary" />
+                  <motion.div
+                    animate={{ y: [0, -10, 0] }}
+                    transition={{ duration: 4, repeat: Infinity }}
+                    className="absolute -top-4 -right-4 w-14 h-14 bg-primary rounded-3xl border-4 border-background flex items-center justify-center shadow-2xl"
+                  >
+                    <Plus className="w-6 h-6 text-black" />
+                  </motion.div>
+                </motion.div>
               </div>
+
+              <div className="space-y-6 relative z-10">
+                <h3 className="text-4xl font-black uppercase tracking-tighter italic text-foreground leading-none text-gradient">
+                  Inicia la <br /> Jugada
+                </h3>
+                <p className="text-[11px] font-bold uppercase tracking-[0.4em] text-foreground/40 max-w-sm mx-auto leading-relaxed">
+                  Conecta con otros jugadores de la <br /> comunidad para organizar tu próximo
+                  partido
+                </p>
+              </div>
+
+              <motion.button
+                whileHover={{ scale: 1.05, y: -4, boxShadow: '0 20px 40px rgba(85,250,134,0.2)' }}
+                whileTap={{ scale: 0.95 }}
+                onClick={() => setIsSearchOpen(true)}
+                className="px-10 h-16 bg-primary text-black font-black italic text-sm uppercase tracking-[0.3em] rounded-2xl relative z-10 shadow-2xl transition-all"
+              >
+                NUEVO MENSAJE
+              </motion.button>
             </div>
           )}
         </div>
