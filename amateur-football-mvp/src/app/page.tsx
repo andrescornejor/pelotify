@@ -308,15 +308,13 @@ export default function HomePage() {
                     <Target className="w-5 h-5" />
                  </Link>
                  <Link href="/profile/me">
-                   <div className="w-12 h-12 rounded-full p-0.5 bg-gradient-to-br from-primary/30 to-transparent border border-primary/20">
-                     <div className="w-full h-full rounded-full overflow-hidden bg-surface relative">
+                    <div className="w-12 h-12 rounded-full overflow-hidden bg-surface border border-foreground/10 relative shadow-lg">
                         {metadata?.avatar_url ? (
-                          <img src={metadata.avatar_url} alt="" className="w-full h-full object-cover" />
+                          <img src={metadata.avatar_url} alt="" className="w-full h-full object-cover scale-105" />
                         ) : (
                           <User2 className="w-6 h-6 text-foreground/20 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" />
                         )}
                      </div>
-                   </div>
                  </Link>
               </div>
             </div>
@@ -606,14 +604,14 @@ export default function HomePage() {
                     
                     {/* Avatar Block */}
                     <div className="relative">
-                      <div className="w-12 h-12 rounded-full overflow-hidden flex items-center justify-center bg-surface border border-foreground/20 shadow-inner">
+                      <div className="w-12 h-12 rounded-full overflow-hidden flex items-center justify-center bg-surface border border-foreground/10 shadow-inner">
                         {metadata?.avatar_url ? (
-                          <img src={metadata.avatar_url} alt="" className="w-full h-full object-cover" />
+                          <img src={metadata.avatar_url} alt="" className="w-full h-full object-cover scale-105" />
                         ) : (
                           <User2 className="w-6 h-6 text-foreground/40" />
                         )}
                       </div>
-                      <div className="absolute -bottom-2 -right-2 w-6 h-6 rounded-full bg-surface border border-foreground/20 flex items-center justify-center shadow-lg rotate-12 group-hover:rotate-0 transition-transform" style={{ borderColor: `${rankCalculation.info.color}50` }}>
+                      <div className="absolute -bottom-2 -right-2 w-6 h-6 rounded-full bg-surface border border-foreground/10 flex items-center justify-center shadow-lg rotate-12 group-hover:rotate-0 transition-transform" style={{ borderColor: `${rankCalculation.info.color}50` }}>
                          <rankCalculation.rank.icon className="w-3.5 h-3.5 drop-shadow-md" style={{ color: rankCalculation.info.color }} />
                       </div>
                     </div>

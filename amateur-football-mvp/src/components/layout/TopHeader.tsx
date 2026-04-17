@@ -396,24 +396,22 @@ export const TopHeader = memo(function TopHeader() {
                       whileHover={{ scale: 1.08 }}
                       whileTap={{ scale: 0.92 }}
                       className={cn(
-                        "w-12 h-12 lg:w-11 lg:h-11 rounded-full p-0.5 transition-all flex items-center justify-center",
+                        "w-12 h-12 lg:w-11 lg:h-11 rounded-full overflow-hidden transition-all flex items-center justify-center",
                         user 
                           ? "bg-foreground/[0.04] border border-foreground/[0.08] hover:border-primary/30" 
                           : "bg-primary text-background font-black text-[10px] uppercase shadow-[0_0_20px_rgba(16,185,129,0.4)]"
                       )}
                     >
                       {user ? (
-                        <div className="w-full h-full rounded-full overflow-hidden bg-primary/5 flex items-center justify-center">
-                          {user.avatar_url ? (
-                            <img
-                              src={user.avatar_url}
-                              alt="Perfil"
-                              className="w-full h-full object-cover"
-                            />
-                          ) : (
-                            <User2 className="w-5 h-5 text-primary/60" />
-                          )}
-                        </div>
+                        user.avatar_url ? (
+                          <img
+                            src={user.avatar_url}
+                            alt="Perfil"
+                            className="w-full h-full object-cover scale-105"
+                          />
+                        ) : (
+                          <User2 className="w-5 h-5 text-primary/60" />
+                        )
                       ) : (
                         <div className="flex flex-col items-center leading-none gap-0.5">
                           <User2 className="w-4 h-4" />

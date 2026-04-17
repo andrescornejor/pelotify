@@ -638,11 +638,11 @@ export default function FeedClient({ standalonePostId }: { standalonePostId?: st
                   {/* Cover strip */}
                   <div className="h-16 bg-gradient-to-r from-primary/20 via-primary/5 to-transparent relative">
                     <div className="absolute -bottom-5 left-4">
-                      <Link href={`/feed/profile?id=${user.id}`} className="block w-12 h-12 rounded-full overflow-hidden border-2 border-background shadow-lg hover:opacity-90 transition-opacity">
+                      <Link href={`/feed/profile?id=${user.id}`} className="block w-12 h-12 rounded-full overflow-hidden border border-foreground/10 shadow-lg hover:opacity-90 transition-opacity">
                         {user?.avatar_url ? (
-                          <img src={user.avatar_url} className="w-full h-full object-cover" alt="" />
+                          <img src={user.avatar_url} className="w-full h-full object-cover scale-105" alt="" />
                         ) : (
-                          <div className="w-full h-full bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center font-bold text-primary text-[15px]">
+                          <div className="w-full h-full bg-surface-elevated flex items-center justify-center font-bold text-primary text-[15px]">
                             {user?.name?.charAt(0) || '?'}
                           </div>
                         )}
@@ -765,9 +765,9 @@ export default function FeedClient({ standalonePostId }: { standalonePostId?: st
                 <div className="flex items-center gap-3 px-4 py-3">
                   <Link href={`/feed/profile?id=${user.id}`} className="w-9 h-9 rounded-full overflow-hidden shrink-0 border border-foreground/10">
                     {user?.avatar_url ? (
-                      <img src={user.avatar_url} className="w-full h-full object-cover" alt="" />
+                      <img src={user.avatar_url} className="w-full h-full object-cover scale-105" alt="" />
                     ) : (
-                      <div className="w-full h-full bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center font-bold text-primary text-xs">
+                      <div className="w-full h-full bg-surface-elevated flex items-center justify-center font-bold text-primary text-xs">
                         {user?.name?.charAt(0) || '?'}
                       </div>
                     )}
