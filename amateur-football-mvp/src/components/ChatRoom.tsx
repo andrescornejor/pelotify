@@ -325,8 +325,8 @@ export default function ChatRoom({ matchId, recipientId, className, title }: Cha
         onScroll={handleScroll}
         className="flex-1 overflow-y-auto overflow-x-hidden scroll-smooth relative z-10 
                    [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-track]:bg-transparent 
-                   [&::-webkit-scrollbar-thumb]:bg-slate-200 dark:[&::-webkit-scrollbar-thumb]:bg-white/10 [&::-webkit-scrollbar-thumb]:rounded-full hover:[&::-webkit-scrollbar-thumb]:bg-slate-300 dark:hover:[&::-webkit-scrollbar-thumb]:bg-white/20
-                   pb-24 lg:pb-6"
+                   [&::-webkit-scrollbar-thumb]:bg-white/10 [&::-webkit-scrollbar-thumb]:rounded-full hover:[&::-webkit-scrollbar-thumb]:bg-white/20
+                   pb-6"
       >
         {isLoading ? (
           <div className="flex flex-col gap-6 p-6 opacity-60">

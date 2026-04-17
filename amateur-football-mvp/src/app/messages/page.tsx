@@ -342,10 +342,7 @@ export default function MessagesPage() {
   if (!user) return null;
 
   return (
-    <div className={cn(
-      "flex-1 bg-background lg:pt-28 relative flex flex-col transition-all min-h-0",
-      selectedChat ? "overflow-hidden" : "px-0 sm:px-5 lg:px-10 xl:px-16"
-    )}>
+    <div className="min-h-[100dvh] bg-background lg:pt-28 pb-32 lg:pb-0 px-0 sm:px-5 lg:px-10 xl:px-16 relative flex flex-col">
       {/* Animated Background Blobs - Hidden on mobile for cleaner professional look */}
       <div className="absolute inset-0 overflow-x-hidden pointer-events-none hidden md:block">
         {/* Superior blending glow */}
@@ -371,10 +368,7 @@ export default function MessagesPage() {
         />
       </div>
 
-      <div className={cn(
-        "max-w-full mx-auto relative z-10 w-full flex-1 flex flex-col min-h-0",
-        selectedChat ? "lg:h-[80vh] lg:grid lg:grid-cols-12 lg:gap-8" : "lg:grid lg:grid-cols-12 lg:gap-8"
-      )}>
+      <div className="max-w-full mx-auto h-[80vh] grid grid-cols-1 lg:grid-cols-12 gap-8 relative z-10 w-full">
         {/* Conversations List */}
         <div
           className={cn(
@@ -544,15 +538,12 @@ export default function MessagesPage() {
         >
           {selectedChat ? (
             <motion.div
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              className={cn(
-                "flex-1 flex flex-col min-h-0 bg-white dark:bg-[#0A0A0A] relative z-50",
-                "lg:bg-surface/30 lg:dark:bg-foreground/[0.02] lg:border lg:border-foreground/10 lg:rounded-[3.5rem] lg:overflow-hidden lg:shadow-[0_40px_100px_-20px_rgba(0,0,0,0.1)] lg:dark:shadow-[0_50px_120px_rgba(0,0,0,0.6)]"
-              )}
+              initial={{ opacity: 0, y: 10, scale: 0.99 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              className="flex flex-col h-full bg-surface/30 dark:bg-foreground/[0.02] md: border border-foreground/10 rounded-[3.5rem] overflow-hidden relative shadow-[0_40px_100px_-20px_rgba(0,0,0,0.1)] dark:shadow-[0_50px_120px_rgba(0,0,0,0.6)]"
             >
-              {/* Chat Header - Sticky on mobile */}
-              <div className="safe-top px-5 py-4 lg:py-3.5 bg-white/80 dark:bg-background/50 backdrop-blur-xl border-b border-foreground/5 flex items-center justify-between relative z-20">
+              {/* Chat Header */}
+              <div className="px-5 py-3.5 bg-background/50 backdrop-blur-xl border-b border-foreground/5 flex items-center justify-between relative z-20">
                 <div className="flex items-center gap-3">
                   <button
                     onClick={() => setSelectedChat(null)}
