@@ -784,8 +784,8 @@ export default function HomePage() {
           <div className="lg:col-span-8 xl:col-span-8 space-y-6 order-2 lg:order-1">
             {/* --- DASHBOARD TAB CONTROLLER --- */}
             <section className={cn(
-              "sticky top-20 lg:top-4 z-40 py-2 -mx-2 px-2 lg:bg-transparent lg:static lg:pb-6",
-              isMobile ? "bg-background/95 backdrop-blur-md" : "bg-background/80"
+              "z-40 py-2 -mx-2 px-2 lg:bg-transparent lg:static lg:pb-6",
+              isMobile ? "relative bg-transparent" : "sticky top-20 bg-background/80 backdrop-blur-md"
             )}>
               <div className={cn(
                 "w-full rounded-[2rem] flex items-center gap-1 relative overflow-hidden",
