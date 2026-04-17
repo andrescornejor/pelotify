@@ -398,8 +398,8 @@ export default function ChatRoom({ matchId, recipientId, className, title }: Cha
         )}
       </AnimatePresence>
 
-      {/* Input Area */}
-      <div className="p-4 pt-2 relative z-20 bg-gradient-to-t from-[#0A0A0A] via-[#0A0A0A]/95 to-transparent">
+      {/* Input Area - Adjusted for mobile BottomNav */}
+      <div className="p-4 pt-2 pb-[95px] lg:pb-4 relative z-20 bg-gradient-to-t from-[#0A0A0A] via-[#0A0A0A]/95 to-transparent">
         <form
           onSubmit={handleSend}
           className="flex flex-col gap-2 relative bg-[#1C1C1E] border border-white/10 rounded-[1.5rem] p-1.5 shadow-inner transition-all focus-within:border-white/20 focus-within:bg-[#202022]"
