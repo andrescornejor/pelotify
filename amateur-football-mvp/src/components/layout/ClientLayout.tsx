@@ -78,14 +78,15 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
             showNav
               ? pathname.startsWith('/match') ||
                 pathname === '/profile' ||
-                pathname.startsWith('/profile/') ||
-                pathname.startsWith('/messages')
+                pathname.startsWith('/profile/')
                 ? 'pb-24 lg:pt-24 lg:pb-0'
-                : isFeedOrPostPage
+                : pathname.startsWith('/messages')
                   ? 'pb-0 lg:pt-24 lg:pb-0'
-                  : pathname === '/'
-                    ? 'pb-24 lg:pt-28 lg:pb-0' // Only 32 for home page
-                    : 'pb-24 lg:pt-24 lg:pb-0' // Reset others to 24
+                  : isFeedOrPostPage
+                    ? 'pb-0 lg:pt-24 lg:pb-0'
+                    : pathname === '/'
+                      ? 'pb-24 lg:pt-28 lg:pb-0' // Only 32 for home page
+                      : 'pb-24 lg:pt-24 lg:pb-0' // Reset others to 24
               : ''
           )}
         >
