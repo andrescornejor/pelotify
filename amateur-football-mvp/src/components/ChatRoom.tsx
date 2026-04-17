@@ -56,12 +56,12 @@ const MessageItem = memo(
           {!isMine && !sameAuthorAsNext && (
             <motion.div
               whileHover={{ scale: 1.05 }}
-              className="w-8 h-8 rounded-full border border-white/10 bg-[#121212] overflow-hidden flex items-center justify-center relative group/avatar shadow-lg z-10"
+              className="w-8 h-8 rounded-full border border-black/5 dark:border-white/10 bg-slate-100 dark:bg-[#121212] overflow-hidden flex items-center justify-center relative group/avatar shadow-md z-10"
             >
               {msg.profiles?.avatar_url ? (
                 <img src={msg.profiles.avatar_url} alt="" className="w-full h-full object-cover" />
               ) : (
-                <UserIcon className="w-4 h-4 text-white/40" />
+                <UserIcon className="w-4 h-4 text-slate-400 dark:text-white/40" />
               )}
             </motion.div>
           )}
@@ -74,7 +74,7 @@ const MessageItem = memo(
           )}
         >
           {!isMine && !sameAuthorAsPrev && (
-            <span className="text-[11px] font-semibold tracking-wide text-white/50 mb-1 ml-1 opacity-80">
+            <span className="text-[11px] font-bold tracking-wide text-slate-400 dark:text-white/50 mb-1 ml-1">
               {msg.profiles?.name || 'Usuario'}
             </span>
           )}
@@ -83,8 +83,8 @@ const MessageItem = memo(
             className={cn(
               'relative transition-all duration-300 group/bubble overflow-hidden flex flex-col',
               isMine
-                ? 'bg-gradient-to-br from-[#2CFC7D] directly to-[#1bba58] text-black rounded-[1.3rem] rounded-br-[0.3rem] shadow-[0_5px_20px_rgba(44,252,125,0.15)]'
-                : 'bg-[#1C1C1E] border border-white/5 text-white/90 rounded-[1.3rem] rounded-bl-[0.3rem] shadow-md',
+                ? 'bg-gradient-to-br from-[#2CFC7D] to-[#1bba58] text-black rounded-[1.3rem] rounded-br-[0.3rem] shadow-[0_5px_20px_rgba(44,252,125,0.15)]'
+                : 'bg-slate-100 dark:bg-[#1C1C1E] border border-black/5 dark:border-white/5 text-slate-900 dark:text-white/90 rounded-[1.3rem] rounded-bl-[0.3rem] shadow-sm',
               sameAuthorAsPrev && (isMine ? 'rounded-tr-[1.3rem]' : 'rounded-tl-[1.3rem]'),
               sameAuthorAsNext && (isMine ? 'rounded-br-[1.3rem]' : 'rounded-bl-[1.3rem]')
             )}
@@ -106,7 +106,7 @@ const MessageItem = memo(
             <div
               className={cn(
                 'px-4 pb-2 pt-0.5 text-[10px] font-medium flex items-center gap-1 opacity-0 group-hover/bubble:opacity-100 transition-opacity absolute bottom-0 right-0 left-0 bg-gradient-to-t via-current/10 to-transparent',
-                isMine ? 'text-black/60 justify-end from-[#1bba58]' : 'text-white/40 justify-start from-[#1C1C1E]'
+                isMine ? 'text-black/60 justify-end from-[#1bba58]' : 'text-slate-400 dark:text-white/40 justify-start from-slate-100 dark:from-[#1C1C1E]'
               )}
             >
               <Clock className="w-3 h-3" />
@@ -297,7 +297,7 @@ export default function ChatRoom({ matchId, recipientId, className, title }: Cha
   return (
     <div
       className={cn(
-        'flex flex-col h-full bg-[#0A0A0A] overflow-hidden relative group font-sans',
+        'flex flex-col h-full bg-white dark:bg-[#0A0A0A] overflow-hidden relative group font-sans',
         className
       )}
     >
@@ -399,10 +399,10 @@ export default function ChatRoom({ matchId, recipientId, className, title }: Cha
       </AnimatePresence>
 
       {/* Input Area - Adjusted for mobile BottomNav */}
-      <div className="p-4 pt-2 pb-[95px] lg:pb-4 relative z-20 bg-gradient-to-t from-[#0A0A0A] via-[#0A0A0A]/95 to-transparent">
+      <div className="p-4 pt-2 pb-[95px] lg:pb-4 relative z-20 bg-gradient-to-t from-white dark:from-[#0A0A0A] via-white/95 dark:via-[#0A0A0A]/95 to-transparent">
         <form
           onSubmit={handleSend}
-          className="flex flex-col gap-2 relative bg-[#1C1C1E] border border-white/10 rounded-[1.5rem] p-1.5 shadow-inner transition-all focus-within:border-white/20 focus-within:bg-[#202022]"
+          className="flex flex-col gap-2 relative bg-slate-100 dark:bg-[#1C1C1E] border border-black/5 dark:border-white/10 rounded-[2rem] p-1.5 shadow-inner transition-all focus-within:border-primary/30 focus-within:bg-white dark:focus-within:bg-[#202022]"
         >
           {/* Image Preview */}
           <AnimatePresence>
@@ -449,7 +449,7 @@ export default function ChatRoom({ matchId, recipientId, className, title }: Cha
               type="button"
               disabled={isSending || uploadingImage}
               onClick={() => fileInputRef.current?.click()}
-              className="p-2.5 rounded-full text-white/40 hover:text-white hover:bg-white/5 transition-colors shrink-0 mb-0.5"
+              className="p-2.5 rounded-full text-slate-400 dark:text-white/40 hover:text-slate-600 dark:hover:text-white hover:bg-black/5 dark:hover:bg-white/5 transition-colors shrink-0 mb-0.5"
             >
               <ImagePlus className="w-5 h-5" />
             </button>
@@ -461,7 +461,7 @@ export default function ChatRoom({ matchId, recipientId, className, title }: Cha
               placeholder="Mensaje..."
               rows={1}
               style={{ minHeight: '40px', maxHeight: '120px' }}
-              className="flex-1 bg-transparent outline-none text-[15px] text-white placeholder:text-white/30 resize-none py-2.5 scrollbar-hide"
+              className="flex-1 bg-transparent outline-none text-[15px] text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-white/30 resize-none py-2.5 scrollbar-hide"
             />
 
             <button
