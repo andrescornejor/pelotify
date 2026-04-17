@@ -541,7 +541,8 @@ export default function MessagesPage() {
               initial={{ opacity: 0, y: 10, scale: 0.99 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
               className="flex flex-col h-full bg-surface/30 dark:bg-foreground/[0.02] md: border border-foreground/10 rounded-[3.5rem] overflow-hidden relative shadow-[0_40px_100px_-20px_rgba(0,0,0,0.1)] dark:shadow-[0_50px_120px_rgba(0,0,0,0.6)]"
-                        {/* Chat Header */}
+            >
+              {/* Chat Header */}
               <div className="px-5 py-3.5 bg-background/50 backdrop-blur-xl border-b border-foreground/5 flex items-center justify-between relative z-20">
                 <div className="flex items-center gap-3">
                   <button
