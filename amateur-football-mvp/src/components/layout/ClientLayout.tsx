@@ -80,10 +80,12 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
                 pathname === '/profile' ||
                 pathname.startsWith('/profile/') ||
                 pathname.startsWith('/messages')
-                ? 'pb-24 lg:pt-32 lg:pb-0'
+                ? 'pb-24 lg:pt-24 lg:pb-0'
                 : isFeedOrPostPage
-                ? 'pb-0 lg:pt-32 lg:pb-0' 
-                : 'pb-24 lg:pt-36 lg:pb-0' // Extra room for home page hero on desktop
+                ? 'pb-0 lg:pt-24 lg:pb-0' 
+                : pathname === '/'
+                ? 'pb-24 lg:pt-32 lg:pb-0' // Only 32 for home page
+                : 'pb-24 lg:pt-24 lg:pb-0' // Reset others to 24
               : ''
           )}
         >
