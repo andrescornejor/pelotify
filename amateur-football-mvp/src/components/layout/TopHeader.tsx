@@ -123,28 +123,40 @@ export const TopHeader = memo(function TopHeader() {
           
           {/* MOBILE MINIMAL ACTIONS (Floating Style) */}
           <div className="flex lg:hidden items-center justify-between w-full pointer-events-none">
-            {/* Hamburger / Menu */}
-            <motion.button
-              onClick={toggleSidebar}
-              whileTap={{ scale: 0.9 }}
-              className="pointer-events-auto w-12 h-12 flex items-center justify-center rounded-2xl bg-background/60 backdrop-blur-xl border border-white/10 shadow-lg"
-              aria-label="Menu"
-            >
-              <div className="flex flex-col gap-[4.5px] w-[20px] items-center">
-                <motion.span
-                  animate={useSidebar().isOpen ? { rotate: 45, y: 6.5 } : { rotate: 0, y: 0 }}
-                  className="h-[2px] w-full bg-foreground rounded-full block origin-center transition-all"
-                />
-                <motion.span
-                  animate={useSidebar().isOpen ? { opacity: 0, x: -5 } : { opacity: 1, x: 0 }}
-                  className="h-[2px] w-[70%] bg-primary rounded-full block transition-all"
-                />
-                <motion.span
-                  animate={useSidebar().isOpen ? { rotate: -45, y: -6.5 } : { rotate: 0, y: 0 }}
-                  className="h-[2px] w-full bg-foreground rounded-full block origin-center transition-all"
-                />
-              </div>
-            </motion.button>
+            <div className="flex items-center gap-3 pointer-events-auto">
+              {/* Hamburger / Menu */}
+              <motion.button
+                onClick={toggleSidebar}
+                whileTap={{ scale: 0.9 }}
+                className="w-12 h-12 flex items-center justify-center rounded-2xl bg-background/60 backdrop-blur-xl border border-white/10 shadow-lg"
+                aria-label="Menu"
+              >
+                <div className="flex flex-col gap-[4.5px] w-[20px] items-center">
+                  <motion.span
+                    animate={useSidebar().isOpen ? { rotate: 45, y: 6.5 } : { rotate: 0, y: 0 }}
+                    className="h-[2px] w-full bg-foreground rounded-full block origin-center transition-all"
+                  />
+                  <motion.span
+                    animate={useSidebar().isOpen ? { opacity: 0, x: -5 } : { opacity: 1, x: 0 }}
+                    className="h-[2px] w-[70%] bg-primary rounded-full block transition-all"
+                  />
+                  <motion.span
+                    animate={useSidebar().isOpen ? { rotate: -45, y: -6.5 } : { rotate: 0, y: 0 }}
+                    className="h-[2px] w-full bg-foreground rounded-full block origin-center transition-all"
+                  />
+                </div>
+              </motion.button>
+
+              {/* Logo (Home Link) */}
+              <Link href="/">
+                <motion.div 
+                  whileTap={{ scale: 0.95 }}
+                  className="w-10 h-10 flex items-center justify-center"
+                >
+                  <img src="/logo_pelotify.png" alt="Pelotify" className="w-full h-full object-contain drop-shadow-[0_0_8px_rgba(44,252,125,0.4)]" />
+                </motion.div>
+              </Link>
+            </div>
 
             {/* Notification Bell (Floating) */}
             <motion.button

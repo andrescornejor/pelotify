@@ -272,7 +272,7 @@ export default function HomePage() {
       <button
         onClick={() => setPerformanceMode(!performanceMode)}
         className={cn(
-          'fixed top-28 right-4 z-[50] w-10 h-10 rounded-xl md:hidden flex flex-col items-center justify-center transition-all active:scale-90 border',
+          'fixed bottom-32 right-4 z-[50] w-10 h-10 rounded-xl md:hidden flex flex-col items-center justify-center transition-all active:scale-90 border',
           performanceMode
             ? 'bg-primary text-black border-primary shadow-[0_0_15px_rgba(44,252,125,0.3)]'
             : 'glass border-foreground/10 text-primary shadow-sm shadow-primary/5'
