@@ -541,8 +541,8 @@ export default function MessagesPage() {
               animate={{ opacity: 1 }}
               className="flex flex-col h-full relative"
             >
-              {/* Chat Header - WhatsApp Style */}
-              <div className="px-4 py-3 bg-[#f0f2f5] dark:bg-[#202c33] border-b border-black/5 dark:border-white/5 flex items-center justify-between relative z-20">
+              {/* Chat Header - Pelotify Style */}
+              <div className="px-4 py-3 bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl border-b border-black/5 dark:border-white/5 flex items-center justify-between relative z-20">
                 <div className="flex items-center gap-3">
                   <button
                     onClick={() => setSelectedChat(null)}

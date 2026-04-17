@@ -69,11 +69,11 @@ const MessageItem = memo(
           <motion.div
             layout
             className={cn(
-              'relative transition-all duration-300 group/bubble flex flex-col min-w-[60px] shadow-sm',
+              'relative transition-all duration-300 group/bubble flex flex-col min-w-[60px] shadow-md border',
               isMine
-                ? 'bg-[#dcf8c6] dark:bg-[#005c4b] text-[#111b21] dark:text-[#e9edef] rounded-lg rounded-tr-none'
-                : 'bg-white dark:bg-[#202c33] text-[#111b21] dark:text-[#e9edef] rounded-lg rounded-tl-none',
-              sameAuthorAsPrev && (isMine ? 'rounded-tr-lg' : 'rounded-tl-lg'),
+                ? 'bg-primary/20 dark:bg-primary/10 border-primary/20 text-slate-900 dark:text-primary rounded-[1.2rem] rounded-tr-none'
+                : 'bg-white dark:bg-slate-800/40 border-black/[0.05] dark:border-white/10 text-slate-800 dark:text-slate-100 rounded-[1.2rem] rounded-tl-none',
+              sameAuthorAsPrev && (isMine ? 'rounded-tr-[1.2rem]' : 'rounded-tl-[1.2rem]'),
             )}
           >
             {msg.image_url && (
@@ -282,14 +282,13 @@ export default function ChatRoom({ matchId, recipientId, className, title }: Cha
   return (
     <div
       className={cn(
-        'flex flex-col h-full bg-[#e5ddd5] dark:bg-[#0b141a] overflow-hidden relative group font-sans',
+        'flex flex-col h-full bg-slate-50 dark:bg-[#08080c] overflow-hidden relative group font-sans',
         className
       )}
     >
-      {/* WhatsApp Background Pattern (Subtle Overlay) */}
+      {/* Premium Subtle Grid/Doodle Overlay */}
       <div 
-        className="absolute inset-0 opacity-[0.06] dark:opacity-[0.03] pointer-events-none z-0"
-        style={{ backgroundImage: 'url("https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png")' }}
+        className="absolute inset-0 opacity-[0.03] dark:opacity-[0.02] pointer-events-none z-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')]"
       />
 
       {title && (
@@ -386,13 +385,13 @@ export default function ChatRoom({ matchId, recipientId, className, title }: Cha
         )}
       </AnimatePresence>
 
-      {/* WhatsApp Style Input Area */}
-      <div className="p-2 pb-[95px] lg:pb-3 bg-[#f0f2f5] dark:bg-[#202c33] relative z-20">
+      {/* WhatsApp Style Input Area - Fixed Spacing */}
+      <div className="px-3 pb-[80px] lg:pb-4 bg-white/80 dark:bg-[#08080c]/80 backdrop-blur-xl border-t border-black/5 dark:border-white/5 relative z-20">
         <form
           onSubmit={handleSend}
-          className="flex items-center gap-2 max-w-full"
+          className="flex items-center gap-2 max-w-full pt-3"
         >
-          <div className="flex-1 flex items-center bg-white dark:bg-[#2a3942] rounded-full px-4 py-1.5 shadow-sm">
+          <div className="flex-1 flex items-center bg-slate-100 dark:bg-white/[0.03] border border-black/5 dark:border-white/10 rounded-[1.5rem] px-4 py-1.5 shadow-inner">
             <input
               type="file"
               ref={fileInputRef}
@@ -405,7 +404,7 @@ export default function ChatRoom({ matchId, recipientId, className, title }: Cha
               type="button"
               disabled={isSending || uploadingImage}
               onClick={() => fileInputRef.current?.click()}
-              className="p-1.5 rounded-full text-slate-500 dark:text-slate-400 hover:text-slate-600 transition-colors shrink-0"
+              className="p-1.5 rounded-full text-slate-400 hover:text-primary transition-colors shrink-0"
             >
               <ImagePlus className="w-6 h-6" />
             </button>
@@ -414,10 +413,10 @@ export default function ChatRoom({ matchId, recipientId, className, title }: Cha
               value={newMessage}
               onChange={(e) => setNewMessage(e.target.value)}
               onKeyDown={handleKeyDown}
-              placeholder="Escribe un mensaje"
+              placeholder="Escribe un mensaje..."
               rows={1}
               style={{ minHeight: '36px', maxHeight: '120px' }}
-              className="flex-1 bg-transparent outline-none text-[15px] text-slate-900 dark:text-[#e9edef] placeholder:text-slate-400 dark:placeholder:text-slate-500 resize-none py-2 scrollbar-hide ml-2"
+              className="flex-1 bg-transparent outline-none text-[15px] text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-white/20 resize-none py-2 scrollbar-hide ml-2"
             />
           </div>
 
@@ -425,14 +424,14 @@ export default function ChatRoom({ matchId, recipientId, className, title }: Cha
             type="submit"
             disabled={(!newMessage.trim() && !selectedImage) || isSending}
             className={cn(
-              'w-11 h-11 rounded-full transition-all shrink-0 flex items-center justify-center bg-[#00a884] shadow-sm',
-              !(newMessage.trim() || selectedImage) && 'opacity-50'
+              'w-11 h-11 rounded-full transition-all shrink-0 flex items-center justify-center bg-primary text-black shadow-lg shadow-primary/20 hover:scale-105 active:scale-95',
+              !(newMessage.trim() || selectedImage) && 'opacity-50 grayscale pointer-events-none'
             )}
           >
             {isSending || uploadingImage ? (
-              <Loader2 className="w-5 h-5 text-white animate-spin" />
+              <Loader2 className="w-5 h-5 text-black animate-spin" />
             ) : (
-              <Send className="w-5 h-5 text-white fill-current ml-0.5" />
+              <Send className="w-5 h-5 ml-0.5" />
             )}
           </button>
         </form>
