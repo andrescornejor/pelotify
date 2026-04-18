@@ -51,20 +51,22 @@ const MessageItem = memo(
           sameAuthorAsPrev ? 'mt-1' : 'mt-6'
         )}
       >
-        <div className="w-8 shrink-0 flex items-end justify-center pb-1">
-          {!isMine && !sameAuthorAsNext && (
-            <motion.div
-              whileHover={{ scale: 1.05 }}
-              className="w-8 h-8 rounded-full border border-black/5 dark:border-white/10 bg-slate-100 dark:bg-[#121212] overflow-hidden flex items-center justify-center relative group/avatar shadow-md z-10"
-            >
-              {msg.profiles?.avatar_url ? (
-                <img src={msg.profiles.avatar_url} alt="" className="w-full h-full object-cover" />
-              ) : (
-                <UserIcon className="w-4 h-4 text-slate-400 dark:text-white/40" />
-              )}
-            </motion.div>
-          )}
-        </div>
+        {!isMine && (
+          <div className="w-8 shrink-0 flex items-end justify-center pb-1">
+            {!sameAuthorAsNext && (
+              <motion.div
+                whileHover={{ scale: 1.05 }}
+                className="w-8 h-8 rounded-full border border-black/5 dark:border-white/10 bg-slate-100 dark:bg-[#121212] overflow-hidden flex items-center justify-center relative group/avatar shadow-md z-10"
+              >
+                {msg.profiles?.avatar_url ? (
+                  <img src={msg.profiles.avatar_url} alt="" className="w-full h-full object-cover" />
+                ) : (
+                  <UserIcon className="w-4 h-4 text-slate-400 dark:text-white/40" />
+                )}
+              </motion.div>
+            )}
+          </div>
+        )}
 
         <div
           className={cn(
@@ -411,7 +413,7 @@ export default function ChatRoom({ matchId, recipientId, className, title }: Cha
       </AnimatePresence>
 
       {/* Input Area - Restored normal padding without bottom navigation space */}
-      <div className="p-3 lg:p-4 pt-2 pb-3 md:pb-4 relative z-20 bg-gradient-to-t from-white dark:from-[#0A0A0A] via-white/95 dark:via-[#0A0A0A]/95 to-transparent">
+      <div className="px-4 sm:px-6 py-3 lg:py-4 pt-2 pb-3 md:pb-4 relative z-20 bg-gradient-to-t from-white dark:from-[#0A0A0A] via-white/95 dark:via-[#0A0A0A]/95 to-transparent">
         <form
           onSubmit={handleSend}
           className="flex flex-col gap-2 relative bg-slate-100 dark:bg-[#1C1C1E] border border-black/5 dark:border-white/10 rounded-[2rem] p-1.5 shadow-inner transition-all focus-within:border-primary/30 focus-within:bg-white dark:focus-within:bg-[#202022]"
