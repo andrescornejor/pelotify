@@ -1,7 +1,7 @@
 'use client';
 
 import { memo, useState } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { 
   MessageSquare, Heart, Bookmark, BookmarkCheck, 
   Share2, Check, MoreHorizontal, Trash2, Zap, Send, Loader2
@@ -10,7 +10,6 @@ import { cn } from '@/lib/utils';
 import MatchPostCard from './MatchPostCard';
 import { useInView } from 'react-intersection-observer';
 import { useHaptic } from '@/hooks/useHaptic';
-import { AnimatePresence, motion } from 'framer-motion';
 import Link from 'next/link';
 
 interface Post {
