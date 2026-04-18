@@ -40,7 +40,7 @@ const DESKTOP_NAV = [
   { href: '/teams', icon: Shield, label: 'Equipos' },
 ];
 
-export const TopHeader = memo(function TopHeader() {
+export const TopHeader = memo(function TopHeader({ isVisible = true }: { isVisible?: boolean }) {
   const pathname = usePathname();
   const { toggleSidebar, isNotificationsOpen, setNotificationsOpen } = useSidebar();
   const { user } = useAuth();
@@ -118,7 +118,11 @@ export const TopHeader = memo(function TopHeader() {
 
   return (
     <>
-      <header className="relative z-[60] pt-[calc(0.75rem+env(safe-area-inset-top,0px))] sm:pt-6 lg:fixed lg:top-0 lg:left-0 lg:right-0 lg:pt-4 px-3 sm:px-5 lg:px-10 xl:px-16 pointer-events-none w-full">
+      <header className={cn(
+        "z-[60] pt-[calc(0.75rem+env(safe-area-inset-top,0px))] sm:pt-6 lg:fixed lg:top-0 lg:left-0 lg:right-0 lg:pt-4 px-3 sm:px-5 lg:px-10 xl:px-16 pointer-events-none w-full",
+        "sticky top-0 transition-transform duration-300",
+        !isVisible ? "-translate-y-[150%] lg:translate-y-0" : "translate-y-0"
+      )}>
         <div className="max-w-full mx-auto w-full flex items-center justify-between lg:block">
           
           {/* MOBILE MINIMAL ACTIONS (Inline with flow) */}

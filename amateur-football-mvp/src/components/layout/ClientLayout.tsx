@@ -1,7 +1,7 @@
 'use client';
 
 import { usePathname } from 'next/navigation';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState, useCallback, UIEvent } from 'react';
 import { Sidebar, SidebarContent } from '@/components/layout/Sidebar';
 import { TopHeader } from '@/components/layout/TopHeader';
 import { BottomNav } from '@/components/layout/BottomNav';
@@ -19,6 +19,29 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
   const { isNotificationsOpen, setNotificationsOpen } = useSidebar();
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const fcmInitRef = useRef(false);
+
+  // Scroll to show/hide header state
+  const [headerVisible, setHeaderVisible] = useState(true);
+  const lastScrollY = useRef(0);
+
+  const handleScroll = useCallback((e: UIEvent<HTMLDivElement>) => {
+    const currentScrollY = e.currentTarget.scrollTop;
+    
+    // threshold before hiding to avoid jitter at very top
+    if (currentScrollY > 60) {
+      if (currentScrollY > lastScrollY.current + 8) {
+        // Scrolling down significantly
+        setHeaderVisible(false);
+      } else if (currentScrollY < lastScrollY.current - 8) {
+        // Scrolling up significantly
+        setHeaderVisible(true);
+      }
+    } else {
+      setHeaderVisible(true);
+    }
+    
+    lastScrollY.current = currentScrollY;
+  }, []);
 
   // Scroll to top on route change
   useEffect(() => {
@@ -65,12 +88,13 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
 
       <div
         ref={scrollContainerRef}
+        onScroll={handleScroll}
         className={cn(
           'flex-1 flex flex-col min-w-0 transition-[padding] duration-300 ease-in-out max-h-[100dvh]',
           isHighlightsPage || pathname.startsWith('/messages') ? 'overflow-hidden' : 'overflow-y-auto'
         )}
       >
-        {showNav && <TopHeader />}
+        {showNav && <TopHeader isVisible={headerVisible} />}
 
         <main
           className={cn(
