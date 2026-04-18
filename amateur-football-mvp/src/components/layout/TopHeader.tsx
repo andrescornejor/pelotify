@@ -129,11 +129,8 @@ export const TopHeader = memo(function TopHeader({ isVisible = true }: { isVisib
         <div className="max-w-full mx-auto w-full flex items-center justify-between lg:block relative z-10">
           
           {/* MOBILE MINIMAL ACTIONS (Inline with flow) */}
-          <div className={cn(
-            "lg:hidden items-center justify-between w-full pointer-events-none pb-0",
-            pathname === '/' ? 'hidden' : 'flex'
-          )}>
-            <div className="flex items-center gap-3 pointer-events-auto">
+          <div className="lg:hidden flex items-center justify-between w-full pointer-events-none pb-0">
+            <div className="flex items-center gap-2 sm:gap-3 pointer-events-auto">
               {/* Hamburger / Menu */}
               <motion.button
                 onClick={toggleSidebar}
@@ -168,33 +165,90 @@ export const TopHeader = memo(function TopHeader({ isVisible = true }: { isVisib
               </Link>
             </div>
 
-            {/* Notification Bell (Floating) */}
-            <motion.button
-              whileTap={{ scale: 0.9 }}
-              onClick={() => {
-                if (!user) {
-                  window.location.href = '/login';
-                  return;
-                }
-                setNotificationsOpen(true);
-                setNotifCount(0);
-              }}
-              className="pointer-events-auto relative w-12 h-12 flex items-center justify-center rounded-2xl bg-background/60 backdrop-blur-xl border border-white/10 shadow-lg text-foreground/60"
-            >
-              <Bell className="w-5 h-5 text-foreground" />
-              <AnimatePresence>
-                {notifCount > 0 && (
-                  <motion.span
-                    initial={{ scale: 0 }}
-                    animate={{ scale: 1 }}
-                    exit={{ scale: 0 }}
-                    className="absolute -top-1 -right-1 min-w-[18px] h-[18px] px-1 bg-primary text-black text-[9px] font-black rounded-full flex items-center justify-center border-2 border-background"
+            {/* Right: Actions (Theme, Notifications, Profile) */}
+            <div className="flex items-center gap-1.5 sm:gap-2 pointer-events-auto">
+              {/* Theme Toggle */}
+              <motion.button
+                whileTap={{ scale: 0.88, rotate: 20 }}
+                onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+                className="w-10 h-10 flex items-center justify-center rounded-xl bg-foreground/[0.04] text-foreground/45 transition-all border border-foreground/[0.04]"
+              >
+                <AnimatePresence mode="wait">
+                  <motion.div
+                    key={theme}
+                    initial={{ scale: 0.5, rotate: -30, opacity: 0 }}
+                    animate={{ scale: 1, rotate: 0, opacity: 1 }}
+                    exit={{ scale: 0.5, rotate: 30, opacity: 0 }}
+                    transition={{ duration: 0.2 }}
                   >
-                    {notifCount > 9 ? '9+' : notifCount}
-                  </motion.span>
-                )}
-              </AnimatePresence>
-            </motion.button>
+                    {theme === 'dark' ? (
+                      <Sun className="w-4 h-4" />
+                    ) : (
+                      <Moon className="w-4 h-4" />
+                    )}
+                  </motion.div>
+                </AnimatePresence>
+              </motion.button>
+
+              {/* Notification Bell */}
+              <motion.button
+                whileTap={{ scale: 0.88 }}
+                onClick={() => {
+                  if (!user) {
+                    window.location.href = '/login';
+                    return;
+                  }
+                  setNotificationsOpen(true);
+                  setNotifCount(0);
+                }}
+                className="relative w-10 h-10 flex items-center justify-center rounded-xl bg-foreground/[0.04] text-foreground/45 transition-all border border-foreground/[0.04]"
+              >
+                <Bell className="w-4 h-4" />
+                <AnimatePresence>
+                  {notifCount > 0 && (
+                    <motion.span
+                      initial={{ scale: 0, y: 4 }}
+                      animate={{ scale: 1, y: 0 }}
+                      exit={{ scale: 0 }}
+                      transition={{ type: 'spring', stiffness: 500, damping: 25 }}
+                      className="absolute -top-1 -right-1 min-w-[16px] h-[16px] px-1 bg-primary text-background text-[9px] font-black rounded-full flex items-center justify-center shadow-[0_0_10px_rgba(16,185,129,0.5)] border-2 border-background"
+                    >
+                      {notifCount > 9 ? '9+' : notifCount}
+                    </motion.span>
+                  )}
+                </AnimatePresence>
+              </motion.button>
+
+              {/* Profile Avatar */}
+              <Link href={user ? "/profile/me" : "/login"}>
+                <motion.div
+                  whileTap={{ scale: 0.92 }}
+                  className={cn(
+                    "w-10 h-10 rounded-full overflow-hidden transition-all flex items-center justify-center",
+                    user 
+                      ? "bg-foreground/[0.04] border border-foreground/[0.08]" 
+                      : "bg-primary text-background font-black text-[9px] uppercase"
+                  )}
+                >
+                  {user ? (
+                    user.avatar_url ? (
+                      <img
+                        src={user.avatar_url}
+                        alt="Perfil"
+                        className="w-full h-full object-cover scale-105"
+                      />
+                    ) : (
+                      <User2 className="w-4 h-4 text-primary/60" />
+                    )
+                  ) : (
+                    <div className="flex flex-col items-center leading-none gap-0.5">
+                      <User2 className="w-3.5 h-3.5" />
+                      <span className="text-[6px] font-black tracking-tighter">ENTRAR</span>
+                    </div>
+                  )}
+                </motion.div>
+              </Link>
+            </div>
           </div>
 
           {/* DESKTOP HEADER (Bulky Row) */}

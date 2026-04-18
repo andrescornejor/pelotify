@@ -283,48 +283,15 @@ export default function HomePage() {
          */}
         {isMobile ? (
           <section className="space-y-6 pt-2">
-            {/* Professional App Header & Greeting */}
-            <div className="flex items-center justify-between px-1 gap-4">
-              <div className="flex items-center gap-4 flex-1 min-w-0">
-                {/* Burger Button */}
-                <button 
-                  onClick={() => toggleSidebar()}
-                  className="w-11 h-11 flex items-center justify-center rounded-2xl bg-foreground/[0.04] border border-foreground/[0.08] text-foreground/70 active:scale-90 transition-all shrink-0"
-                >
-                  <Menu className="w-5 h-5" />
-                </button>
-
-                {/* Greeting */}
-                <div className="flex flex-col truncate">
-                  <span className="text-[10px] font-black uppercase tracking-[0.2em] text-foreground/30 font-kanit leading-none">
-                    {greeting}
-                  </span>
-                  <h1 className="text-xl font-black italic uppercase font-kanit tracking-tighter text-foreground leading-none mt-1 truncate">
-                    HOLA, <span className="text-primary">{userName}</span>
-                  </h1>
-                </div>
-              </div>
-
-              <div className="flex items-center gap-2.5 shrink-0">
-                 {/* Notification Bell */}
-                 <button
-                   onClick={() => setNotificationsOpen(true)}
-                   className="w-11 h-11 rounded-2xl flex items-center justify-center bg-foreground/[0.04] border border-foreground/[0.08] text-foreground/40 active:scale-95 transition-all relative"
-                 >
-                   <Bell className="w-5 h-5" />
-                   {/* Subtle dot if notifications (static for now or link to dynamic count) */}
-                 </button>
-
-                 {/* Profile Pic */}
-                 <Link href="/profile/me">
-                    <div className="w-11 h-11 rounded-full overflow-hidden bg-surface border border-foreground/10 relative shadow-lg active:scale-95 transition-all">
-                        {metadata?.avatar_url ? (
-                          <img src={metadata.avatar_url} alt="" className="w-full h-full object-cover scale-105" />
-                        ) : (
-                          <User2 className="w-5 h-5 text-foreground/20 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" />
-                        )}
-                    </div>
-                 </Link>
+            {/* Greeting (Mobile Top Header is handled globally now) */}
+            <div className="px-1">
+              <div className="flex flex-col">
+                <span className="text-[11px] font-black uppercase tracking-[0.2em] text-foreground/40 font-kanit leading-tight">
+                  {greeting}
+                </span>
+                <h1 className="text-3xl font-black italic uppercase font-kanit tracking-tighter text-foreground leading-[0.9] mt-0.5">
+                  HOLA, <span className="text-primary">{userName}</span>
+                </h1>
               </div>
             </div>
 
