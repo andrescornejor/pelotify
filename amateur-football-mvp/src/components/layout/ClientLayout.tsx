@@ -67,7 +67,7 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
         ref={scrollContainerRef}
         className={cn(
           'flex-1 flex flex-col min-w-0 transition-[padding] duration-300 ease-in-out max-h-[100dvh]',
-          isHighlightsPage ? 'overflow-hidden' : 'overflow-y-auto'
+          isHighlightsPage || pathname.startsWith('/messages') ? 'overflow-hidden' : 'overflow-y-auto'
         )}
       >
         {showNav && <TopHeader />}
