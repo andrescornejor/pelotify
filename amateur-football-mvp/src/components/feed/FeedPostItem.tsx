@@ -1,6 +1,6 @@
 'use client';
 
-import { memo, useState, useRef } from 'react';
+import { memo, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   MessageSquare, Heart, Bookmark, BookmarkCheck, 
@@ -11,7 +11,6 @@ import MatchPostCard from './MatchPostCard';
 import { useInView } from 'react-intersection-observer';
 import { useHaptic } from '@/hooks/useHaptic';
 import { useMobileShare } from '@/hooks/useMobileShare';
-import { useLongPress } from '@/hooks/useLongPress';
 import Link from 'next/link';
 import { BottomSheet } from '@/components/BottomSheet';
 
@@ -67,22 +66,6 @@ interface FeedPostItemProps {
   timeAgo: (date: string) => string;
 }
 
-const HeartAnimation = ({ onComplete }: { onComplete: () => void }) => (
-  <motion.div
-    initial={{ scale: 0, opacity: 0 }}
-    animate={{ 
-      scale: [0, 1.5, 1.2], 
-      opacity: [0, 1, 0],
-      rotate: [-10, 0, 10]
-    }}
-    transition={{ duration: 0.6, times: [0, 0.4, 1] }}
-    onAnimationComplete={onComplete}
-    className="absolute inset-0 flex items-center justify-center z-50 pointer-events-none"
-  >
-    <Heart className="w-24 h-24 text-pink-500 fill-pink-500 drop-shadow-[0_0_30px_rgba(236,72,153,0.6)]" />
-  </motion.div>
-);
-
 const FeedPostItem = memo(function FeedPostItem({
   post,
   user,
@@ -108,44 +91,9 @@ const FeedPostItem = memo(function FeedPostItem({
     threshold: 0,
     rootMargin: '200px 0px', // Load slightly before coming into view
   });
-  const { hapticMedium, hapticLight, hapticHeavy } = useHaptic();
+  const { hapticMedium, hapticLight } = useHaptic();
   const { shareContent } = useMobileShare();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [showHeart, setShowHeart] = useState(false);
-  const lastTap = useRef<number>(0);
-
-  const longPressProps = useLongPress({
-    onLongPress: () => {
-      hapticMedium();
-      setIsMenuOpen(true);
-    },
-    onClick: (e) => {
-      if ((e.target as HTMLElement).closest('a, button, input')) return;
-      if (!standalonePostId) {
-        window.location.href = `/post/${post.id}`;
-      }
-    }
-  });
-
-  const handleDoubleTap = (e: React.MouseEvent | React.TouchEvent) => {
-    const now = Date.now();
-    const DOUBLE_TAP_DELAY = 300;
-    
-    if (now - lastTap.current < DOUBLE_TAP_DELAY) {
-      if (!post.user_has_liked) {
-        hapticHeavy();
-        onLike(post.id, false);
-        setShowHeart(true);
-      } else {
-        // Just show the animation if they already liked it
-        hapticMedium();
-        setShowHeart(true);
-      }
-      lastTap.current = 0; // Reset
-    } else {
-      lastTap.current = now;
-    }
-  };
 
   if (!inView && !standalonePostId) {
     // If not in view, render a placeholder of approximately the same height to maintain scroll position
@@ -159,10 +107,15 @@ const FeedPostItem = memo(function FeedPostItem({
   return (
     <div
       ref={ref}
-      {...longPressProps}
+      onClick={(e) => {
+        if ((e.target as HTMLElement).closest('a, button, input')) return;
+        if (!standalonePostId) {
+          window.location.href = `/post/${post.id}`;
+        }
+      }}
       className={cn(
         "p-4 sm:px-5 sm:py-4 border-b border-foreground/[0.06] transition-colors duration-200 relative flex gap-3 sm:gap-4 group/post animate-in fade-in slide-in-from-bottom-2",
-        !standalonePostId && "hover:bg-foreground/[0.03] cursor-pointer touch-pan-y",
+        !standalonePostId && "hover:bg-foreground/[0.03] cursor-pointer",
         standalonePostId && "bg-background py-8 sm:py-10 border-b-2",
         post.author.is_pro ? "bg-gradient-to-r from-yellow-500/[0.03] to-transparent" : ""
       )}
@@ -296,22 +249,12 @@ const FeedPostItem = memo(function FeedPostItem({
           })()}
           {post.image_url && (
             <div
-              className="mt-3 rounded-2xl overflow-hidden border border-foreground/[0.08] shadow-sm cursor-pointer hover:opacity-95 transition-opacity relative"
+              className="mt-3 rounded-2xl overflow-hidden border border-foreground/[0.08] shadow-sm cursor-pointer hover:opacity-95 transition-opacity"
               onClick={(e) => {
                 e.stopPropagation();
-                handleDoubleTap(e);
-                // After 300ms if no second tap, it will trigger single tap elsewhere
-                // but since double tap resets it, we need to distinguish
-                setTimeout(() => {
-                  if (Date.now() - lastTap.current > 300 && lastTap.current !== 0) {
-                    onImageClick(post.image_url!);
-                  }
-                }, 305);
+                onImageClick(post.image_url!);
               }}
             >
-              <AnimatePresence>
-                {showHeart && <HeartAnimation onComplete={() => setShowHeart(false)} />}
-              </AnimatePresence>
               <img src={post.image_url} alt="" loading="lazy" decoding="async" className="w-full max-h-[500px] object-cover" />
             </div>
           )}

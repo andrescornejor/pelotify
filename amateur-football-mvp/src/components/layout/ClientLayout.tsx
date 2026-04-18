@@ -15,7 +15,6 @@ import { initializePushNotifications } from '@/lib/notifications';
 import { MobileStatusBar } from '@/components/MobileStatusBar';
 import { MobilePullToRefresh } from '@/components/MobilePullToRefresh';
 import { MobileOfflineBanner } from '@/components/MobileOfflineBanner';
-import { MobileScrollToTop } from '@/components/MobileScrollToTop';
 import { useMobileRefresh } from '@/hooks/useMobileRefresh';
 import { useHaptic } from '@/hooks/useHaptic';
 
@@ -171,7 +170,6 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
       {/* Mobile-only tools */}
       <MobileStatusBar />
       <MobileOfflineBanner />
-      <MobileScrollToTop />
     </div>
   );
 }
