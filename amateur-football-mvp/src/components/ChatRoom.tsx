@@ -45,7 +45,6 @@ const MessageItem = memo(
         initial={{ opacity: 0, y: 10, scale: 0.98 }}
         animate={{ opacity: 1, y: 0, scale: 1 }}
         transition={{ type: 'spring', stiffness: 260, damping: 25 }}
-        layout
         className={cn(
           'flex gap-3 px-4 sm:px-6 w-full',
           isMine ? 'flex-row-reverse' : 'flex-row',
@@ -79,7 +78,6 @@ const MessageItem = memo(
             </span>
           )}
           <motion.div
-            layout
             className={cn(
               'relative transition-all duration-300 group/bubble overflow-hidden flex flex-col',
               isMine
@@ -239,13 +237,19 @@ export default function ChatRoom({ matchId, recipientId, className, title }: Cha
   useEffect(() => {
     // Use instant scroll on initial load, smooth for subsequent messages
     const behavior: ScrollBehavior = isInitialLoadRef.current ? 'instant' : 'smooth';
-    // Use a longer delay on initial load to ensure DOM is fully rendered
-    const delay = isInitialLoadRef.current ? 200 : 100;
-    const timer = setTimeout(() => {
-      scrollToBottom(behavior);
-      isInitialLoadRef.current = false;
-    }, delay);
-    return () => clearTimeout(timer);
+    
+    // Execute instantly for first load, small delay for subsequent messages
+    if (isInitialLoadRef.current) {
+      requestAnimationFrame(() => {
+        scrollToBottom(behavior);
+        isInitialLoadRef.current = false;
+      });
+    } else {
+      const timer = setTimeout(() => {
+        scrollToBottom(behavior);
+      }, 100);
+      return () => clearTimeout(timer);
+    }
   }, [messages, selectedImage]);
 
   const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
@@ -461,7 +465,7 @@ export default function ChatRoom({ matchId, recipientId, className, title }: Cha
               placeholder="Mensaje..."
               rows={1}
               style={{ minHeight: '40px', maxHeight: '120px' }}
-              className="flex-1 bg-transparent outline-none text-[15px] text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-white/30 resize-none py-2.5 scrollbar-hide"
+              className="flex-1 bg-transparent outline-none text-[16px] text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-white/30 resize-none py-2.5 scrollbar-hide"
             />
 
             <button
