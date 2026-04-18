@@ -59,6 +59,7 @@ export default function VideoPlayer({
   const [localComments, setLocalComments] = useState(comments);
   const [showCopied, setShowCopied] = useState(false);
   const [isShareModalOpen, setIsShareModalOpen] = useState(false);
+  const lastTapRef = useRef<number>(0);
 
   const { ref: inViewRef, inView } = useInView({ threshold: 0.5 });
 
@@ -114,19 +115,20 @@ export default function VideoPlayer({
     setIsMuted(!isMuted);
   };
 
-  let lastTap = 0;
   const handleTap = (e: React.MouseEvent) => {
     const now = Date.now();
     const DOUBLE_TAP_DELAY = 300;
     
-    if (now - lastTap < DOUBLE_TAP_DELAY) {
+    if (now - lastTapRef.current < DOUBLE_TAP_DELAY) {
       // It's a double tap
       handleDoubleTap(e);
+      // Reset so 3 taps don't count as 2 double-taps
+      lastTapRef.current = 0;
     } else {
-      // It's a single tap (will wait a bit before toggling perhaps, but directly toggling play is fine)
+      // It's a single tap
       togglePlay(e);
+      lastTapRef.current = now;
     }
-    lastTap = now;
   };
 
   const handleDoubleTap = (e: React.MouseEvent) => {
