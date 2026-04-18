@@ -345,8 +345,10 @@ export default function MessagesPage() {
 
   return (
     <div className={cn(
-      "flex-1 w-full lg:min-h-[100dvh] lg:h-auto bg-background relative flex flex-col pt-0 lg:pt-28 overflow-hidden",
-      selectedChat ? "pb-0 lg:pb-0" : "pb-24 lg:pb-0 px-0 sm:px-5 lg:px-10 xl:px-16"
+      "w-full bg-background relative flex flex-col lg:pt-28 overflow-hidden",
+      selectedChat 
+        ? "fixed inset-0 z-[100] pt-[env(safe-area-inset-top)] lg:relative lg:inset-auto lg:z-auto lg:flex-1 lg:min-h-[100dvh] lg:h-auto pb-0 lg:pb-0" 
+        : "flex-1 lg:min-h-[100dvh] lg:h-auto pb-24 lg:pb-0 px-0 sm:px-5 lg:px-10 xl:px-16 pt-0"
     )}>
       {/* Hide Bottom Nav on mobile when a chat is active to behave like a native messenger app */}
       {selectedChat && (
@@ -383,7 +385,7 @@ export default function MessagesPage() {
 
       <div className={cn(
         "max-w-full mx-auto relative z-10 w-full flex-1 min-h-0",
-        selectedChat ? "flex-1 lg:h-[80vh] grid grid-cols-1 lg:grid-cols-12 lg:gap-8" : "flex-1 lg:h-[80vh] grid grid-cols-1 lg:grid-cols-12 gap-8"
+        selectedChat ? "flex flex-col flex-1 lg:grid lg:grid-cols-12 lg:gap-8 lg:h-[80vh]" : "flex-1 lg:h-[80vh] grid grid-cols-1 lg:grid-cols-12 gap-8"
       )}>
         {/* Conversations List */}
         <div
@@ -548,7 +550,7 @@ export default function MessagesPage() {
         {/* Chat Area */}
         <div
           className={cn(
-            'lg:col-span-8 h-full flex flex-col min-h-0',
+            'lg:col-span-8 flex-1 flex flex-col min-h-0 w-full',
             !selectedChat ? 'hidden lg:flex' : 'flex'
           )}
         >
@@ -556,16 +558,17 @@ export default function MessagesPage() {
             <motion.div
               initial={{ opacity: 0, y: 10, scale: 0.99 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
-              className="flex flex-col h-full bg-surface/30 dark:bg-foreground/[0.02] border-foreground/10 md:border md:rounded-[3rem] lg:rounded-[3.5rem] overflow-hidden relative shadow-[0_40px_100px_-20px_rgba(0,0,0,0.1)] dark:shadow-[0_50px_120px_rgba(0,0,0,0.6)]"
+              className="flex flex-col flex-1 min-h-0 bg-surface/30 dark:bg-[#0A0A0A] border-foreground/10 md:border md:rounded-[3rem] lg:rounded-[3.5rem] overflow-hidden relative shadow-2xl lg:shadow-[0_50px_120px_rgba(0,0,0,0.6)]"
             >
               {/* Chat Header */}
-              <div className="px-5 py-3 lg:py-3.5 bg-background/50 backdrop-blur-xl border-b border-foreground/5 flex items-center justify-between relative z-20">
-                <div className="flex items-center gap-3">
+              <div className="px-3 sm:px-5 py-2 lg:py-3.5 bg-background/80 lg:bg-background/50 backdrop-blur-xl border-b border-foreground/5 flex items-center justify-between relative z-20">
+                <div className="flex items-center gap-2 sm:gap-3">
                   <button
                     onClick={() => setSelectedChat(null)}
-                    className="lg:hidden w-10 h-10 flex items-center justify-center bg-foreground/5 rounded-xl active:bg-foreground/10 transition-colors"
+                    className="lg:hidden w-10 h-10 flex flex-col items-center justify-center rounded-xl transition-all"
                   >
-                    <X className="w-5 h-5 opacity-40" />
+                    <ChevronRight className="w-6 h-6 text-primary rotate-180 mb-0.5" />
+                    <span className="text-[8px] font-black uppercase text-primary tracking-widest leading-none">Volver</span>
                   </button>
                   <div className="flex items-center gap-3">
                     <div className="w-10 h-10 rounded-xl overflow-hidden border border-primary/20 bg-primary/5">
@@ -594,7 +597,7 @@ export default function MessagesPage() {
 
               <ChatRoom
                 recipientId={selectedChat.userId}
-                className="flex-1 !bg-transparent !border-0 !rounded-none !shadow-none"
+                className="flex-1 min-h-0 !bg-transparent !border-0 !rounded-none !shadow-none"
               />
             </motion.div>
           ) : (
