@@ -22,7 +22,7 @@ export function NotificationToast() {
           animate={{ opacity: 1, y: 0, scale: 1 }}
           exit={{ opacity: 0, y: -60, scale: 0.95 }}
           transition={{ type: 'spring', stiffness: 400, damping: 30 }}
-          className="fixed top-4 left-4 right-4 z-[9999] max-w-lg mx-auto"
+          className="fixed top-[calc(1rem+env(safe-area-inset-top,0px))] left-4 right-4 z-[9999] max-w-lg mx-auto"
         >
           <button
             onClick={() => {

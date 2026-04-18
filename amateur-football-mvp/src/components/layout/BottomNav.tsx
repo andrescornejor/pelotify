@@ -94,7 +94,7 @@ export function BottomNav() {
                 animate={{ opacity: 1, y: 0, scale: 1 }}
                 exit={{ opacity: 0, y: 20, scale: 0.9 }}
                 transition={{ type: "spring", stiffness: 400, damping: 25 }}
-                className="absolute bottom-[90px] left-1/2 -translate-x-1/2 w-[280px] flex flex-col gap-3 py-4"
+                className="absolute bottom-[calc(90px+env(safe-area-inset-bottom,0px))] left-1/2 -translate-x-1/2 w-[280px] flex flex-col gap-3 py-4"
               >
                 {[
                   { label: "Armar Partido", icon: Target, href: "/create", color: "text-[#2cfc7d]" },
@@ -160,7 +160,7 @@ export function BottomNav() {
                 : 'bg-background/95 backdrop-blur-[20px] border-white/5 dark:border-white/5'
             )}
           >
-            <div className="relative z-10 flex w-full h-[76px] items-center justify-around pt-1 pb-[calc(env(safe-area-inset-bottom,0px)*0.6)]">
+            <div className="relative z-10 flex w-full h-[calc(76px+env(safe-area-inset-bottom,0px))] items-center justify-around pt-1 pb-[env(safe-area-inset-bottom,0px)]">
               {navItems.map((item) => {
                 const isActive = item.href === '/' 
                   ? pathname === '/' 

@@ -103,14 +103,14 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
               ? pathname.startsWith('/match') ||
                 pathname === '/profile' ||
                 pathname.startsWith('/profile/')
-                ? 'pb-24 lg:pt-24 lg:pb-0'
+                ? 'pb-[calc(6rem+env(safe-area-inset-bottom,0px))] lg:pt-24 lg:pb-0'
                 : pathname.startsWith('/messages')
                   ? 'pb-0 lg:pt-24 lg:pb-0'
                   : isFeedOrPostPage
                     ? 'pb-0 lg:pt-24 lg:pb-0'
                     : pathname === '/'
-                      ? 'pb-24 lg:pt-28 lg:pb-0' // Only 32 for home page
-                      : 'pb-24 lg:pt-24 lg:pb-0' // Reset others to 24
+                      ? 'pb-[calc(6rem+env(safe-area-inset-bottom,0px))] lg:pt-28 lg:pb-0' // Only 32 for home page
+                      : 'pb-[calc(6rem+env(safe-area-inset-bottom,0px))] lg:pt-24 lg:pb-0' // Reset others to 24
               : ''
           )}
         >

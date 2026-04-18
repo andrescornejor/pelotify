@@ -405,7 +405,7 @@ export default function ChatRoom({ matchId, recipientId, className, title }: Cha
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             onClick={() => scrollToBottom()}
-            className="absolute bottom-[90px] right-6 w-9 h-9 rounded-full bg-[#1C1C1E]/90 backdrop-blur-md border border-white/10 text-white flex items-center justify-center shadow-xl z-30 transition-all hover:bg-[#2CFC7D] hover:text-black hover:border-transparent"
+            className="absolute bottom-[calc(90px+env(safe-area-inset-bottom,0px))] right-6 w-9 h-9 rounded-full bg-[#1C1C1E]/90 backdrop-blur-md border border-white/10 text-white flex items-center justify-center shadow-xl z-30 transition-all hover:bg-[#2CFC7D] hover:text-black hover:border-transparent"
           >
              <ChevronDown className="w-5 h-5" />
           </motion.button>
@@ -413,7 +413,7 @@ export default function ChatRoom({ matchId, recipientId, className, title }: Cha
       </AnimatePresence>
 
       {/* Input Area - Restored normal padding without bottom navigation space */}
-      <div className="px-4 sm:px-6 py-3 lg:py-4 pt-2 pb-3 md:pb-4 relative z-20 bg-gradient-to-t from-white dark:from-[#0A0A0A] via-white/95 dark:via-[#0A0A0A]/95 to-transparent">
+      <div className="px-4 sm:px-6 py-3 lg:py-4 pt-2 pb-[calc(1rem+env(safe-area-inset-bottom,0px))] md:pb-4 relative z-20 bg-gradient-to-t from-white dark:from-[#0A0A0A] via-white/95 dark:via-[#0A0A0A]/95 to-transparent">
         <form
           onSubmit={handleSend}
           className="flex flex-col gap-2 relative bg-slate-100 dark:bg-[#1C1C1E] border border-black/5 dark:border-white/10 rounded-[2rem] p-1.5 shadow-inner transition-all focus-within:border-primary/30 focus-within:bg-white dark:focus-within:bg-[#202022]"

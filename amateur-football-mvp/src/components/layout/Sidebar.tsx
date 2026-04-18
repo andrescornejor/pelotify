@@ -242,7 +242,7 @@ export const SidebarContent = memo(function SidebarContent({
       )}
 
       {/* ── Top Header ── */}
-      <div className="relative z-10 px-6 py-6 pb-4 flex items-center justify-between shrink-0">
+      <div className="relative z-10 px-6 pt-[calc(1.5rem+env(safe-area-inset-top,0px))] pb-4 flex items-center justify-between shrink-0">
         <Link href="/" className="flex items-center gap-3 group/logo">
           <div className="relative w-11 h-11 flex items-center justify-center shrink-0 transition-transform duration-500 group-hover/logo:scale-110">
             <div className="absolute inset-0 bg-primary/20 blur-[12px] rounded-2xl opacity-50" />
@@ -366,7 +366,7 @@ export const SidebarContent = memo(function SidebarContent({
       {/* ── Footer ── */}
       <div className={cn(
         "relative z-10 p-4 shrink-0 transition-all",
-        isMobile ? "pb-8" : "pb-4"
+        isMobile ? "pb-[calc(2rem+env(safe-area-inset-bottom,0px))]" : "pb-4"
       )}>
         <div className="bg-foreground/[0.03] border border-foreground/5 rounded-2xl overflow-hidden">
           <Link href="/settings" onClick={() => isMobile && onClose && onClose()} className="block">
