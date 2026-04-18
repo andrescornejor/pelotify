@@ -18,6 +18,7 @@ import { cn } from '@/lib/utils';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useMemo, useState } from 'react';
 import { useSettings } from '@/contexts/SettingsContext';
+import { useHaptic } from '@/hooks/useHaptic';
 
 /**
  * PREMIUM REDESIGNED BOTTOM NAV
@@ -28,6 +29,7 @@ export function BottomNav() {
   const pathname = usePathname();
   const { performanceMode } = useSettings();
   const [isCreateMenuOpen, setIsCreateMenuOpen] = useState(false);
+  const { hapticLight, hapticMedium } = useHaptic();
 
   const navItems = useMemo(() => [
     { 
@@ -104,7 +106,10 @@ export function BottomNav() {
                   <Link 
                     key={i}
                     href={action.href}
-                    onClick={() => setIsCreateMenuOpen(false)}
+                    onClick={() => {
+                      hapticLight();
+                      setIsCreateMenuOpen(false);
+                    }}
                     className="block w-full"
                   >
                     <motion.div
@@ -173,7 +178,10 @@ export function BottomNav() {
                     <div
                       key="primary-btn"
                       className="relative flex items-center justify-center -mt-8 cursor-pointer pointer-events-auto"
-                      onClick={() => setIsCreateMenuOpen(!isCreateMenuOpen)}
+                      onClick={() => {
+                        hapticMedium();
+                        setIsCreateMenuOpen(!isCreateMenuOpen);
+                      }}
                     >
                       <motion.div
                         animate={{ rotate: isCreateMenuOpen ? 45 : 0 }}
@@ -211,7 +219,10 @@ export function BottomNav() {
                   <Link
                     key={item.href}
                     href={item.href}
-                    onClick={() => setIsCreateMenuOpen(false)}
+                    onClick={() => {
+                      if (!isActive) hapticLight();
+                      setIsCreateMenuOpen(false);
+                    }}
                     className="relative flex flex-col items-center justify-center h-full px-4 group pointer-events-auto"
                   >
                     <motion.div

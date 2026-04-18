@@ -6,10 +6,12 @@ import {
   MessageSquare, Heart, Bookmark, BookmarkCheck, 
   Share2, Check, MoreHorizontal, Trash2, Zap, Send, Loader2
 } from 'lucide-react';
-import Link from 'next/link';
 import { cn } from '@/lib/utils';
 import MatchPostCard from './MatchPostCard';
 import { useInView } from 'react-intersection-observer';
+import { useHaptic } from '@/hooks/useHaptic';
+import { AnimatePresence, motion } from 'framer-motion';
+import Link from 'next/link';
 
 interface Post {
   id: string;
@@ -88,6 +90,19 @@ const FeedPostItem = memo(function FeedPostItem({
     threshold: 0,
     rootMargin: '200px 0px', // Load slightly before coming into view
   });
+  
+  const { hapticMedium, hapticLight } = useHaptic();
+  const [showHeartOverlay, setShowHeartOverlay] = useState(false);
+
+  const handleDoubleTap = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    hapticMedium();
+    if (!post.user_has_liked) {
+      onLike(post.id, false);
+    }
+    setShowHeartOverlay(true);
+    setTimeout(() => setShowHeartOverlay(false), 800);
+  };
 
   if (!inView && !standalonePostId) {
     // If not in view, render a placeholder of approximately the same height to maintain scroll position
@@ -101,6 +116,7 @@ const FeedPostItem = memo(function FeedPostItem({
   return (
     <div
       ref={ref}
+      onDoubleClick={handleDoubleTap}
       onClick={(e) => {
         if ((e.target as HTMLElement).closest('a, button, input')) return;
         if (!standalonePostId) {
@@ -114,6 +130,20 @@ const FeedPostItem = memo(function FeedPostItem({
         post.author.is_pro ? "bg-gradient-to-r from-yellow-500/[0.03] to-transparent" : ""
       )}
     >
+      <AnimatePresence>
+        {showHeartOverlay && (
+          <motion.div
+            initial={{ opacity: 0, scale: 0.5 }}
+            animate={{ opacity: 1, scale: 1.2 }}
+            exit={{ opacity: 0, scale: 1.5 }}
+            transition={{ type: "spring", damping: 15 }}
+            className="absolute inset-0 flex items-center justify-center z-50 pointer-events-none"
+          >
+            <Heart className="w-24 h-24 text-pink-500 fill-pink-500 drop-shadow-2xl" />
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       {/* LEFTSIDE AVATAR */}
       <div className="shrink-0 flex flex-col items-center">
         <Link href={`/feed/profile?id=${post.author.id}`} className={cn("w-12 h-12 rounded-full overflow-hidden shrink-0 relative hover:opacity-90 transition-opacity duration-200 z-10", post.author.is_pro ? "ring-2 ring-yellow-500/40" : "")}>
@@ -210,7 +240,11 @@ const FeedPostItem = memo(function FeedPostItem({
 
         <div className="flex items-center justify-between text-foreground/40 max-w-[425px] pr-2 -ml-2 pb-1">
           <button
-            onClick={(e) => { e.stopPropagation(); onExpand(post.id); }}
+            onClick={(e) => { 
+              e.stopPropagation(); 
+              hapticLight();
+              onExpand(post.id); 
+            }}
             className={cn("flex items-center gap-1.5 text-[13px] group/btn transition-colors", isExpanded ? "text-blue-500" : "hover:text-blue-500")}
           >
             <div className={cn("p-2 rounded-full transition-colors", isExpanded ? "bg-blue-500/10" : "group-hover/btn:bg-blue-500/10")}>
@@ -220,7 +254,11 @@ const FeedPostItem = memo(function FeedPostItem({
           </button>
 
           <button
-            onClick={(e) => { e.stopPropagation(); onBookmark(post.id); }}
+            onClick={(e) => { 
+              e.stopPropagation(); 
+              hapticLight();
+              onBookmark(post.id); 
+            }}
             className={cn("flex items-center gap-1.5 text-[13px] group/btn transition-colors", isBookmarked ? "text-green-500" : "hover:text-green-500")}
           >
             <div className={cn("p-2 rounded-full transition-colors", isBookmarked ? "bg-green-500/10" : "group-hover/btn:bg-green-500/10")}>
@@ -229,7 +267,11 @@ const FeedPostItem = memo(function FeedPostItem({
           </button>
 
           <button
-            onClick={(e) => { e.stopPropagation(); onLike(post.id, post.user_has_liked); }}
+            onClick={(e) => { 
+              e.stopPropagation(); 
+              hapticMedium();
+              onLike(post.id, post.user_has_liked); 
+            }}
             className={cn("flex items-center gap-1.5 text-[13px] group/btn transition-colors", post.user_has_liked ? "text-pink-600" : "hover:text-pink-600")}
           >
             <div className={cn("p-2 rounded-full transition-colors", post.user_has_liked ? "bg-pink-600/10" : "group-hover/btn:bg-pink-600/10")}>
