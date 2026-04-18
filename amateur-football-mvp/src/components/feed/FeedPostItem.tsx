@@ -10,6 +10,7 @@ import { cn } from '@/lib/utils';
 import MatchPostCard from './MatchPostCard';
 import { useInView } from 'react-intersection-observer';
 import { useHaptic } from '@/hooks/useHaptic';
+import { useMobileShare } from '@/hooks/useMobileShare';
 import Link from 'next/link';
 import { BottomSheet } from '@/components/BottomSheet';
 
@@ -91,6 +92,7 @@ const FeedPostItem = memo(function FeedPostItem({
     rootMargin: '200px 0px', // Load slightly before coming into view
   });
   const { hapticMedium, hapticLight } = useHaptic();
+  const { shareContent } = useMobileShare();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   if (!inView && !standalonePostId) {
@@ -197,13 +199,16 @@ const FeedPostItem = memo(function FeedPostItem({
             )}
             
             <button
-              onClick={(e) => { 
+              onClick={async (e) => { 
                 e.stopPropagation(); 
-                hapticLight();
-                onShare(post);
                 setIsMenuOpen(false);
+                await shareContent({
+                  title: `Post de ${post.author.name}`,
+                  text: post.content,
+                  url: `${window.location.origin}/post/${post.id}`
+                });
               }}
-              className="w-full text-left px-5 py-4 text-base font-bold text-foreground bg-foreground/5 hover:bg-foreground/10 rounded-2xl flex items-center gap-3 transition-colors"
+              className="w-full text-left px-5 py-4 text-base font-bold text-foreground bg-foreground/5 hover:bg-foreground/10 rounded-2xl flex items-center gap-3 transition-colors mobile-touch-feedback"
             >
               <Share2 className="w-5 h-5" /> Compartir Post
             </button>
@@ -298,8 +303,15 @@ const FeedPostItem = memo(function FeedPostItem({
           </button>
 
           <button
-            onClick={(e) => { e.stopPropagation(); onShare(post); }}
-            className="flex items-center gap-1.5 text-[13px] group/btn transition-colors hover:text-primary"
+            onClick={async (e) => { 
+              e.stopPropagation(); 
+              await shareContent({
+                title: `Post de ${post.author.name}`,
+                text: post.content,
+                url: `${window.location.origin}/post/${post.id}`
+              });
+            }}
+            className="flex items-center gap-1.5 text-[13px] group/btn transition-colors hover:text-primary mobile-touch-feedback"
           >
             <div className="p-2 rounded-full group-hover/btn:bg-primary/10 transition-colors">
               <Share2 className="w-4.5 h-4.5" />

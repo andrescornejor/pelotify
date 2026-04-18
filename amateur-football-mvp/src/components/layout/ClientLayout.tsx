@@ -12,6 +12,12 @@ import { NotificationCenter } from '@/components/notifications/NotificationCente
 import { NotificationToast, NotificationPromptBanner } from '@/components/notifications/NotificationUI';
 import { FloatingChat } from '@/components/FloatingChat';
 import { initializePushNotifications } from '@/lib/notifications';
+import { MobileStatusBar } from '@/components/MobileStatusBar';
+import { MobilePullToRefresh } from '@/components/MobilePullToRefresh';
+import { MobileOfflineBanner } from '@/components/MobileOfflineBanner';
+import { useMobileRefresh } from '@/hooks/useMobileRefresh';
+import { useHaptic } from '@/hooks/useHaptic';
+
 
 export default function ClientLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
@@ -19,6 +25,8 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
   const { isNotificationsOpen, setNotificationsOpen } = useSidebar();
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const fcmInitRef = useRef(false);
+  const { handleRefresh } = useMobileRefresh();
+  const { hapticLight } = useHaptic();
 
   // Scroll to show/hide header state
   const [headerVisible, setHeaderVisible] = useState(true);
@@ -116,7 +124,25 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
         >
           {/* Push Notification Permission Banner */}
           {showNav && <NotificationPromptBanner />}
-          {children}
+          
+          {/* Mobile-only Pull-to-Refresh for key pages */}
+          {showNav && (pathname === '/' || pathname === '/feed') ? (
+            <div className="flex-1 lg:hidden">
+              <MobilePullToRefresh onRefresh={handleRefresh}>
+                {children}
+              </MobilePullToRefresh>
+            </div>
+          ) : (
+            null
+          )}
+          
+          {/* Desktop & Non-refreshable mobile pages */}
+          <div className={cn(
+            "flex-1",
+            (showNav && (pathname === '/' || pathname === '/feed')) ? "hidden lg:block" : "block"
+          )}>
+            {children}
+          </div>
         </main>
 
         {/* Mobile Navigation */}
@@ -140,6 +166,10 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
 
       {/* Persistent Floating Chat (Desktop only) */}
       {showNav && <FloatingChat />}
+      
+      {/* Mobile-only tools */}
+      <MobileStatusBar />
+      <MobileOfflineBanner />
     </div>
   );
 }

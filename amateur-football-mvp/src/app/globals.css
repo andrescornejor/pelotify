@@ -377,6 +377,19 @@
     transform: scale(0.96);
   }
 
+  /* AAA Mobile Touch Feedback */
+  .mobile-touch-feedback {
+    @apply transition-all duration-200;
+  }
+  
+  .mobile-touch-feedback:active {
+    @apply opacity-70 scale-[0.97];
+  }
+
+  .squishy-button {
+    @apply transition-all active:scale-90 duration-300 ease-out active:duration-75;
+  }
+
   /* ── Smooth reveal on scroll ── */
   .reveal-up {
     animation: reveal-up 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards;
