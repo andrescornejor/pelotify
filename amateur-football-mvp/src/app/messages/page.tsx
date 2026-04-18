@@ -346,8 +346,16 @@ export default function MessagesPage() {
   return (
     <div className={cn(
       "flex-1 w-full lg:min-h-[100dvh] lg:h-auto bg-background relative flex flex-col pt-0 lg:pt-28 overflow-hidden",
-      selectedChat ? "pb-0 lg:pb-0" : "pb-32 lg:pb-0 px-0 sm:px-5 lg:px-10 xl:px-16"
+      selectedChat ? "pb-0 lg:pb-0" : "pb-24 lg:pb-0 px-0 sm:px-5 lg:px-10 xl:px-16"
     )}>
+      {/* Hide Bottom Nav on mobile when a chat is active to behave like a native messenger app */}
+      {selectedChat && (
+        <style dangerouslySetInnerHTML={{ __html: `
+          @media (max-width: 1023px) {
+            .mobile-bottom-nav { display: none !important; }
+          }
+        `}} />
+      )}
       {/* Animated Background Blobs - Hidden on mobile for cleaner professional look */}
       <div className="absolute inset-0 overflow-x-hidden pointer-events-none hidden md:block">
         {/* Superior blending glow */}

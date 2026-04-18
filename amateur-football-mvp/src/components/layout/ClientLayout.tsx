@@ -97,7 +97,7 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
 
         {/* Mobile Navigation */}
         {showNav && !isFeedOrPostPage && (
-          <div className="lg:hidden">
+          <div className="lg:hidden mobile-bottom-nav z-[100] fixed bottom-0 left-0 right-0">
             <BottomNav />
           </div>
         )}
