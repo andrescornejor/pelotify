@@ -134,6 +134,7 @@ export default function ChatRoom({ matchId, recipientId, className, title }: Cha
   const [uploadingImage, setUploadingImage] = useState(false);
   const [selectedImage, setSelectedImage] = useState<{ file: File; preview: string } | null>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const isInitialLoadRef = useRef(true);
 
@@ -223,7 +224,9 @@ export default function ChatRoom({ matchId, recipientId, className, title }: Cha
   }, [matchId, recipientId, user?.id]);
 
   const scrollToBottom = (behavior: ScrollBehavior = 'smooth') => {
-    if (scrollRef.current) {
+    if (messagesEndRef.current) {
+      messagesEndRef.current.scrollIntoView({ behavior, block: 'end' });
+    } else if (scrollRef.current) {
       const scrollHeight = scrollRef.current.scrollHeight;
       const height = scrollRef.current.clientHeight;
       const maxScrollTop = scrollHeight - height;
@@ -235,22 +238,26 @@ export default function ChatRoom({ matchId, recipientId, className, title }: Cha
   };
 
   useEffect(() => {
+    if (isLoading) return;
+
     // Use instant scroll on initial load, smooth for subsequent messages
     const behavior: ScrollBehavior = isInitialLoadRef.current ? 'instant' : 'smooth';
     
     // Execute instantly for first load, small delay for subsequent messages
     if (isInitialLoadRef.current) {
-      requestAnimationFrame(() => {
-        scrollToBottom(behavior);
+      // Add a tiny timeout to ensure Framer Motion and DOM fully digested the items,
+      // but keep behavior 'instant' so the user doesn't see it sliding down.
+      setTimeout(() => {
+        scrollToBottom('instant');
         isInitialLoadRef.current = false;
-      });
+      }, 50);
     } else {
       const timer = setTimeout(() => {
         scrollToBottom(behavior);
       }, 100);
       return () => clearTimeout(timer);
     }
-  }, [messages, selectedImage]);
+  }, [messages, selectedImage, isLoading]);
 
   const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
     const target = e.currentTarget;
@@ -369,7 +376,7 @@ export default function ChatRoom({ matchId, recipientId, className, title }: Cha
             </p>
           </div>
         ) : (
-          <div className="flex flex-col py-6">
+          <div className="flex flex-col py-6 pb-2">
             <AnimatePresence initial={false}>
               {messages.map((msg, i) => (
                 <MessageItem
@@ -381,6 +388,7 @@ export default function ChatRoom({ matchId, recipientId, className, title }: Cha
                 />
               ))}
             </AnimatePresence>
+            <div ref={messagesEndRef} className="h-px mt-2" />
           </div>
         )}
       </div>
