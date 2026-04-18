@@ -119,11 +119,14 @@ export const TopHeader = memo(function TopHeader({ isVisible = true }: { isVisib
   return (
     <>
       <header className={cn(
-        "z-[60] pt-[calc(0.75rem+env(safe-area-inset-top,0px))] sm:pt-6 lg:fixed lg:top-0 lg:left-0 lg:right-0 lg:pt-4 px-3 sm:px-5 lg:px-10 xl:px-16 pointer-events-none w-full",
-        "sticky top-0 transition-transform duration-300",
+        "z-[60] w-full",
+        "pt-[calc(0.6rem+env(safe-area-inset-top,0px))] pb-2.5 sm:pt-6 lg:pt-4 px-3 sm:px-5 lg:px-10 xl:px-16",
+        "sticky top-0 lg:fixed lg:top-0 lg:left-0 lg:right-0 lg:pb-0",
+        "bg-background border-b border-foreground/[0.06] shadow-sm lg:bg-transparent lg:border-transparent lg:shadow-none",
+        "pointer-events-auto lg:pointer-events-none transition-transform duration-300",
         !isVisible ? "-translate-y-[150%] lg:translate-y-0" : "translate-y-0"
       )}>
-        <div className="max-w-full mx-auto w-full flex items-center justify-between lg:block">
+        <div className="max-w-full mx-auto w-full flex items-center justify-between lg:block relative z-10">
           
           {/* MOBILE MINIMAL ACTIONS (Inline with flow) */}
           <div className={cn(
