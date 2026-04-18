@@ -9,6 +9,7 @@ import Link from 'next/link';
 import CommentsModal from './CommentsModal';
 import ShareModal from './ShareModal';
 import { supabase } from '@/lib/supabase';
+import { useHaptic } from '@/hooks/useHaptic';
 
 interface VideoPlayerProps {
   id: string;
@@ -41,6 +42,7 @@ export default function VideoPlayer({
 }: VideoPlayerProps) {
   const { user } = useAuth();
   const router = useRouter();
+  const { hapticMedium, hapticLight } = useHaptic();
   const videoRef = useRef<HTMLVideoElement>(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [isMuted, setIsMuted] = useState(true);
@@ -135,6 +137,7 @@ export default function VideoPlayer({
     
     setDoubleTapPosition({ x, y });
     setShowDoubleTapHeart(true);
+    hapticMedium();
     setTimeout(() => setShowDoubleTapHeart(false), 1000); // hide after animation
     
     // Auto-like if not liked

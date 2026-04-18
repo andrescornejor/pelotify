@@ -11,6 +11,7 @@ import MatchPostCard from './MatchPostCard';
 import { useInView } from 'react-intersection-observer';
 import { useHaptic } from '@/hooks/useHaptic';
 import Link from 'next/link';
+import { BottomSheet } from '@/components/BottomSheet';
 
 interface Post {
   id: string;
@@ -89,19 +90,8 @@ const FeedPostItem = memo(function FeedPostItem({
     threshold: 0,
     rootMargin: '200px 0px', // Load slightly before coming into view
   });
-  
   const { hapticMedium, hapticLight } = useHaptic();
-  const [showHeartOverlay, setShowHeartOverlay] = useState(false);
-
-  const handleDoubleTap = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    hapticMedium();
-    if (!post.user_has_liked) {
-      onLike(post.id, false);
-    }
-    setShowHeartOverlay(true);
-    setTimeout(() => setShowHeartOverlay(false), 800);
-  };
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   if (!inView && !standalonePostId) {
     // If not in view, render a placeholder of approximately the same height to maintain scroll position
@@ -115,7 +105,6 @@ const FeedPostItem = memo(function FeedPostItem({
   return (
     <div
       ref={ref}
-      onDoubleClick={handleDoubleTap}
       onClick={(e) => {
         if ((e.target as HTMLElement).closest('a, button, input')) return;
         if (!standalonePostId) {
@@ -129,20 +118,6 @@ const FeedPostItem = memo(function FeedPostItem({
         post.author.is_pro ? "bg-gradient-to-r from-yellow-500/[0.03] to-transparent" : ""
       )}
     >
-      <AnimatePresence>
-        {showHeartOverlay && (
-          <motion.div
-            initial={{ opacity: 0, scale: 0.5 }}
-            animate={{ opacity: 1, scale: 1.2 }}
-            exit={{ opacity: 0, scale: 1.5 }}
-            transition={{ type: "spring", damping: 15 }}
-            className="absolute inset-0 flex items-center justify-center z-50 pointer-events-none"
-          >
-            <Heart className="w-24 h-24 text-pink-500 fill-pink-500 drop-shadow-2xl" />
-          </motion.div>
-        )}
-      </AnimatePresence>
-
       {/* LEFTSIDE AVATAR */}
       <div className="shrink-0 flex flex-col items-center">
         <Link href={`/feed/profile?id=${post.author.id}`} className={cn("w-12 h-12 rounded-full overflow-hidden shrink-0 relative hover:opacity-90 transition-opacity duration-200 z-10", post.author.is_pro ? "ring-2 ring-yellow-500/40" : "")}>
@@ -175,22 +150,65 @@ const FeedPostItem = memo(function FeedPostItem({
             </span>
           </div>
 
-          {isAuthor && (
-            <div className="relative group/menu shrink-0">
-              <button className="text-foreground/40 hover:text-blue-500 p-1.5 hover:bg-blue-500/10 rounded-full transition-colors mt-[-4px]">
-                <MoreHorizontal className="w-4 h-4" />
-              </button>
-              <div className="absolute right-0 top-full mt-1 w-32 bg-surface-elevated border border-foreground/10 rounded-xl shadow-xl flex flex-col opacity-0 group-hover/menu:opacity-100 pointer-events-none group-hover/menu:pointer-events-auto transition-all z-20 overflow-hidden">
-                <button
-                  onClick={(e) => { e.stopPropagation(); onDelete(post.id); }}
-                  className="w-full text-left px-4 py-3 text-sm font-bold text-red-500 hover:bg-white/5 flex items-center gap-2"
-                >
-                  <Trash2 className="w-4 h-4" /> Eliminar
-                </button>
-              </div>
-            </div>
-          )}
+          <div className="shrink-0">
+            <button 
+              onClick={(e) => {
+                e.stopPropagation();
+                hapticLight();
+                setIsMenuOpen(true);
+              }}
+              className="text-foreground/40 hover:text-primary p-1.5 hover:bg-primary/10 rounded-full transition-colors mt-[-4px]"
+            >
+              <MoreHorizontal className="w-5 h-5" />
+            </button>
+          </div>
         </div>
+
+        <BottomSheet 
+          isOpen={isMenuOpen} 
+          onClose={() => setIsMenuOpen(false)} 
+          title="Opciones del Post"
+        >
+          <div className="flex flex-col gap-2">
+            {isAuthor ? (
+              <button
+                onClick={(e) => { 
+                  e.stopPropagation(); 
+                  hapticMedium();
+                  onDelete(post.id); 
+                  setIsMenuOpen(false);
+                }}
+                className="w-full text-left px-5 py-4 text-base font-bold text-red-500 bg-red-500/5 hover:bg-red-500/10 rounded-2xl flex items-center gap-3 transition-colors"
+              >
+                <Trash2 className="w-5 h-5" /> Eliminar Publicación
+              </button>
+            ) : (
+              <button
+                onClick={(e) => { 
+                  e.stopPropagation(); 
+                  hapticLight();
+                  // For now just close or add report logic here
+                  setIsMenuOpen(false);
+                }}
+                className="w-full text-left px-5 py-4 text-base font-bold text-foreground bg-foreground/5 hover:bg-foreground/10 rounded-2xl flex items-center gap-3 transition-colors"
+              >
+                <MoreHorizontal className="w-5 h-5 opacity-50" /> Reportar (Próximamente)
+              </button>
+            )}
+            
+            <button
+              onClick={(e) => { 
+                e.stopPropagation(); 
+                hapticLight();
+                onShare(post);
+                setIsMenuOpen(false);
+              }}
+              className="w-full text-left px-5 py-4 text-base font-bold text-foreground bg-foreground/5 hover:bg-foreground/10 rounded-2xl flex items-center gap-3 transition-colors"
+            >
+              <Share2 className="w-5 h-5" /> Compartir Post
+            </button>
+          </div>
+        </BottomSheet>
 
         <div className={cn("mt-1 mb-2.5", standalonePostId ? "mt-4 mb-5" : "")}>
           <p className={cn("text-foreground whitespace-pre-wrap", standalonePostId ? "text-xl sm:text-[22px] font-medium leading-relaxed font-kanit tracking-tight" : "text-[15px] leading-snug")}>
