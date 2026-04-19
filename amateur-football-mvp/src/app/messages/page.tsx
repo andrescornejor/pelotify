@@ -248,9 +248,10 @@ export default function MessagesPage() {
     };
     loadData();
 
-    // Subscribe to changes to refresh the list
+    // Subscribe to changes to refresh the list with a unique channel name to avoid collisions
+    const channelId = `messages-page-${user.id}-${Math.random().toString(36).slice(2, 9)}`;
     const channel = supabase
-      .channel('messages-page-refresh')
+      .channel(channelId)
       .on(
         'postgres_changes',
         {
