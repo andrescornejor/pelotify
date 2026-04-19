@@ -566,7 +566,7 @@ export default function FeedClient({ standalonePostId }: { standalonePostId?: st
 
   if (isLoading) {
     return (
-      <div className="flex flex-col min-h-screen bg-background pt-16 sm:pt-[25px] lg:pt-[30px] px-0 sm:px-5 lg:px-10 xl:px-16 relative overflow-hidden">
+      <div className="flex flex-col min-h-screen bg-background pt-0 sm:pt-[25px] lg:pt-[30px] px-0 sm:px-5 lg:px-10 xl:px-16 relative overflow-hidden">
         {/* AMBIENT BACKGROUND */}
         <div className="fixed inset-0 pointer-events-none -z-10 overflow-hidden">
           <div className="absolute top-[-5%] right-[-5%] w-[40%] h-[40%] opacity-[0.03]" style={{ background: 'radial-gradient(circle, #2cfc7d 0%, transparent 70%)' }} />
