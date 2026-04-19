@@ -114,18 +114,6 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
   const showNav = !isAuthPage && !!user && !isHighlightsPage;
   const showTopHeader = showNav && !isProfilePage;
 
-  // Mobile/PTR Scroll Handling
-  const [isMobile, setIsMobile] = useState(false);
-  useEffect(() => {
-    const checkMobile = () => setIsMobile(window.innerWidth < 1024);
-    checkMobile();
-    window.addEventListener('resize', checkMobile);
-    return () => window.removeEventListener('resize', checkMobile);
-  }, []);
-
-  const isPTRPage = showNav && (pathname === '/' || pathname === '/feed');
-  const shouldBlockOuterScroll = isHighlightsPage || isMessagesPage || (isMobile && isPTRPage);
-
   if (isAuthPage) {
     return <>{children}</>;
   }
@@ -140,7 +128,7 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
         onScroll={handleScroll}
         className={cn(
           'flex-1 flex flex-col min-w-0 transition-[padding] duration-300 ease-in-out max-h-[100dvh]',
-          shouldBlockOuterScroll ? 'overflow-hidden' : 'overflow-y-auto'
+          isHighlightsPage || pathname.startsWith('/messages') ? 'overflow-hidden' : 'overflow-y-auto'
         )}
         onTouchStart={showNav ? onTouchStart : undefined}
         onTouchEnd={showNav ? onTouchEnd : undefined}
@@ -173,20 +161,12 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
                   stiffness: 300,
                   damping: 30
                 }}
-                className={cn(
-                  "w-full flex flex-col overflow-x-hidden",
-                  isMobile ? "h-full" : "h-auto min-h-full",
-                  (isMobile && !isPTRPage) ? "overflow-y-auto" : "overflow-y-visible"
-                )}
-                onScroll={(isMobile && !isPTRPage) ? handleScroll : undefined}
+                className="w-full h-full flex flex-col overflow-y-auto overflow-x-hidden"
               >
                 {/* Mobile-only Pull-to-Refresh for key pages */}
-                {isPTRPage ? (
+                {showNav && (pathname === '/' || pathname === '/feed') ? (
                   <div className="flex-1 lg:hidden">
-                    <MobilePullToRefresh 
-                      onRefresh={handleRefresh}
-                      onScroll={handleScroll}
-                    >
+                    <MobilePullToRefresh onRefresh={handleRefresh}>
                       {children}
                     </MobilePullToRefresh>
                   </div>
