@@ -17,6 +17,7 @@ import { MobilePullToRefresh } from '@/components/MobilePullToRefresh';
 import { MobileOfflineBanner } from '@/components/MobileOfflineBanner';
 import { useMobileRefresh } from '@/hooks/useMobileRefresh';
 import { useHaptic } from '@/hooks/useHaptic';
+import { useSwipeNavigation } from '@/hooks/useSwipeNavigation';
 
 
 export default function ClientLayout({ children }: { children: React.ReactNode }) {
@@ -31,6 +32,10 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
   // Scroll to show/hide header state
   const [headerVisible, setHeaderVisible] = useState(true);
   const lastScrollY = useRef(0);
+
+  // Swipe navigation for mobile
+  const navPaths = ['/', '/search', '/feed', '/messages'];
+  const { onTouchStart, onTouchEnd } = useSwipeNavigation({ paths: navPaths });
 
   const handleScroll = useCallback((e: UIEvent<HTMLDivElement>) => {
     const currentScrollY = e.currentTarget.scrollTop;
@@ -104,6 +109,8 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
           'flex-1 flex flex-col min-w-0 transition-[padding] duration-300 ease-in-out max-h-[100dvh]',
           isHighlightsPage || pathname.startsWith('/messages') ? 'overflow-hidden' : 'overflow-y-auto'
         )}
+        onTouchStart={showNav ? onTouchStart : undefined}
+        onTouchEnd={showNav ? onTouchEnd : undefined}
       >
         {showTopHeader && <TopHeader isVisible={headerVisible} />}
 
