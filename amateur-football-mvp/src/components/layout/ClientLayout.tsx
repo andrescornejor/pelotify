@@ -18,6 +18,7 @@ import { MobileOfflineBanner } from '@/components/MobileOfflineBanner';
 import { useMobileRefresh } from '@/hooks/useMobileRefresh';
 import { useHaptic } from '@/hooks/useHaptic';
 import { useSwipeNavigation } from '@/hooks/useSwipeNavigation';
+import { motion, AnimatePresence } from 'framer-motion';
 
 
 export default function ClientLayout({ children }: { children: React.ReactNode }) {
@@ -34,8 +35,28 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
   const lastScrollY = useRef(0);
 
   // Swipe navigation for mobile
+  const [direction, setDirection] = useState(0);
+  const [prevPath, setPrevPath] = useState(pathname);
   const navPaths = ['/', '/search', '/feed', '/messages'];
-  const { onTouchStart, onTouchEnd } = useSwipeNavigation({ paths: navPaths });
+  
+  // Update direction synchronously when pathname changes
+  if (pathname !== prevPath) {
+    const prevIdx = navPaths.indexOf(prevPath);
+    const curIdx = navPaths.indexOf(pathname);
+    
+    if (prevIdx !== -1 && curIdx !== -1) {
+      const newDir = curIdx > prevIdx ? 1 : -1;
+      if (newDir !== direction) setDirection(newDir);
+    } else {
+      if (direction !== 0) setDirection(0);
+    }
+    setPrevPath(pathname);
+  }
+
+  const { onTouchStart, onTouchEnd } = useSwipeNavigation({ 
+    paths: navPaths,
+    onNavigate: (dir) => setDirection(dir)
+  });
 
   const handleScroll = useCallback((e: UIEvent<HTMLDivElement>) => {
     const currentScrollY = e.currentTarget.scrollTop;
@@ -127,23 +148,40 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
           {/* Push Notification Permission Banner */}
           {showNav && <NotificationPromptBanner />}
           
-          {/* Mobile-only Pull-to-Refresh for key pages */}
-          {showNav && (pathname === '/' || pathname === '/feed') ? (
-            <div className="flex-1 lg:hidden">
-              <MobilePullToRefresh onRefresh={handleRefresh}>
-                {children}
-              </MobilePullToRefresh>
-            </div>
-          ) : (
-            null
-          )}
-          
-          {/* Desktop & Non-refreshable mobile pages */}
-          <div className={cn(
-            "flex-1",
-            (showNav && (pathname === '/' || pathname === '/feed')) ? "hidden lg:block" : "block"
-          )}>
-            {children}
+          <div className="flex-1 relative overflow-hidden">
+            <AnimatePresence mode="popLayout" initial={false} custom={direction}>
+              <motion.div
+                key={pathname}
+                custom={direction}
+                initial={direction !== 0 ? { x: direction * 100 + '%', opacity: 0 } : false}
+                animate={{ x: 0, opacity: 1 }}
+                exit={direction !== 0 ? { x: direction * -100 + '%', opacity: 0 } : { opacity: 0 }}
+                transition={{
+                  type: "spring",
+                  stiffness: 300,
+                  damping: 30
+                }}
+                onAnimationComplete={() => setDirection(0)}
+                className="w-full h-full flex flex-col"
+              >
+                {/* Mobile-only Pull-to-Refresh for key pages */}
+                {showNav && (pathname === '/' || pathname === '/feed') ? (
+                  <div className="flex-1 lg:hidden">
+                    <MobilePullToRefresh onRefresh={handleRefresh}>
+                      {children}
+                    </MobilePullToRefresh>
+                  </div>
+                ) : null}
+                
+                {/* Desktop & Non-refreshable mobile pages */}
+                <div className={cn(
+                  "flex-1",
+                  (showNav && (pathname === '/' || pathname === '/feed')) ? "hidden lg:block" : "block"
+                )}>
+                  {children}
+                </div>
+              </motion.div>
+            </AnimatePresence>
           </div>
         </main>
 

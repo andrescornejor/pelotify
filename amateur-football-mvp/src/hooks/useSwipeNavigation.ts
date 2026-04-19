@@ -9,9 +9,10 @@ const ANGLE_THRESHOLD = 30; // Max angle from horizontal to count as horizontal 
 
 interface SwipeNavigationProps {
   paths: string[];
+  onNavigate?: (direction: number) => void;
 }
 
-export function useSwipeNavigation({ paths }: SwipeNavigationProps) {
+export function useSwipeNavigation({ paths, onNavigate }: SwipeNavigationProps) {
   const router = useRouter();
   const pathname = usePathname();
   const { hapticLight } = useHaptic();
@@ -58,12 +59,14 @@ export function useSwipeNavigation({ paths }: SwipeNavigationProps) {
           // Swipe Right (Go to Previous)
           if (currentIndex > 0) {
             hapticLight();
+            onNavigate?.(-1);
             router.push(paths[currentIndex - 1]);
           }
         } else {
           // Swipe Left (Go to Next)
           if (currentIndex < paths.length - 1) {
             hapticLight();
+            onNavigate?.(1);
             router.push(paths[currentIndex + 1]);
           }
         }
@@ -71,7 +74,7 @@ export function useSwipeNavigation({ paths }: SwipeNavigationProps) {
     }
 
     touchStart.current = null;
-  }, [pathname, paths, router, hapticLight]);
+  }, [pathname, paths, router, hapticLight, onNavigate]);
 
   return { onTouchStart, onTouchEnd };
 }
