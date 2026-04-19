@@ -149,7 +149,7 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
           {showNav && <NotificationPromptBanner />}
           
           <div className="flex-1 relative overflow-hidden">
-            <AnimatePresence mode="popLayout" initial={false} custom={direction}>
+            <AnimatePresence mode="wait" initial={false} custom={direction}>
               <motion.div
                 key={pathname}
                 custom={direction}
@@ -161,7 +161,6 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
                   stiffness: 300,
                   damping: 30
                 }}
-                onAnimationComplete={() => setDirection(0)}
                 className="w-full h-full flex flex-col"
               >
                 {/* Mobile-only Pull-to-Refresh for key pages */}
