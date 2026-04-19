@@ -161,7 +161,7 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
                   stiffness: 300,
                   damping: 30
                 }}
-                className="w-full h-full flex flex-col overflow-y-auto overflow-x-hidden"
+                className="w-full min-h-full flex flex-col overflow-x-hidden"
               >
                 {/* Mobile-only Pull-to-Refresh for key pages */}
                 {showNav && (pathname === '/' || pathname === '/feed') ? (
