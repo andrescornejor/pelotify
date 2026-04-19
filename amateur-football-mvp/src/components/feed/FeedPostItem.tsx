@@ -114,57 +114,101 @@ const FeedPostItem = memo(function FeedPostItem({
         }
       }}
       className={cn(
-        "p-4 sm:px-5 sm:py-4 border-b border-foreground/[0.06] transition-colors duration-200 relative flex gap-3 sm:gap-4 group/post animate-in fade-in slide-in-from-bottom-2",
-        !standalonePostId && "hover:bg-foreground/[0.03] cursor-pointer",
-        standalonePostId && "bg-background py-8 sm:py-10 border-b-2",
+        "p-4 sm:px-6 sm:py-6 border-b border-foreground/[0.06] transition-colors duration-200 relative flex group/post animate-in fade-in slide-in-from-bottom-2",
+        !standalonePostId ? "gap-3 sm:gap-4 hover:bg-foreground/[0.03] cursor-pointer" : "flex-col gap-4 sm:gap-6 bg-background py-6 sm:py-12 border-b-0 min-h-[60vh] px-5 sm:px-10",
         post.author.is_pro ? "bg-gradient-to-r from-yellow-500/[0.03] to-transparent" : ""
       )}
     >
-      {/* LEFTSIDE AVATAR */}
-      <div className="shrink-0 flex flex-col items-center">
-        <Link href={`/feed/profile?id=${post.author.id}`} className={cn("w-12 h-12 rounded-full overflow-hidden shrink-0 relative hover:opacity-90 transition-opacity duration-200 z-10", post.author.is_pro ? "ring-2 ring-yellow-500/40" : "")}>
-          {post.author.avatar_url ? (
-            <img src={post.author.avatar_url} loading="lazy" decoding="async" className="w-full h-full object-cover" alt="" />
-          ) : (
-            <div className="w-full h-full bg-gradient-to-br from-primary/15 to-primary/5 flex items-center justify-center font-bold text-primary text-[15px]">
-              {post.author.name.charAt(0)}
-            </div>
-          )}
-        </Link>
-      </div>
-
-      {/* RIGHTSIDE CONTENT */}
-      <div className="flex-1 min-w-0 mt-0.5">
-        <div className="flex justify-between items-start">
-          <div className="flex items-center gap-1.5 flex-wrap leading-tight">
-            <Link href={`/feed/profile?id=${post.author.id}`} className="group flex items-center gap-1 min-w-0">
-              <span className={cn("font-bold text-[15px] truncate group-hover:underline", post.author.is_pro ? "text-yellow-500" : "text-foreground")}>
-                {post.author.name}
-              </span>
-              {post.author.is_pro && <Zap className="w-3.5 h-3.5 text-yellow-500 fill-yellow-500 shrink-0" />}
-              <span className="text-foreground/40 text-[15px] truncate ml-0.5">
+      {/* HEADER ROW (Standalone) or AVATAR (Feed) */}
+      {!standalonePostId ? (
+        <div className="shrink-0 flex flex-col items-center">
+          <Link href={`/feed/profile?id=${post.author.id}`} className={cn("w-12 h-12 rounded-full overflow-hidden shrink-0 relative hover:opacity-90 transition-opacity duration-200 z-10", post.author.is_pro ? "ring-2 ring-yellow-500/40" : "")}>
+            {post.author.avatar_url ? (
+              <img src={post.author.avatar_url} loading="lazy" decoding="async" className="w-full h-full object-cover" alt="" />
+            ) : (
+              <div className="w-full h-full bg-gradient-to-br from-primary/15 to-primary/5 flex items-center justify-center font-bold text-primary text-[15px]">
+                {post.author.name.charAt(0)}
+              </div>
+            )}
+          </Link>
+        </div>
+      ) : (
+        <div className="flex items-center justify-between w-full">
+          <div className="flex items-center gap-3">
+            <Link href={`/feed/profile?id=${post.author.id}`} className={cn("w-14 h-14 rounded-full overflow-hidden shrink-0 relative hover:opacity-90 transition-opacity duration-200 z-10 shadow-md", post.author.is_pro ? "ring-2 ring-yellow-500" : "ring-1 ring-foreground/10")}>
+              {post.author.avatar_url ? (
+                <img src={post.author.avatar_url} loading="lazy" decoding="async" className="w-full h-full object-cover" alt="" />
+              ) : (
+                <div className="w-full h-full bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center font-bold text-primary text-lg">
+                  {post.author.name.charAt(0)}
+                </div>
+              )}
+            </Link>
+            <div className="flex flex-col">
+              <Link href={`/feed/profile?id=${post.author.id}`} className="group flex items-center gap-1.5 min-w-0">
+                <span className={cn("font-black text-lg truncate group-hover:underline", post.author.is_pro ? "text-yellow-500" : "text-foreground")}>
+                  {post.author.name}
+                </span>
+                {post.author.is_pro && <Zap className="w-4 h-4 text-yellow-500 fill-yellow-500 shrink-0" />}
+              </Link>
+              <span className="text-foreground/40 text-[15px] truncate">
                 @{post.author.handle || post.author.name.toLowerCase().replace(/\s+/g, '')}
               </span>
-            </Link>
-            <span className="text-foreground/40 text-[15px]">·</span>
-            <span className="text-foreground/40 text-[15px] hover:underline cursor-pointer">
+            </div>
+          </div>
+          
+          <div className="shrink-0 flex items-center gap-2">
+             <span className="text-foreground/30 text-sm hidden sm:block">
               {timeAgo(post.created_at)}
             </span>
-          </div>
-
-          <div className="shrink-0">
             <button 
               onClick={(e) => {
                 e.stopPropagation();
                 hapticLight();
                 setIsMenuOpen(true);
               }}
-              className="text-foreground/40 hover:text-primary p-1.5 hover:bg-primary/10 rounded-full transition-colors mt-[-4px]"
+              className="text-foreground/40 hover:text-primary p-2 hover:bg-primary/10 rounded-full transition-colors"
             >
-              <MoreHorizontal className="w-5 h-5" />
+              <MoreHorizontal className="w-6 h-6" />
             </button>
           </div>
         </div>
+      )}
+
+      {/* CONTENT AREA */}
+      <div className={cn("flex-1 min-w-0", !standalonePostId ? "mt-0.5" : "")}>
+        {!standalonePostId && (
+          <div className="flex justify-between items-start">
+            <div className="flex items-center gap-1.5 flex-wrap leading-tight">
+              <Link href={`/feed/profile?id=${post.author.id}`} className="group flex items-center gap-1 min-w-0">
+                <span className={cn("font-bold text-[15px] truncate group-hover:underline", post.author.is_pro ? "text-yellow-500" : "text-foreground")}>
+                  {post.author.name}
+                </span>
+                {post.author.is_pro && <Zap className="w-3.5 h-3.5 text-yellow-500 fill-yellow-500 shrink-0" />}
+                <span className="text-foreground/40 text-[15px] truncate ml-0.5">
+                  @{post.author.handle || post.author.name.toLowerCase().replace(/\s+/g, '')}
+                </span>
+              </Link>
+              <span className="text-foreground/40 text-[15px]">·</span>
+              <span className="text-foreground/40 text-[15px] hover:underline cursor-pointer">
+                {timeAgo(post.created_at)}
+              </span>
+            </div>
+
+            <div className="shrink-0">
+              <button 
+                onClick={(e) => {
+                  e.stopPropagation();
+                  hapticLight();
+                  setIsMenuOpen(true);
+                }}
+                className="text-foreground/40 hover:text-primary p-1.5 hover:bg-primary/10 rounded-full transition-colors mt-[-4px]"
+              >
+                <MoreHorizontal className="w-5 h-5" />
+              </button>
+            </div>
+          </div>
+        )}
 
         <BottomSheet 
           isOpen={isMenuOpen} 
@@ -215,8 +259,13 @@ const FeedPostItem = memo(function FeedPostItem({
           </div>
         </BottomSheet>
 
-        <div className={cn("mt-1 mb-2.5", standalonePostId ? "mt-4 mb-5" : "")}>
-          <p className={cn("text-foreground whitespace-pre-wrap", standalonePostId ? "text-xl sm:text-[22px] font-medium leading-relaxed font-kanit tracking-tight" : "text-[15px] leading-snug")}>
+        <div className={cn("mt-1 mb-2.5", standalonePostId ? "mt-2 mb-6" : "")}>
+          {standalonePostId && (
+            <div className="sm:hidden mb-4 text-foreground/30 text-xs font-bold uppercase tracking-widest">
+              Publicado {timeAgo(post.created_at)}
+            </div>
+          )}
+          <p className={cn("text-foreground whitespace-pre-wrap", standalonePostId ? "text-[22px] sm:text-[28px] font-medium leading-[1.3] font-outfit tracking-tight" : "text-[15px] leading-snug")}>
             {(() => {
               let content = post.content;
               const hasMatchCard = post.content.match(/[?&]id=([0-9a-fA-F-]{36})/);
@@ -243,36 +292,47 @@ const FeedPostItem = memo(function FeedPostItem({
           {(() => {
             const matchIdMatch = post.content.match(/[?&]id=([0-9a-fA-F-]{36})/);
             if (matchIdMatch) {
-              return <MatchPostCard matchId={matchIdMatch[1]} />;
+              return (
+                <div className={cn(standalonePostId ? "mt-6" : "mt-2")}>
+                  <MatchPostCard matchId={matchIdMatch[1]} />
+                </div>
+              );
             }
             return null;
           })()}
           {post.image_url && (
             <div
-              className="mt-3 rounded-2xl overflow-hidden border border-foreground/[0.08] shadow-sm cursor-pointer hover:opacity-95 transition-opacity"
+              className={cn(
+                "rounded-2xl overflow-hidden border border-foreground/[0.08] shadow-sm cursor-pointer hover:opacity-95 transition-opacity",
+                standalonePostId ? "mt-6" : "mt-3"
+              )}
               onClick={(e) => {
                 e.stopPropagation();
                 onImageClick(post.image_url!);
               }}
             >
-              <img src={post.image_url} alt="" loading="lazy" decoding="async" className="w-full max-h-[500px] object-cover" />
+              <img src={post.image_url} alt="" loading="lazy" decoding="async" className={cn("w-full object-cover", standalonePostId ? "max-h-[80vh]" : "max-h-[500px]")} />
             </div>
           )}
         </div>
+        </div>
 
-        <div className="flex items-center justify-between text-foreground/40 max-w-[425px] pr-2 -ml-2 pb-1">
+        <div className={cn(
+          "flex items-center justify-between text-foreground/40 pr-2 -ml-2 pb-1",
+          standalonePostId ? "max-w-none mt-4 pt-4 border-t border-foreground/[0.08]" : "max-w-[425px]"
+        )}>
           <button
             onClick={(e) => { 
               e.stopPropagation(); 
               hapticLight();
               onExpand(post.id); 
             }}
-            className={cn("flex items-center gap-1.5 text-[13px] group/btn transition-colors", isExpanded ? "text-blue-500" : "hover:text-blue-500")}
+            className={cn("flex items-center gap-1.5 transition-colors", isExpanded ? "text-blue-500" : "hover:text-blue-500", standalonePostId ? "text-base" : "text-[13px]")}
           >
-            <div className={cn("p-2 rounded-full transition-colors", isExpanded ? "bg-blue-500/10" : "group-hover/btn:bg-blue-500/10")}>
-              <MessageSquare className="w-4.5 h-4.5" />
+            <div className={cn("rounded-full transition-colors", isExpanded ? "bg-blue-500/10" : "group-hover/btn:bg-blue-500/10", standalonePostId ? "p-3" : "p-2")}>
+              <MessageSquare className={cn(standalonePostId ? "w-6 h-6" : "w-4.5 h-4.5")} />
             </div>
-            <span className="font-medium -ml-0.5">{post.comments_count > 0 ? post.comments_count : ''}</span>
+            {post.comments_count > 0 && <span className="font-bold -ml-0.5">{post.comments_count}</span>}
           </button>
 
           <button
@@ -281,10 +341,10 @@ const FeedPostItem = memo(function FeedPostItem({
               hapticLight();
               onBookmark(post.id); 
             }}
-            className={cn("flex items-center gap-1.5 text-[13px] group/btn transition-colors", isBookmarked ? "text-green-500" : "hover:text-green-500")}
+            className={cn("flex items-center gap-1.5 transition-colors", isBookmarked ? "text-green-500" : "hover:text-green-500", standalonePostId ? "text-base" : "text-[13px]")}
           >
-            <div className={cn("p-2 rounded-full transition-colors", isBookmarked ? "bg-green-500/10" : "group-hover/btn:bg-green-500/10")}>
-              {isBookmarked ? <BookmarkCheck className="w-4.5 h-4.5 fill-green-500" /> : <Bookmark className="w-4.5 h-4.5" />}
+            <div className={cn("rounded-full transition-colors", isBookmarked ? "bg-green-500/10" : "group-hover/btn:bg-green-500/10", standalonePostId ? "p-3" : "p-2")}>
+              {isBookmarked ? <BookmarkCheck className={cn("fill-green-500", standalonePostId ? "w-6 h-6" : "w-4.5 h-4.5")} /> : <Bookmark className={cn(standalonePostId ? "w-6 h-6" : "w-4.5 h-4.5")} />}
             </div>
           </button>
 
@@ -294,12 +354,12 @@ const FeedPostItem = memo(function FeedPostItem({
               hapticMedium();
               onLike(post.id, post.user_has_liked); 
             }}
-            className={cn("flex items-center gap-1.5 text-[13px] group/btn transition-colors", post.user_has_liked ? "text-pink-600" : "hover:text-pink-600")}
+            className={cn("flex items-center gap-1.5 transition-colors", post.user_has_liked ? "text-pink-600" : "hover:text-pink-600", standalonePostId ? "text-base" : "text-[13px]")}
           >
-            <div className={cn("p-2 rounded-full transition-colors", post.user_has_liked ? "bg-pink-600/10" : "group-hover/btn:bg-pink-600/10")}>
-              <Heart className={cn("w-4.5 h-4.5", post.user_has_liked && "fill-pink-600")} />
+            <div className={cn("rounded-full transition-colors", post.user_has_liked ? "bg-pink-600/10" : "group-hover/btn:bg-pink-600/10", standalonePostId ? "p-3" : "p-2")}>
+              <Heart className={cn(post.user_has_liked && "fill-pink-600", standalonePostId ? "w-6 h-6" : "w-4.5 h-4.5")} />
             </div>
-            <span className="font-medium -ml-0.5">{post.likes_count > 0 ? post.likes_count : ''}</span>
+            {post.likes_count > 0 && <span className="font-bold -ml-0.5">{post.likes_count}</span>}
           </button>
 
           <button
@@ -311,10 +371,10 @@ const FeedPostItem = memo(function FeedPostItem({
                 url: `${window.location.origin}/post/${post.id}`
               });
             }}
-            className="flex items-center gap-1.5 text-[13px] group/btn transition-colors hover:text-primary mobile-touch-feedback"
+            className={cn("flex items-center gap-1.5 transition-colors hover:text-primary mobile-touch-feedback", standalonePostId ? "text-base" : "text-[13px]")}
           >
-            <div className="p-2 rounded-full group-hover/btn:bg-primary/10 transition-colors">
-              <Share2 className="w-4.5 h-4.5" />
+            <div className={cn("group-hover/btn:bg-primary/10 transition-colors", standalonePostId ? "p-3" : "p-2")}>
+              <Share2 className={cn(standalonePostId ? "w-6 h-6" : "w-4.5 h-4.5")} />
             </div>
           </button>
         </div>

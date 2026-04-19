@@ -566,13 +566,13 @@ export default function FeedClient({ standalonePostId }: { standalonePostId?: st
 
   if (isLoading) {
     return (
-      <div className="flex flex-col min-h-screen bg-background pt-0 sm:pt-[25px] lg:pt-[30px] px-0 sm:px-5 lg:px-10 xl:px-16 relative overflow-hidden">
+      <div className="flex flex-col min-h-screen bg-background pt-16 sm:pt-[25px] lg:pt-[30px] px-0 sm:px-5 lg:px-10 xl:px-16 relative overflow-hidden">
         {/* AMBIENT BACKGROUND */}
         <div className="fixed inset-0 pointer-events-none -z-10 overflow-hidden">
           <div className="absolute top-[-5%] right-[-5%] w-[40%] h-[40%] opacity-[0.03]" style={{ background: 'radial-gradient(circle, #2cfc7d 0%, transparent 70%)' }} />
         </div>
 
-        <div className="flex gap-0 lg:gap-6 xl:gap-8 grow">
+        <div className="flex gap-0 lg:gap-6 xl:gap-8 grow justify-center">
           {/* LEFT SIDEBAR SKELETON */}
           <aside className="hidden lg:flex flex-col w-[280px] xl:w-[320px] shrink-0 gap-4">
             <SkeletonPremium className="h-[300px] w-full rounded-[2rem]" />
@@ -582,7 +582,7 @@ export default function FeedClient({ standalonePostId }: { standalonePostId?: st
 
 
           {/* MAIN FEED SKELETON */}
-          <div className="w-full lg:flex-1 border-x-0 sm:border-x border-foreground/[0.06] flex flex-col gap-6 px-4 sm:px-5 py-4">
+          <div className="w-full max-w-3xl lg:flex-1 border-x-0 sm:border-x border-foreground/[0.06] flex flex-col gap-6 px-4 sm:px-5 py-4">
             <SkeletonPremium className="h-20 w-full rounded-2xl" />
             {[1, 2, 3].map(i => (
               <div key={i} className="space-y-4">
@@ -625,8 +625,11 @@ export default function FeedClient({ standalonePostId }: { standalonePostId?: st
       {/* 3-column layout matching TopHeader padding exactly */}
 
       {/* 3-column layout matching TopHeader padding exactly */}
-      <div className="w-full px-0 sm:px-5 lg:px-10 xl:px-16 pt-0 sm:pt-[25px] lg:pt-[30px]">
-        <div className={cn("flex gap-0", standalonePostId ? "justify-center max-w-2xl mx-auto" : "lg:gap-6 xl:gap-8")}>
+      <div className="w-full px-0 sm:px-5 lg:px-10 xl:px-16 pt-0 sm:pt-[25px] lg:pt-[30px] flex justify-center">
+        <div className={cn(
+          "flex gap-0 w-full", 
+          standalonePostId ? "max-w-3xl justify-center" : "lg:gap-6 xl:gap-8 max-w-7xl"
+        )}>
 
           {/* ── LEFT SIDEBAR (desktop only) ── */}
           {!standalonePostId && (
@@ -803,10 +806,22 @@ export default function FeedClient({ standalonePostId }: { standalonePostId?: st
                 if (standalonePostId) router.back();
                 else window.scrollTo({ top: 0, behavior: 'smooth' });
               }}
-              className="sticky top-[84px] sm:top-[85px] lg:top-[30px] z-50 bg-background/85 backdrop-blur-xl border-b border-foreground/[0.08] px-4 sm:px-5 py-3.5 flex items-center justify-between cursor-pointer hover:bg-foreground/[0.02] transition-colors shadow-sm"
+              className={cn(
+                "sticky z-50 bg-background/85 backdrop-blur-xl border-b border-foreground/[0.08] px-4 sm:px-5 py-3.5 flex items-center justify-between cursor-pointer hover:bg-foreground/[0.02] transition-colors shadow-sm",
+                standalonePostId 
+                  ? "top-0 lg:top-[30px] rounded-b-2xl lg:rounded-2xl lg:mb-4" 
+                  : "top-[84px] sm:top-[85px] lg:top-[30px]"
+              )}
             >
               <div className="flex items-center gap-2.5">
-                {standalonePostId && <span className="text-foreground/50 mr-1 text-xl leading-none pt-1">←</span>}
+                {standalonePostId && (
+                  <button 
+                    onClick={(e) => { e.stopPropagation(); router.back(); }}
+                    className="w-8 h-8 flex items-center justify-center rounded-full bg-foreground/5 hover:bg-foreground/10 transition-colors mr-1"
+                  >
+                    <span className="text-foreground/50 text-xl leading-none pt-0.5">←</span>
+                  </button>
+                )}
                 <h1 className="text-2xl font-black italic uppercase font-kanit text-foreground tracking-tighter leading-none">{standalonePostId ? 'Post' : '3erTiempo'}</h1>
               </div>
               <div className="flex items-center gap-2">
