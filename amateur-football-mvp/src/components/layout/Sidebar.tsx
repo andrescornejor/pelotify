@@ -231,7 +231,7 @@ export const SidebarContent = memo(function SidebarContent({
   const RankIcon = rank.icon;
 
   return (
-    <div className="flex flex-col h-full overflow-hidden relative bg-background/50">
+    <div className="flex flex-col h-full lg:h-full min-h-[100dvh] lg:min-h-0 overflow-hidden relative bg-background/50">
       {/* ── Visual Backdrop ── */}
       {!performanceMode && !isMobile && (
         <div className="absolute inset-0 pointer-events-none opacity-30">
@@ -351,7 +351,7 @@ export const SidebarContent = memo(function SidebarContent({
       )}
 
       {/* ── Navigation Groups ── */}
-      <div className="relative z-10 flex-1 overflow-y-auto no-scrollbar min-h-0 py-2">
+      <div className="relative z-10 flex-1 overflow-y-auto no-scrollbar min-h-0 py-2 overscroll-contain">
         {navigationGroups.map((group, index) => (
           <SidebarGroup
             key={index}
