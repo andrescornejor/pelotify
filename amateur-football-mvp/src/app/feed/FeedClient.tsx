@@ -1094,25 +1094,25 @@ export default function FeedClient({ standalonePostId }: { standalonePostId?: st
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={() => setExpandedImage(null)}
-            className="fixed inset-0 z-[100] flex items-center justify-center bg-black/90 p-4 backdrop-blur-sm"
+            className="fixed inset-0 z-[100] flex items-center justify-center bg-black/95 p-4 backdrop-blur-sm cursor-zoom-out"
           >
             <motion.div
-              initial={{ scale: 0.95 }}
-              animate={{ scale: 1 }}
-              exit={{ scale: 0.95 }}
+              initial={{ scale: 0.95, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.95, opacity: 0 }}
               onClick={(e) => e.stopPropagation()}
-              className="relative max-w-[95vw] max-h-[95vh] w-full h-full flex items-center justify-center"
+              className="relative max-w-fit max-h-fit"
             >
               <button
                 onClick={() => setExpandedImage(null)}
-                className="absolute top-4 right-4 sm:top-8 sm:right-8 w-12 h-12 bg-white/10 hover:bg-white/20 text-white rounded-full flex items-center justify-center transition-all backdrop-blur-md z-50 border border-white/20"
+                className="absolute top-4 right-4 sm:-top-2 sm:-right-14 w-10 h-10 bg-white/10 hover:bg-white/20 text-white rounded-full flex items-center justify-center transition-all backdrop-blur-md z-50 border border-white/10 mobile-touch-feedback"
               >
-                <X className="w-6 h-6" />
+                <X className="w-5 h-5" />
               </button>
               <img
                 src={expandedImage}
                 alt="Expanded view"
-                className="max-w-full max-h-full object-contain rounded-lg shadow-2xl"
+                className="max-w-[95vw] max-h-[90vh] w-auto h-auto object-contain rounded-xl shadow-2xl cursor-default border border-white/5"
               />
             </motion.div>
           </motion.div>
