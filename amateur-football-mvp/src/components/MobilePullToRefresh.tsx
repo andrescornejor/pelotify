@@ -9,7 +9,6 @@ import { cn } from '@/lib/utils';
 interface MobilePullToRefreshProps {
   children: React.ReactNode;
   onRefresh: () => Promise<void>;
-  onScroll?: (e: React.UIEvent<HTMLDivElement>) => void;
   className?: string;
   disabled?: boolean;
 }
@@ -17,7 +16,6 @@ interface MobilePullToRefreshProps {
 export function MobilePullToRefresh({
   children,
   onRefresh,
-  onScroll,
   className,
   disabled = false,
 }: MobilePullToRefreshProps) {
@@ -90,8 +88,7 @@ export function MobilePullToRefresh({
   return (
     <div 
       ref={containerRef}
-      className={cn("relative w-full h-full overflow-y-auto overscroll-y-contain no-scrollbar", className)}
-      onScroll={onScroll}
+      className={cn("relative w-full h-full overflow-y-auto overscroll-none no-scrollbar", className)}
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}

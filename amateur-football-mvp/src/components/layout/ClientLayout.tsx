@@ -148,12 +148,7 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
           {/* Push Notification Permission Banner */}
           {showNav && <NotificationPromptBanner />}
           
-          <div className={cn(
-            "relative",
-            (isHighlightsPage || isMessagesPage || (showNav && (pathname === '/' || pathname === '/feed'))) 
-              ? "flex-1 overflow-hidden" 
-              : "min-h-0"
-          )}>
+          <div className="flex-1 relative overflow-hidden">
             <AnimatePresence mode="wait" initial={false} custom={direction}>
               <motion.div
                 key={pathname}
@@ -166,16 +161,12 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
                   stiffness: 300,
                   damping: 30
                 }}
-                className={cn(
-                  "w-full flex flex-col",
-                  (isHighlightsPage || isMessagesPage) ? "h-full overflow-y-auto" : "h-auto overflow-y-visible"
-                )}
-                onScroll={(isHighlightsPage || isMessagesPage) ? handleScroll : undefined}
+                className="w-full h-full flex flex-col overflow-y-auto overflow-x-hidden"
               >
                 {/* Mobile-only Pull-to-Refresh for key pages */}
                 {showNav && (pathname === '/' || pathname === '/feed') ? (
                   <div className="flex-1 lg:hidden">
-                    <MobilePullToRefresh onRefresh={handleRefresh} onScroll={handleScroll}>
+                    <MobilePullToRefresh onRefresh={handleRefresh}>
                       {children}
                     </MobilePullToRefresh>
                   </div>
