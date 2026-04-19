@@ -315,7 +315,6 @@ const FeedPostItem = memo(function FeedPostItem({
             </div>
           )}
         </div>
-        </div>
 
         <div className={cn(
           "flex items-center justify-between text-foreground/40 pr-2 -ml-2 pb-1",
