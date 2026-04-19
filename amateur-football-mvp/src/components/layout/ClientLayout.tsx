@@ -82,6 +82,7 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
     pathname.startsWith('/canchas');
 
   const isHighlightsPage = pathname === '/highlights';
+  const isMessagesPage = pathname.startsWith('/messages');
   const isFeedOrPostPage = pathname.startsWith('/feed') || pathname.startsWith('/post');
   const showNav = !isAuthPage && !!user && !isHighlightsPage;
 
@@ -108,17 +109,9 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
           className={cn(
             'flex-1 flex flex-col w-full relative min-h-0',
             showNav
-              ? pathname.startsWith('/match') ||
-                pathname === '/profile' ||
-                pathname.startsWith('/profile/')
-                ? 'pb-[calc(6rem+env(safe-area-inset-bottom,0px))] lg:pt-24 lg:pb-0'
-                : pathname.startsWith('/messages')
-                  ? 'pb-0 lg:pt-24 lg:pb-0'
-                  : isFeedOrPostPage
-                    ? 'pb-0 lg:pt-24 lg:pb-0'
-                    : pathname === '/'
-                      ? 'pb-[calc(6rem+env(safe-area-inset-bottom,0px))] lg:pt-28 lg:pb-0' // Only 32 for home page
-                      : 'pb-[calc(6rem+env(safe-area-inset-bottom,0px))] lg:pt-24 lg:pb-0' // Reset others to 24
+              ? pathname === '/'
+                  ? 'pb-[calc(6rem+env(safe-area-inset-bottom,0px))] lg:pt-28 lg:pb-0'
+                  : 'pb-[calc(6rem+env(safe-area-inset-bottom,0px))] lg:pt-24 lg:pb-0'
               : ''
           )}
         >
@@ -146,7 +139,7 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
         </main>
 
         {/* Mobile Navigation */}
-        {showNav && !isFeedOrPostPage && (
+        {showNav && (
           <div className="lg:hidden mobile-bottom-nav z-[100] fixed bottom-0 left-0 right-0">
             <BottomNav />
           </div>

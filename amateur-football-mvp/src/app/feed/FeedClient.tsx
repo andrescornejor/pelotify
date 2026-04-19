@@ -839,7 +839,7 @@ export default function FeedClient({ standalonePostId }: { standalonePostId?: st
             )}
 
             {/* POSTS FEED */}
-            <div className="flex flex-col pb-20">
+            <div className="flex flex-col">
               {filteredPosts.map((post) => (
                 <FeedPostItem
                   key={post.id}
