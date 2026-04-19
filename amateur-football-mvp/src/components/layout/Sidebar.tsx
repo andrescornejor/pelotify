@@ -365,36 +365,27 @@ export const SidebarContent = memo(function SidebarContent({
 
       {/* ── Footer ── */}
       <div className={cn(
-        "relative z-10 p-4 shrink-0 transition-all",
-        isMobile ? "pb-[calc(2rem+env(safe-area-inset-bottom,0px))]" : "pb-4"
+        "relative z-10 shrink-0 border-t border-foreground/5 bg-foreground/[0.02]",
+        isMobile && "pb-[env(safe-area-inset-bottom,0px)]"
       )}>
-        <div className="bg-foreground/[0.03] border border-foreground/5 rounded-2xl overflow-hidden">
-          <Link href="/settings" onClick={() => isMobile && onClose && onClose()} className="block">
-            <div className="px-4 py-3.5 flex items-center gap-3 hover:bg-foreground/[0.04] transition-colors group">
-              <Settings className="w-4 h-4 text-foreground/40 group-hover:text-foreground/70 transition-colors" />
-              <span className="text-[11px] font-black uppercase italic tracking-widest text-foreground/60 group-hover:text-foreground/90">
-                Ajustes / Configuración
-              </span>
-            </div>
-          </Link>
-
-          <button
-            onClick={logout}
-            className="w-full px-4 py-3.5 flex items-center gap-3 hover:bg-red-500/[0.05] transition-colors group"
-          >
-            <LogOut className="w-4 h-4 text-red-500/40 group-hover:text-red-500/80 transition-colors" />
-            <span className="text-[11px] font-black uppercase italic tracking-widest text-red-500/60 group-hover:text-red-500/90">
-              Cerrar Sesión Activa
+        <Link href="/settings" onClick={() => isMobile && onClose && onClose()} className="block">
+          <div className="px-6 py-4 flex items-center gap-3 hover:bg-foreground/[0.04] transition-colors group">
+            <Settings className="w-4.5 h-4.5 text-foreground/40 group-hover:text-foreground/70 transition-colors" />
+            <span className="text-[12px] font-black uppercase italic tracking-widest text-foreground/60 group-hover:text-foreground/90 font-kanit">
+              Ajustes / Configuración
             </span>
-          </button>
-        </div>
-
-        <div className="mt-4 flex flex-col items-center gap-1 opacity-20">
-          <div className="flex items-center gap-1.5">
-            <LayoutGrid className="w-2.5 h-2.5" />
-            <span className="text-[7px] font-black uppercase tracking-[0.3em]">Pelotify Engine v2.4.0</span>
           </div>
-        </div>
+        </Link>
+
+        <button
+          onClick={logout}
+          className="w-full px-6 py-4 flex items-center gap-3 hover:bg-red-500/[0.05] transition-colors group border-t border-foreground/5"
+        >
+          <LogOut className="w-4.5 h-4.5 text-red-500/40 group-hover:text-red-500/80 transition-colors" />
+          <span className="text-[12px] font-black uppercase italic tracking-widest text-red-500/60 group-hover:text-red-500/90 font-kanit">
+            Cerrar Sesión Activa
+          </span>
+        </button>
       </div>
     </div>
   );
