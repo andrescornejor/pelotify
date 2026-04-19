@@ -99,9 +99,7 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
         onScroll={handleScroll}
         className={cn(
           'flex-1 flex flex-col min-w-0 transition-[padding] duration-300 ease-in-out max-h-[100dvh]',
-          (isHighlightsPage || pathname.startsWith('/messages') || (useSidebar().isOpen && typeof window !== 'undefined' && window.innerWidth < 1024)) 
-            ? 'overflow-hidden' 
-            : 'overflow-y-auto'
+          isHighlightsPage || pathname.startsWith('/messages') ? 'overflow-hidden' : 'overflow-y-auto'
         )}
       >
         {showNav && <TopHeader isVisible={headerVisible} />}
