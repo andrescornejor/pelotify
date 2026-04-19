@@ -156,6 +156,7 @@ export default function RanksPage() {
   const topRef = useRef<HTMLDivElement>(null);
   const [topPlayers, setTopPlayers] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [activeTab, setActiveTab] = useState<'ranks' | 'leaderboard'>('ranks');
   const [expandedRank, setExpandedRank] = useState<number | null>(null);
   const [isMobile, setIsMobile] = useState(false);
   
