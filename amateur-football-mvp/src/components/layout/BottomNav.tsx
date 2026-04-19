@@ -2,10 +2,10 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { 
-  Home, 
-  Plus, 
-  UserPlus, 
+import {
+  Home,
+  Plus,
+  UserPlus,
   MessageSquare,
   Search,
   Flame,
@@ -32,34 +32,33 @@ export function BottomNav() {
   const { hapticLight, hapticMedium } = useHaptic();
 
   const navItems = useMemo(() => [
-    { 
-      label: 'Home', 
-      href: '/', 
+    {
+      label: 'Home',
+      href: '/',
       icon: Home,
       color: 'from-[#2cfc7d] to-[#10b981]'
     },
-    { 
-      label: 'Buscar', 
-      href: '/search', 
+    {
+      label: 'Buscar',
+      href: '/search',
       icon: Search,
       color: 'from-blue-400 to-blue-600'
     },
-    { 
-      label: 'Crear', 
-      href: '#', 
-      icon: Plus, 
+    {
+      href: '#',
+      icon: Plus,
       isPrimary: true,
       color: 'from-primary via-[#3dfc8d] to-primary-dark'
     },
-    { 
-      label: 'Muro', 
-      href: '/feed', 
+    {
+      label: 'Muro',
+      href: '/feed',
       icon: Globe,
       color: 'from-blue-400 to-indigo-500'
     },
-    { 
-      label: 'Chats', 
-      href: '/messages', 
+    {
+      label: 'Chats',
+      href: '/messages',
       icon: MessageSquare,
       color: 'from-purple-400 to-pink-500'
     }
@@ -74,7 +73,7 @@ export function BottomNav() {
       {/* Create Menu Backdrop */}
       <AnimatePresence>
         {isCreateMenuOpen && (
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -86,12 +85,12 @@ export function BottomNav() {
 
       {/* Main Bottom Nav Area - Pegged to Bottom */}
       <div className="fixed bottom-0 left-0 right-0 z-[100] lg:hidden pointer-events-none">
-        
+
         {/* Expanded Menu Actions */}
         <div className="relative pointer-events-auto w-full">
           <AnimatePresence>
             {isCreateMenuOpen && (
-              <motion.div 
+              <motion.div
                 initial={{ opacity: 0, y: 20, scale: 0.9 }}
                 animate={{ opacity: 1, y: 0, scale: 1 }}
                 exit={{ opacity: 0, y: 20, scale: 0.9 }}
@@ -103,7 +102,7 @@ export function BottomNav() {
                   { label: "Post en 3erTiempo", icon: MessageSquare, href: "/feed", color: "text-blue-400" },
                   { label: "Subir FutTok", icon: Flame, href: "/highlights/upload", color: "text-orange-500" }
                 ].map((action, i) => (
-                  <Link 
+                  <Link
                     key={i}
                     href={action.href}
                     onClick={() => {
@@ -131,46 +130,46 @@ export function BottomNav() {
 
           {/* Dynamic Background Glow based on active item */}
           {!performanceMode && (
-             <AnimatePresence mode="wait">
-               {navItems.map((item) => {
-                 const isActive = item.href === '/' ? pathname === '/' : (pathname + '/').startsWith(item.href + '/');
-                 if (!isActive && !isCreateMenuOpen) return null;
-                 // If menu is open, show primary color glow
-                 if (isCreateMenuOpen && !item.isPrimary) return null;
-                 
-                 return (
-                   <motion.div
-                     key={item.href}
-                     initial={{ opacity: 0, scale: 0.8 }}
-                     animate={{ opacity: 0.5, scale: 1 }}
-                     exit={{ opacity: 0, scale: 0.8 }}
-                     className={cn(
-                       "absolute -top-12 left-1/2 -translate-x-1/2 w-48 h-24 blur-[60px] rounded-full pointer-events-none z-0",
-                       (item.href === '/' && !isCreateMenuOpen) ? "bg-[#2cfc7d]" : 
-                       (item.href === '/search' && !isCreateMenuOpen) ? "bg-blue-500" :
-                       (item.isPrimary || isCreateMenuOpen) ? "bg-primary" :
-                       item.href === '/feed' ? "bg-indigo-500" : "bg-purple-500"
-                     )}
-                   />
-                 );
-               })}
-             </AnimatePresence>
+            <AnimatePresence mode="wait">
+              {navItems.map((item) => {
+                const isActive = item.href === '/' ? pathname === '/' : (pathname + '/').startsWith(item.href + '/');
+                if (!isActive && !isCreateMenuOpen) return null;
+                // If menu is open, show primary color glow
+                if (isCreateMenuOpen && !item.isPrimary) return null;
+
+                return (
+                  <motion.div
+                    key={item.href}
+                    initial={{ opacity: 0, scale: 0.8 }}
+                    animate={{ opacity: 0.5, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.8 }}
+                    className={cn(
+                      "absolute -top-12 left-1/2 -translate-x-1/2 w-48 h-24 blur-[60px] rounded-full pointer-events-none z-0",
+                      (item.href === '/' && !isCreateMenuOpen) ? "bg-[#2cfc7d]" :
+                        (item.href === '/search' && !isCreateMenuOpen) ? "bg-blue-500" :
+                          (item.isPrimary || isCreateMenuOpen) ? "bg-primary" :
+                            item.href === '/feed' ? "bg-indigo-500" : "bg-purple-500"
+                    )}
+                  />
+                );
+              })}
+            </AnimatePresence>
           )}
 
           <nav
             className={cn(
               'relative transition-all duration-700 flex items-center w-full border-t',
-              performanceMode 
-                ? 'bg-surface border-border' 
+              performanceMode
+                ? 'bg-surface border-border'
                 : 'bg-background/95 backdrop-blur-[20px] border-white/5 dark:border-white/5'
             )}
           >
             <div className="relative z-10 flex w-full h-[calc(76px+env(safe-area-inset-bottom,0px))] items-center justify-around pt-1 pb-[env(safe-area-inset-bottom,0px)]">
               {navItems.map((item) => {
-                const isActive = item.href === '/' 
-                  ? pathname === '/' 
+                const isActive = item.href === '/'
+                  ? pathname === '/'
                   : (item.href !== '#' && (pathname + '/').startsWith(item.href + '/'));
-                
+
                 const Icon = item.icon;
 
                 if (item.isPrimary) {
@@ -194,15 +193,15 @@ export function BottomNav() {
                         )}
                       >
                         <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-500" />
-                        
+
                         <div className="relative z-10">
-                             <Icon className="w-9 h-9 text-black stroke-[3]" />
+                          <Icon className="w-9 h-9 text-black stroke-[3]" />
                         </div>
-                        
+
                         {/* Inner Shine */}
                         <div className="absolute top-0 left-0 right-0 h-1/2 bg-gradient-to-b from-white/30 to-transparent pointer-events-none" />
                       </motion.div>
-                      
+
                       <span
                         className={cn(
                           "text-[8px] font-black tracking-[0.1em] transition-all duration-300 uppercase italic mt-1",
@@ -211,10 +210,10 @@ export function BottomNav() {
                       >
                         {item.label}
                       </span>
-                      
+
                       {/* Pulsing Aura */}
                       {!performanceMode && (
-                        <motion.div 
+                        <motion.div
                           animate={{ scale: [1, 1.2, 1], opacity: [0.3, 0.1, 0.3] }}
                           transition={{ duration: 3, repeat: Infinity }}
                           className="absolute inset-[0_-12px] bg-primary/20 blur-2xl rounded-full -z-10"
@@ -239,19 +238,19 @@ export function BottomNav() {
                       whileTap={{ scale: 0.85 }}
                     >
                       <div className="relative block h-[26px]">
-                         {isActive && (
-                           <motion.div
-                             layoutId="nav-bg"
-                             className="absolute -inset-3 bg-foreground/[0.03] dark:bg-white/[0.04] rounded-2xl blur-sm"
-                             transition={{ type: 'spring', bounce: 0.2, duration: 0.6 }}
-                           />
-                         )}
-                         
-                         <Icon 
+                        {isActive && (
+                          <motion.div
+                            layoutId="nav-bg"
+                            className="absolute -inset-3 bg-foreground/[0.03] dark:bg-white/[0.04] rounded-2xl blur-sm"
+                            transition={{ type: 'spring', bounce: 0.2, duration: 0.6 }}
+                          />
+                        )}
+
+                        <Icon
                           className={cn(
                             "w-6 h-6 transition-all duration-300 relative z-10",
-                            isActive 
-                              ? "text-primary drop-shadow-[0_0_12px_rgba(44,252,125,0.5)] scale-110" 
+                            isActive
+                              ? "text-primary drop-shadow-[0_0_12px_rgba(44,252,125,0.5)] scale-110"
                               : "text-foreground/40 group-hover:text-foreground/60"
                           )}
                           strokeWidth={isActive ? 2.5 : 2}
