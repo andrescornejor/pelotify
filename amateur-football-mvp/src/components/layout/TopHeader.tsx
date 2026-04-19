@@ -120,7 +120,7 @@ export const TopHeader = memo(function TopHeader({ isVisible = true }: { isVisib
     <>
       <header className={cn(
         "z-[60] w-full",
-        "pt-[calc(0.6rem+env(safe-area-inset-top,0px))] pb-2.5 sm:pt-6 lg:pt-4 px-3 sm:px-5 lg:px-10 xl:px-16",
+        "pt-[env(safe-area-inset-top,0.4rem)] pb-2 sm:pt-6 lg:pt-4 px-3 sm:px-5 lg:px-10 xl:px-16",
         "sticky top-0 lg:fixed lg:top-0 lg:left-0 lg:right-0 lg:pb-0",
         "bg-background border-b border-foreground/[0.06] shadow-sm lg:bg-transparent lg:border-transparent lg:shadow-none",
         "pointer-events-auto lg:pointer-events-none transition-transform duration-300",

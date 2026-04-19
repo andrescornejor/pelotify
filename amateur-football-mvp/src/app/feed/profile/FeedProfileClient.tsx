@@ -604,46 +604,49 @@ export default function FeedProfilePage() {
           {/* ── MIDDLE CONTENT (Profile) ── */}
           <main className="flex-1 min-w-0 max-w-2xl border-x border-foreground/[0.06] bg-background min-h-screen pb-20">
             {/* ── STICKY TOP BAR ── */}
-            <div className="sticky top-[84px] sm:top-[85px] lg:top-[30px] z-50 bg-background/85 backdrop-blur-xl border-b border-foreground/[0.08] px-4 py-3 flex items-center gap-4 shadow-sm">
+            <div className="sticky top-0 lg:top-[30px] z-[100] bg-background/85 backdrop-blur-xl border-b border-foreground/[0.08] px-4 pt-[env(safe-area-inset-top,0.5rem)] pb-3 flex items-center gap-4 shadow-sm transition-all duration-300">
               <button
                 onClick={() => router.back()}
-                className="w-9 h-9 rounded-full hover:bg-foreground/[0.08] flex items-center justify-center transition-colors shrink-0"
+                className="w-10 h-10 rounded-full hover:bg-foreground/[0.08] flex items-center justify-center transition-colors shrink-0"
               >
-                <ArrowLeft className="w-5 h-5 text-foreground" />
+                <ArrowLeft className="w-5.5 h-5.5 text-foreground" />
               </button>
               <div className="flex-1 min-w-0">
-                <h1 className="text-xl font-black italic uppercase font-kanit text-foreground tracking-tighter leading-none truncate">
+                <h1 className="text-xl font-black italic uppercase font-kanit text-foreground tracking-tighter leading-none truncate pt-0.5">
                   {profile.name}
                 </h1>
-                <p className="text-[11px] text-foreground/40 font-bold">{posts.length} posts</p>
+                <p className="text-[11px] text-foreground/40 font-bold uppercase tracking-widest">{posts.length} aportes</p>
               </div>
             </div>
 
             {/* ── COVER BANNER ── */}
-            <div className="relative w-full h-36 sm:h-48 bg-background overflow-hidden group/banner shadow-inner">
+            <div className="relative w-full h-44 sm:h-56 bg-background overflow-hidden group/banner">
               <img
                 src={profile.cover_url || "https://images.unsplash.com/photo-1574629810360-7efbbe195018?auto=format&fit=crop&q=80&w=2000"}
                 alt=""
-                className="w-full h-full object-cover brightness-75 group-hover/banner:scale-105 transition-transform duration-[4s]"
+                className="w-full h-full object-cover brightness-[0.85] group-hover/banner:scale-110 transition-transform duration-[6s] ease-out"
               />
-              <div className="absolute inset-x-0 bottom-0 h-full z-10 bg-gradient-to-t from-background via-background/60 to-transparent" />
-              <div className="absolute inset-x-0 bottom-0 h-1/2 z-10 bg-gradient-to-t from-background to-transparent" />
+              <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-transparent to-background/90 z-10" />
+              <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-background to-transparent z-10" />
+              
+              {/* Decorative accent */}
+              <div className="absolute top-0 right-0 w-1/2 h-full bg-primary/5 skew-x-[-20deg] translate-x-1/2 blur-3xl pointer-events-none" />
             </div>
 
             {/* ── PROFILE INFO ── */}
             <div className="px-4 sm:px-5 relative z-20">
-              <div className="absolute -top-10 left-4">
+              <div className="absolute -top-12 left-4">
                 <Link
                   href={`/profile?id=${profile.id}`}
                   className={cn(
-                    "block w-20 h-20 rounded-full overflow-hidden border-4 border-background shadow-xl hover:opacity-90 transition-opacity",
-                    profile.is_pro && "ring-2 ring-yellow-500/60"
+                    "block w-24 h-24 rounded-[2rem] overflow-hidden border-4 border-background shadow-2xl hover:opacity-95 transition-all transform hover:scale-105 active:scale-95",
+                    profile.is_pro && "ring-4 ring-yellow-500/30 ring-offset-2 ring-offset-background"
                   )}
                 >
                   {profile.avatar_url ? (
-                    <img src={profile.avatar_url} className="w-full h-full object-cover" alt="" />
+                    <img src={profile.avatar_url} className="w-full h-full object-cover scale-110" alt="" />
                   ) : (
-                    <div className="w-full h-full bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center font-bold text-primary text-2xl">
+                    <div className="w-full h-full bg-gradient-to-br from-primary/30 to-primary/10 flex items-center justify-center font-black text-primary text-3xl italic">
                       {profile.name.charAt(0)}
                     </div>
                   )}

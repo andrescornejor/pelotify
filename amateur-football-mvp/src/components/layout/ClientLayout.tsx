@@ -1,6 +1,6 @@
 'use client';
 
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { useEffect, useRef, useState, useCallback, UIEvent } from 'react';
 import { Sidebar, SidebarContent } from '@/components/layout/Sidebar';
 import { TopHeader } from '@/components/layout/TopHeader';
@@ -83,8 +83,10 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
 
   const isHighlightsPage = pathname === '/highlights';
   const isMessagesPage = pathname.startsWith('/messages');
+  const isProfilePage = pathname.startsWith('/feed/profile');
   const isFeedOrPostPage = pathname.startsWith('/feed') || pathname.startsWith('/post');
   const showNav = !isAuthPage && !!user && !isHighlightsPage;
+  const showTopHeader = showNav && !isProfilePage;
 
   if (isAuthPage) {
     return <>{children}</>;
@@ -103,7 +105,7 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
           isHighlightsPage || pathname.startsWith('/messages') ? 'overflow-hidden' : 'overflow-y-auto'
         )}
       >
-        {showNav && <TopHeader isVisible={headerVisible} />}
+        {showTopHeader && <TopHeader isVisible={headerVisible} />}
 
         <main
           className={cn(
