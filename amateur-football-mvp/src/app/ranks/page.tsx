@@ -38,16 +38,18 @@ const MouseGlow = memo(({ isMobile }: { isMobile: boolean }) => {
     return () => window.removeEventListener('mousemove', handleMouseMove);
   }, [mouseX, mouseY, isMobile]);
 
+  const background = useTransform(
+    [springX, springY],
+    ([x, y]) => `radial-gradient(600px at ${x}px ${y}px, rgba(var(--primary-rgb), 0.04), transparent 80%)`
+  );
+
   if (isMobile) return null;
 
   return (
     <motion.div
       className="fixed inset-0 pointer-events-none z-0"
       style={{
-        background: useTransform(
-          [springX, springY],
-          ([x, y]) => `radial-gradient(600px at ${x}px ${y}px, rgba(var(--primary-rgb), 0.04), transparent 80%)`
-        ),
+        background
       }}
     />
   );
@@ -129,8 +131,8 @@ const PlayerCard = memo(({ player, index }: any) => {
         <div className="flex-1 min-w-0">
           <h4 className="text-lg sm:text-xl font-black italic uppercase tracking-tighter truncate">{player.name}</h4>
           <div className="flex items-center gap-2 mt-1">
-            <RankBadge rankName={getRankByElo(player.elo).name} size="sm" />
-            <span className="text-[10px] font-black text-foreground/40">{player.elo.toLocaleString()} XP</span>
+            <RankBadge rankName={getRankByElo(player.elo || 0).name} size="sm" />
+            <span className="text-[10px] font-black text-foreground/40">{(player.elo || 0).toLocaleString()} XP</span>
           </div>
         </div>
       </div>
@@ -319,7 +321,7 @@ export default function RanksPage() {
                         stroke="url(#gradient-path)"
                         strokeWidth="4"
                         strokeLinecap="round"
-                        style={{ pathLength: isMobile ? scrollYProgress : pathLength }}
+                        style={{ pathLength: pathLength }}
                       />
                       <defs>
                         <linearGradient id="gradient-path" x1="0%" y1="0%" x2="0%" y2="100%">
