@@ -22,20 +22,23 @@ const RANK_DETAILS: Record<string, { desc: string; tagline: string; color: strin
 };
 
 /* ─── Mouse Interactive Glow ─── */
-const MouseGlow = () => {
+const MouseGlow = memo(({ isMobile }: { isMobile: boolean }) => {
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
   const springX = useSpring(mouseX, { stiffness: 100, damping: 20 });
   const springY = useSpring(mouseY, { stiffness: 100, damping: 20 });
 
   useEffect(() => {
+    if (isMobile) return;
     const handleMouseMove = (e: MouseEvent) => {
       mouseX.set(e.clientX);
       mouseY.set(e.clientY);
     };
     window.addEventListener('mousemove', handleMouseMove);
     return () => window.removeEventListener('mousemove', handleMouseMove);
-  }, [mouseX, mouseY]);
+  }, [mouseX, mouseY, isMobile]);
+
+  if (isMobile) return null;
 
   return (
     <motion.div
@@ -48,7 +51,104 @@ const MouseGlow = () => {
       }}
     />
   );
-};
+});
+
+MouseGlow.displayName = 'MouseGlow';
+
+/* ─── RANK CARD COMPONENT ─── */
+const RankCard = memo(({ rank, detail, index, isMobile, isExpanded, onToggle }: any) => {
+  const isLeft = index % 2 !== 0;
+  
+  return (
+    <div className={cn("flex w-full mb-24 sm:mb-32", isLeft ? "justify-start pl-2 sm:pl-4 lg:pl-20" : "justify-end pr-2 sm:pr-4 lg:pr-20")}>
+      <motion.div
+        initial={isMobile ? { opacity: 0, y: 30 } : { opacity: 0, x: isLeft ? -100 : 100 }}
+        whileInView={{ opacity: 1, x: 0, y: 0 }}
+        viewport={{ once: true, margin: isMobile ? "-50px" : "-100px" }}
+        whileHover={isMobile ? {} : { scale: 1.05 }}
+        onClick={onToggle}
+        className={cn(
+          "relative group cursor-pointer w-full max-w-[280px] sm:max-w-[320px] p-5 sm:p-8 rounded-[2.5rem] sm:rounded-[3rem] backdrop-blur-xl border border-foreground/5 shadow-2xl transition-all duration-500",
+          isExpanded ? "bg-foreground/[0.04]" : "bg-foreground/[0.01]"
+        )}
+      >
+        <div className="absolute -top-10 -left-6 sm:-top-12 sm:-left-12 group-hover:rotate-12 transition-transform duration-500">
+          <div className="relative">
+            <RankBadge rankName={rank.name} size={isMobile ? "lg" : "xl"} />
+            <div className="absolute inset-0 bg-primary/20 blur-2xl rounded-full opacity-0 group-hover:opacity-40 transition-opacity" />
+          </div>
+        </div>
+
+        <div className="pt-6 sm:pt-8 space-y-3 sm:space-y-4">
+          <div className="flex items-center justify-between">
+            <h3 className="text-2xl sm:text-3xl font-black italic uppercase tracking-tighter" style={{ color: rank.color }}>{rank.name}</h3>
+            <ChevronDown className={cn("w-5 h-5 text-foreground/20 transition-transform", isExpanded && "rotate-180")} />
+          </div>
+          <span className="text-[9px] sm:text-[10px] font-black uppercase tracking-[0.4em] text-foreground/30">{detail.tagline}</span>
+          <p className="text-[11px] sm:text-xs text-foreground/50 leading-relaxed font-medium mb-4 italic">"{detail.desc}"</p>
+          <div className="w-full h-1 bg-foreground/5 rounded-full overflow-hidden">
+            <motion.div initial={{ width: 0 }} whileInView={{ width: '100%' }} transition={{ duration: 1, delay: 0.5 }} className="h-full" style={{ background: rank.color }} />
+          </div>
+          <div className="flex justify-between items-center text-[8px] sm:text-[9px] font-black uppercase text-foreground/20 tracking-widest">
+            <span>Requerido</span>
+            <span>{rank.minElo.toLocaleString()} XP</span>
+          </div>
+        </div>
+
+        <AnimatePresence>
+          {isExpanded && (
+            <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="overflow-hidden pt-4 border-t border-foreground/5 mt-4">
+              <p className="text-[10px] sm:text-[11px] font-bold text-foreground/40 italic flex items-center gap-2">
+                <Info className="w-3.5 h-3.5" />
+                Alcanzá este rango para subir en el ranking mundial.
+              </p>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </motion.div>
+    </div>
+  );
+});
+
+RankCard.displayName = 'RankCard';
+
+/* ─── PLAYER CARD COMPONENT ─── */
+const PlayerCard = memo(({ player, index }: any) => {
+  return (
+    <motion.div
+      initial={{ opacity: 0, scale: 0.95 }}
+      animate={{ opacity: 1, scale: 1 }}
+      transition={{ delay: index * 0.03 }}
+      className="p-5 sm:p-6 rounded-[2rem] sm:rounded-[2.5rem] bg-foreground/[0.02] border border-foreground/5 hover:border-primary/20 transition-all group relative overflow-hidden"
+    >
+      <div className="absolute top-4 right-4 text-3xl sm:text-4xl font-black italic opacity-[0.03] group-hover:opacity-10 transition-opacity">#{index + 1}</div>
+      <div className="flex items-center gap-4">
+        <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl sm:rounded-3xl overflow-hidden border-2 border-foreground/10 group-hover:border-primary/50 transition-all">
+          <img src={player.avatar_url || `https://api.dicebear.com/7.x/notionists/svg?seed=${player.name}`} className="w-full h-full object-cover" />
+        </div>
+        <div className="flex-1 min-w-0">
+          <h4 className="text-lg sm:text-xl font-black italic uppercase tracking-tighter truncate">{player.name}</h4>
+          <div className="flex items-center gap-2 mt-1">
+            <RankBadge rankName={getRankByElo(player.elo).name} size="sm" />
+            <span className="text-[10px] font-black text-foreground/40">{player.elo.toLocaleString()} XP</span>
+          </div>
+        </div>
+      </div>
+      <div className="mt-5 sm:mt-6 pt-4 border-t border-foreground/5 flex justify-between items-center">
+        <div className="flex flex-col">
+          <span className="text-[10px] font-black uppercase text-foreground/20">Posición</span>
+          <span className="text-xs font-black italic text-foreground/60">{player.position || 'Versátil'}</span>
+        </div>
+        <div className="flex flex-col items-end">
+          <span className="text-[10px] font-black uppercase text-foreground/20">Partidos</span>
+          <span className="text-xs font-black italic text-foreground/60">{player.matches || 0}</span>
+        </div>
+      </div>
+    </motion.div>
+  );
+});
+
+PlayerCard.displayName = 'PlayerCard';
 
 /* ─── MAIN PAGE ─── */
 export default function RanksPage() {
@@ -56,10 +156,18 @@ export default function RanksPage() {
   const topRef = useRef<HTMLDivElement>(null);
   const [topPlayers, setTopPlayers] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState<'ranks' | 'leaderboard'>('ranks');
   const [expandedRank, setExpandedRank] = useState<number | null>(null);
+  const [isMobile, setIsMobile] = useState(false);
   
   const containerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 768);
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
   const { scrollYProgress } = useScroll({
     target: containerRef,
     offset: ["start start", "end end"]
@@ -86,7 +194,7 @@ export default function RanksPage() {
   return (
     <div className="min-h-screen bg-background relative overflow-x-hidden selection:bg-primary/30" ref={containerRef}>
       <div ref={topRef} className="absolute top-0 left-0 w-full h-px pointer-events-none" />
-      <MouseGlow />
+      <MouseGlow isMobile={isMobile} />
       
       {/* ── BACKGROUND ORNAMENTS ── */}
       <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
@@ -95,20 +203,25 @@ export default function RanksPage() {
              style={{ backgroundImage: 'radial-gradient(circle, currentColor 1px, transparent 1px)', backgroundSize: '40px 40px' }} />
              
         {/* Floating Tactic Icons (Scattered) */}
-        {[...Array(12)].map((_, i) => (
+        {[...Array(isMobile ? 4 : 12)].map((_, i) => (
           <motion.div
             key={i}
             initial={{ opacity: 0 }}
             animate={{ 
-              opacity: [0.02, 0.05, 0.02],
-              y: [0, -100, 0],
-              x: [0, i % 2 === 0 ? 50 : -50, 0]
+              opacity: [0.01, 0.03, 0.01],
+              y: isMobile ? [0, -40, 0] : [0, -100, 0],
+              x: isMobile ? [0, 0, 0] : [0, i % 2 === 0 ? 50 : -50, 0]
             }}
-            transition={{ duration: 15 + i * 2, repeat: Infinity, ease: 'linear', delay: i * 1 }}
+            transition={{ 
+              duration: isMobile ? 10 + i * 5 : 15 + i * 2, 
+              repeat: Infinity, 
+              ease: 'linear', 
+              delay: i * 1 
+            }}
             className="absolute text-foreground font-black italic text-4xl select-none"
             style={{ 
-              left: `${(i * 17) % 100}%`, 
-              top: `${(i * 23) % 100}%`,
+              left: `${(i * 27) % 100}%`, 
+              top: `${(i * 37) % 100}%`,
               filter: `blur(${i % 3 === 0 ? '4px' : '0px'})`
             }}
           >
@@ -197,23 +310,23 @@ export default function RanksPage() {
                     />
                   </svg>
                   
-                  {/* Glowing Animated Path */}
-                  <svg width="400" height="auto" className="h-full w-full max-w-[80vw] absolute inset-0" viewBox="0 0 100 800" preserveAspectRatio="none">
-                    <motion.path
-                      d="M 50 0 C 100 100, 0 100, 50 200 C 100 300, 0 300, 50 400 C 100 500, 0 500, 50 600 C 100 700, 0 700, 50 800"
-                      fill="none"
-                      stroke="url(#gradient-path)"
-                      strokeWidth="4"
-                      strokeLinecap="round"
-                      style={{ pathLength: pathLength }}
-                    />
-                    <defs>
-                      <linearGradient id="gradient-path" x1="0%" y1="0%" x2="0%" y2="100%">
-                        <stop offset="0%" stopColor="var(--primary)" />
-                        <stop offset="100%" stopColor="var(--primary-dark)" />
-                      </linearGradient>
-                    </defs>
-                  </svg>
+                    {/* Glowing Animated Path */}
+                    <svg width="400" height="auto" className="h-full w-full max-w-[80vw] absolute inset-0" viewBox="0 0 100 800" preserveAspectRatio="none">
+                      <motion.path
+                        d="M 50 0 C 100 100, 0 100, 50 200 C 100 300, 0 300, 50 400 C 100 500, 0 500, 50 600 C 100 700, 0 700, 50 800"
+                        fill="none"
+                        stroke="url(#gradient-path)"
+                        strokeWidth="4"
+                        strokeLinecap="round"
+                        style={{ pathLength: isMobile ? scrollYProgress : pathLength }}
+                      />
+                      <defs>
+                        <linearGradient id="gradient-path" x1="0%" y1="0%" x2="0%" y2="100%">
+                          <stop offset="0%" stopColor="var(--primary)" />
+                          <stop offset="100%" stopColor="var(--primary-dark)" />
+                        </linearGradient>
+                      </defs>
+                    </svg>
                 </div>
 
                 {/* ── CINEMATIC INTRO: THE STARTING LINE ── */}
@@ -267,61 +380,18 @@ export default function RanksPage() {
                 </motion.div>
 
                 {/* Rank Items along the Zig-Zag */}
-                <div className="relative z-10 space-y-[-40px]">
-                  {RANKS.map((rank, i) => {
-                    const detail = RANK_DETAILS[rank.name];
-                    const isLeft = i % 2 !== 0;
-                    return (
-                      <div key={rank.name} className={cn("flex w-full mb-32", isLeft ? "justify-start pl-4 lg:pl-20" : "justify-end pr-4 lg:pr-20")}>
-                        <motion.div
-                          initial={{ opacity: 0, x: isLeft ? -100 : 100 }}
-                          whileInView={{ opacity: 1, x: 0 }}
-                          viewport={{ once: true, margin: "-100px" }}
-                          whileHover={{ scale: 1.05 }}
-                          onClick={() => setExpandedRank(expandedRank === i ? null : i)}
-                          className={cn(
-                            "relative group cursor-pointer max-w-[320px] p-6 lg:p-8 rounded-[3rem] backdrop-blur-xl border border-foreground/5 shadow-2xl transition-all duration-500",
-                            expandedRank === i ? "bg-foreground/[0.03]" : "bg-foreground/[0.01]"
-                          )}
-                        >
-                          {/* Rank Icon Container */}
-                          <div className="absolute -top-12 -left-4 sm:-left-12 group-hover:rotate-12 transition-transform duration-500">
-                             <div className="relative">
-                               <RankBadge rankName={rank.name} size="xl" />
-                               <div className="absolute inset-0 bg-primary/20 blur-2xl rounded-full opacity-0 group-hover:opacity-40 transition-opacity" />
-                             </div>
-                          </div>
-
-                          <div className="pt-8 space-y-4">
-                            <div className="flex items-center justify-between">
-                              <h3 className="text-3xl font-black italic uppercase tracking-tighter" style={{ color: rank.color }}>{rank.name}</h3>
-                              <ChevronDown className={cn("w-5 h-5 text-foreground/20 transition-transform", expandedRank === i && "rotate-180")} />
-                            </div>
-                            <span className="text-[10px] font-black uppercase tracking-[0.4em] text-foreground/30">{detail.tagline}</span>
-                            <p className="text-xs text-foreground/50 leading-relaxed font-medium mb-4 italic">"{detail.desc}"</p>
-                            <div className="w-full h-1 bg-foreground/5 rounded-full overflow-hidden">
-                              <motion.div initial={{ width: 0 }} whileInView={{ width: '100%' }} transition={{ duration: 1, delay: 0.5 }} className="h-full" style={{ background: rank.color }} />
-                            </div>
-                            <div className="flex justify-between items-center text-[9px] font-black uppercase text-foreground/20 tracking-widest">
-                               <span>Puntos Requeridos</span>
-                               <span>{rank.minElo.toLocaleString()} XP</span>
-                            </div>
-                          </div>
-
-                          <AnimatePresence>
-                            {expandedRank === i && (
-                              <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="overflow-hidden pt-4 border-t border-foreground/5 mt-4">
-                                <p className="text-[11px] font-bold text-foreground/40 italic flex items-center gap-2">
-                                  <Info className="w-3.5 h-3.5" />
-                                  Alcanzá este rango para subir en el ranking mundial.
-                                </p>
-                              </motion.div>
-                            )}
-                          </AnimatePresence>
-                        </motion.div>
-                      </div>
-                    );
-                  })}
+                <div className="relative z-10 space-y-[-20px] sm:space-y-[-40px]">
+                  {RANKS.map((rank, i) => (
+                    <RankCard
+                      key={rank.name}
+                      rank={rank}
+                      detail={RANK_DETAILS[rank.name]}
+                      index={i}
+                      isMobile={isMobile}
+                      isExpanded={expandedRank === i}
+                      onToggle={() => setExpandedRank(expandedRank === i ? null : i)}
+                    />
+                  ))}
                 </div>
 
                 {/* ── FINAL GRAND FINALE: THE PORTAL TO IMMORTALITY ── */}
@@ -416,38 +486,7 @@ export default function RanksPage() {
                ) : (
                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {topPlayers.map((p, idx) => (
-                      <motion.div
-                        key={p.id}
-                        initial={{ opacity: 0, scale: 0.9 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        transition={{ delay: idx * 0.05 }}
-                        whileHover={{ y: -5 }}
-                        className="p-6 rounded-[2.5rem] bg-foreground/[0.02] border border-foreground/5 hover:border-primary/20 transition-all group relative overflow-hidden"
-                      >
-                         <div className="absolute top-4 right-4 text-4xl font-black italic opacity-[0.03] group-hover:opacity-10 transition-opacity">#{idx+1}</div>
-                         <div className="flex items-center gap-4">
-                            <div className="w-20 h-20 rounded-3xl overflow-hidden border-2 border-foreground/10 group-hover:border-primary/50 transition-all">
-                               <img src={p.avatar_url || `https://api.dicebear.com/7.x/notionists/svg?seed=${p.name}`} className="w-full h-full object-cover" />
-                            </div>
-                            <div className="flex-1 min-w-0">
-                               <h4 className="text-xl font-black italic uppercase tracking-tighter truncate">{p.name}</h4>
-                               <div className="flex items-center gap-2 mt-1">
-                                  <RankBadge rankName={getRankByElo(p.elo).name} size="sm" />
-                                  <span className="text-[10px] font-black text-foreground/40">{p.elo.toLocaleString()} XP</span>
-                               </div>
-                            </div>
-                         </div>
-                         <div className="mt-6 pt-4 border-t border-foreground/5 flex justify-between items-center">
-                            <div className="flex flex-col">
-                               <span className="text-[10px] font-black uppercase text-foreground/20">Posición</span>
-                               <span className="text-xs font-black italic text-foreground/60">{p.position || 'Versátil'}</span>
-                            </div>
-                            <div className="flex flex-col items-end">
-                               <span className="text-[10px] font-black uppercase text-foreground/20">Partidos</span>
-                               <span className="text-xs font-black italic text-foreground/60">{p.matches || 0}</span>
-                            </div>
-                         </div>
-                      </motion.div>
+                      <PlayerCard key={p.id} player={p} index={idx} />
                     ))}
                  </div>
                )}
