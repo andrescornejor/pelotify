@@ -88,7 +88,7 @@ export function MobilePullToRefresh({
   return (
     <div 
       ref={containerRef}
-      className={cn("relative w-full h-full overflow-y-auto overscroll-contain no-scrollbar", className)}
+      className={cn("relative w-full h-full overflow-y-auto overscroll-none no-scrollbar", className)}
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}
