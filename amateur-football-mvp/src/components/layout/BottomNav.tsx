@@ -177,7 +177,7 @@ export function BottomNav() {
                   return (
                     <div
                       key="primary-btn"
-                      className="relative flex items-center justify-center -mt-8 cursor-pointer pointer-events-auto"
+                      className="relative flex flex-col items-center justify-center h-full cursor-pointer pointer-events-auto"
                       onClick={() => {
                         hapticMedium();
                         setIsCreateMenuOpen(!isCreateMenuOpen);
@@ -189,7 +189,7 @@ export function BottomNav() {
                         whileTap={{ scale: 0.9 }}
                         transition={{ type: "spring", stiffness: 400, damping: 15 }}
                         className={cn(
-                          "w-16 h-16 rounded-[2rem] flex items-center justify-center shadow-[0_15px_30px_rgba(44,252,125,0.3)] relative z-20 group overflow-hidden border-2 border-white/20",
+                          "w-16 h-16 rounded-[2rem] flex items-center justify-center shadow-[0_15px_30px_rgba(44,252,125,0.3)] relative z-20 group overflow-hidden border-2 border-white/20 -mt-8",
                           "bg-gradient-to-br", item.color
                         )}
                       >
@@ -203,12 +203,21 @@ export function BottomNav() {
                         <div className="absolute top-0 left-0 right-0 h-1/2 bg-gradient-to-b from-white/30 to-transparent pointer-events-none" />
                       </motion.div>
                       
+                      <span
+                        className={cn(
+                          "text-[8px] font-black tracking-[0.1em] transition-all duration-300 uppercase italic mt-1",
+                          isCreateMenuOpen ? "text-primary" : "text-foreground/40"
+                        )}
+                      >
+                        {item.label}
+                      </span>
+                      
                       {/* Pulsing Aura */}
                       {!performanceMode && (
                         <motion.div 
                           animate={{ scale: [1, 1.2, 1], opacity: [0.3, 0.1, 0.3] }}
                           transition={{ duration: 3, repeat: Infinity }}
-                          className="absolute inset-0 bg-primary/20 blur-2xl rounded-full -z-10"
+                          className="absolute inset-[0_-12px] bg-primary/20 blur-2xl rounded-full -z-10"
                         />
                       )}
                     </div>
@@ -243,7 +252,7 @@ export function BottomNav() {
                             "w-6 h-6 transition-all duration-300 relative z-10",
                             isActive 
                               ? "text-primary drop-shadow-[0_0_12px_rgba(44,252,125,0.5)] scale-110" 
-                              : "text-foreground/30 group-hover:text-foreground/60"
+                              : "text-foreground/40 group-hover:text-foreground/60"
                           )}
                           strokeWidth={isActive ? 2.5 : 2}
                         />
@@ -252,7 +261,7 @@ export function BottomNav() {
                       <span
                         className={cn(
                           "text-[8px] font-black tracking-[0.1em] transition-all duration-300 uppercase italic",
-                          isActive ? "text-primary opacity-100" : "text-foreground/20 opacity-0 group-hover:opacity-100 scale-90"
+                          isActive ? "text-primary" : "text-foreground/40"
                         )}
                       >
                         {item.label}
