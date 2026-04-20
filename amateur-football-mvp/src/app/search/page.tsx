@@ -94,7 +94,7 @@ export default function SearchPage() {
       {/* ── HEADER & RADAR SCANNER ── */}
       <div
         className={cn(
-          'sticky top-0 z-30 pt-4 pb-6 -mx-3 px-3 sm:-mx-5 sm:px-5 lg:-mx-10 lg:px-10 xl:-mx-16 xl:px-16 border-b border-foreground/5 shadow-2xl shadow-black/5',
+          'relative lg:sticky top-0 z-30 pt-4 pb-6 -mx-3 px-3 sm:-mx-5 sm:px-5 lg:-mx-10 lg:px-10 xl:-mx-16 xl:px-16 border-b border-foreground/5 shadow-2xl shadow-black/5',
           isPerfMode ? 'bg-background' : 'bg-background/80 backdrop-blur-md'
         )}
       >

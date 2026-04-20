@@ -92,8 +92,7 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
       <div
         ref={scrollContainerRef}
         className={cn(
-          'flex-1 flex flex-col min-w-0 transition-[padding] duration-300 ease-in-out',
-          isHighlightsPage || pathname.startsWith('/messages') ? 'h-[100dvh] overflow-hidden' : 'min-h-screen'
+          'flex-1 flex flex-col min-w-0 transition-[padding] duration-300 ease-in-out min-h-screen'
         )}
       >
         {showTopHeader && <TopHeader isVisible={headerVisible} />}

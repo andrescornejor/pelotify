@@ -391,7 +391,7 @@ export default function MessagesPage() {
         {/* Conversations List */}
         <div
           className={cn(
-            'lg:col-span-4 flex flex-col gap-2 transition-all h-full overflow-hidden px-4 lg:px-0 pt-4 lg:pt-0',
+            'lg:col-span-4 flex flex-col gap-2 transition-all lg:h-full lg:overflow-hidden px-4 lg:px-0 pt-4 lg:pt-0',
             selectedChat ? 'hidden lg:flex' : 'flex'
           )}
         >
@@ -434,7 +434,7 @@ export default function MessagesPage() {
             variants={containerVariants}
             initial="hidden"
             animate="visible"
-            className="flex-1 overflow-y-auto space-y-3 pr-2 no-scrollbar pb-6"
+            className="flex-1 lg:overflow-y-auto space-y-3 pr-2 no-scrollbar pb-6"
           >
             {isLoading ? (
               Array(6)

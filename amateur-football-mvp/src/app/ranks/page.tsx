@@ -275,7 +275,7 @@ export default function RanksPage() {
       </section>
 
       {/* ── Tabs ── */}
-      <div className="sticky top-[80px] z-[50] flex justify-center mb-16 px-4">
+      <div className="relative lg:sticky lg:top-20 z-[50] flex justify-center mb-16 px-4">
         <div className="p-1.5 rounded-full bg-foreground/[0.04] backdrop-blur-xl border border-foreground/10 flex gap-2 shadow-2xl">
           {['ranks', 'leaderboard'].map((t) => (
             <button

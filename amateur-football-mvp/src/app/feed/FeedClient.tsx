@@ -807,10 +807,10 @@ export default function FeedClient({ standalonePostId }: { standalonePostId?: st
                 else window.scrollTo({ top: 0, behavior: 'smooth' });
               }}
               className={cn(
-                "sticky z-50 bg-background/85 backdrop-blur-xl border-b border-foreground/[0.08] px-4 sm:px-5 py-3.5 flex items-center justify-between cursor-pointer hover:bg-foreground/[0.02] transition-colors shadow-sm",
+                "relative lg:sticky z-50 bg-background/85 backdrop-blur-xl border-b border-foreground/[0.08] px-4 sm:px-5 py-3.5 flex items-center justify-between cursor-pointer hover:bg-foreground/[0.02] transition-colors shadow-sm",
                 standalonePostId 
                   ? "top-0 lg:top-[30px] rounded-b-2xl lg:rounded-2xl lg:mb-4" 
-                  : "top-[84px] sm:top-[85px] lg:top-[30px]"
+                  : "lg:top-[30px]"
               )}
             >
               <div className="flex items-center gap-2.5">
