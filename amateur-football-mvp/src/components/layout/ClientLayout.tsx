@@ -128,7 +128,7 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
         onScroll={handleScroll}
         className={cn(
           'flex-1 flex flex-col min-w-0 transition-[padding] duration-300 ease-in-out max-h-[100dvh]',
-          isHighlightsPage || pathname.startsWith('/messages') ? 'overflow-hidden' : 'overflow-y-auto'
+          isHighlightsPage || pathname.startsWith('/messages') || (showNav && (pathname === '/' || pathname === '/feed')) ? 'overflow-hidden overflow-x-hidden' : 'overflow-y-auto overflow-x-hidden'
         )}
         onTouchStart={showNav ? onTouchStart : undefined}
         onTouchEnd={showNav ? onTouchEnd : undefined}
@@ -161,12 +161,15 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
                   stiffness: 300,
                   damping: 30
                 }}
-                className="w-full h-full flex flex-col overflow-y-auto overflow-x-hidden"
+                className="w-full flex-1 flex flex-col"
               >
                 {/* Mobile-only Pull-to-Refresh for key pages */}
                 {showNav && (pathname === '/' || pathname === '/feed') ? (
                   <div className="flex-1 lg:hidden">
-                    <MobilePullToRefresh onRefresh={handleRefresh}>
+                    <MobilePullToRefresh 
+                      onRefresh={handleRefresh}
+                      onScroll={handleScroll}
+                    >
                       {children}
                     </MobilePullToRefresh>
                   </div>

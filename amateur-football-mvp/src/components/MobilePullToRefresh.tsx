@@ -10,6 +10,7 @@ interface MobilePullToRefreshProps {
   children: React.ReactNode;
   onRefresh: () => Promise<void>;
   className?: string;
+  onScroll?: (e: React.UIEvent<HTMLDivElement>) => void;
   disabled?: boolean;
 }
 
@@ -17,6 +18,7 @@ export function MobilePullToRefresh({
   children,
   onRefresh,
   className,
+  onScroll,
   disabled = false,
 }: MobilePullToRefreshProps) {
   const [isRefreshing, setIsRefreshing] = useState(false);
@@ -88,7 +90,9 @@ export function MobilePullToRefresh({
   return (
     <div 
       ref={containerRef}
-      className={cn("relative w-full h-full overflow-y-auto overscroll-none no-scrollbar", className)}
+      className={cn("relative w-full h-full overflow-y-auto overscroll-y-contain touch-pan-y", className)}
+      style={{ WebkitOverflowScrolling: 'touch' }}
+      onScroll={onScroll}
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}
