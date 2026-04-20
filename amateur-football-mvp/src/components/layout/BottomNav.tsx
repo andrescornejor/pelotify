@@ -50,6 +50,7 @@ export function BottomNav() {
       isPrimary: true,
       color: 'from-primary via-[#3dfc8d] to-primary-dark'
     },
+
     {
       label: 'Muro',
       href: '/feed',
