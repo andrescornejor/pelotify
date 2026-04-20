@@ -79,7 +79,7 @@ export default function SearchPage() {
   return (
     <div
       className={cn(
-        'min-h-screen bg-background pt-4 px-3 sm:px-5 lg:px-10 xl:px-16 relative overflow-hidden flex flex-col gap-8',
+        'min-h-screen bg-background pt-4 px-3 sm:px-5 lg:px-10 xl:px-16 relative overflow-hidden flex flex-col gap-4 sm:gap-8',
         isPerfMode && 'perf-mode'
       )}
     >
@@ -95,7 +95,7 @@ export default function SearchPage() {
       <div
         className={cn(
           'sticky top-0 z-30 pt-4 pb-6 -mx-3 px-3 sm:-mx-5 sm:px-5 lg:-mx-10 lg:px-10 xl:-mx-16 xl:px-16 border-b border-foreground/5 shadow-2xl shadow-black/5',
-          isPerfMode ? 'bg-background' : 'bg-background/80 md:'
+          isPerfMode ? 'bg-background' : 'bg-background/80 backdrop-blur-md'
         )}
       >
         <div className="flex flex-col gap-8 relative z-10 text-center lg:text-left w-full">
@@ -126,7 +126,7 @@ export default function SearchPage() {
                 Sintonizando Frecuencias
               </span>
             </div>
-            <h1 className="text-5xl lg:text-7xl font-black italic text-foreground uppercase tracking-tightest leading-none">
+            <h1 className="text-4xl sm:text-5xl lg:text-7xl font-black italic text-foreground uppercase tracking-tightest leading-none">
               Radar de <span className="text-foreground/20">Partidos</span>
             </h1>
           </div>
@@ -248,7 +248,7 @@ export default function SearchPage() {
         </div>
       </div>
 
-      <div className="flex-1 overflow-y-auto no-scrollbar pb-24 relative z-10">
+      <div className="flex-1 overflow-y-auto no-scrollbar relative z-10">
         {isLoading ? (
           <div className="flex flex-col gap-6">
             <div className="flex flex-col items-center justify-center py-12 text-zinc-500 gap-4 mb-4">
@@ -586,12 +586,11 @@ export default function SearchPage() {
               </div>
             )}
           </div>
-
         ) : (
-          <div className="w-full h-full min-h-[600px] relative overflow-hidden rounded-[4rem] border border-foreground/10 shadow-[0_50px_100px_rgba(0,0,0,0.5)] bg-surface">
+          <div className="w-full h-[60vh] sm:h-[500px] lg:h-full lg:min-h-[600px] relative overflow-hidden rounded-[2rem] lg:rounded-[4rem] border border-foreground/10 shadow-[0_50px_100px_rgba(0,0,0,0.5)] bg-surface">
             <MapSearch matches={mapMatches} userLocation={userLocation} radius={radiusFilter} />
-            <div className="absolute top-8 right-8 z-20 flex flex-col gap-3">
-              <div className="px-5 py-2.5 bg-background/60 md: border border-foreground/10 rounded-2xl flex items-center gap-3">
+            <div className="absolute top-4 right-4 lg:top-8 lg:right-8 z-20 flex flex-col gap-3">
+              <div className="px-3 py-1.5 lg:px-5 lg:py-2.5 bg-background/60 backdrop-blur-md border border-foreground/10 rounded-2xl flex items-center gap-2 lg:gap-3">
                 <div className={cn(
                   "w-2 h-2 rounded-full",
                   userLocation ? "bg-primary animate-pulse shadow-[0_0_10px_rgba(16,185,129,1)]" : "bg-foreground/20"
