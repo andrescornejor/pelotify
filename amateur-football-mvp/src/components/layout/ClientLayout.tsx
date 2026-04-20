@@ -101,9 +101,9 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
           className={cn(
             'flex-1 flex flex-col w-full relative min-h-0',
             showNav
-              ? pathname === '/'
-                  ? 'pb-[calc(65px+env(safe-area-inset-bottom,0px))] lg:pt-28 lg:pb-0'
-                  : 'pb-[calc(65px+env(safe-area-inset-bottom,0px))] lg:pt-24 lg:pb-0'
+                ? pathname === '/'
+                    ? 'pb-[calc(58px+env(safe-area-inset-bottom,0px))] lg:pt-28 lg:pb-0'
+                    : 'pb-[calc(58px+env(safe-area-inset-bottom,0px))] lg:pt-24 lg:pb-0'
               : ''
           )}
         >

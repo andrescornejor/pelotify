@@ -365,11 +365,11 @@ export const SidebarContent = memo(function SidebarContent({
 
       {/* ── Footer ── */}
       <div className={cn(
-        "relative z-10 shrink-0 border-t border-foreground/5 bg-foreground/[0.02]",
+        "relative z-10 shrink-0",
         isMobile && "pb-[env(safe-area-inset-bottom,0px)]"
       )}>
         <Link href="/settings" onClick={() => isMobile && onClose && onClose()} className="block">
-          <div className="px-6 py-4 flex items-center gap-3 hover:bg-foreground/[0.04] transition-colors group">
+          <div className="px-6 py-3.5 flex items-center gap-3 hover:bg-foreground/[0.04] transition-colors group">
             <Settings className="w-4.5 h-4.5 text-foreground/40 group-hover:text-foreground/70 transition-colors" />
             <span className="text-[12px] font-black uppercase italic tracking-widest text-foreground/60 group-hover:text-foreground/90 font-kanit">
               Ajustes / Configuración
@@ -379,7 +379,7 @@ export const SidebarContent = memo(function SidebarContent({
 
         <button
           onClick={logout}
-          className="w-full px-6 py-4 flex items-center gap-3 hover:bg-red-500/[0.05] transition-colors group border-t border-foreground/5"
+          className="w-full px-6 py-3.5 flex items-center gap-3 hover:bg-red-500/[0.05] transition-colors group"
         >
           <LogOut className="w-4.5 h-4.5 text-red-500/40 group-hover:text-red-500/80 transition-colors" />
           <span className="text-[12px] font-black uppercase italic tracking-widest text-red-500/60 group-hover:text-red-500/90 font-kanit">
