@@ -38,12 +38,12 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
   const [direction, setDirection] = useState(0);
   const [prevPath, setPrevPath] = useState(pathname);
   const navPaths = ['/', '/search', '/feed', '/messages'];
-  
+
   // Update direction synchronously when pathname changes
   if (pathname !== prevPath) {
     const prevIdx = navPaths.indexOf(prevPath);
     const curIdx = navPaths.indexOf(pathname);
-    
+
     if (prevIdx !== -1 && curIdx !== -1) {
       const newDir = curIdx > prevIdx ? 1 : -1;
       if (newDir !== direction) setDirection(newDir);
@@ -53,14 +53,14 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
     setPrevPath(pathname);
   }
 
-  const { onTouchStart, onTouchEnd } = useSwipeNavigation({ 
+  const { onTouchStart, onTouchEnd } = useSwipeNavigation({
     paths: navPaths,
     onNavigate: (dir) => setDirection(dir)
   });
 
   const handleScroll = useCallback((e: UIEvent<HTMLDivElement>) => {
     const currentScrollY = e.currentTarget.scrollTop;
-    
+
     // threshold before hiding to avoid jitter at very top
     if (currentScrollY > 60) {
       if (currentScrollY > lastScrollY.current + 8) {
@@ -73,7 +73,7 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
     } else {
       setHeaderVisible(true);
     }
-    
+
     lastScrollY.current = currentScrollY;
   }, []);
 
@@ -140,14 +140,16 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
             'flex-1 flex flex-col w-full relative min-h-0',
             showNav
               ? pathname === '/'
-                  ? 'pb-[calc(76px+env(safe-area-inset-bottom,0px))] lg:pt-28 lg:pb-0'
-                  : 'pb-[calc(76px+env(safe-area-inset-bottom,0px))] lg:pt-24 lg:pb-0'
+                ? 'pb-[calc(76px+env(safe-area-inset-bottom,0px))] lg:pt-28 lg:pb-0'
+                : 'pb-[calc(76px+env(safe-area-inset-bottom,0px))] lg:pt-24 lg:pb-0'
               : ''
           )}
+
+
         >
           {/* Push Notification Permission Banner */}
           {showNav && <NotificationPromptBanner />}
-          
+
           <div className="flex-1 relative overflow-hidden">
             <AnimatePresence mode="wait" initial={false} custom={direction}>
               <motion.div
@@ -166,7 +168,7 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
                 {/* Mobile-only Pull-to-Refresh for key pages */}
                 {showNav && (pathname === '/' || pathname === '/feed') ? (
                   <div className="flex-1 lg:hidden">
-                    <MobilePullToRefresh 
+                    <MobilePullToRefresh
                       onRefresh={handleRefresh}
                       onScroll={handleScroll}
                     >
@@ -174,7 +176,7 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
                     </MobilePullToRefresh>
                   </div>
                 ) : null}
-                
+
                 {/* Desktop & Non-refreshable mobile pages */}
                 <div className={cn(
                   "flex-1",
@@ -208,7 +210,7 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
 
       {/* Persistent Floating Chat (Desktop only) */}
       {showNav && <FloatingChat />}
-      
+
       {/* Mobile-only tools */}
       <MobileStatusBar />
       <MobileOfflineBanner />
