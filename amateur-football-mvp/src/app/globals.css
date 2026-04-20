@@ -133,7 +133,6 @@
   }
 
   html {
-    scroll-snap-type: y proximity;
     scroll-behavior: smooth;
   }
 
@@ -142,9 +141,7 @@
     -webkit-overflow-scrolling: touch;
   }
 
-  section,
-  .snap-section {
-    scroll-snap-align: start;
+  section {
     scroll-margin-top: 5rem;
     /* Default header offset */
   }

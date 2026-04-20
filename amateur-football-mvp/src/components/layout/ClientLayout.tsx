@@ -1,8 +1,8 @@
 'use client';
 
-import { usePathname, useRouter } from 'next/navigation';
+import { usePathname } from 'next/navigation';
 import { useEffect, useRef, useState, useCallback, UIEvent } from 'react';
-import { Sidebar, SidebarContent } from '@/components/layout/Sidebar';
+import { Sidebar } from '@/components/layout/Sidebar';
 import { TopHeader } from '@/components/layout/TopHeader';
 import { BottomNav } from '@/components/layout/BottomNav';
 import { useAuth } from '@/contexts/AuthContext';
@@ -16,10 +16,6 @@ import { MobileStatusBar } from '@/components/MobileStatusBar';
 import { MobilePullToRefresh } from '@/components/MobilePullToRefresh';
 import { MobileOfflineBanner } from '@/components/MobileOfflineBanner';
 import { useMobileRefresh } from '@/hooks/useMobileRefresh';
-import { useHaptic } from '@/hooks/useHaptic';
-import { useSwipeNavigation } from '@/hooks/useSwipeNavigation';
-import { motion, AnimatePresence } from 'framer-motion';
-
 
 export default function ClientLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
@@ -28,35 +24,10 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const fcmInitRef = useRef(false);
   const { handleRefresh } = useMobileRefresh();
-  const { hapticLight } = useHaptic();
 
   // Scroll to show/hide header state
   const [headerVisible, setHeaderVisible] = useState(true);
   const lastScrollY = useRef(0);
-
-  // Swipe navigation for mobile
-  const [direction, setDirection] = useState(0);
-  const [prevPath, setPrevPath] = useState(pathname);
-  const navPaths = ['/', '/search', '/feed', '/messages'];
-  
-  // Update direction synchronously when pathname changes
-  if (pathname !== prevPath) {
-    const prevIdx = navPaths.indexOf(prevPath);
-    const curIdx = navPaths.indexOf(pathname);
-    
-    if (prevIdx !== -1 && curIdx !== -1) {
-      const newDir = curIdx > prevIdx ? 1 : -1;
-      if (newDir !== direction) setDirection(newDir);
-    } else {
-      if (direction !== 0) setDirection(0);
-    }
-    setPrevPath(pathname);
-  }
-
-  const { onTouchStart, onTouchEnd } = useSwipeNavigation({ 
-    paths: navPaths,
-    onNavigate: (dir) => setDirection(dir)
-  });
 
   const handleScroll = useCallback((e: UIEvent<HTMLDivElement>) => {
     const currentScrollY = e.currentTarget.scrollTop;
@@ -108,9 +79,7 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
     pathname.startsWith('/canchas');
 
   const isHighlightsPage = pathname === '/highlights';
-  const isMessagesPage = pathname.startsWith('/messages');
   const isProfilePage = pathname.startsWith('/feed/profile');
-  const isFeedOrPostPage = pathname.startsWith('/feed') || pathname.startsWith('/post');
   const showNav = !isAuthPage && !!user && !isHighlightsPage;
   const showTopHeader = showNav && !isProfilePage;
 
@@ -130,8 +99,6 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
           'flex-1 flex flex-col min-w-0 transition-[padding] duration-300 ease-in-out max-h-[100dvh]',
           isHighlightsPage || pathname.startsWith('/messages') ? 'overflow-hidden' : 'overflow-y-auto'
         )}
-        onTouchStart={showNav ? onTouchStart : undefined}
-        onTouchEnd={showNav ? onTouchEnd : undefined}
       >
         {showTopHeader && <TopHeader isVisible={headerVisible} />}
 
@@ -149,38 +116,24 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
           {showNav && <NotificationPromptBanner />}
           
           <div className="flex-1 relative overflow-hidden">
-            <AnimatePresence mode="wait" initial={false} custom={direction}>
-              <motion.div
-                key={pathname}
-                custom={direction}
-                initial={direction !== 0 ? { x: direction * 100 + '%', opacity: 0 } : false}
-                animate={{ x: 0, opacity: 1 }}
-                exit={direction !== 0 ? { x: direction * -100 + '%', opacity: 0 } : { opacity: 0 }}
-                transition={{
-                  type: "spring",
-                  stiffness: 300,
-                  damping: 30
-                }}
-                className="w-full h-full flex flex-col overflow-y-auto overflow-x-hidden"
-              >
-                {/* Mobile-only Pull-to-Refresh for key pages */}
-                {showNav && (pathname === '/' || pathname === '/feed') ? (
-                  <div className="flex-1 lg:hidden">
-                    <MobilePullToRefresh onRefresh={handleRefresh}>
-                      {children}
-                    </MobilePullToRefresh>
-                  </div>
-                ) : null}
-                
-                {/* Desktop & Non-refreshable mobile pages */}
-                <div className={cn(
-                  "flex-1",
-                  (showNav && (pathname === '/' || pathname === '/feed')) ? "hidden lg:block" : "block"
-                )}>
-                  {children}
+            <div className="w-full h-full flex flex-col overflow-y-auto overflow-x-hidden">
+              {/* Mobile-only Pull-to-Refresh for key pages */}
+              {showNav && (pathname === '/' || pathname === '/feed') ? (
+                <div className="flex-1 lg:hidden">
+                  <MobilePullToRefresh onRefresh={handleRefresh}>
+                    {children}
+                  </MobilePullToRefresh>
                 </div>
-              </motion.div>
-            </AnimatePresence>
+              ) : null}
+              
+              {/* Desktop & Non-refreshable mobile pages */}
+              <div className={cn(
+                "flex-1",
+                (showNav && (pathname === '/' || pathname === '/feed')) ? "hidden lg:block" : "block"
+              )}>
+                {children}
+              </div>
+            </div>
           </div>
         </main>
 
