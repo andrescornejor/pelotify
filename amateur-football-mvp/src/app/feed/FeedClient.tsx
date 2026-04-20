@@ -610,7 +610,7 @@ export default function FeedClient({ standalonePostId }: { standalonePostId?: st
   }
 
   return (
-    <div className="flex flex-col min-h-screen bg-background pt-0 relative overflow-hidden">
+    <div className="flex flex-col min-h-screen bg-background pt-0 relative">
       {/* AMBIENT BACKGROUND */}
       <div className="fixed inset-0 pointer-events-none -z-10 overflow-hidden">
         <div

@@ -79,7 +79,7 @@ export default function SearchPage() {
   return (
     <div
       className={cn(
-        'min-h-screen bg-background pt-4 px-3 sm:px-5 lg:px-10 xl:px-16 relative overflow-hidden flex flex-col gap-4 sm:gap-8',
+        'min-h-screen bg-background pt-4 px-3 sm:px-5 lg:px-10 xl:px-16 relative flex flex-col gap-4 sm:gap-8',
         isPerfMode && 'perf-mode'
       )}
     >
@@ -248,7 +248,7 @@ export default function SearchPage() {
         </div>
       </div>
 
-      <div className="flex-1 overflow-y-auto no-scrollbar relative z-10">
+      <div className="flex-1 relative z-10">
         {isLoading ? (
           <div className="flex flex-col gap-6">
             <div className="flex flex-col items-center justify-center py-12 text-zinc-500 gap-4 mb-4">

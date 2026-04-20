@@ -346,9 +346,9 @@ export default function MessagesPage() {
 
   return (
     <div className={cn(
-      "w-full bg-background relative flex flex-col lg:pt-28 overflow-hidden",
+      "w-full bg-background relative flex flex-col lg:pt-28",
       selectedChat 
-        ? "fixed inset-0 z-[100] pt-[env(safe-area-inset-top)] lg:relative lg:inset-auto lg:z-auto lg:flex-1 lg:min-h-[100dvh] lg:h-auto pb-0 lg:pb-0" 
+        ? "fixed inset-0 z-[100] pt-[env(safe-area-inset-top)] lg:relative lg:inset-auto lg:z-auto lg:flex-1 lg:min-h-[100dvh] lg:h-auto pb-0 lg:pb-0 overflow-hidden" 
         : "flex-1 lg:min-h-[100dvh] lg:h-auto px-0 sm:px-5 lg:px-10 xl:px-16 pt-0"
     )}>
       {/* Hide Bottom Nav on mobile when a chat is active to behave like a native messenger app */}

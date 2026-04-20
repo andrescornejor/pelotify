@@ -29,30 +29,27 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
   const [headerVisible, setHeaderVisible] = useState(true);
   const lastScrollY = useRef(0);
 
-  const handleScroll = useCallback((e: UIEvent<HTMLDivElement>) => {
-    const currentScrollY = e.currentTarget.scrollTop;
-    
-    // threshold before hiding to avoid jitter at very top
-    if (currentScrollY > 60) {
-      if (currentScrollY > lastScrollY.current + 8) {
-        // Scrolling down significantly
+  useEffect(() => {
+    const handleWindowScroll = () => {
+      const currentScrollY = window.scrollY;
+      
+      if (currentScrollY < 10) {
+        setHeaderVisible(true);
+      } else if (currentScrollY > lastScrollY.current && currentScrollY > 76) {
         setHeaderVisible(false);
-      } else if (currentScrollY < lastScrollY.current - 8) {
-        // Scrolling up significantly
+      } else if (currentScrollY < lastScrollY.current) {
         setHeaderVisible(true);
       }
-    } else {
-      setHeaderVisible(true);
-    }
-    
-    lastScrollY.current = currentScrollY;
+      
+      lastScrollY.current = currentScrollY;
+    };
+
+    window.addEventListener('scroll', handleWindowScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleWindowScroll);
   }, []);
 
   // Scroll to top on route change
   useEffect(() => {
-    if (scrollContainerRef.current) {
-      scrollContainerRef.current.scrollTo(0, 0);
-    }
     window.scrollTo(0, 0);
   }, [pathname]);
 
@@ -94,10 +91,9 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
 
       <div
         ref={scrollContainerRef}
-        onScroll={handleScroll}
         className={cn(
-          'flex-1 flex flex-col min-w-0 transition-[padding] duration-300 ease-in-out max-h-[100dvh]',
-          isHighlightsPage || pathname.startsWith('/messages') ? 'overflow-hidden' : 'overflow-y-auto'
+          'flex-1 flex flex-col min-w-0 transition-[padding] duration-300 ease-in-out',
+          isHighlightsPage || pathname.startsWith('/messages') ? 'h-[100dvh] overflow-hidden' : 'min-h-screen'
         )}
       >
         {showTopHeader && <TopHeader isVisible={headerVisible} />}
@@ -115,25 +111,8 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
           {/* Push Notification Permission Banner */}
           {showNav && <NotificationPromptBanner />}
           
-          <div className="flex-1 relative overflow-hidden">
-            <div className="w-full h-full flex flex-col overflow-y-auto overflow-x-hidden">
-              {/* Mobile-only Pull-to-Refresh for key pages */}
-              {showNav && (pathname === '/' || pathname === '/feed') ? (
-                <div className="flex-1 lg:hidden">
-                  <MobilePullToRefresh onRefresh={handleRefresh}>
-                    {children}
-                  </MobilePullToRefresh>
-                </div>
-              ) : null}
-              
-              {/* Desktop & Non-refreshable mobile pages */}
-              <div className={cn(
-                "flex-1",
-                (showNav && (pathname === '/' || pathname === '/feed')) ? "hidden lg:block" : "block"
-              )}>
-                {children}
-              </div>
-            </div>
+          <div className="flex-1 w-full relative">
+            {children}
           </div>
         </main>
 
