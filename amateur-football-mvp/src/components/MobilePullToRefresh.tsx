@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, useScroll, useSpring, useTransform, useMotionValue } from 'framer-motion';
 import { useHaptic } from '@/hooks/useHaptic';
-import { Loader2, RefreshCw } from 'lucide-react';
+import { Loader2, ArrowDown } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface MobilePullToRefreshProps {
@@ -99,24 +99,54 @@ export function MobilePullToRefresh({
       >
         <motion.div
           animate={{ 
-            y: isRefreshing ? 20 : (pullProgress * 40 - 20),
-            opacity: isRefreshing ? 1 : pullProgress,
-            scale: isRefreshing ? 1 : Math.min(pullProgress, 1.2)
+            y: isRefreshing ? 25 : (pullProgress * 40 - 20),
+            opacity: isRefreshing ? 1 : Math.max(0, pullProgress),
+            scale: isRefreshing ? 1 : Math.min(pullProgress, 1.1)
           }}
-          className="bg-surface/90 backdrop-blur-md rounded-full p-2.5 shadow-lg border border-primary/20 flex items-center justify-center mt-2"
+          className="bg-background/95 backdrop-blur-[20px] rounded-full p-2 shadow-[0_8px_30px_rgb(0,0,0,0.12)] border border-foreground/5 flex items-center justify-center mt-2 z-50 ring-1 ring-black/5"
         >
           {isRefreshing ? (
-            <Loader2 className="w-5 h-5 text-primary animate-spin" />
-          ) : (
             <motion.div
-              animate={{ rotate: pullProgress * 360 }}
-              style={{ opacity: pullProgress }}
+              initial={{ scale: 0, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{ type: "spring", stiffness: 300, damping: 20 }}
+              className="p-1"
             >
-              <RefreshCw className={cn(
-                "w-5 h-5 transition-colors",
-                pullProgress >= 1 ? "text-primary" : "text-muted-foreground"
-              )} />
+              <Loader2 className="w-5 h-5 text-primary animate-spin" strokeWidth={3} />
             </motion.div>
+          ) : (
+            <div className="relative flex items-center justify-center w-7 h-7">
+              {/* Background Ring */}
+              <svg className="absolute inset-0 w-full h-full text-foreground/10" viewBox="0 0 24 24" fill="none">
+                <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="2.5" />
+              </svg>
+              
+              {/* Progress Ring */}
+              <svg className="absolute inset-0 w-full h-full -rotate-90 text-primary" viewBox="0 0 24 24" fill="none">
+                <motion.circle 
+                  cx="12" cy="12" r="10" 
+                  stroke="currentColor" 
+                  strokeWidth="2.5" 
+                  strokeLinecap="round"
+                  strokeDasharray={2 * Math.PI * 10}
+                  strokeDashoffset={2 * Math.PI * 10 * (1 - Math.min(pullProgress, 1))}
+                />
+              </svg>
+              
+              {/* Inner Animated Arrow */}
+              <motion.div
+                animate={{ 
+                  rotate: pullProgress >= 1 ? 180 : 0,
+                  y: pullProgress >= 1 ? -1 : 0
+                }}
+                className={cn(
+                  "z-10 transition-colors",
+                  pullProgress >= 1 ? "text-primary" : "text-foreground/40"
+                )}
+              >
+                <ArrowDown className="w-3.5 h-3.5 mt-[2px]" strokeWidth={3} />
+              </motion.div>
+            </div>
           )}
         </motion.div>
       </div>
