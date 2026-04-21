@@ -137,19 +137,18 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
             {/* Main content — slides during swipe */}
             <div
               className={cn(
-                "relative z-10 flex-1 min-h-0 transition-[box-shadow,border-radius] duration-300",
-                (swipeState.isSwiping || swipeState.isExiting) ? "bg-background shadow-[-20px_0_40px_rgba(0,0,0,0.1),20px_0_40px_rgba(0,0,0,0.1)] rounded-[32px] overflow-hidden" : ""
+                "relative z-10 flex-1 min-h-0 transition-[border-radius,box-shadow] duration-200",
+                (swipeState.isSwiping || swipeState.isExiting) ? "bg-background shadow-xl rounded-3xl" : ""
               )}
               style={{
                 transform: (swipeState.isSwiping || swipeState.isExiting)
-                  ? `translateX(${swipeState.offset}px)`
-                  : 'translateX(0)',
+                  ? `translate3d(${swipeState.offset}px, 0, 0)`
+                  : 'none',
                 transition: swipeState.isSwiping
                   ? 'none'
                   : swipeState.isExiting
-                    ? 'transform 280ms cubic-bezier(0.25, 0.46, 0.45, 0.94), border-radius 280ms ease, box-shadow 280ms ease'
-                    : 'transform 320ms cubic-bezier(0.22, 1, 0.36, 1), border-radius 320ms ease, box-shadow 320ms ease',
-                willChange: (swipeState.isSwiping || swipeState.isExiting) ? 'transform' : 'auto',
+                    ? 'transform 250ms cubic-bezier(0.25, 0.46, 0.45, 0.94)'
+                    : 'transform 300ms cubic-bezier(0.22, 1, 0.36, 1)',
               }}
             >
               {children}
