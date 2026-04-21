@@ -147,6 +147,10 @@ export function useSwipeNavigation() {
         }
 
         isLockedRef.current = 'horizontal';
+
+        // Aggressively prefetch target routes in Next.js router cache while user is swiping
+        if (dx < 0 && canSwipeLeft) router.prefetch(NAV_ROUTES[currentIdx + 1]);
+        if (dx > 0 && canSwipeRight) router.prefetch(NAV_ROUTES[currentIdx - 1]);
       } else if (absDy > 12 || absDy > absDx) {
         isLockedRef.current = 'vertical';
         return;

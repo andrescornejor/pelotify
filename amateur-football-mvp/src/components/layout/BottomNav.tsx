@@ -228,6 +228,7 @@ export function BottomNav() {
                   <Link
                     key={item.href}
                     href={item.href}
+                    prefetch={true}
                     onClick={() => {
                       if (!isActive) hapticLight();
                       setIsCreateMenuOpen(false);
