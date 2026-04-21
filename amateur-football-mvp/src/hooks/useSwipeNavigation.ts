@@ -64,6 +64,14 @@ export function useSwipeNavigation() {
     }
 
     const touch = e.touches[0];
+
+    // Edge exclusion zone: ignore touches starting within 30px of screen edges
+    // to avoid conflicting with OS-level back gestures (Android, iOS Safari)
+    const EDGE_ZONE = 30;
+    if (touch.clientX < EDGE_ZONE || touch.clientX > window.innerWidth - EDGE_ZONE) {
+      return;
+    }
+
     touchStartRef.current = { x: touch.clientX, y: touch.clientY, time: Date.now() };
     isLockedRef.current = null;
     currentOffsetRef.current = 0;
