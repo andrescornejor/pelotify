@@ -3,6 +3,7 @@
 import { useCallback, useRef, useEffect, useState } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 import { useSwipeDirection } from '@/contexts/SwipeNavigationContext';
+import { useSidebar } from '@/contexts/SidebarContext';
 
 /**
  * Ordered routes matching the BottomNav items (excluding the center "create" button).
@@ -43,6 +44,7 @@ export function useSwipeNavigation() {
   const pathname = usePathname();
   const router = useRouter();
   const { setDirection } = useSwipeDirection();
+  const { openSidebar } = useSidebar();
 
   const touchStartRef = useRef<{ x: number; y: number; time: number } | null>(null);
   const lastTouchRef = useRef<{ x: number; time: number } | null>(null);
@@ -139,7 +141,7 @@ export function useSwipeNavigation() {
         if (currentIdx < 0) return;
 
         const canSwipeLeft = currentIdx < NAV_ROUTES.length - 1;
-        const canSwipeRight = currentIdx > 0;
+        const canSwipeRight = currentIdx > 0 || currentIdx === 0; // Allow swipe right at Home for Sidebar
         if ((dx < 0 && !canSwipeLeft) || (dx > 0 && !canSwipeRight)) {
           isLockedRef.current = 'vertical';
           return;
@@ -158,7 +160,7 @@ export function useSwipeNavigation() {
 
     const currentIdx = getCurrentIndex();
     const canSwipeLeft = currentIdx < NAV_ROUTES.length - 1;
-    const canSwipeRight = currentIdx > 0;
+    const canSwipeRight = currentIdx > 0 || currentIdx === 0;
 
     let clampedDx = dx;
     if ((dx < 0 && !canSwipeLeft) || (dx > 0 && !canSwipeRight)) {
@@ -174,12 +176,17 @@ export function useSwipeNavigation() {
     const targetIdx = dir === 'left' ? currentIdx + 1 : dir === 'right' ? currentIdx - 1 : -1;
     const targetRoute = targetIdx >= 0 && targetIdx < NAV_ROUTES.length ? NAV_ROUTES[targetIdx] : null;
 
+    let targetLabel = targetRoute ? NAV_LABELS[targetRoute] || null : null;
+    if (dir === 'right' && currentIdx === 0) {
+      targetLabel = 'Menú';
+    }
+
     setSwipeState({
       offset: clampedDx,
       isSwiping: true,
       isExiting: false,
       direction: dir,
-      targetLabel: targetRoute ? NAV_LABELS[targetRoute] || null : null,
+      targetLabel,
     });
   }, [getCurrentIndex]);
 
@@ -201,6 +208,25 @@ export function useSwipeNavigation() {
 
     if (currentIdx >= 0 && (isPastDistance || isFastSwipeLeft || isFastSwipeRight)) {
       const dir = offset < 0 ? 'left' : 'right';
+
+      // Special case: opening Sidebar from Home
+      if (dir === 'right' && currentIdx === 0) {
+        touchStartRef.current = null;
+        isLockedRef.current = null;
+        currentOffsetRef.current = 0;
+        
+        // Reset state immediately and open sidebar
+        setSwipeState({
+          offset: 0,
+          isSwiping: false,
+          isExiting: false,
+          direction: null,
+          targetLabel: null,
+        });
+        openSidebar();
+        return;
+      }
+
       const targetIdx = dir === 'left' ? currentIdx + 1 : currentIdx - 1;
 
       if (targetIdx >= 0 && targetIdx < NAV_ROUTES.length) {
