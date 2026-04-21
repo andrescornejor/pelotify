@@ -34,7 +34,7 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
   useEffect(() => {
     const handleWindowScroll = () => {
       const currentScrollY = window.scrollY;
-      
+
       if (currentScrollY < 10) {
         setHeaderVisible(true);
       } else if (currentScrollY > lastScrollY.current && currentScrollY > 76) {
@@ -42,7 +42,7 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
       } else if (currentScrollY < lastScrollY.current) {
         setHeaderVisible(true);
       }
-      
+
       lastScrollY.current = currentScrollY;
     };
 
@@ -103,15 +103,15 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
           className={cn(
             'flex-1 flex flex-col w-full relative min-h-0',
             showNav
-                ? pathname === '/'
-                    ? 'pb-[calc(58px+env(safe-area-inset-bottom,0px))] lg:pt-28 lg:pb-0'
-                    : 'pb-[calc(58px+env(safe-area-inset-bottom,0px))] lg:pt-24 lg:pb-0'
+              ? pathname === '/'
+                ? 'pb-[calc(58px+env(safe-area-inset-bottom,0px))] lg:pt-28 lg:pb-0'
+                : 'pb-[calc(58px+env(safe-area-inset-bottom,0px))] lg:pt-24 lg:pb-0'
               : ''
           )}
         >
           {/* Push Notification Permission Banner */}
           {showNav && <NotificationPromptBanner />}
-          
+
           {/* Swipeable content wrapper */}
           <div className="flex-1 w-full relative overflow-hidden lg:overflow-visible">
             {/* Peek panel — shows next/previous section label behind the content */}
@@ -129,6 +129,9 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
                   <div className="w-8 h-[2px] rounded-full bg-primary/30" />
                 </div>
               </div>
+
+
+
             )}
 
             {/* Main content — slides during swipe */}
@@ -172,7 +175,7 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
 
       {/* Persistent Floating Chat (Desktop only) */}
       {showNav && <FloatingChat />}
-      
+
       {/* Mobile-only tools */}
       <MobileStatusBar />
       <MobileOfflineBanner />
