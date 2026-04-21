@@ -136,7 +136,10 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
 
             {/* Main content — slides during swipe */}
             <div
-              className="relative z-10 flex-1 min-h-0"
+              className={cn(
+                "relative z-10 flex-1 min-h-0 transition-[box-shadow,border-radius] duration-300",
+                (swipeState.isSwiping || swipeState.isExiting) ? "bg-background shadow-[-20px_0_40px_rgba(0,0,0,0.1),20px_0_40px_rgba(0,0,0,0.1)] rounded-[32px] overflow-hidden" : ""
+              )}
               style={{
                 transform: (swipeState.isSwiping || swipeState.isExiting)
                   ? `translateX(${swipeState.offset}px)`
@@ -144,8 +147,8 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
                 transition: swipeState.isSwiping
                   ? 'none'
                   : swipeState.isExiting
-                    ? 'transform 280ms cubic-bezier(0.25, 0.46, 0.45, 0.94)'
-                    : 'transform 320ms cubic-bezier(0.22, 1, 0.36, 1)',
+                    ? 'transform 280ms cubic-bezier(0.25, 0.46, 0.45, 0.94), border-radius 280ms ease, box-shadow 280ms ease'
+                    : 'transform 320ms cubic-bezier(0.22, 1, 0.36, 1), border-radius 320ms ease, box-shadow 320ms ease',
                 willChange: (swipeState.isSwiping || swipeState.isExiting) ? 'transform' : 'auto',
               }}
             >

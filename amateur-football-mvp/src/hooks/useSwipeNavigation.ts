@@ -45,6 +45,8 @@ export function useSwipeNavigation() {
   const { setDirection } = useSwipeDirection();
 
   const touchStartRef = useRef<{ x: number; y: number; time: number } | null>(null);
+  const lastTouchRef = useRef<{ x: number; time: number } | null>(null);
+  const velocityRef = useRef(0);
   const isLockedRef = useRef<'horizontal' | 'vertical' | null>(null);
   const currentOffsetRef = useRef(0);
   const isNavigatingRef = useRef(false);
@@ -103,6 +105,8 @@ export function useSwipeNavigation() {
     }
 
     touchStartRef.current = { x: touch.clientX, y: touch.clientY, time: Date.now() };
+    lastTouchRef.current = { x: touch.clientX, time: Date.now() };
+    velocityRef.current = 0;
     isLockedRef.current = null;
     currentOffsetRef.current = 0;
   }, []);
@@ -116,11 +120,21 @@ export function useSwipeNavigation() {
     const absDx = Math.abs(dx);
     const absDy = Math.abs(dy);
 
+    // Calculate velocity
+    if (lastTouchRef.current) {
+      const now = Date.now();
+      const dt = now - lastTouchRef.current.time;
+      if (dt > 0) {
+        velocityRef.current = (touch.clientX - lastTouchRef.current.x) / dt;
+      }
+      lastTouchRef.current = { x: touch.clientX, time: now };
+    }
+
     // Decision phase
     if (!isLockedRef.current) {
-      if (absDx < 10 && absDy < 10) return;
+      if (absDx < 8 && absDy < 8) return;
 
-      if (absDx > absDy * 1.5 && absDx > 20) {
+      if (absDx > absDy * 1.2 && absDx > 12) {
         const currentIdx = getCurrentIndex();
         if (currentIdx < 0) return;
 
@@ -132,7 +146,7 @@ export function useSwipeNavigation() {
         }
 
         isLockedRef.current = 'horizontal';
-      } else {
+      } else if (absDy > 12 || absDy > absDx) {
         isLockedRef.current = 'vertical';
         return;
       }
@@ -151,8 +165,8 @@ export function useSwipeNavigation() {
       clampedDx = dx * 0.15; // Rubber-band resistance
     }
 
-    // Cap offset
-    const maxOffset = window.innerWidth * 0.5;
+    // Cap offset to full screen width instead of 0.5
+    const maxOffset = window.innerWidth * 0.95;
     clampedDx = Math.max(-maxOffset, Math.min(maxOffset, clampedDx));
     currentOffsetRef.current = clampedDx;
 
@@ -177,10 +191,15 @@ export function useSwipeNavigation() {
     }
 
     const offset = currentOffsetRef.current;
-    const threshold = 70;
+    const distanceThreshold = window.innerWidth * 0.3; // 30% of screen width
+    const velocityThreshold = 0.4; // px per ms
     const currentIdx = getCurrentIndex();
 
-    if (currentIdx >= 0 && Math.abs(offset) > threshold) {
+    const isFastSwipeLeft = offset < 0 && velocityRef.current < -velocityThreshold;
+    const isFastSwipeRight = offset > 0 && velocityRef.current > velocityThreshold;
+    const isPastDistance = Math.abs(offset) > distanceThreshold;
+
+    if (currentIdx >= 0 && (isPastDistance || isFastSwipeLeft || isFastSwipeRight)) {
       const dir = offset < 0 ? 'left' : 'right';
       const targetIdx = dir === 'left' ? currentIdx + 1 : currentIdx - 1;
 
