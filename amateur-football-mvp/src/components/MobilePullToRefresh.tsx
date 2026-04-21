@@ -34,8 +34,8 @@ export function MobilePullToRefresh({
   const handleTouchStart = (e: React.TouchEvent) => {
     if (disabled || isRefreshing) return;
     
-    // Only allow pull if we are at the top of the container
-    const scrollTop = containerRef.current?.scrollTop || 0;
+    // Only allow pull if we are at the top of the window
+    const scrollTop = typeof window !== 'undefined' ? window.scrollY : 0;
     if (scrollTop > 5) return;
     
     startY.current = e.touches[0].pageY;
@@ -87,8 +87,7 @@ export function MobilePullToRefresh({
 
   return (
     <div 
-      ref={containerRef}
-      className={cn("relative w-full h-full overflow-y-auto overscroll-none no-scrollbar", className)}
+      className={cn("relative w-full min-h-[100dvh]", className)}
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}

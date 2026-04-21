@@ -151,7 +151,9 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
                     : 'transform 300ms cubic-bezier(0.22, 1, 0.36, 1)',
               }}
             >
-              {children}
+              <MobilePullToRefresh onRefresh={handleRefresh}>
+                {children}
+              </MobilePullToRefresh>
             </div>
           </div>
         </main>
