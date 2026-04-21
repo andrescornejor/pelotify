@@ -2,6 +2,7 @@
 
 import { useCallback, useRef, useEffect, useState } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
+import { useSwipeDirection } from '@/contexts/SwipeNavigationContext';
 
 /**
  * Ordered routes matching the BottomNav items (excluding the center "create" button).
@@ -9,47 +10,75 @@ import { usePathname, useRouter } from 'next/navigation';
  */
 const NAV_ROUTES = ['/', '/search', '/feed', '/messages'];
 
-interface SwipeState {
+const NAV_LABELS: Record<string, string> = {
+  '/': 'Home',
+  '/search': 'Buscar',
+  '/feed': 'Muro',
+  '/messages': 'Chats',
+};
+
+export interface SwipeState {
   /** Current swipe offset in px (negative = swiping left, positive = swiping right) */
   offset: number;
   /** Whether a swipe gesture is actively happening */
   isSwiping: boolean;
+  /** Whether the exit animation is playing (content sliding off-screen) */
+  isExiting: boolean;
   /** Direction the navigation will go when released ('left' | 'right' | null) */
   direction: 'left' | 'right' | null;
+  /** Label of the section being swiped toward */
+  targetLabel: string | null;
 }
 
 /**
- * Hook that detects horizontal swipe gestures and navigates between BottomNav sections.
- * 
- * Design decisions:
- * - Uses a 30px horizontal threshold before "locking" into a swipe to avoid stealing vertical scroll.
- * - Once locked, prevents vertical scroll for the duration of that touch.
- * - Only fires navigation on touch end if horizontal distance > 80px.
- * - Returns swipe state for visual feedback (offset, direction).
+ * Instagram-style swipe navigation between BottomNav sections.
+ *
+ * Key behaviors:
+ * - Horizontal lock with 1.5x ratio vs vertical movement
+ * - 30px edge exclusion for OS back gestures
+ * - On release past threshold: animates content fully off-screen, THEN navigates
+ * - Sets swipe direction in context so template.tsx can do directional entry animation
  */
 export function useSwipeNavigation() {
   const pathname = usePathname();
   const router = useRouter();
+  const { setDirection } = useSwipeDirection();
 
   const touchStartRef = useRef<{ x: number; y: number; time: number } | null>(null);
   const isLockedRef = useRef<'horizontal' | 'vertical' | null>(null);
   const currentOffsetRef = useRef(0);
+  const isNavigatingRef = useRef(false);
 
   const [swipeState, setSwipeState] = useState<SwipeState>({
     offset: 0,
     isSwiping: false,
+    isExiting: false,
     direction: null,
+    targetLabel: null,
   });
 
-  // Find the current route index (match prefix for sub-routes like /feed/profile)
+  // Find the current route index (match prefix for sub-routes)
   const getCurrentIndex = useCallback(() => {
     if (pathname === '/') return 0;
     const idx = NAV_ROUTES.findIndex((r, i) => i > 0 && pathname.startsWith(r));
     return idx >= 0 ? idx : -1;
   }, [pathname]);
 
+  // Reset state when pathname changes (navigation completed)
+  useEffect(() => {
+    isNavigatingRef.current = false;
+    setSwipeState({
+      offset: 0,
+      isSwiping: false,
+      isExiting: false,
+      direction: null,
+      targetLabel: null,
+    });
+  }, [pathname]);
+
   const handleTouchStart = useCallback((e: TouchEvent) => {
-    // Don't swipe if touching within interactive elements that handle their own swipe
+    if (isNavigatingRef.current) return;
+
     const target = e.target as HTMLElement;
     if (
       target.closest('.swipe-ignore') ||
@@ -58,15 +87,16 @@ export function useSwipeNavigation() {
       target.closest('[data-radix-scroll-area-viewport]') ||
       target.closest('.map-container') ||
       target.closest('video') ||
-      target.closest('.bottom-sheet')
+      target.closest('.bottom-sheet') ||
+      target.closest('.mobile-bottom-nav') ||
+      target.closest('[role="dialog"]')
     ) {
       return;
     }
 
     const touch = e.touches[0];
 
-    // Edge exclusion zone: ignore touches starting within 30px of screen edges
-    // to avoid conflicting with OS-level back gestures (Android, iOS Safari)
+    // Edge exclusion zone for OS-level back gestures
     const EDGE_ZONE = 30;
     if (touch.clientX < EDGE_ZONE || touch.clientX > window.innerWidth - EDGE_ZONE) {
       return;
@@ -78,7 +108,7 @@ export function useSwipeNavigation() {
   }, []);
 
   const handleTouchMove = useCallback((e: TouchEvent) => {
-    if (!touchStartRef.current) return;
+    if (!touchStartRef.current || isNavigatingRef.current) return;
 
     const touch = e.touches[0];
     const dx = touch.clientX - touchStartRef.current.x;
@@ -86,21 +116,18 @@ export function useSwipeNavigation() {
     const absDx = Math.abs(dx);
     const absDy = Math.abs(dy);
 
-    // Decision phase: determine if this is a horizontal or vertical gesture
+    // Decision phase
     if (!isLockedRef.current) {
-      // Need at least some movement to decide
       if (absDx < 10 && absDy < 10) return;
 
       if (absDx > absDy * 1.5 && absDx > 20) {
-        // Horizontal swipe detected
         const currentIdx = getCurrentIndex();
-        if (currentIdx < 0) return; // Not on a nav route
+        if (currentIdx < 0) return;
 
-        // Check if there's a valid target in this direction
         const canSwipeLeft = currentIdx < NAV_ROUTES.length - 1;
         const canSwipeRight = currentIdx > 0;
         if ((dx < 0 && !canSwipeLeft) || (dx > 0 && !canSwipeRight)) {
-          isLockedRef.current = 'vertical'; // Can't swipe further, allow normal scroll
+          isLockedRef.current = 'vertical';
           return;
         }
 
@@ -113,63 +140,93 @@ export function useSwipeNavigation() {
 
     if (isLockedRef.current !== 'horizontal') return;
 
-    // Prevent vertical scrolling while swiping horizontally
     e.preventDefault();
 
-    // Apply resistance at the edges
     const currentIdx = getCurrentIndex();
     const canSwipeLeft = currentIdx < NAV_ROUTES.length - 1;
     const canSwipeRight = currentIdx > 0;
 
     let clampedDx = dx;
     if ((dx < 0 && !canSwipeLeft) || (dx > 0 && !canSwipeRight)) {
-      clampedDx = dx * 0.2; // Rubber-band effect
+      clampedDx = dx * 0.15; // Rubber-band resistance
     }
 
-    // Cap the offset for visual feedback
-    const maxOffset = window.innerWidth * 0.45;
+    // Cap offset
+    const maxOffset = window.innerWidth * 0.5;
     clampedDx = Math.max(-maxOffset, Math.min(maxOffset, clampedDx));
-
     currentOffsetRef.current = clampedDx;
+
+    const dir = clampedDx < -20 ? 'left' : clampedDx > 20 ? 'right' : null;
+    const targetIdx = dir === 'left' ? currentIdx + 1 : dir === 'right' ? currentIdx - 1 : -1;
+    const targetRoute = targetIdx >= 0 && targetIdx < NAV_ROUTES.length ? NAV_ROUTES[targetIdx] : null;
 
     setSwipeState({
       offset: clampedDx,
       isSwiping: true,
-      direction: clampedDx < -30 ? 'left' : clampedDx > 30 ? 'right' : null,
+      isExiting: false,
+      direction: dir,
+      targetLabel: targetRoute ? NAV_LABELS[targetRoute] || null : null,
     });
   }, [getCurrentIndex]);
 
   const handleTouchEnd = useCallback(() => {
-    if (!touchStartRef.current || isLockedRef.current !== 'horizontal') {
+    if (!touchStartRef.current || isLockedRef.current !== 'horizontal' || isNavigatingRef.current) {
       touchStartRef.current = null;
       isLockedRef.current = null;
       return;
     }
 
     const offset = currentOffsetRef.current;
-    const threshold = 80; // Minimum distance to trigger navigation
+    const threshold = 70;
     const currentIdx = getCurrentIndex();
 
-    // Reset visual state with animation
-    setSwipeState({ offset: 0, isSwiping: false, direction: null });
-
     if (currentIdx >= 0 && Math.abs(offset) > threshold) {
-      if (offset < -threshold && currentIdx < NAV_ROUTES.length - 1) {
-        // Swiped left → go to next section
-        router.push(NAV_ROUTES[currentIdx + 1]);
-      } else if (offset > threshold && currentIdx > 0) {
-        // Swiped right → go to previous section
-        router.push(NAV_ROUTES[currentIdx - 1]);
+      const dir = offset < 0 ? 'left' : 'right';
+      const targetIdx = dir === 'left' ? currentIdx + 1 : currentIdx - 1;
+
+      if (targetIdx >= 0 && targetIdx < NAV_ROUTES.length) {
+        isNavigatingRef.current = true;
+
+        // Set the direction in context for template.tsx entry animation
+        setDirection(dir);
+
+        // Animate content off-screen (full exit), THEN navigate
+        const exitOffset = dir === 'left' ? -window.innerWidth : window.innerWidth;
+        setSwipeState({
+          offset: exitOffset,
+          isSwiping: false,
+          isExiting: true,
+          direction: dir,
+          targetLabel: NAV_LABELS[NAV_ROUTES[targetIdx]] || null,
+        });
+
+        // Navigate after the exit animation completes
+        setTimeout(() => {
+          router.push(NAV_ROUTES[targetIdx]);
+        }, 250);
+
+        touchStartRef.current = null;
+        isLockedRef.current = null;
+        currentOffsetRef.current = 0;
+        return;
       }
     }
+
+    // Snap back — didn't meet threshold
+    setSwipeState({
+      offset: 0,
+      isSwiping: false,
+      isExiting: false,
+      direction: null,
+      targetLabel: null,
+    });
 
     touchStartRef.current = null;
     isLockedRef.current = null;
     currentOffsetRef.current = 0;
-  }, [getCurrentIndex, router]);
+  }, [getCurrentIndex, router, setDirection]);
 
   useEffect(() => {
-    // Only enable on mobile (pointer: coarse or narrow viewport)
     const isMobile = window.matchMedia('(max-width: 1023px)').matches;
     if (!isMobile) return;
 

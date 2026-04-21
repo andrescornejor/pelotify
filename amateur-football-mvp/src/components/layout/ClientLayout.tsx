@@ -1,7 +1,7 @@
 'use client';
 
 import { usePathname } from 'next/navigation';
-import { useEffect, useRef, useState, useCallback, UIEvent, useMemo } from 'react';
+import { useEffect, useRef, useState, useCallback } from 'react';
 import { Sidebar } from '@/components/layout/Sidebar';
 import { TopHeader } from '@/components/layout/TopHeader';
 import { BottomNav } from '@/components/layout/BottomNav';
@@ -112,31 +112,43 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
           {/* Push Notification Permission Banner */}
           {showNav && <NotificationPromptBanner />}
           
-          <div
-            className="flex-1 w-full relative"
-            style={{
-              transform: swipeState.isSwiping ? `translateX(${swipeState.offset}px)` : 'translateX(0)',
-              transition: swipeState.isSwiping ? 'none' : 'transform 0.3s cubic-bezier(0.22, 1, 0.36, 1)',
-              willChange: swipeState.isSwiping ? 'transform' : 'auto',
-            }}
-          >
-            {children}
-          </div>
-
-          {/* Swipe edge indicators */}
-          {swipeState.isSwiping && swipeState.direction && (
-            <div
-              className={cn(
-                'fixed top-1/2 -translate-y-1/2 z-[200] pointer-events-none transition-opacity duration-150 lg:hidden',
-                swipeState.direction === 'right' ? 'left-3' : 'right-3',
-                Math.abs(swipeState.offset) > 60 ? 'opacity-100' : 'opacity-0'
-              )}
-            >
-              <div className="bg-background/90 backdrop-blur-md border border-primary/30 rounded-2xl px-4 py-2.5 shadow-[0_0_20px_rgba(44,252,125,0.15)]">
-                <SwipeLabel direction={swipeState.direction} pathname={pathname} />
+          {/* Swipeable content wrapper */}
+          <div className="flex-1 w-full relative overflow-hidden lg:overflow-visible">
+            {/* Peek panel — shows next/previous section label behind the content */}
+            {(swipeState.isSwiping || swipeState.isExiting) && swipeState.direction && (
+              <div
+                className={cn(
+                  'absolute inset-0 z-0 flex items-center pointer-events-none lg:hidden',
+                  swipeState.direction === 'left' ? 'justify-end pr-8' : 'justify-start pl-8'
+                )}
+              >
+                <div className="flex flex-col items-center gap-2 opacity-40">
+                  <span className="text-[13px] font-black uppercase italic tracking-widest text-primary/80 font-kanit">
+                    {swipeState.targetLabel}
+                  </span>
+                  <div className="w-8 h-[2px] rounded-full bg-primary/30" />
+                </div>
               </div>
+            )}
+
+            {/* Main content — slides during swipe */}
+            <div
+              className="relative z-10 flex-1 min-h-0"
+              style={{
+                transform: (swipeState.isSwiping || swipeState.isExiting)
+                  ? `translateX(${swipeState.offset}px)`
+                  : 'translateX(0)',
+                transition: swipeState.isSwiping
+                  ? 'none'
+                  : swipeState.isExiting
+                    ? 'transform 280ms cubic-bezier(0.25, 0.46, 0.45, 0.94)'
+                    : 'transform 320ms cubic-bezier(0.22, 1, 0.36, 1)',
+                willChange: (swipeState.isSwiping || swipeState.isExiting) ? 'transform' : 'auto',
+              }}
+            >
+              {children}
             </div>
-          )}
+          </div>
         </main>
 
         {/* Mobile Navigation */}
@@ -165,29 +177,5 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
       <MobileStatusBar />
       <MobileOfflineBanner />
     </div>
-  );
-}
-
-/** Small helper that shows the name of the section being swiped toward */
-const NAV_ROUTES_META = [
-  { path: '/', label: 'Home' },
-  { path: '/search', label: 'Buscar' },
-  { path: '/feed', label: 'Muro' },
-  { path: '/messages', label: 'Chats' },
-];
-
-function SwipeLabel({ direction, pathname }: { direction: 'left' | 'right'; pathname: string }) {
-  const currentIdx = pathname === '/'
-    ? 0
-    : NAV_ROUTES_META.findIndex((r, i) => i > 0 && pathname.startsWith(r.path));
-  
-  const targetIdx = direction === 'left' ? currentIdx + 1 : currentIdx - 1;
-  const target = NAV_ROUTES_META[targetIdx];
-  if (!target) return null;
-
-  return (
-    <span className="text-[11px] font-black uppercase italic tracking-wider text-primary font-kanit">
-      {direction === 'right' ? '‹ ' : ''}{target.label}{direction === 'left' ? ' ›' : ''}
-    </span>
   );
 }

@@ -7,6 +7,7 @@ import { ThemeProvider } from '@/contexts/ThemeContext';
 import { QueryProvider } from '@/providers/QueryProvider';
 import ClientLayout from '@/components/layout/ClientLayout';
 import PostMatchManager from '@/components/PostMatchManager';
+import { SwipeNavigationProvider } from '@/contexts/SwipeNavigationContext';
 import PWARegistration from '@/components/PWARegistration';
 
 const kanit = Kanit({
@@ -72,11 +73,13 @@ export default function RootLayout({
             <ThemeProvider>
               <AuthProvider>
                 <SidebarProvider>
-                  <ClientLayout>
-                    <PWARegistration />
-                    {children}
-                    <PostMatchManager />
-                  </ClientLayout>
+                  <SwipeNavigationProvider>
+                    <ClientLayout>
+                      <PWARegistration />
+                      {children}
+                      <PostMatchManager />
+                    </ClientLayout>
+                  </SwipeNavigationProvider>
                 </SidebarProvider>
               </AuthProvider>
             </ThemeProvider>
