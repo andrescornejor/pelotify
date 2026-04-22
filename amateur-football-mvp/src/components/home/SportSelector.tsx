@@ -22,7 +22,7 @@ export function SportSelector({
   return (
     <div
       className={cn(
-        'relative w-full border border-white/10 bg-background/55 backdrop-blur-2xl shadow-[0_20px_60px_rgba(0,0,0,0.22)] overflow-hidden',
+        'relative w-full border border-foreground/10 bg-surface/50 backdrop-blur-2xl shadow-[0_20px_60px_rgba(0,0,0,0.08)] overflow-hidden',
         isCompact ? 'rounded-[1.7rem] p-2' : 'rounded-[2rem] p-2.5'
       )}
     >
@@ -42,13 +42,13 @@ export function SportSelector({
             <button
               key={sport}
               onClick={() => onSelect(sport)}
-              className={cn(
-                'group relative min-w-0 border transition-all duration-300 outline-none text-left overflow-hidden',
-                isCompact ? 'min-h-[92px] rounded-[1.15rem] px-2.5 py-2' : 'min-h-[82px] rounded-[1.4rem] px-3 py-3',
-                isSelected
-                  ? cn('bg-gradient-to-br shadow-[0_18px_40px_rgba(0,0,0,0.22)] scale-[1.01]', accent)
-                  : 'bg-white/[0.03] border-white/8 text-foreground/55 hover:text-foreground hover:bg-white/[0.05] hover:border-white/15'
-              )}
+                className={cn(
+                  'group relative min-w-0 border transition-all duration-300 outline-none text-left overflow-hidden',
+                  isCompact ? 'min-h-[92px] rounded-[1.15rem] px-2.5 py-2' : 'min-h-[82px] rounded-[1.4rem] px-3 py-3',
+                  isSelected
+                    ? cn('bg-gradient-to-br shadow-[0_18px_40px_rgba(0,0,0,0.12)] scale-[1.01]', accent)
+                    : 'bg-foreground/[0.03] border-foreground/10 text-foreground/55 hover:text-foreground hover:bg-foreground/[0.05] hover:border-foreground/20'
+                )}
             >
               {isSelected && (
                 <motion.div
@@ -68,11 +68,11 @@ export function SportSelector({
                     {meta.icon}
                   </motion.span>
                   <div
-                    className={cn(
-                      'rounded-full border font-black uppercase tracking-[0.2em]',
-                      isCompact ? 'px-1.5 py-1 text-[7px]' : 'px-2 py-1 text-[8px]',
-                      isSelected ? 'border-current/20 bg-black/10 text-current' : 'border-white/10 text-foreground/30'
-                    )}
+                      className={cn(
+                        'rounded-full border font-black uppercase tracking-[0.2em]',
+                        isCompact ? 'px-1.5 py-1 text-[7px]' : 'px-2 py-1 text-[8px]',
+                        isSelected ? 'border-current/20 bg-black/10 text-current' : 'border-foreground/10 text-foreground/30'
+                      )}
                   >
                     {isSelected ? 'Activo' : 'Elegir'}
                   </div>

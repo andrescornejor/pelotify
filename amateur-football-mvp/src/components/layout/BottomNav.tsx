@@ -154,7 +154,7 @@ export function BottomNav() {
               'relative transition-all duration-700 flex items-center w-full border-t',
               performanceMode
                 ? 'bg-surface border-border'
-                : 'bg-background/95 backdrop-blur-[20px] border-white/5 dark:border-white/5'
+                : 'bg-background/95 backdrop-blur-[20px] border-foreground/10 dark:border-white/5'
             )}
           >
             <div className="relative z-10 flex w-full h-[calc(58px+env(safe-area-inset-bottom,0px))] items-center justify-around pt-0 pb-[env(safe-area-inset-bottom,0px)]">

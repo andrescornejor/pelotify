@@ -380,7 +380,7 @@ export default function HomePage() {
                   </div>
 
                   <Link href="/profile/me" className="shrink-0">
-                    <div className="w-14 h-14 rounded-[1.2rem] border border-white/10 bg-black/20 backdrop-blur-sm flex items-center justify-center relative overflow-hidden">
+                    <div className="w-14 h-14 rounded-[1.2rem] border border-foreground/15 bg-foreground/5 backdrop-blur-sm flex items-center justify-center relative overflow-hidden">
                       {metadata?.avatar_url ? (
                         <img src={metadata.avatar_url} alt="" className="w-full h-full object-cover" />
                       ) : (
@@ -394,19 +394,19 @@ export default function HomePage() {
                 <SportSelector selectedSport={selectedSport} onSelect={setSelectedSport} />
 
                 <div className="grid grid-cols-3 gap-2">
-                  <div className="rounded-[1.2rem] border border-white/8 bg-white/[0.03] px-3 py-3">
+                  <div className="rounded-[1.2rem] border border-foreground/10 bg-foreground/[0.03] px-3 py-3">
                     <p className="text-[8px] font-black uppercase tracking-[0.2em] text-foreground/35">{focusSportMeta.shortLabel}</p>
                     <AnimatePresence mode="wait">
                       <motion.p key={`total-${selectedSport}`} initial={{ y: 10, opacity: 0, filter: 'blur(4px)' }} animate={{ y: 0, opacity: 1, filter: 'blur(0px)' }} exit={{ y: -10, opacity: 0, filter: 'blur(4px)' }} transition={{ duration: 0.2 }} className="mt-2 text-xl font-black italic text-foreground">{statsSummary.totalMatches}</motion.p>
                     </AnimatePresence>
                   </div>
-                  <div className="rounded-[1.2rem] border border-white/8 bg-white/[0.03] px-3 py-3">
+                  <div className="rounded-[1.2rem] border border-foreground/10 bg-foreground/[0.03] px-3 py-3">
                     <p className="text-[8px] font-black uppercase tracking-[0.2em] text-foreground/35">Ganados</p>
                     <AnimatePresence mode="wait">
                       <motion.p key={`wins-${selectedSport}`} initial={{ y: 10, opacity: 0, filter: 'blur(4px)' }} animate={{ y: 0, opacity: 1, filter: 'blur(0px)' }} exit={{ y: -10, opacity: 0, filter: 'blur(4px)' }} transition={{ duration: 0.2 }} className="mt-2 text-xl font-black italic text-primary">{statsSummary.wins}</motion.p>
                     </AnimatePresence>
                   </div>
-                  <div className="rounded-[1.2rem] border border-white/8 bg-white/[0.03] px-3 py-3">
+                  <div className="rounded-[1.2rem] border border-foreground/10 bg-foreground/[0.03] px-3 py-3">
                     <p className="text-[8px] font-black uppercase tracking-[0.2em] text-foreground/35">Win Rate</p>
                     <AnimatePresence mode="wait">
                       <motion.p key={`winrate-${selectedSport}`} initial={{ y: 10, opacity: 0, filter: 'blur(4px)' }} animate={{ y: 0, opacity: 1, filter: 'blur(0px)' }} exit={{ y: -10, opacity: 0, filter: 'blur(4px)' }} transition={{ duration: 0.2 }} className="mt-2 text-xl font-black italic text-foreground">{statsSummary.winRate}%</motion.p>
@@ -422,7 +422,7 @@ export default function HomePage() {
                     </button>
                   </Link>
                   <Link href={`/search?sport=${selectedSport}`}>
-                    <button className="w-full h-12 rounded-[1.2rem] border border-white/10 bg-white/[0.04] text-foreground text-[10px] font-black uppercase tracking-[0.18em] flex items-center justify-center gap-2">
+                    <button className="w-full h-12 rounded-[1.2rem] border border-foreground/10 bg-foreground/[0.04] text-foreground text-[10px] font-black uppercase tracking-[0.18em] flex items-center justify-center gap-2">
                       <Search className="w-4 h-4 text-primary" />
                       Buscar
                     </button>
@@ -433,7 +433,7 @@ export default function HomePage() {
 
             {nextMatch ? (
               <Link href={`/match?id=${nextMatch.id}`} className="block">
-                <div className="rounded-[1.9rem] border border-primary/15 bg-[linear-gradient(180deg,rgba(255,255,255,0.03),rgba(255,255,255,0.015))] p-4 shadow-[0_14px_35px_rgba(0,0,0,0.18)]">
+                <div className="rounded-[1.9rem] border border-primary/30 bg-[linear-gradient(180deg,rgba(var(--foreground-rgb),0.03),rgba(var(--foreground-rgb),0.015))] p-4 shadow-[0_14px_35px_rgba(0,0,0,0.18)]">
                   <div className="flex items-center justify-between gap-3">
                     <div className="min-w-0">
                       <p className="text-[9px] font-black uppercase tracking-[0.24em] text-primary">Próximo partido</p>
@@ -453,8 +453,8 @@ export default function HomePage() {
                   </div>
 
                   <div className="mt-4 grid grid-cols-[1fr_auto_1fr] items-center gap-2">
-                    <div className="rounded-[1.2rem] border border-white/10 bg-white/[0.03] p-3 flex items-center gap-2 min-w-0">
-                      <div className="w-10 h-10 rounded-xl bg-surface border border-foreground/10 p-2 shrink-0">
+                    <div className="rounded-[1.2rem] border border-foreground/10 bg-foreground/[0.03] p-3 flex items-center gap-2 min-w-0">
+                      <div className="w-10 h-10 rounded-xl bg-foreground/[0.05] border border-foreground/10 p-2 shrink-0">
                         <JerseyVisualizer primaryColor="#18181b" secondaryColor={sportTheme.accent} pattern="vertical" className="w-full h-full" />
                       </div>
                       <span className="truncate text-[10px] font-black uppercase italic text-foreground">
@@ -462,9 +462,9 @@ export default function HomePage() {
                       </span>
                     </div>
                     <span className="text-sm font-black italic text-primary">VS</span>
-                    <div className="rounded-[1.2rem] border border-white/10 bg-white/[0.03] p-3 flex items-center gap-2 min-w-0">
-                      <div className="w-10 h-10 rounded-xl bg-surface border border-foreground/10 p-2 shrink-0">
-                        <JerseyVisualizer primaryColor={sportTheme.accent} secondaryColor="#ffffff" pattern="hoops" className="w-full h-full" />
+                    <div className="rounded-[1.2rem] border border-foreground/10 bg-foreground/[0.03] p-3 flex items-center gap-2 min-w-0">
+                      <div className="w-10 h-10 rounded-xl bg-foreground/[0.05] border border-foreground/10 p-2 shrink-0">
+                        <JerseyVisualizer primaryColor={sportTheme.accent} secondaryColor="rgba(var(--foreground-rgb), 0.2)" pattern="hoops" className="w-full h-full" />
                       </div>
                       <span className="truncate text-[10px] font-black uppercase italic text-foreground">
                         {(nextMatch.team_b_name && nextMatch.team_b_name !== 'Team B') ? nextMatch.team_b_name : nextMatchSport === 'padel' ? 'Dupla B' : 'Visita'}
@@ -474,7 +474,7 @@ export default function HomePage() {
                 </div>
               </Link>
             ) : (
-              <div className="rounded-[1.9rem] border border-dashed border-white/10 bg-white/[0.02] p-5 text-center">
+              <div className="rounded-[1.9rem] border border-dashed border-foreground/20 bg-foreground/[0.02] p-5 text-center">
                 <p className="text-[10px] font-black uppercase tracking-[0.22em] text-foreground/35">Agenda libre</p>
                 <p className="mt-2 text-sm font-bold text-foreground/65">No hay partidos de {focusSportMeta.label} programados.</p>
               </div>
@@ -488,7 +488,7 @@ export default function HomePage() {
                 { label: 'Clips', icon: Flame, color: 'text-rose-500', href: '/highlights' },
               ].map((item) => (
                 <Link key={item.label} href={item.href} className="block">
-                  <div className="rounded-[1.3rem] border border-white/8 bg-white/[0.03] px-2 py-3 flex flex-col items-center justify-center gap-2">
+                  <div className="rounded-[1.3rem] border border-foreground/10 bg-foreground/[0.03] px-2 py-3 flex flex-col items-center justify-center gap-2">
                     <item.icon className={cn('w-5 h-5', item.color)} />
                     <span className="text-[8px] font-black uppercase tracking-[0.16em] text-foreground/55">{item.label}</span>
                   </div>
