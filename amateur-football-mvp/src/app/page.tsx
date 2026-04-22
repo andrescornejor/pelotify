@@ -1035,7 +1035,7 @@ export default function HomePage() {
                 </Link>
               </div>
               {highlights.length > 0 ? (
-                <div className="flex gap-3 overflow-x-auto pb-1 snap-x swipe-ignore">
+                <div className="flex gap-3 overflow-x-auto pb-2 snap-x snap-mandatory no-scrollbar scroll-px-1 swipe-ignore">
                   {highlights.slice(0, 4).map((highlight, idx) => (
                     <Link
                       key={highlight.id}
