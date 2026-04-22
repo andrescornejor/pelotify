@@ -20,6 +20,7 @@ import { useMobileRefresh } from '@/hooks/useMobileRefresh';
 import { useSwipeNavigation } from '@/hooks/useSwipeNavigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useHaptic } from '@/hooks/useHaptic';
+import { trackUsage } from '@/lib/personalization';
 
 export default function ClientLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
@@ -66,6 +67,11 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [pathname]);
+
+  useEffect(() => {
+    if (!pathname || !user) return;
+    trackUsage(pathname);
+  }, [pathname, user]);
 
   // Initialize FCM push notifications when user is logged in
   useEffect(() => {

@@ -222,6 +222,31 @@ export async function notifyMatchParticipants(
   }
 }
 
+export async function sendDiscoveryNotifications(params: {
+  title: string;
+  body: string;
+  sport?: string;
+  zone?: string;
+  clickAction?: string;
+  data?: Record<string, string>;
+}): Promise<boolean> {
+  try {
+    const response = await fetch('/api/notifications/send', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        audience: 'discovery',
+        ...params,
+      }),
+    });
+
+    return response.ok;
+  } catch (error) {
+    console.error('Error sending discovery notifications:', error);
+    return false;
+  }
+}
+
 // Helpers
 
 function getDeviceType(): string {

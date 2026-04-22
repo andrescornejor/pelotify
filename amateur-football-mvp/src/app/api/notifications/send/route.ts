@@ -1,7 +1,7 @@
 // src/app/api/notifications/send/route.ts — API route to send push notifications
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
-import { sendPushNotification, sendPushToMultiple, PushNotificationPayload } from '@/lib/firebaseAdmin';
+import { sendPushToMultiple, PushNotificationPayload } from '@/lib/firebaseAdmin';
 
 // Use service role for reading tokens (no RLS restrictions)
 const supabaseAdmin = createClient(
@@ -12,7 +12,18 @@ const supabaseAdmin = createClient(
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { userId, matchId, excludeUserId, title, body: messageBody, clickAction, data } = body;
+    const {
+      userId,
+      matchId,
+      excludeUserId,
+      title,
+      body: messageBody,
+      clickAction,
+      data,
+      audience,
+      sport,
+      zone,
+    } = body;
 
     if (!title || !messageBody) {
       return NextResponse.json({ error: 'title and body are required' }, { status: 400 });
@@ -58,6 +69,37 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({
         sent: tokens.length - failedTokens.length,
         failed: failedTokens.length,
+      });
+    }
+
+    // Mode 1.5: Smart discovery audience by sport / zone
+    if (audience === 'discovery') {
+      const matchingUserIds = await getDiscoveryAudienceUserIds({ sport, zone });
+
+      if (matchingUserIds.length === 0) {
+        return NextResponse.json({ sent: 0, message: 'No users matched discovery preferences' });
+      }
+
+      const { data: tokens, error: tokenError } = await supabaseAdmin
+        .from('fcm_tokens')
+        .select('token')
+        .in('user_id', matchingUserIds);
+
+      if (tokenError || !tokens || tokens.length === 0) {
+        return NextResponse.json({ sent: 0, message: 'No tokens found for discovery audience' });
+      }
+
+      const allTokens = tokens.map((t) => t.token);
+      const failedTokens = await sendPushToMultiple(allTokens, payload);
+
+      if (failedTokens.length > 0) {
+        await supabaseAdmin.from('fcm_tokens').delete().in('token', failedTokens);
+      }
+
+      return NextResponse.json({
+        sent: allTokens.length - failedTokens.length,
+        failed: failedTokens.length,
+        matchedUsers: matchingUserIds.length,
       });
     }
 
@@ -111,11 +153,68 @@ export async function POST(request: NextRequest) {
     }
 
     return NextResponse.json({ error: 'userId or matchId required' }, { status: 400 });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Notification API error:', error);
     return NextResponse.json(
-      { error: error.message || 'Internal server error' },
+      { error: error instanceof Error ? error.message : 'Internal server error' },
       { status: 500 }
     );
   }
+}
+
+async function getDiscoveryAudienceUserIds({
+  sport,
+  zone,
+}: {
+  sport?: string;
+  zone?: string;
+}) {
+  const userIds = new Set<string>();
+  let page = 1;
+  const perPage = 200;
+
+  while (true) {
+    const { data, error } = await supabaseAdmin.auth.admin.listUsers({
+      page,
+      perPage,
+    });
+
+    if (error) {
+      console.error('Error listing users for discovery audience:', error);
+      break;
+    }
+
+    const users = data.users || [];
+    if (users.length === 0) break;
+
+    users.forEach((user) => {
+      const preferences = user.user_metadata?.preferences;
+      const notifications = preferences?.notifications;
+      if (!notifications?.enabled) return;
+
+      const sports = Array.isArray(notifications.sports) ? notifications.sports : [];
+      if (sport && sports.length > 0 && !sports.includes(sport)) return;
+
+      const preferredZone = normalize(zone);
+      const savedZone = normalize(notifications.zone || preferences?.preferredZone || '');
+      if (preferredZone && savedZone && !savedZone.includes(preferredZone) && !preferredZone.includes(savedZone)) {
+        return;
+      }
+
+      userIds.add(user.id);
+    });
+
+    if (users.length < perPage) break;
+    page += 1;
+  }
+
+  return Array.from(userIds);
+}
+
+function normalize(value?: string) {
+  return String(value || '')
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .trim();
 }

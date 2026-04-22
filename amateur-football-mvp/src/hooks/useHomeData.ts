@@ -5,18 +5,21 @@ import { queryKeys } from '@/lib/queryKeys';
 import { supabase } from '@/lib/supabase';
 import { getHighlights } from '@/lib/highlights';
 
+type HomeEntity = Record<string, unknown>;
+
 interface HomeData {
-  userTeams: any[];
-  nextMatch: any | null;
+  userTeams: HomeEntity[];
+  nextMatch: HomeEntity | null;
+  recommendedMatches: HomeEntity[];
   totalPlayers: number;
-  activities: any[];
-  highlights: any[];
-  featuredVenues: any[];
-  recentPosts: any[];
+  activities: HomeEntity[];
+  highlights: HomeEntity[];
+  featuredVenues: HomeEntity[];
+  recentPosts: HomeEntity[];
 }
 
 async function fetchHomeData(userId: string): Promise<HomeData> {
-  const [teamsRes, matchesRes, playersCountRes, recentProfilesRes, venuesRes, postsRes] =
+  const [teamsRes, matchesRes, recommendedMatchesRes, playersCountRes, recentProfilesRes, venuesRes, postsRes] =
     await Promise.all([
       supabase
         .from('team_members')
@@ -34,6 +37,17 @@ async function fetchHomeData(userId: string): Promise<HomeData> {
         })())
         .order('date', { foreignTable: 'matches', ascending: true })
         .limit(1),
+      supabase
+        .from('matches')
+        .select('*, participants:match_participants(count)')
+        .eq('status', 'published')
+        .eq('is_completed', false)
+        .gte('date', (() => { 
+            const d = new Date(); 
+            return `${d.getFullYear()}-${(d.getMonth() + 1).toString().padStart(2, '0')}-${d.getDate().toString().padStart(2, '0')}`;
+        })())
+        .order('date', { ascending: true })
+        .limit(12),
       supabase
         .from('profiles')
         .select('id', { count: 'exact', head: true }),
@@ -66,14 +80,17 @@ async function fetchHomeData(userId: string): Promise<HomeData> {
 
   let nextMatch = null;
   if (matchesRes.data?.[0]) {
-    const m = (matchesRes.data[0] as any).matches;
+    const m = (matchesRes.data[0] as { matches: HomeEntity | HomeEntity[] }).matches;
     nextMatch = Array.isArray(m) ? m[0] : m;
   }
 
+  const recommendedMatches = (recommendedMatchesRes.data || []).filter(
+    (match) => match.creator_id !== userId && match.id !== nextMatch?.id
+  );
   const totalPlayers = playersCountRes.count || 0;
 
   const activities = recentProfilesRes.data
-    ? recentProfilesRes.data.map((p: any) => ({
+    ? recentProfilesRes.data.map((p) => ({
         type: 'RANK_UP',
         user: p.name || 'Nuevo Jugador',
         detail: `se ha unido a la liga`,
@@ -84,14 +101,14 @@ async function fetchHomeData(userId: string): Promise<HomeData> {
   const highlights = await getHighlights(6);
   const featuredVenues = venuesRes.data || [];
   
-  const recentPosts = postsRes.data ? postsRes.data.map((p: any) => ({
+  const recentPosts = postsRes.data ? postsRes.data.map((p) => ({
     ...p,
     likes_count: p.post_likes.length,
     comments_count: p.post_comments[0].count,
-    user_has_liked: p.post_likes.some((like: any) => like.user_id === userId)
+    user_has_liked: p.post_likes.some((like: { user_id: string }) => like.user_id === userId)
   })) : [];
 
-  return { userTeams, nextMatch, totalPlayers, activities, highlights, featuredVenues, recentPosts };
+  return { userTeams, nextMatch, recommendedMatches, totalPlayers, activities, highlights, featuredVenues, recentPosts };
 }
 
 /**

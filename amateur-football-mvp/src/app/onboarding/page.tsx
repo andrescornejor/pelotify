@@ -6,22 +6,26 @@ import { useRouter } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/lib/supabase';
 import { FifaCard } from '@/components/FifaCard';
+import { buildUpdatedPreferences } from '@/lib/personalization';
 import confetti from 'canvas-confetti';
 import {
-  ChevronRight,
   Target,
   Activity,
   Shield,
   Crosshair,
   ArrowRight,
-  Upload,
+  MapPin,
+  Bell,
+  Users,
+  Dumbbell,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { SPORT_META, type Sport } from '@/lib/sports';
 
 type Position = 'POR' | 'DFC' | 'MC' | 'DC' | '';
 
 export default function OnboardingPage() {
-  const { user, login } = useAuth(); // we just need user from auth
+  const { user } = useAuth();
   const router = useRouter();
   const [step, setStep] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
@@ -32,6 +36,9 @@ export default function OnboardingPage() {
     height: '',
     foot: 'Derecha',
     position: '' as Position,
+    sports: ['football'] as Sport[],
+    preferredZone: '',
+    goal: 'competitive' as 'competitive' | 'social' | 'fitness' | 'casual',
   });
 
   // Check if somehow they already onboarded
@@ -69,6 +76,18 @@ export default function OnboardingPage() {
           height: parseInt(formData.height),
           position: formData.position,
           preferred_foot: formData.foot,
+          preferences: buildUpdatedPreferences(user?.user_metadata, {
+            favoriteSports: formData.sports,
+            preferredZone: formData.preferredZone,
+            goal: formData.goal,
+            notifications: {
+              sports: formData.sports,
+              zone: formData.preferredZone,
+              enabled: true,
+              community: true,
+              reminders: true,
+            },
+          }),
         },
       });
 
@@ -87,9 +106,10 @@ export default function OnboardingPage() {
       setTimeout(() => {
         router.push('/');
       }, 2500);
-    } catch (error: any) {
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : 'Error desconocido';
       console.error('Error in onboarding:', error);
-      alert('Error al firmar tu contrato. Intenta de nuevo.');
+      alert(`Error al firmar tu contrato. ${message}`);
       setIsLoading(false);
     }
   };
@@ -313,10 +333,131 @@ export default function OnboardingPage() {
             </motion.div>
           )}
 
-          {/* STEP 2: FINALE (The FIFA Card Generation) */}
+          {/* STEP 2: PERSONALIZATION */}
           {step === 2 && (
             <motion.div
               key="step2"
+              variants={containerVariants}
+              initial="hidden"
+              animate="visible"
+              exit="exit"
+              className="flex flex-col gap-8"
+            >
+              <motion.div variants={itemVariants} className="text-center space-y-4">
+                <h1 className="text-4xl lg:text-5xl font-black italic uppercase tracking-tighter">
+                  Tu <span className="text-primary">Mapa</span> de juego
+                </h1>
+                <p className="text-foreground/50 text-sm font-bold tracking-widest uppercase">
+                  Personalizamos comunidad, radar y notificaciones desde el arranque.
+                </p>
+              </motion.div>
+
+              <motion.div variants={itemVariants} className="space-y-3">
+                <label className="text-[10px] font-black uppercase text-foreground/60 tracking-widest pl-4">
+                  Deportes que más te interesan
+                </label>
+                <div className="grid grid-cols-3 gap-3">
+                  {(Object.keys(SPORT_META) as Sport[]).map((sport) => {
+                    const active = formData.sports.includes(sport);
+                    return (
+                      <button
+                        key={sport}
+                        type="button"
+                        onClick={() =>
+                          setFormData((prev) => {
+                            const exists = prev.sports.includes(sport);
+                            const nextSports = exists
+                              ? prev.sports.filter((item) => item !== sport)
+                              : [...prev.sports, sport];
+                            return {
+                              ...prev,
+                              sports: nextSports.length > 0 ? nextSports : [sport],
+                            };
+                          })
+                        }
+                        className={cn(
+                          'min-h-24 rounded-[1.8rem] border p-4 transition-all flex flex-col items-center justify-center gap-2',
+                          active
+                            ? 'bg-primary text-black border-primary shadow-[0_0_20px_rgba(16,185,129,0.25)]'
+                            : 'bg-foreground/[0.03] border-foreground/10 text-foreground/60 hover:text-foreground'
+                        )}
+                      >
+                        <span className="text-2xl">{SPORT_META[sport].icon}</span>
+                        <span className="text-[10px] font-black uppercase tracking-widest">
+                          {SPORT_META[sport].shortLabel}
+                        </span>
+                      </button>
+                    );
+                  })}
+                </div>
+              </motion.div>
+
+              <motion.div variants={itemVariants} className="space-y-2">
+                <label className="text-[10px] font-black uppercase text-foreground/60 tracking-widest pl-4">
+                  Tu zona preferida
+                </label>
+                <div className="relative">
+                  <MapPin className="w-4 h-4 text-primary absolute left-5 top-1/2 -translate-y-1/2" />
+                  <input
+                    type="text"
+                    value={formData.preferredZone}
+                    onChange={(e) => setFormData({ ...formData, preferredZone: e.target.value })}
+                    className="w-full h-16 pl-12 pr-6 rounded-2xl bg-foreground/[0.03] border border-foreground/10 focus:border-primary/50 text-base font-bold outline-none transition-all"
+                    placeholder="Ej: Rosario Centro, Alberdi, Fisherton"
+                  />
+                </div>
+              </motion.div>
+
+              <motion.div variants={itemVariants} className="space-y-3">
+                <label className="text-[10px] font-black uppercase text-foreground/60 tracking-widest pl-4">
+                  Qué buscás en Pelotify
+                </label>
+                <div className="grid grid-cols-2 gap-3">
+                  {[
+                    { id: 'competitive', label: 'Competir', icon: Target },
+                    { id: 'social', label: 'Comunidad', icon: Users },
+                    { id: 'fitness', label: 'Ritmo', icon: Dumbbell },
+                    { id: 'casual', label: 'Sin vueltas', icon: Bell },
+                  ].map(({ id, label, icon: Icon }: { id: 'competitive' | 'social' | 'fitness' | 'casual'; label: string; icon: typeof Target }) => (
+                    <button
+                      key={id}
+                      type="button"
+                      onClick={() => setFormData({ ...formData, goal: id })}
+                      className={cn(
+                        'min-h-20 rounded-[1.6rem] border p-4 flex items-center gap-3 transition-all text-left',
+                        formData.goal === id
+                          ? 'bg-white text-black border-white shadow-xl'
+                          : 'bg-foreground/[0.03] border-foreground/10 text-foreground/60 hover:text-foreground'
+                      )}
+                    >
+                      <Icon className="w-5 h-5 shrink-0" />
+                      <span className="text-[11px] font-black uppercase tracking-widest">{label}</span>
+                    </button>
+                  ))}
+                </div>
+              </motion.div>
+
+              <motion.div variants={itemVariants} className="flex gap-3">
+                <button
+                  onClick={() => setStep(1)}
+                  className="flex-1 h-14 rounded-2xl border border-foreground/10 text-[10px] font-black uppercase tracking-[0.2em] text-foreground/50 hover:text-foreground hover:bg-foreground/5 transition-all"
+                >
+                  Atrás
+                </button>
+                <button
+                  onClick={() => setStep(3)}
+                  className="flex-1 h-14 rounded-2xl bg-foreground text-background font-black text-[10px] uppercase tracking-[0.2em] hover:bg-primary hover:text-black transition-all"
+                >
+                  Ajustar experiencia
+                </button>
+              </motion.div>
+            </motion.div>
+          )}
+
+          {/* STEP 3: FINALE (The FIFA Card Generation) */}
+          {step === 3 && (
+            <motion.div
+              key="step3"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 1 }}

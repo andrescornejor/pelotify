@@ -42,6 +42,7 @@ import { StatCard, TeamCard, RankBadgeInline, EmptyState, SectionDivider, LazyVi
 import { useHomeData } from '@/hooks/useHomeData';
 import { useEffect, useMemo, useState } from 'react';
 import { getFormatMeta, getMatchSport, getSportMeta, SPORT_META } from '@/lib/sports';
+import { getGoalLabel, getUsageSnapshot, getUserPreferences, recommendMatches } from '@/lib/personalization';
 
 // --- TYPES & CONSTANTS (extracted to @/components/home) ---
 
@@ -58,6 +59,7 @@ export default function HomePage() {
 
   const userTeams = homeData?.userTeams || [];
   const nextMatch = homeData?.nextMatch || null;
+  const recommendationPool = homeData?.recommendedMatches || [];
   const activities = homeData?.activities || [];
   const totalPlayers = homeData?.totalPlayers || 0;
   const highlights = homeData?.highlights || [];
@@ -133,6 +135,12 @@ export default function HomePage() {
   }, [nextMatch]);
 
   const metadata = user?.user_metadata || {};
+  const userPreferences = useMemo(() => getUserPreferences(metadata), [metadata]);
+  const usageSnapshot = useMemo(() => getUsageSnapshot(), [user?.id]);
+  const recommendedMatches = useMemo(
+    () => recommendMatches(recommendationPool, userPreferences, 3),
+    [recommendationPool, userPreferences]
+  );
 
   const statsSummary = useMemo(() => {
     const elo = metadata?.elo || 0;
@@ -895,6 +903,86 @@ export default function HomePage() {
                     </div>
                   </motion.div>
 
+                  <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
+                    <motion.section
+                      variants={fadeUp}
+                      className="rounded-[2.5rem] border border-foreground/10 glass-premium p-6 space-y-4"
+                    >
+                      <div className="flex items-center justify-between gap-3">
+                        <div>
+                          <p className="text-[9px] font-black uppercase tracking-[0.25em] text-primary">
+                            Onboarding personalizado
+                          </p>
+                          <h3 className="text-xl font-black italic uppercase tracking-tighter text-foreground font-kanit mt-1">
+                            Tu perfil ideal
+                          </h3>
+                        </div>
+                        <Sparkles className="w-5 h-5 text-primary/50" />
+                      </div>
+                      <div className="flex flex-wrap gap-2">
+                        {userPreferences.favoriteSports.map((sport) => (
+                          <span
+                            key={sport}
+                            className="px-3 py-2 rounded-full bg-primary/10 text-primary text-[10px] font-black uppercase tracking-widest"
+                          >
+                            {SPORT_META[sport].icon} {SPORT_META[sport].shortLabel}
+                          </span>
+                        ))}
+                        <span className="px-3 py-2 rounded-full bg-foreground/[0.04] text-foreground/60 text-[10px] font-black uppercase tracking-widest">
+                          Objetivo: {getGoalLabel(userPreferences.goal)}
+                        </span>
+                      </div>
+                      <p className="text-sm text-foreground/60 leading-relaxed">
+                        {userPreferences.preferredZone
+                          ? `Priorizamos partidos y avisos en ${userPreferences.preferredZone}.`
+                          : 'Definí tu zona para afinar aún más las recomendaciones y avisos.'}
+                      </p>
+                      <Link href="/settings" className="inline-flex">
+                        <button className="h-11 px-5 rounded-2xl bg-foreground text-background text-[10px] font-black uppercase tracking-[0.2em] hover:bg-primary hover:text-black transition-all">
+                          Ajustar experiencia
+                        </button>
+                      </Link>
+                    </motion.section>
+
+                    <motion.section
+                      variants={fadeUp}
+                      className="rounded-[2.5rem] border border-foreground/10 glass-premium p-6 space-y-4"
+                    >
+                      <div className="flex items-center justify-between gap-3">
+                        <div>
+                          <p className="text-[9px] font-black uppercase tracking-[0.25em] text-primary">
+                            Métricas de uso
+                          </p>
+                          <h3 className="text-xl font-black italic uppercase tracking-tighter text-foreground font-kanit mt-1">
+                            Retención en juego
+                          </h3>
+                        </div>
+                        <TrendingUp className="w-5 h-5 text-primary/50" />
+                      </div>
+                      <div className="grid grid-cols-3 gap-3">
+                        {[
+                          { label: 'Sesiones', value: usageSnapshot.totalVisits },
+                          { label: 'Racha', value: usageSnapshot.streakDays },
+                          { label: 'Días activos', value: usageSnapshot.uniqueDays },
+                        ].map((item) => (
+                          <div key={item.label} className="rounded-2xl bg-foreground/[0.03] border border-foreground/10 p-3">
+                            <p className="text-[8px] font-black uppercase tracking-[0.2em] text-foreground/40">{item.label}</p>
+                            <p className="text-2xl font-black italic text-foreground mt-2">{item.value}</p>
+                          </div>
+                        ))}
+                      </div>
+                      <div className="rounded-2xl bg-primary/5 border border-primary/10 p-4">
+                        <p className="text-[9px] font-black uppercase tracking-[0.2em] text-primary">Sección favorita</p>
+                        <p className="text-sm font-bold text-foreground mt-2">{usageSnapshot.favoriteSection}</p>
+                        {usageSnapshot.recentSections.length > 0 && (
+                          <p className="text-xs text-foreground/50 mt-1">
+                            Últimas vistas: {usageSnapshot.recentSections.join(' · ')}
+                          </p>
+                        )}
+                      </div>
+                    </motion.section>
+                  </div>
+
                   <SectionDivider />
 
                   <motion.section
@@ -1446,6 +1534,70 @@ export default function HomePage() {
                   </div>
                 )}
               </div>
+            </div>
+
+            <div className="glass-premium p-6 rounded-[2.5rem] border-foreground/15 space-y-4">
+              <div className="flex items-center justify-between gap-3">
+                <div>
+                  <h3 className="text-[10px] font-semibold text-foreground/40 tracking-wide font-kanit">
+                    Recomendaciones para vos
+                  </h3>
+                  <p className="text-xl font-black italic uppercase tracking-tighter text-foreground font-kanit mt-1">
+                    Partidos sugeridos
+                  </p>
+                </div>
+                <Sparkles className="w-5 h-5 text-primary/40" />
+              </div>
+
+              {recommendedMatches.length > 0 ? (
+                <div className="space-y-3">
+                  {recommendedMatches.map((match) => (
+                    <Link
+                      key={match.id}
+                      href={`/match?id=${match.id}`}
+                      className="block rounded-[1.8rem] border border-foreground/10 bg-foreground/[0.02] p-4 hover:border-primary/30 transition-all"
+                    >
+                      <div className="flex items-start justify-between gap-3">
+                        <div>
+                          <p className="text-[10px] font-black uppercase tracking-[0.2em] text-primary">
+                            {SPORT_META[getMatchSport(match)].icon} {getFormatMeta(match.type, getMatchSport(match)).label}
+                          </p>
+                          <h4 className="text-lg font-black italic uppercase tracking-tighter text-foreground mt-2">
+                            {match.location}
+                          </h4>
+                          <p className="text-xs text-foreground/50 mt-1">
+                            {match.date} · {match.time}
+                          </p>
+                        </div>
+                        <span className="text-[10px] font-black uppercase tracking-[0.2em] text-foreground/40">
+                          {match.price ? `$${match.price.toLocaleString()}` : 'Libre'}
+                        </span>
+                      </div>
+                      {match.recommendationReasons?.length > 0 && (
+                        <div className="mt-3 flex flex-wrap gap-2">
+                          {match.recommendationReasons.map((reason) => (
+                            <span
+                              key={reason}
+                              className="px-2.5 py-1.5 rounded-full bg-primary/10 text-primary text-[9px] font-black"
+                            >
+                              {reason}
+                            </span>
+                          ))}
+                        </div>
+                      )}
+                    </Link>
+                  ))}
+                </div>
+              ) : (
+                <div className="rounded-[1.8rem] border border-dashed border-foreground/15 p-5 text-center">
+                  <p className="text-sm font-bold text-foreground/60">
+                    Todavía no tenemos sugerencias finas para vos.
+                  </p>
+                  <p className="text-xs text-foreground/40 mt-2">
+                    Ajustá deportes y zona en configuración para mejorar el radar.
+                  </p>
+                </div>
+              )}
             </div>
 
             <div className="hidden lg:block glass-premium p-6 rounded-[2.5rem] border-foreground/15 space-y-4">
