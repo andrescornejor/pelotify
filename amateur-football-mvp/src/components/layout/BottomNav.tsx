@@ -40,6 +40,7 @@ export function BottomNav() {
       color: 'from-[#2cfc7d] to-[#10b981]'
     },
     {
+
       label: 'Buscar',
       href: '/search',
       icon: Search,
