@@ -150,8 +150,8 @@ export default function SearchPage() {
               </div>
 
               {/* Advanced Filters */}
-              <div className="flex overflow-x-auto no-scrollbar items-center gap-2 lg:gap-3 pb-2 -mx-3 px-3 sm:mx-0 sm:px-2 snap-x w-screen sm:w-full" style={{ scrollbarWidth: 'none', WebkitOverflowScrolling: 'touch' }}>
-                <div className="flex items-center p-1 bg-foreground/5 rounded-2xl border border-foreground/5 gap-1 shrink-0 snap-start">
+              <div className="flex flex-wrap items-center gap-2 lg:gap-3 px-1 lg:px-2">
+                <div className="flex items-center p-1 bg-foreground/5 rounded-2xl border border-foreground/5 gap-1">
                   {(['All', 'F5', 'F7', 'F11'] as const).map((type) => (
                     <button
                       key={type}
@@ -173,7 +173,7 @@ export default function SearchPage() {
                 <button
                   onClick={() => setOnlyAvailable(!onlyAvailable)}
                   className={cn(
-                    'flex items-center gap-2 lg:gap-3 px-5 lg:px-6 py-2.5 lg:py-3.5 rounded-2xl border transition-all text-[10px] font-black uppercase tracking-widest italic shrink-0 snap-start',
+                    'flex items-center gap-2 lg:gap-3 px-5 lg:px-6 py-2.5 lg:py-3.5 rounded-2xl border transition-all text-[10px] font-black uppercase tracking-widest italic',
                     onlyAvailable
                       ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400 shadow-lg shadow-emerald-500/5'
                       : 'bg-foreground/5 border-foreground/5 text-foreground/50 hover:text-foreground hover:border-foreground/10'
@@ -184,7 +184,7 @@ export default function SearchPage() {
 
                 <div className="h-6 w-px bg-foreground/10 mx-1 hidden lg:block" />
 
-                <div className="flex items-center gap-3 lg:gap-4 bg-foreground/5 p-1 px-3 lg:px-4 rounded-2xl border border-foreground/5 shrink-0 snap-start mr-3 sm:mr-0">
+                <div className="flex items-center gap-3 lg:gap-4 bg-foreground/5 p-1 px-3 lg:px-4 rounded-2xl border border-foreground/5">
                   <div className="flex flex-col gap-0.5">
                     <span className="text-[8px] font-black text-foreground/40 uppercase tracking-widest leading-none">Cercanía</span>
                     <input
@@ -193,10 +193,10 @@ export default function SearchPage() {
                       max="50"
                       value={radiusFilter || 0}
                       onChange={(e) => setRadiusFilter(parseInt(e.target.value))}
-                      className="w-20 lg:w-24 h-1.5 bg-foreground/10 rounded-full appearance-none cursor-pointer accent-primary"
+                      className="w-24 h-1.5 bg-foreground/10 rounded-full appearance-none cursor-pointer accent-primary"
                     />
                   </div>
-                  <span className="text-[10px] font-black text-primary w-6 lg:w-8 italic">{radiusFilter || '∞'}k</span>
+                  <span className="text-[10px] font-black text-primary w-8 italic">{radiusFilter || '∞'}k</span>
                   <button
                     onClick={handleLocateMe}
                     className={cn(
