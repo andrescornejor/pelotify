@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -294,7 +294,7 @@ export default function HomePage() {
       },
       {
         icon: Calendar,
-        label: 'Próximos',
+        label: 'PrÃ³ximos',
         value: statsSummary.upcomingMatches,
         color: '#6366f1',
         glow: 'rgba(99,102,241,0.2)',
@@ -357,133 +357,142 @@ export default function HomePage() {
             MOBILE APP-LIKE HERO & QUICK ACTIONS
          */}
         {isMobile ? (
-          <section className="space-y-6 pt-2">
-            {/* Greeting */}
-            <div className="px-1">
-              <div className="flex flex-col">
-                <span className="text-[11px] font-black uppercase tracking-[0.2em] text-foreground/40 font-kanit leading-tight">
-                  {greeting}
-                </span>
-                <div className="mt-4 mb-2">
-                  <SportSelector selectedSport={selectedSport} onSelect={setSelectedSport} />
+          <section className="space-y-4 pt-1">
+            <div className="relative overflow-hidden rounded-[2rem] border border-foreground/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.04),rgba(255,255,255,0.01))] p-4 shadow-[0_16px_50px_rgba(0,0,0,0.22)]">
+              <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(var(--primary-rgb),0.18),transparent_35%),linear-gradient(180deg,rgba(255,255,255,0.03),transparent)] pointer-events-none" />
+              <div className="relative z-10 space-y-4">
+                <div className="flex items-start justify-between gap-3">
+                  <div className="min-w-0">
+                    <span className="text-[10px] font-black uppercase tracking-[0.28em] text-foreground/35 font-kanit">
+                      {greeting}
+                    </span>
+                    <AnimatePresence mode="wait">
+                      <motion.h1
+                        key={selectedSport}
+                        initial={{ y: 8, opacity: 0 }}
+                        animate={{ y: 0, opacity: 1 }}
+                        exit={{ y: -8, opacity: 0 }}
+                        transition={{ duration: 0.18 }}
+                        className="mt-2 text-[2rem] font-black italic uppercase tracking-tighter text-foreground leading-[0.9]"
+                      >
+                        {focusSportMeta.homeHeadline.split(' ')[0].toUpperCase()}
+                        <br />
+                        <span className="text-primary">{focusSportMeta.homeHeadline.split(' ').slice(1).join(' ').toUpperCase()}</span>
+                      </motion.h1>
+                    </AnimatePresence>
+                  </div>
+
+                  <Link href="/profile/me" className="shrink-0">
+                    <div className="w-14 h-14 rounded-[1.2rem] border border-white/10 bg-black/20 backdrop-blur-sm flex items-center justify-center relative overflow-hidden">
+                      {metadata?.avatar_url ? (
+                        <img src={metadata.avatar_url} alt="" className="w-full h-full object-cover" />
+                      ) : (
+                        <User2 className="w-6 h-6 text-foreground/40" />
+                      )}
+                      <div className="absolute inset-x-2 bottom-1 h-1 rounded-full" style={{ background: rankCalculation.info.color }} />
+                    </div>
+                  </Link>
                 </div>
-                <AnimatePresence mode="wait">
-                  <motion.h1 
-                    key={selectedSport}
-                    initial={{ y: 10, opacity: 0 }}
-                    animate={{ y: 0, opacity: 1 }}
-                    exit={{ y: -10, opacity: 0 }}
-                    className="text-3xl font-black italic uppercase font-kanit tracking-tighter text-foreground leading-[0.9] mt-0.5"
-                  >
-                    HOLA, <span className="text-primary">{userName}</span>
-                  </motion.h1>
-                </AnimatePresence>
-              </div>
-            </div>
 
-            {/* Next Match horizontal card if available */}
-            {nextMatch && (
-              <motion.div 
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                className="relative overflow-hidden rounded-[2.5rem] p-5 shadow-2xl glass-premium border-primary/20"
-              >
-                <div className="absolute top-0 right-0 w-32 h-32 bg-primary/10 blur-[40px] rounded-full -translate-y-1/2 translate-x-1/2" />
-                
-                <div className="relative z-10 flex flex-col gap-4">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <div className="w-2 h-2 rounded-full bg-primary animate-pulse shadow-[0_0_8px_rgba(44,252,125,0.6)]" />
-                      <span className="text-[9px] font-black text-foreground/40 uppercase tracking-[0.2em]">PRÓXIMO ENCUENTRO</span>
-                    </div>
-                    {countdownText && (
-                      <span className="px-2 py-0.5 rounded-full bg-primary/10 text-primary text-[8px] font-black uppercase tracking-tighter">
-                        {countdownText}
-                      </span>
-                    )}
+                <SportSelector selectedSport={selectedSport} onSelect={setSelectedSport} />
+
+                <div className="grid grid-cols-3 gap-2">
+                  <div className="rounded-[1.2rem] border border-white/8 bg-white/[0.03] px-3 py-3">
+                    <p className="text-[8px] font-black uppercase tracking-[0.2em] text-foreground/35">{focusSportMeta.shortLabel}</p>
+                    <p className="mt-2 text-xl font-black italic text-foreground">{statsSummary.totalMatches}</p>
                   </div>
-                  
-                  {nextMatchFormat && (
-                    <div className="text-[9px] font-black uppercase tracking-[0.2em] text-foreground/35">
-                      {nextMatchMeta.icon} {nextMatchFormat.label}
-                    </div>
-                  )}
-
-                  <div className="flex items-center justify-between gap-2">
-                    <div className="flex flex-col items-center gap-1 flex-1">
-                      <div className="w-12 h-12 rounded-xl bg-surface border border-foreground/10 p-2 overflow-hidden flex items-center justify-center">
-                        <JerseyVisualizer primaryColor="#18181b" secondaryColor={sportTheme.accent} pattern="vertical" className="w-full h-full" />
-                      </div>
-                      <span className="text-[10px] font-black text-center truncate w-full uppercase italic">
-                        {(nextMatch.team_a_name && nextMatch.team_a_name !== 'Team A') ? nextMatch.team_a_name : nextMatchSport === 'padel' ? 'DUPLA A' : 'LOCAL'}
-                      </span>
-                    </div>
-                    
-                    <div className="flex flex-col items-center shrink-0">
-                      <span className="text-sm font-black italic text-primary leading-none">VS</span>
-                      <span className="text-[9px] font-bold text-foreground/30 mt-1">{nextMatch.time?.slice(0, 5)} HS</span>
-                    </div>
-
-                    <div className="flex flex-col items-center gap-1 flex-1">
-                      <div className="w-12 h-12 rounded-xl bg-surface border border-foreground/10 p-2 overflow-hidden flex items-center justify-center">
-                        <JerseyVisualizer primaryColor={sportTheme.accent} secondaryColor="#ffffff" pattern="hoops" className="w-full h-full" />
-                      </div>
-                      <span className="text-[10px] font-black text-center truncate w-full uppercase italic">
-                        {(nextMatch.team_b_name && nextMatch.team_b_name !== 'Team B') ? nextMatch.team_b_name : nextMatchSport === 'padel' ? 'DUPLA B' : 'VISITA'}
-                      </span>
-                    </div>
+                  <div className="rounded-[1.2rem] border border-white/8 bg-white/[0.03] px-3 py-3">
+                    <p className="text-[8px] font-black uppercase tracking-[0.2em] text-foreground/35">Ganados</p>
+                    <p className="mt-2 text-xl font-black italic text-primary">{statsSummary.wins}</p>
                   </div>
+                  <div className="rounded-[1.2rem] border border-white/8 bg-white/[0.03] px-3 py-3">
+                    <p className="text-[8px] font-black uppercase tracking-[0.2em] text-foreground/35">Win Rate</p>
+                    <p className="mt-2 text-xl font-black italic text-foreground">{statsSummary.winRate}%</p>
+                  </div>
+                </div>
 
-                  <Link href={`/match?id=${nextMatch.id}`} className="w-full">
-                    <button className="w-full h-10 rounded-xl bg-primary text-black text-[10px] font-black uppercase tracking-widest flex items-center justify-center gap-2 shadow-[0_10px_20px_rgba(44,252,125,0.3)]">
-                      DETALLES <ArrowRight className="w-3.5 h-3.5" />
+                <div className="grid grid-cols-2 gap-2">
+                  <Link href={`/create?sport=${selectedSport}`}>
+                    <button className="w-full h-12 rounded-[1.2rem] bg-primary text-black text-[10px] font-black uppercase tracking-[0.18em] flex items-center justify-center gap-2 shadow-[0_10px_25px_rgba(44,252,125,0.22)]">
+                      <PlusCircle className="w-4 h-4" />
+                      Armar partido
+                    </button>
+                  </Link>
+                  <Link href={`/search?sport=${selectedSport}`}>
+                    <button className="w-full h-12 rounded-[1.2rem] border border-white/10 bg-white/[0.04] text-foreground text-[10px] font-black uppercase tracking-[0.18em] flex items-center justify-center gap-2">
+                      <Search className="w-4 h-4 text-primary" />
+                      Buscar
                     </button>
                   </Link>
                 </div>
-              </motion.div>
+              </div>
+            </div>
+
+            {nextMatch ? (
+              <Link href={`/match?id=${nextMatch.id}`} className="block">
+                <div className="rounded-[1.9rem] border border-primary/15 bg-[linear-gradient(180deg,rgba(255,255,255,0.03),rgba(255,255,255,0.015))] p-4 shadow-[0_14px_35px_rgba(0,0,0,0.18)]">
+                  <div className="flex items-center justify-between gap-3">
+                    <div className="min-w-0">
+                      <p className="text-[9px] font-black uppercase tracking-[0.24em] text-primary">Próximo partido</p>
+                      <h3 className="mt-2 truncate text-lg font-black italic uppercase tracking-tighter text-foreground">
+                        {nextMatch.location || 'Sede por confirmar'}
+                      </h3>
+                      <p className="mt-1 text-[11px] font-bold uppercase tracking-[0.16em] text-foreground/45">
+                        {nextMatchMeta.icon} {nextMatchFormat?.label || focusSportMeta.label} · {nextMatch.time?.slice(0, 5) || '--:--'} hs
+                      </p>
+                    </div>
+                    {countdownText && (
+                      <div className="rounded-[1rem] border border-primary/20 bg-primary/10 px-3 py-2 text-center shrink-0">
+                        <p className="text-[8px] font-black uppercase tracking-[0.18em] text-primary">Cuenta atrás</p>
+                        <p className="mt-1 text-[10px] font-black uppercase text-foreground">{countdownText}</p>
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="mt-4 grid grid-cols-[1fr_auto_1fr] items-center gap-2">
+                    <div className="rounded-[1.2rem] border border-white/10 bg-white/[0.03] p-3 flex items-center gap-2 min-w-0">
+                      <div className="w-10 h-10 rounded-xl bg-surface border border-foreground/10 p-2 shrink-0">
+                        <JerseyVisualizer primaryColor="#18181b" secondaryColor={sportTheme.accent} pattern="vertical" className="w-full h-full" />
+                      </div>
+                      <span className="truncate text-[10px] font-black uppercase italic text-foreground">
+                        {(nextMatch.team_a_name && nextMatch.team_a_name !== 'Team A') ? nextMatch.team_a_name : nextMatchSport === 'padel' ? 'Dupla A' : 'Local'}
+                      </span>
+                    </div>
+                    <span className="text-sm font-black italic text-primary">VS</span>
+                    <div className="rounded-[1.2rem] border border-white/10 bg-white/[0.03] p-3 flex items-center gap-2 min-w-0">
+                      <div className="w-10 h-10 rounded-xl bg-surface border border-foreground/10 p-2 shrink-0">
+                        <JerseyVisualizer primaryColor={sportTheme.accent} secondaryColor="#ffffff" pattern="hoops" className="w-full h-full" />
+                      </div>
+                      <span className="truncate text-[10px] font-black uppercase italic text-foreground">
+                        {(nextMatch.team_b_name && nextMatch.team_b_name !== 'Team B') ? nextMatch.team_b_name : nextMatchSport === 'padel' ? 'Dupla B' : 'Visita'}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </Link>
+            ) : (
+              <div className="rounded-[1.9rem] border border-dashed border-white/10 bg-white/[0.02] p-5 text-center">
+                <p className="text-[10px] font-black uppercase tracking-[0.22em] text-foreground/35">Agenda libre</p>
+                <p className="mt-2 text-sm font-bold text-foreground/65">No hay partidos de {focusSportMeta.label} programados.</p>
+              </div>
             )}
 
-            {/* App Grid Actions */}
-            <div className="grid grid-cols-4 gap-3">
+            <div className="grid grid-cols-4 gap-2">
               {[
-                { label: 'Buscar', icon: Search, color: 'text-primary', href: `/search?sport=${selectedSport}` },
+                { label: 'Radar', icon: Search, color: 'text-primary', href: `/search?sport=${selectedSport}` },
                 { label: 'Equipos', icon: Shield, color: 'text-blue-400', href: '/teams' },
                 { label: 'Sedes', icon: MapPin, color: 'text-orange-400', href: '/establecimientos' },
-                { label: focusSportMeta.highlightLabel, icon: Flame, color: 'text-rose-500', href: '/highlights' },
-              ].map((item, idx) => (
-                <Link key={idx} href={item.href} className="flex flex-col items-center gap-2 group">
-                  <div className="w-full aspect-square rounded-[1.5rem] glass border-foreground/10 flex items-center justify-center group-active:scale-90 transition-all shadow-lg group-hover:border-primary/20">
-                    <item.icon className={cn("w-6 h-6", item.label === 'Buscar' ? "text-primary" : item.color)} strokeWidth={2.5} />
+                { label: 'Clips', icon: Flame, color: 'text-rose-500', href: '/highlights' },
+              ].map((item) => (
+                <Link key={item.label} href={item.href} className="block">
+                  <div className="rounded-[1.3rem] border border-white/8 bg-white/[0.03] px-2 py-3 flex flex-col items-center justify-center gap-2">
+                    <item.icon className={cn('w-5 h-5', item.color)} />
+                    <span className="text-[8px] font-black uppercase tracking-[0.16em] text-foreground/55">{item.label}</span>
                   </div>
-                  <span className="text-[9px] font-black uppercase text-foreground/60 tracking-tighter">{item.label}</span>
                 </Link>
               ))}
             </div>
-
-            {/* Quick Rank Card */}
-            <Link href="/profile/me">
-              <div className="glass-premium p-4 rounded-[2rem] border-foreground/5 flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-xl bg-surface flex items-center justify-center border border-foreground/10">
-                    <rankCalculation.rank.icon className="w-6 h-6" style={{ color: rankCalculation.rank.hex }} />
-                  </div>
-                  <div>
-                    <h4 className="text-xs font-black uppercase italic font-kanit text-foreground/40 leading-none">Mi Rango</h4>
-                    <p className="text-lg font-black uppercase italic font-kanit text-foreground tracking-tighter leading-none mt-1">
-                      {rankCalculation.rank.name}
-                    </p>
-                  </div>
-                </div>
-                <div className="text-right">
-                  <span className="text-sm font-black italic font-kanit text-primary">{Math.round(rankCalculation.progress)}%</span>
-                  <div className="w-20 h-1 bg-foreground/5 rounded-full mt-1 overflow-hidden">
-                    <div className="h-full bg-primary" style={{ width: `${rankCalculation.progress}%` }} />
-                  </div>
-                </div>
-              </div>
-            </Link>
-          </section>
-        ) : reduceAnimations ? (
+          </section>        ) : reduceAnimations ? (
           <section className="relative overflow-hidden rounded-[2.5rem] shadow-xl bg-background border border-foreground/5 group/hero">
             <div className="absolute inset-0 z-0 select-none">
               <img
@@ -880,7 +889,195 @@ export default function HomePage() {
           </motion.section>
         )}
 
+        {isMobile ? (
+          <div className="space-y-4">
+            <section className="grid grid-cols-2 gap-3">
+              {statCardsData.map((stat) => (
+                <div
+                  key={stat.label}
+                  className="rounded-[1.6rem] border border-foreground/10 bg-white/[0.03] p-4 shadow-[0_10px_28px_rgba(0,0,0,0.14)]"
+                >
+                  <div
+                    className="w-10 h-10 rounded-[1rem] flex items-center justify-center border border-white/10"
+                    style={{ backgroundColor: `${stat.color}18` }}
+                  >
+                    <stat.icon className="w-5 h-5" style={{ color: stat.color }} />
+                  </div>
+                  <p className="mt-4 text-[9px] font-black uppercase tracking-[0.18em] text-foreground/35">
+                    {stat.label}
+                  </p>
+                  <p className="mt-1 text-2xl font-black italic text-foreground tracking-tighter">
+                    {stat.value}
+                  </p>
+                </div>
+              ))}
+            </section>
 
+            <section className="rounded-[1.8rem] border border-foreground/10 bg-white/[0.03] p-4 shadow-[0_12px_30px_rgba(0,0,0,0.14)]">
+              <div className="flex items-center justify-between gap-3">
+                <div>
+                  <p className="text-[9px] font-black uppercase tracking-[0.22em] text-primary">Momentum</p>
+                  <h3 className="mt-2 text-lg font-black italic uppercase tracking-tighter text-foreground">
+                    {rankCalculation.rank.name}
+                  </h3>
+                </div>
+                <div className="text-right">
+                  <p className="text-[9px] font-black uppercase tracking-[0.18em] text-foreground/35">Racha</p>
+                  <p className="mt-2 text-2xl font-black italic text-primary">{usageSnapshot.streakDays}</p>
+                </div>
+              </div>
+              <div className="mt-4 h-2 rounded-full bg-white/5 overflow-hidden">
+                <div className="h-full rounded-full bg-primary" style={{ width: `${rankCalculation.progress}%` }} />
+              </div>
+              <div className="mt-3 flex items-center justify-between text-[10px] font-bold text-foreground/45">
+                <span>Sección top: {usageSnapshot.favoriteSection}</span>
+                <span>{Math.round(rankCalculation.progress)}%</span>
+              </div>
+            </section>
+
+            <section className="space-y-3">
+              <div className="flex items-center justify-between px-1">
+                <div>
+                  <p className="text-[9px] font-black uppercase tracking-[0.22em] text-primary">Para vos</p>
+                  <h3 className="mt-1 text-lg font-black italic uppercase tracking-tighter text-foreground">
+                    Recomendados
+                  </h3>
+                </div>
+                <Link href={`/search?sport=${selectedSport}`} className="text-[9px] font-black uppercase tracking-[0.18em] text-foreground/45">
+                  Ver más
+                </Link>
+              </div>
+              <div className="flex gap-3 overflow-x-auto pb-1 snap-x">
+                {recommendedMatches.length > 0 ? (
+                  recommendedMatches.map((match) => (
+                    <Link
+                      key={match.id}
+                      href={`/match?id=${match.id}`}
+                      className="snap-start min-w-[280px] rounded-[1.7rem] border border-foreground/10 bg-white/[0.03] p-4 shadow-[0_12px_28px_rgba(0,0,0,0.14)]"
+                    >
+                      <p className="text-[9px] font-black uppercase tracking-[0.2em] text-primary">
+                        {SPORT_META[getMatchSport(match)].icon} {getFormatMeta(match.type, getMatchSport(match)).label}
+                      </p>
+                      <h4 className="mt-2 text-base font-black italic uppercase tracking-tighter text-foreground truncate">
+                        {match.location}
+                      </h4>
+                      <p className="mt-1 text-[11px] font-bold uppercase tracking-[0.15em] text-foreground/45">
+                        {match.date} · {match.time}
+                      </p>
+                      {match.recommendationReasons?.[0] && (
+                        <div className="mt-3 inline-flex rounded-full bg-primary/10 px-3 py-1.5 text-[9px] font-black text-primary">
+                          {match.recommendationReasons[0]}
+                        </div>
+                      )}
+                    </Link>
+                  ))
+                ) : (
+                  <div className="w-full rounded-[1.7rem] border border-dashed border-foreground/10 bg-white/[0.02] p-5 text-center text-sm font-bold text-foreground/55">
+                    No hay sugerencias para {focusSportMeta.label} por ahora.
+                  </div>
+                )}
+              </div>
+            </section>
+
+            <section className="space-y-3">
+              <div className="flex items-center justify-between px-1">
+                <div>
+                  <p className="text-[9px] font-black uppercase tracking-[0.22em] text-primary">Actividad</p>
+                  <h3 className="mt-1 text-lg font-black italic uppercase tracking-tighter text-foreground">
+                    Comunidad en movimiento
+                  </h3>
+                </div>
+              </div>
+              <div className="space-y-2">
+                {(activities.length > 0 ? activities.slice(0, 3) : []).map((activity, idx) => (
+                  <div key={`${activity.user}-${idx}`} className="rounded-[1.5rem] border border-foreground/10 bg-white/[0.03] p-4 flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-full bg-primary/10 border border-primary/15 flex items-center justify-center shrink-0">
+                      <TrendingUp className="w-4 h-4 text-primary" />
+                    </div>
+                    <div className="min-w-0">
+                      <p className="text-sm font-bold text-foreground truncate">
+                        {activity.user} <span className="text-foreground/45 font-medium">{activity.detail}</span>
+                      </p>
+                      <p className="mt-1 text-[9px] font-black uppercase tracking-[0.18em] text-foreground/35">
+                        {activity.time}
+                      </p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </section>
+
+            <section className="space-y-3">
+              <div className="flex items-center justify-between px-1">
+                <div>
+                  <p className="text-[9px] font-black uppercase tracking-[0.22em] text-primary">Social</p>
+                  <h3 className="mt-1 text-lg font-black italic uppercase tracking-tighter text-foreground">
+                    3erTiempo
+                  </h3>
+                </div>
+                <Link href="/feed" className="text-[9px] font-black uppercase tracking-[0.18em] text-foreground/45">
+                  Ver muro
+                </Link>
+              </div>
+              <div className="space-y-3">
+                {(recentPosts.length > 0 ? recentPosts.slice(0, 2) : []).map((post) => (
+                  <div key={post.id} className="rounded-[1.7rem] border border-foreground/10 bg-white/[0.03] p-4 shadow-[0_10px_24px_rgba(0,0,0,0.12)]">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-full overflow-hidden border border-white/10 bg-surface-elevated shrink-0">
+                        {post.author?.avatar_url ? (
+                          <img src={post.author.avatar_url} alt="" className="w-full h-full object-cover" />
+                        ) : (
+                          <div className="w-full h-full flex items-center justify-center text-foreground/35 font-black">
+                            {post.author?.name?.charAt(0) || 'P'}
+                          </div>
+                        )}
+                      </div>
+                      <div className="min-w-0">
+                        <p className="text-sm font-bold text-foreground truncate">{post.author?.name || 'Jugador'}</p>
+                        <p className="text-[9px] font-black uppercase tracking-[0.16em] text-foreground/35">
+                          {new Date(post.created_at).toLocaleDateString()}
+                        </p>
+                      </div>
+                    </div>
+                    <p className="mt-3 text-sm text-foreground/70 leading-relaxed line-clamp-3">
+                      {post.content}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            </section>
+
+            <section className="space-y-3">
+              <div className="flex items-center justify-between px-1">
+                <div>
+                  <p className="text-[9px] font-black uppercase tracking-[0.22em] text-primary">Highlights</p>
+                  <h3 className="mt-1 text-lg font-black italic uppercase tracking-tighter text-foreground">
+                    {focusSportMeta.highlightLabel}
+                  </h3>
+                </div>
+                <Link href="/highlights" className="text-[9px] font-black uppercase tracking-[0.18em] text-foreground/45">
+                  Ver todo
+                </Link>
+              </div>
+              <div className="flex gap-3 overflow-x-auto pb-1 snap-x">
+                {(highlights.length > 0 ? highlights.slice(0, 4) : []).map((highlight) => (
+                  <Link
+                    key={highlight.id}
+                    href={`/highlights?v=${highlight.id}`}
+                    className="snap-start min-w-[150px] rounded-[1.7rem] border border-foreground/10 bg-white/[0.03] p-4"
+                  >
+                    <div className="aspect-[3/4] rounded-[1.2rem] bg-gradient-to-b from-white/[0.07] to-transparent border border-white/8 flex items-center justify-center">
+                      <Play className="w-8 h-8 text-primary/80" />
+                    </div>
+                    <p className="mt-3 text-[10px] font-black uppercase tracking-[0.16em] text-foreground truncate">
+                      @{highlight.profiles?.name || 'Jugador'}
+                    </p>
+                  </Link>
+                ))}
+              </div>
+            </section>
+          </div>
+        ) : (
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
           <div className="lg:col-span-8 xl:col-span-8 space-y-6 order-2 lg:order-1">
             {/* --- DASHBOARD TAB CONTROLLER --- */}
@@ -1038,7 +1235,7 @@ export default function HomePage() {
                       <p className="text-sm text-foreground/60 leading-relaxed">
                         {userPreferences.preferredZone
                           ? `Priorizamos partidos y avisos en ${userPreferences.preferredZone}.`
-                          : 'Definí tu zona para afinar aún más las recomendaciones y avisos.'}
+                          : 'DefinÃ­ tu zona para afinar aÃºn mÃ¡s las recomendaciones y avisos.'}
                       </p>
                       <Link href="/settings" className="inline-flex">
                         <button className="h-11 px-5 rounded-2xl bg-foreground text-background text-[10px] font-black uppercase tracking-[0.2em] hover:bg-primary hover:text-black transition-all">
@@ -1054,10 +1251,10 @@ export default function HomePage() {
                       <div className="flex items-center justify-between gap-3">
                         <div>
                           <p className="text-[9px] font-black uppercase tracking-[0.25em] text-primary">
-                            Métricas de uso
+                            MÃ©tricas de uso
                           </p>
                           <h3 className="text-xl font-black italic uppercase tracking-tighter text-foreground font-kanit mt-1">
-                            Retención en juego
+                            RetenciÃ³n en juego
                           </h3>
                         </div>
                         <TrendingUp className="w-5 h-5 text-primary/50" />
@@ -1066,7 +1263,7 @@ export default function HomePage() {
                         {[
                           { label: 'Sesiones', value: usageSnapshot.totalVisits },
                           { label: 'Racha', value: usageSnapshot.streakDays },
-                          { label: 'Días activos', value: usageSnapshot.uniqueDays },
+                          { label: 'DÃ­as activos', value: usageSnapshot.uniqueDays },
                         ].map((item) => (
                           <div key={item.label} className="rounded-2xl bg-foreground/[0.03] border border-foreground/10 p-3">
                             <p className="text-[8px] font-black uppercase tracking-[0.2em] text-foreground/40">{item.label}</p>
@@ -1075,11 +1272,11 @@ export default function HomePage() {
                         ))}
                       </div>
                       <div className="rounded-2xl bg-primary/5 border border-primary/10 p-4">
-                        <p className="text-[9px] font-black uppercase tracking-[0.2em] text-primary">Sección favorita</p>
+                        <p className="text-[9px] font-black uppercase tracking-[0.2em] text-primary">SecciÃ³n favorita</p>
                         <p className="text-sm font-bold text-foreground mt-2">{usageSnapshot.favoriteSection}</p>
                         {usageSnapshot.recentSections.length > 0 && (
                           <p className="text-xs text-foreground/50 mt-1">
-                            Últimas vistas: {usageSnapshot.recentSections.join(' · ')}
+                            Ãšltimas vistas: {usageSnapshot.recentSections.join(' Â· ')}
                           </p>
                         )}
                       </div>
@@ -1177,7 +1374,7 @@ export default function HomePage() {
                           {[
                             { icon: Activity, color: sportTheme.accent, label: `${focusSportMeta.shortLabel}`, value: statsSummary.totalMatches },
                             { icon: Trophy, color: '#f59e0b', label: 'Ganados', value: statsSummary.wins },
-                            { icon: Award, color: '#6366f1', label: 'Próximos', value: statsSummary.upcomingMatches },
+                            { icon: Award, color: '#6366f1', label: 'PrÃ³ximos', value: statsSummary.upcomingMatches },
                           ].map((item, i) => (
                             <div key={i} className="flex items-center gap-4 p-4 rounded-2xl bg-foreground/[0.02] border border-foreground/15 group hover:bg-foreground/[0.04] transition-colors">
                               <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0" style={{ backgroundColor: `${item.color}15` }}>
@@ -1265,7 +1462,7 @@ export default function HomePage() {
                     {userTeams.length > 0 ? (
                       userTeams.map((team) => <TeamCard key={team.id} team={team} performanceMode={performanceMode} />)
                     ) : (
-                      <EmptyState icon={Shield} title="Sin Plantel" description="Aún no eres parte de ningún equipo." />
+                      <EmptyState icon={Shield} title="Sin Plantel" description="AÃºn no eres parte de ningÃºn equipo." />
                     )}
                   </div>
                 </motion.div>
@@ -1283,7 +1480,7 @@ export default function HomePage() {
                   <div className="flex items-center justify-between px-1">
                     <div className="flex flex-col gap-1">
                         <h2 className="text-xl lg:text-2xl font-black text-foreground italic uppercase tracking-tighter font-kanit">
-                          Lo último en 3erTiempo
+                          Lo Ãºltimo en 3erTiempo
                         </h2>
                         <span className="text-[9px] font-semibold text-foreground/40 tracking-wide font-kanit">
                           Conversaciones y posteos alrededor de {focusSportMeta.label}
@@ -1369,7 +1566,7 @@ export default function HomePage() {
                         </motion.div>
                       ))
                     ) : (
-                      <EmptyState icon={MessageSquare} title="Silencio en el Muro" description="Se el primero en postear algo épico." />
+                      <EmptyState icon={MessageSquare} title="Silencio en el Muro" description="Se el primero en postear algo Ã©pico." />
                     )}
                   </div>
                 </motion.div>
@@ -1413,7 +1610,7 @@ export default function HomePage() {
                         </Link>
                       ))
                     ) : (
-                      <EmptyState icon={Flame} title="Sin Brillo" description="Aún no hay clips tendencia." />
+                      <EmptyState icon={Flame} title="Sin Brillo" description="AÃºn no hay clips tendencia." />
                     )}
                     <Link href="/highlights" className="shrink-0 aspect-[9/16] h-full rounded-[2rem] glass-premium border-dashed border-foreground/20 flex flex-col items-center justify-center gap-3 group hover:border-primary/40 transition-all text-foreground/30 snap-start">
                       <div className="w-10 h-10 rounded-full bg-surface flex items-center justify-center group-hover:scale-110 transition-transform">
@@ -1447,7 +1644,7 @@ export default function HomePage() {
                   <div className="flex flex-col gap-1">
                     <div className="flex items-center gap-2">
                       <div className="w-2 h-2 rounded-full bg-foreground/30 shadow-[0_0_6px_rgba(var(--foreground-rgb),0.3)]" />
-                      <span className="text-[10px] font-black text-foreground/40 uppercase tracking-[0.4em] font-kanit">PRÓXIMO PARTIDO</span>
+                      <span className="text-[10px] font-black text-foreground/40 uppercase tracking-[0.4em] font-kanit">PRÃ“XIMO PARTIDO</span>
                     </div>
                     <h3 className="text-[11px] font-medium text-foreground/20 tracking-wide font-kanit">Agenda prioritaria</h3>
                   </div>
@@ -1568,8 +1765,8 @@ export default function HomePage() {
                          <MapPin className="w-6 h-6 text-foreground/40 group-hover/loc:text-primary transition-colors" />
                        </div>
                        <div className="flex flex-col min-w-0 flex-1">
-                         <span className="text-[9px] font-black text-foreground/40 uppercase tracking-[0.2em] mb-0.5">UBICACIÓN DEL ENCUENTRO</span>
-                         <span className="text-[12px] font-bold text-foreground/90 truncate group-hover/loc:text-foreground transition-colors">{nextMatch.location || 'Sede por confirmar, mantén contacto.'}</span>
+                         <span className="text-[9px] font-black text-foreground/40 uppercase tracking-[0.2em] mb-0.5">UBICACIÃ“N DEL ENCUENTRO</span>
+                         <span className="text-[12px] font-bold text-foreground/90 truncate group-hover/loc:text-foreground transition-colors">{nextMatch.location || 'Sede por confirmar, mantÃ©n contacto.'}</span>
                        </div>
                        <ChevronRight className="w-5 h-5 text-foreground/20 group-hover/loc:text-primary group-hover/loc:translate-x-1 transition-all shrink-0" />
                     </div>
@@ -1607,7 +1804,7 @@ export default function HomePage() {
                     <div className="space-y-3 relative z-10 group-hover/agenda:-translate-y-1 transition-transform duration-700">
                       <h4 className="text-3xl font-black italic uppercase tracking-tighter text-foreground/80 font-kanit">Agenda Libre</h4>
                       <p className="text-[11px] font-medium text-foreground/40 tracking-wide leading-relaxed max-w-[240px] mx-auto">
-                        No hay encuentros programados.<br />Buscá uno nuevo o armalo desde cero.
+                        No hay encuentros programados.<br />BuscÃ¡ uno nuevo o armalo desde cero.
                       </p>
                     </div>
 
@@ -1669,7 +1866,7 @@ export default function HomePage() {
                             {match.location}
                           </h4>
                           <p className="text-xs text-foreground/50 mt-1">
-                            {match.date} · {match.time}
+                            {match.date} Â· {match.time}
                           </p>
                         </div>
                         <span className="text-[10px] font-black uppercase tracking-[0.2em] text-foreground/40">
@@ -1694,23 +1891,23 @@ export default function HomePage() {
               ) : (
                 <div className="rounded-[1.8rem] border border-dashed border-foreground/15 p-5 text-center">
                   <p className="text-sm font-bold text-foreground/60">
-                    Todavía no tenemos sugerencias finas para vos.
+                    TodavÃ­a no tenemos sugerencias finas para vos.
                   </p>
                   <p className="text-xs text-foreground/40 mt-2">
-                    Ajustá deportes y zona en configuración para mejorar el radar.
+                    AjustÃ¡ deportes y zona en configuraciÃ³n para mejorar el radar.
                   </p>
                 </div>
               )}
             </div>
 
             <div className="hidden lg:block glass-premium p-6 rounded-[2.5rem] border-foreground/15 space-y-4">
-              <h3 className="text-[10px] font-semibold text-foreground/40 tracking-wide font-kanit">Accesos rápidos</h3>
+              <h3 className="text-[10px] font-semibold text-foreground/40 tracking-wide font-kanit">Accesos rÃ¡pidos</h3>
               <div className="grid grid-cols-1 gap-2">
                 {[
                   { label: 'Sedes', icon: MapPin, href: '/establecimientos' },
                   { label: 'Mis Amigos', icon: Users, href: '/friends' },
                   { label: 'Chat Global', icon: MessageSquare, href: '/messages' },
-                  { label: 'Configuración', icon: Target, href: '/settings' }
+                  { label: 'ConfiguraciÃ³n', icon: Target, href: '/settings' }
                 ].map((link, idx) => (
                   <Link key={idx} href={link.href}>
                     <button className="w-full h-12 px-4 rounded-xl flex items-center justify-between group hover:bg-foreground/[0.03] transition-all border border-transparent hover:border-foreground/15">
@@ -1726,6 +1923,7 @@ export default function HomePage() {
             </div>
           </aside>
         </div>
+        )}
 
 
 
@@ -1742,8 +1940,8 @@ export default function HomePage() {
             </div>
           </div>
           <div className="mt-12 pt-8 flex flex-col md:flex-row items-center justify-between gap-4 text-[9px] font-medium tracking-wide text-foreground/30">
-            <span>© 2026 Pelotify. Todos los derechos reservados.</span>
-            <span className="flex items-center gap-2">Diseñado con <Sparkles className="w-3 h-3 text-primary" /> para campeones</span>
+            <span>Â© 2026 Pelotify. Todos los derechos reservados.</span>
+            <span className="flex items-center gap-2">DiseÃ±ado con <Sparkles className="w-3 h-3 text-primary" /> para campeones</span>
           </div>
         </footer>
       </div>
@@ -1763,3 +1961,4 @@ function getNextSportMatch(matches: Array<Partial<Match>>, sport: Sport) {
     })
     .find((match) => new Date(`${match.date}T${match.time}`).getTime() >= now) || null;
 }
+
