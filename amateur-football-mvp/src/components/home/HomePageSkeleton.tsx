@@ -2,219 +2,161 @@
 
 import { motion } from 'framer-motion';
 
-const shimmer = {
-  initial: { x: '-100%' },
-  animate: { x: '100%' },
-  transition: { repeat: Infinity, ease: 'linear', duration: 1.5 },
-} as const;
-
+/**
+ * Bone component uses the CSS-based skeleton-shimmer defined in globals.css
+ * for maximum performance (GPU accelerated CSS instead of JS Framer Motion).
+ */
 const Bone = ({ className = '', style }: { className?: string, style?: React.CSSProperties }) => (
-  <div className={`relative overflow-hidden bg-foreground/[0.04] ${className}`} style={style}>
-    <motion.div
-      className="absolute inset-0 bg-gradient-to-r from-transparent via-foreground/[0.10] to-transparent w-[200%]"
-      initial={shimmer.initial}
-      animate={shimmer.animate}
-      transition={shimmer.transition}
-    />
-  </div>
+  <div 
+    className={`skeleton-shimmer relative overflow-hidden bg-foreground/[0.04] ${className}`} 
+    style={{ ...style, willChange: 'transform' }} 
+  />
 );
 
 /**
- * HomePageSkeleton serves as the premium Splash Screen / Initial Loader
- * for the application when it boots up or fetches initial data.
+ * HomePageSkeleton serves as the high-performance Splash Screen / Initial Loader.
+ * Optimized for low-end devices while maintaining a premium aesthetic.
  */
 export const HomePageSkeleton = () => (
   <div className="relative min-h-screen bg-background text-foreground font-sans flex flex-col overflow-hidden">
 
-    {/* Ambient background (theme-aware via CSS variables) */}
-    <div className="absolute inset-0 pointer-events-none -z-10 overflow-hidden">
-      <div className="absolute -top-32 -right-32 w-[520px] h-[520px] rounded-full blur-[120px] opacity-60 bg-[radial-gradient(circle_at_center,rgba(var(--primary-rgb),0.22),transparent_55%)]" />
-      <div className="absolute -bottom-40 -left-40 w-[620px] h-[620px] rounded-full blur-[140px] opacity-50 bg-[radial-gradient(circle_at_center,rgba(var(--primary-rgb),0.14),transparent_60%)]" />
+    {/* Simplified Ambient Background - Using simple radial gradients instead of heavy blurs */}
+    <div className="absolute inset-0 pointer-events-none -z-10 overflow-hidden opacity-50">
+      <div 
+        className="absolute -top-32 -right-32 w-[520px] h-[520px] rounded-full" 
+        style={{ background: 'radial-gradient(circle at center, rgba(var(--primary-rgb), 0.15), transparent 70%)' }}
+      />
+      <div 
+        className="absolute -bottom-40 -left-40 w-[620px] h-[620px] rounded-full" 
+        style={{ background: 'radial-gradient(circle at center, rgba(var(--primary-rgb), 0.1), transparent 70%)' }}
+      />
     </div>
     
-    {/* ─── PREMIUM LOADER SYMBOL ─── */}
+    {/* ─── CONSOLIDATED PREMIUM LOADER ─── */}
     <div className="absolute inset-0 z-50 flex items-center justify-center pointer-events-none">
-      <div className="flex flex-col items-center gap-6">
+      <div className="flex flex-col items-center gap-8">
         <motion.div
-          animate={{ 
-            scale: [1, 1.1, 1],
-            rotateY: [0, 360]
-          }}
-          transition={{
-            scale: { duration: 2, repeat: Infinity, ease: "easeInOut" },
-            rotateY: { duration: 4, repeat: Infinity, ease: "linear" }
-          }}
-          className="w-20 h-20 bg-gradient-to-br from-primary to-primary-dark rounded-[1.8rem] flex items-center justify-center shadow-[0_0_50px_rgba(44,252,125,0.3)] border border-primary/30"
+          initial={{ opacity: 0, scale: 0.9, y: 10 }}
+          animate={{ opacity: 1, scale: 1, y: 0 }}
+          transition={{ type: 'spring', stiffness: 200, damping: 20 }}
+          className="relative"
         >
-          <div className="w-[85%] h-[85%] bg-black rounded-[1.5rem] flex items-center justify-center">
-            <span className="text-3xl font-black italic text-primary">P</span>
+          {/* Subtle Glow - Reduced complexity */}
+          <div className="absolute -inset-8 rounded-full opacity-40 bg-[radial-gradient(circle_at_center,rgba(var(--primary-rgb),0.3),transparent_65%)]" />
+          
+          <div className="relative w-28 h-28 rounded-[2.5rem] border border-primary/25 bg-foreground/[0.03] backdrop-blur-md shadow-[0_20px_50px_rgba(0,0,0,0.15)] dark:shadow-[0_20px_50px_rgba(0,0,0,0.4)] flex items-center justify-center overflow-hidden">
+            <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-transparent to-transparent opacity-50" />
+            
+            {/* Logo with micro-pulse */}
+            <motion.img 
+              src="/logo_pelotify.png" 
+              alt="Pelotify" 
+              className="w-16 h-16 object-contain relative z-10"
+              animate={{ scale: [1, 1.05, 1] }}
+              transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+            />
           </div>
+          
+          {/* Orbital Ring - High Visual, Low Cost */}
+          <div className="absolute inset-[-12px] rounded-[3rem] border border-primary/10 animate-[spin_8s_linear_infinite]" />
         </motion.div>
-        
-        <div className="flex flex-col items-center">
-          <p className="text-[10px] font-black uppercase tracking-[0.4em] text-primary/60 animate-pulse">
-            Sincronizando...
-          </p>
+
+        <div className="flex flex-col items-center gap-4">
+          <div className="text-center space-y-1">
+            <h2 className="text-[12px] font-black uppercase tracking-[0.4em] text-primary/80">
+              Pelotify
+            </h2>
+            <p className="text-[9px] font-bold uppercase tracking-[0.2em] text-foreground/40 animate-pulse">
+              Sincronizando experiencia...
+            </p>
+          </div>
+
+          {/* Optimized Progress Bar - Using CSS animation for zero JS overhead */}
+          <div className="w-[180px] h-1 rounded-full overflow-hidden border border-foreground/[0.06] bg-foreground/[0.02] relative">
+            <div className="absolute inset-0 bg-primary/5" />
+            <div 
+              className="absolute top-0 bottom-0 w-1/2 bg-gradient-to-r from-transparent via-primary/50 to-transparent animate-[skeleton-sweep_1.5s_infinite_ease-in-out]"
+              style={{ willChange: 'transform' }}
+            />
+          </div>
         </div>
       </div>
     </div>
 
-    {/* ─── MINIMAL LOADER BACKGROUND ─── */}
-    <div className="absolute inset-0 pointer-events-none z-0 flex items-center justify-center overflow-hidden">
-      <div className="absolute bottom-0 left-0 right-0 h-1/2 bg-gradient-to-t from-background to-transparent" />
-    </div>
-
-    {/* ─── APP SKELETON (Dimmed out in background to simulate loading state) ─── */}
-    <motion.div 
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 0.26 }}
-      transition={{ duration: 1.5 }}
-      className="max-w-full mx-auto w-full px-4 sm:px-6 lg:px-10 xl:px-16 py-4 lg:py-8 space-y-8 lg:space-y-12 relative z-10 pointer-events-none"
-    >
+    {/* ─── APP SKELETON (Subtle background context) ─── */}
+    <div className="max-w-full mx-auto w-full px-4 sm:px-6 lg:px-10 xl:px-16 py-4 lg:py-8 space-y-8 lg:space-y-12 relative z-10 pointer-events-none opacity-[0.12]">
       
       {/* ─── HERO SECTION ─── */}
-      <div className="relative overflow-hidden rounded-[2.5rem] lg:rounded-[3rem] border border-foreground/[0.08] bg-foreground/[0.02]">
-        <div className="absolute inset-0 bg-gradient-to-br from-foreground/[0.05] to-transparent" />
+      <div className="relative overflow-hidden rounded-[2.5rem] lg:rounded-[3rem] border border-foreground/[0.06] bg-foreground/[0.01]">
         <div className="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-6 lg:gap-10 p-6 sm:p-12 lg:p-16 xl:p-20">
           <div className="flex-1 space-y-6 lg:space-y-8 max-w-2xl">
-            <Bone className="w-32 h-7 rounded-full bg-foreground/[0.05]" />
+            <Bone className="w-32 h-7 rounded-full" />
             <div className="space-y-4">
               <div className="space-y-2">
-                <Bone className="w-[75%] h-12 lg:h-16 rounded-2xl bg-foreground/[0.05]" />
-                <Bone className="w-[55%] h-12 lg:h-16 rounded-2xl bg-foreground/[0.05]" />
+                <Bone className="w-[75%] h-12 lg:h-16 rounded-2xl" />
+                <Bone className="w-[55%] h-12 lg:h-16 rounded-2xl" />
               </div>
               <div className="flex items-center gap-4 py-2">
-                <Bone className="h-[2px] w-12 rounded-full bg-primary/20" />
-                <Bone className="w-12 h-12 rounded-full border border-primary/20 bg-primary/10" />
-                <Bone className="w-40 h-5 rounded-full bg-foreground/[0.05]" />
+                <Bone className="h-[2px] w-12 rounded-full" />
+                <Bone className="w-12 h-12 rounded-full opacity-30" />
+                <Bone className="w-40 h-5 rounded-full" />
               </div>
             </div>
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 lg:gap-6 pt-2">
-              <div className="space-y-2">
-                <Bone className="w-20 h-3 rounded-full bg-foreground/[0.05]" />
-                <Bone className="w-24 h-7 rounded-lg bg-foreground/[0.05]" />
-              </div>
-              <div className="space-y-2">
-                <Bone className="w-24 h-3 rounded-full bg-foreground/[0.05]" />
-                <Bone className="w-16 h-7 rounded-lg bg-foreground/[0.05]" />
-              </div>
+              <Bone className="w-full h-12 rounded-xl" />
+              <Bone className="w-full h-12 rounded-xl" />
             </div>
           </div>
 
           <div className="lg:shrink-0 w-full lg:w-[400px] space-y-4">
-            <div className="rounded-[2.5rem] border border-primary/[0.1] p-6 space-y-6 bg-primary/[0.02]">
+            <div className="rounded-[2.5rem] border border-primary/[0.08] p-6 space-y-6 bg-primary/[0.01]">
               <div className="flex items-center gap-6">
-                <Bone className="w-24 h-24 rounded-2xl border border-primary/20 bg-primary/10" />
+                <Bone className="w-24 h-24 rounded-2xl opacity-40" />
                 <div className="flex-1 space-y-3">
-                  <Bone className="w-28 h-3 rounded-full bg-foreground/[0.05]" />
-                  <Bone className="w-20 h-6 rounded-lg bg-foreground/[0.05]" />
-                  <Bone className="w-32 h-3 rounded-full bg-foreground/[0.05]" />
+                  <Bone className="w-28 h-3 rounded-full" />
+                  <Bone className="w-20 h-6 rounded-lg" />
+                  <Bone className="w-32 h-3 rounded-full" />
                 </div>
               </div>
-              <div className="space-y-3">
-                <Bone className="w-full h-3 rounded-full bg-primary/20" />
-                <div className="flex justify-between">
-                  <Bone className="w-32 h-2 rounded-full bg-foreground/[0.05]" />
-                  <Bone className="w-24 h-2 rounded-full bg-foreground/[0.05]" />
-                </div>
-              </div>
-            </div>
-            <div className="grid grid-cols-3 gap-3">
-              <Bone className="col-span-3 h-16 rounded-[2rem] bg-primary/20" />
-              <Bone className="col-span-2 h-16 rounded-[2rem] bg-foreground/[0.05]" />
-              <Bone className="col-span-1 h-16 rounded-[2rem] bg-orange-500/20" />
+              <Bone className="w-full h-3 rounded-full opacity-20" />
             </div>
           </div>
         </div>
       </div>
 
+      {/* Grid Content */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-        <div className="lg:col-span-8 xl:col-span-8 space-y-6">
+        <div className="lg:col-span-8 space-y-6">
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
             {[...Array(4)].map((_, i) => (
-              <div key={i} className="rounded-[2.5rem] border border-foreground/[0.08] p-6 space-y-4 bg-foreground/[0.02]">
-                <Bone className={`w-12 h-12 rounded-2xl ${i === 0 ? 'bg-primary/20' : 'bg-foreground/[0.05]'}`} />
-                <div className="space-y-2">
-                  <Bone className="w-16 h-2 rounded-full bg-foreground/[0.05]" />
-                  <Bone className="w-12 h-8 rounded-lg bg-foreground/[0.05]" />
-                </div>
+              <div key={i} className="rounded-[2rem] border border-foreground/[0.06] p-6 space-y-4">
+                <Bone className="w-10 h-10 rounded-xl" />
+                <Bone className="w-16 h-3 rounded-full" />
               </div>
             ))}
           </div>
-
-          <div className="space-y-6">
-            <div className="flex items-end justify-between px-1">
-              <div className="space-y-2">
-                <Bone className="w-36 h-6 rounded-lg bg-foreground/[0.05]" />
-                <Bone className="w-48 h-3 rounded-full bg-foreground/[0.05]" />
-              </div>
-            </div>
-            <div className="rounded-[2.5rem] border border-foreground/[0.08] p-8 bg-foreground/[0.02] space-y-8">
-              <div className="flex items-center justify-between px-4 sm:px-10">
-                {[...Array(9)].map((_, i) => (
-                  <Bone key={i} className="w-10 h-10 rounded-xl bg-foreground/[0.08]" />
+          
+          <div className="space-y-4">
+            <Bone className="w-48 h-8 rounded-xl" />
+            <div className="rounded-[2rem] border border-foreground/[0.06] p-8 h-32">
+              <div className="flex justify-between">
+                 {[...Array(5)].map((_, i) => (
+                  <Bone key={i} className="w-12 h-12 rounded-xl opacity-20" />
                 ))}
               </div>
             </div>
           </div>
         </div>
 
-        <div className="lg:col-span-4 xl:col-span-4 space-y-6">
-          <div className="rounded-[3rem] border border-foreground/[0.08] bg-foreground/[0.02] overflow-hidden">
-            <div className="p-8 space-y-8">
-              <div className="flex items-center justify-between">
-                <div className="space-y-2">
-                  <Bone className="w-32 h-3 rounded-full bg-primary/40" />
-                  <Bone className="w-28 h-4 rounded-full bg-foreground/[0.05]" />
-                </div>
-                <Bone className="w-14 h-8 rounded-2xl bg-foreground/[0.05]" />
-              </div>
-
-              <div className="flex items-center justify-between px-4 gap-4">
-                <div className="flex flex-col items-center gap-4 flex-1">
-                  <Bone className="w-20 h-20 rounded-[2.5rem] bg-foreground/[0.05]" />
-                </div>
-                <Bone className="w-10 h-10 rounded-full border-2 border-primary/40 bg-transparent shrink-0" />
-                <div className="flex flex-col items-center gap-4 flex-1">
-                  <Bone className="w-20 h-20 rounded-[2.5rem] bg-foreground/[0.05]" />
-                </div>
-              </div>
-              <Bone className="w-full h-14 rounded-2xl bg-primary/20" />
-            </div>
-          </div>
-        </div>
-      </div>
-    </motion.div>
-
-    {/* Foreground loader (brand + progress) */}
-    <div className="absolute inset-0 flex items-center justify-center z-20 pointer-events-none">
-      <div className="flex flex-col items-center gap-6">
-        <motion.div
-          initial={{ opacity: 0, scale: 0.92 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ type: 'spring', stiffness: 260, damping: 24 }}
-          className="relative"
-        >
-          <div className="absolute -inset-10 rounded-full blur-3xl opacity-60 bg-[radial-gradient(circle_at_center,rgba(var(--primary-rgb),0.25),transparent_60%)]" />
-          <div className="relative w-24 h-24 rounded-[2.25rem] border border-primary/20 bg-foreground/[0.03] backdrop-blur-xl shadow-[0_30px_80px_rgba(0,0,0,0.22)] dark:shadow-[0_30px_80px_rgba(0,0,0,0.6)] flex items-center justify-center overflow-hidden">
-            <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-transparent to-transparent" />
-            <img src="/logo_pelotify.png" alt="Pelotify" className="w-14 h-14 object-contain relative z-10" />
-          </div>
-        </motion.div>
-
-        <div className="w-[240px]">
-          <div className="flex items-center justify-between mb-2">
-            <span className="text-[10px] font-black uppercase tracking-[0.35em] text-foreground/45">Cargando</span>
-            <span className="text-[10px] font-black uppercase tracking-[0.25em] text-primary/80">PELOTIFY</span>
-          </div>
-          <div className="relative h-2 rounded-full overflow-hidden border border-foreground/[0.10] bg-foreground/[0.04]">
-            <div className="absolute inset-0 animate-shimmer opacity-60" />
-            <motion.div
-              initial={{ x: '-60%' }}
-              animate={{ x: '120%' }}
-              transition={{ repeat: Infinity, duration: 1.2, ease: 'linear' }}
-              className="absolute top-0 bottom-0 w-1/2 rounded-full bg-gradient-to-r from-transparent via-primary/70 to-transparent"
-            />
+        <div className="lg:col-span-4">
+          <div className="rounded-[2.5rem] border border-foreground/[0.06] h-[300px] p-8 space-y-6">
+             <Bone className="w-full h-6 rounded-full" />
+             <div className="flex justify-between items-center py-4">
+                <Bone className="w-20 h-20 rounded-[2rem]" />
+                <Bone className="w-10 h-10 rounded-full opacity-30" />
+                <Bone className="w-20 h-20 rounded-[2rem]" />
+             </div>
+             <Bone className="w-full h-14 rounded-2xl opacity-20" />
           </div>
         </div>
       </div>
