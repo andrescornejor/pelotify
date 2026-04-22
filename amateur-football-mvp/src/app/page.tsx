@@ -23,27 +23,21 @@ import {
   Sparkles,
   Award,
   Shield,
-  Crown,
   Play,
   Heart,
-  Menu,
-  Bell,
 } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useSidebar } from '@/contexts/SidebarContext';
 import { useSettings } from '@/contexts/SettingsContext';
-import { supabase } from '@/lib/supabase';
 import { cn } from '@/lib/utils';
-import { OnboardingTour } from '@/components/OnboardingTour';
 import { JerseyVisualizer } from '@/components/JerseyVisualizer';
-import { getHighlights, Highlight } from '@/lib/highlights';
 import LandingPage from '@/components/LandingPage';
-import { StatCard, TeamCard, RankBadgeInline, EmptyState, SectionDivider, LazyVideo, HomePageSkeleton, VenueCard, RANKS, getRankByElo, WeatherWidget, CalendarButton, SportsAnnouncementBanner, SportSelector } from '@/components/home';
+import { StatCard, TeamCard, RankBadgeInline, EmptyState, SectionDivider, LazyVideo, HomePageSkeleton, RANKS, getRankByElo, WeatherWidget, CalendarButton, SportsAnnouncementBanner, SportSelector } from '@/components/home';
 import { useHomeData } from '@/hooks/useHomeData';
 import { useUserMatches } from '@/hooks/useMatchQueries';
 import { useEffect, useMemo, useState } from 'react';
 import { getFormatMeta, getMatchSport, getSportMeta, SPORT_META, type Sport } from '@/lib/sports';
-import { getGoalLabel, getUsageSnapshot, getUserPreferences, recommendMatches } from '@/lib/personalization';
+import { getUsageSnapshot, getUserPreferences, recommendMatches } from '@/lib/personalization';
 import type { Match } from '@/lib/matches';
 
 // --- TYPES & CONSTANTS (extracted to @/components/home) ---
@@ -332,8 +326,6 @@ export default function HomePage() {
         '--primary-rgb': sportTheme.accentRgb
       } as any}
     >
-      <OnboardingTour />
-
       {/*  AMBIENT  Simplified for Performance  */}
       {!performanceMode && (
         <div className="fixed inset-0 pointer-events-none -z-10 overflow-hidden hidden md:block">
@@ -987,24 +979,53 @@ export default function HomePage() {
                     Comunidad en movimiento
                   </h3>
                 </div>
+                <div className="rounded-full border border-white/10 bg-white/[0.04] px-3 py-1 text-[9px] font-black uppercase tracking-[0.18em] text-foreground/45">
+                  {totalPlayers}+ en juego
+                </div>
               </div>
-              <div className="space-y-2">
-                {(activities.length > 0 ? activities.slice(0, 3) : []).map((activity, idx) => (
-                  <div key={`${activity.user}-${idx}`} className="rounded-[1.5rem] border border-foreground/10 bg-white/[0.03] p-4 flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-full bg-primary/10 border border-primary/15 flex items-center justify-center shrink-0">
-                      <TrendingUp className="w-4 h-4 text-primary" />
-                    </div>
-                    <div className="min-w-0">
-                      <p className="text-sm font-bold text-foreground truncate">
-                        {activity.user} <span className="text-foreground/45 font-medium">{activity.detail}</span>
-                      </p>
-                      <p className="mt-1 text-[9px] font-black uppercase tracking-[0.18em] text-foreground/35">
-                        {activity.time}
-                      </p>
-                    </div>
+              {activities.length > 0 ? (
+                <div className="relative overflow-hidden rounded-[2rem] border border-white/10 bg-[linear-gradient(160deg,rgba(255,255,255,0.06),rgba(255,255,255,0.02))] p-4 shadow-[0_18px_40px_rgba(0,0,0,0.18)]">
+                  <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(var(--primary-rgb),0.22),transparent_34%),radial-gradient(circle_at_bottom_right,rgba(255,255,255,0.08),transparent_38%)] pointer-events-none" />
+                  <div className="relative space-y-3">
+                    {activities.slice(0, 3).map((activity, idx) => (
+                      <div
+                        key={`${activity.user}-${idx}`}
+                        className={cn(
+                          'relative overflow-hidden rounded-[1.5rem] border border-white/10 p-4 backdrop-blur-sm',
+                          idx === 0 ? 'bg-black/20' : 'bg-white/[0.035]'
+                        )}
+                      >
+                        <div className="flex items-start gap-3">
+                          <div className="relative flex flex-col items-center shrink-0">
+                            <div className="flex h-11 w-11 items-center justify-center rounded-[1.1rem] border border-primary/20 bg-primary/12 shadow-[0_0_24px_rgba(var(--primary-rgb),0.16)]">
+                              <TrendingUp className="h-4 w-4 text-primary" />
+                            </div>
+                            {idx < 2 && <div className="mt-2 h-8 w-px bg-gradient-to-b from-primary/40 to-transparent" />}
+                          </div>
+                          <div className="min-w-0 flex-1">
+                            <div className="flex items-center justify-between gap-3">
+                              <p className="text-[9px] font-black uppercase tracking-[0.22em] text-primary">
+                                {idx === 0 ? 'Ahora' : `Pulso 0${idx + 1}`}
+                              </p>
+                              <span className="rounded-full border border-white/10 bg-white/[0.04] px-2.5 py-1 text-[8px] font-black uppercase tracking-[0.16em] text-foreground/40">
+                                {activity.time}
+                              </span>
+                            </div>
+                            <p className="mt-2 text-[15px] font-black leading-snug text-foreground">
+                              {activity.user}
+                              <span className="ml-1 font-medium text-foreground/58">{activity.detail}</span>
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
                   </div>
-                ))}
-              </div>
+                </div>
+              ) : (
+                <div className="rounded-[1.7rem] border border-dashed border-foreground/10 bg-white/[0.02] p-5 text-center text-sm font-bold text-foreground/55">
+                  No hay movimiento reciente en la comunidad.
+                </div>
+              )}
             </section>
 
             <section className="space-y-3">
@@ -1019,32 +1040,68 @@ export default function HomePage() {
                   Ver muro
                 </Link>
               </div>
-              <div className="space-y-3">
-                {(recentPosts.length > 0 ? recentPosts.slice(0, 2) : []).map((post) => (
-                  <div key={post.id} className="rounded-[1.7rem] border border-foreground/10 bg-white/[0.03] p-4 shadow-[0_10px_24px_rgba(0,0,0,0.12)]">
-                    <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-full overflow-hidden border border-white/10 bg-surface-elevated shrink-0">
-                        {post.author?.avatar_url ? (
-                          <img src={post.author.avatar_url} alt="" className="w-full h-full object-cover" />
-                        ) : (
-                          <div className="w-full h-full flex items-center justify-center text-foreground/35 font-black">
-                            {post.author?.name?.charAt(0) || 'P'}
-                          </div>
+              {recentPosts.length > 0 ? (
+                <div className="flex gap-3 overflow-x-auto pb-1 snap-x">
+                  {recentPosts.slice(0, 3).map((post, idx) => (
+                    <Link
+                      key={post.id}
+                      href={`/feed?post=${post.id}`}
+                      className="snap-start min-w-[280px] max-w-[280px]"
+                    >
+                      <div className="relative h-full overflow-hidden rounded-[2rem] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.06),rgba(255,255,255,0.02))] p-4 shadow-[0_18px_44px_rgba(0,0,0,0.16)]">
+                        {post.image_url && (
+                          <>
+                            <img src={post.image_url} alt="" className="absolute inset-0 h-full w-full object-cover opacity-25" />
+                            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/45 to-black/10" />
+                          </>
                         )}
+                        <div className="relative flex h-full flex-col">
+                          <div className="flex items-center justify-between gap-3">
+                            <div className="flex items-center gap-3 min-w-0">
+                              <div className="h-11 w-11 rounded-full overflow-hidden border border-white/10 bg-surface-elevated shrink-0">
+                                {post.author?.avatar_url ? (
+                                  <img src={post.author.avatar_url} alt="" className="h-full w-full object-cover" />
+                                ) : (
+                                  <div className="flex h-full w-full items-center justify-center text-foreground/35 font-black">
+                                    {post.author?.name?.charAt(0) || 'P'}
+                                  </div>
+                                )}
+                              </div>
+                              <div className="min-w-0">
+                                <p className="truncate text-sm font-black text-foreground">{post.author?.name || 'Jugador'}</p>
+                                <p className="text-[9px] font-black uppercase tracking-[0.16em] text-foreground/40">
+                                  {new Date(post.created_at).toLocaleDateString()}
+                                </p>
+                              </div>
+                            </div>
+                            <div className="rounded-full border border-white/10 bg-white/[0.05] px-2.5 py-1 text-[8px] font-black uppercase tracking-[0.18em] text-primary">
+                              {idx === 0 ? 'En foco' : '3T'}
+                            </div>
+                          </div>
+
+                          <p className="mt-4 text-[15px] font-medium leading-relaxed text-foreground/82 line-clamp-5">
+                            {post.content}
+                          </p>
+
+                          <div className="mt-5 flex items-center justify-between border-t border-white/10 pt-3">
+                            <div className="flex items-center gap-4 text-[11px] font-bold text-foreground/55">
+                              <span>{post.likes_count || 0} likes</span>
+                              <span>{post.comments_count || 0} respuestas</span>
+                            </div>
+                            <span className="text-[9px] font-black uppercase tracking-[0.18em] text-primary">
+                              Ver post
+                            </span>
+                          </div>
+                        </div>
                       </div>
-                      <div className="min-w-0">
-                        <p className="text-sm font-bold text-foreground truncate">{post.author?.name || 'Jugador'}</p>
-                        <p className="text-[9px] font-black uppercase tracking-[0.16em] text-foreground/35">
-                          {new Date(post.created_at).toLocaleDateString()}
-                        </p>
-                      </div>
-                    </div>
-                    <p className="mt-3 text-sm text-foreground/70 leading-relaxed line-clamp-3">
-                      {post.content}
-                    </p>
-                  </div>
-                ))}
-              </div>
+                    </Link>
+                  ))}
+                </div>
+              ) : (
+                <div className="rounded-[1.7rem] border border-dashed border-foreground/10 bg-white/[0.02] p-5 text-center text-sm font-bold text-foreground/55">
+                  El muro todavía está tranquilo.
+                </div>
+              )}
             </section>
 
             <section className="space-y-3">
@@ -1059,22 +1116,64 @@ export default function HomePage() {
                   Ver todo
                 </Link>
               </div>
-              <div className="flex gap-3 overflow-x-auto pb-1 snap-x">
-                {(highlights.length > 0 ? highlights.slice(0, 4) : []).map((highlight) => (
-                  <Link
-                    key={highlight.id}
-                    href={`/highlights?v=${highlight.id}`}
-                    className="snap-start min-w-[150px] rounded-[1.7rem] border border-foreground/10 bg-white/[0.03] p-4"
-                  >
-                    <div className="aspect-[3/4] rounded-[1.2rem] bg-gradient-to-b from-white/[0.07] to-transparent border border-white/8 flex items-center justify-center">
-                      <Play className="w-8 h-8 text-primary/80" />
-                    </div>
-                    <p className="mt-3 text-[10px] font-black uppercase tracking-[0.16em] text-foreground truncate">
-                      @{highlight.profiles?.name || 'Jugador'}
-                    </p>
-                  </Link>
-                ))}
-              </div>
+              {highlights.length > 0 ? (
+                <div className="flex gap-3 overflow-x-auto pb-1 snap-x">
+                  {highlights.slice(0, 4).map((highlight, idx) => (
+                    <Link
+                      key={highlight.id}
+                      href={`/highlights?v=${highlight.id}`}
+                      className={cn(
+                        'snap-start overflow-hidden rounded-[2rem] border border-white/10 shadow-[0_18px_44px_rgba(0,0,0,0.18)]',
+                        idx === 0 ? 'min-w-[240px]' : 'min-w-[180px]'
+                      )}
+                    >
+                      <div className={cn('relative', idx === 0 ? 'aspect-[10/16]' : 'aspect-[4/6]')}>
+                        {highlight.thumbnail_url ? (
+                          <img src={highlight.thumbnail_url} alt="" className="absolute inset-0 h-full w-full object-cover" />
+                        ) : (
+                          <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(var(--primary-rgb),0.35),rgba(0,0,0,0.92))]" />
+                        )}
+                        <div className="absolute inset-0 bg-gradient-to-t from-black via-black/35 to-black/10" />
+                        <div className="absolute left-4 top-4 flex h-12 w-12 items-center justify-center rounded-full border border-white/15 bg-black/35 backdrop-blur-md">
+                          <Play className="h-5 w-5 translate-x-[1px] text-white" />
+                        </div>
+
+                        <div className="absolute inset-x-4 bottom-4">
+                          <div className="flex items-center gap-2">
+                            <div className="h-8 w-8 rounded-full overflow-hidden border border-white/15 bg-white/10">
+                              {highlight.profiles?.avatar_url ? (
+                                <img src={highlight.profiles.avatar_url} alt="" className="h-full w-full object-cover" />
+                              ) : (
+                                <div className="flex h-full w-full items-center justify-center text-[10px] font-black text-white/70">
+                                  {(highlight.profiles?.name || 'J').charAt(0)}
+                                </div>
+                              )}
+                            </div>
+                            <div className="min-w-0">
+                              <p className="truncate text-[10px] font-black uppercase tracking-[0.16em] text-white">
+                                @{highlight.profiles?.name || 'Jugador'}
+                              </p>
+                              <p className="text-[9px] font-bold text-white/65">
+                                {highlight.likes_count || 0} likes · {highlight.views_count || 0} views
+                              </p>
+                            </div>
+                          </div>
+
+                          {idx === 0 && (
+                            <div className="mt-3 inline-flex rounded-full border border-white/10 bg-white/10 px-3 py-1.5 text-[9px] font-black uppercase tracking-[0.18em] text-white">
+                              Clip destacado
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    </Link>
+                  ))}
+                </div>
+              ) : (
+                <div className="rounded-[1.7rem] border border-dashed border-foreground/10 bg-white/[0.02] p-5 text-center text-sm font-bold text-foreground/55">
+                  Todavía no hay highlights para mostrar.
+                </div>
+              )}
             </section>
           </div>
         ) : (
@@ -1202,88 +1301,6 @@ export default function HomePage() {
                       </Link>
                     </div>
                   </motion.div>
-
-                  <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
-                    <motion.section
-                      variants={fadeUp}
-                      className="rounded-[2.5rem] border border-foreground/10 glass-premium p-6 space-y-4"
-                    >
-                      <div className="flex items-center justify-between gap-3">
-                        <div>
-                          <p className="text-[9px] font-black uppercase tracking-[0.25em] text-primary">
-                            Onboarding personalizado
-                          </p>
-                          <h3 className="text-xl font-black italic uppercase tracking-tighter text-foreground font-kanit mt-1">
-                            Tu perfil ideal
-                          </h3>
-                        </div>
-                        <Sparkles className="w-5 h-5 text-primary/50" />
-                      </div>
-                      <div className="flex flex-wrap gap-2">
-                        {userPreferences.favoriteSports.map((sport) => (
-                          <span
-                            key={sport}
-                            className="px-3 py-2 rounded-full bg-primary/10 text-primary text-[10px] font-black uppercase tracking-widest"
-                          >
-                            {SPORT_META[sport].icon} {SPORT_META[sport].shortLabel}
-                          </span>
-                        ))}
-                        <span className="px-3 py-2 rounded-full bg-foreground/[0.04] text-foreground/60 text-[10px] font-black uppercase tracking-widest">
-                          Objetivo: {getGoalLabel(userPreferences.goal)}
-                        </span>
-                      </div>
-                      <p className="text-sm text-foreground/60 leading-relaxed">
-                        {userPreferences.preferredZone
-                          ? `Priorizamos partidos y avisos en ${userPreferences.preferredZone}.`
-                          : 'DefinÃ­ tu zona para afinar aÃºn mÃ¡s las recomendaciones y avisos.'}
-                      </p>
-                      <Link href="/settings" className="inline-flex">
-                        <button className="h-11 px-5 rounded-2xl bg-foreground text-background text-[10px] font-black uppercase tracking-[0.2em] hover:bg-primary hover:text-black transition-all">
-                          Ajustar experiencia
-                        </button>
-                      </Link>
-                    </motion.section>
-
-                    <motion.section
-                      variants={fadeUp}
-                      className="rounded-[2.5rem] border border-foreground/10 glass-premium p-6 space-y-4"
-                    >
-                      <div className="flex items-center justify-between gap-3">
-                        <div>
-                          <p className="text-[9px] font-black uppercase tracking-[0.25em] text-primary">
-                            MÃ©tricas de uso
-                          </p>
-                          <h3 className="text-xl font-black italic uppercase tracking-tighter text-foreground font-kanit mt-1">
-                            RetenciÃ³n en juego
-                          </h3>
-                        </div>
-                        <TrendingUp className="w-5 h-5 text-primary/50" />
-                      </div>
-                      <div className="grid grid-cols-3 gap-3">
-                        {[
-                          { label: 'Sesiones', value: usageSnapshot.totalVisits },
-                          { label: 'Racha', value: usageSnapshot.streakDays },
-                          { label: 'DÃ­as activos', value: usageSnapshot.uniqueDays },
-                        ].map((item) => (
-                          <div key={item.label} className="rounded-2xl bg-foreground/[0.03] border border-foreground/10 p-3">
-                            <p className="text-[8px] font-black uppercase tracking-[0.2em] text-foreground/40">{item.label}</p>
-                            <p className="text-2xl font-black italic text-foreground mt-2">{item.value}</p>
-                          </div>
-                        ))}
-                      </div>
-                      <div className="rounded-2xl bg-primary/5 border border-primary/10 p-4">
-                        <p className="text-[9px] font-black uppercase tracking-[0.2em] text-primary">SecciÃ³n favorita</p>
-                        <p className="text-sm font-bold text-foreground mt-2">{usageSnapshot.favoriteSection}</p>
-                        {usageSnapshot.recentSections.length > 0 && (
-                          <p className="text-xs text-foreground/50 mt-1">
-                            Ãšltimas vistas: {usageSnapshot.recentSections.join(' Â· ')}
-                          </p>
-                        )}
-                      </div>
-                    </motion.section>
-                  </div>
-
-                  <SectionDivider />
 
                   <motion.section
                     variants={fadeUp}
@@ -1603,7 +1620,7 @@ export default function HomePage() {
                           <LazyVideo src={h.video_url} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 opacity-60 group-hover:opacity-100" />
                           <div className="absolute bottom-4 left-4 right-4 z-20 flex items-center gap-2">
                             <div className="w-6 h-6 rounded-full bg-surface border border-foreground/20 flex items-center justify-center overflow-hidden">
-                              {h.profiles?.avatar_url ? <img src={h.profiles.avatar_url} className="w-full h-full object-cover" /> : <User2 className="w-3 h-3 text-white/40" />}
+                              {h.profiles?.avatar_url ? <img src={h.profiles.avatar_url} alt="" className="w-full h-full object-cover" /> : <User2 className="w-3 h-3 text-white/40" />}
                             </div>
                             <span className="text-[8px] font-black text-white">@{h.profiles?.name || 'user'}</span>
                           </div>
