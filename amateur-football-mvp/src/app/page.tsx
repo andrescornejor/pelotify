@@ -317,9 +317,9 @@ export default function HomePage() {
       <div className="max-w-full mx-auto px-4 sm:px-6 lg:px-10 xl:px-14 2xl:px-16 py-4 lg:py-6 space-y-4 lg:space-y-6">
         <SportsAnnouncementBanner />
         
-        <section className="pt-2">
+        <div className="pb-2">
            <SportSelector selectedSport={selectedSport} onSelect={setSelectedSport} />
-        </section>
+        </div>
         {/* 
             MOBILE APP-LIKE HERO & QUICK ACTIONS
          */}

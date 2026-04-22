@@ -13,66 +13,68 @@ export function SportSelector({ selectedSport, onSelect }: SportSelectorProps) {
   const sports: Sport[] = ['football', 'padel', 'basket'];
 
   return (
-    <div className="relative w-fit mx-auto p-1 bg-surface-elevated/40 backdrop-blur-xl rounded-[1.5rem] border border-foreground/[0.03] shadow-inner flex items-center gap-1">
-      {sports.map((sport) => {
-        const isSelected = selectedSport === sport;
-        const meta = SPORT_META[sport];
-        
-        let activeColor = "bg-primary";
-        let activeText = "text-black";
-        let glowColor = "shadow-[0_8px_15px_rgba(44,252,125,0.3)]";
-
-        if (sport === 'padel') {
-          activeColor = "bg-cyan-400";
-          activeText = "text-black";
-          glowColor = "shadow-[0_8px_15px_rgba(34,211,238,0.3)]";
-        } else if (sport === 'basket') {
-          activeColor = "bg-orange-500";
-          activeText = "text-white";
-          glowColor = "shadow-[0_8px_15px_rgba(249,115,22,0.3)]";
-        }
-
-        return (
-          <button
-            key={sport}
-            onClick={() => onSelect(sport)}
-            className={cn(
-              "relative px-4 py-2.5 rounded-xl transition-all duration-500 flex items-center gap-2 group outline-none",
-              isSelected ? activeText : "text-foreground/40 hover:text-foreground/60"
-            )}
-          >
-            {isSelected && (
+    <div className="relative w-full max-w-md mx-auto h-12 flex items-center p-1 bg-foreground/[0.03] backdrop-blur-md rounded-2xl border border-foreground/[0.05]">
+      {/* Background Track / Shared Layout */}
+      <div className="absolute inset-1 flex gap-1 pointer-events-none">
+        {sports.map((sport) => (
+          <div key={sport} className="flex-1 relative">
+            {selectedSport === sport && (
               <motion.div
-                layoutId="active-selector-pill"
-                className={cn("absolute inset-0 rounded-xl z-0", activeColor, glowColor)}
-                transition={{ type: "spring", stiffness: 450, damping: 35 }}
+                layoutId="sport-selector-active"
+                className="absolute inset-0 bg-surface shadow-sm rounded-xl border border-foreground/[0.05]"
+                transition={{ type: "spring", stiffness: 400, damping: 30 }}
               />
             )}
-            
-            <span className={cn(
-              "text-lg relative z-10 transition-transform duration-500",
-              isSelected ? "scale-110" : "opacity-40 grayscale group-hover:grayscale-0 group-hover:opacity-100"
-            )}>
-              {meta.icon}
-            </span>
-            
-            <span className={cn(
-              "text-[10px] font-black uppercase tracking-[0.15em] italic font-kanit relative z-10 transition-colors duration-300",
-              isSelected ? "" : "group-hover:text-foreground/70"
-            )}>
-              {meta.label}
-            </span>
+          </div>
+        ))}
+      </div>
 
-            {isSelected && (
-              <motion.div
-                initial={{ scale: 0 }}
-                animate={{ scale: 1 }}
-                className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-white/40"
-              />
-            )}
-          </button>
-        );
-      })}
+      <div className="flex w-full relative z-10 h-full">
+        {sports.map((sport) => {
+          const isSelected = selectedSport === sport;
+          const meta = SPORT_META[sport];
+          
+          let accentColor = "text-primary";
+          let glowColor = "rgba(44,252,125,0.15)";
+          if (sport === 'padel') {
+            accentColor = "text-cyan-500";
+            glowColor = "rgba(34,211,238,0.15)";
+          }
+          if (sport === 'basket') {
+            accentColor = "text-orange-500";
+            glowColor = "rgba(249,115,22,0.15)";
+          }
+
+          return (
+            <button
+              key={sport}
+              onClick={() => onSelect(sport)}
+              className={cn(
+                "flex-1 flex items-center justify-center gap-2 transition-all duration-300 outline-none relative z-10",
+                isSelected ? accentColor : "text-foreground/30 hover:text-foreground/50"
+              )}
+            >
+              <span className={cn(
+                "text-base transition-transform duration-500",
+                isSelected ? "scale-110" : "grayscale opacity-50"
+              )}>
+                {meta.icon}
+              </span>
+              <span className="text-[10px] font-black uppercase tracking-widest italic font-kanit">
+                {meta.label}
+              </span>
+              
+              {isSelected && (
+                <motion.div
+                  layoutId="sport-glow"
+                  className="absolute inset-0 -z-10 blur-xl opacity-50"
+                  style={{ backgroundColor: glowColor }}
+                />
+              )}
+            </button>
+          );
+        })}
+      </div>
     </div>
   );
 }
