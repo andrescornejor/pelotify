@@ -41,7 +41,7 @@ import LandingPage from '@/components/LandingPage';
 import { StatCard, TeamCard, RankBadgeInline, EmptyState, SectionDivider, LazyVideo, HomePageSkeleton, VenueCard, RANKS, getRankByElo, WeatherWidget, CalendarButton, SportsAnnouncementBanner } from '@/components/home';
 import { useHomeData } from '@/hooks/useHomeData';
 import { useEffect, useMemo, useState } from 'react';
-import { getFormatMeta, getMatchSport, SPORT_META } from '@/lib/sports';
+import { getFormatMeta, getMatchSport, getSportMeta, SPORT_META } from '@/lib/sports';
 
 // --- TYPES & CONSTANTS (extracted to @/components/home) ---
 
@@ -66,6 +66,7 @@ export default function HomePage() {
   const nextMatchSport = nextMatch ? getMatchSport(nextMatch) : 'football';
   const nextMatchFormat = nextMatch ? getFormatMeta(nextMatch.type, nextMatchSport) : null;
   const nextMatchMeta = SPORT_META[nextMatchSport];
+  const focusSportMeta = getSportMeta(nextMatchSport);
 
   const [greeting, setGreeting] = useState('');
   const [countdownText, setCountdownText] = useState<string | null>(null);
@@ -368,7 +369,7 @@ export default function HomePage() {
                 { label: 'Buscar', icon: Search, color: 'text-primary', href: '/search' },
                 { label: 'Equipos', icon: Shield, color: 'text-blue-400', href: '/teams' },
                 { label: 'Sedes', icon: MapPin, color: 'text-orange-400', href: '/establecimientos' },
-                { label: 'FutTok', icon: Flame, color: 'text-rose-500', href: '/highlights' },
+                { label: focusSportMeta.highlightLabel, icon: Flame, color: 'text-rose-500', href: '/highlights' },
               ].map((item, idx) => (
                 <Link key={idx} href={item.href} className="flex flex-col items-center gap-2 group">
                   <div className="w-full aspect-square rounded-[1.5rem] glass border-foreground/10 flex items-center justify-center group-active:scale-90 transition-all shadow-lg group-hover:border-primary/20">
@@ -429,7 +430,7 @@ export default function HomePage() {
                     className="font-black italic uppercase font-kanit tracking-tighter text-foreground leading-[0.85]"
                     style={{ fontSize: 'clamp(2.5rem, 12vw, 4rem)' }}
                   >
-                    DOMINÁ <br /> <span className="text-primary italic">LA CANCHA</span>
+                    {focusSportMeta.homeHeadline.split(' ')[0].toUpperCase()} <br /> <span className="text-primary italic">{focusSportMeta.homeHeadline.split(' ').slice(1).join(' ').toUpperCase()}</span>
                   </h1>
                 </div>
 
@@ -574,7 +575,7 @@ export default function HomePage() {
                     className="font-black italic uppercase font-kanit tracking-tighter text-foreground"
                     style={{ fontSize: 'clamp(2.5rem, 8vw, 6rem)', lineHeight: '0.85' }}
                   >
-                    DOMINÁ <br /> <span className="text-primary italic">LA CANCHA</span>
+                    {focusSportMeta.homeHeadline.split(' ')[0].toUpperCase()} <br /> <span className="text-primary italic">{focusSportMeta.homeHeadline.split(' ').slice(1).join(' ').toUpperCase()}</span>
                   </motion.h1>
                 </div>
 
@@ -787,7 +788,7 @@ export default function HomePage() {
                   { id: 'activity', label: 'Feed', icon: Activity },
                   { id: 'teams', label: 'Equipos', icon: Users },
                   { id: 'social', label: 'Social', icon: MessageSquare }, // Added social tab
-                  { id: 'futtok', label: 'FutTok', icon: Flame },
+                  { id: 'futtok', label: focusSportMeta.highlightLabel, icon: Flame },
                 ].map((tab) => {
                   const isSelected = activeTab === tab.id;
                   return (
@@ -1195,7 +1196,7 @@ export default function HomePage() {
                   <div className="flex items-center justify-between px-1">
                     <div className="flex flex-col gap-1">
                       <h2 className="text-xl lg:text-2xl font-black text-foreground italic uppercase tracking-tighter font-kanit">
-                        Tendencias en FutTok
+                        Tendencias en {focusSportMeta.highlightLabel}
                       </h2>
                       <span className="text-[9px] font-semibold text-foreground/40 tracking-wide font-kanit">
                         Lo mejor de la comunidad

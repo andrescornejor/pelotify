@@ -11,6 +11,20 @@ type SportMeta = {
   headline: string;
   description: string;
   heroImage: string;
+  surfaceClass: string;
+  tintClass: string;
+  accentTextClass: string;
+  accentBorderClass: string;
+  accentBgClass: string;
+  accentSoftClass: string;
+  availabilityLabel: string;
+  venueLabel: string;
+  organizerLabel: string;
+  highlightLabel: string;
+  teamLabels: [string, string];
+  benchLabel: string;
+  gameLabel: string;
+  homeHeadline: string;
 };
 
 type FormatMeta = {
@@ -35,6 +49,20 @@ export const SPORT_META: Record<Sport, SportMeta> = {
     description: 'Pelotify sigue poniendo al futbol al frente, con nuevos deportes como opcion.',
     heroImage:
       'https://images.unsplash.com/photo-1574629810360-7efbbe195018?auto=format&fit=crop&q=80&w=1600',
+    surfaceClass: 'from-emerald-500/20 via-teal-500/10 to-transparent',
+    tintClass: 'bg-emerald-500/10',
+    accentTextClass: 'text-emerald-300',
+    accentBorderClass: 'border-emerald-500/30',
+    accentBgClass: 'bg-emerald-500',
+    accentSoftClass: 'bg-emerald-500/10',
+    availabilityLabel: 'jugadores',
+    venueLabel: 'cancha',
+    organizerLabel: 'capitan',
+    highlightLabel: 'FutTok',
+    teamLabels: ['Local', 'Visitante'],
+    benchLabel: 'Banco',
+    gameLabel: 'partido',
+    homeHeadline: 'Domina la cancha',
   },
   padel: {
     key: 'padel',
@@ -45,6 +73,20 @@ export const SPORT_META: Record<Sport, SportMeta> = {
     description: 'Organiza, completa y entra a partidos de padel sin salir de Pelotify.',
     heroImage:
       'https://images.unsplash.com/photo-1622279457486-62dcc4a431f1?auto=format&fit=crop&q=80&w=1600',
+    surfaceClass: 'from-cyan-500/20 via-sky-500/10 to-transparent',
+    tintClass: 'bg-cyan-500/10',
+    accentTextClass: 'text-cyan-300',
+    accentBorderClass: 'border-cyan-500/30',
+    accentBgClass: 'bg-cyan-500',
+    accentSoftClass: 'bg-cyan-500/10',
+    availabilityLabel: 'cupos',
+    venueLabel: 'club',
+    organizerLabel: 'dupla anfitriona',
+    highlightLabel: 'Padel Clips',
+    teamLabels: ['Dupla A', 'Dupla B'],
+    benchLabel: 'Espera',
+    gameLabel: 'partido',
+    homeHeadline: 'Controla el vidrio',
   },
   basket: {
     key: 'basket',
@@ -55,6 +97,20 @@ export const SPORT_META: Record<Sport, SportMeta> = {
     description: 'Abre cupos y arma equipos para jugar basket con la misma dinamica social.',
     heroImage:
       'https://images.unsplash.com/photo-1546519638-68e109498ffc?auto=format&fit=crop&q=80&w=1600',
+    surfaceClass: 'from-orange-500/20 via-amber-500/10 to-transparent',
+    tintClass: 'bg-orange-500/10',
+    accentTextClass: 'text-orange-300',
+    accentBorderClass: 'border-orange-500/30',
+    accentBgClass: 'bg-orange-500',
+    accentSoftClass: 'bg-orange-500/10',
+    availabilityLabel: 'jugadores',
+    venueLabel: 'cancha',
+    organizerLabel: 'coach',
+    highlightLabel: 'Hoops Reel',
+    teamLabels: ['Quinteto A', 'Quinteto B'],
+    benchLabel: 'Rotacion',
+    gameLabel: 'partido',
+    homeHeadline: 'Marca el ritmo',
   },
 };
 
@@ -169,6 +225,19 @@ export function getTeamSize(matchOrType?: Partial<Match> | MatchFormat | null, s
 
 export function getSportFormats(sport: Sport) {
   return SPORT_FORMATS[sport].map((format) => FORMAT_META[format]);
+}
+
+export function getSportMeta(sport: Sport | undefined) {
+  return SPORT_META[sport || 'football'];
+}
+
+export function getSportTeamLabels(sport: Sport | undefined) {
+  return getSportMeta(sport).teamLabels;
+}
+
+export function getSportPlaceholder(sport: Sport | undefined) {
+  const meta = getSportMeta(sport);
+  return `Busca ${meta.venueLabel}s, zonas o formatos`;
 }
 
 export function getMatchDisplayTitle(match?: Partial<Match> | null) {

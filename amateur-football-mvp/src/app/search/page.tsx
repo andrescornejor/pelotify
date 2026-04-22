@@ -24,7 +24,7 @@ import { useMatchSearch } from '@/hooks/useMatchSearch';
 import { useSettings } from '@/contexts/SettingsContext';
 import { supabase } from '@/lib/supabase';
 import { type Match } from '@/lib/matches';
-import { getFormatMeta, getMatchSport, getMaxPlayers, SPORT_META, type Sport } from '@/lib/sports';
+import { getFormatMeta, getMatchSport, getMaxPlayers, getSportMeta, getSportPlaceholder, SPORT_META, type Sport } from '@/lib/sports';
 
 const MapSearch = dynamic(() => import('@/components/MapSearch'), {
   ssr: false,
@@ -54,6 +54,10 @@ export default function SearchPage() {
     setRadiusFilter,
   } = useMatchSearch();
   const { performanceMode: isPerfMode } = useSettings();
+  const activeSportMeta = typeFilter === 'All' ? null : getSportMeta(typeFilter);
+  const searchPlaceholder = activeSportMeta
+    ? getSportPlaceholder(activeSportMeta.key).replace(/^./, (char) => char.toUpperCase())
+    : 'Buscar sedes, zonas o formatos';
 
 
   const handleLocateMe = () => {
@@ -124,11 +128,11 @@ export default function SearchPage() {
                 )}
               />
               <span className="text-[10px] font-black uppercase tracking-[0.5em] text-primary italic">
-                Sintonizando Frecuencias
+                {activeSportMeta ? `Radar ${activeSportMeta.label}` : 'Sintonizando Frecuencias'}
               </span>
             </div>
             <h1 className="text-3xl sm:text-5xl lg:text-7xl font-black italic text-foreground uppercase tracking-tightest leading-none">
-              Radar de <span className="text-foreground/20">Partidos</span>
+              {activeSportMeta ? activeSportMeta.label : 'Radar de'} <span className="text-foreground/20">{activeSportMeta ? activeSportMeta.gameLabel + 's' : 'Partidos'}</span>
             </h1>
           </div>
 
@@ -140,7 +144,7 @@ export default function SearchPage() {
                 </div>
                 <input
                   type="text"
-                  placeholder="Buscar canchas, zonas..."
+                  placeholder={searchPlaceholder}
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   className="w-full h-14 lg:h-20 pl-14 lg:pl-20 pr-12 rounded-2xl lg:rounded-[2.5rem] bg-foreground/[0.03] border border-foreground/10 focus:bg-foreground/[0.05] focus:border-primary/30 outline-none transition-all text-base lg:text-xl font-black text-foreground placeholder:text-foreground/20 placeholder:italic shadow-inner focus:shadow-primary/5"
@@ -180,7 +184,7 @@ export default function SearchPage() {
                       : 'bg-foreground/5 border-foreground/5 text-foreground/50 hover:text-foreground hover:border-foreground/10'
                   ) + ' active:scale-95'}
                 >
-                  <Users className="w-3.5 h-3.5" /> Cupos
+                  <Users className="w-3.5 h-3.5" /> {activeSportMeta ? activeSportMeta.availabilityLabel : 'Cupos'}
                 </button>
 
                 <div className="h-6 w-px bg-foreground/10 mx-1 hidden lg:block" />
@@ -394,7 +398,7 @@ export default function SearchPage() {
                             <div className="flex flex-col gap-1.5 flex-1 max-w-[140px]">
                                <div className="flex justify-between items-end">
                                  <span className="text-[9px] font-black uppercase text-foreground/50 tracking-[0.2em] flex items-center gap-1.5">
-                                   <Users className="w-3.5 h-3.5" /> Cupos
+                                  <Users className="w-3.5 h-3.5" /> {SPORT_META[getMatchSport(match)].availabilityLabel}
                                  </span>
                                  <span className={cn("text-[10px] font-black uppercase tracking-widest italic", missing > 0 ? "text-primary" : "text-foreground/40")}>
                                    {currentPlayers}/{maxPlayers}
@@ -538,7 +542,7 @@ export default function SearchPage() {
                                 <>
                                   <Users className={cn('w-5 h-5', missing > 0 ? 'text-primary animate-pulse' : 'text-foreground/10')} />
                                   <span className={cn('text-xs font-black uppercase tracking-[0.2em] italic', missing > 0 ? 'text-foreground/40' : 'text-foreground/10')}>
-                                    {missing > 0 ? `Faltan ${missing} jugadores` : 'Completo'}
+                                    {missing > 0 ? `Faltan ${missing} ${SPORT_META[getMatchSport(match)].availabilityLabel}` : 'Completo'}
                                   </span>
                                 </>
                               );

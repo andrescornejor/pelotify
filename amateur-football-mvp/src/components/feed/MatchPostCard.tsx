@@ -6,7 +6,7 @@ import Link from 'next/link';
 import { useEffect, useState, memo } from 'react';
 import { supabase } from '@/lib/supabase';
 import { cn } from '@/lib/utils';
-import { getFormatMeta, getMatchSport, getMaxPlayers, SPORT_META } from '@/lib/sports';
+import { getFormatMeta, getMatchSport, getMaxPlayers, getSportMeta, SPORT_META } from '@/lib/sports';
 
 interface MatchPostCardProps {
   matchId: string;
@@ -85,6 +85,7 @@ const MatchPostCard = memo(function MatchPostCard({ matchId }: MatchPostCardProp
   });
 
   const sport = getMatchSport(match);
+  const sportMeta = getSportMeta(sport);
   const format = getFormatMeta(match.type, sport);
   const maxPlayers = getMaxPlayers(match);
   const currentPlayers = match.participants?.[0]?.count || 0;
@@ -99,7 +100,7 @@ const MatchPostCard = memo(function MatchPostCard({ matchId }: MatchPostCardProp
       {/* Visual Side */}
       <div className="w-full sm:w-40 h-32 sm:h-auto relative overflow-hidden shrink-0">
         <img 
-          src="https://images.unsplash.com/photo-1574629810360-7efbbe195018?auto=format&fit=crop&q=60&w=400" 
+          src={sportMeta.heroImage}
           alt="" 
           loading="lazy"
           decoding="async"
@@ -126,7 +127,7 @@ const MatchPostCard = memo(function MatchPostCard({ matchId }: MatchPostCardProp
               missing > 0 ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/10" : "bg-white/5 text-white/40 border-white/5"
             )}>
               {missing > 0 && <div className="w-1 h-1 rounded-full bg-emerald-400 animate-pulse" />}
-              {missing > 0 ? `${missing} Disponibles` : 'Completo'}
+              {missing > 0 ? `${missing} ${sportMeta.availabilityLabel}` : 'Completo'}
             </div>
           </div>
           <div className="text-sm font-black text-primary italic uppercase tracking-tighter">
@@ -158,7 +159,7 @@ const MatchPostCard = memo(function MatchPostCard({ matchId }: MatchPostCardProp
           className="w-full h-14 rounded-2xl bg-primary text-black font-black italic uppercase text-xs tracking-widest flex items-center justify-center gap-3 hover:scale-[1.02] active:scale-95 transition-all shadow-xl shadow-primary/20"
         >
           <Zap className="w-4 h-4 fill-current" />
-          Unirme al Partido
+          Unirme al {sportMeta.gameLabel}
         </Link>
       </div>
     </motion.div>

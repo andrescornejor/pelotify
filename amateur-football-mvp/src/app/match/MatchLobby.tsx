@@ -57,7 +57,7 @@ import MercadoPagoButton from '@/components/payments/MercadoPagoButton';
 import EntryQRModal from '@/components/EntryQRModal';
 import JoinQRModal from '@/components/JoinQRModal';
 import { WeatherWidget, CalendarButton } from '@/components/home';
-import { getFormatMeta, getMatchDisplayTitle, getMatchSport, getMaxPlayers, getTeamSize, SPORT_META } from '@/lib/sports';
+import { getFormatMeta, getMatchDisplayTitle, getMatchSport, getMaxPlayers, getSportTeamLabels, getTeamSize, SPORT_META } from '@/lib/sports';
 
 const VenueMap = dynamic(() => import('@/components/VenueMap'), {
   ssr: false,
@@ -229,8 +229,8 @@ function MatchLobbyContent() {
 
   const [isEditingNames, setIsEditingNames] = useState(false);
   const updateMatchMutation = useUpdateMatch();
-  const [teamAName, setTeamAName] = useState('Local');
-  const [teamBName, setTeamBName] = useState('Visitante');
+  const [teamAName, setTeamAName] = useState('Equipo A');
+  const [teamBName, setTeamBName] = useState('Equipo B');
 
   // 3. MEMOS & DERIVED STATE (hooks)
   const isChronologicallyFinished = useMemo(() => {
@@ -249,16 +249,19 @@ function MatchLobbyContent() {
     return matchReports.some((r: any) => r.reporter_id === user.id);
   }, [user, matchReports]);
 
+  const currentSport = match ? getMatchSport(match) : 'football';
+  const [defaultTeamAName, defaultTeamBName] = getSportTeamLabels(currentSport);
+
   // 4. EFFECTS
 
 
   // Sync team names
   useEffect(() => {
     if (match) {
-      setTeamAName(match.team_a_name || 'Local');
-      setTeamBName(match.team_b_name || 'Visitante');
+      setTeamAName(match.team_a_name || defaultTeamAName);
+      setTeamBName(match.team_b_name || defaultTeamBName);
     }
-  }, [match?.team_a_name, match?.team_b_name]);
+  }, [defaultTeamAName, defaultTeamBName, match?.team_a_name, match?.team_b_name]);
 
   // Derived check for effect
   const participantsTemp = (match?.participants || []) as MatchParticipant[];
@@ -519,7 +522,7 @@ function MatchLobbyContent() {
                 </span>
                 <span className="px-3 py-1 rounded-full bg-white/5 border border-white/10 text-foreground/40 text-[10px] font-black uppercase tracking-widest flex items-center gap-2">
                   <span className={cn("w-1.5 h-1.5 rounded-full animate-pulse", participants.length >= totalPlayers ? "bg-rose-500" : "bg-primary")} />
-                  {participants.length} / {totalPlayers} Jugadores
+                  {participants.length} / {totalPlayers} {sportMeta.availabilityLabel}
                 </span>
               </div>
               <h1 className="text-5xl md:text-8xl font-black italic uppercase tracking-tighter text-foreground leading-[0.8]">
@@ -568,7 +571,7 @@ function MatchLobbyContent() {
                          ¿Estás listo para jugar?
                        </h2>
                        <p className="text-foreground/40 font-bold max-w-lg">
-                         Unite al partido para reservar tu lugar. El organizador te asignará a un equipo una vez que estés dentro.
+                         Unite al {sportMeta.gameLabel} para reservar tu lugar. Quien organiza definira los equipos una vez que entres.
                        </p>
                     </div>
 
@@ -591,7 +594,7 @@ function MatchLobbyContent() {
                       className="w-full h-20 rounded-[2rem] bg-primary text-black font-black italic uppercase text-lg hover:scale-[1.02] active:scale-95 transition-all shadow-2xl shadow-primary/20 flex items-center justify-center gap-4"
                     >
                       {joinMutation.isPending ? <Loader2 className="w-8 h-8 animate-spin" /> : (
-                        <><Zap className="w-6 h-6 fill-current" /> Unirme al partido</>
+                        <><Zap className="w-6 h-6 fill-current" /> Unirme al {sportMeta.gameLabel}</>
                       )}
                     </button>
                   </div>
@@ -621,7 +624,7 @@ function MatchLobbyContent() {
                   <h4 className="text-xs font-black italic uppercase text-foreground/20 tracking-widest">Detalles Rápidos</h4>
                   <div className="space-y-6">
                     {[
-                      { icon: Users, label: 'Ocupación', value: `${participants.length}/${totalPlayers} Jugadores`, color: 'text-primary', percentage: (participants.length / totalPlayers) * 100 },
+                      { icon: Users, label: 'Ocupación', value: `${participants.length}/${totalPlayers} ${sportMeta.availabilityLabel}`, color: 'text-primary', percentage: (participants.length / totalPlayers) * 100 },
                       { icon: Shield, label: 'Formato de Juego', value: format.label, color: 'text-indigo-400' },
                       { icon: DollarSign, label: 'Método de Pago', value: match.payment_method === 'mercado_pago' ? 'Transferencia' : 'En cancha', color: 'text-emerald-400' },
                     ].map((item, i) => (
@@ -838,7 +841,7 @@ function MatchLobbyContent() {
                         <h4 className="text-xs font-black italic uppercase text-foreground/40">Lista de Espera</h4>
                         <span className="text-[10px] font-black text-primary uppercase tracking-widest mt-1">Esperando asignación de equipo</span>
                       </div>
-                      <span className="text-[10px] font-bold text-foreground/20">{unassigned.length} JUGADORES</span>
+                      <span className="text-[10px] font-bold text-foreground/20">{unassigned.length} {sportMeta.benchLabel.toUpperCase()}</span>
                     </div>
                     <div className="flex flex-wrap gap-4">
                       {unassigned.map((p) => (
@@ -899,7 +902,7 @@ function MatchLobbyContent() {
                                   ) : (
                                     <div className="flex items-center gap-2 group/title">
                                       <h3 className="text-lg font-black italic uppercase tracking-tighter text-foreground leading-none">
-                                        {team === 'A' ? match.team_a_name || 'Local' : match.team_b_name || 'Visitante'}
+                                        {team === 'A' ? match.team_a_name || defaultTeamAName : match.team_b_name || defaultTeamBName}
                                       </h3>
                                       {isCreator && (
                                         <button 
@@ -913,7 +916,7 @@ function MatchLobbyContent() {
                                   )}
                                </div>
                                <span className={cn("text-[9px] font-black uppercase tracking-widest mt-1 block", cfg.text)}>
-                                 {members.length}/{teamSize} JUGADORES
+                                 {members.length}/{teamSize} {sportMeta.availabilityLabel.toUpperCase()}
                                </span>
                              </div>
                            </div>
@@ -1204,7 +1207,7 @@ function MatchLobbyContent() {
                         }}
                         className="w-full h-14 rounded-2xl bg-zinc-800 text-foreground/70 font-black italic uppercase text-xs hover:bg-zinc-700 transition-all flex items-center justify-center gap-3"
                       >
-                        <LogOut className="w-4 h-4 rotate-180" /> Mover al Banquillo
+                        <LogOut className="w-4 h-4 rotate-180" /> Mover a {sportMeta.benchLabel}
                       </button>
                     )}
                     
@@ -1251,7 +1254,7 @@ function MatchLobbyContent() {
                     <ArrowLeft className="w-6 h-6 md:w-7 md:h-7" />
                   </button>
                   <div className="space-y-0.5 md:space-y-1">
-                    <h2 className="text-2xl md:text-3xl font-black italic uppercase tracking-tighter text-foreground leading-none">Armar Equipos</h2>
+                    <h2 className="text-2xl md:text-3xl font-black italic uppercase tracking-tighter text-foreground leading-none">{sport === 'padel' ? 'Armar Duplas' : 'Armar Equipos'}</h2>
                     <p className="text-[8px] md:text-[10px] font-black text-primary uppercase tracking-widest italic">Toca un jugador y luego una posición</p>
                   </div>
                 </div>
@@ -1419,7 +1422,7 @@ function MatchLobbyContent() {
                       <Users className="w-4 h-4 md:w-5 md:h-5 text-foreground/20" />
                       <div>
                         <h4 className="text-[10px] md:text-sm font-black italic uppercase text-foreground leading-none">Esperando</h4>
-                        <span className="text-[8px] md:text-[10px] font-bold text-primary uppercase tracking-widest mt-0.5 md:mt-1">{unassigned.length} JUGADORES</span>
+                        <span className="text-[8px] md:text-[10px] font-bold text-primary uppercase tracking-widest mt-0.5 md:mt-1">{unassigned.length} {sportMeta.benchLabel.toUpperCase()}</span>
                       </div>
                     </div>
                     <button 
@@ -1464,7 +1467,7 @@ function MatchLobbyContent() {
                     }) : (
                       <div className="w-full h-full flex flex-col items-center justify-center text-foreground/5 space-y-2 md:space-y-4 opacity-40">
                          <Users className="w-8 h-8 md:w-12 md:h-12" />
-                         <p className="text-[10px] font-black uppercase tracking-[0.1em] md:tracking-[0.2em] italic text-center leading-none">Sin jugadores</p>
+                         <p className="text-[10px] font-black uppercase tracking-[0.1em] md:tracking-[0.2em] italic text-center leading-none">Sin {sportMeta.availabilityLabel}</p>
                       </div>
                     )}
                   </div>

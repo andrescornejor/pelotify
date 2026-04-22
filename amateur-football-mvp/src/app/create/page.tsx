@@ -29,11 +29,19 @@ import { useAuth } from '@/contexts/AuthContext';
 import { WeatherWidget } from '@/components/home';
 import { useQueryClient } from '@tanstack/react-query';
 import { queryKeys } from '@/lib/queryKeys';
-import { ROSARIO_VENUES, findVenueByLocation, getVenueSports, venueSupportsSport, type Venue } from '@/lib/venues';
+import { ROSARIO_VENUES, findVenueByLocation, getVenueSports, venueSupportsSport } from '@/lib/venues';
 import LocationSearch from '@/components/LocationSearch';
 import { cn } from '@/lib/utils';
 import { AVAILABLE_TIMES } from '@/lib/constants';
-import { getMaxPlayers, inferSportFromType, type MatchFormat, type Sport } from '@/lib/sports';
+import {
+  getFormatMeta,
+  getMaxPlayers,
+  getSportFormats,
+  getSportMeta,
+  inferSportFromType,
+  type MatchFormat,
+  type Sport,
+} from '@/lib/sports';
 
 const STEPS = ['Cancha', 'Cuándo', 'Detalles', 'Cobro', 'Confirmar'];
 
@@ -79,6 +87,8 @@ const FORMAT_DATA = {
     glow: 'shadow-orange-500/30',
   },
 } as const;
+
+const SPORT_OPTIONS: Sport[] = ['football', 'padel', 'basket'];
 
 function PitchSVG({ type }: { type: MatchFormat }) {
   if (type === 'PADEL') {
@@ -288,6 +298,9 @@ export default function CreateMatchPage() {
   });
 
   const [shareInFeed, setShareInFeed] = useState(true);
+  const sportMeta = getSportMeta(formData.sport);
+  const selectedFormat = getFormatMeta(formData.type, formData.sport);
+  const sportFormats = getSportFormats(formData.sport);
 
   const getBusinessSports = (businessId: string): Sport[] => {
     const sports = new Set<Sport>();
@@ -499,7 +512,7 @@ export default function CreateMatchPage() {
 📅 ${getSelectedDateLabel()}
 ⏰ ${getTimeLabel()}
 🏟️ ${formData.location}
-🏆 ${FORMAT_DATA[formData.type].label}
+🏆 ${selectedFormat.label}
 💰 ${formData.price > 0 ? `$${formData.price}` : 'Libre'}
 
 ¡Sumate acá! 👇
@@ -696,7 +709,7 @@ ${matchUrl}`;
                     ¿Dónde se juega?
                   </h2>
                   <p className="text-[11px] text-foreground/40 font-bold uppercase tracking-widest">
-                    Elegí la cancha o escribí una dirección
+                    Elegi la sede o escribi una direccion
                   </p>
                 </div>
 
@@ -705,12 +718,9 @@ ${matchUrl}`;
                     Filtrar por deporte
                   </span>
                   <div className="flex flex-wrap gap-3">
-                    {([
-                      { sport: 'football' as Sport, label: 'Futbol', icon: '⚽' },
-                      { sport: 'basket' as Sport, label: 'Basket', icon: '🏀' },
-                      { sport: 'padel' as Sport, label: 'Padel', icon: '🎾' },
-                    ]).map(({ sport, label, icon }) => {
+                    {SPORT_OPTIONS.map((sport) => {
                       const isSelected = formData.sport === sport;
+                      const optionMeta = getSportMeta(sport);
                       return (
                         <button
                           key={sport}
@@ -723,8 +733,8 @@ ${matchUrl}`;
                               : 'border-foreground/[0.06] bg-foreground/[0.02] text-foreground/40 hover:border-foreground/15'
                           )}
                         >
-                          <span className="text-base leading-none">{icon}</span>
-                          {label}
+                          <span className="text-base leading-none">{optionMeta.icon}</span>
+                          {optionMeta.label}
                         </button>
                       );
                     })}
@@ -773,7 +783,7 @@ ${matchUrl}`;
                                   key={sport}
                                   className="px-2 py-1 rounded-full bg-foreground/[0.04] text-[8px] font-black uppercase tracking-widest text-foreground/40"
                                 >
-                                  {sport === 'football' ? 'Futbol' : sport === 'basket' ? 'Basket' : 'Padel'}
+                                  {getSportMeta(sport).label}
                                 </span>
                               ))}
                             </div>
@@ -820,7 +830,7 @@ ${matchUrl}`;
                                   key={sport}
                                   className="px-2 py-1 rounded-full bg-foreground/[0.04] text-[8px] font-black uppercase tracking-widest text-foreground/40"
                                 >
-                                  {sport === 'football' ? 'Futbol' : sport === 'basket' ? 'Basket' : 'Padel'}
+                                  {getSportMeta(sport).label}
                                 </span>
                               ))}
                             </div>
@@ -834,7 +844,7 @@ ${matchUrl}`;
                 {filteredDbVenues.length === 0 && filteredDefaultVenues.length === 0 && (
                   <div className="p-6 rounded-3xl border border-foreground/[0.06] bg-foreground/[0.02] text-center">
                     <span className="block text-sm font-black italic uppercase tracking-tight text-foreground">
-                      No hay canchas cargadas para este deporte
+                      No hay sedes cargadas para este deporte
                     </span>
                     <span className="block mt-2 text-[10px] font-bold uppercase tracking-widest text-foreground/35">
                       Podés escribir una dirección manual o cambiar el filtro.
@@ -1153,11 +1163,9 @@ ${matchUrl}`;
                     Deporte
                   </span>
                   <div className="grid grid-cols-3 gap-4">
-                    {(['football', 'padel', 'basket'] as const).map((sport) => {
+                    {SPORT_OPTIONS.map((sport) => {
                       const isSelected = formData.sport === sport;
-                      const icon = sport === 'football' ? '⚽' : sport === 'padel' ? '🎾' : '🏀';
-                      const title = sport === 'football' ? 'Futbol' : sport === 'padel' ? 'Padel' : 'Basket';
-                      const description = sport === 'football' ? 'Principal en Pelotify' : sport === 'padel' ? 'Partidos en dupla' : 'Equipos 5 vs 5';
+                      const optionMeta = getSportMeta(sport);
 
                       return (
                         <button
@@ -1171,13 +1179,13 @@ ${matchUrl}`;
                           }`}
                         >
                           <div className={`w-11 h-11 rounded-2xl flex items-center justify-center text-xl mb-3 ${isSelected ? 'bg-primary text-black' : 'bg-foreground/[0.04]'}`}>
-                            {icon}
+                            {optionMeta.icon}
                           </div>
                           <span className={`block text-sm font-black italic uppercase tracking-tight ${isSelected ? 'text-foreground' : 'text-foreground/30'}`}>
-                            {title}
+                            {optionMeta.label}
                           </span>
                           <span className={`block text-[9px] font-bold uppercase tracking-widest mt-1 ${isSelected ? 'text-primary' : 'text-foreground/20'}`}>
-                            {description}
+                            {optionMeta.description}
                           </span>
                         </button>
                       );
@@ -1194,21 +1202,16 @@ ${matchUrl}`;
                     {dbFields.length === 0 && formData.business_id ? (
                       <div className="col-span-3 py-10 flex flex-col items-center justify-center gap-4 bg-foreground/[0.02] rounded-3xl border border-foreground/[0.04]">
                          <Loader2 className="w-8 h-8 text-primary animate-spin" />
-                         <span className="text-[10px] font-black uppercase tracking-widest text-foreground/40">Cargando formatos de la sede...</span>
+                         <span className="text-[10px] font-black uppercase tracking-widest text-foreground/40">Cargando formatos disponibles para esta sede...</span>
                       </div>
                     ) : (
-                      (Object.entries(FORMAT_DATA) as [
-                        keyof typeof FORMAT_DATA,
-                        (typeof FORMAT_DATA)[keyof typeof FORMAT_DATA],
-                      ][]).filter(([key]) => {
-                        if (formData.sport === 'football') return key === 'F5' || key === 'F7' || key === 'F11';
-                        if (formData.sport === 'padel') return key === 'PADEL';
-                        return key === 'BASKET';
-                      }).map(([key, data]) => {
+                      sportFormats.map((format) => {
+                        const key = format.key;
+                        const data = format;
                         let isAvailable = true;
                         if (formData.business_id) {
                           isAvailable = dbFields.some(
-                            f =>
+                            (f) =>
                               f.business_id === formData.business_id &&
                               inferSportFromType(f.type) === formData.sport &&
                               f.type === key
@@ -1217,7 +1220,7 @@ ${matchUrl}`;
                           const venue = findVenueByLocation(formData.location);
                           isAvailable = !venue?.formats || venue.formats.some((f: any) => f.type === key);
                         }
-                        
+
                         if (!isAvailable) return null;
 
                         const isSelected = formData.type === key;
@@ -1260,14 +1263,14 @@ ${matchUrl}`;
                                   isSelected ? 'text-primary' : 'text-foreground/20'
                                 }`}
                               >
-                                {data.players}
+                                {data.playersLabel}
                               </span>
                               <span
                                 className={`block text-[9px] tracking-wide transition-colors ${
                                   isSelected ? 'text-foreground/50' : 'text-foreground/15'
                                 }`}
                               >
-                                {data.desc}
+                                {data.description}
                               </span>
                             </div>
                             {isSelected && (
@@ -1572,7 +1575,7 @@ ${matchUrl}`;
                     {/* Format badge */}
                     <div className="relative z-10 px-6 py-2 rounded-full bg-primary/20 border border-primary/30 md:">
                       <span className="text-primary font-black text-sm uppercase tracking-widest italic">
-                        {FORMAT_DATA[formData.type].label}
+                        {selectedFormat.label}
                       </span>
                     </div>
                   </div>
@@ -1582,7 +1585,7 @@ ${matchUrl}`;
                     {[
                       {
                         icon: <MapPin className="w-4 h-4" />,
-                        label: 'Cancha',
+                        label: 'Sede',
                         value: formData.location || '—',
                       },
                       {
@@ -1598,7 +1601,7 @@ ${matchUrl}`;
                       {
                         icon: <Users className="w-4 h-4" />,
                         label: 'Formato',
-                        value: `${FORMAT_DATA[formData.type].players}`,
+                        value: `${selectedFormat.playersLabel}`,
                       },
                       {
                         icon: <DollarSign className="w-4 h-4" />,
@@ -1650,7 +1653,7 @@ ${matchUrl}`;
                       <Zap className="w-4 h-4 text-foreground/20" />
                     </div>
                     <p className="text-[10px] text-foreground/30 font-bold uppercase tracking-wider leading-relaxed flex-1">
-                      Serás el organizador con control total sobre los jugadores
+                      Ser??s el  y manejar??s la convocatoria, los pagos y la distribuci??n de .
                     </p>
                   </div>
 
@@ -1665,7 +1668,7 @@ ${matchUrl}`;
                           ? "bg-primary/10 border-primary/30 text-primary" 
                           : "bg-foreground/[0.02] border-foreground/10 text-foreground/40"
                       )}
-                    >
+                      >
                       <div className="flex items-center gap-3">
                         <div className={cn(
                           "w-10 h-10 rounded-2xl flex items-center justify-center transition-all duration-500",
@@ -1678,13 +1681,13 @@ ${matchUrl}`;
                             "block text-sm font-black italic uppercase tracking-tight leading-none",
                             shareInFeed ? "text-foreground" : "text-foreground/40"
                           )}>
-                            Publicar en 3erTiempo
+                            Publicar en {sportMeta.highlightLabel}
                           </span>
                           <span className={cn(
                             "block text-[10px] font-bold uppercase tracking-widest mt-1",
                             shareInFeed ? "text-primary/70" : "text-foreground/20"
                           )}>
-                            ¡Atraé a más jugadores!
+                            Atrae a mas {sportMeta.availabilityLabel}
                           </span>
                         </div>
                       </div>
@@ -1785,3 +1788,4 @@ ${matchUrl}`;
     </div>
   );
 }
+
