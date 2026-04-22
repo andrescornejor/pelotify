@@ -418,18 +418,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     >
       {showLoader ? (
         <div className="fixed inset-0 bg-[#020203] flex flex-col items-center justify-center z-[9999] overflow-hidden">
-          {/* Cinematic Background - Subtle gradient shift */}
-          <div className="absolute inset-0 opacity-40">
-            <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-primary/10 blur-[120px] rounded-full animate-pulse" />
-            <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-primary/5 blur-[120px] rounded-full animate-pulse" style={{ animationDelay: '1s' }} />
+          {/* Atmospheric Background - More immersive for PC */}
+          <div className="absolute inset-0">
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_40%,rgba(var(--primary-rgb),0.08),transparent_70%)]" />
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_100%,rgba(var(--primary-rgb),0.03),transparent_80%)]" />
           </div>
           
           <div className="relative flex flex-col items-center gap-12">
-            {/* Optimized Logo Reveal */}
-            <div className="relative w-32 h-32 flex items-center justify-center">
-              {/* CSS-only Pulsing Rings - Zero JS overhead */}
-              <div className="absolute inset-0 rounded-[2.5rem] border border-primary/20 animate-[ping_3s_linear_infinite] opacity-20" />
-              <div className="absolute inset-4 rounded-[2rem] border border-primary/30 animate-[ping_3s_linear_infinite] opacity-30" style={{ animationDelay: '1.5s' }} />
+            {/* Optimized Logo Reveal - Container size increased to prevent glow clipping */}
+            <div className="relative w-64 h-64 flex items-center justify-center">
+              {/* CSS-only Pulsing Rings */}
+              <div className="absolute w-32 h-32 rounded-[2.5rem] border border-primary/20 animate-[ping_3s_linear_infinite] opacity-20" />
+              <div className="absolute w-24 h-24 rounded-[2rem] border border-primary/30 animate-[ping_3s_linear_infinite] opacity-30" style={{ animationDelay: '1.5s' }} />
               
               {/* Main Brand Icon */}
               <motion.div 
