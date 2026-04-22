@@ -324,25 +324,26 @@ export default function HomePage() {
           <section className="space-y-6 pt-2">
             {/* Greeting */}
             <div className="px-1">
-              <div className="flex flex-col">
-                <span className="text-[11px] font-black uppercase tracking-[0.2em] text-foreground/40 font-kanit leading-tight">
-                  {greeting}
-                </span>
-                <div className="mt-4 mb-2">
-                  <SportSelector selectedSport={selectedSport} onSelect={setSelectedSport} />
+                <div className="flex items-center justify-between gap-4 mb-2">
+                  <div className="flex flex-col flex-1">
+                    <span className="text-[10px] font-black uppercase tracking-[0.2em] text-foreground/40 font-kanit leading-tight">
+                      {greeting}
+                    </span>
+                    <motion.h1 
+                      layout
+                      className="text-2xl font-black italic uppercase font-kanit tracking-tighter text-foreground leading-[0.9] mt-1"
+                    >
+                      HOLA, <span className="text-primary">{userName}</span>
+                    </motion.h1>
+                  </div>
+                  {/* Clean Native Mobile App Header Selector */}
+                  <SportSelector 
+                    selectedSport={selectedSport} 
+                    onSelect={setSelectedSport} 
+                    className="w-[145px] shrink-0 h-11" 
+                    variant="app"
+                  />
                 </div>
-                <AnimatePresence mode="wait">
-                  <motion.h1 
-                    key={selectedSport}
-                    initial={{ y: 10, opacity: 0 }}
-                    animate={{ y: 0, opacity: 1 }}
-                    exit={{ y: -10, opacity: 0 }}
-                    className="text-3xl font-black italic uppercase font-kanit tracking-tighter text-foreground leading-[0.9] mt-0.5"
-                  >
-                    HOLA, <span className="text-primary">{userName}</span>
-                  </motion.h1>
-                </AnimatePresence>
-              </div>
             </div>
 
             {/* Next Match horizontal card if available */}
@@ -606,14 +607,16 @@ export default function HomePage() {
                 )}
               </div>
 
-              <div className="absolute top-8 right-8 z-20">
-                <SportSelector selectedSport={selectedSport} onSelect={setSelectedSport} />
+
+              {/* Desktop Dashboard Selector: Positioned for focus and full clickability */}
+              <div className="absolute top-12 right-12 z-[100]">
+                <SportSelector selectedSport={selectedSport} onSelect={setSelectedSport} className="w-[200px]" />
               </div>
 
-              {/* Overlay gradients for depth */}
-              <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent opacity-90" />
-              <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-transparent to-accent/5" />
-              <div className="absolute inset-0 backdrop-blur-[2px] opacity-40 mix-blend-overlay" />
+              {/* Overlay gradients for depth: Pointer events disabled to allow background interaction */}
+              <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent opacity-90 pointer-events-none" />
+              <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-transparent to-accent/5 pointer-events-none" />
+              <div className="absolute inset-0 backdrop-blur-[2px] opacity-40 mix-blend-overlay pointer-events-none" />
             </div>
 
             {/* Content Wrapper */}
