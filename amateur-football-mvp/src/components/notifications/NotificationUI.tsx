@@ -33,7 +33,7 @@ export function NotificationToast() {
             }}
             className="w-full text-left"
           >
-            <div className="relative overflow-hidden rounded-2xl border border-primary/30 bg-background/95 md: shadow-[0_20px_60px_rgba(44,252,125,0.15),0_0_0_1px_rgba(44,252,125,0.1)] p-4">
+            <div className="relative overflow-hidden rounded-2xl border border-primary/30 bg-background/95 shadow-[0_20px_60px_rgba(44,252,125,0.12),0_0_0_1px_rgba(44,252,125,0.08)] dark:shadow-[0_20px_60px_rgba(44,252,125,0.2),0_0_0_1px_rgba(44,252,125,0.12)] p-4 backdrop-blur-xl">
               {/* Glow effect */}
               <div className="absolute -top-10 -right-10 w-32 h-32 bg-primary/10 rounded-full blur-3xl pointer-events-none" />
               
@@ -105,7 +105,7 @@ export function NotificationPromptBanner() {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -20 }}
-      className="relative overflow-hidden rounded-2xl border border-primary/20 bg-primary/5 p-4 mx-4 mb-4"
+      className="relative overflow-hidden rounded-2xl border border-primary/20 bg-primary/5 dark:bg-primary/[0.08] p-4 mx-4 mb-4 backdrop-blur-md"
     >
       <div className="absolute -top-10 -left-10 w-32 h-32 bg-primary/5 rounded-full blur-3xl pointer-events-none" />
 
@@ -203,7 +203,7 @@ export function NotificationBell({ className }: { className?: string }) {
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: -10, scale: 0.95 }}
               transition={{ type: 'spring', stiffness: 400, damping: 30 }}
-              className="absolute right-0 top-full mt-2 w-80 max-h-96 overflow-auto rounded-2xl border border-foreground/10 bg-background/95 md: shadow-2xl z-50"
+              className="absolute right-0 top-full mt-2 w-80 max-h-96 overflow-auto rounded-2xl border border-foreground/10 bg-background/95 shadow-[0_20px_60px_rgba(15,23,42,0.12)] dark:shadow-[0_20px_60px_rgba(0,0,0,0.45)] z-50 backdrop-blur-xl"
             >
               {/* Header */}
               <div className="flex items-center justify-between px-4 py-3 border-b border-foreground/5">

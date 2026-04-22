@@ -226,10 +226,10 @@ export function NotificationCenter({ isOpen, onClose }: NotificationCenterProps)
             animate="animate"
             exit="exit"
             transition={{ type: 'spring', damping: 30, stiffness: 250 }}
-            className="fixed bottom-0 right-0 lg:top-4 lg:right-4 h-[94dvh] lg:h-[calc(100vh-2rem)] w-full lg:w-[480px] z-[101] flex flex-col bg-white shadow-2xl border-t lg:border border-black/5 lg:rounded-[2.5rem] rounded-t-[2.5rem] overflow-hidden"
+            className="fixed bottom-0 right-0 lg:top-4 lg:right-4 h-[94dvh] lg:h-[calc(100vh-2rem)] w-full lg:w-[480px] z-[101] flex flex-col bg-background/98 shadow-[0_28px_90px_rgba(0,0,0,0.18)] dark:shadow-[0_28px_90px_rgba(0,0,0,0.6)] border-t lg:border border-foreground/10 lg:rounded-[2.5rem] rounded-t-[2.5rem] overflow-hidden backdrop-blur-xl"
           >
-            <div className="relative pt-6 sm:pt-8 px-8 sm:px-10 pb-6 flex flex-col gap-6 shrink-0 overflow-hidden border-b border-black/[0.03]">
-              <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 blur-[60px] pointer-events-none" />
+            <div className="relative pt-6 sm:pt-8 px-8 sm:px-10 pb-6 flex flex-col gap-6 shrink-0 overflow-hidden border-b border-foreground/[0.08] bg-gradient-to-b from-primary/[0.04] via-transparent to-transparent">
+              <div className="absolute top-0 right-0 w-32 h-32 bg-primary/10 blur-[60px] pointer-events-none" />
               
               <div className="flex items-center justify-between relative z-10">
                 <div className="flex items-center gap-4">
@@ -237,12 +237,12 @@ export function NotificationCenter({ isOpen, onClose }: NotificationCenterProps)
                     <Bell className="w-6 h-6 text-primary" />
                   </div>
                   <div>
-                    <h2 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tighter uppercase italic">
+                    <h2 className="text-xl sm:text-2xl font-black text-foreground tracking-tighter uppercase italic">
                       ALERTA <span className="text-primary italic opacity-80">CENTER</span>
                     </h2>
                     <div className="flex items-center gap-2 mt-0.5">
                       <div className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
-                      <p className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em]">
+                      <p className="text-[10px] font-bold text-foreground/45 uppercase tracking-[0.2em]">
                         Sincronizado vía Pelotify Cloud
                       </p>
                     </div>
@@ -250,9 +250,9 @@ export function NotificationCenter({ isOpen, onClose }: NotificationCenterProps)
                 </div>
                 <button
                   onClick={onClose}
-                  className="w-10 h-10 flex items-center justify-center transition-all bg-black/[0.03] hover:bg-black/[0.06] rounded-xl border border-black/5 active:scale-90"
+                  className="w-10 h-10 flex items-center justify-center transition-all bg-foreground/[0.04] hover:bg-foreground/[0.08] rounded-xl border border-foreground/[0.08] active:scale-90"
                 >
-                  <X className="w-5 h-5 text-slate-400" />
+                  <X className="w-5 h-5 text-foreground/45" />
                 </button>
               </div>
 
@@ -263,15 +263,15 @@ export function NotificationCenter({ isOpen, onClose }: NotificationCenterProps)
                     onClick={() => setActiveFilter(filter.id)}
                     className={`px-4 py-2 rounded-xl text-[9px] font-black uppercase tracking-widest transition-all whitespace-nowrap flex items-center gap-2 border ${
                       activeFilter === filter.id
-                        ? 'bg-primary border-primary text-white shadow-lg shadow-primary/20'
-                        : 'bg-black/[0.02] border-black/5 text-slate-400 hover:border-black/10'
+                        ? 'bg-primary border-primary text-black shadow-lg shadow-primary/20'
+                        : 'bg-foreground/[0.03] border-foreground/[0.08] text-foreground/50 hover:border-foreground/15 hover:text-foreground/75'
                     }`}
                   >
                     <filter.icon className="w-3 h-3" />
                     <span>{filter.label}</span>
                     {filter.count > 0 && (
                       <span className={`px-1.5 py-0.5 rounded-md ${
-                        activeFilter === filter.id ? 'bg-white/20 text-white' : 'bg-primary/10 text-primary'
+                        activeFilter === filter.id ? 'bg-black/10 text-black' : 'bg-primary/10 text-primary'
                       }`}>
                         {filter.count}
                       </span>
@@ -285,15 +285,15 @@ export function NotificationCenter({ isOpen, onClose }: NotificationCenterProps)
               {isLoading ? (
                 <div className="h-[50vh] flex flex-col items-center justify-center gap-6">
                   <div className="w-16 h-16 rounded-2xl border-2 border-primary/10 border-t-primary animate-spin" />
-                  <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em]">Sincronizando datos...</p>
+                  <p className="text-[10px] font-black text-foreground/45 uppercase tracking-[0.3em]">Sincronizando datos...</p>
                 </div>
               ) : filteredNotifications.length === 0 ? (
                 <div className="h-[50vh] flex flex-col items-center justify-center text-center px-10">
-                  <div className="w-20 h-20 rounded-[2rem] bg-black/[0.01] border border-black/5 flex items-center justify-center mb-6">
+                  <div className="w-20 h-20 rounded-[2rem] bg-foreground/[0.03] border border-foreground/[0.08] flex items-center justify-center mb-6">
                     <Sparkles className="w-8 h-8 text-primary/30" />
                   </div>
-                  <h3 className="text-xl font-black text-slate-900 italic uppercase tracking-widest">TRANQUILIDAD TOTAL</h3>
-                  <p className="text-[11px] text-slate-400 mt-3 font-bold uppercase tracking-widest">No hay alertas pendientes, capitán.</p>
+                  <h3 className="text-xl font-black text-foreground italic uppercase tracking-widest">TRANQUILIDAD TOTAL</h3>
+                  <p className="text-[11px] text-foreground/45 mt-3 font-bold uppercase tracking-widest">No hay alertas pendientes, capitán.</p>
                 </div>
               ) : (
                 <motion.div
@@ -324,19 +324,19 @@ export function NotificationCenter({ isOpen, onClose }: NotificationCenterProps)
               )}
             </div>
 
-            <div className="p-8 border-t border-black/[0.03] bg-gradient-to-b from-transparent to-white relative z-20">
+            <div className="p-8 border-t border-foreground/[0.08] bg-gradient-to-b from-transparent to-foreground/[0.02] relative z-20">
               <Link
                 href="/friends"
                 onClick={onClose}
-                className="group w-full h-16 rounded-2xl bg-black/[0.01] border border-black/5 flex items-center justify-between px-6 hover:bg-primary/[0.03] hover:border-primary/20 transition-all active:scale-[0.98]"
+                className="group w-full h-16 rounded-2xl bg-foreground/[0.03] border border-foreground/[0.08] flex items-center justify-between px-6 hover:bg-primary/[0.06] hover:border-primary/20 transition-all active:scale-[0.98]"
               >
                 <div className="flex items-center gap-4">
-                  <div className="w-8 h-8 rounded-lg bg-black/[0.03] flex items-center justify-center group-hover:bg-primary/10 transition-colors">
-                    <UserPlus className="w-4 h-4 text-slate-400 group-hover:text-primary transition-colors" />
+                  <div className="w-8 h-8 rounded-lg bg-foreground/[0.04] flex items-center justify-center group-hover:bg-primary/10 transition-colors">
+                    <UserPlus className="w-4 h-4 text-foreground/45 group-hover:text-primary transition-colors" />
                   </div>
-                  <span className="text-[11px] font-black uppercase tracking-widest text-slate-400 group-hover:text-slate-900">Administrar Alianzas</span>
+                  <span className="text-[11px] font-black uppercase tracking-widest text-foreground/45 group-hover:text-foreground">Administrar Alianzas</span>
                 </div>
-                <ArrowRight className="w-4 h-4 text-slate-200 group-hover:text-primary group-hover:translate-x-1 transition-all" />
+                <ArrowRight className="w-4 h-4 text-foreground/20 group-hover:text-primary group-hover:translate-x-1 transition-all" />
               </Link>
             </div>
           </motion.div>
@@ -401,7 +401,7 @@ function NotificationItem({ type, data, onAction, onVote, actionLoading, userId 
     <motion.div
       variants={itemVariants}
       layout
-      className={`relative rounded-3xl border border-black/[0.06] bg-slate-50/50 overflow-hidden transition-all duration-300 hover:border-black/10 group shadow-sm hover:shadow-md`}
+      className="relative rounded-3xl border border-foreground/[0.08] bg-foreground/[0.025] overflow-hidden transition-all duration-300 hover:border-foreground/15 group shadow-[0_10px_30px_rgba(15,23,42,0.06)] dark:shadow-[0_18px_40px_rgba(0,0,0,0.24)]"
     >
       {/* Category Accent Bar */}
       <div className={`absolute top-0 left-0 bottom-0 w-1 ${config.accent} opacity-60`} />
@@ -410,16 +410,16 @@ function NotificationItem({ type, data, onAction, onVote, actionLoading, userId 
         {/* Header Part */}
         <div className="flex items-start gap-4">
           <div className="relative shrink-0">
-            <div className="w-14 h-14 rounded-2xl bg-white border border-black/[0.08] overflow-hidden flex items-center justify-center shadow-sm transition-transform group-hover:scale-105">
+            <div className="w-14 h-14 rounded-2xl bg-surface border border-foreground/[0.08] overflow-hidden flex items-center justify-center shadow-sm transition-transform group-hover:scale-105">
               {type === 'friend' || type === 'team_request' ? (
                 data.profiles?.avatar_url ? (
-                  <img src={data.profiles.avatar_url} className="w-full h-full object-cover" />
+                  <img src={data.profiles.avatar_url} alt="" className="w-full h-full object-cover" />
                 ) : (
                   <span className={`text-xl font-black italic ${config.textAccent}`}>{data.profiles?.name?.charAt(0)}</span>
                 )
               ) : type === 'team_invitation' ? (
                 data.teams?.logo_url ? (
-                  <img src={data.teams.logo_url} className="w-full h-full object-cover" />
+                  <img src={data.teams.logo_url} alt="" className="w-full h-full object-cover" />
                 ) : (
                   <Shield className="w-8 h-8 text-primary opacity-40" />
                 )
@@ -432,19 +432,19 @@ function NotificationItem({ type, data, onAction, onVote, actionLoading, userId 
           <div className="flex-1 min-w-0">
             <div className="flex items-center justify-between mb-1">
               <span className={`text-[8px] font-black tracking-[0.2em] uppercase italic ${config.textAccent}`}>
-                // {config.label}
+                {'// '} {config.label}
               </span>
-              <span className="text-[8px] text-slate-300 font-bold flex items-center gap-1">
+              <span className="text-[8px] text-foreground/30 font-bold flex items-center gap-1">
                 <Clock className="w-2.5 h-2.5" /> RECIENTE
               </span>
             </div>
-            <h4 className="text-base sm:text-lg font-black text-slate-900 italic uppercase tracking-tight truncate">
+            <h4 className="text-base sm:text-lg font-black text-foreground italic uppercase tracking-tight truncate">
               {type === 'challenge' ? `${data.challenger_team?.name} VS ${data.challenged_team?.name}` :
                 type === 'match' ? data.matches?.location :
                 type === 'team_invitation' ? data.teams?.name :
                 data.profiles?.name || 'Nuevo Contacto'}
             </h4>
-            <p className="text-[11px] text-slate-500 font-medium line-clamp-1 mt-0.5">
+            <p className="text-[11px] text-foreground/55 font-medium line-clamp-1 mt-0.5">
               {type === 'challenge' ? `Desafío directo por el honor del potrero.` :
                 type === 'match' ? `Evento programado: ${data.matches?.date}` :
                 type === 'team_request' ? `Nueva solicitud para ${data.teams?.name}` :
@@ -456,9 +456,9 @@ function NotificationItem({ type, data, onAction, onVote, actionLoading, userId 
 
         {/* Tactical Info Section (Challenge only) */}
         {type === 'challenge' && data.venue_candidates?.length > 0 && (
-          <div className="bg-slate-100/50 rounded-2xl p-4 border border-black/[0.03]">
+          <div className="bg-foreground/[0.03] rounded-2xl p-4 border border-foreground/[0.08]">
             <div className="flex items-center gap-2 mb-3">
-              <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest italic">Selección de Sede</p>
+              <p className="text-[9px] font-black text-foreground/45 uppercase tracking-widest italic">Selección de Sede</p>
             </div>
             <div className="flex flex-col gap-1.5">
               {data.venue_candidates.map((venue: string) => {
@@ -471,7 +471,7 @@ function NotificationItem({ type, data, onAction, onVote, actionLoading, userId 
                     className={`flex items-center justify-between p-3 rounded-xl border text-[10px] font-bold uppercase transition-all ${
                       isVoted 
                         ? 'bg-amber-500 border-amber-500 text-white shadow-lg shadow-amber-500/20' 
-                        : 'bg-white border-black/[0.05] text-slate-400 hover:border-black/[0.1]'
+                        : 'bg-surface border-foreground/[0.08] text-foreground/55 hover:border-foreground/15'
                     }`}
                   >
                     <span className="truncate flex items-center gap-2">
@@ -492,7 +492,7 @@ function NotificationItem({ type, data, onAction, onVote, actionLoading, userId 
             disabled={isActionLoading}
             className={`h-12 rounded-2xl flex items-center justify-center gap-2 text-[10px] font-black uppercase tracking-widest transition-all ${
               config.accent === 'bg-amber-500' ? 'bg-amber-500 text-white shadow-amber-500/20' : 
-              config.accent === 'bg-accent' ? 'bg-accent text-white shadow-accent/20' : 'bg-primary text-white shadow-primary/20'
+              config.accent === 'bg-accent' ? 'bg-accent text-black shadow-accent/20' : 'bg-primary text-black shadow-primary/20'
             } hover:opacity-90 active:scale-[0.97] shadow-lg`}
           >
             {isActionLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : (
@@ -505,7 +505,7 @@ function NotificationItem({ type, data, onAction, onVote, actionLoading, userId 
           <button
             onClick={() => onAction(data.id, false)}
             disabled={isActionLoading}
-            className="h-12 rounded-2xl bg-black/[0.03] border border-black/5 flex items-center justify-center text-slate-400 hover:bg-red-500/10 hover:border-red-500/20 hover:text-red-500 transition-all active:scale-[0.97]"
+            className="h-12 rounded-2xl bg-foreground/[0.03] border border-foreground/[0.08] flex items-center justify-center text-foreground/50 hover:bg-red-500/10 hover:border-red-500/20 hover:text-red-500 transition-all active:scale-[0.97]"
           >
             {isActionLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : (
               <div className="flex items-center gap-2 uppercase tracking-tighter text-[9px] font-black">
