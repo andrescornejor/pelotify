@@ -1677,7 +1677,7 @@ export default function HomePage() {
                     <div className="flex flex-col gap-1">
                       <div className="flex items-center gap-2">
                         <div className="w-2 h-2 rounded-full bg-foreground/30 shadow-[0_0_6px_rgba(var(--foreground-rgb),0.3)]" />
-                        <span className="text-[10px] font-black text-foreground/40 uppercase tracking-[0.4em] font-kanit">PRÃ“XIMO PARTIDO</span>
+                        <span className="text-[10px] font-black text-foreground/40 uppercase tracking-[0.4em] font-kanit">PRÓXIMO PARTIDO</span>
                       </div>
                       <h3 className="text-[11px] font-medium text-foreground/20 tracking-wide font-kanit">Agenda prioritaria</h3>
                     </div>
@@ -1934,13 +1934,13 @@ export default function HomePage() {
               </div>
 
               <div className="hidden lg:block glass-premium p-6 rounded-[2.5rem] border-foreground/15 space-y-4">
-                <h3 className="text-[10px] font-semibold text-foreground/40 tracking-wide font-kanit">Accesos rÃ¡pidos</h3>
+                <h3 className="text-[10px] font-semibold text-foreground/40 tracking-wide font-kanit">Accesos rápidos</h3>
                 <div className="grid grid-cols-1 gap-2">
                   {[
                     { label: 'Sedes', icon: MapPin, href: '/establecimientos' },
                     { label: 'Mis Amigos', icon: Users, href: '/friends' },
                     { label: 'Chat Global', icon: MessageSquare, href: '/messages' },
-                    { label: 'ConfiguraciÃ³n', icon: Target, href: '/settings' }
+                    { label: 'Configuración', icon: Target, href: '/settings' }
                   ].map((link, idx) => (
                     <Link key={idx} href={link.href}>
                       <button className="w-full h-12 px-4 rounded-xl flex items-center justify-between group hover:bg-foreground/[0.03] transition-all border border-transparent hover:border-foreground/15">
