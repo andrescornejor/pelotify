@@ -90,6 +90,7 @@ export function SportSelector({
                     </span>
                     {isSelected && <Zap className={cn(isCompact ? 'w-3 h-3' : 'w-3.5 h-3.5')} />}
                   </div>
+                </div>
               </div>
             </button>
           );
