@@ -1,4 +1,5 @@
-export type MatchFormat = 'F5' | 'F7' | 'F11';
+import type { MatchFormat, Sport } from './sports';
+import { inferSportFromType } from './sports';
 
 export interface VenueFormat {
   type: MatchFormat;
@@ -8,79 +9,74 @@ export interface VenueFormat {
 export interface Venue {
   id: string;
   name: string;
-  displayName?: string; // Concise name for UI (e.g. 'ADIUR' instead of full name)
+  displayName?: string;
   address: string;
   city: string;
   lat: number;
   lng: number;
-  mapQuery?: string; // override for Google Maps search
-  aliases?: string[]; // alternative names like 'Hipódromo'
+  mapQuery?: string;
+  aliases?: string[];
   formats?: VenueFormat[];
 }
 
 export const ROSARIO_VENUES: Venue[] = [
   {
     id: 'adiur',
-    name: 'ADIUR Agrupación Deportiva Infantil Unión Rosario',
+    name: 'ADIUR Agrupacion Deportiva Infantil Union Rosario',
     displayName: 'ADIUR',
     address: 'Av. Alberdi 30 Bis, Rosario',
     city: 'Rosario',
-    mapQuery: 'ADIUR Agrupación Deportiva Infantil Unión Rosario',
+    mapQuery: 'ADIUR Agrupacion Deportiva Infantil Union Rosario',
     lat: -32.92991583849577,
     lng: -60.67460062260593,
     aliases: ['adiur', 'alberdi', 'mongsfeld'],
     formats: [
       { type: 'F7', pricePerPlayer: 6500 },
-      { type: 'F11', pricePerPlayer: 7500 }
+      { type: 'F11', pricePerPlayer: 7500 },
     ],
   },
   {
     id: 'olimpicus',
     name: 'Olimpicus',
     displayName: 'Olimpicus',
-    address: 'Tucumán 3140, Rosario',
+    address: 'Tucuman 3140, Rosario',
     city: 'Rosario',
-    mapQuery: 'Olimpicus Rosario Tucumán',
+    mapQuery: 'Olimpicus Rosario Tucuman',
     lat: -32.937213,
     lng: -60.655214,
     aliases: ['olimpicus'],
-    formats: [
-      { type: 'F5', pricePerPlayer: 7000 }
-    ],
+    formats: [{ type: 'F5', pricePerPlayer: 7000 }],
   },
   {
     id: 'el-ovalo',
-    name: 'El Óvalo Sports',
-    displayName: 'El Óvalo',
+    name: 'El Ovalo Sports',
+    displayName: 'El Ovalo',
     address: 'Av. Dante Alighieri 2485, Rosario',
     city: 'Rosario',
-    mapQuery: 'El Óvalo Sports Rosario',
+    mapQuery: 'El Ovalo Sports Rosario',
     lat: -32.962106518121615,
     lng: -60.661848158713866,
-    aliases: ['ovalo', 'hipodromo', 'hipódromo', 'hipodromo independencia'],
+    aliases: ['ovalo', 'hipodromo', 'hipodromo independencia'],
     formats: [
       { type: 'F5', pricePerPlayer: 6500 },
       { type: 'F7', pricePerPlayer: 8000 },
-      { type: 'F11', pricePerPlayer: 9000 }
+      { type: 'F11', pricePerPlayer: 9000 },
     ],
   },
   {
     id: 'la-cancha',
     name: 'La Cancha',
     displayName: 'La Cancha',
-    address: 'España 1855, Rosario',
+    address: 'Espana 1855, Rosario',
     city: 'Rosario',
-    mapQuery: 'Stadium Fútbol 5 Rosario',
+    mapQuery: 'Stadium Futbol 5 Rosario',
     lat: -32.9463,
     lng: -60.6521,
     aliases: ['la cancha', 'stadium'],
-    formats: [
-      { type: 'F5', pricePerPlayer: 7000 }
-    ],
+    formats: [{ type: 'F5', pricePerPlayer: 7000 }],
   },
 ];
 
-// Helper to normalize strings for comparison
 export const normalizeVenueString = (s: string) =>
   s
     .toLowerCase()
@@ -88,7 +84,18 @@ export const normalizeVenueString = (s: string) =>
     .replace(/[\u0300-\u036f]/g, '')
     .trim();
 
-// Centralized lookup helper
+export function getVenueSports(venue: Venue): Sport[] {
+  const sports = new Set<Sport>();
+  (venue.formats || []).forEach((format) => {
+    sports.add(inferSportFromType(format.type));
+  });
+  return Array.from(sports);
+}
+
+export function venueSupportsSport(venue: Venue, sport: Sport) {
+  return getVenueSports(venue).includes(sport);
+}
+
 export const findVenueByLocation = (location: string): Venue | undefined => {
   if (!location) return undefined;
   const loc = normalizeVenueString(location);
@@ -97,22 +104,18 @@ export const findVenueByLocation = (location: string): Venue | undefined => {
     const vName = normalizeVenueString(v.name);
     const vAddr = normalizeVenueString(v.address);
 
-    // Exact matches
     if (loc === vName || loc === vAddr) return true;
-
-    // Name-based partial matches
     if (vName.includes(loc) || loc.includes(vName)) return true;
 
-    // Alias-based matches
     if (
       v.aliases?.some((alias) => {
         const normalizedAlias = normalizeVenueString(alias);
         return loc.includes(normalizedAlias) || normalizedAlias.includes(loc);
       })
-    )
+    ) {
       return true;
+    }
 
-    // Street-based matches (fallback)
     const vAddrShort = normalizeVenueString(v.address.split(',')[0]);
     if (loc.includes(vAddrShort) || vAddrShort.includes(loc)) return true;
 

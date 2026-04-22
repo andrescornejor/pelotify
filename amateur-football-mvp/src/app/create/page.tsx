@@ -29,11 +29,11 @@ import { useAuth } from '@/contexts/AuthContext';
 import { WeatherWidget } from '@/components/home';
 import { useQueryClient } from '@tanstack/react-query';
 import { queryKeys } from '@/lib/queryKeys';
-import { ROSARIO_VENUES, findVenueByLocation } from '@/lib/venues';
+import { ROSARIO_VENUES, findVenueByLocation, getVenueSports, venueSupportsSport, type Venue } from '@/lib/venues';
 import LocationSearch from '@/components/LocationSearch';
 import { cn } from '@/lib/utils';
 import { AVAILABLE_TIMES } from '@/lib/constants';
-import { getMaxPlayers, type MatchFormat, type Sport } from '@/lib/sports';
+import { getMaxPlayers, inferSportFromType, type MatchFormat, type Sport } from '@/lib/sports';
 
 const STEPS = ['Cancha', 'Cuándo', 'Detalles', 'Cobro', 'Confirmar'];
 
@@ -289,6 +289,28 @@ export default function CreateMatchPage() {
 
   const [shareInFeed, setShareInFeed] = useState(true);
 
+  const getBusinessSports = (businessId: string): Sport[] => {
+    const sports = new Set<Sport>();
+    dbFields
+      .filter((field) => field.business_id === businessId)
+      .forEach((field) => sports.add(inferSportFromType(field.type)));
+    return Array.from(sports);
+  };
+
+  const businessSupportsSport = (businessId: string, sport: Sport) => {
+    return getBusinessSports(businessId).includes(sport);
+  };
+
+  const getSelectedVenueSupportsSport = (sport: Sport) => {
+    if (!formData.location) return false;
+    if (formData.business_id) return businessSupportsSport(formData.business_id, sport);
+    const venue = findVenueByLocation(formData.location);
+    return venue ? venueSupportsSport(venue, sport) : true;
+  };
+
+  const filteredDbVenues = dbVenues.filter((venue) => businessSupportsSport(venue.id, formData.sport));
+  const filteredDefaultVenues = ROSARIO_VENUES.filter((venue) => venueSupportsSport(venue, formData.sport));
+
   useEffect(() => {
     // Escuchar cambios de cancha y fecha para obtener horarios ocupados
     const fetchBookings = async () => {
@@ -343,17 +365,19 @@ export default function CreateMatchPage() {
     const isNewVenue = address !== formData.location;
     if (isNewVenue) setPriceManuallyEdited(false);
 
-    if (formData.sport !== 'football') {
-      fieldId = '';
-    } else if (isRealDb && businessId) {
-       // Search first available field matching format, or any format
-       let validField = dbFields.find(f => f.business_id === businessId && f.type === formData.type);
-       if (!validField) validField = dbFields.find(f => f.business_id === businessId);
+    if (isRealDb && businessId) {
+       let validField = dbFields.find(
+         f => f.business_id === businessId && inferSportFromType(f.type) === formData.sport && f.type === formData.type
+       );
+       if (!validField) {
+         validField = dbFields.find(
+           f => f.business_id === businessId && inferSportFromType(f.type) === formData.sport
+         );
+       }
        
        if (validField) {
          newType = validField.type as any;
-         // Calcular por jugador dividiendo el total por el formato
-         const divider = validField.type === 'F5' ? 10 : validField.type === 'F7' ? 14 : validField.type === 'F11' ? 22 : 10;
+         const divider = getMaxPlayers(validField.type);
          newPrice = Math.round((validField.price_per_match || 0) / divider);
          fieldId = validField.id;
        }
@@ -392,12 +416,12 @@ export default function CreateMatchPage() {
     let newPrice = formData.price;
     let fieldId = formData.field_id;
 
-    if (formData.sport !== 'football') {
-      fieldId = '';
-    } else if (formData.business_id && venue) { // Real DB venue (canchas_businesses)
-      const formatData = dbFields.find(f => f.business_id === venue.id && f.type === type);
+    if (formData.business_id && venue) { // Real DB venue (canchas_businesses)
+      const formatData = dbFields.find(
+        f => f.business_id === venue.id && inferSportFromType(f.type) === formData.sport && f.type === type
+      );
       if (formatData) {
-        const divider = type === 'F5' ? 10 : type === 'F7' ? 14 : type === 'F11' ? 22 : 10;
+        const divider = getMaxPlayers(type);
         newPrice = Math.round((formatData.price_per_match || 0) / divider);
         fieldId = formatData.id;
       }
@@ -425,13 +449,18 @@ export default function CreateMatchPage() {
   const handleSportSelect = (sport: Sport) => {
     const defaultType = sport === 'football' ? 'F5' : sport === 'padel' ? 'PADEL' : 'BASKET';
     setPriceManuallyEdited(false);
+    const keepCurrentVenue = getSelectedVenueSupportsSport(sport);
     setFormData((prev) => ({
       ...prev,
       sport,
       type: defaultType,
-      field_id: sport === 'football' ? prev.field_id : '',
-      payment_method: sport === 'football' ? prev.payment_method : 'cash',
-      price: sport === 'football' ? prev.price : 0,
+      location: keepCurrentVenue ? prev.location : '',
+      business_id: keepCurrentVenue ? prev.business_id : '',
+      field_id: '',
+      price: keepCurrentVenue ? prev.price : 0,
+      time: keepCurrentVenue ? prev.time : '',
+      lat: keepCurrentVenue ? prev.lat : undefined,
+      lng: keepCurrentVenue ? prev.lng : undefined,
       missing_players: 0,
     }));
   };
@@ -671,10 +700,42 @@ ${matchUrl}`;
                   </p>
                 </div>
 
+                <div className="space-y-3">
+                  <span className="text-[10px] font-black text-foreground/30 uppercase tracking-[0.4em] px-1">
+                    Filtrar por deporte
+                  </span>
+                  <div className="flex flex-wrap gap-3">
+                    {([
+                      { sport: 'football' as Sport, label: 'Futbol', icon: '⚽' },
+                      { sport: 'basket' as Sport, label: 'Basket', icon: '🏀' },
+                      { sport: 'padel' as Sport, label: 'Padel', icon: '🎾' },
+                    ]).map(({ sport, label, icon }) => {
+                      const isSelected = formData.sport === sport;
+                      return (
+                        <button
+                          key={sport}
+                          type="button"
+                          onClick={() => handleSportSelect(sport)}
+                          className={cn(
+                            'px-4 py-3 rounded-2xl border text-[10px] font-black uppercase tracking-[0.25em] flex items-center gap-2 transition-all',
+                            isSelected
+                              ? 'border-primary bg-primary/[0.08] text-primary'
+                              : 'border-foreground/[0.06] bg-foreground/[0.02] text-foreground/40 hover:border-foreground/15'
+                          )}
+                        >
+                          <span className="text-base leading-none">{icon}</span>
+                          {label}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   {/* Real DB Venues go first */}
-                  {dbVenues.map((v) => {
+                  {filteredDbVenues.map((v) => {
                     const isSelected = formData.location === (v.address || v.name);
+                    const sports = getBusinessSports(v.id);
                     return (
                       <motion.button
                         key={v.id}
@@ -706,6 +767,16 @@ ${matchUrl}`;
                             <span className="text-[10px] font-bold uppercase tracking-widest text-foreground/25 block mt-0.5 truncate">
                               {v.address || "Complejo Pelotify"}
                             </span>
+                            <div className="flex flex-wrap gap-1.5 mt-3">
+                              {sports.map((sport) => (
+                                <span
+                                  key={sport}
+                                  className="px-2 py-1 rounded-full bg-foreground/[0.04] text-[8px] font-black uppercase tracking-widest text-foreground/40"
+                                >
+                                  {sport === 'football' ? 'Futbol' : sport === 'basket' ? 'Basket' : 'Padel'}
+                                </span>
+                              ))}
+                            </div>
                           </div>
                         </div>
                       </motion.button>
@@ -713,8 +784,9 @@ ${matchUrl}`;
                   })}
                   
                   {/* Hardcoded mock venues for fallback demonstration */}
-                  {ROSARIO_VENUES.map((venue, i) => {
+                  {filteredDefaultVenues.map((venue) => {
                     const isSelected = formData.location === venue.address;
+                    const sports = getVenueSports(venue);
                     return (
                       <motion.button
                         key={venue.id}
@@ -742,12 +814,33 @@ ${matchUrl}`;
                             <span className="text-[10px] font-bold uppercase tracking-widest text-foreground/25 block mt-0.5 truncate">
                               {venue.address}
                             </span>
+                            <div className="flex flex-wrap gap-1.5 mt-3">
+                              {sports.map((sport) => (
+                                <span
+                                  key={sport}
+                                  className="px-2 py-1 rounded-full bg-foreground/[0.04] text-[8px] font-black uppercase tracking-widest text-foreground/40"
+                                >
+                                  {sport === 'football' ? 'Futbol' : sport === 'basket' ? 'Basket' : 'Padel'}
+                                </span>
+                              ))}
+                            </div>
                           </div>
                         </div>
                       </motion.button>
                     );
                   })}
                 </div>
+
+                {filteredDbVenues.length === 0 && filteredDefaultVenues.length === 0 && (
+                  <div className="p-6 rounded-3xl border border-foreground/[0.06] bg-foreground/[0.02] text-center">
+                    <span className="block text-sm font-black italic uppercase tracking-tight text-foreground">
+                      No hay canchas cargadas para este deporte
+                    </span>
+                    <span className="block mt-2 text-[10px] font-bold uppercase tracking-widest text-foreground/35">
+                      Podés escribir una dirección manual o cambiar el filtro.
+                    </span>
+                  </div>
+                )}
 
                 {/* Custom location search */}
                 <motion.div
@@ -1098,7 +1191,7 @@ ${matchUrl}`;
                     Formato
                   </span>
                   <div className="grid grid-cols-3 gap-4">
-                    {dbFields.length === 0 && formData.business_id && formData.sport === 'football' ? (
+                    {dbFields.length === 0 && formData.business_id ? (
                       <div className="col-span-3 py-10 flex flex-col items-center justify-center gap-4 bg-foreground/[0.02] rounded-3xl border border-foreground/[0.04]">
                          <Loader2 className="w-8 h-8 text-primary animate-spin" />
                          <span className="text-[10px] font-black uppercase tracking-widest text-foreground/40">Cargando formatos de la sede...</span>
@@ -1113,10 +1206,13 @@ ${matchUrl}`;
                         return key === 'BASKET';
                       }).map(([key, data]) => {
                         let isAvailable = true;
-                        if (formData.sport !== 'football') {
-                          isAvailable = true;
-                        } else if (formData.business_id) {
-                          isAvailable = dbFields.some(f => f.business_id === formData.business_id && f.type === key);
+                        if (formData.business_id) {
+                          isAvailable = dbFields.some(
+                            f =>
+                              f.business_id === formData.business_id &&
+                              inferSportFromType(f.type) === formData.sport &&
+                              f.type === key
+                          );
                         } else {
                           const venue = findVenueByLocation(formData.location);
                           isAvailable = !venue?.formats || venue.formats.some((f: any) => f.type === key);
@@ -1387,11 +1483,9 @@ ${matchUrl}`;
                   <div className="grid grid-cols-2 gap-4">
                     <button
                       type="button"
-                      disabled={formData.sport !== 'football'}
                       onClick={() => setFormData({ ...formData, payment_method: 'mercado_pago' })}
                       className={cn(
                         "p-5 rounded-3xl border text-left transition-all duration-300 flex flex-col gap-3 relative overflow-hidden",
-                        formData.sport !== 'football' && "opacity-40 cursor-not-allowed",
                         formData.payment_method === 'mercado_pago'
                           ? "border-primary bg-primary/[0.08]"
                           : "border-foreground/[0.06] bg-foreground/[0.02] hover:border-foreground/15"
@@ -1406,7 +1500,7 @@ ${matchUrl}`;
                       <div>
                         <span className={cn("block text-sm font-black italic uppercase tracking-tight", formData.payment_method === 'mercado_pago' ? "text-foreground" : "text-foreground/30")}>Mercado Pago</span>
                         <span className={cn("block text-[10px] font-bold tracking-wide mt-0.5", formData.payment_method === 'mercado_pago' ? "text-foreground/50" : "text-foreground/15")}>
-                          {formData.sport === 'football' ? 'Asegura la cancha ahora' : 'Disponible para futbol'}
+                          Asegura la reserva online
                         </span>
                       </div>
                     </button>

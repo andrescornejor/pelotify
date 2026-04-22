@@ -35,6 +35,7 @@ import { AVAILABLE_TIMES } from '@/lib/constants';
 import Link from 'next/link';
 
 export default function CreateTournamentPage() {
+  type TournamentMatchType = 'F5' | 'F7' | 'F11';
   const router = useRouter();
   const { user } = useAuth();
   const [loading, setLoading] = useState(false);
@@ -93,19 +94,20 @@ export default function CreateTournamentPage() {
 
     if (isRealDb && businessId) {
         let validField = dbFields.find(f => f.business_id === businessId && f.type === formData.type);
-        if (!validField) validField = dbFields.find(f => f.business_id === businessId);
+        if (!validField) validField = dbFields.find(f => f.business_id === businessId && ['F5', 'F7', 'F11'].includes(f.type));
         if (validField) {
             const divider = validField.type === 'F5' ? 10 : validField.type === 'F7' ? 14 : 22;
             newMatchFee = Math.round((validField.price_per_match || 0) / divider);
             fieldId = validField.id;
-            type = validField.type as any;
+            type = validField.type as TournamentMatchType;
         }
     } else {
         const venue = findVenueByLocation(address);
         if (venue?.formats) {
-            const format = venue.formats.find((f: any) => f.type === type) || venue.formats[0];
+            const footballFormats = venue.formats.filter((f: any) => ['F5', 'F7', 'F11'].includes(f.type));
+            const format = footballFormats.find((f: any) => f.type === type) || footballFormats[0];
             if (format) {
-                type = format.type;
+                type = format.type as TournamentMatchType;
                 newMatchFee = format.pricePerPlayer;
             }
         }
