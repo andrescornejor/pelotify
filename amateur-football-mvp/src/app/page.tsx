@@ -40,9 +40,11 @@ import { getHighlights, Highlight } from '@/lib/highlights';
 import LandingPage from '@/components/LandingPage';
 import { StatCard, TeamCard, RankBadgeInline, EmptyState, SectionDivider, LazyVideo, HomePageSkeleton, VenueCard, RANKS, getRankByElo, WeatherWidget, CalendarButton, SportsAnnouncementBanner, SportSelector } from '@/components/home';
 import { useHomeData } from '@/hooks/useHomeData';
+import { useUserMatches } from '@/hooks/useMatchQueries';
 import { useEffect, useMemo, useState } from 'react';
 import { getFormatMeta, getMatchSport, getSportMeta, SPORT_META, type Sport } from '@/lib/sports';
 import { getGoalLabel, getUsageSnapshot, getUserPreferences, recommendMatches } from '@/lib/personalization';
+import type { Match } from '@/lib/matches';
 
 // --- TYPES & CONSTANTS (extracted to @/components/home) ---
 
@@ -58,13 +60,13 @@ export default function HomePage() {
   const { data: homeData, isLoading: isDataLoading } = useHomeData(user?.id);
 
   const userTeams = homeData?.userTeams || [];
-  const nextMatch = homeData?.nextMatch || null;
   const recommendationPool = homeData?.recommendedMatches || [];
   const activities = homeData?.activities || [];
   const totalPlayers = homeData?.totalPlayers || 0;
   const highlights = homeData?.highlights || [];
   const featuredVenues = homeData?.featuredVenues || [];
   const recentPosts = homeData?.recentPosts || [];
+  const { data: userMatches = [] } = useUserMatches(user?.id);
   const [selectedSport, setSelectedSport] = useState<Sport>('football');
   const focusSportMeta = getSportMeta(selectedSport);
 
@@ -74,19 +76,6 @@ export default function HomePage() {
     if (selectedSport === 'basket') return { accent: '#f97316', accentDark: '#c2410c', accentRgb: '249, 115, 22', gradient: 'from-orange-500/20 via-amber-500/10' };
     return { accent: '#2cfc7d', accentDark: '#1a9a4a', accentRgb: '44, 252, 125', gradient: 'from-emerald-500/20 via-teal-500/10' };
   }, [selectedSport]);
-
-  const nextMatchSport = nextMatch ? getMatchSport(nextMatch) : 'football';
-  const nextMatchFormat = nextMatch ? getFormatMeta(nextMatch.type, nextMatchSport) : null;
-  const nextMatchMeta = SPORT_META[nextMatchSport];
-
-  // Sync selected sport with next match ONLY if it's the first render and they have a match
-  const [hasSynced, setHasSynced] = useState(false);
-  useEffect(() => {
-    if (!hasSynced && nextMatchSport !== 'football') {
-      setSelectedSport(nextMatchSport);
-      setHasSynced(true);
-    }
-  }, [nextMatchSport, hasSynced]);
 
   const [greeting, setGreeting] = useState('');
   const [countdownText, setCountdownText] = useState<string | null>(null);
@@ -115,13 +104,19 @@ export default function HomePage() {
 
   // Handle Countdown Update
   useEffect(() => {
-    if (!nextMatch) {
+    if (!userMatches.length) {
       setCountdownText(null);
       return;
     }
 
     const updateCountdown = () => {
-      const target = new Date(`${nextMatch.date}T${nextMatch.time}`);
+      const selectedNextMatch = getNextSportMatch(userMatches, selectedSport);
+      if (!selectedNextMatch) {
+        setCountdownText(null);
+        return;
+      }
+
+      const target = new Date(`${selectedNextMatch.date}T${selectedNextMatch.time}`);
       const now = new Date();
       const diff = target.getTime() - now.getTime();
 
@@ -148,31 +143,72 @@ export default function HomePage() {
     updateCountdown();
     const interval = setInterval(updateCountdown, 60000);
     return () => clearInterval(interval);
-  }, [nextMatch]);
+  }, [userMatches, selectedSport]);
 
 
   const metadata = user?.user_metadata || {};
   const userPreferences = useMemo(() => getUserPreferences(metadata), [metadata]);
   const usageSnapshot = useMemo(() => getUsageSnapshot(), [user?.id]);
+  const selectedSportMatches = useMemo(
+    () => userMatches.filter((match) => getMatchSport(match) === selectedSport),
+    [userMatches, selectedSport]
+  );
+  const nextMatch = useMemo(
+    () => getNextSportMatch(userMatches, selectedSport),
+    [userMatches, selectedSport]
+  );
+  const nextMatchSport = nextMatch ? getMatchSport(nextMatch) : selectedSport;
+  const nextMatchFormat = nextMatch ? getFormatMeta(nextMatch.type, nextMatchSport) : null;
+  const nextMatchMeta = SPORT_META[nextMatchSport];
   const userPreferencesForRecommendation = useMemo(() => ({
     ...userPreferences,
     favoriteSports: [selectedSport, ...userPreferences.favoriteSports.filter(s => s !== selectedSport)]
   }), [userPreferences, selectedSport]);
 
   const recommendedMatches = useMemo(
-    () => recommendMatches(recommendationPool, userPreferencesForRecommendation, 3),
-    [recommendationPool, userPreferencesForRecommendation]
+    () =>
+      recommendMatches(
+        recommendationPool.filter((match) => getMatchSport(match) === selectedSport),
+        userPreferencesForRecommendation,
+        3
+      ),
+    [recommendationPool, selectedSport, userPreferencesForRecommendation]
   );
+
+  const sportStatsSummary = useMemo(() => {
+    const completed = selectedSportMatches.filter((match) => match.is_completed);
+    const upcoming = selectedSportMatches.filter((match) => !match.is_completed);
+    const wins = completed.filter((match) => {
+      const scoreA = match.team_a_score ?? 0;
+      const scoreB = match.team_b_score ?? 0;
+      if (match.user_team === 'A') return scoreA > scoreB;
+      if (match.user_team === 'B') return scoreB > scoreA;
+      return false;
+    }).length;
+    const losses = completed.filter((match) => {
+      const scoreA = match.team_a_score ?? 0;
+      const scoreB = match.team_b_score ?? 0;
+      if (match.user_team === 'A') return scoreA < scoreB;
+      if (match.user_team === 'B') return scoreB < scoreA;
+      return false;
+    }).length;
+    const draws = completed.length - wins - losses;
+    const winRate = completed.length > 0 ? Math.round((wins / completed.length) * 100) : 0;
+
+    return {
+      totalMatches: completed.length,
+      upcomingMatches: upcoming.length,
+      wins,
+      losses,
+      draws,
+      winRate,
+    };
+  }, [selectedSportMatches]);
 
   const statsSummary = useMemo(() => {
     const elo = metadata?.elo || 0;
-    const totalMatches = metadata?.matches || 0;
-    const matchesWon = metadata?.matches_won || 0;
-    const winRate =
-      totalMatches > 0 ? Math.min(100, Math.round((matchesWon / totalMatches) * 100)) : 0;
-
-    return { elo, totalMatches, matchesWon, winRate };
-  }, [metadata]);
+    return { elo, ...sportStatsSummary };
+  }, [metadata, sportStatsSummary]);
 
   const rankCalculation = useMemo(() => {
     const info = getRankByElo(statsSummary.elo);
@@ -241,28 +277,28 @@ export default function HomePage() {
   const statCardsData = useMemo(
     () => [
       {
-        icon: Trophy,
-        label: 'Rango Actual',
-        value: rankCalculation.rank.name,
-        color: rankCalculation.rank.hex,
-        glow: rankCalculation.rank.glow,
-        tooltip: 'Tu rango competitivo',
-      },
-      {
         icon: Activity,
-        label: 'Partidos',
+        label: `${focusSportMeta.shortLabel} jugados`,
         value: statsSummary.totalMatches,
-        color: '#6366f1',
-        glow: 'rgba(99,102,241,0.2)',
-        tooltip: 'Partidos jugados',
+        color: sportTheme.accent,
+        glow: `rgba(${sportTheme.accentRgb},0.2)`,
+        tooltip: `Partidos completados en ${focusSportMeta.label}`,
       },
       {
-        icon: Star,
-        label: 'MVPs',
-        value: metadata?.mvp_count || 0,
+        icon: Trophy,
+        label: 'Ganados',
+        value: statsSummary.wins,
         color: '#f59e0b',
         glow: 'rgba(245,158,11,0.2)',
-        tooltip: 'Veces elegido MVP',
+        tooltip: `Victorias en ${focusSportMeta.label}`,
+      },
+      {
+        icon: Calendar,
+        label: 'Próximos',
+        value: statsSummary.upcomingMatches,
+        color: '#6366f1',
+        glow: 'rgba(99,102,241,0.2)',
+        tooltip: `Partidos pendientes de ${focusSportMeta.label}`,
       },
       {
         icon: TrendingUp,
@@ -270,10 +306,10 @@ export default function HomePage() {
         value: `${statsSummary.winRate}%`,
         color: '#f43f5e',
         glow: 'rgba(244,63,94,0.2)',
-        tooltip: 'Tu efectividad de victoria',
+        tooltip: `Tu efectividad en ${focusSportMeta.label}`,
       },
     ],
-    [statsSummary, metadata?.mvp_count]
+    [focusSportMeta.label, focusSportMeta.shortLabel, sportTheme.accent, sportTheme.accentRgb, statsSummary]
   );
 
   if (isLoading) {
@@ -496,8 +532,8 @@ export default function HomePage() {
 
                 <div className="grid grid-cols-2 gap-4 pt-2">
                   {[
-                    { label: 'Rango', value: rankCalculation.rank.name, color: rankCalculation.rank.color, icon: Trophy },
-                    { label: 'Partidos', value: statsSummary.totalMatches, color: 'text-accent', icon: Calendar },
+                    { label: `${focusSportMeta.shortLabel}`, value: `${statsSummary.totalMatches} jug.`, color: 'text-accent', icon: Calendar },
+                    { label: 'Win Rate', value: `${statsSummary.winRate}%`, color: 'text-primary', icon: TrendingUp },
                   ].map((item, idx) => (
                     <div key={idx} className="space-y-0.5">
                       <p className="text-[8px] font-black text-foreground/40 uppercase tracking-[0.2em] flex items-center gap-1">
@@ -698,16 +734,16 @@ export default function HomePage() {
                 >
                   {[
                     {
-                      label: 'Rango Actual',
-                      value: rankCalculation.rank.name,
-                      color: rankCalculation.rank.color,
-                      icon: Trophy,
-                    },
-                    {
-                      label: 'Partidos Jugados',
+                      label: `${focusSportMeta.shortLabel} jugados`,
                       value: statsSummary.totalMatches,
                       color: 'text-accent',
                       icon: Calendar,
+                    },
+                    {
+                      label: 'Victorias',
+                      value: statsSummary.wins,
+                      color: 'text-primary',
+                      icon: Trophy,
                     },
                   ].map((item, idx) => (
                     <div key={idx} className={cn("space-y-1", idx === 2 && "hidden sm:block")}>
@@ -1135,9 +1171,9 @@ export default function HomePage() {
 
                         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-4">
                           {[
-                            { icon: Activity, color: '#2cfc7d', label: 'Partidos', value: statsSummary.totalMatches },
-                            { icon: Target, color: '#f59e0b', label: 'Goles', value: metadata?.goals || 0 },
-                            { icon: Award, color: '#6366f1', label: 'Honores', value: metadata?.mvp_count || 0 },
+                            { icon: Activity, color: sportTheme.accent, label: `${focusSportMeta.shortLabel}`, value: statsSummary.totalMatches },
+                            { icon: Trophy, color: '#f59e0b', label: 'Ganados', value: statsSummary.wins },
+                            { icon: Award, color: '#6366f1', label: 'Próximos', value: statsSummary.upcomingMatches },
                           ].map((item, i) => (
                             <div key={i} className="flex items-center gap-4 p-4 rounded-2xl bg-foreground/[0.02] border border-foreground/15 group hover:bg-foreground/[0.04] transition-colors">
                               <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0" style={{ backgroundColor: `${item.color}15` }}>
@@ -1163,7 +1199,7 @@ export default function HomePage() {
                           Feed de Actividad
                         </h2>
                         <span className="text-[9px] font-semibold text-foreground/40 tracking-wide font-kanit">
-                          Comunidad en tiempo real
+                          Comunidad de {focusSportMeta.label} en tiempo real
                         </span>
                       </div>
                       <Activity className="w-5 h-5 text-primary/30" />
@@ -1242,12 +1278,12 @@ export default function HomePage() {
                 >
                   <div className="flex items-center justify-between px-1">
                     <div className="flex flex-col gap-1">
-                      <h2 className="text-xl lg:text-2xl font-black text-foreground italic uppercase tracking-tighter font-kanit">
-                        Lo último en 3erTiempo
-                      </h2>
-                      <span className="text-[9px] font-semibold text-foreground/40 tracking-wide font-kanit">
-                        Comunidad activa en Pelotify
-                      </span>
+                        <h2 className="text-xl lg:text-2xl font-black text-foreground italic uppercase tracking-tighter font-kanit">
+                          Lo último en 3erTiempo
+                        </h2>
+                        <span className="text-[9px] font-semibold text-foreground/40 tracking-wide font-kanit">
+                          Conversaciones y posteos alrededor de {focusSportMeta.label}
+                        </span>
                     </div>
                     <Link href="/feed" className="group flex items-center gap-2 px-5 py-2.5 rounded-full text-[9px] font-black text-white hover:text-primary transition-all tracking-[0.2em] uppercase glass-premium border-primary/20 hover:border-primary/50 shadow-lg shadow-primary/5">
                       VER MURO <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
@@ -1709,4 +1745,17 @@ export default function HomePage() {
       </div>
     </main>
   );
+}
+
+function getNextSportMatch(matches: Array<Partial<Match>>, sport: Sport) {
+  const now = Date.now();
+
+  return matches
+    .filter((match) => getMatchSport(match) === sport && !match.is_completed && match.date && match.time)
+    .sort((left, right) => {
+      const leftTime = new Date(`${left.date}T${left.time}`).getTime();
+      const rightTime = new Date(`${right.date}T${right.time}`).getTime();
+      return leftTime - rightTime;
+    })
+    .find((match) => new Date(`${match.date}T${match.time}`).getTime() >= now) || null;
 }
