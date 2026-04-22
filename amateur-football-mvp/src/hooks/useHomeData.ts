@@ -4,13 +4,15 @@ import { useQuery } from '@tanstack/react-query';
 import { queryKeys } from '@/lib/queryKeys';
 import { supabase } from '@/lib/supabase';
 import { getHighlights } from '@/lib/highlights';
+import type { Match } from '@/lib/matches';
 
 type HomeEntity = Record<string, unknown>;
+type HomeMatch = Partial<Match> & HomeEntity;
 
 interface HomeData {
   userTeams: HomeEntity[];
-  nextMatch: HomeEntity | null;
-  recommendedMatches: HomeEntity[];
+  nextMatch: HomeMatch | null;
+  recommendedMatches: HomeMatch[];
   totalPlayers: number;
   activities: HomeEntity[];
   highlights: HomeEntity[];
@@ -80,13 +82,13 @@ async function fetchHomeData(userId: string): Promise<HomeData> {
 
   let nextMatch = null;
   if (matchesRes.data?.[0]) {
-    const m = (matchesRes.data[0] as { matches: HomeEntity | HomeEntity[] }).matches;
-    nextMatch = Array.isArray(m) ? m[0] : m;
+    const m = (matchesRes.data[0] as { matches: HomeMatch | HomeMatch[] }).matches;
+    nextMatch = (Array.isArray(m) ? m[0] : m) || null;
   }
 
   const recommendedMatches = (recommendedMatchesRes.data || []).filter(
     (match) => match.creator_id !== userId && match.id !== nextMatch?.id
-  );
+  ) as HomeMatch[];
   const totalPlayers = playersCountRes.count || 0;
 
   const activities = recentProfilesRes.data
