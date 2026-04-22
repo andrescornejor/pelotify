@@ -1826,7 +1826,7 @@ export default function HomePage() {
                       <div className="space-y-3 relative z-10 group-hover/agenda:-translate-y-1 transition-transform duration-700">
                         <h4 className="text-3xl font-black italic uppercase tracking-tighter text-foreground/80 font-kanit">Agenda Libre</h4>
                         <p className="text-[11px] font-medium text-foreground/40 tracking-wide leading-relaxed max-w-[240px] mx-auto">
-                          No hay encuentros programados.<br />BuscÃ¡ uno nuevo o armalo desde cero.
+                          No hay encuentros programados.<br />Buscá uno nuevo o armalo desde cero.
                         </p>
                       </div>
 
