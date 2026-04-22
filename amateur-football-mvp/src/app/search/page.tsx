@@ -126,41 +126,41 @@ export default function SearchPage() {
                 Sintonizando Frecuencias
               </span>
             </div>
-            <h1 className="text-4xl sm:text-5xl lg:text-7xl font-black italic text-foreground uppercase tracking-tightest leading-none">
+            <h1 className="text-3xl sm:text-5xl lg:text-7xl font-black italic text-foreground uppercase tracking-tightest leading-none">
               Radar de <span className="text-foreground/20">Partidos</span>
             </h1>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-end">
-            <div className="lg:col-span-8 space-y-6">
-              <div className="relative group">
-                <div className="absolute inset-y-0 left-7 flex items-center pointer-events-none">
-                  <Search className="w-6 h-6 text-foreground/20 group-focus-within:text-primary transition-all duration-500" />
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 lg:gap-6 items-end">
+            <div className="lg:col-span-8 space-y-4 lg:space-y-6 flex flex-col">
+              <div className="relative group w-full">
+                <div className="absolute inset-y-0 left-5 lg:left-7 flex items-center pointer-events-none">
+                  <Search className="w-5 h-5 lg:w-6 lg:h-6 text-foreground/20 group-focus-within:text-primary transition-all duration-500" />
                 </div>
                 <input
                   type="text"
-                  placeholder="Buscá canchas, zonas o tipo de partido..."
+                  placeholder="Buscar canchas, zonas..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full h-16 lg:h-20 pl-16 lg:pl-20 pr-10 rounded-[1.8rem] lg:rounded-[2.5rem] bg-foreground/[0.03] border border-foreground/10 focus:bg-foreground/[0.05] focus:border-primary/30 outline-none transition-all text-lg lg:text-xl font-black text-foreground placeholder:text-foreground/20 placeholder:italic shadow-2xl focus:shadow-primary/5"
+                  className="w-full h-14 lg:h-20 pl-14 lg:pl-20 pr-12 rounded-2xl lg:rounded-[2.5rem] bg-foreground/[0.03] border border-foreground/10 focus:bg-foreground/[0.05] focus:border-primary/30 outline-none transition-all text-base lg:text-xl font-black text-foreground placeholder:text-foreground/20 placeholder:italic shadow-inner focus:shadow-primary/5"
                 />
-                <div className="absolute inset-y-0 right-10 flex items-center">
-                  <Filter className="w-6 h-6 text-primary cursor-pointer hover:text-primary transition-colors" />
+                <div className="absolute inset-y-0 right-4 lg:right-10 flex items-center">
+                  <Filter className="w-5 h-5 lg:w-6 lg:h-6 text-primary cursor-pointer hover:text-primary transition-colors" />
                 </div>
               </div>
 
               {/* Advanced Filters */}
-              <div className="flex flex-wrap items-center gap-3 px-2">
-                <div className="flex items-center p-1 bg-foreground/5 rounded-2xl border border-foreground/5 gap-1">
+              <div className="flex overflow-x-auto no-scrollbar items-center gap-2 lg:gap-3 pb-2 -mx-3 px-3 sm:mx-0 sm:px-2 snap-x w-screen sm:w-full" style={{ scrollbarWidth: 'none', WebkitOverflowScrolling: 'touch' }}>
+                <div className="flex items-center p-1 bg-foreground/5 rounded-2xl border border-foreground/5 gap-1 shrink-0 snap-start">
                   {(['All', 'F5', 'F7', 'F11'] as const).map((type) => (
                     <button
                       key={type}
                       onClick={() => setTypeFilter(type)}
                       className={cn(
-                        'px-5 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest italic transition-all',
+                        'px-4 lg:px-5 py-2 lg:py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest italic transition-all',
                         typeFilter === type
                           ? 'bg-primary text-black shadow-lg shadow-primary/20'
-                          : 'text-foreground/40 hover:text-foreground/60 hover:bg-foreground/5'
+                          : 'text-foreground/50 hover:text-foreground border border-transparent hover:border-foreground/10'
                       )}
                     >
                       {type === 'All' ? 'TODOS' : type}
@@ -168,40 +168,40 @@ export default function SearchPage() {
                   ))}
                 </div>
 
-                <div className="h-8 w-px bg-foreground/10 mx-1 hidden sm:block" />
+                <div className="h-6 w-px bg-foreground/10 mx-1 hidden lg:block" />
 
                 <button
                   onClick={() => setOnlyAvailable(!onlyAvailable)}
                   className={cn(
-                    'flex items-center gap-3 px-6 py-3.5 rounded-2xl border transition-all text-[10px] font-black uppercase tracking-widest italic',
+                    'flex items-center gap-2 lg:gap-3 px-5 lg:px-6 py-2.5 lg:py-3.5 rounded-2xl border transition-all text-[10px] font-black uppercase tracking-widest italic shrink-0 snap-start',
                     onlyAvailable
                       ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400 shadow-lg shadow-emerald-500/5'
-                      : 'bg-foreground/5 border-foreground/5 text-foreground/40 hover:border-foreground/10'
+                      : 'bg-foreground/5 border-foreground/5 text-foreground/50 hover:text-foreground hover:border-foreground/10'
                   ) + ' active:scale-95'}
                 >
-                  Solo con cupo
+                  <Users className="w-3.5 h-3.5" /> Cupos
                 </button>
 
-                <div className="h-8 w-px bg-foreground/10 mx-1 hidden sm:block" />
+                <div className="h-6 w-px bg-foreground/10 mx-1 hidden lg:block" />
 
-                <div className="flex items-center gap-4 bg-foreground/5 p-1 px-4 rounded-2xl border border-foreground/5">
+                <div className="flex items-center gap-3 lg:gap-4 bg-foreground/5 p-1 px-3 lg:px-4 rounded-2xl border border-foreground/5 shrink-0 snap-start mr-3 sm:mr-0">
                   <div className="flex flex-col gap-0.5">
-                    <span className="text-[8px] font-black text-foreground/30 uppercase tracking-widest leading-none">Radio (km)</span>
+                    <span className="text-[8px] font-black text-foreground/40 uppercase tracking-widest leading-none">Cercanía</span>
                     <input
                       type="range"
                       min="1"
                       max="50"
                       value={radiusFilter || 0}
                       onChange={(e) => setRadiusFilter(parseInt(e.target.value))}
-                      className="w-24 h-1.5 bg-foreground/10 rounded-full appearance-none cursor-pointer accent-primary"
+                      className="w-20 lg:w-24 h-1.5 bg-foreground/10 rounded-full appearance-none cursor-pointer accent-primary"
                     />
                   </div>
-                  <span className="text-[10px] font-black text-primary w-8 italic">{radiusFilter || '∞'}k</span>
+                  <span className="text-[10px] font-black text-primary w-6 lg:w-8 italic">{radiusFilter || '∞'}k</span>
                   <button
                     onClick={handleLocateMe}
                     className={cn(
                       "p-2 rounded-xl transition-all active:scale-95",
-                      userLocation ? "bg-primary text-black" : "bg-foreground/10 text-foreground/40 hover:bg-foreground/20"
+                      userLocation ? "bg-primary text-black" : "bg-foreground/10 text-foreground/40 hover:bg-foreground/20 hover:text-foreground"
                     )}
                     title="Usar mi ubicación GPS"
                   >
@@ -213,24 +213,24 @@ export default function SearchPage() {
 
             <div className="lg:col-span-4 self-center lg:self-end">
               {/* Tab Switcher */}
-              <div className="flex p-1 bg-foreground/5 rounded-2xl border border-foreground/5 relative h-14 items-center">
+              <div className="flex p-1 bg-foreground/5 rounded-2xl border border-foreground/5 relative h-12 lg:h-14 items-center">
                 <button
                   onClick={() => setActiveTab('list')}
                   className={cn(
                     'flex-1 h-full text-[9px] font-black uppercase tracking-[0.1em] rounded-xl transition-all relative z-10 flex items-center justify-center gap-1.5 italic',
-                    activeTab === 'list' ? 'text-black' : 'text-foreground/40 hover:text-foreground/60'
+                    activeTab === 'list' ? 'text-black' : 'text-foreground/50 hover:text-foreground'
                   )}
                 >
-                  <LayoutGrid className="w-3 h-3" /> LISTA
+                  <LayoutGrid className="w-3.5 h-3.5" /> LISTA
                 </button>
                 <button
                   onClick={() => setActiveTab('map')}
                   className={cn(
                     'flex-1 h-full text-[9px] font-black uppercase tracking-[0.1em] rounded-xl transition-all relative z-10 flex items-center justify-center gap-1.5 italic',
-                    activeTab === 'map' ? 'text-black' : 'text-foreground/40 hover:text-foreground/60'
+                    activeTab === 'map' ? 'text-black' : 'text-foreground/50 hover:text-foreground'
                   )}
                 >
-                  <MapPin className="w-3 h-3" /> MAPA
+                  <MapPin className="w-3.5 h-3.5" /> MAPA
                 </button>
                 <motion.div
                   layoutId="radar-pill"
@@ -321,244 +321,265 @@ export default function SearchPage() {
                   {/* Radar Scan Line */}
                   <div className="absolute inset-y-0 left-0 w-1 bg-gradient-to-b from-transparent via-primary/40 to-transparent group-hover:h-full transition-all duration-700 pointer-events-none" />
 
-                  {/* ── LEFT SECTION: Context & Level ── */}
-                  <div className="flex lg:flex-col items-center lg:items-start justify-between lg:justify-center gap-2 lg:min-w-[150px] relative z-10 lg:border-r border-foreground/5 lg:pr-14">
-                    <div className="flex flex-row lg:flex-col gap-2">
-                      <div className="flex items-center gap-2 px-2.5 py-1 bg-primary/10 text-primary border border-primary/20 rounded-lg w-fit shadow-sm">
-                        <div className="w-1 h-1 rounded-full bg-primary animate-pulse" />
-                        <span className="text-[9px] font-black uppercase tracking-widest">
-                          {match.type}
-                        </span>
-                      </div>
-                      <div className="px-2.5 py-1 bg-blue-500/10 text-blue-400 border border-blue-500/20 rounded-lg text-[9px] font-black uppercase tracking-widest italic w-fit">
-                        {match.level}
-                      </div>
-                    </div>
-                    <div className="hidden lg:flex flex-col gap-1.5 mt-5">
-                      <span className="text-[9px] font-black uppercase text-foreground/30 tracking-[0.2em]">
-                        Despliegue
-                      </span>
-                      <div className="flex items-center gap-2.5 text-foreground">
-                        <Calendar className="w-3.5 h-3.5 text-primary/60" />
-                        <span className="text-[11px] font-black uppercase tracking-[0.15em] italic">
-                          {match.date}
-                        </span>
-                      </div>
-                      <div className="flex items-center gap-2.5 text-foreground/60 mt-0.5">
-                        <div className="w-3.5 h-3.5 flex items-center justify-center">
-                          <div className="w-1 h-1 rounded-full bg-foreground/30" />
-                        </div>
-                        <span className="text-[10px] font-bold uppercase tracking-widest">
-                          {match.time} HS
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* ── CENTER SECTION: Venue Info ── */}
-                  <div className="flex-1 relative z-10 space-y-1 lg:space-y-3 py-0 lg:py-0">
-                    {(() => {
-                      const venue = findVenueByLocation(match.location || '');
-                      const displayName = venue?.displayName || venue?.name || match.location;
-                      return (
-                        <div className="space-y-0.5 lg:space-y-2">
-                          <h3 className="font-black text-2xl lg:text-5xl text-foreground italic uppercase group-hover:text-primary transition-colors tracking-tighter leading-tight">
-                            {displayName}
-                          </h3>
-                          <div className="flex items-center gap-2">
-                            <div className="w-6 h-6 lg:w-8 lg:h-8 rounded-full bg-foreground/5 flex items-center justify-center border border-foreground/10">
-                              <MapPin className="w-3 h-3 lg:w-4 lg:h-4 text-foreground/40 group-hover:text-primary/60 transition-colors" />
-                            </div>
-                            <p className="text-[9px] lg:text-xs text-foreground/50 font-bold uppercase tracking-widest max-w-[200px] lg:max-w-sm truncate">
-                              {match.location}
-                            </p>
+                  {/* ── CARD CONTENT ── */}
+                  <div className="flex flex-col lg:flex-row items-stretch lg:items-center w-full relative z-10">
+                    
+                    {/* 📱 MOBILE VIEW (Compact & App-like) */}
+                    <div className="lg:hidden flex flex-col w-full gap-3">
+                      {/* Top Row: Context Tags & Time */}
+                      <div className="flex justify-between items-center bg-foreground/[0.03] p-2.5 -mx-2.5 -mt-2 rounded-[1rem] border border-foreground/5">
+                        <div className="flex gap-2">
+                          <div className="flex items-center gap-1.5 px-2.5 py-1 bg-primary/10 text-primary border border-primary/20 rounded-[0.5rem] shadow-sm">
+                            <div className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
+                            <span className="text-[10px] font-black uppercase tracking-widest mt-0.5">{match.type}</span>
+                          </div>
+                          <div className="px-2.5 py-1 bg-blue-500/10 text-blue-400 border border-blue-500/20 rounded-[0.5rem] text-[10px] font-black uppercase tracking-widest italic mt-0.5">
+                            {match.level}
                           </div>
                         </div>
-                      );
-                    })()}
-
-                    {/* Mobile Info Overlay (Single Line Tighter) */}
-                    <div className="lg:hidden flex justify-between items-center pt-2 mt-2 border-t border-foreground/5">
-                      <div className="flex items-center gap-1.5">
-                        <Calendar className="w-3 h-3 text-primary/40" />
-                        <span className="text-[10px] text-foreground/60 font-black uppercase italic tracking-widest">
-                          {match.date}
-                        </span>
+                        <div className="flex items-center gap-1.5 text-foreground/70 pr-1">
+                          <Calendar className="w-3.5 h-3.5 text-primary/70" />
+                          <span className="text-[10px] font-black uppercase tracking-widest italic mt-0.5">
+                            {match.date} • {match.time}
+                          </span>
+                        </div>
                       </div>
-                      <div className="flex items-center gap-2">
+
+                      {/* Main Center: Venue Info */}
+                      <div className="flex justify-between items-start pt-1 gap-4">
+                        {(() => {
+                          const venue = findVenueByLocation(match.location || '');
+                          const displayName = venue?.displayName || venue?.name || match.location;
+                          return (
+                            <div className="flex flex-col gap-1 flex-1 min-w-0">
+                              <h3 className="font-black text-2xl text-foreground italic uppercase leading-[0.95] tracking-tight truncate pb-1">
+                                {displayName}
+                              </h3>
+                              <div className="flex items-center gap-1.5 opacity-60">
+                                <MapPin className="w-3.5 h-3.5 text-foreground shrink-0" />
+                                <p className="text-[11px] text-foreground font-bold uppercase tracking-widest truncate">
+                                  {match.location}
+                                </p>
+                              </div>
+                            </div>
+                          );
+                        })()}
+                        <div className="flex flex-col items-end shrink-0 pl-3 border-l border-foreground/10 h-full justify-center">
+                          <span className="text-[8px] font-black uppercase text-foreground/40 tracking-[0.2em] mb-0.5">
+                            Valor
+                          </span>
+                          <div className="flex items-start gap-0.5 text-primary">
+                            <span className="text-[12px] font-black italic">$</span>
+                            <span className="text-xl font-black leading-none tracking-tighter italic tabular-nums">
+                              {match.price.toLocaleString()}
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Bottom Row: Details & Actions */}
+                      <div className="flex items-center justify-between gap-3 pt-3 mt-1 border-t border-foreground/5">
                         {(() => {
                           const maxPlayers = match.type === 'F5' ? 10 : match.type === 'F7' ? 14 : 22;
                           const currentPlayers = typeof match.participants?.[0] === 'number'
                             ? match.participants[0]
                             : (match.participants?.[0] as any)?.count ?? (match.participants?.length || 0);
                           const missing = Math.max(0, maxPlayers - currentPlayers);
+                          const percent = Math.min(100, (currentPlayers / maxPlayers) * 100);
 
                           return (
-                            <>
-                              <div
-                                className={cn(
-                                  'w-1.5 h-1.5 rounded-full',
-                                  missing > 0 ? 'bg-primary animate-pulse' : 'bg-zinc-700'
-                                )}
-                              />
-                              <span
-                                className={cn(
-                                  'text-[10px] font-black uppercase italic tracking-widest leading-none',
-                                  missing > 0 ? 'text-primary' : 'text-foreground/30'
-                                )}
-                              >
-                                {missing > 0 ? `Faltan ${missing}` : 'COMPLETO'}
-                              </span>
-                            </>
+                            <div className="flex flex-col gap-1.5 flex-1 max-w-[140px]">
+                               <div className="flex justify-between items-end">
+                                 <span className="text-[9px] font-black uppercase text-foreground/50 tracking-[0.2em] flex items-center gap-1.5">
+                                   <Users className="w-3.5 h-3.5" /> Cupos
+                                 </span>
+                                 <span className={cn("text-[10px] font-black uppercase tracking-widest italic", missing > 0 ? "text-primary" : "text-foreground/40")}>
+                                   {currentPlayers}/{maxPlayers}
+                                 </span>
+                               </div>
+                               <div className="w-full h-2 bg-foreground/10 rounded-full overflow-hidden border border-foreground/5">
+                                 <div className={cn("h-full rounded-full transition-all duration-700", percent >= 100 ? "bg-zinc-600" : "bg-primary")} style={{ width: `${percent}%` }} />
+                               </div>
+                            </div>
                           );
                         })()}
+
+                        <Link
+                          href={`/match?id=${match.id}`}
+                          className={cn(
+                            'h-11 px-5 rounded-[1rem] text-[10px] font-black uppercase tracking-[0.2em] transition-all flex items-center justify-center gap-2 active:scale-95 border min-w-[120px]',
+                            joinedIds.has(match.id)
+                              ? 'bg-foreground/5 text-foreground/50 border-foreground/10'
+                              : 'bg-primary text-black border-primary shadow-lg shadow-primary/20'
+                          )}
+                        >
+                          {joinedIds.has(match.id) ? (
+                            <>
+                              <CheckCircle2 className="w-3.5 h-3.5" />
+                              <span className="mt-0.5">UNIDO</span>
+                            </>
+                          ) : (
+                            <>
+                              <span className="mt-0.5">INGRESAR</span>
+                              <ChevronRight className="w-3.5 h-3.5" />
+                            </>
+                          )}
+                        </Link>
                       </div>
                     </div>
-                  </div>
 
-                  {/* ── DESKTOP DETAILS: Availability ── */}
-                  <div className="hidden lg:flex items-center gap-14 relative z-10 px-0 lg:px-4 border-l border-foreground/5 lg:min-w-[320px]">
-                    <div className="flex flex-col gap-4 w-full">
-                      <div className="flex justify-between items-end">
-                        <span className="text-[10px] font-black uppercase text-foreground/30 tracking-[0.2em]">
-                          Disponibilidad
-                        </span>
-                        {(() => {
-                          const maxPlayers = match.type === 'F5' ? 10 : match.type === 'F7' ? 14 : 22;
-                          const realPlayers = typeof match.participants?.[0] === 'number'
-                            ? match.participants[0]
-                            : (match.participants?.[0] as any)?.count ?? (match.participants?.length || 0);
-                          const missing = Math.max(0, maxPlayers - realPlayers);
-
-                          return (
-                            <span
-                              className={cn(
-                                'text-[11px] font-black uppercase tracking-widest italic',
-                                missing > 0 ? 'text-primary' : 'text-foreground/20'
-                              )}
-                            >
-                              {realPlayers} / {maxPlayers}
+                    {/* 💻 DESKTOP VIEW */}
+                    <div className="hidden lg:flex flex-row items-center justify-between w-full gap-14">
+                      {/* Left: Context */}
+                      <div className="flex flex-col items-start justify-center gap-2 min-w-[150px] border-r border-foreground/5 pr-14 h-full">
+                        <div className="flex flex-col gap-2">
+                          <div className="flex items-center gap-2 px-2.5 py-1 bg-primary/10 text-primary border border-primary/20 rounded-lg w-fit shadow-sm">
+                            <div className="w-1 h-1 rounded-full bg-primary animate-pulse" />
+                            <span className="text-[9px] font-black uppercase tracking-widest">
+                              {match.type}
                             </span>
+                          </div>
+                          <div className="px-2.5 py-1 bg-blue-500/10 text-blue-400 border border-blue-500/20 rounded-lg text-[9px] font-black uppercase tracking-widest italic w-fit">
+                            {match.level}
+                          </div>
+                        </div>
+                        <div className="flex flex-col gap-1.5 mt-5">
+                          <span className="text-[9px] font-black uppercase text-foreground/30 tracking-[0.2em]">
+                            Despliegue
+                          </span>
+                          <div className="flex items-center gap-2.5 text-foreground">
+                            <Calendar className="w-3.5 h-3.5 text-primary/60" />
+                            <span className="text-[11px] font-black uppercase tracking-[0.15em] italic">
+                              {match.date}
+                            </span>
+                          </div>
+                          <div className="flex items-center gap-2.5 text-foreground/60 mt-0.5">
+                            <div className="w-3.5 h-3.5 flex items-center justify-center">
+                              <div className="w-1 h-1 rounded-full bg-foreground/30" />
+                            </div>
+                            <span className="text-[10px] font-bold uppercase tracking-widest">
+                              {match.time} HS
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Center: Venue */}
+                      <div className="flex-1 space-y-3 py-0">
+                        {(() => {
+                          const venue = findVenueByLocation(match.location || '');
+                          const displayName = venue?.displayName || venue?.name || match.location;
+                          return (
+                            <div className="space-y-2">
+                              <h3 className="font-black text-5xl text-foreground italic uppercase group-hover:text-primary transition-colors tracking-tighter leading-tight truncate">
+                                {displayName}
+                              </h3>
+                              <div className="flex items-center gap-2">
+                                <div className="w-8 h-8 rounded-full bg-foreground/5 flex items-center justify-center border border-foreground/10">
+                                  <MapPin className="w-4 h-4 text-foreground/40 group-hover:text-primary/60 transition-colors" />
+                                </div>
+                                <p className="text-xs text-foreground/50 font-bold uppercase tracking-widest max-w-sm truncate">
+                                  {match.location}
+                                </p>
+                              </div>
+                            </div>
                           );
                         })()}
                       </div>
 
-                      {/* Progress Bar */}
-                      <div className="w-full h-2 bg-foreground/5 rounded-full overflow-hidden border border-foreground/5 relative">
-                        {(() => {
-                          const maxPlayers =
-                            match.type === 'F5' ? 10 : match.type === 'F7' ? 14 : 22;
-                          const countObj = match.participants?.[0];
-                          const currentPlayers =
-                            typeof countObj === 'number'
-                              ? countObj
-                              : countObj?.count !== undefined
-                                ? countObj.count
-                                : match.participants?.length || 0;
-                          const percent = (currentPlayers / maxPlayers) * 100;
-                          return (
-                            <motion.div
-                              initial={{ width: 0 }}
-                              whileInView={{ width: `${percent}%` }}
-                              transition={{ duration: 1, ease: 'circOut' }}
-                              className={cn(
-                                'h-full rounded-full transition-colors relative',
-                                percent >= 100 ? 'bg-zinc-700' : 'bg-primary'
-                              )}
-                            >
-                              {percent < 100 && (
-                                <div className="absolute inset-0 bg-white/20 animate-shimmer" />
-                              )}
-                            </motion.div>
-                          );
-                        })()}
+                      {/* Right: Details */}
+                      <div className="flex items-center gap-14 px-4 border-l border-foreground/5 min-w-[320px]">
+                        <div className="flex flex-col gap-4 w-full">
+                          <div className="flex justify-between items-end">
+                            <span className="text-[10px] font-black uppercase text-foreground/30 tracking-[0.2em]">
+                              Disponibilidad
+                            </span>
+                            {(() => {
+                              const maxPlayers = match.type === 'F5' ? 10 : match.type === 'F7' ? 14 : 22;
+                              const realPlayers = typeof match.participants?.[0] === 'number'
+                                ? match.participants[0]
+                                : (match.participants?.[0] as any)?.count ?? (match.participants?.length || 0);
+                              const missing = Math.max(0, maxPlayers - realPlayers);
+                              return (
+                                <span className={cn('text-[11px] font-black uppercase tracking-widest italic', missing > 0 ? 'text-primary' : 'text-foreground/20')}>
+                                  {realPlayers} / {maxPlayers}
+                                </span>
+                              );
+                            })()}
+                          </div>
+                          <div className="w-full h-2 bg-foreground/5 rounded-full overflow-hidden border border-foreground/5 relative">
+                            {(() => {
+                              const maxPlayers = match.type === 'F5' ? 10 : match.type === 'F7' ? 14 : 22;
+                              const countObj = match.participants?.[0];
+                              const currentPlayers = typeof countObj === 'number' ? countObj : countObj?.count !== undefined ? countObj.count : match.participants?.length || 0;
+                              const percent = (currentPlayers / maxPlayers) * 100;
+                              return (
+                                <motion.div
+                                  initial={{ width: 0 }}
+                                  whileInView={{ width: `${percent}%` }}
+                                  transition={{ duration: 1, ease: 'circOut' }}
+                                  className={cn('h-full rounded-full transition-colors relative', percent >= 100 ? 'bg-zinc-700' : 'bg-primary')}
+                                >
+                                  {percent < 100 && <div className="absolute inset-0 bg-white/20 animate-shimmer" />}
+                                </motion.div>
+                              );
+                            })()}
+                          </div>
+                          <div className="flex items-center gap-3">
+                            {(() => {
+                              const maxPlayers = match.type === 'F5' ? 10 : match.type === 'F7' ? 14 : 22;
+                              const countObj = match.participants?.[0];
+                              const currentPlayers = typeof countObj === 'number' ? countObj : countObj?.count !== undefined ? countObj.count : match.participants?.length || 0;
+                              const missing = Math.max(0, maxPlayers - currentPlayers);
+                              return (
+                                <>
+                                  <Users className={cn('w-5 h-5', missing > 0 ? 'text-primary animate-pulse' : 'text-foreground/10')} />
+                                  <span className={cn('text-xs font-black uppercase tracking-[0.2em] italic', missing > 0 ? 'text-foreground/40' : 'text-foreground/10')}>
+                                    {missing > 0 ? `Se buscan ${missing} pibes` : 'Pelotón completo'}
+                                  </span>
+                                </>
+                              );
+                            })()}
+                          </div>
+                        </div>
+
+                        <div className="flex flex-col items-end min-w-[140px] border-l border-foreground/5 pl-14">
+                          <span className="text-[9px] font-black uppercase text-foreground/20 tracking-[0.2em] mb-1.5">
+                            Matrícula
+                          </span>
+                          <div className="flex items-baseline gap-0.5">
+                            <span className="text-[14px] font-black text-foreground/40 italic">$</span>
+                            <span className="text-5xl font-black text-foreground leading-none tracking-tighter italic tabular-nums group-hover:text-primary/90 transition-colors">
+                              {match.price.toLocaleString()}
+                            </span>
+                          </div>
+                        </div>
                       </div>
 
-                      <div className="flex items-center gap-3">
-                        {(() => {
-                          const maxPlayers =
-                            match.type === 'F5' ? 10 : match.type === 'F7' ? 14 : 22;
-                          const countObj = match.participants?.[0];
-                          const currentPlayers =
-                            typeof countObj === 'number'
-                              ? countObj
-                              : countObj?.count !== undefined
-                                ? countObj.count
-                                : match.participants?.length || 0;
-                          const missing = Math.max(0, maxPlayers - currentPlayers);
-                          return (
+                      {/* Action */}
+                      <div className="w-[300px] flex flex-col gap-5 pl-10 border-l border-foreground/5">
+                        <Link
+                          href={`/match?id=${match.id}`}
+                          className={cn(
+                            'w-full h-24 rounded-[2.2rem] text-[12px] font-black uppercase tracking-[0.3em] transition-all text-center flex items-center justify-center gap-3 active:scale-95 shadow-xl relative overflow-hidden',
+                            joinedIds.has(match.id)
+                              ? 'bg-foreground/5 text-foreground/40 border border-foreground/5'
+                              : 'bg-primary text-black shadow-primary/20 hover:bg-white hover:text-black transition-colors'
+                          )}
+                        >
+                          {joinedIds.has(match.id) ? (
                             <>
-                              <Users
-                                className={cn(
-                                  'w-5 h-5',
-                                  missing > 0 ? 'text-primary animate-pulse' : 'text-foreground/10'
-                                )}
-                              />
-                              <span
-                                className={cn(
-                                  'text-xs font-black uppercase tracking-[0.2em] italic',
-                                  missing > 0 ? 'text-foreground/40' : 'text-foreground/10'
-                                )}
-                              >
-                                {missing > 0 ? `Se buscan ${missing} pibes` : 'Pelotón completo'}
-                              </span>
+                              <CheckCircle2 className="w-4 h-4 text-primary" />
+                              <span>RECLUTADO</span>
                             </>
-                          );
-                        })()}
+                          ) : (
+                            <>
+                              <span>SOLICITAR INGRESO</span>
+                            </>
+                          )}
+                        </Link>
                       </div>
                     </div>
-
-                    <div className="flex flex-col items-end min-w-[140px] border-l border-foreground/5 pl-14">
-                      <span className="text-[9px] font-black uppercase text-foreground/20 tracking-[0.2em] mb-1.5">
-                        Matrícula
-                      </span>
-                      <div className="flex items-baseline gap-0.5">
-                        <span className="text-[14px] font-black text-foreground/40 italic">$</span>
-                        <span className="text-5xl font-black text-foreground leading-none tracking-tighter italic tabular-nums group-hover:text-primary/90 transition-colors">
-                          {match.price.toLocaleString()}
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* ── ACTION SECTION (Mobile Tighter) ── */}
-                  <div className="lg:w-[300px] relative z-20 flex flex-col gap-3 lg:gap-5 lg:pl-10 lg:border-l border-foreground/5">
-                    <div className="lg:hidden flex items-center justify-between px-1">
-                      <div className="flex items-baseline gap-1">
-                        <span className="text-[14px] font-black text-foreground/20 italic">$</span>
-                        <span className="text-2xl font-black text-foreground italic tracking-tight">
-                          {match.price.toLocaleString()}
-                        </span>
-                      </div>
-                      <Link
-                        href={`/match?id=${match.id}`}
-                        className="text-primary text-[10px] font-black uppercase italic tracking-widest flex items-center gap-1"
-                      >
-                        DETALLES <ChevronRight className="w-3 h-3" />
-                      </Link>
-                    </div>
-
-                    <Link
-                      href={`/match?id=${match.id}`}
-                      className={cn(
-                        'w-full h-12 lg:h-24 rounded-[1.2rem] lg:rounded-[2.2rem] text-[10px] lg:text-[12px] font-black uppercase tracking-[0.3em] transition-all text-center flex items-center justify-center gap-3 active:scale-95 shadow-xl relative overflow-hidden',
-                        joinedIds.has(match.id)
-                          ? 'bg-foreground/5 text-foreground/40 border border-foreground/5'
-                          : 'bg-primary text-black shadow-primary/20 hover:bg-white hover:text-black transition-colors'
-                      )}
-                    >
-                      {joinedIds.has(match.id) ? (
-                        <>
-                          <CheckCircle2 className="w-4 h-4 text-primary" />
-                          <span>RECLUTADO</span>
-                        </>
-                      ) : (
-                        <>
-                          <span>SOLICITAR INGRESO</span>
-                          <ChevronRight className="w-4 h-4 lg:hidden" />
-                        </>
-                      )}
-                    </Link>
                   </div>
                 </motion.div>
               ))
