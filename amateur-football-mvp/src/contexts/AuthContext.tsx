@@ -417,64 +417,79 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       }}
     >
       {showLoader ? (
-        <div className="fixed inset-0 bg-[#050505] flex flex-col items-center justify-center z-[9999] overflow-hidden">
-          {/* Ambient Glow */}
-          <div className="absolute w-[500px] h-[500px] bg-primary/10 blur-[120px] rounded-full" />
+        <div className="fixed inset-0 bg-[#020203] flex flex-col items-center justify-center z-[9999] overflow-hidden">
+          {/* Cinematic Background - Subtle gradient shift */}
+          <div className="absolute inset-0 opacity-40">
+            <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-primary/10 blur-[120px] rounded-full animate-pulse" />
+            <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-primary/5 blur-[120px] rounded-full animate-pulse" style={{ animationDelay: '1s' }} />
+          </div>
           
-          <div className="relative flex flex-col items-center gap-8">
-            {/* Animated Logo Symbol */}
-            <div className="relative w-24 h-24">
-              {/* Outer Pulsing Rings */}
-              <motion.div 
-                animate={{ scale: [1, 1.5], opacity: [0.3, 0] }}
-                transition={{ duration: 2, repeat: Infinity, ease: "easeOut" }}
-                className="absolute inset-0 rounded-[2rem] border-2 border-primary/30"
-              />
-              <motion.div 
-                animate={{ scale: [1, 1.3], opacity: [0.5, 0] }}
-                transition={{ duration: 2, delay: 0.5, repeat: Infinity, ease: "easeOut" }}
-                className="absolute inset-0 rounded-[2rem] border-2 border-primary/20"
-              />
+          <div className="relative flex flex-col items-center gap-12">
+            {/* Optimized Logo Reveal */}
+            <div className="relative w-32 h-32 flex items-center justify-center">
+              {/* CSS-only Pulsing Rings - Zero JS overhead */}
+              <div className="absolute inset-0 rounded-[2.5rem] border border-primary/20 animate-[ping_3s_linear_infinite] opacity-20" />
+              <div className="absolute inset-4 rounded-[2rem] border border-primary/30 animate-[ping_3s_linear_infinite] opacity-30" style={{ animationDelay: '1.5s' }} />
               
-              {/* Main Core */}
+              {/* Main Brand Icon */}
               <motion.div 
-                animate={{ 
-                  rotateY: [0, 180, 360],
-                  scale: [1, 1.05, 1]
-                }}
-                transition={{ 
-                  rotateY: { duration: 3, repeat: Infinity, ease: "easeInOut" },
-                  scale: { duration: 2, repeat: Infinity, ease: "easeInOut" }
-                }}
-                className="w-full h-full bg-gradient-to-br from-primary to-[#10b981] rounded-[2rem] shadow-[0_0_40px_rgba(44,252,125,0.4)] flex items-center justify-center relative z-10"
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.8, ease: "easeOut" }}
+                className="relative z-10 w-24 h-24 bg-foreground/[0.03] backdrop-blur-xl rounded-[2.2rem] border border-primary/30 shadow-[0_0_60px_rgba(var(--primary-rgb),0.15)] flex items-center justify-center overflow-hidden"
               >
-                <div className="w-[85%] h-[85%] bg-black rounded-[1.8rem] flex items-center justify-center">
-                   <span className="text-4xl font-black italic text-primary">P</span>
-                </div>
+                <div className="absolute inset-0 bg-gradient-to-br from-primary/20 via-transparent to-transparent opacity-40" />
+                
+                {/* Floating Logo Symbol */}
+                <motion.div
+                  animate={{ y: [0, -4, 0] }}
+                  transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+                  className="relative z-10 flex flex-col items-center"
+                >
+                  <span className="text-5xl font-black italic text-primary drop-shadow-[0_0_15px_rgba(var(--primary-rgb),0.5)]">P</span>
+                </motion.div>
+
+                {/* Scanning Light Effect */}
+                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/[0.05] to-transparent -translate-x-full animate-[shimmer_2s_infinite_linear]" style={{ backgroundSize: '200% 100%' }} />
               </motion.div>
+
+              {/* Orbital Ring - Performance optimized */}
+              <div className="absolute inset-[-10px] rounded-[3rem] border border-primary/10 animate-[spin_10s_linear_infinite]" />
             </div>
 
-            {/* Loading text with scanning effect */}
-            <div className="flex flex-col items-center gap-4">
-              <div className="relative">
-                <h1 className="text-2xl font-black italic uppercase tracking-tighter text-white opacity-90">
-                  PELOTI<span className="text-primary">FY</span>
-                </h1>
-                <motion.div 
-                  className="absolute bottom-[-4px] left-0 h-[2px] bg-primary"
-                  initial={{ width: 0 }}
-                  animate={{ width: "100%" }}
-                  transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
-                />
+            {/* Brand & Loading Info */}
+            <div className="flex flex-col items-center gap-5">
+              <div className="flex flex-col items-center">
+                <motion.h1 
+                  initial={{ opacity: 0, letterSpacing: "0.5em" }}
+                  animate={{ opacity: 1, letterSpacing: "0.25em" }}
+                  transition={{ duration: 1, delay: 0.2 }}
+                  className="text-sm font-black uppercase text-white tracking-[0.25em]"
+                >
+                  PELOTIFY<span className="text-primary font-black">.</span>APP
+                </motion.h1>
+                <div className="mt-2 h-[1px] w-12 bg-gradient-to-r from-transparent via-primary to-transparent opacity-50" />
               </div>
-              <p className="text-[9px] font-black uppercase tracking-[0.4em] text-foreground/30">
-                Preparando la cancha
-              </p>
+
+              {/* Optimized Progress Indicator */}
+              <div className="flex flex-col items-center gap-2">
+                <div className="w-48 h-1 rounded-full bg-white/[0.03] border border-white/[0.05] overflow-hidden relative">
+                  <div className="absolute inset-0 bg-primary/5" />
+                  <div 
+                    className="absolute top-0 bottom-0 w-1/3 bg-gradient-to-r from-transparent via-primary/60 to-transparent animate-[skeleton-sweep_1.5s_infinite_ease-in-out]"
+                    style={{ willChange: 'transform' }}
+                  />
+                </div>
+                <p className="text-[9px] font-bold uppercase tracking-[0.3em] text-foreground/30 animate-pulse">
+                  Verificando credenciales...
+                </p>
+              </div>
             </div>
           </div>
 
-          {/* Perspective grid footer */}
-          <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-primary/10 to-transparent opacity-20" />
+          {/* Perspective Floor - High Visual / Zero Cost */}
+          <div className="absolute bottom-0 left-0 right-0 h-[40vh] bg-[radial-gradient(circle_at_50%_100%,rgba(var(--primary-rgb),0.08),transparent_70%)] pointer-events-none" />
+          <div className="absolute bottom-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-primary/20 to-transparent" />
         </div>
       ) : (
         children
