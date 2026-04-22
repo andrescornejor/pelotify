@@ -25,14 +25,14 @@ function deg2rad(deg: number) {
 export function useMatchSearch() {
   const { user } = useAuth();
   const searchParams = typeof window !== 'undefined' ? new URLSearchParams(window.location.search) : null;
-  const initialSport = (searchParams?.get('sport') as Sport) || 'All';
+  const initialSport = searchParams?.get('sport') as Sport | 'All' | null;
   
   // Use TanStack Query hooks
   const { data: allMatches = [], isLoading: isLoadingAll } = useMatches();
   const { data: userMatches = [], isLoading: isLoadingUser } = useUserMatches(user?.id);
   
   const [searchQuery, setSearchQuery] = useState('');
-  const [typeFilter, setTypeFilter] = useState<'All' | Sport>(initialSport === 'All' ? 'All' : initialSport);
+  const [typeFilter, setTypeFilter] = useState<'All' | Sport>(initialSport || 'All');
   const [maxPrice, setMaxPrice] = useState<number>(Infinity);
   const [onlyAvailable, setOnlyAvailable] = useState(false);
   

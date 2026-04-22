@@ -56,7 +56,7 @@ type UsageStorage = {
 };
 
 export function getUserPreferences(metadata: Record<string, unknown> | null | undefined): UserPreferences {
-  const raw = (metadata?.preferences as Record<string, unknown> | undefined) || {};
+  const raw = (metadata?.preferences as any) || {};
   const favoriteSports = sanitizeSports(raw.favoriteSports || raw.notifications?.sports);
   const preferredZone = String(raw.preferredZone || '').trim();
   const notificationsZone = String(raw.notifications?.zone || preferredZone || '').trim();

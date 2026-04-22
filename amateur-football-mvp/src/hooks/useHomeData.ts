@@ -6,15 +6,22 @@ import { supabase } from '@/lib/supabase';
 import { getHighlights } from '@/lib/highlights';
 import type { Match } from '@/lib/matches';
 
-type HomeEntity = Record<string, unknown>;
+type HomeEntity = Record<string, any>; // Changed from unknown to any to avoid strict ReactNode errors in complex UI
 type HomeMatch = Match & HomeEntity;
+
+interface HomeActivity {
+  type: string;
+  user: string;
+  detail: string;
+  time: string;
+}
 
 interface HomeData {
   userTeams: HomeEntity[];
   nextMatch: HomeMatch | null;
   recommendedMatches: HomeMatch[];
   totalPlayers: number;
-  activities: HomeEntity[];
+  activities: HomeActivity[];
   highlights: HomeEntity[];
   featuredVenues: HomeEntity[];
   recentPosts: HomeEntity[];
