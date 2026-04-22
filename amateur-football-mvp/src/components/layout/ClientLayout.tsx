@@ -23,7 +23,11 @@ import { useHaptic } from '@/hooks/useHaptic';
 export default function ClientLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const { user } = useAuth();
-  const { isNotificationsOpen, setNotificationsOpen, isNavMenuOpen, setNavMenuOpen } = useSidebar();
+  const { 
+    isNotificationsOpen, setNotificationsOpen, 
+    isNavMenuOpen, setNavMenuOpen,
+    expandedImageUrl, setExpandedImageUrl 
+  } = useSidebar();
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const fcmInitRef = useRef(false);
   const { handleRefresh } = useMobileRefresh();
