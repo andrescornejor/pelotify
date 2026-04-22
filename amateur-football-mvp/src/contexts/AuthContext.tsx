@@ -441,17 +441,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                 <div className="absolute inset-0 bg-gradient-to-br from-primary/20 via-transparent to-transparent opacity-40" />
                 
                 {/* Floating Logo Symbol */}
-                <motion.div
+                <motion.img 
+                  src="/logo_pelotify.png" 
+                  alt="Pelotify" 
+                  className="w-14 h-14 object-contain relative z-10 drop-shadow-[0_0_15px_rgba(var(--primary-rgb),0.4)]"
                   animate={{ y: [0, -4, 0] }}
                   transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
-                  className="relative z-10 flex flex-col items-center"
-                >
-                  <img 
-                    src="/logo_pelotify.png" 
-                    alt="Pelotify" 
-                    className="w-16 h-16 object-contain drop-shadow-[0_0_15px_rgba(var(--primary-rgb),0.3)]" 
-                  />
-                </motion.div>
+                />
 
                 {/* Scanning Light Effect */}
                 <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/[0.05] to-transparent -translate-x-full animate-[shimmer_2s_infinite_linear]" style={{ backgroundSize: '200% 100%' }} />
