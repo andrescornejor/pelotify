@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { MercadoPagoConfig, Preference } from 'mercadopago';
 import { createClient } from '@supabase/supabase-js';
+import { addMinutesToTime, getFieldPriceForTime, isSlotAvailable, normalizeTimeHHMM } from '@/lib/canchas';
 
 const platformClient = new MercadoPagoConfig({ 
   accessToken: process.env.MP_ACCESS_TOKEN || '' 
@@ -13,10 +14,43 @@ export async function POST(request: Request) {
   );
 
   try {
-    const { businessId, fieldId, date, time, userId, totalPrice, downPayment, bookingId } = await request.json();
+    const {
+      businessId,
+      fieldId,
+      date,
+      time,
+      userId,
+      durationMinutes,
+      // Back-compat (client may still send these; we recompute server-side anyway)
+      totalPrice: _totalPriceClient,
+      downPayment: _downPaymentClient,
+      bookingId,
+    } = await request.json();
 
     if (!businessId || !fieldId || !date || !time || !userId) {
       return NextResponse.json({ error: 'Faltan datos obligatorios' }, { status: 400 });
+    }
+
+    const duration = Number.isFinite(Number(durationMinutes)) ? Number(durationMinutes) : 60;
+    if (duration < 30 || duration > 240) {
+      return NextResponse.json({ error: 'Duracion invalida' }, { status: 400 });
+    }
+
+    // 0) Fetch field: validate + compute price server-side
+    const { data: field, error: fError } = await supabaseAdmin
+      .from('canchas_fields')
+      .select('id, business_id, is_active, price_per_match, time_pricing, down_payment_percentage')
+      .eq('id', fieldId)
+      .single();
+
+    if (fError || !field) {
+      return NextResponse.json({ error: 'Cancha no encontrada' }, { status: 404 });
+    }
+    if ((field as any).business_id !== businessId) {
+      return NextResponse.json({ error: 'Cancha invalida para el establecimiento' }, { status: 400 });
+    }
+    if ((field as any).is_active === false) {
+      return NextResponse.json({ error: 'Cancha no disponible' }, { status: 409 });
     }
 
     // 1. Obtener info del negocio y su token de MP
@@ -29,6 +63,37 @@ export async function POST(request: Request) {
     if (bError || !business) {
       return NextResponse.json({ error: 'Establecimiento no encontrado' }, { status: 404 });
     }
+
+    // 1.5) Availability check (server-side)
+    const startTime = normalizeTimeHHMM(time);
+    const { data: existingBookings, error: existingError } = await supabaseAdmin
+      .from('canchas_bookings')
+      .select('id, field_id, date, start_time, end_time, status')
+      .eq('field_id', fieldId)
+      .eq('date', date)
+      .neq('status', 'cancelled');
+
+    if (existingError) {
+      return NextResponse.json({ error: 'Error validando disponibilidad' }, { status: 500 });
+    }
+
+    const isFree = isSlotAvailable({
+      bookings: ((existingBookings || []) as any[]).filter((b) => (bookingId ? b.id !== bookingId : true)),
+      fieldId,
+      date,
+      startTime,
+      durationMinutes: duration,
+    });
+
+    if (!isFree) {
+      return NextResponse.json({ error: 'Horario ocupado' }, { status: 409 });
+    }
+
+    // 1.6) Compute pricing server-side (avoid tampering)
+    const hourlyPrice = getFieldPriceForTime(field as any, startTime);
+    const totalPrice = Math.round((hourlyPrice * duration) / 60);
+    const downPaymentPct = Math.round(Number((field as any).down_payment_percentage || 0));
+    const downPayment = Math.round((totalPrice * downPaymentPct) / 100);
 
     // 2. Determinar el token a usar (negocio o dueño)
     let finalToken = business.mp_access_token;
@@ -57,8 +122,8 @@ export async function POST(request: Request) {
          .insert([{
            field_id: fieldId,
            date,
-           start_time: time,
-           end_time: (parseInt(time.split(':')[0]) + 1) + ":00", // Asumimos 1 hora
+           start_time: startTime,
+           end_time: addMinutesToTime(startTime, duration),
            booker_id: userId,
            status: 'pending',
            total_price: totalPrice,

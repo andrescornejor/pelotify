@@ -2,8 +2,9 @@
 
 import Link from 'next/link';
 import { motion } from 'framer-motion';
-import { MapPin, Star, Zap, ArrowRight, ShieldCheck } from 'lucide-react';
+import { MapPin, Zap, ArrowRight } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { getSportMeta, inferSportFromType, type Sport } from '@/lib/sports';
 
 interface VenueCardProps {
   venue: any;
@@ -11,6 +12,19 @@ interface VenueCardProps {
 }
 
 export const VenueCard = ({ venue, performanceMode }: VenueCardProps) => {
+  const activeFields = (venue.fields || []).filter((f: any) => f?.is_active !== false);
+  const sports = Array.from(new Set(activeFields.map((f: any) => inferSportFromType(f?.type)))).filter(
+    Boolean
+  ) as Sport[];
+  const minPrice =
+    activeFields.length > 0
+      ? Math.min(
+          ...activeFields
+            .map((f: any) => Number(f.price_per_match || 0))
+            .filter((n: number) => Number.isFinite(n) && n > 0)
+        )
+      : null;
+
   return (
     <Link href={`/establecimientos/${venue.id}`} className="block h-full">
       <motion.div
@@ -65,8 +79,29 @@ export const VenueCard = ({ venue, performanceMode }: VenueCardProps) => {
              </div>
              <p className="text-[11px] font-bold text-foreground/40 uppercase flex items-center gap-2 tracking-wide">
                 <MapPin className="w-3.5 h-3.5 text-primary/60" />
-                {venue.address || "Rosario, Argentina"}
+                {venue.address
+                  ? `${venue.address}${venue.city ? `, ${venue.city}` : ''}`
+                  : 'Rosario, Argentina'}
              </p>
+          </div>
+
+          <div className="flex flex-wrap items-center gap-2 pt-2">
+            {sports.map((s) => {
+              const meta = getSportMeta(s);
+              return (
+                <span
+                  key={s}
+                  className="px-3 py-1 rounded-full bg-foreground/[0.03] border border-foreground/[0.06] text-[9px] font-black uppercase tracking-widest text-foreground/60"
+                >
+                  {meta.icon} {meta.shortLabel}
+                </span>
+              );
+            })}
+            {minPrice !== null && Number.isFinite(minPrice) && (
+              <span className="ml-auto text-[10px] font-black uppercase tracking-widest text-primary">
+                Desde ${Math.round(minPrice).toLocaleString('es-AR')}/HS
+              </span>
+            )}
           </div>
 
           <div className="flex-1" />
@@ -78,8 +113,8 @@ export const VenueCard = ({ venue, performanceMode }: VenueCardProps) => {
                    <Zap className="w-4 h-4 text-primary" />
                 </div>
                 <div className="flex flex-col">
-                   <span className="text-[10px] font-black uppercase tracking-widest text-foreground font-kanit italic">Premium</span>
-                   <span className="text-[8px] font-bold text-foreground/30 uppercase tracking-[0.1em]">Césped PRO</span>
+                   <span className="text-[10px] font-black uppercase tracking-widest text-foreground font-kanit italic">{activeFields.length} Cancha{activeFields.length === 1 ? "" : "s"}</span>
+                   <span className="text-[8px] font-bold text-foreground/30 uppercase tracking-[0.1em]">Reserva online</span>
                 </div>
              </div>
           </div>

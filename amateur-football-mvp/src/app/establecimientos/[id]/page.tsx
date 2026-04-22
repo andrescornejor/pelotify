@@ -28,6 +28,14 @@ import { useQueryClient } from '@tanstack/react-query';
 import { queryKeys } from '@/lib/queryKeys';
 import confetti from 'canvas-confetti';
 import { cn } from '@/lib/utils';
+import { AVAILABLE_TIMES } from '@/lib/constants';
+import { getSportMeta, type Sport } from '@/lib/sports';
+import {
+  getFieldPriceForTime,
+  getFieldSport,
+  isSlotAvailable as isSlotAvailableForBookings,
+  normalizeTimeHHMM,
+} from '@/lib/canchas';
 
 export default function EstablecimientoProfile() {
   const params = useParams();
@@ -49,6 +57,13 @@ export default function EstablecimientoProfile() {
   const searchParams = useSearchParams();
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [isPro, setIsPro] = useState(false);
+  const [activeSport, setActiveSport] = useState<Sport>('football');
+  const [durationMinutes, setDurationMinutes] = useState<number>(60);
+
+  useEffect(() => {
+    // Reasonable defaults by sport (can be overridden by the user)
+    setDurationMinutes(activeSport === 'padel' ? 90 : 60);
+  }, [activeSport]);
 
   useEffect(() => {
     if (user) {
@@ -88,6 +103,20 @@ export default function EstablecimientoProfile() {
       fetchData();
     }
   }, [params.id, selectedDate]);
+
+  useEffect(() => {
+    if (!fields?.length) return;
+    const sports = Array.from(new Set(fields.map((f) => getFieldSport(f.type)))) as Sport[];
+    const nextSport = sports.includes(activeSport) ? activeSport : (sports[0] || 'football');
+    if (nextSport !== activeSport) {
+      setActiveSport(nextSport);
+    }
+    const first = fields.find((f) => getFieldSport(f.type) === nextSport);
+    if (first && selectedField?.id !== first.id) {
+      setSelectedField(first);
+      setSelectedSlot(null);
+    }
+  }, [fields, activeSport, selectedField?.id]);
 
   const fetchData = async () => {
     try {
@@ -141,28 +170,22 @@ export default function EstablecimientoProfile() {
     }
   };
 
-  const timeSlots = ["08:00", "09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00", "19:00", "20:00", "21:00", "22:00", "23:00"];
+  const timeSlots = AVAILABLE_TIMES.filter((t) => t !== '00:00' && t !== '07:00');
+  const visibleFields = fields.filter((f) => getFieldSport(f.type) === activeSport);
 
-  const isSlotAvailable = (time: string, fieldId: string) => {
-    return !bookings.some(b => b.field_id === fieldId && b.start_time.startsWith(time));
+  const isTimeSlotAvailable = (time: string, fieldId: string) => {
+    return isSlotAvailableForBookings({
+      bookings,
+      fieldId,
+      date: selectedDate,
+      startTime: normalizeTimeHHMM(time),
+      durationMinutes,
+    });
   };
 
   const getCurrentPrice = (field: any, time: string | null) => {
-    if (!field) return 0;
-    let basePrice = field.price_per_match || 0;
-    
-    // Check dynamic pricing
-    if (time) {
-      const selectedTime = time.substring(0, 5);
-      const pricing = field.time_pricing || [];
-      const range = pricing.find((p: any) => selectedTime >= p.startTime && selectedTime <= p.endTime);
-      if (range) basePrice = range.price;
-    }
-
-    // Apply Pro discount if applicable
-    if (isPro) basePrice = basePrice * 0.9;
-    
-    return Math.round(basePrice);
+    const base = getFieldPriceForTime(field, time);
+    return Math.round(isPro ? base * 0.9 : base);
   };
 
   
@@ -201,8 +224,11 @@ const handleBooking = async () => {
 
     try {
       setIsBooking(true);
-      const totalPrice = getCurrentPrice(selectedField, selectedSlot);
-      const downPayment = Math.round(totalPrice * (selectedField.down_payment_percentage || 30) / 100);
+      const hourlyPrice = getCurrentPrice(selectedField, selectedSlot);
+      const totalPrice = Math.round((hourlyPrice * durationMinutes) / 60);
+      const downPayment = Math.round(
+        (totalPrice * (selectedField.down_payment_percentage || 30)) / 100
+      );
 
       const response = await fetch('/api/bookings/checkout', {
         method: 'POST',
@@ -211,10 +237,11 @@ const handleBooking = async () => {
           businessId: business.id,
           fieldId: selectedField.id,
           date: selectedDate,
-          time: selectedSlot,
+          time: normalizeTimeHHMM(selectedSlot),
           userId: user.id,
+          durationMinutes,
           totalPrice,
-          downPayment
+          downPayment,
         }),
       });
 
@@ -353,17 +380,33 @@ const handleBooking = async () => {
                   </div>
                   
                   <div className="flex gap-2 bg-surface-elevated/50 p-2 rounded-2xl border border-white/5 shadow-inner">
-                     {(Array.from(new Set(fields.map(f => f.type))) as string[]).map(type => (
-                        <button key={type} className="px-6 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-surface-bright transition-all border border-transparent hover:border-white/5">
-                           {type}
-                        </button>
-                     ))}
+                     {(Array.from(new Set(fields.map(f => getFieldSport(f.type)))) as Sport[]).map((sport) => {
+                        const meta = getSportMeta(sport);
+                        const isActive = sport === activeSport;
+                        return (
+                          <button
+                            key={sport}
+                            onClick={() => {
+                              setActiveSport(sport);
+                              const first = fields.find((f) => getFieldSport(f.type) === sport);
+                              if (first) setSelectedField(first);
+                              setSelectedSlot(null);
+                            }}
+                            className={cn(
+                              "px-6 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all border",
+                              isActive ? "bg-primary text-black border-primary" : "hover:bg-surface-bright border-transparent hover:border-white/5"
+                            )}
+                          >
+                            {meta.icon} {meta.label}
+                          </button>
+                        );
+                     })}
                   </div>
                </div>
 
                {/* FIELD SELECTOR */}
                <div className="flex gap-4 overflow-x-auto no-scrollbar pb-4 -mx-2 px-2">
-                  {fields.map(field => (
+                  {visibleFields.map(field => (
                      <button 
                        key={field.id}
                        onClick={() => setSelectedField(field)}
@@ -380,7 +423,8 @@ const handleBooking = async () => {
                            <p className={`text-base font-black uppercase tracking-tighter transition-colors ${selectedField?.id === field.id ? 'text-black' : 'text-foreground'}`}>{field.name}</p>
                            <p className={`text-xs font-bold transition-colors ${selectedField?.id === field.id ? 'text-black/60' : 'text-muted-foreground'}`}>
                              {isPro && <span className="line-through opacity-50 mr-2">${new Intl.NumberFormat('es-AR').format(field.price_per_match)}</span>}
-                             ${new Intl.NumberFormat('es-AR').format(isPro ? field.price_per_match * 0.9 : field.price_per_match)} <span className="text-[10px] opacity-70"> /HS</span>
+                             ${new Intl.NumberFormat('es-AR').format(Math.round((getCurrentPrice(field, selectedSlot) * durationMinutes) / 60))}{' '}
+                             <span className="text-[10px] opacity-70"> /{durationMinutes}m</span>
                              {isPro && <span className="ml-2 text-[8px] font-black uppercase tracking-widest text-[#d97706] bg-yellow-500/20 px-1.5 py-0.5 rounded-full inline-flex border border-yellow-500/30 shadow-[0_0_10px_rgba(250,204,21,0.2)]">PRO</span>}
                            </p>
                         </div>
@@ -419,10 +463,40 @@ const handleBooking = async () => {
                   })}
                </div>
 
+               {/* DURATION */}
+               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                  <div className="space-y-1">
+                     <p className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.4em]">DuraciÃ³n</p>
+                     <p className="text-sm font-black italic text-foreground">{durationMinutes} min</p>
+                  </div>
+                  <div className="flex gap-2 bg-surface-elevated/50 p-2 rounded-2xl border border-white/5 shadow-inner">
+                     {[60, 90, 120].map((m) => {
+                        const active = durationMinutes === m;
+                        return (
+                           <button
+                              key={m}
+                              onClick={() => {
+                                 setSelectedSlot(null);
+                                 setDurationMinutes(m);
+                              }}
+                              className={cn(
+                                 "px-5 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all border",
+                                 active
+                                    ? "bg-primary text-black border-primary"
+                                    : "hover:bg-surface-bright border-transparent hover:border-white/5 text-muted-foreground hover:text-foreground"
+                              )}
+                           >
+                              {m}m
+                           </button>
+                        );
+                     })}
+                  </div>
+               </div>
+
                {/* SLOTS GRID */}
                <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-4">
                   {timeSlots.map(time => {
-                     const available = isSlotAvailable(time, selectedField?.id);
+                     const available = selectedField?.id ? isTimeSlotAvailable(time, selectedField.id) : false;
                      const isSelected = selectedSlot === time;
                      return (
                         <button 
@@ -454,6 +528,18 @@ const handleBooking = async () => {
                   <p className="text-base text-muted-foreground leading-relaxed max-w-2xl font-medium">
                      {business.description || "Este establecimiento cuenta con las mejores instalaciones de la zona. Canchas de césped sintético autorizadas por FIFA, iluminación de alta potencia para turnos nocturnos, y un ambiente 100% futbolero. Disponemos de vestuarios climatizados, bar con vista a las canchas y estacionamiento privado."}
                   </p>
+                  {Array.isArray(business.amenities) && business.amenities.length > 0 && (
+                    <div className="flex flex-wrap gap-2 pt-2">
+                      {business.amenities.map((a: string) => (
+                        <span
+                          key={a}
+                          className="px-3 py-1.5 rounded-full bg-foreground/[0.03] border border-foreground/[0.06] text-[9px] font-black uppercase tracking-widest text-foreground/60"
+                        >
+                          {a}
+                        </span>
+                      ))}
+                    </div>
+                  )}
                </div>
 
                <div className="grid grid-cols-2 sm:grid-cols-3 gap-8 pt-4">
@@ -520,7 +606,16 @@ const handleBooking = async () => {
                               <p className="text-[8px] font-bold text-muted-foreground uppercase tracking-widest">({selectedField?.down_payment_percentage || 30}% del valor total)</p>
                            </div>
                            <p className="text-4xl font-black font-kanit italic tracking-tighter text-white">
-                              ${selectedField ? new Intl.NumberFormat('es-AR').format(Math.round(getCurrentPrice(selectedField, selectedSlot) * (selectedField.down_payment_percentage || 30) / 100)) : "0"}
+                              $
+                              {selectedField
+                                ? new Intl.NumberFormat('es-AR').format(
+                                    Math.round(
+                                      ((getCurrentPrice(selectedField, selectedSlot) * durationMinutes) / 60) *
+                                        (selectedField.down_payment_percentage || 30) /
+                                        100
+                                    )
+                                  )
+                                : "0"}
                            </p>
                         </div>
                      </div>

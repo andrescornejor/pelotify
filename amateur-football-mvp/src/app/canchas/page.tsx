@@ -51,6 +51,9 @@ import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGri
 import { createTournament, registerTeamForTournament } from '@/lib/tournaments';
 import { getUserTeams } from '@/lib/teams';
 import { AVAILABLE_TIMES } from '@/lib/constants';
+import { getSportMeta, type Sport } from '@/lib/sports';
+import { addMinutesToTime, getFieldPriceForTime, getFieldSport, isSlotAvailable as isSlotAvailableForBookings, normalizeTimeHHMM } from '@/lib/canchas';
+import { cn } from '@/lib/utils';
 
 export default function CanchasDashboard() {
   const { user, logout } = useAuth();
@@ -459,6 +462,7 @@ export default function CanchasDashboard() {
             selectedSlot={selectedSlot}
             onBooked={(newBooking: any) => setBookings(prev => [...prev, newBooking])}
             selectedDate={selectedDate}
+            existingBookings={bookings}
           />
         )}
         {showEditBookingModal && selectedBooking && (
@@ -1213,6 +1217,7 @@ const PRESET_IMAGES = [
 const SettingsTab = React.memo(function SettingsTab({ business, fields, setFields, hasMP, setBusiness, logout, router }: any) {
   const { user } = useAuth();
   const [loading, setLoading] = useState(false);
+  const [inventorySport, setInventorySport] = useState<Sport | 'all'>('all');
   const [deposit, setDeposit] = useState(fields?.[0]?.down_payment_percentage || 30);
   const [depositMode, setDepositMode] = useState<'percentage' | 'share'>(() => {
     // Detect if it matches any standard share percentage roughly
@@ -1277,6 +1282,10 @@ const SettingsTab = React.memo(function SettingsTab({ business, fields, setField
     const range = pricing.find((p: any) => selectedTime >= p.startTime && selectedTime <= p.endTime);
     return range ? range.price : basePrice;
   };
+
+  const inventorySports = (Array.from(new Set((fields || []).map((f: any) => getFieldSport(f.type)))) as Sport[]).filter(Boolean);
+  const inventoryFilteredFields =
+    inventorySport === 'all' ? fields : (fields || []).filter((f: any) => getFieldSport(f.type) === inventorySport);
 
   const handleSavePrices = async () => {
     if (!business) return;
@@ -1355,7 +1364,7 @@ const SettingsTab = React.memo(function SettingsTab({ business, fields, setField
   const handleCreateField = async () => {
     const fieldName = prompt("Nombre de la nueva cancha (ej. Cancha 4):");
     if (!fieldName) return;
-    const type = prompt("Tipo (F5, F7, F11):") || 'F5';
+    const type = prompt("Tipo (F5, F7, F11, PADEL, BASKET):") || 'F5';
     const priceStr = prompt("Precio por partido:");
 
     if (fieldName && priceStr && business) {
@@ -1376,6 +1385,39 @@ const SettingsTab = React.memo(function SettingsTab({ business, fields, setField
       }
       setLoading(false);
     }
+  };
+
+  const handleSetFieldActive = async (fieldId: string, isActive: boolean) => {
+    if (!business?.id) return;
+    setLoading(true);
+    try {
+      const { data, error } = await supabase
+        .from('canchas_fields')
+        .update({ is_active: isActive })
+        .eq('id', fieldId)
+        .eq('business_id', business.id)
+        .select()
+        .single();
+
+      if (error) throw error;
+      setFields((prev: any) => prev.map((f: any) => (f.id === fieldId ? { ...f, ...data } : f)));
+    } catch (err: any) {
+      alert('Error al actualizar cancha: ' + err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleDeactivateField = async (field: any) => {
+    if (!field?.id) return;
+    if (
+      !window.confirm(
+        `¿Ocultar "${field.name}"? Esto no borra reservas históricas, solo la saca del perfil público y de nuevas reservas.`
+      )
+    ) {
+      return;
+    }
+    await handleSetFieldActive(field.id, false);
   };
 
   return (
@@ -1770,30 +1812,92 @@ const SettingsTab = React.memo(function SettingsTab({ business, fields, setField
             <Plus className="w-6 h-6" />
           </button>
         </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {fields.map((f: any) => (
-            <div key={f.id} className="p-6 rounded-3xl bg-surface-elevated/30 border border-border/40 hover:border-primary/30 transition-all group">
-              <div className="flex justify-between items-start mb-6">
-                <div className="p-3 rounded-xl bg-background border border-border/50 group-hover:bg-primary/10 transition-colors">
-                  <MapPin className="w-6 h-6 text-primary" />
-                </div>
-                <span className="text-[9px] font-black uppercase tracking-widest text-muted-foreground px-2 py-1 rounded bg-foreground/5">{f.type}</span>
-              </div>
-              <h4 className="text-lg font-black uppercase tracking-tighter mb-1">{f.name}</h4>
-              <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Activa • {f.is_active ? 'Visible' : 'Oculta'}</p>
 
-              <div className="mt-8 flex gap-3">
-                <button className="flex-1 py-3 rounded-xl bg-foreground/5 hover:bg-foreground/10 text-[9px] font-black uppercase tracking-widest transition-all">Editar Horarios</button>
-                <button className="p-3 rounded-xl bg-danger/10 text-danger hover:bg-danger transition-all hover:text-white">
-                  <Trash2 className="w-4 h-4" />
-                </button>
+        <div className="flex flex-wrap gap-2 mb-6">
+          <button
+            onClick={() => setInventorySport('all')}
+            className={`h-10 px-4 rounded-xl text-[9px] font-black uppercase tracking-widest border transition-all ${
+              inventorySport === 'all' ? 'bg-primary text-black border-primary' : 'bg-foreground/5 border-border/40 text-muted-foreground hover:text-foreground'
+            }`}
+          >
+            Todas
+          </button>
+          {inventorySports.map((sport) => {
+            const meta = getSportMeta(sport);
+            const active = inventorySport === sport;
+            return (
+              <button
+                key={sport}
+                onClick={() => setInventorySport(sport)}
+                className={`h-10 px-4 rounded-xl text-[9px] font-black uppercase tracking-widest border transition-all ${
+                  active ? 'bg-primary text-black border-primary' : 'bg-foreground/5 border-border/40 text-muted-foreground hover:text-foreground'
+                }`}
+              >
+                {meta.icon} {meta.label}
+              </button>
+            );
+          })}
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {inventoryFilteredFields.map((f: any) => {
+            const sport = getFieldSport(f.type);
+            const meta = getSportMeta(sport);
+            const base = getFieldPriceForTime(f, '18:00');
+            const rangesCount = Array.isArray(f.time_pricing) ? f.time_pricing.length : 0;
+            return (
+              <div key={f.id} className="p-6 rounded-3xl bg-surface-elevated/30 border border-border/40 hover:border-primary/30 transition-all group">
+                <div className="flex justify-between items-start mb-6">
+                  <div className="p-3 rounded-xl bg-background border border-border/50 group-hover:bg-primary/10 transition-colors">
+                    <MapPin className="w-6 h-6 text-primary" />
+                  </div>
+                  <span className="text-[9px] font-black uppercase tracking-widest text-muted-foreground px-2 py-1 rounded bg-foreground/5">{f.type}</span>
+                </div>
+                <h4 className="text-lg font-black uppercase tracking-tighter mb-1">{f.name}</h4>
+                <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">
+                  Activa: {f.is_active ? 'Visible' : 'Oculta'}
+                </p>
+
+                <div className="mt-4 flex flex-wrap items-center gap-2">
+                  <span className="px-2 py-1 rounded-lg bg-foreground/5 border border-border/40 text-[9px] font-black uppercase tracking-widest text-foreground/70">
+                    {meta.icon} {meta.shortLabel}
+                  </span>
+                  <span className="ml-auto text-[10px] font-black uppercase tracking-widest text-primary">${base.toLocaleString()}</span>
+                </div>
+                <p className="mt-2 text-[9px] font-bold text-muted-foreground uppercase tracking-widest">Horarios: {rangesCount > 0 ? `${rangesCount} rangos` : 'base'}</p>
+
+                <div className="mt-8 flex gap-3">
+                  <button
+                    type="button"
+                    onClick={() => setEditingPricingField(f)}
+                    className="flex-1 py-3 rounded-xl bg-foreground/5 hover:bg-foreground/10 text-[9px] font-black uppercase tracking-widest transition-all"
+                  >
+                    Editar Horarios
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() =>
+                      f.is_active ? handleDeactivateField(f) : handleSetFieldActive(f.id, true)
+                    }
+                    className={cn(
+                      "p-3 rounded-xl transition-all",
+                      f.is_active
+                        ? "bg-danger/10 text-danger hover:bg-danger hover:text-white"
+                        : "bg-primary/10 text-primary hover:bg-primary hover:text-black"
+                    )}
+                    title={f.is_active ? "Ocultar cancha" : "Activar cancha"}
+                  >
+                    {f.is_active ? <Trash2 className="w-4 h-4" /> : <Check className="w-4 h-4" />}
+                  </button>
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </div>
 
-      {/* Danger Zone */}
+
+{/* Danger Zone */}
       <div className="glass-premium rounded-[2.5rem] p-10 border-danger/20 bg-danger/[0.03] mt-12 animate-reveal-up group">
         <div className="flex items-center gap-4 mb-6">
           <div className="w-12 h-12 rounded-2xl bg-danger/10 flex items-center justify-center border border-danger/20 group-hover:rotate-12 transition-transform">
@@ -1824,7 +1928,7 @@ const SettingsTab = React.memo(function SettingsTab({ business, fields, setField
 /* =========================================
    NEW BOOKING MODAL
 ========================================= */
-function NewBookingModal({ onClose, fields, selectedSlot, onBooked, selectedDate }: any) {
+function NewBookingModal({ onClose, fields, selectedSlot, onBooked, selectedDate, existingBookings }: any) {
   const [loading, setLoading] = useState(false);
   const { user } = useAuth();
 
@@ -1832,6 +1936,7 @@ function NewBookingModal({ onClose, fields, selectedSlot, onBooked, selectedDate
     title: '',
     fieldId: selectedSlot?.fieldId || (fields[0]?.id || ''),
     time: selectedSlot?.time || '18:00',
+    durationMinutes: 60,
     date: selectedDate || new Date().toISOString().split('T')[0],
     paid: false,
     isRecurring: false,
@@ -1851,29 +1956,41 @@ function NewBookingModal({ onClose, fields, selectedSlot, onBooked, selectedDate
       setLoading(false);
       return;
     }
-    const pricing = selectedFieldObj.time_pricing || [];
-    const selectedTime = formData.time.substring(0, 5);
-    const range = pricing.find((p: any) => selectedTime >= p.startTime && selectedTime <= p.endTime);
-    const price = range ? range.price : (selectedFieldObj.price_per_match || 15000);
+    const startTime = normalizeTimeHHMM(formData.time);
+    const duration = Number.isFinite(Number(formData.durationMinutes)) ? Number(formData.durationMinutes) : 60;
+    const hourlyPrice = getFieldPriceForTime(selectedFieldObj, startTime);
+    const price = Math.round((hourlyPrice * duration) / 60);
 
-    // Calculate end time (assuming 1 hour matches)
-    const [hours, minutes] = formData.time.split(':');
-    const endHours = parseInt(hours) + 1;
-    const endTime = `${endHours.toString().padStart(2, '0')}:${minutes}:00`;
-    const startTimeFull = `${formData.time}:00`;
+    const endTime = addMinutesToTime(startTime, duration);
+    const startTimeFull = `${startTime}:00`;
+    const endTimeFull = `${endTime}:00`;
 
     const newBookings = [];
     let currentDate = new Date(formData.date + 'T00:00:00');
 
     for (let i = 0; i < (formData.isRecurring ? formData.weeks : 1); i++) {
        const dateStr = currentDate.toISOString().split('T')[0];
+       // Prevent overlaps with existing bookings for each generated date.
+       const isFree = isSlotAvailableForBookings({
+         bookings: existingBookings || [],
+         fieldId: formData.fieldId,
+         date: dateStr,
+         startTime,
+         durationMinutes: duration,
+       });
+       if (!isFree) {
+         alert(`El turno ${startTime} del ${dateStr} ya esta ocupado para esa cancha.`);
+         setLoading(false);
+         return;
+       }
+
        newBookings.push({
          field_id: formData.fieldId,
          booker_id: user?.id,
          title: formData.title || 'Reserva Presencial',
          date: dateStr,
          start_time: startTimeFull,
-         end_time: endTime,
+         end_time: endTimeFull,
          total_price: price,
          down_payment_paid: formData.paid && i === 0 ? price : 0,
          status: formData.paid ? 'full_paid' : 'pending'
@@ -1915,7 +2032,7 @@ function NewBookingModal({ onClose, fields, selectedSlot, onBooked, selectedDate
             <input type="text" value={formData.title} onChange={e => setFormData(prev => ({ ...prev, title: e.target.value }))} className="w-full bg-surface-elevated border border-border/50 rounded-xl px-4 py-3 outline-none" placeholder="Nombre completo o equipo..." required />
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <div>
               <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-1 block">Cancha</label>
               <select value={formData.fieldId} onChange={e => setFormData(prev => ({ ...prev, fieldId: e.target.value }))} className="w-full bg-surface-elevated border border-border/50 rounded-xl px-4 py-3 outline-none appearance-none">
@@ -1927,8 +2044,20 @@ function NewBookingModal({ onClose, fields, selectedSlot, onBooked, selectedDate
             <div>
               <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-1 block">Hora Inicio</label>
               <select value={formData.time} onChange={e => setFormData(prev => ({ ...prev, time: e.target.value }))} className="w-full bg-surface-elevated border border-border/50 rounded-xl px-4 py-3 outline-none appearance-none">
-                {["08:00", "09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00", "19:00", "20:00", "21:00", "22:00", "23:00"].map(t => (
+                {AVAILABLE_TIMES.filter((t) => t !== '00:00' && t !== '07:00').map(t => (
                   <option key={t} value={t}>{t}</option>
+                ))}
+              </select>
+            </div>
+            <div>
+              <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-1 block">DuraciÃ³n</label>
+              <select
+                value={formData.durationMinutes}
+                onChange={e => setFormData(prev => ({ ...prev, durationMinutes: Number(e.target.value) }))}
+                className="w-full bg-surface-elevated border border-border/50 rounded-xl px-4 py-3 outline-none appearance-none"
+              >
+                {[60, 90, 120].map((m) => (
+                  <option key={m} value={m}>{m} min</option>
                 ))}
               </select>
             </div>

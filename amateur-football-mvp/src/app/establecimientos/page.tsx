@@ -52,7 +52,7 @@ export default function EstablecimientosList() {
       setLoading(true);
       const { data, error } = await supabase
         .from('canchas_businesses')
-        .select('*')
+        .select('*, fields:canchas_fields(id,type,price_per_match,is_active)')
         .eq('is_active', true)
         .order('name', { ascending: true });
 
@@ -75,7 +75,7 @@ export default function EstablecimientosList() {
 
   const stats = useMemo(() => ({
     totalVenues: venues.length,
-    totalFields: venues.reduce((acc, v) => acc + (v.fields_count || 0), 0),
+    totalFields: venues.reduce((acc, v) => acc + ((v.fields || []).filter((f: any) => f.is_active).length), 0),
   }), [venues]);
 
   return (
