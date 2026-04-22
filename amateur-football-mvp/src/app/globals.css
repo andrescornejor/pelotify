@@ -939,15 +939,34 @@ html.dark {
 }
 
 /* ══════════════════════════════════════════
-   THEME TRANSITION
+   THEME TRANSITION (VIEW TRANSITIONS API)
 ══════════════════════════════════════════ */
-.theme-transition,
-.theme-transition *,
-.theme-transition *::before,
-.theme-transition *::after {
-  transition: background-color 400ms cubic-bezier(0.16, 1, 0.3, 1),
-              color 400ms cubic-bezier(0.16, 1, 0.3, 1),
-              border-color 400ms cubic-bezier(0.16, 1, 0.3, 1),
-              box-shadow 400ms cubic-bezier(0.16, 1, 0.3, 1) !important;
-  transition-delay: 0ms !important;
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: 0.5s;
+  animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+  mix-blend-mode: normal;
+}
+
+::view-transition-old(root) {
+  animation-name: theme-fade-out;
+}
+
+::view-transition-new(root) {
+  animation-name: theme-fade-in;
+}
+
+@keyframes theme-fade-out {
+  0% { opacity: 1; filter: blur(0px); transform: scale(1); }
+  100% { opacity: 0; filter: blur(8px); transform: scale(0.96); }
+}
+
+@keyframes theme-fade-in {
+  0% { opacity: 0; filter: blur(8px); transform: scale(1.04); }
+  100% { opacity: 1; filter: blur(0px); transform: scale(1); }
+}
+
+/* Fallback for browsers without View Transitions */
+.theme-transition {
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
