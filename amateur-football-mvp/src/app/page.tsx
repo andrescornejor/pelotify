@@ -317,9 +317,6 @@ export default function HomePage() {
       <div className="max-w-full mx-auto px-4 sm:px-6 lg:px-10 xl:px-14 2xl:px-16 py-4 lg:py-6 space-y-4 lg:space-y-6">
         <SportsAnnouncementBanner />
         
-        <div className="pb-2">
-           <SportSelector selectedSport={selectedSport} onSelect={setSelectedSport} />
-        </div>
         {/* 
             MOBILE APP-LIKE HERO & QUICK ACTIONS
          */}
@@ -331,6 +328,9 @@ export default function HomePage() {
                 <span className="text-[11px] font-black uppercase tracking-[0.2em] text-foreground/40 font-kanit leading-tight">
                   {greeting}
                 </span>
+                <div className="mt-4 mb-2">
+                  <SportSelector selectedSport={selectedSport} onSelect={setSelectedSport} />
+                </div>
                 <AnimatePresence mode="wait">
                   <motion.h1 
                     key={selectedSport}
@@ -604,6 +604,10 @@ export default function HomePage() {
                 {selectedSport === 'basket' && (
                   <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(249,115,22,0.1)_0%,transparent_50%)]" />
                 )}
+              </div>
+
+              <div className="absolute top-8 right-8 z-20">
+                <SportSelector selectedSport={selectedSport} onSelect={setSelectedSport} />
               </div>
 
               {/* Overlay gradients for depth */}
