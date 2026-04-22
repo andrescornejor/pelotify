@@ -4,6 +4,7 @@ import { memo, useMemo, useState, useEffect, useCallback, useRef } from 'react';
 import { motion, AnimatePresence, useScroll, useTransform, useMotionValue, useSpring } from 'framer-motion';
 import { Trophy, ArrowLeft, ChevronDown, Crown, Shield, Target, Sparkles, Activity, Info, Star, Flame, Zap, ChevronUp } from 'lucide-react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import { RANKS, getRankByElo } from '@/lib/ranks';
 import { cn } from '@/lib/utils';
 import { RankBadge } from '@/components/RankBadge';
@@ -125,9 +126,9 @@ const PlayerCard = memo(({ player, index }: any) => {
     >
       <div className="absolute top-4 right-4 text-3xl sm:text-4xl font-black italic opacity-[0.03] group-hover:opacity-10 transition-opacity">#{index + 1}</div>
       <div className="flex items-center gap-4">
-        <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl sm:rounded-3xl overflow-hidden border-2 border-foreground/10 group-hover:border-primary/50 transition-all">
-          <img src={player.avatar_url || `https://api.dicebear.com/7.x/notionists/svg?seed=${player.name}`} className="w-full h-full object-cover" />
-        </div>
+        <Link href={`/feed/profile?id=${player.id}`} className="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl sm:rounded-3xl overflow-hidden border-2 border-foreground/10 group-hover:border-primary/50 transition-all block">
+          <motion.img layoutId={`avatar-${player.id}`} src={player.avatar_url || `https://api.dicebear.com/7.x/notionists/svg?seed=${player.name}`} className="w-full h-full object-cover" />
+        </Link>
         <div className="flex-1 min-w-0">
           <h4 className="text-lg sm:text-xl font-black italic uppercase tracking-tighter truncate">{player.name}</h4>
           <div className="flex items-center gap-2 mt-1">

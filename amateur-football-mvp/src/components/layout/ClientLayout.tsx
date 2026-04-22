@@ -27,8 +27,9 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
   const { handleRefresh } = useMobileRefresh();
   const swipeState = useSwipeNavigation();
 
-  // Scroll to show/hide header state
+  // Scroll to show/hide header and bottom nav state
   const [headerVisible, setHeaderVisible] = useState(true);
+  const [bottomNavVisible, setBottomNavVisible] = useState(true);
   const lastScrollY = useRef(0);
 
   useEffect(() => {
@@ -37,10 +38,13 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
 
       if (currentScrollY < 10) {
         setHeaderVisible(true);
+        setBottomNavVisible(true);
       } else if (currentScrollY > lastScrollY.current && currentScrollY > 76) {
         setHeaderVisible(false);
+        setBottomNavVisible(false);
       } else if (currentScrollY < lastScrollY.current) {
         setHeaderVisible(true);
+        setBottomNavVisible(true);
       }
 
       lastScrollY.current = currentScrollY;
@@ -160,7 +164,12 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
 
         {/* Mobile Navigation */}
         {showNav && (
-          <div className="lg:hidden mobile-bottom-nav z-[100] fixed bottom-0 left-0 right-0">
+          <div 
+            className={cn(
+              "lg:hidden mobile-bottom-nav z-[100] fixed bottom-0 left-0 right-0 transition-transform duration-300 ease-in-out",
+              bottomNavVisible ? "translate-y-0" : "translate-y-[120%]"
+            )}
+          >
             <BottomNav />
           </div>
         )}

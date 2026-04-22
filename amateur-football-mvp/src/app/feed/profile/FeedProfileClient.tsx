@@ -644,11 +644,11 @@ export default function FeedProfilePage() {
                   )}
                 >
                   {profile.avatar_url ? (
-                    <img src={profile.avatar_url} className="w-full h-full object-cover scale-110" alt="" />
+                    <motion.img layoutId={`avatar-${profile.id}`} src={profile.avatar_url} className="w-full h-full object-cover scale-110" alt="" />
                   ) : (
-                    <div className="w-full h-full bg-gradient-to-br from-primary/30 to-primary/10 flex items-center justify-center font-black text-primary text-3xl italic">
+                    <motion.div layoutId={`avatar-${profile.id}`} className="w-full h-full bg-gradient-to-br from-primary/30 to-primary/10 flex items-center justify-center font-black text-primary text-3xl italic">
                       {profile.name.charAt(0)}
-                    </div>
+                    </motion.div>
                   )}
                 </Link>
               </div>

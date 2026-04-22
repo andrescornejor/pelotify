@@ -124,11 +124,11 @@ const FeedPostItem = memo(function FeedPostItem({
         <div className="shrink-0 flex flex-col items-center">
           <Link href={`/feed/profile?id=${post.author.id}`} className={cn("w-12 h-12 rounded-full overflow-hidden shrink-0 relative hover:opacity-90 transition-opacity duration-200 z-10", post.author.is_pro ? "ring-2 ring-yellow-500/40" : "")}>
             {post.author.avatar_url ? (
-              <img src={post.author.avatar_url} loading="lazy" decoding="async" className="w-full h-full object-cover" alt="" />
+              <motion.img layoutId={`avatar-${post.author.id}`} src={post.author.avatar_url} loading="lazy" decoding="async" className="w-full h-full object-cover" alt="" />
             ) : (
-              <div className="w-full h-full bg-gradient-to-br from-primary/15 to-primary/5 flex items-center justify-center font-bold text-primary text-[15px]">
+              <motion.div layoutId={`avatar-${post.author.id}`} className="w-full h-full bg-gradient-to-br from-primary/15 to-primary/5 flex items-center justify-center font-bold text-primary text-[15px]">
                 {post.author.name.charAt(0)}
-              </div>
+              </motion.div>
             )}
           </Link>
         </div>
@@ -137,11 +137,11 @@ const FeedPostItem = memo(function FeedPostItem({
           <div className="flex items-center gap-3">
             <Link href={`/feed/profile?id=${post.author.id}`} className={cn("w-14 h-14 rounded-full overflow-hidden shrink-0 relative hover:opacity-90 transition-opacity duration-200 z-10 shadow-md", post.author.is_pro ? "ring-2 ring-yellow-500" : "ring-1 ring-foreground/10")}>
               {post.author.avatar_url ? (
-                <img src={post.author.avatar_url} loading="lazy" decoding="async" className="w-full h-full object-cover" alt="" />
+                <motion.img layoutId={`avatar-${post.author.id}`} src={post.author.avatar_url} loading="lazy" decoding="async" className="w-full h-full object-cover" alt="" />
               ) : (
-                <div className="w-full h-full bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center font-bold text-primary text-lg">
+                <motion.div layoutId={`avatar-${post.author.id}`} className="w-full h-full bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center font-bold text-primary text-lg">
                   {post.author.name.charAt(0)}
-                </div>
+                </motion.div>
               )}
             </Link>
             <div className="flex flex-col">

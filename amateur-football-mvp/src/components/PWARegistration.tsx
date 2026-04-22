@@ -1,15 +1,42 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { X, Download, Share, PlusSquare } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 export default function PWARegistration() {
   const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
+  const [showInstallPrompt, setShowInstallPrompt] = useState(false);
+  const [isIOS, setIsIOS] = useState(false);
+  const [isStandalone, setIsStandalone] = useState(true);
+
+  useEffect(() => {
+    // Check if app is already installed
+    const _isStandalone = window.matchMedia('(display-mode: standalone)').matches || (window.navigator as any).standalone;
+    setIsStandalone(_isStandalone);
+
+    // Detect iOS
+    const _isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !(window as any).MSStream;
+    setIsIOS(_isIOS);
+
+    // If not standalone, we might want to show the prompt (delayed so it's not instantly annoying)
+    if (!_isStandalone) {
+      const timer = setTimeout(() => {
+        setShowInstallPrompt(true);
+      }, 5000); // show after 5 seconds
+      return () => clearTimeout(timer);
+    }
+  }, []);
 
   useEffect(() => {
     // Handle beforeinstallprompt event for Chromium browsers
     const handleBeforeInstallPrompt = (e: Event) => {
       e.preventDefault();
       setDeferredPrompt(e);
+      if (!isStandalone) {
+        setShowInstallPrompt(true);
+      }
       console.log('App installable: beforeinstallprompt caught');
     };
 
@@ -42,7 +69,77 @@ export default function PWARegistration() {
     return () => {
       window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
     };
-  }, []);
+  }, [isStandalone]);
 
-  return null;
+  const handleInstallClick = async () => {
+    if (deferredPrompt) {
+      deferredPrompt.prompt();
+      const { outcome } = await deferredPrompt.userChoice;
+      if (outcome === 'accepted') {
+        setShowInstallPrompt(false);
+      }
+      setDeferredPrompt(null);
+    }
+  };
+
+  const closePrompt = () => {
+    setShowInstallPrompt(false);
+    // Optionally save to localStorage so we don't bother them for a few days
+  };
+
+  return (
+    <AnimatePresence>
+      {showInstallPrompt && (
+        <motion.div
+          initial={{ y: 150, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          exit={{ y: 150, opacity: 0 }}
+          transition={{ type: 'spring', damping: 25, stiffness: 200 }}
+          className="fixed bottom-[80px] left-4 right-4 z-[999] md:bottom-6 md:left-auto md:right-6 md:w-96"
+        >
+          <div className="bg-background border border-border/50 shadow-2xl rounded-2xl p-4 flex flex-col gap-3 relative overflow-hidden backdrop-blur-xl bg-background/80">
+            {/* Background glowing effect */}
+            <div className="absolute -top-[50%] -right-[50%] w-[100%] h-[100%] bg-primary/20 blur-[60px] rounded-full pointer-events-none" />
+            
+            <button 
+              onClick={closePrompt}
+              className="absolute top-3 right-3 text-muted-foreground hover:text-foreground transition-colors p-1"
+            >
+              <X size={18} />
+            </button>
+
+            <div className="flex items-center gap-4 relative z-10">
+              <div className="w-14 h-14 rounded-2xl bg-gradient-to-tr from-primary to-emerald-400 p-[2px] shadow-lg shrink-0">
+                <div className="w-full h-full bg-background rounded-[14px] flex items-center justify-center overflow-hidden">
+                  <img src="/icon-192.png" alt="Pelotify Logo" className="w-10 h-10 object-contain" />
+                </div>
+              </div>
+              <div>
+                <h3 className="font-kanit font-bold text-lg leading-tight">Instala Pelotify</h3>
+                <p className="text-sm text-muted-foreground leading-snug">
+                  Carga más rápido, funciona offline y sin barra de navegador.
+                </p>
+              </div>
+            </div>
+
+            <div className="mt-2 relative z-10 w-full">
+              {isIOS && !deferredPrompt ? (
+                <div className="bg-muted/50 rounded-xl p-3 text-xs text-muted-foreground flex items-center gap-2">
+                  <span>1. Toca</span> <Share size={14} className="text-foreground" />
+                  <span>2. <strong>Añadir a inicio</strong></span> <PlusSquare size={14} className="text-foreground" />
+                </div>
+              ) : (
+                <Button 
+                  onClick={handleInstallClick} 
+                  className="w-full font-bold bg-primary text-primary-foreground hover:bg-primary/90"
+                >
+                  <Download className="mr-2 h-4 w-4" /> Instalar App
+                </Button>
+              )}
+            </div>
+          </div>
+        </motion.div>
+      )}
+    </AnimatePresence>
+  );
 }
