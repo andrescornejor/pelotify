@@ -26,55 +26,9 @@ const Bone = ({ className = '', style }: { className?: string, style?: React.CSS
 export const HomePageSkeleton = () => (
   <div className="relative min-h-screen bg-[#050505] font-sans flex flex-col overflow-hidden">
     
-    {/* ─── PREMIUM SPLASH SCREEN OVERLAY ELEMENTS ─── */}
+    {/* ─── MINIMAL LOADER ─── */}
     <div className="absolute inset-0 pointer-events-none z-0 flex items-center justify-center overflow-hidden">
-      {/* Center glowing orb */}
-      <motion.div 
-        initial={{ scale: 0.5, opacity: 0 }}
-        animate={{ scale: 1.2, opacity: 0.15 }}
-        transition={{ duration: 2, repeat: Infinity, repeatType: "reverse", ease: "easeInOut" }}
-        className="absolute w-[600px] h-[600px] bg-primary blur-[120px] rounded-full mix-blend-screen"
-      />
-      {/* Aesthetic grid overlay */}
-      <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-[0.03] mix-blend-overlay" />
       <div className="absolute bottom-0 left-0 right-0 h-1/2 bg-gradient-to-t from-background to-transparent" />
-    </div>
-
-    {/* SPLASH LOGO (Centered) */}
-    <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50 flex flex-col items-center justify-center">
-      <motion.div
-        initial={{ opacity: 0, scale: 0.8, y: 20 }}
-        animate={{ opacity: 1, scale: 1, y: 0 }}
-        transition={{ duration: 0.8, type: "spring", bounce: 0.5 }}
-        className="flex flex-col items-center"
-      >
-        <div className="relative w-28 h-28 sm:w-36 sm:h-36 mb-4 flex items-center justify-center">
-          <motion.div 
-            animate={{ rotate: 360 }}
-            transition={{ duration: 8, repeat: Infinity, ease: "linear" }}
-            className="absolute inset-0 rounded-[2.5rem] border-[2px] border-dashed border-primary/40 opacity-70"
-          />
-          <motion.div 
-            animate={{ scale: [1, 1.1, 1], rotate: [0, -5, 5, 0] }}
-            transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-            className="w-20 h-20 sm:w-24 sm:h-24 bg-gradient-to-br from-primary/20 to-primary/5 rounded-[2rem] border border-primary/30 shadow-[0_0_40px_rgba(44,252,125,0.4)] flex items-center justify-center backdrop-blur-xl"
-          >
-            <img src="/logo_pelotify.png" className="w-14 h-14 sm:w-16 sm:h-16 object-contain drop-shadow-[0_0_15px_rgba(44,252,125,0.8)]" alt="Pelotify" />
-          </motion.div>
-        </div>
-        <h1 className="text-3xl sm:text-4xl font-black italic uppercase tracking-tighter text-white drop-shadow-[0_0_15px_rgba(255,255,255,0.3)]">
-          PELOTI<span className="text-primary text-transparent bg-clip-text bg-gradient-to-r from-primary to-[#5dfd9d]">FY</span>
-        </h1>
-        <motion.div 
-          initial={{ width: 0 }}
-          animate={{ width: "100%" }}
-          transition={{ duration: 1.5, delay: 0.5, ease: "circOut" }}
-          className="h-1 bg-gradient-to-r from-transparent via-primary to-transparent mt-3 opacity-50"
-        />
-        <p className="mt-4 text-[10px] font-black uppercase tracking-[0.4em] text-primary/80 animate-pulse">
-          Sincronizando la gloria...
-        </p>
-      </motion.div>
     </div>
 
     {/* ─── APP SKELETON (Dimmed out in background to simulate loading state) ─── */}
