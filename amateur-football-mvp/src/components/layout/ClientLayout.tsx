@@ -205,6 +205,49 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
         />
       )}
 
+      {/* GLOBAL FULLSCREEN IMAGE MODAL (Centering fix) */}
+      <AnimatePresence>
+        {expandedImageUrl && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setExpandedImageUrl(null)}
+            className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/95 p-4 backdrop-blur-md cursor-zoom-out h-[100dvh] w-full"
+            style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0 }}
+          >
+            <motion.div
+              initial={{ scale: 0.95, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.95, opacity: 0 }}
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+              }}
+              className="relative max-w-fit max-h-fit"
+            >
+              <button
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  setExpandedImageUrl(null);
+                }}
+                className="absolute top-4 right-4 sm:-top-4 sm:-right-14 w-12 h-12 bg-white/10 hover:bg-white/20 text-white rounded-full flex items-center justify-center transition-all backdrop-blur-md z-[10000] border border-white/10 mobile-touch-feedback"
+                aria-label="Cerrar imagen"
+              >
+                <X className="w-6 h-6" />
+              </button>
+              <img
+                src={expandedImageUrl}
+                alt="Expanded view"
+                className="max-w-[95vw] max-h-[85vh] sm:max-h-[90vh] w-auto h-auto object-contain rounded-xl shadow-[0_0_80px_rgba(0,0,0,0.8)] cursor-default border border-white/5 select-none"
+                onContextMenu={(e) => e.preventDefault()}
+              />
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       {/* Persistent Floating Chat (Desktop only) */}
       {showNav && <FloatingChat />}
 

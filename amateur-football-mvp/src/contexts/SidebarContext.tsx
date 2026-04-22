@@ -11,6 +11,8 @@ interface SidebarContextType {
   setNotificationsOpen: (open: boolean) => void;
   isNavMenuOpen: boolean;
   setNavMenuOpen: (open: boolean) => void;
+  expandedImageUrl: string | null;
+  setExpandedImageUrl: (url: string | null) => void;
 }
 
 const SidebarContext = createContext<SidebarContextType | undefined>(undefined);
@@ -19,12 +21,14 @@ export function SidebarProvider({ children }: { children: ReactNode }) {
   const [isOpen, setIsOpen] = useState(false);
   const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
   const [isNavMenuOpen, setIsNavMenuOpen] = useState(false);
+  const [expandedImageUrl, setExpandedImageUrl] = useState<string | null>(null);
 
   const openSidebar = useCallback(() => setIsOpen(true), []);
   const closeSidebar = useCallback(() => setIsOpen(false), []);
   const toggleSidebar = useCallback(() => setIsOpen((prev) => !prev), []);
   const setNotificationsOpen = useCallback((open: boolean) => setIsNotificationsOpen(open), []);
   const setNavMenuOpen = useCallback((open: boolean) => setIsNavMenuOpen(open), []);
+  const handleSetExpandedImageUrl = useCallback((url: string | null) => setExpandedImageUrl(url), []);
 
   return (
     <SidebarContext.Provider
@@ -37,6 +41,8 @@ export function SidebarProvider({ children }: { children: ReactNode }) {
         setNotificationsOpen,
         isNavMenuOpen,
         setNavMenuOpen,
+        expandedImageUrl,
+        setExpandedImageUrl: handleSetExpandedImageUrl,
       }}
     >
       {children}
