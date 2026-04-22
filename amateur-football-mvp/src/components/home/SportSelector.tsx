@@ -7,66 +7,55 @@ import { type Sport, SPORT_META } from '@/lib/sports';
 interface SportSelectorProps {
   selectedSport: Sport;
   onSelect: (sport: Sport) => void;
-  className?: string;
-  variant?: 'app' | 'default';
 }
 
-export function SportSelector({ selectedSport, onSelect, className, variant = 'default' }: SportSelectorProps) {
+export function SportSelector({ selectedSport, onSelect }: SportSelectorProps) {
   const sports: Sport[] = ['football', 'padel', 'basket'];
 
   return (
-    <div className={cn(
-      "relative flex items-center p-1 bg-white/10 backdrop-blur-3xl rounded-[1.25rem] border border-white/20 shadow-2xl overflow-hidden",
-      variant === 'app' && "bg-foreground/[0.04] border-foreground/[0.08] backdrop-blur-xl shadow-none",
-      className
-    )}>
-      {/* Background Track Slider */}
-      <div className="absolute inset-1 flex gap-1 pointer-events-none">
-        {sports.map((sport) => (
-          <div key={sport} className="flex-1 relative">
-            {selectedSport === sport && (
-              <motion.div
-                layoutId="sport-pill-bg"
-                className={cn(
-                  "absolute inset-0 bg-white shadow-xl rounded-[0.9rem]",
-                  variant === 'app' && "bg-background shadow-md border border-foreground/[0.05]"
-                )}
-                transition={{ type: "spring", stiffness: 440, damping: 32 }}
-              />
-            )}
-          </div>
-        ))}
-      </div>
+    <div className="relative w-fit flex items-center p-1 bg-foreground/[0.03] backdrop-blur-3xl rounded-[1.25rem] border border-foreground/[0.08] shadow-2xl overflow-hidden">
+      {/* Moving Background Pill */}
+      <motion.div
+        layoutId="active-sport-pill"
+        className="absolute h-[calc(100%-8px)] rounded-xl bg-white shadow-[0_4px_12px_rgba(0,0,0,0.1)] z-0"
+        initial={false}
+        animate={{
+          width: 'calc(33.33% - 4px)',
+          x: sports.indexOf(selectedSport) * 100 + '%'
+        }}
+        transition={{ type: "spring", stiffness: 400, damping: 30 }}
+        style={{
+           left: '4px',
+           width: 'calc(33.33% - 4px)',
+           transform: `translateX(${sports.indexOf(selectedSport) * (100 / sports.length)}%)`
+        } as any}
+      />
 
-      {/* Buttons */}
-      <div className="flex w-full relative z-10 h-full">
+      <div className="flex relative z-10 w-full min-w-[280px]">
         {sports.map((sport) => {
           const isSelected = selectedSport === sport;
           const meta = SPORT_META[sport];
           
+          let activeColor = "text-emerald-600";
+          if (sport === 'padel') activeColor = "text-cyan-600";
+          if (sport === 'basket') activeColor = "text-orange-600";
+
           return (
             <button
               key={sport}
-              onClick={(e) => {
-                e.stopPropagation();
-                onSelect(sport);
-              }}
+              onClick={() => onSelect(sport)}
               className={cn(
-                "flex-1 flex flex-col items-center justify-center py-1 transition-all duration-300 relative group active:scale-95 touch-manipulation",
-                isSelected ? "text-slate-900" : "text-white/40 hover:text-white/70",
-                variant === 'app' && (isSelected ? "text-primary" : "text-foreground/30")
+                "flex-1 px-4 py-2.5 flex items-center justify-center gap-2.5 transition-all duration-300 outline-none",
+                isSelected ? activeColor : "text-foreground/40 hover:text-foreground/60"
               )}
             >
-              <span className={cn(
-                "text-lg mb-0.5 transition-all duration-500",
-                isSelected ? "scale-110 grayscale-0" : "grayscale opacity-60"
-              )}>
+              <motion.span 
+                animate={isSelected ? { scale: 1.2, rotate: [0, -10, 10, 0] } : { scale: 1, rotate: 0 }}
+                className="text-lg leading-none"
+              >
                 {meta.icon}
-              </span>
-              <span className={cn(
-                "text-[7px] font-extrabold uppercase tracking-[0.1em] transition-all duration-300",
-                isSelected ? "opacity-100" : "opacity-0 translate-y-1"
-              )}>
+              </motion.span>
+              <span className="text-[10px] font-black uppercase tracking-[0.1em] font-kanit italic">
                 {meta.label}
               </span>
             </button>
