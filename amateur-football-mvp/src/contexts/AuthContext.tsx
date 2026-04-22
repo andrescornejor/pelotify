@@ -446,7 +446,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                   transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
                   className="relative z-10 flex flex-col items-center"
                 >
-                  <span className="text-5xl font-black italic text-primary drop-shadow-[0_0_15px_rgba(var(--primary-rgb),0.5)]">P</span>
+                  <img 
+                    src="/logo_pelotify.png" 
+                    alt="Pelotify" 
+                    className="w-16 h-16 object-contain drop-shadow-[0_0_15px_rgba(var(--primary-rgb),0.3)]" 
+                  />
                 </motion.div>
 
                 {/* Scanning Light Effect */}
