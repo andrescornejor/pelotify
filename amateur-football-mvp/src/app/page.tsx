@@ -41,6 +41,7 @@ import LandingPage from '@/components/LandingPage';
 import { StatCard, TeamCard, RankBadgeInline, EmptyState, SectionDivider, LazyVideo, HomePageSkeleton, VenueCard, RANKS, getRankByElo, WeatherWidget, CalendarButton, SportsAnnouncementBanner } from '@/components/home';
 import { useHomeData } from '@/hooks/useHomeData';
 import { useEffect, useMemo, useState } from 'react';
+import { getFormatMeta, getMatchSport, SPORT_META } from '@/lib/sports';
 
 // --- TYPES & CONSTANTS (extracted to @/components/home) ---
 
@@ -62,6 +63,9 @@ export default function HomePage() {
   const highlights = homeData?.highlights || [];
   const featuredVenues = homeData?.featuredVenues || [];
   const recentPosts = homeData?.recentPosts || [];
+  const nextMatchSport = nextMatch ? getMatchSport(nextMatch) : 'football';
+  const nextMatchFormat = nextMatch ? getFormatMeta(nextMatch.type, nextMatchSport) : null;
+  const nextMatchMeta = SPORT_META[nextMatchSport];
 
   const [greeting, setGreeting] = useState('');
   const [countdownText, setCountdownText] = useState<string | null>(null);
@@ -318,12 +322,20 @@ export default function HomePage() {
                     )}
                   </div>
                   
+                  {nextMatchFormat && (
+                    <div className="text-[9px] font-black uppercase tracking-[0.2em] text-foreground/35">
+                      {nextMatchMeta.icon} {nextMatchFormat.label}
+                    </div>
+                  )}
+
                   <div className="flex items-center justify-between gap-2">
                     <div className="flex flex-col items-center gap-1 flex-1">
                       <div className="w-12 h-12 rounded-xl bg-surface border border-foreground/10 p-2 overflow-hidden flex items-center justify-center">
                         <JerseyVisualizer primaryColor="#18181b" secondaryColor="#2cfc7d" pattern="vertical" className="w-full h-full" />
                       </div>
-                      <span className="text-[10px] font-black text-center truncate w-full uppercase italic">{(nextMatch.team_a_name && nextMatch.team_a_name !== 'Team A') ? nextMatch.team_a_name : 'LOCAL'}</span>
+                      <span className="text-[10px] font-black text-center truncate w-full uppercase italic">
+                        {(nextMatch.team_a_name && nextMatch.team_a_name !== 'Team A') ? nextMatch.team_a_name : nextMatchSport === 'padel' ? 'DUPLA A' : 'LOCAL'}
+                      </span>
                     </div>
                     
                     <div className="flex flex-col items-center shrink-0">
@@ -335,7 +347,9 @@ export default function HomePage() {
                       <div className="w-12 h-12 rounded-xl bg-surface border border-foreground/10 p-2 overflow-hidden flex items-center justify-center">
                         <JerseyVisualizer primaryColor="#10b981" secondaryColor="#ffffff" pattern="hoops" className="w-full h-full" />
                       </div>
-                      <span className="text-[10px] font-black text-center truncate w-full uppercase italic">{(nextMatch.team_b_name && nextMatch.team_b_name !== 'Team B') ? nextMatch.team_b_name : 'VISITA'}</span>
+                      <span className="text-[10px] font-black text-center truncate w-full uppercase italic">
+                        {(nextMatch.team_b_name && nextMatch.team_b_name !== 'Team B') ? nextMatch.team_b_name : nextMatchSport === 'padel' ? 'DUPLA B' : 'VISITA'}
+                      </span>
                     </div>
                   </div>
 
@@ -1255,7 +1269,9 @@ export default function HomePage() {
                         time={nextMatch.time}
                       />
                       <div className="px-4 py-2 rounded-2xl bg-foreground/[0.05] border border-foreground/20 md:">
-                        <span className="text-[10px] font-black text-foreground/60 uppercase tracking-widest">{nextMatch.type || 'F5'}</span>
+                        <span className="text-[10px] font-black text-foreground/60 uppercase tracking-widest">
+                          {nextMatchMeta.icon} {nextMatchFormat?.label || nextMatch.type || 'F5'}
+                        </span>
                       </div>
                     </div>
                   )}
@@ -1285,8 +1301,12 @@ export default function HomePage() {
                             </div>
                           </motion.div>
                           <div className="text-center space-y-1">
-                            <span className="text-sm md:text-base font-black uppercase italic tracking-tighter text-foreground font-kanit block px-2 line-clamp-1 max-w-[120px]">{(nextMatch.team_a_name && nextMatch.team_a_name !== 'Team A') ? nextMatch.team_a_name : 'LOCAL'}</span>
-                            <div className="inline-block px-2 py-0.5 rounded text-[8px] font-black bg-foreground/5 text-foreground/40 uppercase tracking-[0.2em] border border-foreground/10">LOCAL</div>
+                            <span className="text-sm md:text-base font-black uppercase italic tracking-tighter text-foreground font-kanit block px-2 line-clamp-1 max-w-[120px]">
+                              {(nextMatch.team_a_name && nextMatch.team_a_name !== 'Team A') ? nextMatch.team_a_name : nextMatchSport === 'padel' ? 'DUPLA A' : 'LOCAL'}
+                            </span>
+                            <div className="inline-block px-2 py-0.5 rounded text-[8px] font-black bg-foreground/5 text-foreground/40 uppercase tracking-[0.2em] border border-foreground/10">
+                              {nextMatchSport === 'padel' ? 'LADO A' : 'LOCAL'}
+                            </div>
                           </div>
                         </div>
 
@@ -1320,8 +1340,12 @@ export default function HomePage() {
                             </div>
                           </motion.div>
                           <div className="text-center space-y-1">
-                            <span className="text-sm md:text-base font-black uppercase italic tracking-tighter text-foreground font-kanit block px-2 line-clamp-1 max-w-[120px]">{(nextMatch.team_b_name && nextMatch.team_b_name !== 'Team B') ? nextMatch.team_b_name : 'VISITA'}</span>
-                            <div className="inline-block px-2 py-0.5 rounded text-[8px] font-black bg-foreground/5 text-foreground/40 uppercase tracking-[0.2em] border border-foreground/10">VISITA</div>
+                            <span className="text-sm md:text-base font-black uppercase italic tracking-tighter text-foreground font-kanit block px-2 line-clamp-1 max-w-[120px]">
+                              {(nextMatch.team_b_name && nextMatch.team_b_name !== 'Team B') ? nextMatch.team_b_name : nextMatchSport === 'padel' ? 'DUPLA B' : 'VISITA'}
+                            </span>
+                            <div className="inline-block px-2 py-0.5 rounded text-[8px] font-black bg-foreground/5 text-foreground/40 uppercase tracking-[0.2em] border border-foreground/10">
+                              {nextMatchSport === 'padel' ? 'LADO B' : 'VISITA'}
+                            </div>
                           </div>
                         </div>
                       </div>
@@ -1366,7 +1390,7 @@ export default function HomePage() {
                           whileTap={{ scale: 0.98 }}
                           className="w-full h-14 rounded-[1.5rem] bg-foreground text-background hover:bg-primary hover:text-black font-black uppercase text-[11px] tracking-[0.2em] flex items-center justify-center gap-3 shadow-[0_10px_25px_rgba(0,0,0,0.5)] hover:shadow-[0_15px_30px_rgba(44,252,125,0.4)] transition-all duration-300 group/btn"
                         >
-                          ENTRAR A CANCHA <ArrowRight className="w-4 h-4 group-hover/btn:translate-x-1 transition-transform" />
+                          VER ENCUENTRO <ArrowRight className="w-4 h-4 group-hover/btn:translate-x-1 transition-transform" />
                         </motion.button>
                       </Link>
                       <CalendarButton match={nextMatch} className="w-full h-14 sm:w-auto sm:flex-1 shrink-0 rounded-[1.5rem] bg-surface hover:bg-foreground/10 border border-foreground/15 text-foreground/60 hover:text-foreground transition-all" />
@@ -1391,7 +1415,7 @@ export default function HomePage() {
                     <div className="space-y-3 relative z-10 group-hover/agenda:-translate-y-1 transition-transform duration-700">
                       <h4 className="text-3xl font-black italic uppercase tracking-tighter text-foreground/80 font-kanit">Agenda Libre</h4>
                       <p className="text-[11px] font-medium text-foreground/40 tracking-wide leading-relaxed max-w-[240px] mx-auto">
-                        No hay encuentros programados.<br />El potrero te está llamando.
+                        No hay encuentros programados.<br />Buscá uno nuevo o armalo desde cero.
                       </p>
                     </div>
 
@@ -1415,7 +1439,7 @@ export default function HomePage() {
                         <Sparkles className="w-3 h-3 text-primary/50" />
                       </div>
                       <p className="text-[10px] font-medium text-foreground/50 italic leading-relaxed px-4">
-                        "La gloria le pertenece a quienes tienen el coraje de pisar la cancha."
+                        "La proxima historia deportiva arranca cuando alguien arma el encuentro."
                       </p>
                     </div>
                   </div>
@@ -1457,7 +1481,7 @@ export default function HomePage() {
                 <span className="text-xl font-black italic uppercase tracking-tighter text-foreground font-kanit">PELOTI<span className="text-primary">FY</span></span>
               </div>
               <p className="text-[11px] text-foreground/40 font-medium tracking-wide leading-relaxed max-w-sm">
-                La plataforma definitiva para el futbol amateur competitivo. Dominá el potrero.
+                La plataforma para organizar futbol, padel y basket amateur con una comunidad bien activa.
               </p>
             </div>
           </div>

@@ -30,7 +30,7 @@ export const SPORT_META: Record<Sport, SportMeta> = {
     key: 'football',
     label: 'Futbol',
     shortLabel: 'Futbol',
-    icon: '⚽',
+    icon: '\u26BD',
     headline: 'La casa del futbol amateur',
     description: 'Pelotify sigue poniendo al futbol al frente, con nuevos deportes como opcion.',
     heroImage:
@@ -40,7 +40,7 @@ export const SPORT_META: Record<Sport, SportMeta> = {
     key: 'padel',
     label: 'Padel',
     shortLabel: 'Padel',
-    icon: '🎾',
+    icon: '\u{1F3BE}',
     headline: 'Partidos rapidos en pareja',
     description: 'Organiza, completa y entra a partidos de padel sin salir de Pelotify.',
     heroImage:
@@ -50,7 +50,7 @@ export const SPORT_META: Record<Sport, SportMeta> = {
     key: 'basket',
     label: 'Basket',
     shortLabel: 'Basket',
-    icon: '🏀',
+    icon: '\u{1F3C0}',
     headline: 'Sumate a una cancha de basket',
     description: 'Abre cupos y arma equipos para jugar basket con la misma dinamica social.',
     heroImage:
