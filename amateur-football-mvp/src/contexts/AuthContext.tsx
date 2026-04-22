@@ -416,8 +416,64 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       }}
     >
       {showLoader ? (
-        <div className="fixed inset-0 bg-background flex flex-col items-center justify-center z-[9999]">
-          <div className="w-10 h-10 border-2 border-primary/20 border-t-primary rounded-full animate-spin" />
+        <div className="fixed inset-0 bg-[#050505] flex flex-col items-center justify-center z-[9999] overflow-hidden">
+          {/* Ambient Glow */}
+          <div className="absolute w-[500px] h-[500px] bg-primary/10 blur-[120px] rounded-full" />
+          
+          <div className="relative flex flex-col items-center gap-8">
+            {/* Animated Logo Symbol */}
+            <div className="relative w-24 h-24">
+              {/* Outer Pulsing Rings */}
+              <motion.div 
+                animate={{ scale: [1, 1.5], opacity: [0.3, 0] }}
+                transition={{ duration: 2, repeat: Infinity, ease: "easeOut" }}
+                className="absolute inset-0 rounded-[2rem] border-2 border-primary/30"
+              />
+              <motion.div 
+                animate={{ scale: [1, 1.3], opacity: [0.5, 0] }}
+                transition={{ duration: 2, delay: 0.5, repeat: Infinity, ease: "easeOut" }}
+                className="absolute inset-0 rounded-[2rem] border-2 border-primary/20"
+              />
+              
+              {/* Main Core */}
+              <motion.div 
+                animate={{ 
+                  rotateY: [0, 180, 360],
+                  scale: [1, 1.05, 1]
+                }}
+                transition={{ 
+                  rotateY: { duration: 3, repeat: Infinity, ease: "easeInOut" },
+                  scale: { duration: 2, repeat: Infinity, ease: "easeInOut" }
+                }}
+                className="w-full h-full bg-gradient-to-br from-primary to-[#10b981] rounded-[2rem] shadow-[0_0_40px_rgba(44,252,125,0.4)] flex items-center justify-center relative z-10"
+              >
+                <div className="w-[85%] h-[85%] bg-black rounded-[1.8rem] flex items-center justify-center">
+                   <span className="text-4xl font-black italic text-primary">P</span>
+                </div>
+              </motion.div>
+            </div>
+
+            {/* Loading text with scanning effect */}
+            <div className="flex flex-col items-center gap-4">
+              <div className="relative">
+                <h1 className="text-2xl font-black italic uppercase tracking-tighter text-white opacity-90">
+                  PELOTI<span className="text-primary">FY</span>
+                </h1>
+                <motion.div 
+                  className="absolute bottom-[-4px] left-0 h-[2px] bg-primary"
+                  initial={{ width: 0 }}
+                  animate={{ width: "100%" }}
+                  transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
+                />
+              </div>
+              <p className="text-[9px] font-black uppercase tracking-[0.4em] text-foreground/30">
+                Preparando la cancha
+              </p>
+            </div>
+          </div>
+
+          {/* Perspective grid footer */}
+          <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-primary/10 to-transparent opacity-20" />
         </div>
       ) : (
         children

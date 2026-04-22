@@ -32,9 +32,36 @@ export const HomePageSkeleton = () => (
       <div className="absolute -bottom-40 -left-40 w-[620px] h-[620px] rounded-full blur-[140px] opacity-50 bg-[radial-gradient(circle_at_center,rgba(var(--primary-rgb),0.14),transparent_60%)]" />
     </div>
     
-    {/* ─── MINIMAL LOADER ─── */}
+    {/* ─── PREMIUM LOADER SYMBOL ─── */}
+    <div className="absolute inset-0 z-50 flex items-center justify-center pointer-events-none">
+      <div className="flex flex-col items-center gap-6">
+        <motion.div
+          animate={{ 
+            scale: [1, 1.1, 1],
+            rotateY: [0, 360]
+          }}
+          transition={{
+            scale: { duration: 2, repeat: Infinity, ease: "easeInOut" },
+            rotateY: { duration: 4, repeat: Infinity, ease: "linear" }
+          }}
+          className="w-20 h-20 bg-gradient-to-br from-primary to-primary-dark rounded-[1.8rem] flex items-center justify-center shadow-[0_0_50px_rgba(44,252,125,0.3)] border border-primary/30"
+        >
+          <div className="w-[85%] h-[85%] bg-black rounded-[1.5rem] flex items-center justify-center">
+            <span className="text-3xl font-black italic text-primary">P</span>
+          </div>
+        </motion.div>
+        
+        <div className="flex flex-col items-center">
+          <p className="text-[10px] font-black uppercase tracking-[0.4em] text-primary/60 animate-pulse">
+            Sincronizando...
+          </p>
+        </div>
+      </div>
+    </div>
+
+    {/* ─── MINIMAL LOADER BACKGROUND ─── */}
     <div className="absolute inset-0 pointer-events-none z-0 flex items-center justify-center overflow-hidden">
-      <div className="absolute bottom-0 left-0 right-0 h-1/2 bg-gradient-to-t from-background via-background/70 to-transparent" />
+      <div className="absolute bottom-0 left-0 right-0 h-1/2 bg-gradient-to-t from-background to-transparent" />
     </div>
 
     {/* ─── APP SKELETON (Dimmed out in background to simulate loading state) ─── */}
