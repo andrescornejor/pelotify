@@ -959,7 +959,7 @@ export default function HomePage() {
                 </Link>
               </div>
               {recentPosts.length > 0 ? (
-                <div className="flex gap-3 overflow-x-auto pb-2 snap-x snap-mandatory no-scrollbar scroll-px-1">
+                <div className="flex gap-3 overflow-x-auto pb-2 snap-x snap-mandatory no-scrollbar scroll-px-1 swipe-ignore">
                   {recentPosts.slice(0, 8).map((post, idx) => (
                     <Link
                       key={post.id}
@@ -1025,6 +1025,78 @@ export default function HomePage() {
             <section className="space-y-3">
               <div className="flex items-center justify-between px-1">
                 <div>
+                  <p className="text-[9px] font-black uppercase tracking-[0.22em] text-primary">Highlights</p>
+                  <h3 className="mt-1 text-lg font-black italic uppercase tracking-tighter text-foreground">
+                    {focusSportMeta.highlightLabel}
+                  </h3>
+                </div>
+                <Link href="/highlights" className="text-[9px] font-black uppercase tracking-[0.18em] text-foreground/45">
+                  Ver todo
+                </Link>
+              </div>
+              {highlights.length > 0 ? (
+                <div className="flex gap-3 overflow-x-auto pb-1 snap-x swipe-ignore">
+                  {highlights.slice(0, 4).map((highlight, idx) => (
+                    <Link
+                      key={highlight.id}
+                      href={`/highlights?v=${highlight.id}`}
+                      className={cn(
+                        'snap-start overflow-hidden rounded-[2rem] border border-white/10 shadow-[0_18px_44px_rgba(0,0,0,0.18)]',
+                        idx === 0 ? 'min-w-[240px]' : 'min-w-[180px]'
+                      )}
+                    >
+                      <div className={cn('relative', idx === 0 ? 'aspect-[10/16]' : 'aspect-[4/6]')}>
+                        {highlight.thumbnail_url ? (
+                          <img src={highlight.thumbnail_url} alt="" className="absolute inset-0 h-full w-full object-cover" />
+                        ) : (
+                          <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(var(--primary-rgb),0.35),rgba(0,0,0,0.92))]" />
+                        )}
+                        <div className="absolute inset-0 bg-gradient-to-t from-black via-black/35 to-black/10" />
+                        <div className="absolute left-4 top-4 flex h-12 w-12 items-center justify-center rounded-full border border-white/15 bg-black/35 backdrop-blur-md">
+                          <Play className="h-5 w-5 translate-x-[1px] text-white" />
+                        </div>
+
+                        <div className="absolute inset-x-4 bottom-4">
+                          <div className="flex items-center gap-2">
+                            <div className="h-8 w-8 rounded-full overflow-hidden border border-white/15 bg-white/10">
+                              {highlight.profiles?.avatar_url ? (
+                                <img src={highlight.profiles.avatar_url} alt="" className="h-full w-full object-cover" />
+                              ) : (
+                                <div className="flex h-full w-full items-center justify-center text-[10px] font-black text-white/70">
+                                  {(highlight.profiles?.name || 'J').charAt(0)}
+                                </div>
+                              )}
+                            </div>
+                            <div className="min-w-0">
+                              <p className="truncate text-[10px] font-black uppercase tracking-[0.16em] text-white">
+                                @{highlight.profiles?.name || 'Jugador'}
+                              </p>
+                              <p className="text-[9px] font-bold text-white/65">
+                                {highlight.likes_count || 0} likes · {highlight.views_count || 0} views
+                              </p>
+                            </div>
+                          </div>
+
+                          {idx === 0 && (
+                            <div className="mt-3 inline-flex rounded-full border border-white/10 bg-white/10 px-3 py-1.5 text-[9px] font-black uppercase tracking-[0.18em] text-white">
+                              Clip destacado
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    </Link>
+                  ))}
+                </div>
+              ) : (
+                <div className="rounded-[1.7rem] border border-dashed border-foreground/10 bg-white/[0.02] p-5 text-center text-sm font-bold text-foreground/55">
+                  Todavía no hay highlights para mostrar.
+                </div>
+              )}
+            </section>
+
+            <section className="space-y-3">
+              <div className="flex items-center justify-between px-1">
+                <div>
                   <p className="text-[9px] font-black uppercase tracking-[0.22em] text-primary">Para vos</p>
                   <h3 className="mt-1 text-lg font-black italic uppercase tracking-tighter text-foreground">
                     Recomendados
@@ -1034,7 +1106,7 @@ export default function HomePage() {
                   Ver más
                 </Link>
               </div>
-              <div className="flex gap-3 overflow-x-auto pb-2 snap-x snap-mandatory no-scrollbar scroll-px-1">
+              <div className="flex gap-3 overflow-x-auto pb-2 snap-x snap-mandatory no-scrollbar scroll-px-1 swipe-ignore">
                 {recommendedMatches.length > 0 ? (
                   recommendedMatches.map((match) => (
                     <Link
@@ -1124,77 +1196,6 @@ export default function HomePage() {
             </section>
 
 
-            <section className="space-y-3">
-              <div className="flex items-center justify-between px-1">
-                <div>
-                  <p className="text-[9px] font-black uppercase tracking-[0.22em] text-primary">Highlights</p>
-                  <h3 className="mt-1 text-lg font-black italic uppercase tracking-tighter text-foreground">
-                    {focusSportMeta.highlightLabel}
-                  </h3>
-                </div>
-                <Link href="/highlights" className="text-[9px] font-black uppercase tracking-[0.18em] text-foreground/45">
-                  Ver todo
-                </Link>
-              </div>
-              {highlights.length > 0 ? (
-                <div className="flex gap-3 overflow-x-auto pb-1 snap-x">
-                  {highlights.slice(0, 4).map((highlight, idx) => (
-                    <Link
-                      key={highlight.id}
-                      href={`/highlights?v=${highlight.id}`}
-                      className={cn(
-                        'snap-start overflow-hidden rounded-[2rem] border border-white/10 shadow-[0_18px_44px_rgba(0,0,0,0.18)]',
-                        idx === 0 ? 'min-w-[240px]' : 'min-w-[180px]'
-                      )}
-                    >
-                      <div className={cn('relative', idx === 0 ? 'aspect-[10/16]' : 'aspect-[4/6]')}>
-                        {highlight.thumbnail_url ? (
-                          <img src={highlight.thumbnail_url} alt="" className="absolute inset-0 h-full w-full object-cover" />
-                        ) : (
-                          <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(var(--primary-rgb),0.35),rgba(0,0,0,0.92))]" />
-                        )}
-                        <div className="absolute inset-0 bg-gradient-to-t from-black via-black/35 to-black/10" />
-                        <div className="absolute left-4 top-4 flex h-12 w-12 items-center justify-center rounded-full border border-white/15 bg-black/35 backdrop-blur-md">
-                          <Play className="h-5 w-5 translate-x-[1px] text-white" />
-                        </div>
-
-                        <div className="absolute inset-x-4 bottom-4">
-                          <div className="flex items-center gap-2">
-                            <div className="h-8 w-8 rounded-full overflow-hidden border border-white/15 bg-white/10">
-                              {highlight.profiles?.avatar_url ? (
-                                <img src={highlight.profiles.avatar_url} alt="" className="h-full w-full object-cover" />
-                              ) : (
-                                <div className="flex h-full w-full items-center justify-center text-[10px] font-black text-white/70">
-                                  {(highlight.profiles?.name || 'J').charAt(0)}
-                                </div>
-                              )}
-                            </div>
-                            <div className="min-w-0">
-                              <p className="truncate text-[10px] font-black uppercase tracking-[0.16em] text-white">
-                                @{highlight.profiles?.name || 'Jugador'}
-                              </p>
-                              <p className="text-[9px] font-bold text-white/65">
-                                {highlight.likes_count || 0} likes · {highlight.views_count || 0} views
-                              </p>
-                            </div>
-                          </div>
-
-                          {idx === 0 && (
-                            <div className="mt-3 inline-flex rounded-full border border-white/10 bg-white/10 px-3 py-1.5 text-[9px] font-black uppercase tracking-[0.18em] text-white">
-                              Clip destacado
-                            </div>
-                          )}
-                        </div>
-                      </div>
-                    </Link>
-                  ))}
-                </div>
-              ) : (
-                <div className="rounded-[1.7rem] border border-dashed border-foreground/10 bg-white/[0.02] p-5 text-center text-sm font-bold text-foreground/55">
-                  Todavía no hay highlights para mostrar.
-                </div>
-              )}
-            </section>
           </div>
         ) : (
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
