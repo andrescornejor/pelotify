@@ -68,15 +68,25 @@ export default function HomePage() {
   const [selectedSport, setSelectedSport] = useState<Sport>('football');
   const focusSportMeta = getSportMeta(selectedSport);
 
+  // Dynamic theme mapping
+  const sportTheme = useMemo(() => {
+    if (selectedSport === 'padel') return { accent: '#22d3ee', accentDark: '#0891b2', accentRgb: '34, 211, 238', gradient: 'from-cyan-500/20 via-sky-500/10' };
+    if (selectedSport === 'basket') return { accent: '#f97316', accentDark: '#c2410c', accentRgb: '249, 115, 22', gradient: 'from-orange-500/20 via-amber-500/10' };
+    return { accent: '#2cfc7d', accentDark: '#1a9a4a', accentRgb: '44, 252, 125', gradient: 'from-emerald-500/20 via-teal-500/10' };
+  }, [selectedSport]);
+
   const nextMatchSport = nextMatch ? getMatchSport(nextMatch) : 'football';
   const nextMatchFormat = nextMatch ? getFormatMeta(nextMatch.type, nextMatchSport) : null;
   const nextMatchMeta = SPORT_META[nextMatchSport];
-  // Sync selected sport with next match if it's the first load
+
+  // Sync selected sport with next match ONLY if it's the first render and they have a match
+  const [hasSynced, setHasSynced] = useState(false);
   useEffect(() => {
-    if (nextMatchSport !== 'football' && selectedSport === 'football') {
+    if (!hasSynced && nextMatchSport !== 'football') {
       setSelectedSport(nextMatchSport);
+      setHasSynced(true);
     }
-  }, [nextMatchSport]);
+  }, [nextMatchSport, hasSynced]);
 
   const [greeting, setGreeting] = useState('');
   const [countdownText, setCountdownText] = useState<string | null>(null);
@@ -201,7 +211,7 @@ export default function HomePage() {
     return { info, nextRank: nextR, progress, rank: rankObj };
   }, [statsSummary.elo]);
 
-  const userName = user?.name || 'Jugador';
+  const userName = (metadata?.name || user?.email?.split('@')[0] || 'Jugador').split(' ')[0];
 
   const fadeUp = {
     hidden: { opacity: 0, y: 20 },
@@ -275,11 +285,16 @@ export default function HomePage() {
   }
 
   return (
-    <div
+        <main
       className={cn(
-        'relative min-h-screen bg-background font-sans selection:bg-primary selection:text-background',
+        'relative min-h-screen bg-background font-sans selection:bg-primary selection:text-background pb-20 lg:pb-0 transition-colors duration-700',
         performanceMode && 'perf-mode'
       )}
+      style={{
+        '--primary': sportTheme.accent,
+        '--primary-dark': sportTheme.accentDark,
+        '--primary-rgb': sportTheme.accentRgb
+      } as any}
     >
       <OnboardingTour />
 
@@ -316,9 +331,17 @@ export default function HomePage() {
                 <span className="text-[11px] font-black uppercase tracking-[0.2em] text-foreground/40 font-kanit leading-tight">
                   {greeting}
                 </span>
-                <h1 className="text-3xl font-black italic uppercase font-kanit tracking-tighter text-foreground leading-[0.9] mt-0.5">
-                  HOLA, <span className="text-primary">{userName}</span>
-                </h1>
+                <AnimatePresence mode="wait">
+                  <motion.h1 
+                    key={selectedSport}
+                    initial={{ y: 10, opacity: 0 }}
+                    animate={{ y: 0, opacity: 1 }}
+                    exit={{ y: -10, opacity: 0 }}
+                    className="text-3xl font-black italic uppercase font-kanit tracking-tighter text-foreground leading-[0.9] mt-0.5"
+                  >
+                    HOLA, <span className="text-primary">{userName}</span>
+                  </motion.h1>
+                </AnimatePresence>
               </div>
             </div>
 
@@ -353,7 +376,7 @@ export default function HomePage() {
                   <div className="flex items-center justify-between gap-2">
                     <div className="flex flex-col items-center gap-1 flex-1">
                       <div className="w-12 h-12 rounded-xl bg-surface border border-foreground/10 p-2 overflow-hidden flex items-center justify-center">
-                        <JerseyVisualizer primaryColor="#18181b" secondaryColor="#2cfc7d" pattern="vertical" className="w-full h-full" />
+                        <JerseyVisualizer primaryColor="#18181b" secondaryColor={sportTheme.accent} pattern="vertical" className="w-full h-full" />
                       </div>
                       <span className="text-[10px] font-black text-center truncate w-full uppercase italic">
                         {(nextMatch.team_a_name && nextMatch.team_a_name !== 'Team A') ? nextMatch.team_a_name : nextMatchSport === 'padel' ? 'DUPLA A' : 'LOCAL'}
@@ -367,7 +390,7 @@ export default function HomePage() {
 
                     <div className="flex flex-col items-center gap-1 flex-1">
                       <div className="w-12 h-12 rounded-xl bg-surface border border-foreground/10 p-2 overflow-hidden flex items-center justify-center">
-                        <JerseyVisualizer primaryColor="#10b981" secondaryColor="#ffffff" pattern="hoops" className="w-full h-full" />
+                        <JerseyVisualizer primaryColor={sportTheme.accent} secondaryColor="#ffffff" pattern="hoops" className="w-full h-full" />
                       </div>
                       <span className="text-[10px] font-black text-center truncate w-full uppercase italic">
                         {(nextMatch.team_b_name && nextMatch.team_b_name !== 'Team B') ? nextMatch.team_b_name : nextMatchSport === 'padel' ? 'DUPLA B' : 'VISITA'}
@@ -394,7 +417,7 @@ export default function HomePage() {
               ].map((item, idx) => (
                 <Link key={idx} href={item.href} className="flex flex-col items-center gap-2 group">
                   <div className="w-full aspect-square rounded-[1.5rem] glass border-foreground/10 flex items-center justify-center group-active:scale-90 transition-all shadow-lg group-hover:border-primary/20">
-                    <item.icon className={cn("w-6 h-6", item.color)} strokeWidth={2.5} />
+                    <item.icon className={cn("w-6 h-6", item.label === 'Buscar' ? "text-primary" : item.color)} strokeWidth={2.5} />
                   </div>
                   <span className="text-[9px] font-black uppercase text-foreground/60 tracking-tighter">{item.label}</span>
                 </Link>
@@ -555,13 +578,34 @@ export default function HomePage() {
           >
             {/* Backdrop image & Effects */}
             <div className="absolute inset-0 z-0 select-none bg-background">
-              <img
-                src="https://images.unsplash.com/photo-1574629810360-7efbbe195018?auto=format&fit=crop&q=60&w=1200"
-                alt=""
-                fetchPriority="high"
-                decoding="async"
-                className="w-full h-full object-cover grayscale opacity-[0.12] transition-opacity"
-              />
+              <AnimatePresence mode="wait">
+                <motion.img
+                  key={selectedSport}
+                  initial={{ opacity: 0, scale: 1.1 }}
+                  animate={{ opacity: 0.12, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.9 }}
+                  transition={{ duration: 1.2, ease: "easeInOut" }}
+                  src={focusSportMeta.heroImage}
+                  alt=""
+                  fetchPriority="high"
+                  decoding="async"
+                  className="w-full h-full object-cover grayscale"
+                />
+              </AnimatePresence>
+              
+              {/* Specialized Court Overlays */}
+              <div className="absolute inset-0 pointer-events-none">
+                {selectedSport === 'football' && (
+                  <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(44,252,125,0.05)_0%,transparent_100%)]" />
+                )}
+                {selectedSport === 'padel' && (
+                  <div className="absolute inset-0 bg-[linear-gradient(rgba(34,211,238,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(34,211,238,0.03)_1px,transparent_1px)] bg-[size:40px_40px]" />
+                )}
+                {selectedSport === 'basket' && (
+                  <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(249,115,22,0.1)_0%,transparent_50%)]" />
+                )}
+              </div>
+
               {/* Overlay gradients for depth */}
               <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent opacity-90" />
               <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-transparent to-accent/5" />
@@ -1658,6 +1702,6 @@ export default function HomePage() {
           </div>
         </footer>
       </div>
-    </div>
+    </main>
   );
 }
