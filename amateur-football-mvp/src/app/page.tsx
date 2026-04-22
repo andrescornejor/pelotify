@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -322,7 +322,7 @@ export default function HomePage() {
   return (
     <main
       className={cn(
-        'relative min-h-screen bg-background font-sans selection:bg-primary selection:text-background pb-20 lg:pb-0 transition-colors duration-700',
+        'relative min-h-screen bg-background font-sans selection:bg-primary selection:text-background pb-20 lg:pb-0 transition-colors duration-300 ease-out',
         performanceMode && 'perf-mode'
       )}
       style={{
@@ -366,10 +366,10 @@ export default function HomePage() {
                     <AnimatePresence mode="wait">
                       <motion.h1
                         key={selectedSport}
-                        initial={{ y: 8, opacity: 0 }}
-                        animate={{ y: 0, opacity: 1 }}
-                        exit={{ y: -8, opacity: 0 }}
-                        transition={{ duration: 0.18 }}
+                        initial={{ y: 15, opacity: 0, scale: 0.95 }}
+                        animate={{ y: 0, opacity: 1, scale: 1 }}
+                        exit={{ y: -15, opacity: 0, scale: 1.05 }}
+                        transition={{ duration: 0.3, type: "spring", bounce: 0.4 }}
                         className="mt-2 text-[2rem] font-black italic uppercase tracking-tighter text-foreground leading-[0.9]"
                       >
                         {focusSportMeta.homeHeadline.split(' ')[0].toUpperCase()}
@@ -396,15 +396,21 @@ export default function HomePage() {
                 <div className="grid grid-cols-3 gap-2">
                   <div className="rounded-[1.2rem] border border-white/8 bg-white/[0.03] px-3 py-3">
                     <p className="text-[8px] font-black uppercase tracking-[0.2em] text-foreground/35">{focusSportMeta.shortLabel}</p>
-                    <p className="mt-2 text-xl font-black italic text-foreground">{statsSummary.totalMatches}</p>
+                    <AnimatePresence mode="wait">
+                      <motion.p key={`total-${selectedSport}`} initial={{ y: 10, opacity: 0, filter: 'blur(4px)' }} animate={{ y: 0, opacity: 1, filter: 'blur(0px)' }} exit={{ y: -10, opacity: 0, filter: 'blur(4px)' }} transition={{ duration: 0.2 }} className="mt-2 text-xl font-black italic text-foreground">{statsSummary.totalMatches}</motion.p>
+                    </AnimatePresence>
                   </div>
                   <div className="rounded-[1.2rem] border border-white/8 bg-white/[0.03] px-3 py-3">
                     <p className="text-[8px] font-black uppercase tracking-[0.2em] text-foreground/35">Ganados</p>
-                    <p className="mt-2 text-xl font-black italic text-primary">{statsSummary.wins}</p>
+                    <AnimatePresence mode="wait">
+                      <motion.p key={`wins-${selectedSport}`} initial={{ y: 10, opacity: 0, filter: 'blur(4px)' }} animate={{ y: 0, opacity: 1, filter: 'blur(0px)' }} exit={{ y: -10, opacity: 0, filter: 'blur(4px)' }} transition={{ duration: 0.2 }} className="mt-2 text-xl font-black italic text-primary">{statsSummary.wins}</motion.p>
+                    </AnimatePresence>
                   </div>
                   <div className="rounded-[1.2rem] border border-white/8 bg-white/[0.03] px-3 py-3">
                     <p className="text-[8px] font-black uppercase tracking-[0.2em] text-foreground/35">Win Rate</p>
-                    <p className="mt-2 text-xl font-black italic text-foreground">{statsSummary.winRate}%</p>
+                    <AnimatePresence mode="wait">
+                      <motion.p key={`winrate-${selectedSport}`} initial={{ y: 10, opacity: 0, filter: 'blur(4px)' }} animate={{ y: 0, opacity: 1, filter: 'blur(0px)' }} exit={{ y: -10, opacity: 0, filter: 'blur(4px)' }} transition={{ duration: 0.2 }} className="mt-2 text-xl font-black italic text-foreground">{statsSummary.winRate}%</motion.p>
+                    </AnimatePresence>
                   </div>
                 </div>
 
@@ -623,10 +629,10 @@ export default function HomePage() {
               <AnimatePresence mode="wait">
                 <motion.img
                   key={selectedSport}
-                  initial={{ opacity: 0, scale: 1.1 }}
-                  animate={{ opacity: 0.12, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.9 }}
-                  transition={{ duration: 1.2, ease: "easeInOut" }}
+                  initial={{ opacity: 0, scale: 1.05, filter: 'blur(8px)' }}
+                  animate={{ opacity: 0.12, scale: 1, filter: 'blur(0px)' }}
+                  exit={{ opacity: 0, scale: 0.95, filter: 'blur(8px)' }}
+                  transition={{ duration: 0.4, type: "spring", bounce: 0.15 }}
                   src={focusSportMeta.heroImage}
                   alt=""
                   fetchPriority="high"
@@ -637,15 +643,17 @@ export default function HomePage() {
 
               {/* Specialized Court Overlays */}
               <div className="absolute inset-0 pointer-events-none">
-                {selectedSport === 'football' && (
-                  <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(44,252,125,0.05)_0%,transparent_100%)]" />
-                )}
-                {selectedSport === 'padel' && (
-                  <div className="absolute inset-0 bg-[linear-gradient(rgba(34,211,238,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(34,211,238,0.03)_1px,transparent_1px)] bg-[size:40px_40px]" />
-                )}
-                {selectedSport === 'basket' && (
-                  <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(249,115,22,0.1)_0%,transparent_50%)]" />
-                )}
+                <AnimatePresence mode="wait">
+                  {selectedSport === 'football' && (
+                    <motion.div key="football" initial={{ opacity: 0, scale: 1.1 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.9 }} transition={{ duration: 0.4, type: "spring" }} className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(44,252,125,0.05)_0%,transparent_100%)]" />
+                  )}
+                  {selectedSport === 'padel' && (
+                    <motion.div key="padel" initial={{ opacity: 0, scale: 1.1 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.9 }} transition={{ duration: 0.4, type: "spring" }} className="absolute inset-0 bg-[linear-gradient(rgba(34,211,238,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(34,211,238,0.03)_1px,transparent_1px)] bg-[size:40px_40px]" />
+                  )}
+                  {selectedSport === 'basket' && (
+                    <motion.div key="basket" initial={{ opacity: 0, scale: 1.1 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.9 }} transition={{ duration: 0.4, type: "spring" }} className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(249,115,22,0.1)_0%,transparent_50%)]" />
+                  )}
+                </AnimatePresence>
               </div>
 
 
@@ -676,15 +684,19 @@ export default function HomePage() {
 
                 {/* Title Section based on Branding */}
                 <div className="flex flex-col">
-                  <motion.h1
-                    initial={{ opacity: 0, x: -40 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: 0.3, duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-                    className="font-black italic uppercase font-kanit tracking-tighter text-foreground"
-                    style={{ fontSize: 'clamp(2.5rem, 8vw, 6rem)', lineHeight: '0.85' }}
-                  >
-                    {focusSportMeta.homeHeadline.split(' ')[0].toUpperCase()} <br /> <span className="text-primary italic">{focusSportMeta.homeHeadline.split(' ').slice(1).join(' ').toUpperCase()}</span>
-                  </motion.h1>
+                  <AnimatePresence mode="wait">
+                    <motion.h1
+                      key={selectedSport}
+                      initial={{ opacity: 0, x: -30, scale: 0.95 }}
+                      animate={{ opacity: 1, x: 0, scale: 1 }}
+                      exit={{ opacity: 0, x: 30, scale: 1.05 }}
+                      transition={{ duration: 0.35, type: "spring", bounce: 0.4 }}
+                      className="font-black italic uppercase font-kanit tracking-tighter text-foreground"
+                      style={{ fontSize: 'clamp(2.5rem, 8vw, 6rem)', lineHeight: '0.85' }}
+                    >
+                      {focusSportMeta.homeHeadline.split(' ')[0].toUpperCase()} <br /> <span className="text-primary italic">{focusSportMeta.homeHeadline.split(' ').slice(1).join(' ').toUpperCase()}</span>
+                    </motion.h1>
+                  </AnimatePresence>
                 </div>
 
                 <motion.div
@@ -752,14 +764,21 @@ export default function HomePage() {
                       <p className="text-[9px] font-black text-foreground/40 uppercase tracking-[0.25em] flex items-center gap-1.5">
                         <item.icon className="w-2.5 h-2.5" /> {item.label}
                       </p>
-                      <p
-                        className={cn(
-                          'text-2xl font-black italic tracking-tighter uppercase font-kanit',
-                          item.color
-                        )}
-                      >
-                        {item.value}
-                      </p>
+                      <AnimatePresence mode="wait">
+                        <motion.p
+                          key={`desktop-stat-${selectedSport}`}
+                          initial={{ y: 15, opacity: 0, filter: 'blur(5px)' }}
+                          animate={{ y: 0, opacity: 1, filter: 'blur(0px)' }}
+                          exit={{ y: -15, opacity: 0, filter: 'blur(5px)' }}
+                          transition={{ duration: 0.3 }}
+                          className={cn(
+                            'text-2xl font-black italic tracking-tighter uppercase font-kanit',
+                            item.color
+                          )}
+                        >
+                          {item.value}
+                        </motion.p>
+                      </AnimatePresence>
                     </div>
                   ))}
                 </motion.div>
