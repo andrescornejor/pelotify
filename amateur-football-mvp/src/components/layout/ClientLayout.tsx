@@ -8,6 +8,7 @@ import { BottomNav } from '@/components/layout/BottomNav';
 import { useAuth } from '@/contexts/AuthContext';
 import { cn } from '@/lib/utils';
 import { useSidebar } from '@/contexts/SidebarContext';
+import { X } from 'lucide-react';
 import { NotificationCenter } from '@/components/notifications/NotificationCenter';
 import { NotificationToast, NotificationPromptBanner } from '@/components/notifications/NotificationUI';
 import { FloatingChat } from '@/components/FloatingChat';
