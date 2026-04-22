@@ -8,13 +8,24 @@ import { type Sport, SPORT_META } from '@/lib/sports';
 interface SportSelectorProps {
   selectedSport: Sport;
   onSelect: (sport: Sport) => void;
+  variant?: 'default' | 'compact';
 }
 
-export function SportSelector({ selectedSport, onSelect }: SportSelectorProps) {
+export function SportSelector({
+  selectedSport,
+  onSelect,
+  variant = 'default',
+}: SportSelectorProps) {
   const sports: Sport[] = ['football', 'padel', 'basket'];
+  const isCompact = variant === 'compact';
 
   return (
-    <div className="relative w-full rounded-[2rem] border border-white/10 bg-background/55 p-2.5 backdrop-blur-2xl shadow-[0_20px_60px_rgba(0,0,0,0.22)] overflow-hidden">
+    <div
+      className={cn(
+        'relative w-full border border-white/10 bg-background/55 backdrop-blur-2xl shadow-[0_20px_60px_rgba(0,0,0,0.22)] overflow-hidden',
+        isCompact ? 'rounded-[1.7rem] p-2' : 'rounded-[2rem] p-2.5'
+      )}
+    >
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(255,255,255,0.08),transparent_40%)] pointer-events-none" />
       <div className="relative z-10 grid grid-cols-3 gap-2">
         {sports.map((sport) => {
@@ -32,7 +43,8 @@ export function SportSelector({ selectedSport, onSelect }: SportSelectorProps) {
               key={sport}
               onClick={() => onSelect(sport)}
               className={cn(
-                'group relative min-h-[82px] rounded-[1.4rem] border px-3 py-3 transition-all duration-300 outline-none text-left overflow-hidden',
+                'group relative min-w-0 border transition-all duration-300 outline-none text-left overflow-hidden',
+                isCompact ? 'min-h-[92px] rounded-[1.15rem] px-2.5 py-2' : 'min-h-[82px] rounded-[1.4rem] px-3 py-3',
                 isSelected
                   ? cn('bg-gradient-to-br shadow-[0_18px_40px_rgba(0,0,0,0.22)] scale-[1.01]', accent)
                   : 'bg-white/[0.03] border-white/8 text-foreground/55 hover:text-foreground hover:bg-white/[0.05] hover:border-white/15'
@@ -51,13 +63,14 @@ export function SportSelector({ selectedSport, onSelect }: SportSelectorProps) {
                   <motion.span
                     animate={isSelected ? { scale: 1.14, y: -1 } : { scale: 1, y: 0 }}
                     transition={{ type: 'spring', stiffness: 280, damping: 18 }}
-                    className="text-[1.65rem] leading-none drop-shadow-sm"
+                    className={cn('leading-none drop-shadow-sm', isCompact ? 'text-[1.3rem]' : 'text-[1.65rem]')}
                   >
                     {meta.icon}
                   </motion.span>
                   <div
                     className={cn(
-                      'rounded-full border px-2 py-1 text-[8px] font-black uppercase tracking-[0.2em]',
+                      'rounded-full border font-black uppercase tracking-[0.2em]',
+                      isCompact ? 'px-1.5 py-1 text-[7px]' : 'px-2 py-1 text-[8px]',
                       isSelected ? 'border-current/20 bg-black/10 text-current' : 'border-white/10 text-foreground/30'
                     )}
                   >
@@ -67,15 +80,22 @@ export function SportSelector({ selectedSport, onSelect }: SportSelectorProps) {
 
                 <div className="mt-3">
                   <div className="flex items-center gap-1.5">
-                    <span className="text-[11px] font-black uppercase tracking-[0.14em] font-kanit italic">
-                      {meta.label}
+                    <span
+                      className={cn(
+                        'font-black uppercase tracking-[0.12em] font-kanit italic truncate',
+                        isCompact ? 'text-[10px]' : 'text-[11px]'
+                      )}
+                    >
+                      {meta.shortLabel}
                     </span>
-                    {isSelected && <Zap className="w-3.5 h-3.5" />}
+                    {isSelected && <Zap className={cn(isCompact ? 'w-3 h-3' : 'w-3.5 h-3.5')} />}
                   </div>
-                  <div className="mt-1 flex items-center gap-1.5 text-[9px] font-bold uppercase tracking-[0.14em] opacity-75">
-                    <Trophy className="w-3 h-3" />
-                    <span>{meta.highlightLabel}</span>
-                  </div>
+                  {!isCompact && (
+                    <div className="mt-1 flex items-center gap-1.5 text-[9px] font-bold uppercase tracking-[0.14em] opacity-75">
+                      <Trophy className="w-3 h-3" />
+                      <span className="truncate">{meta.highlightLabel}</span>
+                    </div>
+                  )}
                 </div>
               </div>
             </button>
