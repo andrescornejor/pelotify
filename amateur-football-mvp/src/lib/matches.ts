@@ -1,12 +1,15 @@
 import { supabase } from './supabase';
 import { notifyMatchParticipants, sendNotificationToUser } from './notifications';
+import type { MatchFormat, Sport } from './sports';
+import { getFormatMeta, getSportLabel, getMatchSport } from './sports';
 
 export interface Match {
   id: string;
   location: string;
   date: string;
   time: string;
-  type: 'F5' | 'F7' | 'F11';
+  type: MatchFormat;
+  sport?: Sport;
   level: string;
   missing_players: number;
   status: 'published' | 'waiting_deposit';
@@ -180,15 +183,15 @@ export async function createMatch(matchData: Partial<Match> & { field_id?: strin
        const startTime = `${parsedHour.toString().padStart(2, '0')}:${parsedMin.toString().padStart(2, '0')}:00`;
        const endTime = `${endHour.toString().padStart(2, '0')}:${parsedMin.toString().padStart(2, '0')}:00`;
 
-       const { error: bookingError } = await supabase.from('canchas_bookings').insert([{
+      const { error: bookingError } = await supabase.from('canchas_bookings').insert([{
          field_id: finalFieldId,
          booker_id: match.creator_id,
          match_id: match.id,
          date: match.date,
          start_time: startTime,
          end_time: endTime,
-         title: `[Pelotify] Partido ${match.type}`,
-         total_price: match.price * (match.type === 'F5' ? 10 : match.type === 'F7' ? 14 : 22), // Total price calculation based on format
+         title: `[Pelotify] ${getSportLabel(getMatchSport(match))} ${match.type}`,
+         total_price: match.price * getFormatMeta(match.type, getMatchSport(match)).totalPlayers,
          down_payment_paid: 0,
          status: match.payment_method === 'cash' ? 'pending' : 'pending' // Still pending until paid on MP
        }]);
@@ -398,7 +401,7 @@ export async function invitePlayer(matchId: string, userId: string) {
       sendNotificationToUser(
         userId,
         '📩 ¡Te invitaron a un partido!',
-        `${match.type} en ${match.location} — ${match.date} a las ${match.time}`,
+        `${getSportLabel(getMatchSport(match as Match))} ${match.type} en ${match.location} — ${match.date} a las ${match.time}`,
         { clickAction: `/match?id=${matchId}` }
       ).catch(() => {}); // Fire and forget
     }

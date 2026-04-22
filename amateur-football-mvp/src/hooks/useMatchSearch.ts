@@ -3,6 +3,7 @@ import { useState, useMemo, useEffect } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { findVenueByLocation, normalizeVenueString } from '@/lib/venues';
 import { useMatches, useUserMatches } from '@/hooks/useMatchQueries';
+import { getMatchSport, getMaxPlayers, Sport } from '@/lib/sports';
 
 // Helper for distance calculation (Haversine formula)
 function getDistance(lat1: number, lon1: number, lat2: number, lon2: number) {
@@ -29,7 +30,7 @@ export function useMatchSearch() {
   const { data: userMatches = [], isLoading: isLoadingUser } = useUserMatches(user?.id);
   
   const [searchQuery, setSearchQuery] = useState('');
-  const [typeFilter, setTypeFilter] = useState<'All' | 'F5' | 'F7' | 'F11'>('All');
+  const [typeFilter, setTypeFilter] = useState<'All' | Sport>('All');
   const [maxPrice, setMaxPrice] = useState<number>(Infinity);
   const [onlyAvailable, setOnlyAvailable] = useState(false);
   
@@ -66,14 +67,14 @@ export function useMatchSearch() {
       if (match.is_private && !joinedIds.has(match.id)) return false;
 
       // Type Filter
-      if (typeFilter !== 'All' && match.type !== typeFilter) return false;
+      if (typeFilter !== 'All' && getMatchSport(match) !== typeFilter) return false;
 
       // Price Filter
       if (match.price > maxPrice) return false;
 
       // Availability Filter
       if (onlyAvailable) {
-        const maxPlayers = match.type === 'F5' ? 10 : match.type === 'F7' ? 14 : 22;
+        const maxPlayers = getMaxPlayers(match);
         const countObj = match.participants?.[0];
         const currentPlayers =
           typeof countObj === 'number'
@@ -94,9 +95,10 @@ export function useMatchSearch() {
 
       const loc = normalizeVenueString(match.location || '');
       const type = normalizeVenueString(match.type);
+      const sport = normalizeVenueString(getMatchSport(match));
       const level = normalizeVenueString(match.level);
 
-      if (loc.includes(search) || type.includes(search) || level.includes(search)) return true;
+      if (loc.includes(search) || type.includes(search) || sport.includes(search) || level.includes(search)) return true;
 
       const venue = findVenueByLocation(match.location || '');
       if (venue) {
@@ -152,4 +154,3 @@ export function useMatchSearch() {
     setRadiusFilter,
   };
 }
-

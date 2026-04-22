@@ -57,6 +57,7 @@ import MercadoPagoButton from '@/components/payments/MercadoPagoButton';
 import EntryQRModal from '@/components/EntryQRModal';
 import JoinQRModal from '@/components/JoinQRModal';
 import { WeatherWidget, CalendarButton } from '@/components/home';
+import { getFormatMeta, getMatchDisplayTitle, getMatchSport, getMaxPlayers, getTeamSize, SPORT_META } from '@/lib/sports';
 
 const VenueMap = dynamic(() => import('@/components/VenueMap'), {
   ssr: false,
@@ -338,8 +339,11 @@ function MatchLobbyContent() {
   const teamB = participants.filter(p => p.team === 'B');
   const unassigned = participants.filter(p => p.team === null);
   
-  const formatNum = parseInt(match?.type?.replace('F', '') || '5');
-  const teamSize = formatNum;
+  const sport = getMatchSport(match);
+  const sportMeta = SPORT_META[sport];
+  const format = getFormatMeta(match.type, sport);
+  const teamSize = getTeamSize(match);
+  const totalPlayers = getMaxPlayers(match);
   
   const isCreator = user?.id === match?.creator_id;
   const isCompleted = match?.is_completed;
@@ -492,7 +496,7 @@ function MatchLobbyContent() {
         <div className="relative h-[50vh] min-h-[400px] overflow-hidden">
           <div className="absolute inset-0 z-0">
             <img
-              src="https://images.unsplash.com/photo-1574629810360-7efbbe195018?auto=format&fit=crop&q=80&w=2000"
+              src={sportMeta.heroImage}
               alt=""
               className="w-full h-full object-cover grayscale opacity-40"
             />
@@ -511,11 +515,11 @@ function MatchLobbyContent() {
             <div className="space-y-6 max-w-2xl">
               <div className="flex items-center gap-3">
                 <span className="px-3 py-1 rounded-full bg-primary/10 border border-primary/20 text-primary text-[10px] font-black uppercase tracking-widest">
-                  {match.type} • {match.is_private ? 'Privado' : 'Público'}
+                  {format.label} • {match.is_private ? 'Privado' : 'Público'}
                 </span>
                 <span className="px-3 py-1 rounded-full bg-white/5 border border-white/10 text-foreground/40 text-[10px] font-black uppercase tracking-widest flex items-center gap-2">
-                  <span className={cn("w-1.5 h-1.5 rounded-full animate-pulse", participants.length >= teamSize * 2 ? "bg-rose-500" : "bg-primary")} />
-                  {participants.length} / {teamSize * 2} Jugadores
+                  <span className={cn("w-1.5 h-1.5 rounded-full animate-pulse", participants.length >= totalPlayers ? "bg-rose-500" : "bg-primary")} />
+                  {participants.length} / {totalPlayers} Jugadores
                 </span>
               </div>
               <h1 className="text-5xl md:text-8xl font-black italic uppercase tracking-tighter text-foreground leading-[0.8]">
@@ -568,7 +572,7 @@ function MatchLobbyContent() {
                        </p>
                     </div>
 
-                    <CapacityVisual current={participants.length} total={teamSize * 2} />
+                    <CapacityVisual current={participants.length} total={totalPlayers} />
 
                     <div className="grid grid-cols-2 gap-4">
                        <div className="p-6 rounded-3xl bg-foreground/5 space-y-1">
@@ -617,8 +621,8 @@ function MatchLobbyContent() {
                   <h4 className="text-xs font-black italic uppercase text-foreground/20 tracking-widest">Detalles Rápidos</h4>
                   <div className="space-y-6">
                     {[
-                      { icon: Users, label: 'Ocupación', value: `${participants.length}/${teamSize * 2} Jugadores`, color: 'text-primary', percentage: (participants.length / (teamSize * 2)) * 100 },
-                      { icon: Shield, label: 'Formato de Juego', value: match.type || 'F5', color: 'text-indigo-400' },
+                      { icon: Users, label: 'Ocupación', value: `${participants.length}/${totalPlayers} Jugadores`, color: 'text-primary', percentage: (participants.length / totalPlayers) * 100 },
+                      { icon: Shield, label: 'Formato de Juego', value: format.label, color: 'text-indigo-400' },
                       { icon: DollarSign, label: 'Método de Pago', value: match.payment_method === 'mercado_pago' ? 'Transferencia' : 'En cancha', color: 'text-emerald-400' },
                     ].map((item, i) => (
                       <div key={i} className="flex items-center gap-5">
@@ -662,7 +666,7 @@ function MatchLobbyContent() {
       <div className="relative h-[45vh] min-h-[400px] overflow-hidden">
         <div className="absolute inset-0 z-0">
           <img
-            src="https://images.unsplash.com/photo-1574629810360-7efbbe195018?auto=format&fit=crop&q=80&w=2000"
+            src={sportMeta.heroImage}
             alt=""
             className="w-full h-full object-cover grayscale opacity-40 object-[center_35%]"
           />
@@ -682,7 +686,7 @@ function MatchLobbyContent() {
             <div className="space-y-4">
               <div className="flex items-center gap-3">
                 <span className="px-3 py-1 rounded-full bg-primary/10 border border-primary/20 text-primary text-[10px] font-black uppercase tracking-widest">
-                  {match.type} • {match.is_private ? 'Privado' : 'Público'}
+                  {format.label} • {match.is_private ? 'Privado' : 'Público'}
                 </span>
                 {isCompleted && (
                   <span className="px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-500 text-[10px] font-black uppercase tracking-widest flex items-center gap-1.5">
@@ -756,8 +760,8 @@ function MatchLobbyContent() {
             {!isCompleted && (
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                 {[
-                  { icon: Users, label: 'Cupos', value: `${participants.length}/${teamSize * 2}`, color: 'text-primary' },
-                  { icon: Shield, label: 'Formato', value: match.type || 'F5', color: 'text-indigo-400' },
+                  { icon: Users, label: 'Cupos', value: `${participants.length}/${totalPlayers}`, color: 'text-primary' },
+                  { icon: Shield, label: 'Formato', value: format.label, color: 'text-indigo-400' },
                   { icon: DollarSign, label: 'Costo', value: match.price > 0 ? `$${match.price}` : 'Gratis', color: 'text-emerald-400' },
                   { icon: Zap, label: 'Estado', value: isCompleted ? 'Finalizado' : 'En Lobby', color: 'text-amber-400' },
                 ].map((stat, i) => (
@@ -785,10 +789,10 @@ function MatchLobbyContent() {
                         <div className="mt-4 h-1.5 w-full bg-foreground/5 rounded-full overflow-hidden">
                           <motion.div 
                             initial={{ width: 0 }}
-                            animate={{ width: `${(participants.length / (teamSize * 2)) * 100}%` }}
+                            animate={{ width: `${(participants.length / totalPlayers) * 100}%` }}
                             className={cn(
                               "h-full rounded-full",
-                              participants.length >= teamSize * 2 ? "bg-rose-500" : "bg-primary shadow-[0_0_10px_rgba(var(--primary-rgb),0.5)]"
+                              participants.length >= totalPlayers ? "bg-rose-500" : "bg-primary shadow-[0_0_10px_rgba(var(--primary-rgb),0.5)]"
                             )}
                           />
                         </div>
@@ -982,7 +986,7 @@ function MatchLobbyContent() {
                   <div className="relative z-10">
                     <MercadoPagoButton 
                       matchId={match.id} 
-                      title={`Partido en ${match.location}`}
+                      title={`${sportMeta.label} en ${match.location}`}
                       price={match.price} 
                     />
                   </div>
@@ -1127,7 +1131,7 @@ function MatchLobbyContent() {
           onClose={() => setIsEntryQRModalOpen(false)}
           participantId={myEntry.id}
           playerName={user.name || "Jugador"}
-          matchTitle={`${match.type} @ ${match.location}`}
+          matchTitle={`${getMatchDisplayTitle(match)} @ ${match.location}`}
         />
       )}
 

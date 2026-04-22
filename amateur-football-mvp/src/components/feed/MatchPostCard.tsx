@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { useEffect, useState, memo } from 'react';
 import { supabase } from '@/lib/supabase';
 import { cn } from '@/lib/utils';
+import { getFormatMeta, getMatchSport, getMaxPlayers, SPORT_META } from '@/lib/sports';
 
 interface MatchPostCardProps {
   matchId: string;
@@ -83,7 +84,9 @@ const MatchPostCard = memo(function MatchPostCard({ matchId }: MatchPostCardProp
     month: 'short' 
   });
 
-  const maxPlayers = match.type === 'F5' ? 10 : match.type === 'F7' ? 14 : 22;
+  const sport = getMatchSport(match);
+  const format = getFormatMeta(match.type, sport);
+  const maxPlayers = getMaxPlayers(match);
   const currentPlayers = match.participants?.[0]?.count || 0;
   const missing = Math.max(0, maxPlayers - currentPlayers);
 
@@ -116,7 +119,7 @@ const MatchPostCard = memo(function MatchPostCard({ matchId }: MatchPostCardProp
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <div className="px-2.5 py-1 rounded-lg bg-primary/10 text-primary text-[9px] font-black uppercase tracking-widest border border-primary/20">
-              {match.type}
+              {SPORT_META[sport].shortLabel}
             </div>
             <div className={cn(
               "px-2.5 py-1 rounded-lg text-[9px] font-black uppercase tracking-widest border flex items-center gap-1.5",
@@ -135,6 +138,9 @@ const MatchPostCard = memo(function MatchPostCard({ matchId }: MatchPostCardProp
           <h3 className="text-xl lg:text-2xl font-black italic uppercase tracking-tighter text-foreground leading-none group-hover:text-primary transition-colors truncate">
             {match.location}
           </h3>
+          <div className="text-[9px] font-black uppercase tracking-[0.2em] text-foreground/30">
+            {format.label}
+          </div>
           <div className="flex flex-wrap items-center gap-4 text-[10px] font-bold text-foreground/40 uppercase tracking-widest">
             <div className="flex items-center gap-2">
               <Calendar className="w-3.5 h-3.5 text-primary/60" />

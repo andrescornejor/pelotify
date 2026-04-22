@@ -24,6 +24,7 @@ import { useMatchSearch } from '@/hooks/useMatchSearch';
 import { useSettings } from '@/contexts/SettingsContext';
 import { supabase } from '@/lib/supabase';
 import { type Match } from '@/lib/matches';
+import { getFormatMeta, getMatchSport, getMaxPlayers, SPORT_META, type Sport } from '@/lib/sports';
 
 const MapSearch = dynamic(() => import('@/components/MapSearch'), {
   ssr: false,
@@ -152,7 +153,7 @@ export default function SearchPage() {
               {/* Advanced Filters */}
               <div className="flex flex-wrap items-center gap-2 lg:gap-3 px-1 lg:px-2">
                 <div className="flex items-center p-1 bg-foreground/5 rounded-2xl border border-foreground/5 gap-1">
-                  {(['All', 'F5', 'F7', 'F11'] as const).map((type) => (
+                  {(['All', 'football', 'padel', 'basket'] as const).map((type) => (
                     <button
                       key={type}
                       onClick={() => setTypeFilter(type)}
@@ -163,7 +164,7 @@ export default function SearchPage() {
                           : 'text-foreground/50 hover:text-foreground border border-transparent hover:border-foreground/10'
                       )}
                     >
-                      {type === 'All' ? 'TODOS' : type}
+                      {type === 'All' ? 'TODOS' : SPORT_META[type as Sport].shortLabel}
                     </button>
                   ))}
                 </div>
@@ -331,10 +332,12 @@ export default function SearchPage() {
                         <div className="flex gap-2">
                           <div className="flex items-center gap-1.5 px-2.5 py-1 bg-primary/10 text-primary border border-primary/20 rounded-[0.5rem] shadow-sm">
                             <div className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
-                            <span className="text-[10px] font-black uppercase tracking-widest mt-0.5">{match.type}</span>
+                            <span className="text-[10px] font-black uppercase tracking-widest mt-0.5">
+                              {SPORT_META[getMatchSport(match)].shortLabel}
+                            </span>
                           </div>
                           <div className="px-2.5 py-1 bg-blue-500/10 text-blue-400 border border-blue-500/20 rounded-[0.5rem] text-[10px] font-black uppercase tracking-widest italic mt-0.5">
-                            {match.level}
+                            {getFormatMeta(match.type, getMatchSport(match)).label}
                           </div>
                         </div>
                         <div className="flex items-center gap-1.5 text-foreground/70 pr-1">
@@ -380,7 +383,7 @@ export default function SearchPage() {
                       {/* Bottom Row: Details & Actions */}
                       <div className="flex items-center justify-between gap-3 pt-3 mt-1 border-t border-foreground/5">
                         {(() => {
-                          const maxPlayers = match.type === 'F5' ? 10 : match.type === 'F7' ? 14 : 22;
+                          const maxPlayers = getMaxPlayers(match);
                           const currentPlayers = typeof match.participants?.[0] === 'number'
                             ? match.participants[0]
                             : (match.participants?.[0] as any)?.count ?? (match.participants?.length || 0);
@@ -436,11 +439,11 @@ export default function SearchPage() {
                           <div className="flex items-center gap-2 px-2.5 py-1 bg-primary/10 text-primary border border-primary/20 rounded-lg w-fit shadow-sm">
                             <div className="w-1 h-1 rounded-full bg-primary animate-pulse" />
                             <span className="text-[9px] font-black uppercase tracking-widest">
-                              {match.type}
+                              {SPORT_META[getMatchSport(match)].shortLabel}
                             </span>
                           </div>
                           <div className="px-2.5 py-1 bg-blue-500/10 text-blue-400 border border-blue-500/20 rounded-lg text-[9px] font-black uppercase tracking-widest italic w-fit">
-                            {match.level}
+                            {getFormatMeta(match.type, getMatchSport(match)).label}
                           </div>
                         </div>
                         <div className="flex flex-col gap-1.5 mt-5">
@@ -495,7 +498,7 @@ export default function SearchPage() {
                               Disponibilidad
                             </span>
                             {(() => {
-                              const maxPlayers = match.type === 'F5' ? 10 : match.type === 'F7' ? 14 : 22;
+                              const maxPlayers = getMaxPlayers(match);
                               const realPlayers = typeof match.participants?.[0] === 'number'
                                 ? match.participants[0]
                                 : (match.participants?.[0] as any)?.count ?? (match.participants?.length || 0);
@@ -509,7 +512,7 @@ export default function SearchPage() {
                           </div>
                           <div className="w-full h-2 bg-foreground/5 rounded-full overflow-hidden border border-foreground/5 relative">
                             {(() => {
-                              const maxPlayers = match.type === 'F5' ? 10 : match.type === 'F7' ? 14 : 22;
+                              const maxPlayers = getMaxPlayers(match);
                               const countObj = match.participants?.[0];
                               const currentPlayers = typeof countObj === 'number' ? countObj : countObj?.count !== undefined ? countObj.count : match.participants?.length || 0;
                               const percent = (currentPlayers / maxPlayers) * 100;
@@ -527,7 +530,7 @@ export default function SearchPage() {
                           </div>
                           <div className="flex items-center gap-3">
                             {(() => {
-                              const maxPlayers = match.type === 'F5' ? 10 : match.type === 'F7' ? 14 : 22;
+                              const maxPlayers = getMaxPlayers(match);
                               const countObj = match.participants?.[0];
                               const currentPlayers = typeof countObj === 'number' ? countObj : countObj?.count !== undefined ? countObj.count : match.participants?.length || 0;
                               const missing = Math.max(0, maxPlayers - currentPlayers);
@@ -535,7 +538,7 @@ export default function SearchPage() {
                                 <>
                                   <Users className={cn('w-5 h-5', missing > 0 ? 'text-primary animate-pulse' : 'text-foreground/10')} />
                                   <span className={cn('text-xs font-black uppercase tracking-[0.2em] italic', missing > 0 ? 'text-foreground/40' : 'text-foreground/10')}>
-                                    {missing > 0 ? `Se buscan ${missing} pibes` : 'Pelotón completo'}
+                                    {missing > 0 ? `Faltan ${missing} jugadores` : 'Completo'}
                                   </span>
                                 </>
                               );

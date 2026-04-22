@@ -33,6 +33,7 @@ import { ROSARIO_VENUES, findVenueByLocation } from '@/lib/venues';
 import LocationSearch from '@/components/LocationSearch';
 import { cn } from '@/lib/utils';
 import { AVAILABLE_TIMES } from '@/lib/constants';
+import { getMaxPlayers, type MatchFormat, type Sport } from '@/lib/sports';
 
 const STEPS = ['Cancha', 'Cuándo', 'Detalles', 'Cobro', 'Confirmar'];
 
@@ -61,9 +62,58 @@ const FORMAT_DATA = {
     color: 'from-amber-500 to-orange-400',
     glow: 'shadow-amber-500/30',
   },
+  PADEL: {
+    label: 'Padel',
+    players: '2 vs 2',
+    emoji: '🎾',
+    desc: 'Duplas y reflejos',
+    color: 'from-cyan-500 to-sky-400',
+    glow: 'shadow-cyan-500/30',
+  },
+  BASKET: {
+    label: 'Basket',
+    players: '5 vs 5',
+    emoji: '🏀',
+    desc: 'Ritmo y transiciones',
+    color: 'from-orange-500 to-amber-400',
+    glow: 'shadow-orange-500/30',
+  },
 } as const;
 
-function PitchSVG({ type }: { type: 'F5' | 'F7' | 'F11' }) {
+function PitchSVG({ type }: { type: MatchFormat }) {
+  if (type === 'PADEL') {
+    return (
+      <svg
+        viewBox="0 0 200 130"
+        className="w-full h-full opacity-20"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <rect x="10" y="8" width="180" height="114" rx="8" stroke="currentColor" strokeWidth="2" />
+        <rect x="30" y="18" width="140" height="94" rx="4" stroke="currentColor" strokeWidth="1.5" />
+        <line x1="100" y1="18" x2="100" y2="112" stroke="currentColor" strokeWidth="1.5" />
+        <line x1="30" y1="65" x2="170" y2="65" stroke="currentColor" strokeWidth="1.5" />
+      </svg>
+    );
+  }
+
+  if (type === 'BASKET') {
+    return (
+      <svg
+        viewBox="0 0 200 130"
+        className="w-full h-full opacity-20"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <rect x="6" y="6" width="188" height="118" rx="8" stroke="currentColor" strokeWidth="2" />
+        <line x1="100" y1="6" x2="100" y2="124" stroke="currentColor" strokeWidth="1.5" />
+        <circle cx="100" cy="65" r="16" stroke="currentColor" strokeWidth="1.5" />
+        <rect x="6" y="38" width="30" height="54" stroke="currentColor" strokeWidth="1.5" />
+        <rect x="164" y="38" width="30" height="54" stroke="currentColor" strokeWidth="1.5" />
+      </svg>
+    );
+  }
+
   const isF5 = type === 'F5';
   const isF11 = type === 'F11';
   return (
@@ -221,10 +271,11 @@ export default function CreateMatchPage() {
   }, []);
   const [priceManuallyEdited, setPriceManuallyEdited] = useState(false);
   const [formData, setFormData] = useState({
+    sport: 'football' as Sport,
     location: '',
     date: '',
     time: '',
-    type: 'F5' as 'F5' | 'F7' | 'F11',
+    type: 'F5' as MatchFormat,
     price: 0,
     level: 'Amateur',
     is_private: false,
@@ -292,7 +343,9 @@ export default function CreateMatchPage() {
     const isNewVenue = address !== formData.location;
     if (isNewVenue) setPriceManuallyEdited(false);
 
-    if (isRealDb && businessId) {
+    if (formData.sport !== 'football') {
+      fieldId = '';
+    } else if (isRealDb && businessId) {
        // Search first available field matching format, or any format
        let validField = dbFields.find(f => f.business_id === businessId && f.type === formData.type);
        if (!validField) validField = dbFields.find(f => f.business_id === businessId);
@@ -330,7 +383,7 @@ export default function CreateMatchPage() {
     });
   };
 
-  const handleTypeSelect = (type: 'F5' | 'F7' | 'F11') => {
+  const handleTypeSelect = (type: MatchFormat) => {
     // If it's a real business, use business_id. Otherwise look it up in hardcoded venues.
     const venue = formData.business_id 
       ? dbVenues.find(v => v.id === formData.business_id) 
@@ -339,7 +392,9 @@ export default function CreateMatchPage() {
     let newPrice = formData.price;
     let fieldId = formData.field_id;
 
-    if (formData.business_id && venue) { // Real DB venue (canchas_businesses)
+    if (formData.sport !== 'football') {
+      fieldId = '';
+    } else if (formData.business_id && venue) { // Real DB venue (canchas_businesses)
       const formatData = dbFields.find(f => f.business_id === venue.id && f.type === type);
       if (formatData) {
         const divider = type === 'F5' ? 10 : type === 'F7' ? 14 : type === 'F11' ? 22 : 10;
@@ -365,6 +420,20 @@ export default function CreateMatchPage() {
       field_id: fieldId,
       missing_players: 0 
     });
+  };
+
+  const handleSportSelect = (sport: Sport) => {
+    const defaultType = sport === 'football' ? 'F5' : sport === 'padel' ? 'PADEL' : 'BASKET';
+    setPriceManuallyEdited(false);
+    setFormData((prev) => ({
+      ...prev,
+      sport,
+      type: defaultType,
+      field_id: sport === 'football' ? prev.field_id : '',
+      payment_method: sport === 'football' ? prev.payment_method : 'cash',
+      price: sport === 'football' ? prev.price : 0,
+      missing_players: 0,
+    }));
   };
 
   const handleCreate = async () => {
@@ -396,7 +465,7 @@ export default function CreateMatchPage() {
       if (shareInFeed && match.id) {
         try {
           const matchUrl = `${window.location.origin}/match?id=${match.id}`;
-          const content = `⚽ ¡Armé un partido! ¿Quién se suma?
+          const content = `${formData.sport === 'football' ? '⚽' : formData.sport === 'padel' ? '🎾' : '🏀'} ¡Armé un partido! ¿Quién se suma?
 
 📅 ${getSelectedDateLabel()}
 ⏰ ${getTimeLabel()}
@@ -986,13 +1055,50 @@ ${matchUrl}`;
                   </p>
                 </div>
 
+                <div className="space-y-4">
+                  <span className="text-[10px] font-black text-foreground/30 uppercase tracking-[0.4em] px-1">
+                    Deporte
+                  </span>
+                  <div className="grid grid-cols-3 gap-4">
+                    {(['football', 'padel', 'basket'] as const).map((sport) => {
+                      const isSelected = formData.sport === sport;
+                      const icon = sport === 'football' ? '⚽' : sport === 'padel' ? '🎾' : '🏀';
+                      const title = sport === 'football' ? 'Futbol' : sport === 'padel' ? 'Padel' : 'Basket';
+                      const description = sport === 'football' ? 'Principal en Pelotify' : sport === 'padel' ? 'Partidos en dupla' : 'Equipos 5 vs 5';
+
+                      return (
+                        <button
+                          key={sport}
+                          type="button"
+                          onClick={() => handleSportSelect(sport)}
+                          className={`p-4 rounded-3xl border text-left transition-all duration-300 ${
+                            isSelected
+                              ? 'border-primary bg-primary/[0.08]'
+                              : 'border-foreground/[0.06] bg-foreground/[0.02] hover:border-foreground/15'
+                          }`}
+                        >
+                          <div className={`w-11 h-11 rounded-2xl flex items-center justify-center text-xl mb-3 ${isSelected ? 'bg-primary text-black' : 'bg-foreground/[0.04]'}`}>
+                            {icon}
+                          </div>
+                          <span className={`block text-sm font-black italic uppercase tracking-tight ${isSelected ? 'text-foreground' : 'text-foreground/30'}`}>
+                            {title}
+                          </span>
+                          <span className={`block text-[9px] font-bold uppercase tracking-widest mt-1 ${isSelected ? 'text-primary' : 'text-foreground/20'}`}>
+                            {description}
+                          </span>
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+
                 {/* Format selector */}
                 <div className="space-y-4">
                   <span className="text-[10px] font-black text-foreground/30 uppercase tracking-[0.4em] px-1">
                     Formato
                   </span>
                   <div className="grid grid-cols-3 gap-4">
-                    {dbFields.length === 0 && formData.business_id ? (
+                    {dbFields.length === 0 && formData.business_id && formData.sport === 'football' ? (
                       <div className="col-span-3 py-10 flex flex-col items-center justify-center gap-4 bg-foreground/[0.02] rounded-3xl border border-foreground/[0.04]">
                          <Loader2 className="w-8 h-8 text-primary animate-spin" />
                          <span className="text-[10px] font-black uppercase tracking-widest text-foreground/40">Cargando formatos de la sede...</span>
@@ -1001,9 +1107,15 @@ ${matchUrl}`;
                       (Object.entries(FORMAT_DATA) as [
                         keyof typeof FORMAT_DATA,
                         (typeof FORMAT_DATA)[keyof typeof FORMAT_DATA],
-                      ][]).map(([key, data]) => {
+                      ][]).filter(([key]) => {
+                        if (formData.sport === 'football') return key === 'F5' || key === 'F7' || key === 'F11';
+                        if (formData.sport === 'padel') return key === 'PADEL';
+                        return key === 'BASKET';
+                      }).map(([key, data]) => {
                         let isAvailable = true;
-                        if (formData.business_id) {
+                        if (formData.sport !== 'football') {
+                          isAvailable = true;
+                        } else if (formData.business_id) {
                           isAvailable = dbFields.some(f => f.business_id === formData.business_id && f.type === key);
                         } else {
                           const venue = findVenueByLocation(formData.location);
@@ -1275,9 +1387,11 @@ ${matchUrl}`;
                   <div className="grid grid-cols-2 gap-4">
                     <button
                       type="button"
+                      disabled={formData.sport !== 'football'}
                       onClick={() => setFormData({ ...formData, payment_method: 'mercado_pago' })}
                       className={cn(
                         "p-5 rounded-3xl border text-left transition-all duration-300 flex flex-col gap-3 relative overflow-hidden",
+                        formData.sport !== 'football' && "opacity-40 cursor-not-allowed",
                         formData.payment_method === 'mercado_pago'
                           ? "border-primary bg-primary/[0.08]"
                           : "border-foreground/[0.06] bg-foreground/[0.02] hover:border-foreground/15"
@@ -1291,7 +1405,9 @@ ${matchUrl}`;
                       </div>
                       <div>
                         <span className={cn("block text-sm font-black italic uppercase tracking-tight", formData.payment_method === 'mercado_pago' ? "text-foreground" : "text-foreground/30")}>Mercado Pago</span>
-                        <span className={cn("block text-[10px] font-bold tracking-wide mt-0.5", formData.payment_method === 'mercado_pago' ? "text-foreground/50" : "text-foreground/15")}>Asegura la cancha ahora</span>
+                        <span className={cn("block text-[10px] font-bold tracking-wide mt-0.5", formData.payment_method === 'mercado_pago' ? "text-foreground/50" : "text-foreground/15")}>
+                          {formData.sport === 'football' ? 'Asegura la cancha ahora' : 'Disponible para futbol'}
+                        </span>
                       </div>
                     </button>
 
@@ -1415,7 +1531,7 @@ ${matchUrl}`;
                       ...(formData.business_id && formData.payment_method === 'mercado_pago' ? [{
                         icon: <Zap className="w-4 h-4 text-primary" />,
                         label: 'Seña a pagar ahora',
-                        value: `$${Math.round((formData.price * (formData.type === 'F5' ? 10 : formData.type === 'F7' ? 14 : 22)) * (dbFields.find(f => f.id === formData.field_id)?.down_payment_percentage || 30) / 100).toLocaleString('es-AR')} ARS`
+                        value: `$${Math.round((formData.price * getMaxPlayers(formData.type)) * (dbFields.find(f => f.id === formData.field_id)?.down_payment_percentage || 30) / 100).toLocaleString('es-AR')} ARS`
                       }] : []),
                     ].map(({ icon, label, value }) => (
                       <div key={label} className="flex items-start gap-3">
