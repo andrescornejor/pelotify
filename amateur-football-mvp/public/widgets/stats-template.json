@@ -1,0 +1,221 @@
+{
+  "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
+  "type": "AdaptiveCard",
+  "version": "1.6",
+  "body": [
+    {
+      "type": "Container",
+      "style": "emphasis",
+      "bleed": true,
+      "items": [
+        {
+          "type": "ColumnSet",
+          "columns": [
+            {
+              "type": "Column",
+              "width": "auto",
+              "items": [
+                {
+                  "type": "Image",
+                  "url": "${$root.iconUrl}",
+                  "size": "Small",
+                  "style": "Person"
+                }
+              ],
+              "verticalContentAlignment": "Center"
+            },
+            {
+              "type": "Column",
+              "width": "stretch",
+              "items": [
+                {
+                  "type": "TextBlock",
+                  "text": "${$root.playerName}",
+                  "weight": "Bolder",
+                  "size": "Medium",
+                  "spacing": "None"
+                },
+                {
+                  "type": "TextBlock",
+                  "text": "Carta de Jugador",
+                  "size": "Small",
+                  "isSubtle": true,
+                  "spacing": "None"
+                }
+              ],
+              "verticalContentAlignment": "Center"
+            },
+            {
+              "type": "Column",
+              "width": "auto",
+              "items": [
+                {
+                  "type": "TextBlock",
+                  "text": "${$root.overall}",
+                  "weight": "Bolder",
+                  "size": "ExtraLarge",
+                  "color": "Good"
+                }
+              ],
+              "verticalContentAlignment": "Center"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "ColumnSet",
+      "spacing": "Medium",
+      "columns": [
+        {
+          "type": "Column",
+          "width": "1",
+          "items": [
+            {
+              "type": "TextBlock",
+              "text": "🏆 Rango",
+              "size": "Small",
+              "isSubtle": true,
+              "spacing": "None"
+            },
+            {
+              "type": "TextBlock",
+              "text": "${$root.rank}",
+              "weight": "Bolder",
+              "color": "Good",
+              "spacing": "None"
+            }
+          ]
+        },
+        {
+          "type": "Column",
+          "width": "1",
+          "items": [
+            {
+              "type": "TextBlock",
+              "text": "⚽ Partidos",
+              "size": "Small",
+              "isSubtle": true,
+              "spacing": "None"
+            },
+            {
+              "type": "TextBlock",
+              "text": "${$root.matches}",
+              "weight": "Bolder",
+              "spacing": "None"
+            }
+          ]
+        },
+        {
+          "type": "Column",
+          "width": "1",
+          "items": [
+            {
+              "type": "TextBlock",
+              "text": "📈 Win Rate",
+              "size": "Small",
+              "isSubtle": true,
+              "spacing": "None"
+            },
+            {
+              "type": "TextBlock",
+              "text": "${$root.winRate}%",
+              "weight": "Bolder",
+              "spacing": "None"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "ColumnSet",
+      "spacing": "Small",
+      "columns": [
+        {
+          "type": "Column",
+          "width": "1",
+          "items": [
+            {
+              "type": "TextBlock",
+              "text": "PAC ${$root.pac}",
+              "size": "Small",
+              "spacing": "None"
+            }
+          ]
+        },
+        {
+          "type": "Column",
+          "width": "1",
+          "items": [
+            {
+              "type": "TextBlock",
+              "text": "SHO ${$root.sho}",
+              "size": "Small",
+              "spacing": "None"
+            }
+          ]
+        },
+        {
+          "type": "Column",
+          "width": "1",
+          "items": [
+            {
+              "type": "TextBlock",
+              "text": "PAS ${$root.pas}",
+              "size": "Small",
+              "spacing": "None"
+            }
+          ]
+        },
+        {
+          "type": "Column",
+          "width": "1",
+          "items": [
+            {
+              "type": "TextBlock",
+              "text": "DRI ${$root.dri}",
+              "size": "Small",
+              "spacing": "None"
+            }
+          ]
+        },
+        {
+          "type": "Column",
+          "width": "1",
+          "items": [
+            {
+              "type": "TextBlock",
+              "text": "DEF ${$root.def}",
+              "size": "Small",
+              "spacing": "None"
+            }
+          ]
+        },
+        {
+          "type": "Column",
+          "width": "1",
+          "items": [
+            {
+              "type": "TextBlock",
+              "text": "PHY ${$root.phy}",
+              "size": "Small",
+              "spacing": "None"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "actions": [
+    {
+      "type": "Action.Execute",
+      "title": "Ver Perfil",
+      "verb": "open-profile"
+    },
+    {
+      "type": "Action.Execute",
+      "title": "Buscar Partido",
+      "verb": "search-match"
+    }
+  ]
+}

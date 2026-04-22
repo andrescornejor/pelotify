@@ -67,5 +67,56 @@
       "url": "/profile",
       "icons": [{ "src": "/icon-192.png", "sizes": "192x192" }]
     }
+  ],
+  "widgets": [
+    {
+      "name": "Próximo Partido",
+      "short_name": "Partido",
+      "description": "Tu próximo encuentro en la cancha",
+      "tag": "next-match",
+      "ms_template": "/widgets/next-match-template.json",
+      "data": "/api/widgets/data?type=next-match",
+      "type": "application/json",
+      "screenshots": [
+        {
+          "src": "/icon-512.png",
+          "sizes": "16x16",
+          "label": "Próximo partido widget"
+        }
+      ]
+    },
+    {
+      "name": "Mi Ranking",
+      "short_name": "Ranking",
+      "description": "Tu progreso y estadísticas",
+      "tag": "ranking",
+      "ms_template": "/widgets/ranking-template.json",
+      "data": "/api/widgets/data?type=ranking",
+      "type": "application/json",
+      "screenshots": [
+        {
+          "src": "/icon-512.png",
+          "sizes": "16x16",
+          "label": "Ranking widget"
+        }
+      ]
+    },
+    {
+      "name": "Mi Carta",
+      "short_name": "Stats",
+      "description": "Tus estadísticas FIFA",
+      "tag": "stats",
+      "ms_template": "/widgets/stats-template.json",
+      "data": "/api/widgets/data?type=stats",
+      "type": "application/json",
+      "screenshots": [
+        {
+          "src": "/icon-512.png",
+          "sizes": "16x16",
+          "label": "Stats widget"
+        }
+      ]
+    }
   ]
 }
+

@@ -1,0 +1,193 @@
+{
+  "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
+  "type": "AdaptiveCard",
+  "version": "1.6",
+  "body": [
+    {
+      "type": "Container",
+      "style": "emphasis",
+      "bleed": true,
+      "items": [
+        {
+          "type": "ColumnSet",
+          "columns": [
+            {
+              "type": "Column",
+              "width": "auto",
+              "items": [
+                {
+                  "type": "Image",
+                  "url": "${$root.iconUrl}",
+                  "size": "Small",
+                  "style": "Person"
+                }
+              ],
+              "verticalContentAlignment": "Center"
+            },
+            {
+              "type": "Column",
+              "width": "stretch",
+              "items": [
+                {
+                  "type": "TextBlock",
+                  "text": "PELOTIFY",
+                  "weight": "Bolder",
+                  "size": "Small",
+                  "color": "Good",
+                  "spacing": "None"
+                },
+                {
+                  "type": "TextBlock",
+                  "text": "Mi Ranking",
+                  "size": "Small",
+                  "isSubtle": true,
+                  "spacing": "None"
+                }
+              ],
+              "verticalContentAlignment": "Center"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "Container",
+      "spacing": "Medium",
+      "items": [
+        {
+          "type": "ColumnSet",
+          "columns": [
+            {
+              "type": "Column",
+              "width": "auto",
+              "items": [
+                {
+                  "type": "TextBlock",
+                  "text": "${$root.rankEmoji}",
+                  "size": "ExtraLarge"
+                }
+              ],
+              "verticalContentAlignment": "Center"
+            },
+            {
+              "type": "Column",
+              "width": "stretch",
+              "items": [
+                {
+                  "type": "TextBlock",
+                  "text": "${$root.rank}",
+                  "weight": "Bolder",
+                  "size": "Large",
+                  "spacing": "None"
+                },
+                {
+                  "type": "TextBlock",
+                  "text": "ELO: ${$root.elo}",
+                  "size": "Small",
+                  "isSubtle": true,
+                  "spacing": "None"
+                }
+              ],
+              "verticalContentAlignment": "Center"
+            },
+            {
+              "type": "Column",
+              "width": "auto",
+              "items": [
+                {
+                  "type": "TextBlock",
+                  "text": "${$root.progress}%",
+                  "weight": "Bolder",
+                  "size": "ExtraLarge",
+                  "color": "Good"
+                }
+              ],
+              "verticalContentAlignment": "Center"
+            }
+          ]
+        },
+        {
+          "type": "TextBlock",
+          "text": "Siguiente: ${$root.nextRank}",
+          "size": "Small",
+          "isSubtle": true,
+          "horizontalAlignment": "Center",
+          "spacing": "Small"
+        }
+      ]
+    },
+    {
+      "type": "ColumnSet",
+      "spacing": "Medium",
+      "columns": [
+        {
+          "type": "Column",
+          "width": "1",
+          "items": [
+            {
+              "type": "TextBlock",
+              "text": "🏅 MVPs",
+              "size": "Small",
+              "isSubtle": true,
+              "spacing": "None"
+            },
+            {
+              "type": "TextBlock",
+              "text": "${$root.mvps}",
+              "weight": "Bolder",
+              "color": "Warning",
+              "spacing": "None"
+            }
+          ]
+        },
+        {
+          "type": "Column",
+          "width": "1",
+          "items": [
+            {
+              "type": "TextBlock",
+              "text": "🏆 Victorias",
+              "size": "Small",
+              "isSubtle": true,
+              "spacing": "None"
+            },
+            {
+              "type": "TextBlock",
+              "text": "${$root.wins}",
+              "weight": "Bolder",
+              "color": "Good",
+              "spacing": "None"
+            }
+          ]
+        },
+        {
+          "type": "Column",
+          "width": "1",
+          "items": [
+            {
+              "type": "TextBlock",
+              "text": "🔥 Racha",
+              "size": "Small",
+              "isSubtle": true,
+              "spacing": "None"
+            },
+            {
+              "type": "TextBlock",
+              "text": "${$root.streak}",
+              "weight": "Bolder",
+              "color": "Attention",
+              "spacing": "None"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "actions": [
+    {
+      "type": "Action.Execute",
+      "title": "Ver Rankings",
+      "verb": "open-ranks"
+    }
+  ]
+}

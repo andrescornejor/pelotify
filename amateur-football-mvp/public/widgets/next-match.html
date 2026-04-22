@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pelotify - Próximo Partido</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    @import url('https://fonts.googleapis.com/css2?family=Kanit:ital,wght@0,400;0,700;0,900;1,700;1,900&display=swap');
+    
+    body {
+      font-family: 'Kanit', system-ui, -apple-system, sans-serif;
+      background: linear-gradient(145deg, #0a0a0a 0%, #111111 50%, #0a0a0a 100%);
+      color: #ffffff;
+      overflow: hidden;
+      -webkit-user-select: none;
+      user-select: none;
+    }
+    
+    .widget-container {
+      width: 100%;
+      height: 100vh;
+      max-height: 200px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .widget-container::before {
+      content: '';
+      position: absolute;
+      top: -30%;
+      right: -20%;
+      width: 60%;
+      height: 80%;
+      background: radial-gradient(circle, rgba(44, 252, 125, 0.12) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    
+    .widget-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    
+    .widget-header-left {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .widget-logo {
+      width: 20px;
+      height: 20px;
+      border-radius: 6px;
+    }
+    
+    .widget-title {
+      font-size: 9px;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 0.2em;
+      color: rgba(255,255,255,0.4);
+    }
+    
+    .pulse-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #2cfc7d;
+      animation: pulse 2s infinite;
+    }
+    
+    @keyframes pulse {
+      0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(44,252,125,0.5); }
+      50% { opacity: 0.7; box-shadow: 0 0 0 4px rgba(44,252,125,0); }
+    }
+    
+    .match-display {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      padding: 8px 0;
+    }
+    
+    .team-name {
+      font-size: 14px;
+      font-weight: 900;
+      font-style: italic;
+      text-transform: uppercase;
+      letter-spacing: -0.02em;
+      text-align: center;
+      flex: 1;
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    
+    .vs-badge {
+      font-size: 12px;
+      font-weight: 900;
+      font-style: italic;
+      color: #2cfc7d;
+      background: rgba(44,252,125,0.1);
+      border: 1px solid rgba(44,252,125,0.2);
+      border-radius: 8px;
+      padding: 4px 8px;
+      flex-shrink: 0;
+      text-shadow: 0 0 10px rgba(44,252,125,0.3);
+    }
+    
+    .match-info {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      font-size: 10px;
+      color: rgba(255,255,255,0.5);
+    }
+    
+    .match-info span {
+      display: flex;
+      align-items: center;
+      gap: 3px;
+    }
+    
+    .countdown-bar {
+      text-align: center;
+      font-size: 10px;
+      font-weight: 900;
+      color: #2cfc7d;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      padding: 6px;
+      background: rgba(44,252,125,0.08);
+      border-radius: 8px;
+      border: 1px solid rgba(44,252,125,0.15);
+    }
+    
+    .skeleton { background: rgba(255,255,255,0.05); border-radius: 6px; animation: shimmer 1.5s infinite; }
+    @keyframes shimmer { 0%,100% { opacity: 0.5; } 50% { opacity: 1; } }
+    
+    .empty-state {
+      text-align: center;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      flex: 1;
+    }
+    
+    .empty-state .emoji { font-size: 28px; margin-bottom: 8px; }
+    .empty-state .text { font-size: 11px; color: rgba(255,255,255,0.4); font-weight: 700; }
+    .empty-state .cta {
+      margin-top: 8px;
+      font-size: 10px;
+      font-weight: 900;
+      color: #0a0a0a;
+      background: #2cfc7d;
+      border: none;
+      border-radius: 8px;
+      padding: 6px 16px;
+      cursor: pointer;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+  </style>
+</head>
+<body>
+  <div class="widget-container" id="widget" onclick="openApp()">
+    <div class="widget-header">
+      <div class="widget-header-left">
+        <img src="/icon-192.png" alt="Pelotify" class="widget-logo">
+        <span class="widget-title">Próximo Partido</span>
+      </div>
+      <div class="pulse-dot" id="pulseDot"></div>
+    </div>
+    
+    <div id="content">
+      <!-- Loading skeleton -->
+      <div class="match-display">
+        <div class="skeleton" style="width: 80px; height: 18px;"></div>
+        <div class="vs-badge">VS</div>
+        <div class="skeleton" style="width: 80px; height: 18px;"></div>
+      </div>
+      <div class="skeleton" style="width: 100%; height: 28px;"></div>
+    </div>
+  </div>
+
+  <script>
+    const BASE_URL = location.origin;
+    
+    async function loadWidgetData() {
+      try {
+        // Try to get userId from stored session
+        const userId = localStorage.getItem('pelotify_widget_userId') || '';
+        const url = `${BASE_URL}/api/widgets/data?type=next-match${userId ? `&userId=${userId}` : ''}`;
+        
+        const res = await fetch(url, { cache: 'no-store' });
+        const data = await res.json();
+        
+        const match = data.nextMatch;
+        const contentEl = document.getElementById('content');
+        
+        if (!match || !match.matchId) {
+          contentEl.innerHTML = `
+            <div class="empty-state">
+              <div class="emoji">⚽</div>
+              <div class="text">No tenés partidos próximos</div>
+              <button class="cta" onclick="event.stopPropagation(); openCreate()">Armar Partido</button>
+            </div>
+          `;
+          document.getElementById('pulseDot').style.display = 'none';
+          return;
+        }
+        
+        contentEl.innerHTML = `
+          <div class="match-display">
+            <span class="team-name">${match.teamA}</span>
+            <span class="vs-badge">VS</span>
+            <span class="team-name">${match.teamB}</span>
+          </div>
+          <div class="match-info">
+            <span>📅 ${match.date}</span>
+            <span>⏰ ${match.time}</span>
+          </div>
+          <div class="countdown-bar">${match.countdown}</div>
+        `;
+        
+        // Store matchId for click handler
+        window._matchId = match.matchId;
+      } catch (err) {
+        console.error('Widget error:', err);
+        document.getElementById('content').innerHTML = `
+          <div class="empty-state">
+            <div class="emoji">📡</div>
+            <div class="text">Sin conexión</div>
+          </div>
+        `;
+      }
+    }
+    
+    function openApp() {
+      if (window._matchId) {
+        window.open(`${BASE_URL}/match?id=${window._matchId}`, '_blank');
+      } else {
+        window.open(BASE_URL, '_blank');
+      }
+    }
+    
+    function openCreate() {
+      window.open(`${BASE_URL}/create`, '_blank');
+    }
+    
+    loadWidgetData();
+    // Refresh every 5 minutes
+    setInterval(loadWidgetData, 5 * 60 * 1000);
+  </script>
+</body>
+</html>

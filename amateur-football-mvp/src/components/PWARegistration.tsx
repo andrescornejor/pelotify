@@ -81,7 +81,36 @@ export default function PWARegistration() {
     }
   };
 
+  // Store userId for widgets
+  useEffect(() => {
+    // We can't use useAuth directly here to avoid circular dependencies if any,
+    // but we can check the window object or just assume it will be called from where user is available
+    // Actually, I'll just check for a 'pelotify_userId' cookie or similar if I had one, 
+    // but I can pass it from a parent or use a separate hook.
+    // For now, let's just make sure we save it to localStorage whenever we have user session.
+    const saveUserId = () => {
+      try {
+        const sessionStr = localStorage.getItem('sb-yidqdqxtzvymmshxwzvv-auth-token'); // Supabase default key pattern
+        if (sessionStr) {
+          const session = JSON.parse(sessionStr);
+          const uid = session?.user?.id;
+          if (uid) {
+            localStorage.setItem('pelotify_widget_userId', uid);
+          }
+        }
+      } catch (e) {
+        console.error('Error saving userId for widgets', e);
+      }
+    };
+    
+    saveUserId();
+    // Also listen for storage events to keep it synced
+    window.addEventListener('storage', saveUserId);
+    return () => window.removeEventListener('storage', saveUserId);
+  }, []);
+
   const closePrompt = () => {
+
     setShowInstallPrompt(false);
     // Optionally save to localStorage so we don't bother them for a few days
   };
