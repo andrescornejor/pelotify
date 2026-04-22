@@ -9,9 +9,9 @@ const shimmer = {
 } as const;
 
 const Bone = ({ className = '', style }: { className?: string, style?: React.CSSProperties }) => (
-  <div className={`relative overflow-hidden bg-foreground/[0.03] ${className}`} style={style}>
+  <div className={`relative overflow-hidden bg-foreground/[0.04] ${className}`} style={style}>
     <motion.div
-      className="absolute inset-0 bg-gradient-to-r from-transparent via-foreground/[0.08] to-transparent w-[200%]"
+      className="absolute inset-0 bg-gradient-to-r from-transparent via-foreground/[0.10] to-transparent w-[200%]"
       initial={shimmer.initial}
       animate={shimmer.animate}
       transition={shimmer.transition}
@@ -24,46 +24,52 @@ const Bone = ({ className = '', style }: { className?: string, style?: React.CSS
  * for the application when it boots up or fetches initial data.
  */
 export const HomePageSkeleton = () => (
-  <div className="relative min-h-screen bg-[#050505] font-sans flex flex-col overflow-hidden">
+  <div className="relative min-h-screen bg-background text-foreground font-sans flex flex-col overflow-hidden">
+
+    {/* Ambient background (theme-aware via CSS variables) */}
+    <div className="absolute inset-0 pointer-events-none -z-10 overflow-hidden">
+      <div className="absolute -top-32 -right-32 w-[520px] h-[520px] rounded-full blur-[120px] opacity-60 bg-[radial-gradient(circle_at_center,rgba(var(--primary-rgb),0.22),transparent_55%)]" />
+      <div className="absolute -bottom-40 -left-40 w-[620px] h-[620px] rounded-full blur-[140px] opacity-50 bg-[radial-gradient(circle_at_center,rgba(var(--primary-rgb),0.14),transparent_60%)]" />
+    </div>
     
     {/* ─── MINIMAL LOADER ─── */}
     <div className="absolute inset-0 pointer-events-none z-0 flex items-center justify-center overflow-hidden">
-      <div className="absolute bottom-0 left-0 right-0 h-1/2 bg-gradient-to-t from-background to-transparent" />
+      <div className="absolute bottom-0 left-0 right-0 h-1/2 bg-gradient-to-t from-background via-background/70 to-transparent" />
     </div>
 
     {/* ─── APP SKELETON (Dimmed out in background to simulate loading state) ─── */}
     <motion.div 
       initial={{ opacity: 0 }}
-      animate={{ opacity: 0.3 }}
+      animate={{ opacity: 0.26 }}
       transition={{ duration: 1.5 }}
-      className="max-w-full mx-auto w-full px-4 sm:px-6 lg:px-10 xl:px-16 py-4 lg:py-8 space-y-8 lg:space-y-12 relative z-10 pointer-events-none filter blur-[2px]"
+      className="max-w-full mx-auto w-full px-4 sm:px-6 lg:px-10 xl:px-16 py-4 lg:py-8 space-y-8 lg:space-y-12 relative z-10 pointer-events-none"
     >
       
       {/* ─── HERO SECTION ─── */}
-      <div className="relative overflow-hidden rounded-[2.5rem] lg:rounded-[3rem] border border-white/[0.03]">
-        <div className="absolute inset-0 bg-gradient-to-br from-white/[0.02] to-transparent" />
+      <div className="relative overflow-hidden rounded-[2.5rem] lg:rounded-[3rem] border border-foreground/[0.08] bg-foreground/[0.02]">
+        <div className="absolute inset-0 bg-gradient-to-br from-foreground/[0.05] to-transparent" />
         <div className="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-6 lg:gap-10 p-6 sm:p-12 lg:p-16 xl:p-20">
           <div className="flex-1 space-y-6 lg:space-y-8 max-w-2xl">
-            <Bone className="w-32 h-7 rounded-full bg-white/[0.05]" />
+            <Bone className="w-32 h-7 rounded-full bg-foreground/[0.05]" />
             <div className="space-y-4">
               <div className="space-y-2">
-                <Bone className="w-[75%] h-12 lg:h-16 rounded-2xl bg-white/[0.05]" />
-                <Bone className="w-[55%] h-12 lg:h-16 rounded-2xl bg-white/[0.05]" />
+                <Bone className="w-[75%] h-12 lg:h-16 rounded-2xl bg-foreground/[0.05]" />
+                <Bone className="w-[55%] h-12 lg:h-16 rounded-2xl bg-foreground/[0.05]" />
               </div>
               <div className="flex items-center gap-4 py-2">
                 <Bone className="h-[2px] w-12 rounded-full bg-primary/20" />
                 <Bone className="w-12 h-12 rounded-full border border-primary/20 bg-primary/10" />
-                <Bone className="w-40 h-5 rounded-full bg-white/[0.05]" />
+                <Bone className="w-40 h-5 rounded-full bg-foreground/[0.05]" />
               </div>
             </div>
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 lg:gap-6 pt-2">
               <div className="space-y-2">
-                <Bone className="w-20 h-3 rounded-full bg-white/[0.05]" />
-                <Bone className="w-24 h-7 rounded-lg bg-white/[0.05]" />
+                <Bone className="w-20 h-3 rounded-full bg-foreground/[0.05]" />
+                <Bone className="w-24 h-7 rounded-lg bg-foreground/[0.05]" />
               </div>
               <div className="space-y-2">
-                <Bone className="w-24 h-3 rounded-full bg-white/[0.05]" />
-                <Bone className="w-16 h-7 rounded-lg bg-white/[0.05]" />
+                <Bone className="w-24 h-3 rounded-full bg-foreground/[0.05]" />
+                <Bone className="w-16 h-7 rounded-lg bg-foreground/[0.05]" />
               </div>
             </div>
           </div>
@@ -73,22 +79,22 @@ export const HomePageSkeleton = () => (
               <div className="flex items-center gap-6">
                 <Bone className="w-24 h-24 rounded-2xl border border-primary/20 bg-primary/10" />
                 <div className="flex-1 space-y-3">
-                  <Bone className="w-28 h-3 rounded-full bg-white/[0.05]" />
-                  <Bone className="w-20 h-6 rounded-lg bg-white/[0.05]" />
-                  <Bone className="w-32 h-3 rounded-full bg-white/[0.05]" />
+                  <Bone className="w-28 h-3 rounded-full bg-foreground/[0.05]" />
+                  <Bone className="w-20 h-6 rounded-lg bg-foreground/[0.05]" />
+                  <Bone className="w-32 h-3 rounded-full bg-foreground/[0.05]" />
                 </div>
               </div>
               <div className="space-y-3">
                 <Bone className="w-full h-3 rounded-full bg-primary/20" />
                 <div className="flex justify-between">
-                  <Bone className="w-32 h-2 rounded-full bg-white/[0.05]" />
-                  <Bone className="w-24 h-2 rounded-full bg-white/[0.05]" />
+                  <Bone className="w-32 h-2 rounded-full bg-foreground/[0.05]" />
+                  <Bone className="w-24 h-2 rounded-full bg-foreground/[0.05]" />
                 </div>
               </div>
             </div>
             <div className="grid grid-cols-3 gap-3">
               <Bone className="col-span-3 h-16 rounded-[2rem] bg-primary/20" />
-              <Bone className="col-span-2 h-16 rounded-[2rem] bg-white/[0.05]" />
+              <Bone className="col-span-2 h-16 rounded-[2rem] bg-foreground/[0.05]" />
               <Bone className="col-span-1 h-16 rounded-[2rem] bg-orange-500/20" />
             </div>
           </div>
@@ -99,11 +105,11 @@ export const HomePageSkeleton = () => (
         <div className="lg:col-span-8 xl:col-span-8 space-y-6">
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
             {[...Array(4)].map((_, i) => (
-              <div key={i} className="rounded-[2.5rem] border border-white/[0.03] p-6 space-y-4 bg-white/[0.02]">
-                <Bone className={`w-12 h-12 rounded-2xl ${i === 0 ? 'bg-primary/20' : 'bg-white/[0.05]'}`} />
+              <div key={i} className="rounded-[2.5rem] border border-foreground/[0.08] p-6 space-y-4 bg-foreground/[0.02]">
+                <Bone className={`w-12 h-12 rounded-2xl ${i === 0 ? 'bg-primary/20' : 'bg-foreground/[0.05]'}`} />
                 <div className="space-y-2">
-                  <Bone className="w-16 h-2 rounded-full bg-white/[0.05]" />
-                  <Bone className="w-12 h-8 rounded-lg bg-white/[0.05]" />
+                  <Bone className="w-16 h-2 rounded-full bg-foreground/[0.05]" />
+                  <Bone className="w-12 h-8 rounded-lg bg-foreground/[0.05]" />
                 </div>
               </div>
             ))}
@@ -112,14 +118,14 @@ export const HomePageSkeleton = () => (
           <div className="space-y-6">
             <div className="flex items-end justify-between px-1">
               <div className="space-y-2">
-                <Bone className="w-36 h-6 rounded-lg bg-white/[0.05]" />
-                <Bone className="w-48 h-3 rounded-full bg-white/[0.05]" />
+                <Bone className="w-36 h-6 rounded-lg bg-foreground/[0.05]" />
+                <Bone className="w-48 h-3 rounded-full bg-foreground/[0.05]" />
               </div>
             </div>
-            <div className="rounded-[2.5rem] border border-white/[0.03] p-8 bg-white/[0.02] space-y-8">
+            <div className="rounded-[2.5rem] border border-foreground/[0.08] p-8 bg-foreground/[0.02] space-y-8">
               <div className="flex items-center justify-between px-4 sm:px-10">
                 {[...Array(9)].map((_, i) => (
-                  <Bone key={i} className="w-10 h-10 rounded-xl bg-white/[0.08]" />
+                  <Bone key={i} className="w-10 h-10 rounded-xl bg-foreground/[0.08]" />
                 ))}
               </div>
             </div>
@@ -127,23 +133,23 @@ export const HomePageSkeleton = () => (
         </div>
 
         <div className="lg:col-span-4 xl:col-span-4 space-y-6">
-          <div className="rounded-[3rem] border border-white/[0.03] bg-white/[0.02] overflow-hidden">
+          <div className="rounded-[3rem] border border-foreground/[0.08] bg-foreground/[0.02] overflow-hidden">
             <div className="p-8 space-y-8">
               <div className="flex items-center justify-between">
                 <div className="space-y-2">
                   <Bone className="w-32 h-3 rounded-full bg-primary/40" />
-                  <Bone className="w-28 h-4 rounded-full bg-white/[0.05]" />
+                  <Bone className="w-28 h-4 rounded-full bg-foreground/[0.05]" />
                 </div>
-                <Bone className="w-14 h-8 rounded-2xl bg-white/[0.05]" />
+                <Bone className="w-14 h-8 rounded-2xl bg-foreground/[0.05]" />
               </div>
-              
+
               <div className="flex items-center justify-between px-4 gap-4">
                 <div className="flex flex-col items-center gap-4 flex-1">
-                  <Bone className="w-20 h-20 rounded-[2.5rem] bg-white/[0.05]" />
+                  <Bone className="w-20 h-20 rounded-[2.5rem] bg-foreground/[0.05]" />
                 </div>
                 <Bone className="w-10 h-10 rounded-full border-2 border-primary/40 bg-transparent shrink-0" />
                 <div className="flex flex-col items-center gap-4 flex-1">
-                  <Bone className="w-20 h-20 rounded-[2.5rem] bg-white/[0.05]" />
+                  <Bone className="w-20 h-20 rounded-[2.5rem] bg-foreground/[0.05]" />
                 </div>
               </div>
               <Bone className="w-full h-14 rounded-2xl bg-primary/20" />
@@ -152,5 +158,39 @@ export const HomePageSkeleton = () => (
         </div>
       </div>
     </motion.div>
+
+    {/* Foreground loader (brand + progress) */}
+    <div className="absolute inset-0 flex items-center justify-center z-20 pointer-events-none">
+      <div className="flex flex-col items-center gap-6">
+        <motion.div
+          initial={{ opacity: 0, scale: 0.92 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ type: 'spring', stiffness: 260, damping: 24 }}
+          className="relative"
+        >
+          <div className="absolute -inset-10 rounded-full blur-3xl opacity-60 bg-[radial-gradient(circle_at_center,rgba(var(--primary-rgb),0.25),transparent_60%)]" />
+          <div className="relative w-24 h-24 rounded-[2.25rem] border border-primary/20 bg-foreground/[0.03] backdrop-blur-xl shadow-[0_30px_80px_rgba(0,0,0,0.22)] dark:shadow-[0_30px_80px_rgba(0,0,0,0.6)] flex items-center justify-center overflow-hidden">
+            <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-transparent to-transparent" />
+            <img src="/logo_pelotify.png" alt="Pelotify" className="w-14 h-14 object-contain relative z-10" />
+          </div>
+        </motion.div>
+
+        <div className="w-[240px]">
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-[10px] font-black uppercase tracking-[0.35em] text-foreground/45">Cargando</span>
+            <span className="text-[10px] font-black uppercase tracking-[0.25em] text-primary/80">PELOTIFY</span>
+          </div>
+          <div className="relative h-2 rounded-full overflow-hidden border border-foreground/[0.10] bg-foreground/[0.04]">
+            <div className="absolute inset-0 animate-shimmer opacity-60" />
+            <motion.div
+              initial={{ x: '-60%' }}
+              animate={{ x: '120%' }}
+              transition={{ repeat: Infinity, duration: 1.2, ease: 'linear' }}
+              className="absolute top-0 bottom-0 w-1/2 rounded-full bg-gradient-to-r from-transparent via-primary/70 to-transparent"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 );
