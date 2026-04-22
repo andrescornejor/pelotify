@@ -20,7 +20,8 @@ export default function PWARegistration() {
     setIsIOS(_isIOS);
 
     // If not standalone, we might want to show the prompt (delayed so it's not instantly annoying)
-    if (!_isStandalone) {
+    const isDismissed = sessionStorage.getItem('pelotify_pwa_prompt_dismissed');
+    if (!_isStandalone && !isDismissed) {
       const timer = setTimeout(() => {
         setShowInstallPrompt(true);
       }, 5000); // show after 5 seconds
@@ -71,13 +72,18 @@ export default function PWARegistration() {
   }, [isStandalone]);
 
   const handleInstallClick = async () => {
+    console.log('Install button clicked', { hasPrompt: !!deferredPrompt });
     if (deferredPrompt) {
       deferredPrompt.prompt();
       const { outcome } = await deferredPrompt.userChoice;
+      console.log('Install outcome:', outcome);
       if (outcome === 'accepted') {
         setShowInstallPrompt(false);
       }
       setDeferredPrompt(null);
+    } else {
+      // Fallback if prompt is missing but button is shown
+      alert('Para instalar: Toca los tres puntos de tu navegador y selecciona "Instalar aplicación" o "Añadir a la pantalla de inicio".');
     }
   };
 
@@ -109,10 +115,15 @@ export default function PWARegistration() {
     return () => window.removeEventListener('storage', saveUserId);
   }, []);
 
-  const closePrompt = () => {
-
+  const closePrompt = (e?: React.MouseEvent) => {
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+    console.log('Close prompt clicked');
     setShowInstallPrompt(false);
-    // Optionally save to localStorage so we don't bother them for a few days
+    // Save preference to not show again in this session
+    sessionStorage.setItem('pelotify_pwa_prompt_dismissed', 'true');
   };
 
   return (
@@ -123,15 +134,16 @@ export default function PWARegistration() {
           animate={{ y: 0, opacity: 1 }}
           exit={{ y: 150, opacity: 0 }}
           transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-          className="fixed bottom-[80px] left-4 right-4 z-[999] md:bottom-6 md:left-auto md:right-6 md:w-96"
+          className="fixed bottom-[80px] left-4 right-4 z-[9999] md:bottom-6 md:left-auto md:right-6 md:w-96"
         >
           <div className="bg-background border border-border/50 shadow-2xl rounded-2xl p-4 flex flex-col gap-3 relative overflow-hidden backdrop-blur-xl bg-background/80">
             {/* Background glowing effect */}
             <div className="absolute -top-[50%] -right-[50%] w-[100%] h-[100%] bg-primary/20 blur-[60px] rounded-full pointer-events-none" />
             
             <button 
-              onClick={closePrompt}
-              className="absolute top-3 right-3 text-muted-foreground hover:text-foreground transition-colors p-1"
+              onClick={(e) => closePrompt(e)}
+              className="absolute top-3 right-3 text-muted-foreground hover:text-foreground transition-all p-2 cursor-pointer z-50 hover:bg-white/10 rounded-full"
+              aria-label="Cerrar"
             >
               <X size={18} />
             </button>
@@ -158,8 +170,8 @@ export default function PWARegistration() {
                 </div>
               ) : (
                 <button 
-                  onClick={handleInstallClick} 
-                  className="w-full font-bold bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2 inline-flex items-center justify-center rounded-md text-sm ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50"
+                  onClick={() => handleInstallClick()} 
+                  className="w-full font-bold bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2 inline-flex items-center justify-center rounded-md text-sm ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 cursor-pointer active:scale-95"
                 >
                   <Download className="mr-2 h-4 w-4" /> Instalar App
                 </button>
