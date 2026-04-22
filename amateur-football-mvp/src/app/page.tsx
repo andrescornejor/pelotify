@@ -947,6 +947,82 @@ export default function HomePage() {
             <section className="space-y-3">
               <div className="flex items-center justify-between px-1">
                 <div>
+                  <p className="text-[9px] font-black uppercase tracking-[0.22em] text-primary">Social</p>
+                  <h3 className="mt-1 text-lg font-black italic uppercase tracking-tighter text-foreground">
+                    3erTiempo
+                  </h3>
+                </div>
+                <Link href="/feed" className="text-[9px] font-black uppercase tracking-[0.18em] text-foreground/45">
+                  Ver muro
+                </Link>
+              </div>
+              {recentPosts.length > 0 ? (
+                <div className="flex gap-3 overflow-x-auto pb-2 snap-x snap-mandatory no-scrollbar scroll-px-1">
+                  {recentPosts.slice(0, 8).map((post, idx) => (
+                    <Link
+                      key={post.id}
+                      href={`/feed?post=${post.id}`}
+                      className="snap-start min-w-[280px] max-w-[280px] shrink-0"
+                    >
+                      <div className="relative h-full overflow-hidden rounded-[2rem] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.06),rgba(255,255,255,0.02))] p-4 shadow-[0_18px_44px_rgba(0,0,0,0.16)]">
+                        {post.image_url && (
+                          <>
+                            <img src={post.image_url} alt="" className="absolute inset-0 h-full w-full object-cover opacity-25" />
+                            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/45 to-black/10" />
+                          </>
+                        )}
+                        <div className="relative flex h-full flex-col">
+                          <div className="flex items-center justify-between gap-3">
+                            <div className="flex items-center gap-3 min-w-0">
+                              <div className="h-11 w-11 rounded-full overflow-hidden border border-white/10 bg-surface-elevated shrink-0">
+                                {post.author?.avatar_url ? (
+                                  <img src={post.author.avatar_url} alt="" className="h-full w-full object-cover" />
+                                ) : (
+                                  <div className="flex h-full w-full items-center justify-center text-foreground/35 font-black">
+                                    {post.author?.name?.charAt(0) || 'P'}
+                                  </div>
+                                )}
+                              </div>
+                              <div className="min-w-0">
+                                <p className="truncate text-sm font-black text-foreground">{post.author?.name || 'Jugador'}</p>
+                                <p className="text-[9px] font-black uppercase tracking-[0.16em] text-foreground/40">
+                                  {new Date(post.created_at).toLocaleDateString()}
+                                </p>
+                              </div>
+                            </div>
+                            <div className="rounded-full border border-white/10 bg-white/[0.05] px-2.5 py-1 text-[8px] font-black uppercase tracking-[0.18em] text-primary">
+                              {idx === 0 ? 'En foco' : '3T'}
+                            </div>
+                          </div>
+
+                          <p className="mt-4 text-[15px] font-medium leading-relaxed text-foreground/82 line-clamp-5">
+                            {post.content}
+                          </p>
+
+                          <div className="mt-5 flex items-center justify-between border-t border-white/10 pt-3">
+                            <div className="flex items-center gap-4 text-[11px] font-bold text-foreground/55">
+                              <span>{post.likes_count || 0} likes</span>
+                              <span>{post.comments_count || 0} respuestas</span>
+                            </div>
+                            <span className="text-[9px] font-black uppercase tracking-[0.18em] text-primary">
+                              Ver post
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    </Link>
+                  ))}
+                </div>
+              ) : (
+                <div className="rounded-[1.7rem] border border-dashed border-foreground/10 bg-white/[0.02] p-5 text-center text-sm font-bold text-foreground/55">
+                  El muro todavía está tranquilo.
+                </div>
+              )}
+            </section>
+
+            <section className="space-y-3">
+              <div className="flex items-center justify-between px-1">
+                <div>
                   <p className="text-[9px] font-black uppercase tracking-[0.22em] text-primary">Para vos</p>
                   <h3 className="mt-1 text-lg font-black italic uppercase tracking-tighter text-foreground">
                     Recomendados
@@ -956,13 +1032,13 @@ export default function HomePage() {
                   Ver más
                 </Link>
               </div>
-              <div className="flex gap-3 overflow-x-auto pb-1 snap-x">
+              <div className="flex gap-3 overflow-x-auto pb-2 snap-x snap-mandatory no-scrollbar scroll-px-1">
                 {recommendedMatches.length > 0 ? (
                   recommendedMatches.map((match) => (
                     <Link
                       key={match.id}
                       href={`/match?id=${match.id}`}
-                      className="snap-start min-w-[280px] rounded-[1.7rem] border border-foreground/10 bg-white/[0.03] p-4 shadow-[0_12px_28px_rgba(0,0,0,0.14)]"
+                      className="snap-start min-w-[280px] rounded-[1.7rem] border border-foreground/10 bg-white/[0.03] p-4 shadow-[0_12px_28px_rgba(0,0,0,0.14)] shrink-0"
                     >
                       <p className="text-[9px] font-black uppercase tracking-[0.2em] text-primary">
                         {SPORT_META[getMatchSport(match)].icon} {getFormatMeta(match.type, getMatchSport(match)).label}
@@ -1045,81 +1121,6 @@ export default function HomePage() {
               )}
             </section>
 
-            <section className="space-y-3">
-              <div className="flex items-center justify-between px-1">
-                <div>
-                  <p className="text-[9px] font-black uppercase tracking-[0.22em] text-primary">Social</p>
-                  <h3 className="mt-1 text-lg font-black italic uppercase tracking-tighter text-foreground">
-                    3erTiempo
-                  </h3>
-                </div>
-                <Link href="/feed" className="text-[9px] font-black uppercase tracking-[0.18em] text-foreground/45">
-                  Ver muro
-                </Link>
-              </div>
-              {recentPosts.length > 0 ? (
-                <div className="flex gap-3 overflow-x-auto pb-1 snap-x">
-                  {recentPosts.slice(0, 3).map((post, idx) => (
-                    <Link
-                      key={post.id}
-                      href={`/feed?post=${post.id}`}
-                      className="snap-start min-w-[280px] max-w-[280px]"
-                    >
-                      <div className="relative h-full overflow-hidden rounded-[2rem] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.06),rgba(255,255,255,0.02))] p-4 shadow-[0_18px_44px_rgba(0,0,0,0.16)]">
-                        {post.image_url && (
-                          <>
-                            <img src={post.image_url} alt="" className="absolute inset-0 h-full w-full object-cover opacity-25" />
-                            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/45 to-black/10" />
-                          </>
-                        )}
-                        <div className="relative flex h-full flex-col">
-                          <div className="flex items-center justify-between gap-3">
-                            <div className="flex items-center gap-3 min-w-0">
-                              <div className="h-11 w-11 rounded-full overflow-hidden border border-white/10 bg-surface-elevated shrink-0">
-                                {post.author?.avatar_url ? (
-                                  <img src={post.author.avatar_url} alt="" className="h-full w-full object-cover" />
-                                ) : (
-                                  <div className="flex h-full w-full items-center justify-center text-foreground/35 font-black">
-                                    {post.author?.name?.charAt(0) || 'P'}
-                                  </div>
-                                )}
-                              </div>
-                              <div className="min-w-0">
-                                <p className="truncate text-sm font-black text-foreground">{post.author?.name || 'Jugador'}</p>
-                                <p className="text-[9px] font-black uppercase tracking-[0.16em] text-foreground/40">
-                                  {new Date(post.created_at).toLocaleDateString()}
-                                </p>
-                              </div>
-                            </div>
-                            <div className="rounded-full border border-white/10 bg-white/[0.05] px-2.5 py-1 text-[8px] font-black uppercase tracking-[0.18em] text-primary">
-                              {idx === 0 ? 'En foco' : '3T'}
-                            </div>
-                          </div>
-
-                          <p className="mt-4 text-[15px] font-medium leading-relaxed text-foreground/82 line-clamp-5">
-                            {post.content}
-                          </p>
-
-                          <div className="mt-5 flex items-center justify-between border-t border-white/10 pt-3">
-                            <div className="flex items-center gap-4 text-[11px] font-bold text-foreground/55">
-                              <span>{post.likes_count || 0} likes</span>
-                              <span>{post.comments_count || 0} respuestas</span>
-                            </div>
-                            <span className="text-[9px] font-black uppercase tracking-[0.18em] text-primary">
-                              Ver post
-                            </span>
-                          </div>
-                        </div>
-                      </div>
-                    </Link>
-                  ))}
-                </div>
-              ) : (
-                <div className="rounded-[1.7rem] border border-dashed border-foreground/10 bg-white/[0.02] p-5 text-center text-sm font-bold text-foreground/55">
-                  El muro todavía está tranquilo.
-                </div>
-              )}
-            </section>
 
             <section className="space-y-3">
               <div className="flex items-center justify-between px-1">
