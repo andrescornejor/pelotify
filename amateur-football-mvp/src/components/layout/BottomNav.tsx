@@ -16,9 +16,9 @@ import {
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useMemo, useState } from 'react';
 import { useSettings } from '@/contexts/SettingsContext';
 import { useHaptic } from '@/hooks/useHaptic';
+import { useSidebar } from '@/contexts/SidebarContext';
 
 /**
  * PREMIUM REDESIGNED BOTTOM NAV
@@ -28,7 +28,7 @@ import { useHaptic } from '@/hooks/useHaptic';
 export function BottomNav() {
   const pathname = usePathname();
   const { performanceMode } = useSettings();
-  const [isCreateMenuOpen, setIsCreateMenuOpen] = useState(false);
+  const { isNavMenuOpen: isCreateMenuOpen, setNavMenuOpen: setIsCreateMenuOpen } = useSidebar();
   const { hapticLight, hapticMedium } = useHaptic();
 
   const navItems = useMemo(() => [
@@ -71,22 +71,7 @@ export function BottomNav() {
 
   return (
     <>
-      {/* Create Menu Backdrop */}
-      <AnimatePresence>
-        {isCreateMenuOpen && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            onClick={() => {
-              hapticLight();
-              setIsCreateMenuOpen(false);
-            }}
-            className="fixed inset-0 bg-black/60 backdrop-blur-xl lg:hidden cursor-pointer"
-            style={{ zIndex: -1 }} 
-          />
-        )}
-      </AnimatePresence>
+      {/* Main Bottom Nav Area - Pegged to Bottom */}
 
       {/* Main Bottom Nav Area - Pegged to Bottom */}
       <div className="fixed bottom-0 left-0 right-0 z-[100] lg:hidden pointer-events-none">

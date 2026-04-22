@@ -17,15 +17,18 @@ import { MobilePullToRefresh } from '@/components/MobilePullToRefresh';
 import { MobileOfflineBanner } from '@/components/MobileOfflineBanner';
 import { useMobileRefresh } from '@/hooks/useMobileRefresh';
 import { useSwipeNavigation } from '@/hooks/useSwipeNavigation';
+import { motion, AnimatePresence } from 'framer-motion';
+import { useHaptic } from '@/hooks/useHaptic';
 
 export default function ClientLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const { user } = useAuth();
-  const { isNotificationsOpen, setNotificationsOpen } = useSidebar();
+  const { isNotificationsOpen, setNotificationsOpen, isNavMenuOpen, setNavMenuOpen } = useSidebar();
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const fcmInitRef = useRef(false);
   const { handleRefresh } = useMobileRefresh();
   const swipeState = useSwipeNavigation();
+  const { hapticLight } = useHaptic();
 
   // Scroll to show/hide header and bottom nav state
   const [headerVisible, setHeaderVisible] = useState(true);
@@ -101,6 +104,22 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
           'flex-1 flex flex-col min-w-0 transition-[padding] duration-300 ease-in-out min-h-screen'
         )}
       >
+        {/* Global Nav Menu Backdrop (Entire Screen) */}
+        <AnimatePresence>
+          {isNavMenuOpen && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => {
+                hapticLight();
+                setNavMenuOpen(false);
+              }}
+              className="fixed inset-0 z-[80] bg-black/60 backdrop-blur-xl lg:hidden cursor-pointer"
+            />
+          )}
+        </AnimatePresence>
+
         {showTopHeader && <TopHeader isVisible={headerVisible} />}
 
         <main

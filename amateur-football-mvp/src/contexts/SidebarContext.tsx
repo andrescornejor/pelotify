@@ -9,6 +9,8 @@ interface SidebarContextType {
   toggleSidebar: () => void;
   isNotificationsOpen: boolean;
   setNotificationsOpen: (open: boolean) => void;
+  isNavMenuOpen: boolean;
+  setNavMenuOpen: (open: boolean) => void;
 }
 
 const SidebarContext = createContext<SidebarContextType | undefined>(undefined);
@@ -16,11 +18,13 @@ const SidebarContext = createContext<SidebarContextType | undefined>(undefined);
 export function SidebarProvider({ children }: { children: ReactNode }) {
   const [isOpen, setIsOpen] = useState(false);
   const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
+  const [isNavMenuOpen, setIsNavMenuOpen] = useState(false);
 
   const openSidebar = useCallback(() => setIsOpen(true), []);
   const closeSidebar = useCallback(() => setIsOpen(false), []);
   const toggleSidebar = useCallback(() => setIsOpen((prev) => !prev), []);
   const setNotificationsOpen = useCallback((open: boolean) => setIsNotificationsOpen(open), []);
+  const setNavMenuOpen = useCallback((open: boolean) => setIsNavMenuOpen(open), []);
 
   return (
     <SidebarContext.Provider
@@ -31,6 +35,8 @@ export function SidebarProvider({ children }: { children: ReactNode }) {
         toggleSidebar,
         isNotificationsOpen,
         setNotificationsOpen,
+        isNavMenuOpen,
+        setNavMenuOpen,
       }}
     >
       {children}
