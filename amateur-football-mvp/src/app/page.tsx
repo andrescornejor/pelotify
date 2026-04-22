@@ -311,9 +311,10 @@ export default function HomePage() {
     [focusSportMeta.label, focusSportMeta.shortLabel, sportTheme.accent, sportTheme.accentRgb, statsSummary]
   );
 
-  if (isLoading) {
-    return <HomePageSkeleton />;
-  }
+  // Secondary loading state removed per user request to avoid double splash screens
+  // if (isLoading) {
+  //   return <HomePageSkeleton />;
+  // }
 
   if (!user) {
     return <LandingPage />;
