@@ -38,7 +38,7 @@ import { OnboardingTour } from '@/components/OnboardingTour';
 import { JerseyVisualizer } from '@/components/JerseyVisualizer';
 import { getHighlights, Highlight } from '@/lib/highlights';
 import LandingPage from '@/components/LandingPage';
-import { StatCard, TeamCard, RankBadgeInline, EmptyState, SectionDivider, LazyVideo, HomePageSkeleton, VenueCard, RANKS, getRankByElo, WeatherWidget, CalendarButton } from '@/components/home';
+import { StatCard, TeamCard, RankBadgeInline, EmptyState, SectionDivider, LazyVideo, HomePageSkeleton, VenueCard, RANKS, getRankByElo, WeatherWidget, CalendarButton, SportsAnnouncementBanner } from '@/components/home';
 import { useHomeData } from '@/hooks/useHomeData';
 import { useEffect, useMemo, useState } from 'react';
 
@@ -275,6 +275,7 @@ export default function HomePage() {
 
 
       <div className="max-w-full mx-auto px-4 sm:px-6 lg:px-10 xl:px-14 2xl:px-16 py-4 lg:py-6 space-y-4 lg:space-y-6">
+        <SportsAnnouncementBanner />
         {/* 
             HERO  full-width cinematic header
          */}
