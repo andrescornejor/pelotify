@@ -7,7 +7,7 @@ import { getHighlights } from '@/lib/highlights';
 import type { Match } from '@/lib/matches';
 
 type HomeEntity = Record<string, unknown>;
-type HomeMatch = Partial<Match> & HomeEntity;
+type HomeMatch = Match & HomeEntity;
 
 interface HomeData {
   userTeams: HomeEntity[];

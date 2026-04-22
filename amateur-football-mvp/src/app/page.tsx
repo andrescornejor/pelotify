@@ -38,7 +38,7 @@ import { OnboardingTour } from '@/components/OnboardingTour';
 import { JerseyVisualizer } from '@/components/JerseyVisualizer';
 import { getHighlights, Highlight } from '@/lib/highlights';
 import LandingPage from '@/components/LandingPage';
-import { StatCard, TeamCard, RankBadgeInline, EmptyState, SectionDivider, LazyVideo, HomePageSkeleton, VenueCard, RANKS, getRankByElo, WeatherWidget, CalendarButton, SportsAnnouncementBanner } from '@/components/home';
+import { StatCard, TeamCard, RankBadgeInline, EmptyState, SectionDivider, LazyVideo, HomePageSkeleton, VenueCard, RANKS, getRankByElo, WeatherWidget, CalendarButton, SportsAnnouncementBanner, SportSelector } from '@/components/home';
 import { useHomeData } from '@/hooks/useHomeData';
 import { useEffect, useMemo, useState } from 'react';
 import { getFormatMeta, getMatchSport, getSportMeta, SPORT_META } from '@/lib/sports';
@@ -65,10 +65,18 @@ export default function HomePage() {
   const highlights = homeData?.highlights || [];
   const featuredVenues = homeData?.featuredVenues || [];
   const recentPosts = homeData?.recentPosts || [];
+  const [selectedSport, setSelectedSport] = useState<Sport>('football');
+  const focusSportMeta = getSportMeta(selectedSport);
+
   const nextMatchSport = nextMatch ? getMatchSport(nextMatch) : 'football';
   const nextMatchFormat = nextMatch ? getFormatMeta(nextMatch.type, nextMatchSport) : null;
   const nextMatchMeta = SPORT_META[nextMatchSport];
-  const focusSportMeta = getSportMeta(nextMatchSport);
+  // Sync selected sport with next match if it's the first load
+  useEffect(() => {
+    if (nextMatchSport !== 'football' && selectedSport === 'football') {
+      setSelectedSport(nextMatchSport);
+    }
+  }, [nextMatchSport]);
 
   const [greeting, setGreeting] = useState('');
   const [countdownText, setCountdownText] = useState<string | null>(null);
@@ -85,8 +93,6 @@ export default function HomePage() {
   }, []);
 
   const reduceAnimations = performanceMode || isMobile;
-
-  // Local sync removed for performance - scroll listeners degrade FPS on mobile wildly
 
   useEffect(() => {
     const hour = new Date().getHours();
@@ -134,12 +140,18 @@ export default function HomePage() {
     return () => clearInterval(interval);
   }, [nextMatch]);
 
+
   const metadata = user?.user_metadata || {};
   const userPreferences = useMemo(() => getUserPreferences(metadata), [metadata]);
   const usageSnapshot = useMemo(() => getUsageSnapshot(), [user?.id]);
+  const userPreferencesForRecommendation = useMemo(() => ({
+    ...userPreferences,
+    favoriteSports: [selectedSport, ...userPreferences.favoriteSports.filter(s => s !== selectedSport)]
+  }), [userPreferences, selectedSport]);
+
   const recommendedMatches = useMemo(
-    () => recommendMatches(recommendationPool, userPreferences, 3),
-    [recommendationPool, userPreferences]
+    () => recommendMatches(recommendationPool, userPreferencesForRecommendation, 3),
+    [recommendationPool, userPreferencesForRecommendation]
   );
 
   const statsSummary = useMemo(() => {
@@ -289,15 +301,16 @@ export default function HomePage() {
 
       <div className="max-w-full mx-auto px-4 sm:px-6 lg:px-10 xl:px-14 2xl:px-16 py-4 lg:py-6 space-y-4 lg:space-y-6">
         <SportsAnnouncementBanner />
-        {/* 
-            HERO  full-width cinematic header
-         */}
+        
+        <section className="pt-2">
+           <SportSelector selectedSport={selectedSport} onSelect={setSelectedSport} />
+        </section>
         {/* 
             MOBILE APP-LIKE HERO & QUICK ACTIONS
          */}
         {isMobile ? (
           <section className="space-y-6 pt-2">
-            {/* Greeting (Mobile Top Header is handled globally now) */}
+            {/* Greeting */}
             <div className="px-1">
               <div className="flex flex-col">
                 <span className="text-[11px] font-black uppercase tracking-[0.2em] text-foreground/40 font-kanit leading-tight">
@@ -374,408 +387,10 @@ export default function HomePage() {
             {/* App Grid Actions */}
             <div className="grid grid-cols-4 gap-3">
               {[
-                { label: 'Buscar', icon: Search, color: 'text-primary', href: '/search' },
+                { label: 'Buscar', icon: Search, color: 'text-primary', href: `/search?sport=${selectedSport}` },
                 { label: 'Equipos', icon: Shield, color: 'text-blue-400', href: '/teams' },
                 { label: 'Sedes', icon: MapPin, color: 'text-orange-400', href: '/establecimientos' },
                 { label: focusSportMeta.highlightLabel, icon: Flame, color: 'text-rose-500', href: '/highlights' },
-              ].map((item, idx) => (
-                <Link key={idx} href={item.href} className="flex flex-col items-center gap-2 group">
-                  <div className="w-full aspect-square rounded-[1.5rem] glass border-foreground/10 flex items-center justify-center group-active:scale-90 transition-all shadow-lg group-hover:border-primary/20">
-                    <item.icon className={cn("w-6 h-6", item.color)} strokeWidth={2.5} />
-                  </div>
-                  <span className="text-[9px] font-black uppercase text-foreground/60 tracking-tighter">{item.label}</span>
-                </Link>
-              ))}
-            </div>
-
-            {/* Quick Rank Card */}
-            <Link href="/profile/me">
-              <div className="glass-premium p-4 rounded-[2rem] border-foreground/5 flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-xl bg-surface flex items-center justify-center border border-foreground/10">
-                    <rankCalculation.rank.icon className="w-6 h-6" style={{ color: rankCalculation.rank.hex }} />
-                  </div>
-                  <div>
-                    <h4 className="text-xs font-black uppercase italic font-kanit text-foreground/40 leading-none">Mi Rango</h4>
-                    <p className="text-lg font-black uppercase italic font-kanit text-foreground tracking-tighter leading-none mt-1">
-                      {rankCalculation.rank.name}
-                    </p>
-                  </div>
-                </div>
-                <div className="text-right">
-                  <span className="text-sm font-black italic font-kanit text-primary">{Math.round(rankCalculation.progress)}%</span>
-                  <div className="w-20 h-1 bg-foreground/5 rounded-full mt-1 overflow-hidden">
-                    <div className="h-full bg-primary" style={{ width: `${rankCalculation.progress}%` }} />
-                  </div>
-                </div>
-              </div>
-            </Link>
-          </section>
-        ) : reduceAnimations ? (
-          <section className="relative overflow-hidden rounded-[2.5rem] shadow-xl bg-background border border-foreground/5 group/hero">
-            <div className="absolute inset-0 z-0 select-none">
-              <img
-                src="https://images.unsplash.com/photo-1574629810360-7efbbe195018?auto=format&fit=crop&q=60&w=1200"
-                alt=""
-                fetchPriority="high"
-                decoding="async"
-                className="w-full h-full object-cover opacity-20"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent opacity-80" />
-            </div>
-
-            <div className="relative z-10 flex flex-col p-6 gap-6">
-              <div className="space-y-4 max-w-2xl">
-                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-surface border border-foreground/10">
-                  <span className="inline-flex w-1.5 h-1.5 rounded-full bg-foreground/30" />
-                  <span className="text-[9px] font-black uppercase tracking-[0.3em] text-foreground/40 font-kanit">
-                    {greeting}
-                  </span>
-                </div>
-
-                <div className="flex flex-col">
-                  <h1
-                    className="font-black italic uppercase font-kanit tracking-tighter text-foreground leading-[0.85]"
-                    style={{ fontSize: 'clamp(2.5rem, 12vw, 4rem)' }}
-                  >
-                    {focusSportMeta.homeHeadline.split(' ')[0].toUpperCase()} <br /> <span className="text-primary italic">{focusSportMeta.homeHeadline.split(' ').slice(1).join(' ').toUpperCase()}</span>
-                  </h1>
-                </div>
-
-                <div className="flex items-center gap-3 py-1">
-                  <div className="w-10 h-10 rounded-full border-2 overflow-hidden flex items-center justify-center bg-surface relative" style={{ borderColor: rankCalculation.info.color }}>
-                    {metadata?.avatar_url ? (
-                      <img src={metadata.avatar_url} alt="" className="w-full h-full object-cover" />
-                    ) : (
-                      <User2 className="w-5 h-5 text-foreground/40" />
-                    )}
-                    <div className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-background border border-foreground/20 flex items-center justify-center shadow-sm">
-                      <rankCalculation.rank.icon className="w-2.5 h-2.5" style={{ color: rankCalculation.rank.hex }} />
-                    </div>
-                  </div>
-                  <p className="text-foreground/70 text-base font-medium font-kanit">
-                    Hola, <span className="text-foreground font-black uppercase">{userName}</span>
-                  </p>
-                </div>
-
-                <div className="grid grid-cols-2 gap-4 pt-2">
-                  {[
-                    { label: 'Rango', value: rankCalculation.rank.name, color: rankCalculation.rank.color, icon: Trophy },
-                    { label: 'Partidos', value: statsSummary.totalMatches, color: 'text-accent', icon: Calendar },
-                  ].map((item, idx) => (
-                    <div key={idx} className="space-y-0.5">
-                      <p className="text-[8px] font-black text-foreground/40 uppercase tracking-[0.2em] flex items-center gap-1">
-                        <item.icon className="w-2.5 h-2.5" /> {item.label}
-                      </p>
-                      <p className={cn('text-xl font-black italic tracking-tighter uppercase font-kanit', item.color)}>
-                        {item.value}
-                      </p>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              <div className="w-full space-y-3">
-                <div className="bg-surface/60 p-4 rounded-2xl border border-foreground/5 space-y-4">
-                  <div className="flex items-center gap-3">
-                    <RankBadgeInline rankName={rankCalculation.info.name} size="sm" />
-                    <div className="flex-1">
-                      <h3 className="text-lg font-black italic text-foreground leading-none font-kanit uppercase tracking-tighter">
-                        {rankCalculation.info.name}
-                      </h3>
-                    </div>
-                    <span className="text-xl font-black text-foreground italic font-kanit leading-none">{Math.round(rankCalculation.progress)}%</span>
-                  </div>
-
-                  <div className="space-y-1.5">
-                    <div className="h-1.5 bg-foreground/5 rounded-full overflow-hidden border border-foreground/10">
-                      <div
-                        className="h-full rounded-full"
-                        style={{
-                          width: `${rankCalculation.progress}%`,
-                          background: rankCalculation.info.color,
-                        }}
-                      />
-                    </div>
-                    <div className="flex justify-between text-[8px] font-medium text-foreground/40 tracking-wide uppercase">
-                      <span>Progreso</span>
-                      <span>Siguiente: {rankCalculation.nextRank.name}</span>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-3 gap-2">
-                  <Link href="/create" className="col-span-3">
-                    <button className="w-full h-12 rounded-xl bg-primary text-black text-[10px] font-black uppercase tracking-widest italic flex items-center justify-center gap-2">
-                      <PlusCircle className="w-4 h-4" />
-                      ARMAR PARTIDO
-                    </button>
-                  </Link>
-
-                  <Link href="/search" className="col-span-2">
-                    <button className="w-full h-12 rounded-xl bg-surface border border-foreground/5 text-foreground text-[10px] font-black uppercase tracking-widest italic flex items-center justify-center gap-2">
-                      <Search className="w-3.5 h-3.5 text-primary" />
-                      BUSCAR
-                    </button>
-                  </Link>
-
-                  <Link href="/highlights" className="col-span-1">
-                    <button className="w-full h-12 rounded-xl bg-surface border border-foreground/5 text-orange-500 font-black flex items-center justify-center">
-                      <Flame className="w-4 h-4" />
-                    </button>
-                  </Link>
-                </div>
-              </div>
-            </div>
-          </section>
-        ) : (
-          <motion.section
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-            className="relative overflow-hidden rounded-[2.5rem] lg:rounded-[3rem] shadow-2xl group/hero"
-            style={{
-              background:
-                'linear-gradient(135deg, rgba(var(--foreground-rgb),0.03) 0%, rgba(var(--foreground-rgb),0.01) 100%)',
-              border: '1px solid rgba(var(--foreground-rgb),0.08)',
-            }}
-          >
-            {/* Backdrop image & Effects */}
-            <div className="absolute inset-0 z-0 select-none bg-background">
-              <img
-                src="https://images.unsplash.com/photo-1574629810360-7efbbe195018?auto=format&fit=crop&q=60&w=1200"
-                alt=""
-                fetchPriority="high"
-                decoding="async"
-                className="w-full h-full object-cover grayscale opacity-[0.12] transition-opacity"
-              />
-              {/* Overlay gradients for depth */}
-              <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent opacity-90" />
-              <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-transparent to-accent/5" />
-              <div className="absolute inset-0 backdrop-blur-[2px] opacity-40 mix-blend-overlay" />
-            </div>
-
-            {/* Content Wrapper */}
-            <div className="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-6 lg:gap-10 p-5 sm:p-12 lg:p-16 xl:p-20">
-              {/* Left: Text & Branding */}
-              <div className="flex-1 space-y-6 lg:space-y-8 max-w-2xl">
-                <motion.div
-                  initial={{ x: -20, opacity: 0 }}
-                  animate={{ x: 0, opacity: 1 }}
-                  transition={{ delay: 0.2, type: 'spring', stiffness: 200 }}
-                  className="inline-flex items-center gap-3 px-4 py-1.5 rounded-full bg-foreground/[0.04] border border-foreground/15"
-                >
-                  <div className="relative flex h-2 w-2">
-                    <span className="absolute inline-flex h-full w-full rounded-full bg-foreground/20 opacity-75 animate-ping" />
-                    <span className="relative inline-flex rounded-full h-2 w-2 bg-foreground/30" />
-                  </div>
-                  <span className="text-[10px] font-black uppercase tracking-[0.4em] text-foreground/40 font-kanit">
-                    {greeting}
-                  </span>
-                </motion.div>
-
-                {/* Title Section based on Branding */}
-                <div className="flex flex-col">
-                  <motion.h1
-                    initial={{ opacity: 0, x: -40 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: 0.3, duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-                    className="font-black italic uppercase font-kanit tracking-tighter text-foreground"
-                    style={{ fontSize: 'clamp(2.5rem, 8vw, 6rem)', lineHeight: '0.85' }}
-                  >
-                    {focusSportMeta.homeHeadline.split(' ')[0].toUpperCase()} <br /> <span className="text-primary italic">{focusSportMeta.homeHeadline.split(' ').slice(1).join(' ').toUpperCase()}</span>
-                  </motion.h1>
-                </div>
-
-                <motion.div
-                  initial={{ opacity: 0, y: 15 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.5, type: "spring", stiffness: 200 }}
-                  className="flex items-stretch gap-0 mt-4 rounded-2xl w-fit relative group cursor-pointer"
-                >
-                  <div className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-10 transition-opacity duration-500 blur-xl" style={{ backgroundColor: rankCalculation.info.color }} />
-                  
-                  {/* VIP ID Side Bar */}
-                  <div className="w-2 rounded-l-[1rem] shadow-[0_0_10px_rgba(0,0,0,0.5)] z-10" style={{ backgroundColor: rankCalculation.info.color, boxShadow: `0 0 15px ${rankCalculation.info.color}80` }} />
-                  
-                  {/* VIP ID Main Body */}
-                  <div className="glass-premium border-y border-r border-foreground/15 rounded-r-[1rem] py-2 px-4 shadow-xl flex items-center gap-4 relative z-10 overflow-hidden">
-                    <div className="absolute inset-0 bg-gradient-to-r from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-                    
-                    {/* Avatar Block */}
-                    <div className="relative">
-                      <div className="w-12 h-12 rounded-full overflow-hidden flex items-center justify-center bg-surface border border-foreground/10 shadow-inner">
-                        {metadata?.avatar_url ? (
-                          <img src={metadata.avatar_url} alt="" className="w-full h-full object-cover scale-105" />
-                        ) : (
-                          <User2 className="w-6 h-6 text-foreground/40" />
-                        )}
-                      </div>
-                      <div className="absolute -bottom-2 -right-2 w-6 h-6 rounded-full bg-surface border border-foreground/10 flex items-center justify-center shadow-lg rotate-12 group-hover:rotate-0 transition-transform" style={{ borderColor: `${rankCalculation.info.color}50` }}>
-                         <rankCalculation.rank.icon className="w-3.5 h-3.5 drop-shadow-md" style={{ color: rankCalculation.info.color }} />
-                      </div>
-                    </div>
-
-                    {/* Data Block */}
-                    <div className="flex flex-col py-1">
-                      <div className="flex items-center gap-2">
-                        <span className="text-[9px] font-black tracking-[0.2em] uppercase text-foreground/40">JUGADOR REGISTRADO</span>
-                        <Shield className="w-3 h-3 opacity-30 text-primary" />
-                      </div>
-                      <h3 className="text-xl font-black italic uppercase leading-none font-kanit tracking-tighter text-foreground mt-0.5">{userName}</h3>
-                    </div>
-                  </div>
-                </motion.div>
-
-                {/* Stats / Rank Summary */}
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.6 }}
-                  className="grid grid-cols-2 sm:grid-cols-3 gap-4 lg:gap-6 pt-2 lg:pt-4"
-                >
-                  {[
-                    {
-                      label: 'Rango Actual',
-                      value: rankCalculation.rank.name,
-                      color: rankCalculation.rank.color,
-                      icon: Trophy,
-                    },
-                    {
-                      label: 'Partidos Jugados',
-                      value: statsSummary.totalMatches,
-                      color: 'text-accent',
-                      icon: Calendar,
-                    },
-                  ].map((item, idx) => (
-                    <div key={idx} className={cn("space-y-1", idx === 2 && "hidden sm:block")}>
-                      <p className="text-[9px] font-black text-foreground/40 uppercase tracking-[0.25em] flex items-center gap-1.5">
-                        <item.icon className="w-2.5 h-2.5" /> {item.label}
-                      </p>
-                      <p
-                        className={cn(
-                          'text-2xl font-black italic tracking-tighter uppercase font-kanit',
-                          item.color
-                        )}
-                      >
-                        {item.value}
-                      </p>
-                    </div>
-                  ))}
-                </motion.div>
-              </div>
-
-              {/* Right: Modern CTA Cards */}
-              <motion.div
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ delay: 0.4, duration: 0.7 }}
-                className="lg:shrink-0 w-full lg:w-[400px] space-y-4"
-              >
-                {/* Rank Progress Card */}
-                <div className="glass-premium p-6 rounded-[2.5rem] border-foreground/15 space-y-6 relative overflow-hidden group">
-                  {/* Background Rank Glow */}
-                  <div
-                    className="absolute -top-20 -right-20 w-40 h-40 blur-[80px] opacity-20 transition-opacity group-hover:opacity-40"
-                    style={{ backgroundColor: rankCalculation.info.color }}
-                  />
-
-                  <div className="flex items-center gap-6 relative z-10">
-                    <RankBadgeInline rankName={rankCalculation.info.name} size="lg" />
-                    <div className="flex-1 space-y-2">
-                      <p className="text-[10px] font-semibold text-foreground/40 tracking-wide leading-none font-kanit">
-                        Progreso de liga
-                      </p>
-                      <div className="flex items-center gap-2">
-                        <h3 className="text-2xl font-black italic text-foreground leading-none font-kanit uppercase tracking-tighter">
-                          {rankCalculation.info.name}
-                        </h3>
-                        <rankCalculation.rank.icon className="w-5 h-5" style={{ color: rankCalculation.rank.hex }} />
-                      </div>
-                      <span className="text-[9px] font-semibold text-foreground/40 tracking-wide font-kanit">
-                        Estado de temporada
-                      </span>
-                    </div>
-                    <div className="text-right flex flex-col items-end">
-                      <div className="flex items-center gap-2">
-                        <span className="text-3xl font-black text-foreground italic font-kanit leading-none">
-                          {Math.round(rankCalculation.progress)}%
-                        </span>
-                        <rankCalculation.nextRank.icon className="w-6 h-6 opacity-20" style={{ color: rankCalculation.nextRank.color }} />
-                      </div>
-                      <p className="text-[8px] font-black text-foreground/30 uppercase mt-1">
-                        PARA {rankCalculation.nextRank.name}
-                      </p>
-                    </div>
-                  </div>
-
-                  <div className="space-y-3 relative z-10">
-                    <div className="relative h-3 bg-foreground/5 rounded-full p-0.5 overflow-hidden border border-foreground/15">
-                      <motion.div
-                        initial={{ width: 0 }}
-                        animate={{ width: `${rankCalculation.progress}%` }}
-                        transition={{ duration: 2, ease: 'circOut', delay: 0.8 }}
-                        className="h-full rounded-full relative"
-                        style={{
-                          background: `linear-gradient(90deg, ${rankCalculation.info.color}, #5dfd9d)`,
-                          boxShadow: `0 0 10px ${rankCalculation.info.color}30`,
-                        }}
-                      >
-                        <div className="absolute inset-0 animate-shimmer opacity-30 bg-gradient-to-r from-transparent via-white/40 to-transparent" />
-                      </motion.div>
-                    </div>
-
-                    <div className="flex justify-between text-[8px] font-medium text-foreground/30 tracking-wide">
-                      <span>Progreso de temporada</span>
-                      <span>Siguiente nivel</span>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-3 gap-3">
-                  <Link href="/create" className="col-span-3">
-                    <motion.button
-                      whileHover={{ scale: 1.015, y: -4 }}
-                      whileTap={{ scale: 0.98 }}
-                      className="w-full h-16 rounded-[2rem] bg-gradient-to-r from-primary to-primary-dark text-background text-[11px] font-black uppercase tracking-widest italic shadow-[0_20px_40px_rgba(44,252,125,0.25)] flex items-center justify-center gap-3 relative overflow-hidden group border border-foreground/20 leading-none"
-                    >
-                      <div className="absolute inset-x-0 top-0 h-1/2 bg-foreground/10 group-hover:h-full transition-all duration-700" />
-                      <div className="absolute inset-0 bg-gradient-to-b from-white/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-                      <PlusCircle className="w-6 h-6 relative z-10 group-hover:rotate-180 transition-transform duration-700" />
-                      <span className="relative z-10 drop-shadow-sm">ARMAR PARTIDO</span>
-                    </motion.button>
-                  </Link>
-
-                  <Link href="/search" className="col-span-2">
-                    <motion.button
-                      whileHover={{ scale: 1.015, y: -4 }}
-                      whileTap={{ scale: 0.98 }}
-                      className="w-full h-16 rounded-[2rem] glass-premium border-foreground/15 text-foreground text-[11px] font-black uppercase tracking-widest italic flex items-center justify-center gap-3 relative overflow-hidden group shadow-xl transition-all duration-500 leading-none"
-                    >
-                      <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                      <Search className="w-5 h-5 relative z-10 text-primary group-hover:scale-110 transition-transform duration-500" />
-                      <span className="relative z-10 group-hover:text-primary transition-colors">BUSCAR PARTIDO</span>
-
-                      <div className="absolute top-2.5 right-4 flex items-center gap-1.5 z-20">
-                        <div className="w-1.5 h-1.5 bg-primary/40 rounded-full animate-pulse" />
-                      </div>
-                    </motion.button>
-                  </Link>
-
-                  <Link href="/highlights" className="col-span-1">
-                    <motion.button
-                      whileHover={{ scale: 1.02, y: -4 }}
-                      whileTap={{ scale: 0.98 }}
-                      className="w-full h-16 rounded-[2rem] glass-premium border-foreground/15 text-orange-500/50 hover:text-orange-500 font-black uppercase text-[10px] tracking-[0.2em] flex items-center justify-center transition-all duration-500 shadow-xl relative overflow-hidden group"
-                    >
-                      <div className="absolute inset-0 bg-gradient-to-br from-orange-500/5 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                      <Flame className="w-6 h-6 relative z-10 transition-transform group-hover:scale-125 group-hover:rotate-12 duration-500" />
-                    </motion.button>
-                  </Link>
-                </div>
-              </motion.div>
-            </div>
-          </motion.section>
         )}
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
