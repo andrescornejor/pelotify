@@ -82,13 +82,11 @@ export function BottomNav() {
               hapticLight();
               setIsCreateMenuOpen(false);
             }}
-            className="fixed inset-0 bg-black/60 backdrop-blur-sm lg:hidden cursor-pointer"
-            style={{ zIndex: -1 }} // Place it behind the nav container content but above the app
+            className="fixed inset-0 bg-black/60 backdrop-blur-xl lg:hidden cursor-pointer"
+            style={{ zIndex: -1 }} 
           />
         )}
       </AnimatePresence>
-
-
 
       {/* Main Bottom Nav Area - Pegged to Bottom */}
       <div className="fixed bottom-0 left-0 right-0 z-[100] lg:hidden pointer-events-none">
@@ -120,30 +118,21 @@ export function BottomNav() {
                   >
                     <motion.div
                       whileTap={{ scale: 0.95 }}
-                      className="glass-premium border-2 border-foreground/10 rounded-[1.8rem] p-4 flex items-center gap-4 bg-surface shadow-[0_20px_50px_rgba(0,0,0,0.5)] relative overflow-hidden group"
-                      style={{ borderLeftColor: action.color.split(' ')[0] === 'text-primary' ? '#2cfc7d' : action.color.includes('blue') ? '#60a5fa' : '#f97316', borderLeftWidth: '4px' }}
+                      className="glass-premium border border-white/20 rounded-[1.8rem] p-4 flex items-center gap-4 bg-black/40 shadow-[0_20px_50px_rgba(0,0,0,0.3)] backdrop-blur-md"
                     >
-                      {/* Inner glow effect */}
-                      <div className="absolute inset-0 bg-gradient-to-r from-white/5 to-transparent pointer-events-none" />
-                      
-                      <div className="w-12 h-12 rounded-2xl bg-background/80 border border-foreground/10 flex items-center justify-center shrink-0 shadow-inner group-hover:scale-110 transition-transform">
-                        <action.icon className={cn("w-6 h-6 drop-shadow-[0_0_8px_rgba(0,0,0,0.5)]", action.color)} />
+                      <div className="w-12 h-12 rounded-2xl bg-white/10 border border-white/10 flex items-center justify-center shrink-0">
+                        <action.icon className={cn("w-6 h-6", action.color)} />
                       </div>
-                      <div className="flex flex-col">
-                        <span className="text-[14px] font-black italic uppercase font-kanit text-foreground tracking-tighter leading-tight">
-                          {action.label}
-                        </span>
-                        <span className="text-[10px] font-bold text-foreground/40 uppercase tracking-widest mt-0.5">
-                          {i === 0 ? "Comenzar" : i === 1 ? "Compartir" : "Publicar"}
-                        </span>
-                      </div>
+                      <span className="text-[15px] font-black italic uppercase font-kanit text-white tracking-tighter">
+                        {action.label}
+                      </span>
                     </motion.div>
-
                   </Link>
                 ))}
               </motion.div>
             )}
           </AnimatePresence>
+
 
           {/* Dynamic Background Glow based on active item */}
           {!performanceMode && (
