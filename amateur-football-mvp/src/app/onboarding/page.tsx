@@ -84,6 +84,7 @@ export default function OnboardingPage() {
               sports: formData.sports,
               zone: formData.preferredZone,
               enabled: true,
+              nearbyOnly: false,
               community: true,
               reminders: true,
             },
