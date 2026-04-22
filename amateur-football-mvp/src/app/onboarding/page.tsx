@@ -414,12 +414,12 @@ export default function OnboardingPage() {
                   Qué buscás en Pelotify
                 </label>
                 <div className="grid grid-cols-2 gap-3">
-                  {[
+                  {([
                     { id: 'competitive', label: 'Competir', icon: Target },
                     { id: 'social', label: 'Comunidad', icon: Users },
                     { id: 'fitness', label: 'Ritmo', icon: Dumbbell },
                     { id: 'casual', label: 'Sin vueltas', icon: Bell },
-                  ].map(({ id, label, icon: Icon }: { id: 'competitive' | 'social' | 'fitness' | 'casual'; label: string; icon: typeof Target }) => (
+                  ] as const).map(({ id, label, icon: Icon }) => (
                     <button
                       key={id}
                       type="button"
