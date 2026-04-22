@@ -3,7 +3,6 @@
 import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Download, Share, PlusSquare } from 'lucide-react';
-import { Button } from '@/components/ui/button';
 
 export default function PWARegistration() {
   const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
@@ -129,12 +128,12 @@ export default function PWARegistration() {
                   <span>2. <strong>Añadir a inicio</strong></span> <PlusSquare size={14} className="text-foreground" />
                 </div>
               ) : (
-                <Button 
+                <button 
                   onClick={handleInstallClick} 
-                  className="w-full font-bold bg-primary text-primary-foreground hover:bg-primary/90"
+                  className="w-full font-bold bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2 inline-flex items-center justify-center rounded-md text-sm ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50"
                 >
                   <Download className="mr-2 h-4 w-4" /> Instalar App
-                </Button>
+                </button>
               )}
             </div>
           </div>
