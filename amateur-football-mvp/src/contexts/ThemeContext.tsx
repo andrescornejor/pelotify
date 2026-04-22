@@ -33,11 +33,18 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
       const nextResolvedTheme: ResolvedTheme =
         theme === 'system' ? (mediaQuery.matches ? 'dark' : 'light') : theme;
 
+      root.classList.add('theme-transition');
+      
+      // Delay removal to allow CSS to paint transition
       root.classList.remove('light', 'dark');
       root.classList.add(nextResolvedTheme);
       root.dataset.theme = nextResolvedTheme;
       root.style.colorScheme = nextResolvedTheme;
       setResolvedTheme(nextResolvedTheme);
+
+      setTimeout(() => {
+        root.classList.remove('theme-transition');
+      }, 400);
     };
 
     applyTheme();
