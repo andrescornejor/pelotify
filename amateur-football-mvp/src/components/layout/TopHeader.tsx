@@ -1,19 +1,16 @@
 'use client';
 
-import React, { useState, useEffect, useRef, memo } from 'react';
+import React, { useState, useEffect, useRef, memo, useCallback } from 'react';
 import {
   Bell,
   Sun,
   Moon,
-  Home,
   Search,
   Users,
   Shield,
-  PlusCircle,
   User2,
   MessageSquare,
   Play,
-  Star,
   Globe,
 } from 'lucide-react';
 import { usePathname } from 'next/navigation';
@@ -42,19 +39,18 @@ const DESKTOP_NAV = [
 
 export const TopHeader = memo(function TopHeader({ isVisible = true }: { isVisible?: boolean }) {
   const pathname = usePathname();
-  const { toggleSidebar, isNotificationsOpen, setNotificationsOpen } = useSidebar();
+  const { toggleSidebar, isOpen: isSidebarOpen, setNotificationsOpen } = useSidebar();
   const { user } = useAuth();
   const { theme, setTheme } = useTheme();
   const [notifCount, setNotifCount] = useState(0);
-  const [unreadChatCount, setUnreadChatCount] = useState(0);
   const [friendsCount, setFriendsCount] = useState(0);
   const lastPathname = useRef(pathname);
   const baseCurrent = pathname.split('?')[0];
 
-  const updateCount = async () => {
+  const updateCount = useCallback(async () => {
     if (!user) return;
     try {
-      const [f, m, t, ti, c, tc] = await Promise.all([
+      const [f, m, t, ti, , tc] = await Promise.all([
         getPendingRequestsCount(user.id),
         getMatchInvitationsCount(user.id),
         getPendingJoinRequestsCountForCaptain(user.id),
@@ -64,33 +60,30 @@ export const TopHeader = memo(function TopHeader({ isVisible = true }: { isVisib
       ]);
       setFriendsCount(f || 0);
       
-      const chatTotal = baseCurrent === '/messages' ? 0 : (c || 0);
-      setUnreadChatCount(chatTotal);
-      
       setNotifCount((f || 0) + (m || 0) + (t || 0) + (ti || 0) + (tc || 0));
     } catch (err) {
       console.error(err);
     }
-  };
+  }, [user]);
 
   useEffect(() => {
     if (!user) return;
-    
-    // Only fetch if initial or significant path change (not just query params)
+
     const baseLast = lastPathname.current.split('?')[0];
-    
     if (baseCurrent !== baseLast || notifCount === 0) {
-      updateCount();
+      queueMicrotask(() => {
+        void updateCount();
+      });
       lastPathname.current = pathname;
     }
 
-    // Clear unread if on messages
-    if (baseCurrent === '/messages') {
-      setUnreadChatCount(0);
-    }
+  }, [user, pathname, baseCurrent, updateCount, notifCount]);
+
+  useEffect(() => {
+    if (!user) return;
 
     const channel = supabase
-      .channel('header-notifications')
+      .channel(`header-notifications-${user.id}`)
       .on(
         'postgres_changes',
         {
@@ -99,16 +92,14 @@ export const TopHeader = memo(function TopHeader({ isVisible = true }: { isVisib
           table: 'direct_messages',
           filter: `recipient_id=eq.${user.id}`,
         },
-        () => {
-          updateCount();
-        }
+        updateCount
       )
       .subscribe();
 
     return () => {
       supabase.removeChannel(channel);
     };
-  }, [user, pathname]);
+  }, [user, updateCount]);
 
   const { performanceMode } = useSettings();
 
@@ -140,15 +131,15 @@ export const TopHeader = memo(function TopHeader({ isVisible = true }: { isVisib
               >
                 <div className="flex flex-col gap-[4.5px] w-[20px] items-center">
                   <motion.span
-                    animate={useSidebar().isOpen ? { rotate: 45, y: 6.5 } : { rotate: 0, y: 0 }}
+                    animate={isSidebarOpen ? { rotate: 45, y: 6.5 } : { rotate: 0, y: 0 }}
                     className="h-[2px] w-full bg-foreground rounded-full block origin-center transition-all"
                   />
                   <motion.span
-                    animate={useSidebar().isOpen ? { opacity: 0, x: -5 } : { opacity: 1, x: 0 }}
+                    animate={isSidebarOpen ? { opacity: 0, x: -5 } : { opacity: 1, x: 0 }}
                     className="h-[2px] w-[70%] bg-primary rounded-full block transition-all"
                   />
                   <motion.span
-                    animate={useSidebar().isOpen ? { rotate: -45, y: -6.5 } : { rotate: 0, y: 0 }}
+                    animate={isSidebarOpen ? { rotate: -45, y: -6.5 } : { rotate: 0, y: 0 }}
                     className="h-[2px] w-full bg-foreground rounded-full block origin-center transition-all"
                   />
                 </div>
@@ -284,19 +275,19 @@ export const TopHeader = memo(function TopHeader({ isVisible = true }: { isVisib
                   <div className="flex flex-col gap-[5px] w-[22px] items-center">
                     <motion.span
                       animate={
-                        useSidebar().isOpen
+                        isSidebarOpen
                           ? { rotate: 45, y: 7.5, width: '100%' }
                           : { rotate: 0, y: 0, width: '100%' }
                       }
                       className="h-[2px] bg-foreground/80 rounded-full block origin-center transition-all duration-300"
                     />
                     <motion.span
-                      animate={useSidebar().isOpen ? { opacity: 0, x: -8 } : { opacity: 1, x: 0 }}
+                      animate={isSidebarOpen ? { opacity: 0, x: -8 } : { opacity: 1, x: 0 }}
                       className="h-[2.2px] w-[70%] bg-primary rounded-full block transition-all duration-300 shadow-[0_0_8px_rgba(16,185,129,0.4)]"
                     />
                     <motion.span
                       animate={
-                        useSidebar().isOpen
+                        isSidebarOpen
                           ? { rotate: -45, y: -7.5, width: '100%' }
                           : { rotate: 0, y: 0, width: '100%' }
                       }

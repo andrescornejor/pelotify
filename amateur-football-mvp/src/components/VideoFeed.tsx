@@ -1,11 +1,11 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { useState, useEffect, useRef, useCallback } from 'react';
+import { motion } from 'framer-motion';
 import VideoPlayer from './VideoPlayer';
 import { getHighlights, Highlight, getFriendsHighlights } from '@/lib/highlights';
 import { useAuth } from '@/contexts/AuthContext';
-import { Loader2, ArrowLeft, Plus, Play, Sparkles, Flame } from 'lucide-react';
+import { ArrowLeft, Plus, Play, Sparkles, Flame } from 'lucide-react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import { cn } from '@/lib/utils';
@@ -20,9 +20,9 @@ export default function VideoFeed() {
   const [activeTab, setActiveTab] = useState<'for-you' | 'friends'>('for-you');
   const { user } = useAuth();
   const feedRef = useRef<HTMLDivElement>(null);
-  const [hasScrolledToParam, setHasScrolledToParam] = useState(false);
+  const hasScrolledToParamRef = useRef(false);
 
-  const fetchHighlights = async () => {
+  const fetchHighlights = useCallback(async () => {
     setLoading(true);
     let data;
     if (activeTab === 'friends' && user) {
@@ -41,21 +41,25 @@ export default function VideoFeed() {
       }
     }
     setLoading(false);
-  };
+  }, [activeTab, user, videoIdParam]);
 
   useEffect(() => {
-    fetchHighlights();
-  }, [activeTab, user]);
+    const run = async () => {
+      await fetchHighlights();
+    };
+
+    void run();
+  }, [fetchHighlights]);
 
   useEffect(() => {
-    if (highlights.length > 0 && activeId && !hasScrolledToParam && videoIdParam) {
+    if (highlights.length > 0 && activeId && !hasScrolledToParamRef.current && videoIdParam) {
       const element = document.getElementById(`video-${activeId}`);
       if (element) {
         element.scrollIntoView({ behavior: 'auto' });
-        setHasScrolledToParam(true);
+        hasScrolledToParamRef.current = true;
       }
     }
-  }, [highlights, activeId, hasScrolledToParam, videoIdParam]);
+  }, [highlights, activeId, videoIdParam]);
 
   if (loading && highlights.length === 0) {
     return (
@@ -140,7 +144,6 @@ export default function VideoFeed() {
       <div 
         ref={feedRef}
         className="h-[100dvh] w-full overflow-y-auto snap-y snap-mandatory no-scrollbar flex flex-col touch-pan-y antialiased overscroll-contain bg-black"
-        style={{ scrollBehavior: 'smooth' }}
       >
         {highlights.length === 0 ? (
           <div className="h-full flex items-center justify-center px-6 text-center bg-black relative">

@@ -10,36 +10,38 @@ interface SettingsContextType {
 const SettingsContext = createContext<SettingsContextType | undefined>(undefined);
 
 export const SettingsProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [performanceMode, setPerformanceMode] = useState<boolean>(false);
-  const [mounted, setMounted] = useState(false);
+  const [performanceMode, setPerformanceMode] = useState<boolean>(() => {
+    if (typeof window === 'undefined') return false;
+
+    const saved = window.localStorage.getItem('performance-mode');
+    if (saved !== null) return saved === 'true';
+
+    const isMobile = window.matchMedia('(max-width: 768px)').matches;
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    return isMobile || prefersReducedMotion;
+  });
 
   useEffect(() => {
-    setMounted(true);
-    const saved = localStorage.getItem('performance-mode');
-    if (saved !== null) {
-      const isEnabled = saved === 'true';
-      setPerformanceMode(isEnabled);
-      if (isEnabled) {
-        document.documentElement.classList.add('perf-mode');
-      }
-    } else {
-      // Default to performance mode (Lite Mode) on mobile if no preference is saved
+    document.documentElement.classList.toggle('perf-mode', performanceMode);
+    window.localStorage.setItem('performance-mode', performanceMode.toString());
+  }, [performanceMode]);
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const saved = window.localStorage.getItem('performance-mode');
+    if (saved !== null) return;
+
+    const handleChange = () => {
       const isMobile = window.matchMedia('(max-width: 768px)').matches;
-      if (isMobile) {
-        updatePerformanceMode(true);
-      }
-    }
+      setPerformanceMode(isMobile || mediaQuery.matches);
+    };
+
+    mediaQuery.addEventListener('change', handleChange);
+    return () => mediaQuery.removeEventListener('change', handleChange);
   }, []);
 
   const updatePerformanceMode = (enabled: boolean) => {
     setPerformanceMode(enabled);
-    localStorage.setItem('performance-mode', enabled.toString());
-
-    if (enabled) {
-      document.documentElement.classList.add('perf-mode');
-    } else {
-      document.documentElement.classList.remove('perf-mode');
-    }
   };
 
   return (

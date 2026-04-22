@@ -76,13 +76,18 @@ export default function HomePage() {
   const [activeTab, setActiveTab] = useState<'activity' | 'teams' | 'social' | 'futtok'>('activity');
   const { toggleSidebar, setNotificationsOpen } = useSidebar();
   const { performanceMode, setPerformanceMode } = useSettings();
-  const [isMobile, setIsMobile] = useState(false);
+  const [isMobile, setIsMobile] = useState(() => {
+    if (typeof window === 'undefined') return false;
+    return window.matchMedia('(max-width: 767px)').matches;
+  });
 
   useEffect(() => {
-    const handleResize = () => setIsMobile(window.innerWidth < 768);
-    handleResize(); // initial check
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
+    const mediaQuery = window.matchMedia('(max-width: 767px)');
+    const handleChange = (event: MediaQueryListEvent) => setIsMobile(event.matches);
+
+    setIsMobile(mediaQuery.matches);
+    mediaQuery.addEventListener('change', handleChange);
+    return () => mediaQuery.removeEventListener('change', handleChange);
   }, []);
 
   const reduceAnimations = performanceMode || isMobile;

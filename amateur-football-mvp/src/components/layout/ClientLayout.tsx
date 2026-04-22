@@ -1,7 +1,7 @@
 'use client';
 
 import { usePathname } from 'next/navigation';
-import { useEffect, useRef, useState, useCallback } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Sidebar } from '@/components/layout/Sidebar';
 import { TopHeader } from '@/components/layout/TopHeader';
 import { BottomNav } from '@/components/layout/BottomNav';
@@ -40,27 +40,38 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
   const [headerVisible, setHeaderVisible] = useState(true);
   const [bottomNavVisible, setBottomNavVisible] = useState(true);
   const lastScrollY = useRef(0);
+  const scrollFrame = useRef<number | null>(null);
 
   useEffect(() => {
     const handleWindowScroll = () => {
-      const currentScrollY = window.scrollY;
+      if (scrollFrame.current !== null) return;
 
-      if (currentScrollY < 10) {
-        setHeaderVisible(true);
-        setBottomNavVisible(true);
-      } else if (currentScrollY > lastScrollY.current && currentScrollY > 76) {
-        setHeaderVisible(false);
-        setBottomNavVisible(false);
-      } else if (currentScrollY < lastScrollY.current) {
-        setHeaderVisible(true);
-        setBottomNavVisible(true);
-      }
+      scrollFrame.current = window.requestAnimationFrame(() => {
+        const currentScrollY = window.scrollY;
 
-      lastScrollY.current = currentScrollY;
+        if (currentScrollY < 10) {
+          setHeaderVisible(true);
+          setBottomNavVisible(true);
+        } else if (currentScrollY > lastScrollY.current && currentScrollY > 76) {
+          setHeaderVisible(false);
+          setBottomNavVisible(false);
+        } else if (currentScrollY < lastScrollY.current) {
+          setHeaderVisible(true);
+          setBottomNavVisible(true);
+        }
+
+        lastScrollY.current = currentScrollY;
+        scrollFrame.current = null;
+      });
     };
 
     window.addEventListener('scroll', handleWindowScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleWindowScroll);
+    return () => {
+      window.removeEventListener('scroll', handleWindowScroll);
+      if (scrollFrame.current !== null) {
+        window.cancelAnimationFrame(scrollFrame.current);
+      }
+    };
   }, []);
 
   // Scroll to top on route change

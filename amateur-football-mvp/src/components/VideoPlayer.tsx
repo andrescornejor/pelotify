@@ -1,6 +1,6 @@
-import { useEffect, useRef, useState } from 'react';
+import { memo, useEffect, useRef, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Heart, MessageCircle, Share2, User2, Play, Pause, Trash2, ChevronLeft, Check, Volume2, VolumeX } from 'lucide-react';
+import { Heart, MessageCircle, Share2, User2, Play, Trash2, Check, Volume2, VolumeX } from 'lucide-react';
 import { useInView } from 'react-intersection-observer';
 import { useAuth } from '@/contexts/AuthContext';
 import { deleteHighlight, toggleLike, checkIfLiked } from '@/lib/highlights';
@@ -8,7 +8,6 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import CommentsModal from './CommentsModal';
 import ShareModal from './ShareModal';
-import { supabase } from '@/lib/supabase';
 import { useHaptic } from '@/hooks/useHaptic';
 
 interface VideoPlayerProps {
@@ -26,7 +25,7 @@ interface VideoPlayerProps {
   onInView?: (id: string) => void;
 }
 
-export default function VideoPlayer({
+function VideoPlayer({
   id,
   url,
   userId,
@@ -42,7 +41,7 @@ export default function VideoPlayer({
 }: VideoPlayerProps) {
   const { user } = useAuth();
   const router = useRouter();
-  const { hapticMedium, hapticLight } = useHaptic();
+  const { hapticMedium } = useHaptic();
   const videoRef = useRef<HTMLVideoElement>(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [isMuted, setIsMuted] = useState(true);
@@ -57,15 +56,22 @@ export default function VideoPlayer({
   const [localLikes, setLocalLikes] = useState(likes);
   const [showComments, setShowComments] = useState(false);
   const [localComments, setLocalComments] = useState(comments);
-  const [showCopied, setShowCopied] = useState(false);
+  const [showCopied] = useState(false);
   const [isShareModalOpen, setIsShareModalOpen] = useState(false);
   const lastTapRef = useRef<number>(0);
 
   const { ref: inViewRef, inView } = useInView({ threshold: 0.5 });
+  const shouldLoadMedia = isActive || inView;
 
   const setRefs = (node: HTMLDivElement) => { inViewRef(node); };
 
   useEffect(() => {
+    if (!shouldLoadMedia) {
+      videoRef.current?.pause();
+      setIsPlaying(false);
+      return;
+    }
+
     if (inView && isActive) {
       videoRef.current?.play().catch(() => setIsPlaying(false));
       setIsPlaying(true);
@@ -77,7 +83,7 @@ export default function VideoPlayer({
       videoRef.current?.pause();
       setIsPlaying(false);
     }
-  }, [inView, isActive]);
+  }, [inView, isActive, shouldLoadMedia]);
 
   useEffect(() => {
     if (inView) {
@@ -91,7 +97,7 @@ export default function VideoPlayer({
     }
   }, [id, user]);
 
-  const togglePlay = (e?: React.MouseEvent) => {
+  const togglePlay = () => {
     // If standard click, just toggle play
     if (videoRef.current) {
       if (isPlaying) videoRef.current.pause();
@@ -126,7 +132,7 @@ export default function VideoPlayer({
       lastTapRef.current = 0;
     } else {
       // It's a single tap
-      togglePlay(e);
+      togglePlay();
       lastTapRef.current = now;
     }
   };
@@ -216,7 +222,11 @@ export default function VideoPlayer({
     >
       {/* Background Blur (Desktop Aesthetics) */}
       <div className="absolute inset-0 hidden sm:block pointer-events-none">
-        <video src={url} className="w-full h-full object-cover blur-3xl opacity-20" muted loop playsInline autoPlay />
+        {thumbnail ? (
+          <img src={thumbnail} alt="" className="w-full h-full object-cover blur-3xl opacity-20 scale-110" />
+        ) : (
+          <div className="w-full h-full bg-[radial-gradient(circle_at_center,rgba(16,185,129,0.18),transparent_55%)]" />
+        )}
       </div>
 
       {/* 9:16 Aspect Ratio Wrapper */}
@@ -228,13 +238,13 @@ export default function VideoPlayer({
         {/* Video Element */}
         <video
           ref={videoRef}
-          src={url}
+          src={shouldLoadMedia ? url : undefined}
           poster={thumbnail}
           loop
           playsInline
           muted={isMuted}
           className="w-full h-full object-cover"
-          preload="metadata"
+          preload={shouldLoadMedia ? 'metadata' : 'none'}
           onTimeUpdate={handleTimeUpdate}
           onError={(e) => console.error('Video error:', e)}
         />
@@ -437,3 +447,5 @@ export default function VideoPlayer({
     </div>
   );
 }
+
+export default memo(VideoPlayer);

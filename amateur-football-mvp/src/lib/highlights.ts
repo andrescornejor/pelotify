@@ -48,8 +48,6 @@ export async function getHighlights(limit = 10) {
     return [];
   }
 
-  console.log('Highlights fetched:', data);
-
   return data as unknown as Highlight[];
 }
 
