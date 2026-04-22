@@ -1452,9 +1452,9 @@ export default function HomePage() {
                       <WeatherWidget
                         lat={nextMatch.lat}
                         lng={nextMatch.lng}
-                        location={nextMatch.location}
-                        date={nextMatch.date}
-                        time={nextMatch.time}
+                        location={nextMatch.location || ''}
+                        date={nextMatch.date || ''}
+                        time={nextMatch.time || ''}
                       />
                       <div className="px-4 py-2 rounded-2xl bg-foreground/[0.05] border border-foreground/20 md:">
                         <span className="text-[10px] font-black text-foreground/60 uppercase tracking-widest">
