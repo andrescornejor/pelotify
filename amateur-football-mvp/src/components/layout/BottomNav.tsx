@@ -78,11 +78,17 @@ export function BottomNav() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            onClick={() => setIsCreateMenuOpen(false)}
-            className="fixed inset-0 z-[90] bg-background/80 backdrop-blur-sm lg:hidden pointer-events-auto"
+            onClick={() => {
+              hapticLight();
+              setIsCreateMenuOpen(false);
+            }}
+            className="fixed inset-0 bg-black/60 backdrop-blur-sm lg:hidden cursor-pointer"
+            style={{ zIndex: -1 }} // Place it behind the nav container content but above the app
           />
         )}
       </AnimatePresence>
+
+
 
       {/* Main Bottom Nav Area - Pegged to Bottom */}
       <div className="fixed bottom-0 left-0 right-0 z-[100] lg:hidden pointer-events-none">
