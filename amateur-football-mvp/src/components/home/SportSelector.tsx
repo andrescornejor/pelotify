@@ -90,13 +90,6 @@ export function SportSelector({
                     </span>
                     {isSelected && <Zap className={cn(isCompact ? 'w-3 h-3' : 'w-3.5 h-3.5')} />}
                   </div>
-                  {!isCompact && (
-                    <div className="mt-1 flex items-center gap-1.5 text-[9px] font-bold uppercase tracking-[0.14em] opacity-75">
-                      <Trophy className="w-3 h-3" />
-                      <span className="truncate">{meta.highlightLabel}</span>
-                    </div>
-                  )}
-                </div>
               </div>
             </button>
           );

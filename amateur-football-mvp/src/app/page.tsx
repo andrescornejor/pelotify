@@ -479,15 +479,13 @@ export default function HomePage() {
                 <p className="mt-2 text-sm font-bold text-foreground/65">No hay partidos de {focusSportMeta.label} programados.</p>
               </div>
             )}
-
-            <div className="grid grid-cols-4 gap-2">
+            <div className="grid grid-cols-3 gap-2">
               {[
                 { label: 'Radar', icon: Search, color: 'text-primary', href: `/search?sport=${selectedSport}` },
                 { label: 'Equipos', icon: Shield, color: 'text-blue-400', href: '/teams' },
                 { label: 'Sedes', icon: MapPin, color: 'text-orange-400', href: '/establecimientos' },
-                { label: 'Clips', icon: Flame, color: 'text-rose-500', href: '/highlights' },
               ].map((item) => (
-                <Link key={item.label} href={item.href} className="block">
+                <Link key={item.label} href={item.href} className="col-span-1">
                   <div className="rounded-[1.3rem] border border-foreground/10 bg-foreground/[0.03] px-2 py-3 flex flex-col items-center justify-center gap-2">
                     <item.icon className={cn('w-5 h-5', item.color)} />
                     <span className="text-[8px] font-black uppercase tracking-[0.16em] text-foreground/55">{item.label}</span>
@@ -596,16 +594,10 @@ export default function HomePage() {
                       </button>
                     </Link>
 
-                    <Link href={`/search?sport=${selectedSport}`} className="col-span-2">
+                    <Link href={`/search?sport=${selectedSport}`} className="col-span-3">
                       <button className="w-full h-12 rounded-xl bg-surface border border-foreground/5 text-foreground text-[10px] font-black uppercase tracking-widest italic flex items-center justify-center gap-2">
                         <Search className="w-3.5 h-3.5 text-primary" />
                         BUSCAR {selectedSport !== 'football' ? selectedSport.toUpperCase() : 'PARTIDO'}
-                      </button>
-                    </Link>
-
-                    <Link href="/highlights" className="col-span-1">
-                      <button className="w-full h-12 rounded-xl bg-surface border border-foreground/5 text-orange-500 font-black flex items-center justify-center">
-                        <Flame className="w-4 h-4" />
                       </button>
                     </Link>
                   </div>
