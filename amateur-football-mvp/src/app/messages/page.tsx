@@ -279,11 +279,19 @@ export default function MessagesPage() {
   }, [user, user?.id]);
 
   useEffect(() => {
-    if (!isLoading && userIdParam && conversations.length > 0) {
-      const existing = conversations.find(c => c.userId === userIdParam);
-      if (existing) {
-        setSelectedChat(existing);
-      } else {
+    if (!isLoading && userIdParam) {
+      const loadUserFromParam = async () => {
+        // If we already have a selected chat with this ID, don't re-set it
+        if (selectedChat?.userId === userIdParam) return;
+
+        // 1. Try to find in existing conversations
+        const existing = conversations.find(c => c.userId === userIdParam);
+        if (existing) {
+          setSelectedChat(existing);
+          return;
+        }
+
+        // 2. Try to find in friends list
         const friend = friends.find(f => f.userId === userIdParam);
         if (friend) {
           setSelectedChat({
@@ -293,8 +301,32 @@ export default function MessagesPage() {
             lastMessage: 'Iniciar conversación...',
             timestamp: new Date().toISOString(),
           });
+          return;
         }
-      }
+
+        // 3. Fallback: Fetch directly from profiles (e.g. if coming from a search result of a non-friend)
+        try {
+          const { data: profile, error } = await supabase
+            .from('profiles')
+            .select('id, name, avatar_url')
+            .eq('id', userIdParam)
+            .single();
+          
+          if (profile && !error) {
+            setSelectedChat({
+              userId: profile.id,
+              name: profile.name,
+              avatar_url: profile.avatar_url,
+              lastMessage: 'Iniciar conversación...',
+              timestamp: new Date().toISOString(),
+            });
+          }
+        } catch (err) {
+          console.error('Error fetching profile for chat:', err);
+        }
+      };
+
+      loadUserFromParam();
     }
   }, [isLoading, userIdParam, conversations, friends]);
 
@@ -348,7 +380,7 @@ export default function MessagesPage() {
     <div className={cn(
       "w-full bg-background relative flex flex-col lg:pt-28",
       selectedChat 
-        ? "fixed inset-0 z-[100] pt-[env(safe-area-inset-top)] lg:relative lg:inset-auto lg:z-auto lg:flex-1 lg:min-h-[100dvh] lg:h-auto pb-0 lg:pb-0 overflow-hidden" 
+        ? "fixed inset-0 z-[100] h-[100dvh] pt-[env(safe-area-inset-top)] lg:relative lg:inset-auto lg:z-auto lg:flex-1 lg:min-h-[100dvh] lg:h-auto pb-0 lg:pb-0 overflow-hidden" 
         : "flex-1 lg:min-h-[100dvh] lg:h-auto px-0 sm:px-5 lg:px-10 xl:px-16 pt-0"
     )}>
       {/* Hide Bottom Nav on mobile when a chat is active to behave like a native messenger app */}
@@ -555,102 +587,112 @@ export default function MessagesPage() {
             !selectedChat ? 'hidden lg:flex' : 'flex'
           )}
         >
-          {selectedChat ? (
-            <motion.div
-              initial={{ opacity: 0, y: 10, scale: 0.99 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
-              className="flex flex-col flex-1 min-h-0 bg-surface/30 dark:bg-[#0A0A0A] border-foreground/10 md:border md:rounded-[3rem] lg:rounded-[3.5rem] overflow-hidden relative shadow-2xl lg:shadow-[0_50px_120px_rgba(0,0,0,0.6)]"
-            >
-              {/* Chat Header */}
-              <div className="px-3 sm:px-5 py-2 lg:py-3.5 bg-background/80 lg:bg-background/50 backdrop-blur-xl border-b border-foreground/5 flex items-center justify-between relative z-20">
-                <div className="flex items-center gap-2 sm:gap-3">
-                  <button
-                    onClick={() => setSelectedChat(null)}
-                    className="lg:hidden w-10 h-10 flex flex-col items-center justify-center rounded-xl transition-all"
-                  >
-                    <ChevronRight className="w-6 h-6 text-primary rotate-180 mb-0.5" />
-                    <span className="text-[8px] font-black uppercase text-primary tracking-widest leading-none">Volver</span>
-                  </button>
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-xl overflow-hidden border border-primary/20 bg-primary/5">
-                      {selectedChat.avatar_url ? (
-                        <img src={selectedChat.avatar_url} alt="" className="w-full h-full object-cover" />
-                      ) : (
-                        <div className="w-full h-full flex items-center justify-center text-primary/40">
-                          <UserIcon className="w-5 h-5" />
+          <AnimatePresence mode="wait">
+            {selectedChat ? (
+              <motion.div
+                key={selectedChat.userId}
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -20 }}
+                transition={{ type: "spring", damping: 25, stiffness: 200 }}
+                className="flex flex-col flex-1 min-h-0 h-full bg-surface/30 dark:bg-[#0A0A0A] border-foreground/10 md:border md:rounded-[3rem] lg:rounded-[3.5rem] overflow-hidden relative shadow-2xl lg:shadow-[0_50px_120px_rgba(0,0,0,0.6)]"
+              >
+                {/* Chat Header */}
+                <div className="px-3 sm:px-5 py-2 lg:py-3.5 bg-background/80 lg:bg-background/50 backdrop-blur-xl border-b border-foreground/5 flex items-center justify-between relative z-20">
+                  <div className="flex items-center gap-2 sm:gap-3">
+                    <button
+                      onClick={() => {
+                        setSelectedChat(null);
+                        // Clear the user param from URL when closing on mobile
+                        const newUrl = window.location.pathname;
+                        window.history.replaceState({}, '', newUrl);
+                      }}
+                      className="lg:hidden w-10 h-10 flex flex-col items-center justify-center rounded-xl transition-all"
+                    >
+                      <ChevronRight className="w-6 h-6 text-primary rotate-180 mb-0.5" />
+                      <span className="text-[8px] font-black uppercase text-primary tracking-widest leading-none">Volver</span>
+                    </button>
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-xl overflow-hidden border border-primary/20 bg-primary/5">
+                        {selectedChat.avatar_url ? (
+                          <img src={selectedChat.avatar_url} alt="" className="w-full h-full object-cover" />
+                        ) : (
+                          <div className="w-full h-full flex items-center justify-center text-primary/40">
+                            <UserIcon className="w-5 h-5" />
+                          </div>
+                        )}
+                      </div>
+                      <div>
+                        <h3 className="font-black uppercase italic tracking-tighter text-foreground text-sm leading-none">
+                          {selectedChat.name}
+                        </h3>
+                        <div className="flex items-center gap-1.5 mt-1">
+                          <span className="w-1 h-1 rounded-full bg-primary animate-pulse" />
+                          <span className="text-[7px] font-black uppercase tracking-[0.2em] text-primary/80">
+                            Encriptado • Online
+                          </span>
                         </div>
-                      )}
-                    </div>
-                    <div>
-                      <h3 className="font-black uppercase italic tracking-tighter text-foreground text-sm leading-none">
-                        {selectedChat.name}
-                      </h3>
-                      <div className="flex items-center gap-1.5 mt-1">
-                        <span className="w-1 h-1 rounded-full bg-primary animate-pulse" />
-                        <span className="text-[7px] font-black uppercase tracking-[0.2em] text-primary/80">
-                          Encriptado • Online
-                        </span>
                       </div>
                     </div>
                   </div>
                 </div>
-              </div>
 
-              <ChatRoom
-                recipientId={selectedChat.userId}
-                className="flex-1 min-h-0 !bg-transparent !border-0 !rounded-none !shadow-none"
-              />
-            </motion.div>
-          ) : (
-            <div className="flex-1 flex flex-col items-center justify-center text-center space-y-12 glass-premium border border-foreground/5 rounded-[3rem] relative overflow-hidden group shadow-2xl">
-              <div
-                className="absolute inset-0 bg-primary/5 opacity-0 group-hover:opacity-10 pointer-events-none"
-              />
+                <ChatRoom
+                  recipientId={selectedChat.userId}
+                  className="flex-1 min-h-0 h-full !bg-transparent !border-0 !rounded-none !shadow-none"
+                />
+              </motion.div>
+            ) : (
+              <div key="empty-state" className="hidden lg:flex flex-1 flex-col items-center justify-center text-center space-y-12 glass-premium border border-foreground/5 rounded-[3rem] relative overflow-hidden group shadow-2xl h-full">
+                <div
+                  className="absolute inset-0 bg-primary/5 opacity-0 group-hover:opacity-10 pointer-events-none"
+                />
 
-              {/* Decorative background elements */}
-              <div className="absolute top-10 left-10 w-32 h-32 bg-primary/5 blur-3xl rounded-full" />
-              <div className="absolute bottom-10 right-10 w-40 h-40 bg-primary/5 blur-3xl rounded-full" />
+                {/* Decorative background elements */}
+                <div className="absolute top-10 left-10 w-32 h-32 bg-primary/5 blur-3xl rounded-full" />
+                <div className="absolute bottom-10 right-10 w-40 h-40 bg-primary/5 blur-3xl rounded-full" />
 
-              <div className="relative">
-                <motion.div
-                  animate={{
-                    scale: [1, 1.05, 1],
-                    rotate: [0, 5, -5, 0],
-                  }}
-                  transition={{ duration: 10, repeat: Infinity, ease: 'easeInOut' }}
-                  className="w-48 h-48 rounded-[4rem] bg-foreground/[0.02] border border-foreground/5 flex items-center justify-center relative shadow-2xl md:"
-                >
-                  <MessageSquare className="w-20 h-20 text-primary" />
+                <div className="relative">
                   <motion.div
-                    animate={{ y: [0, -10, 0] }}
-                    transition={{ duration: 4, repeat: Infinity }}
-                    className="absolute -top-4 -right-4 w-14 h-14 bg-primary rounded-3xl border-4 border-background flex items-center justify-center shadow-2xl"
+                    animate={{
+                      scale: [1, 1.05, 1],
+                      rotate: [0, 5, -5, 0],
+                    }}
+                    transition={{ duration: 10, repeat: Infinity, ease: 'easeInOut' }}
+                    className="w-48 h-48 rounded-[4rem] bg-foreground/[0.02] border border-foreground/5 flex items-center justify-center relative shadow-2xl md:"
                   >
-                    <Plus className="w-6 h-6 text-black" />
+                    <MessageSquare className="w-20 h-20 text-primary" />
+                    <motion.div
+                      animate={{ y: [0, -10, 0] }}
+                      transition={{ duration: 4, repeat: Infinity }}
+                      className="absolute -top-4 -right-4 w-14 h-14 bg-primary rounded-3xl border-4 border-background flex items-center justify-center shadow-2xl"
+                    >
+                      <Plus className="w-6 h-6 text-black" />
+                    </motion.div>
                   </motion.div>
-                </motion.div>
-              </div>
+                </div>
 
-              <div className="space-y-6 relative z-10">
-                <h3 className="text-4xl font-black uppercase tracking-tighter italic text-foreground leading-none text-gradient">
-                  Inicia la <br /> Jugada
-                </h3>
-                <p className="text-[11px] font-bold uppercase tracking-[0.4em] text-foreground/40 max-w-sm mx-auto leading-relaxed">
-                  Conecta con otros jugadores de la <br /> comunidad para organizar tu próximo
-                  partido
-                </p>
-              </div>
+                <div className="space-y-6 relative z-10">
+                  <h3 className="text-4xl font-black uppercase tracking-tighter italic text-foreground leading-none text-gradient">
+                    Inicia la <br /> Jugada
+                  </h3>
+                  <p className="text-[11px] font-bold uppercase tracking-[0.4em] text-foreground/40 max-w-sm mx-auto leading-relaxed">
+                    Conecta con otros jugadores de la <br /> comunidad para organizar tu próximo
+                    partido
+                  </p>
+                </div>
 
-              <motion.button
-                whileHover={{ scale: 1.05, y: -4, boxShadow: '0 20px 40px rgba(85,250,134,0.2)' }}
-                whileTap={{ scale: 0.95 }}
-                onClick={() => setIsSearchOpen(true)}
-                className="px-10 h-16 bg-primary text-black font-black italic text-sm uppercase tracking-[0.3em] rounded-2xl relative z-10 shadow-2xl transition-all"
-              >
-                NUEVO MENSAJE
-              </motion.button>
-            </div>
-          )}
+                <motion.button
+                  whileHover={{ scale: 1.05, y: -4, boxShadow: '0 20px 40px rgba(85,250,134,0.2)' }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={() => setIsSearchOpen(true)}
+                  className="px-10 h-16 bg-primary text-black font-black italic text-sm uppercase tracking-[0.3em] rounded-2xl relative z-10 shadow-2xl transition-all"
+                >
+                  NUEVO MENSAJE
+                </motion.button>
+              </div>
+            )}
+          </AnimatePresence>
         </div>
 
         {/* New Message / Friend Search Modal */}
