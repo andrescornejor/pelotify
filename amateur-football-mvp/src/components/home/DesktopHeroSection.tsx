@@ -1,12 +1,11 @@
 'use client';
 
+import { memo } from 'react';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Trophy,
-  Users,
   Calendar,
-  ChevronRight,
   TrendingUp,
   PlusCircle,
   Search,
@@ -15,7 +14,6 @@ import {
   Shield,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { JerseyVisualizer } from '@/components/JerseyVisualizer';
 import { RankBadgeInline } from './RankBadge';
 import { SportSelector } from './SportSelector';
 import type { Sport } from '@/lib/sports';
@@ -34,7 +32,7 @@ interface DesktopHeroProps {
   reduceAnimations: boolean;
 }
 
-export function DesktopHeroSection({
+export const DesktopHeroSection = memo(function DesktopHeroSection({
   selectedSport,
   setSelectedSport,
   focusSportMeta,
@@ -268,5 +266,4 @@ export function DesktopHeroSection({
       </div>
     </section>
   );
-}
-
+});
