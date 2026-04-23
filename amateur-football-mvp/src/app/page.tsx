@@ -327,9 +327,10 @@ export default function HomePage() {
   return (
     <main
       className={cn(
-        'relative min-h-screen bg-background font-sans selection:bg-primary selection:text-background pb-20 lg:pb-0 transition-colors duration-300 ease-out',
+        'relative min-h-screen bg-background font-sans selection:bg-primary selection:text-background pb-20 lg:pb-0',
         performanceMode && 'perf-mode'
       )}
+
       style={{
         '--primary': sportTheme.accent,
         '--primary-dark': sportTheme.accentDark,

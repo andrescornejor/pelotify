@@ -33,23 +33,13 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
       const nextResolvedTheme: ResolvedTheme =
         theme === 'system' ? (mediaQuery.matches ? 'dark' : 'light') : theme;
 
-      const updateDOM = () => {
-        root.classList.remove('light', 'dark');
-        root.classList.add(nextResolvedTheme);
-        root.dataset.theme = nextResolvedTheme;
-        root.style.colorScheme = nextResolvedTheme;
-        setResolvedTheme(nextResolvedTheme);
-      };
-
-      // Utilizar View Transitions API para un cambio instantáneo y ultra fluido
-      if (document.startViewTransition) {
-        document.startViewTransition(updateDOM);
-      } else {
-        root.classList.add('theme-transition');
-        updateDOM();
-        setTimeout(() => root.classList.remove('theme-transition'), 300);
-      }
+      root.classList.remove('light', 'dark');
+      root.classList.add(nextResolvedTheme);
+      root.dataset.theme = nextResolvedTheme;
+      root.style.colorScheme = nextResolvedTheme;
+      setResolvedTheme(nextResolvedTheme);
     };
+
 
     applyTheme();
     localStorage.setItem('theme', theme);
