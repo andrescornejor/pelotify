@@ -61,7 +61,7 @@ export default function HomePage() {
   const featuredVenues = homeData?.featuredVenues || [];
   const recentPosts = homeData?.recentPosts || [];
   const { data: userMatches = [] } = useUserMatches(user?.id);
-  const [selectedSport, setSelectedSport] = useState<Sport>('football');
+  const { activeSport: selectedSport, setActiveSport: setSelectedSport } = useSettings();
   const focusSportMeta = getSportMeta(selectedSport);
 
   // Dynamic theme mapping

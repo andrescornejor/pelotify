@@ -28,7 +28,7 @@ import { useSidebar } from '@/contexts/SidebarContext';
 
 export function BottomNav() {
   const pathname = usePathname();
-  const { performanceMode } = useSettings();
+  const { performanceMode, activeSport } = useSettings();
   const { isNavMenuOpen: isCreateMenuOpen, setNavMenuOpen: setIsCreateMenuOpen } = useSidebar();
   const { hapticLight, hapticMedium } = useHaptic();
 
@@ -90,9 +90,9 @@ export function BottomNav() {
                 className="absolute bottom-[calc(70px+env(safe-area-inset-bottom,0px))] left-1/2 -translate-x-1/2 w-[280px] flex flex-col gap-3 py-4"
               >
                 {[
-                  { label: "Armar Partido", icon: Target, href: "/create", color: "text-[#2cfc7d]" },
-                  { label: "Post en 3erTiempo", icon: MessageSquare, href: "/feed", color: "text-blue-400" },
-                  { label: "Subir FutTok", icon: Flame, href: "/highlights/upload", color: "text-orange-500" }
+                  { label: "Armar Partido", icon: Target, href: `/create?sport=${activeSport}`, color: "text-[#2cfc7d]" },
+                  { label: "Post en 3erTiempo", icon: MessageSquare, href: `/feed?sport=${activeSport}`, color: "text-blue-400" },
+                  { label: "Subir FutTok", icon: Flame, href: `/highlights/upload?sport=${activeSport}`, color: "text-orange-500" }
                 ].map((action, i) => (
                   <Link
                     key={i}
