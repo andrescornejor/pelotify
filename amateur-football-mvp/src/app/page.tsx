@@ -749,7 +749,7 @@ export default function HomePage() {
                       <div className="mt-2 flex items-center gap-3">
                          <span className="text-[9px] font-bold text-foreground/40 tracking-widest uppercase">{rankCalculation.info.name}</span>
                          <div className="w-1 h-1 rounded-full bg-foreground/20" />
-                         <span className="text-[9px] font-bold text-foreground/40 tracking-widest uppercase">LVL {Math.floor(rankCalculation.elo / 100)}</span>
+                         <span className="text-[9px] font-bold text-foreground/40 tracking-widest uppercase">LVL {Math.floor(statsSummary.elo / 100)}</span>
                       </div>
                     </div>
                   </div>
