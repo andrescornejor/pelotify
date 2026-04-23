@@ -1203,7 +1203,6 @@ export default function HomePage() {
                     </section>
                   </motion.div>
                 )}
-        )}
 
                 {activeTab === 'teams' && (
                   <motion.div
@@ -1399,7 +1398,9 @@ export default function HomePage() {
                   </motion.div>
                 )}
               </AnimatePresence>
-                   <aside className={cn(
+            </div>
+
+            <aside className={cn(
               "lg:col-span-4 xl:col-span-4 lg:col-start-9 space-y-8 lg:sticky lg:top-24",
               nextMatch ? "order-1 lg:order-2" : "order-3 lg:order-2"
             )}>
