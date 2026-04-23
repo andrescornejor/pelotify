@@ -25,9 +25,6 @@ import {
   Shield,
   Play,
   Heart,
-  Twitter,
-  Instagram,
-  Github,
 } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useSidebar } from '@/contexts/SidebarContext';
@@ -796,127 +793,116 @@ export default function HomePage() {
         )}
 
         {isMobile ? (
-          <div className="space-y-8 pb-10">
-            {/* Quick Stats Grid */}
+          <div className="space-y-4">
             <section className="grid grid-cols-2 gap-3">
               {statCardsData.map((stat) => (
                 <div
                   key={stat.label}
-                  className="rounded-[2rem] border border-white/5 bg-surface-elevated/40 p-5 shadow-xl backdrop-blur-sm"
+                  className="rounded-[1.6rem] border border-foreground/10 bg-white/[0.03] p-4 shadow-[0_10px_28px_rgba(0,0,0,0.14)]"
                 >
                   <div
-                    className="w-12 h-12 rounded-2xl flex items-center justify-center border border-white/5 shadow-inner"
-                    style={{ backgroundColor: `${stat.color}10` }}
+                    className="w-10 h-10 rounded-[1rem] flex items-center justify-center border border-white/10"
+                    style={{ backgroundColor: `${stat.color}18` }}
                   >
-                    <stat.icon className="w-6 h-6" style={{ color: stat.color }} />
+                    <stat.icon className="w-5 h-5" style={{ color: stat.color }} />
                   </div>
-                  <div className="mt-4">
-                    <p className="text-[10px] font-black uppercase tracking-[0.25em] text-foreground/30 font-kanit">
-                      {stat.label}
-                    </p>
-                    <p className="mt-0.5 text-3xl font-black italic text-foreground tracking-tighter font-kanit">
-                      {stat.value}
-                    </p>
-                  </div>
+                  <p className="mt-4 text-[9px] font-black uppercase tracking-[0.18em] text-foreground/35">
+                    {stat.label}
+                  </p>
+                  <p className="mt-1 text-2xl font-black italic text-foreground tracking-tighter">
+                    {stat.value}
+                  </p>
                 </div>
               ))}
             </section>
 
-            {/* Momentum & Progress */}
-            <section className="rounded-[2.2rem] border border-white/5 bg-surface-elevated p-6 shadow-2xl relative overflow-hidden">
-              <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 blur-[50px] rounded-full -translate-y-1/2 translate-x-1/2" />
-              <div className="relative z-10 flex items-center justify-between gap-3">
-                <div className="space-y-1">
-                  <p className="text-[10px] font-black uppercase tracking-[0.3em] text-primary font-kanit italic">Momentum Pro</p>
-                  <h3 className="text-2xl font-black italic uppercase tracking-tighter text-foreground font-kanit">
+            <section className="rounded-[1.8rem] border border-foreground/10 bg-white/[0.03] p-4 shadow-[0_12px_30px_rgba(0,0,0,0.14)]">
+              <div className="flex items-center justify-between gap-3">
+                <div>
+                  <p className="text-[9px] font-black uppercase tracking-[0.22em] text-primary">Momentum</p>
+                  <h3 className="mt-2 text-lg font-black italic uppercase tracking-tighter text-foreground">
                     {rankCalculation.rank.name}
                   </h3>
                 </div>
                 <div className="text-right">
-                  <p className="text-[10px] font-black uppercase tracking-[0.2em] text-foreground/30 font-kanit">Racha</p>
-                  <p className="text-3xl font-black italic text-primary font-kanit leading-none mt-1">{usageSnapshot.streakDays}D</p>
+                  <p className="text-[9px] font-black uppercase tracking-[0.18em] text-foreground/35">Racha</p>
+                  <p className="mt-2 text-2xl font-black italic text-primary">{usageSnapshot.streakDays}</p>
                 </div>
               </div>
-              
-              <div className="mt-6 space-y-3">
-                <div className="h-2.5 rounded-full bg-foreground/5 overflow-hidden border border-white/5">
-                  <motion.div 
-                    initial={{ width: 0 }}
-                    animate={{ width: `${rankCalculation.progress}%` }}
-                    className="h-full rounded-full bg-gradient-to-r from-primary/60 to-primary shadow-[0_0_15px_rgba(44,252,125,0.4)]" 
-                  />
-                </div>
-                <div className="flex items-center justify-between text-[11px] font-black uppercase tracking-widest text-foreground/40 font-kanit italic">
-                  <span>{Math.round(rankCalculation.progress)}% Completado</span>
-                  <span className="text-foreground/20">Next: {rankCalculation.nextRank.name}</span>
-                </div>
+              <div className="mt-4 h-2 rounded-full bg-white/5 overflow-hidden">
+                <div className="h-full rounded-full bg-primary" style={{ width: `${rankCalculation.progress}%` }} />
+              </div>
+              <div className="mt-3 flex items-center justify-between text-[10px] font-bold text-foreground/45">
+                <span>Sección top: {usageSnapshot.favoriteSection}</span>
+                <span>{Math.round(rankCalculation.progress)}%</span>
               </div>
             </section>
 
-            {/* Social / 3erTiempo */}
-            <section className="space-y-4">
-              <div className="flex items-end justify-between px-2">
-                <div className="space-y-1">
-                  <p className="text-[10px] font-black uppercase tracking-[0.3em] text-primary font-kanit italic">Social</p>
-                  <h3 className="text-2xl font-black italic uppercase tracking-tighter text-foreground font-kanit leading-none">
-                    3er Tiempo
+
+
+            <section className="space-y-3">
+              <div className="flex items-center justify-between px-1">
+                <div>
+                  <p className="text-[9px] font-black uppercase tracking-[0.22em] text-primary">Social</p>
+                  <h3 className="mt-1 text-lg font-black italic uppercase tracking-tighter text-foreground">
+                    3erTiempo
                   </h3>
                 </div>
-                <Link href="/feed" className="text-[10px] font-black uppercase tracking-[0.2em] text-foreground/40 font-kanit border-b border-foreground/10 pb-0.5">
-                  Ver Todo
+                <Link href="/feed" className="text-[9px] font-black uppercase tracking-[0.18em] text-foreground/45">
+                  Ver muro
                 </Link>
               </div>
-              
               {recentPosts.length > 0 ? (
-                <div className="flex gap-4 overflow-x-auto pb-4 snap-x snap-mandatory no-scrollbar scroll-px-2 swipe-ignore">
+                <div className="flex gap-3 overflow-x-auto pb-2 snap-x snap-mandatory no-scrollbar scroll-px-1 swipe-ignore">
                   {recentPosts.slice(0, 8).map((post, idx) => (
                     <Link
                       key={post.id}
                       href={`/feed?post=${post.id}`}
-                      className="snap-start min-w-[300px] shrink-0"
+                      className="snap-start min-w-[280px] max-w-[280px] shrink-0"
                     >
-                      <div className="relative aspect-[4/5] overflow-hidden rounded-[2.5rem] border border-white/5 bg-surface-elevated shadow-2xl group">
-                        {post.image_url ? (
+                      <div className="relative h-full overflow-hidden rounded-[2rem] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.06),rgba(255,255,255,0.02))] p-4 shadow-[0_18px_44px_rgba(0,0,0,0.16)]">
+                        {post.image_url && (
                           <>
-                            <img src={post.image_url} alt="" className="absolute inset-0 h-full w-full object-cover opacity-40 transition-transform duration-700 group-hover:scale-110" />
-                            <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent" />
+                            <img src={post.image_url} alt="" className="absolute inset-0 h-full w-full object-cover opacity-25" />
+                            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/45 to-black/10" />
                           </>
-                        ) : (
-                          <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(var(--primary-rgb),0.1),transparent)]" />
                         )}
-                        
-                        <div className="relative h-full p-6 flex flex-col justify-between">
-                          <div className="flex items-center justify-between">
-                            <div className="flex items-center gap-3">
-                              <div className="h-12 w-12 rounded-2xl overflow-hidden border border-white/10 bg-surface shadow-lg">
+                        <div className="relative flex h-full flex-col">
+                          <div className="flex items-center justify-between gap-3">
+                            <div className="flex items-center gap-3 min-w-0">
+                              <div className="h-11 w-11 rounded-full overflow-hidden border border-white/10 bg-surface-elevated shrink-0">
                                 {post.author?.avatar_url ? (
                                   <img src={post.author.avatar_url} alt="" className="h-full w-full object-cover" />
                                 ) : (
-                                  <div className="flex h-full w-full items-center justify-center text-foreground/20 font-black">
-                                    <User2 className="w-6 h-6" />
+                                  <div className="flex h-full w-full items-center justify-center text-foreground/35 font-black">
+                                    {post.author?.name?.charAt(0) || 'P'}
                                   </div>
                                 )}
                               </div>
                               <div className="min-w-0">
-                                <p className="truncate text-sm font-black text-foreground font-kanit italic uppercase">{post.author?.name || 'Jugador'}</p>
-                                <p className="text-[8px] font-black uppercase tracking-[0.2em] text-foreground/40 font-kanit">
+                                <p className="truncate text-sm font-black text-foreground">{post.author?.name || 'Jugador'}</p>
+                                <p className="text-[9px] font-black uppercase tracking-[0.16em] text-foreground/40">
                                   {new Date(post.created_at).toLocaleDateString()}
                                 </p>
                               </div>
                             </div>
-                            <div className="h-8 w-8 rounded-full border border-white/10 bg-white/5 flex items-center justify-center">
-                               <MessageSquare className="w-3.5 h-3.5 text-primary" />
+                            <div className="rounded-full border border-white/10 bg-white/[0.05] px-2.5 py-1 text-[8px] font-black uppercase tracking-[0.18em] text-primary">
+                              {idx === 0 ? 'En foco' : '3T'}
                             </div>
                           </div>
 
-                          <div>
-                            <p className="text-lg font-bold leading-tight text-foreground/90 line-clamp-3 font-kanit italic">
-                              "{post.content}"
-                            </p>
-                            <div className="mt-4 flex items-center gap-4 text-[10px] font-black uppercase tracking-widest text-primary font-kanit italic">
-                              <span>{post.likes_count || 0} LIKES</span>
-                              <span>{post.comments_count || 0} RESPUESTAS</span>
+                          <p className="mt-4 text-[15px] font-medium leading-relaxed text-foreground/82 line-clamp-5">
+                            {post.content}
+                          </p>
+
+                          <div className="mt-5 flex items-center justify-between border-t border-white/10 pt-3">
+                            <div className="flex items-center gap-4 text-[11px] font-bold text-foreground/55">
+                              <span>{post.likes_count || 0} likes</span>
+                              <span>{post.comments_count || 0} respuestas</span>
                             </div>
+                            <span className="text-[9px] font-black uppercase tracking-[0.18em] text-primary">
+                              Ver post
+                            </span>
                           </div>
                         </div>
                       </div>
@@ -924,125 +910,206 @@ export default function HomePage() {
                   ))}
                 </div>
               ) : (
-                <div className="rounded-[2rem] border border-dashed border-white/10 bg-surface-elevated/40 p-8 text-center text-[11px] font-black uppercase tracking-widest text-foreground/30 font-kanit italic">
+                <div className="rounded-[1.7rem] border border-dashed border-foreground/10 bg-white/[0.02] p-5 text-center text-sm font-bold text-foreground/55">
                   El muro todavía está tranquilo.
                 </div>
               )}
             </section>
 
-            {/* Highlights Grid */}
-            <section className="space-y-4">
-              <div className="flex items-end justify-between px-2">
-                <div className="space-y-1">
-                  <p className="text-[10px] font-black uppercase tracking-[0.3em] text-primary font-kanit italic">Clips</p>
-                  <h3 className="text-2xl font-black italic uppercase tracking-tighter text-foreground font-kanit leading-none">
-                    Highlights
+            <section className="space-y-3">
+              <div className="flex items-center justify-between px-1">
+                <div>
+                  <p className="text-[9px] font-black uppercase tracking-[0.22em] text-primary">Highlights</p>
+                  <h3 className="mt-1 text-lg font-black italic uppercase tracking-tighter text-foreground">
+                    {focusSportMeta.highlightLabel}
                   </h3>
                 </div>
-                <Link href="/highlights" className="text-[10px] font-black uppercase tracking-[0.2em] text-foreground/40 font-kanit border-b border-foreground/10 pb-0.5">
-                  Ver Todo
+                <Link href="/highlights" className="text-[9px] font-black uppercase tracking-[0.18em] text-foreground/45">
+                  Ver todo
                 </Link>
               </div>
-
-              <div className="flex gap-4 overflow-x-auto pb-4 snap-x snap-mandatory no-scrollbar scroll-px-2 swipe-ignore">
-                {highlights.slice(0, 5).map((highlight) => (
-                  <Link
-                    key={highlight.id}
-                    href={`/highlights?v=${highlight.id}`}
-                    className="snap-start min-w-[200px] shrink-0"
-                  >
-                    <div className="relative aspect-[9/16] overflow-hidden rounded-[2.5rem] border border-white/5 shadow-2xl group">
-                      {highlight.thumbnail_url ? (
-                        <img src={highlight.thumbnail_url} alt="" className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-110" />
-                      ) : (
-                        <div className="absolute inset-0 bg-surface-elevated" />
+              {highlights.length > 0 ? (
+                <div className="flex gap-3 overflow-x-auto pb-2 snap-x snap-mandatory no-scrollbar scroll-px-1 swipe-ignore">
+                  {highlights.slice(0, 4).map((highlight, idx) => (
+                    <Link
+                      key={highlight.id}
+                      href={`/highlights?v=${highlight.id}`}
+                      className={cn(
+                        'snap-start overflow-hidden rounded-[2rem] border border-white/10 shadow-[0_18px_44px_rgba(0,0,0,0.18)]',
+                        idx === 0 ? 'min-w-[240px]' : 'min-w-[180px]'
                       )}
-                      <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent" />
-                      
-                      {/* Play Button Overlay */}
-                      <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                         <div className="w-14 h-14 rounded-full bg-primary/20 backdrop-blur-md border border-primary/40 flex items-center justify-center">
-                            <Play className="w-6 h-6 text-primary fill-primary" />
-                         </div>
-                      </div>
+                    >
+                      <div className={cn('relative', idx === 0 ? 'aspect-[10/16]' : 'aspect-[4/6]')}>
+                        {highlight.thumbnail_url ? (
+                          <img src={highlight.thumbnail_url} alt="" className="absolute inset-0 h-full w-full object-cover" />
+                        ) : (
+                          <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(var(--primary-rgb),0.35),rgba(0,0,0,0.92))]" />
+                        )}
+                        <div className="absolute inset-0 bg-gradient-to-t from-black via-black/35 to-black/10" />
+                        <div className="absolute left-4 top-4 flex h-12 w-12 items-center justify-center rounded-full border border-white/15 bg-black/35 backdrop-blur-md">
+                          <Play className="h-5 w-5 translate-x-[1px] text-white" />
+                        </div>
 
-                      <div className="absolute inset-x-4 bottom-5 flex items-center gap-2">
-                        <div className="h-8 w-8 rounded-xl overflow-hidden border border-white/20 bg-surface">
-                          {highlight.profiles?.avatar_url ? (
-                            <img src={highlight.profiles.avatar_url} alt="" className="h-full w-full object-cover" />
-                          ) : (
-                            <div className="flex h-full w-full items-center justify-center text-[10px] font-black text-white/40 font-kanit">
-                              {highlight.profiles?.name?.charAt(0) || 'J'}
+                        <div className="absolute inset-x-4 bottom-4">
+                          <div className="flex items-center gap-2">
+                            <div className="h-8 w-8 rounded-full overflow-hidden border border-white/15 bg-white/10">
+                              {highlight.profiles?.avatar_url ? (
+                                <img src={highlight.profiles.avatar_url} alt="" className="h-full w-full object-cover" />
+                              ) : (
+                                <div className="flex h-full w-full items-center justify-center text-[10px] font-black text-white/70">
+                                  {(highlight.profiles?.name || 'J').charAt(0)}
+                                </div>
+                              )}
+                            </div>
+                            <div className="min-w-0">
+                              <p className="truncate text-[10px] font-black uppercase tracking-[0.16em] text-white">
+                                @{highlight.profiles?.name || 'Jugador'}
+                              </p>
+                              <p className="text-[9px] font-bold text-white/65">
+                                {highlight.likes_count || 0} likes · {highlight.views_count || 0} views
+                              </p>
+                            </div>
+                          </div>
+
+                          {idx === 0 && (
+                            <div className="mt-3 inline-flex rounded-full border border-white/10 bg-white/10 px-3 py-1.5 text-[9px] font-black uppercase tracking-[0.18em] text-white">
+                              Clip destacado
                             </div>
                           )}
                         </div>
-                        <div className="min-w-0">
-                          <p className="truncate text-[10px] font-black uppercase tracking-widest text-white font-kanit italic">
-                            @{highlight.profiles?.name || 'Jugador'}
-                          </p>
-                        </div>
                       </div>
-                    </div>
-                  </Link>
-                ))}
-              </div>
+                    </Link>
+                  ))}
+                </div>
+              ) : (
+                <div className="rounded-[1.7rem] border border-dashed border-foreground/10 bg-white/[0.02] p-5 text-center text-sm font-bold text-foreground/55">
+                  Todavía no hay highlights para mostrar.
+                </div>
+              )}
             </section>
 
-            {/* Recommended Matches */}
-            <section className="space-y-4">
-              <div className="flex items-end justify-between px-2">
-                <div className="space-y-1">
-                  <p className="text-[10px] font-black uppercase tracking-[0.3em] text-primary font-kanit italic">Radar Pro</p>
-                  <h3 className="text-2xl font-black italic uppercase tracking-tighter text-foreground font-kanit leading-none">
-                    Partidos Para Vos
+            <section className="space-y-3">
+              <div className="flex items-center justify-between px-1">
+                <div>
+                  <p className="text-[9px] font-black uppercase tracking-[0.22em] text-primary">Para vos</p>
+                  <h3 className="mt-1 text-lg font-black italic uppercase tracking-tighter text-foreground">
+                    Recomendados
                   </h3>
                 </div>
+                <Link href={`/search?sport=${selectedSport}`} className="text-[9px] font-black uppercase tracking-[0.18em] text-foreground/45">
+                  Ver más
+                </Link>
               </div>
-
-              <div className="space-y-3">
-                {recommendedMatches.slice(0, 3).map((match) => (
-                  <Link
-                    key={match.id}
-                    href={`/match?id=${match.id}`}
-                    className="block"
-                  >
-                    <div className="rounded-[2rem] border border-white/5 bg-surface-elevated/40 p-5 shadow-lg backdrop-blur-sm relative overflow-hidden group">
-                      <div className="absolute top-0 right-0 px-4 py-1.5 bg-primary/10 rounded-bl-2xl border-l border-b border-primary/20">
-                         <span className="text-[8px] font-black uppercase tracking-[0.2em] text-primary font-kanit italic">Recomendado</span>
-                      </div>
-                      <div className="flex items-center justify-between gap-4">
-                        <div className="min-w-0 flex-1">
-                          <p className="text-[9px] font-black uppercase tracking-[0.3em] text-foreground/30 font-kanit italic mb-1">
-                            {SPORT_META[getMatchSport(match)].icon} {getFormatMeta(match.type, getMatchSport(match)).label}
-                          </p>
-                          <h4 className="text-lg font-black italic uppercase tracking-tighter text-foreground font-kanit truncate">
-                            {match.location}
-                          </h4>
-                          <p className="mt-1 text-[11px] font-bold uppercase tracking-widest text-foreground/40 font-kanit">
-                            {match.date} · <span className="text-primary">{match.time} hs</span>
-                          </p>
+              <div className="flex gap-3 overflow-x-auto pb-2 snap-x snap-mandatory no-scrollbar scroll-px-1 swipe-ignore">
+                {recommendedMatches.length > 0 ? (
+                  recommendedMatches.map((match) => (
+                    <Link
+                      key={match.id}
+                      href={`/match?id=${match.id}`}
+                      className="snap-start min-w-[280px] rounded-[1.7rem] border border-foreground/10 bg-white/[0.03] p-4 shadow-[0_12px_28px_rgba(0,0,0,0.14)] shrink-0"
+                    >
+                      <p className="text-[9px] font-black uppercase tracking-[0.2em] text-primary">
+                        {SPORT_META[getMatchSport(match)].icon} {getFormatMeta(match.type, getMatchSport(match)).label}
+                      </p>
+                      <h4 className="mt-2 text-base font-black italic uppercase tracking-tighter text-foreground truncate">
+                        {match.location}
+                      </h4>
+                      <p className="mt-1 text-[11px] font-bold uppercase tracking-[0.15em] text-foreground/45">
+                        {match.date} · {match.time}
+                      </p>
+                      {match.recommendationReasons?.[0] && (
+                        <div className="mt-3 inline-flex rounded-full bg-primary/10 px-3 py-1.5 text-[9px] font-black text-primary">
+                          {match.recommendationReasons[0]}
                         </div>
-                        <div className="w-12 h-12 rounded-2xl bg-foreground/5 border border-white/5 flex items-center justify-center group-hover:bg-primary/20 group-hover:border-primary/40 transition-colors">
-                           <ArrowRight className="w-5 h-5 text-foreground/40 group-hover:text-primary transition-colors" />
-                        </div>
-                      </div>
-                    </div>
-                  </Link>
-                ))}
+                      )}
+                    </Link>
+                  ))
+                ) : (
+                  <div className="w-full rounded-[1.7rem] border border-dashed border-foreground/10 bg-white/[0.02] p-5 text-center text-sm font-bold text-foreground/55">
+                    No hay sugerencias para {focusSportMeta.label} por ahora.
+                  </div>
+                )}
               </div>
             </section>
+
+            <section className="space-y-3">
+              <div className="flex items-center justify-between px-1">
+                <div>
+                  <p className="text-[9px] font-black uppercase tracking-[0.22em] text-primary">Actividad</p>
+                  <h3 className="mt-1 text-lg font-black italic uppercase tracking-tighter text-foreground">
+                    Comunidad en movimiento
+                  </h3>
+                </div>
+                <div className="rounded-full border border-white/10 bg-white/[0.04] px-3 py-1 text-[9px] font-black uppercase tracking-[0.18em] text-foreground/45">
+                  {totalPlayers}+ en juego
+                </div>
+              </div>
+              {activities.length > 0 ? (
+                <div className="relative overflow-hidden rounded-[2rem] border border-white/10 bg-[linear-gradient(160deg,rgba(255,255,255,0.06),rgba(255,255,255,0.02))] p-4 shadow-[0_18px_40px_rgba(0,0,0,0.18)]">
+                  <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(var(--primary-rgb),0.22),transparent_34%),radial-gradient(circle_at_bottom_right,rgba(255,255,255,0.08),transparent_38%)] pointer-events-none" />
+                  <div className="relative space-y-3">
+                    {activities.slice(0, 3).map((activity, idx) => (
+                      <div
+                        key={`${activity.user}-${idx}`}
+                        className={cn(
+                          'relative overflow-hidden rounded-[1.5rem] border border-white/10 p-4 backdrop-blur-sm',
+                          idx === 0 ? 'bg-black/20' : 'bg-white/[0.035]'
+                        )}
+                      >
+                        <div className="flex items-start gap-3">
+                          <div className="relative flex flex-col items-center shrink-0">
+                            <div className="flex h-11 w-11 items-center justify-center rounded-[1.1rem] border border-primary/20 bg-primary/12 shadow-[0_0_24px_rgba(var(--primary-rgb),0.16)]">
+                              <TrendingUp className="h-4 w-4 text-primary" />
+                            </div>
+                            {idx < 2 && <div className="mt-2 h-8 w-px bg-gradient-to-b from-primary/40 to-transparent" />}
+                          </div>
+                          <div className="min-w-0 flex-1">
+                            <div className="flex items-center justify-between gap-3">
+                              <p className="text-[9px] font-black uppercase tracking-[0.22em] text-primary">
+                                {idx === 0 ? 'Ahora' : `Pulso 0${idx + 1}`}
+                              </p>
+                              <span className="rounded-full border border-white/10 bg-white/[0.04] px-2.5 py-1 text-[8px] font-black uppercase tracking-[0.16em] text-foreground/40">
+                                {activity.time}
+                              </span>
+                            </div>
+                            <p className="mt-2 text-[15px] font-black leading-snug text-foreground">
+                              {activity.user}
+                              <span className="ml-1 font-medium text-foreground/58">{activity.detail}</span>
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ) : (
+                <div className="rounded-[1.7rem] border border-dashed border-foreground/10 bg-white/[0.02] p-5 text-center text-sm font-bold text-foreground/55">
+                  No hay movimiento reciente en la comunidad.
+                </div>
+              )}
+            </section>
+
+
           </div>
         ) : (
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-            <div className="lg:col-span-8 xl:col-span-8 space-y-8 order-2 lg:order-1">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+            <div className="lg:col-span-8 xl:col-span-8 space-y-6 order-2 lg:order-1">
               {/* --- DASHBOARD TAB CONTROLLER --- */}
-              <section className="sticky top-24 z-40 pb-6">
-                <div className="w-full rounded-[2.5rem] p-1.5 bg-surface-elevated/80 backdrop-blur-xl border border-white/5 shadow-2xl flex items-center gap-1.5 relative overflow-hidden">
-                  <div className="absolute inset-0 bg-gradient-to-r from-primary/5 via-transparent to-primary/5 pointer-events-none" />
+              <section className={cn(
+                "z-40 py-2 -mx-2 px-2 lg:bg-transparent lg:static lg:pb-6",
+                isMobile ? "relative bg-transparent" : "sticky top-20 bg-background/80 backdrop-blur-md"
+              )}>
+                <div className={cn(
+                  "w-full rounded-[2rem] flex items-center gap-1 relative overflow-hidden",
+                  isMobile ? "p-1 bg-surface-elevated/50 border border-foreground/[0.03]" : "p-1.5 glass-premium border-foreground/20 shadow-2xl"
+                )}>
+                  {!performanceMode && (
+                    <div className="absolute inset-0 bg-gradient-to-r from-primary/5 via-transparent to-primary/5 pointer-events-none" />
+                  )}
                   {[
                     { id: 'activity', label: 'Feed', icon: Activity },
                     { id: 'teams', label: 'Equipos', icon: Users },
-                    { id: 'social', label: 'Social', icon: MessageSquare },
+                    { id: 'social', label: 'Social', icon: MessageSquare }, // Added social tab
                     { id: 'futtok', label: focusSportMeta.highlightLabel, icon: Flame },
                   ].map((tab) => {
                     const isSelected = activeTab === tab.id;
@@ -1051,22 +1118,22 @@ export default function HomePage() {
                         key={tab.id}
                         onClick={() => setActiveTab(tab.id as any)}
                         className={cn(
-                          "relative flex-1 h-12 rounded-full flex items-center justify-center gap-3 transition-all duration-500 group overflow-hidden",
-                          isSelected ? "text-black" : "text-foreground/40 hover:text-foreground/70"
+                          "relative flex-1 py-2 rounded-full flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-2.5 transition-all duration-500 group",
+                          isSelected ? "text-background" : "text-foreground/40 hover:text-foreground/70"
                         )}
                       >
                         {isSelected && (
                           <motion.div
                             layoutId="active-dashboard-pill"
-                            className="absolute inset-0 bg-primary shadow-[0_0_20px_rgba(44,252,125,0.4)]"
+                            className="absolute inset-0 bg-gradient-to-br from-primary to-primary-dark rounded-full shadow-[0_4px_15px_rgba(44,252,125,0.3)]"
                             transition={{ type: "spring", stiffness: 400, damping: 35 }}
                           />
                         )}
                         <tab.icon className={cn(
                           "w-4 h-4 relative z-10 transition-transform duration-500",
-                          isSelected ? "scale-110" : "group-hover:scale-110"
+                          isSelected ? "scale-110 text-background" : "group-hover:scale-110"
                         )} />
-                        <span className="text-[11px] font-black uppercase tracking-[0.15em] italic relative z-10 font-kanit">
+                        <span className="text-[9px] sm:text-[11px] font-black uppercase tracking-widest italic relative z-10 leading-none">
                           {tab.label}
                         </span>
                       </button>
@@ -1083,125 +1150,218 @@ export default function HomePage() {
                     animate="visible"
                     exit="exit"
                     variants={tabContentVariants}
-                    className="space-y-10"
+                    className="space-y-6"
                   >
                     <motion.section
                       id="stat-cards"
-                      className="grid grid-cols-4 gap-5"
+                      initial="hidden"
+                      animate="visible"
+                      variants={{ visible: { transition: { staggerChildren: 0.08 } } }}
+                      className="grid grid-cols-2 sm:grid-cols-4 gap-4 snap-start scroll-mt-26"
                     >
                       {statCardsData.map((stat, i) => (
-                        <div key={i} className="rounded-[2.5rem] p-6 bg-surface-elevated border border-white/5 shadow-xl group hover:border-primary/20 transition-all duration-500">
-                           <div className="w-12 h-12 rounded-2xl flex items-center justify-center mb-5 bg-foreground/5 border border-white/5 group-hover:scale-110 transition-transform" style={{ color: stat.color }}>
-                              <stat.icon className="w-6 h-6" />
-                           </div>
-                           <p className="text-[10px] font-black uppercase tracking-[0.3em] text-foreground/30 font-kanit">{stat.label}</p>
-                           <p className="text-3xl font-black italic text-foreground mt-1 font-kanit tracking-tighter">{stat.value}</p>
-                        </div>
+                        <StatCard
+                          key={stat.label}
+                          stat={stat}
+                          i={i}
+                          performanceMode={performanceMode}
+                          fadeUp={fadeUp}
+                        />
                       ))}
                     </motion.section>
+
+                    <SectionDivider />
+
+                    <motion.div
+                      variants={fadeUp}
+                      whileHover={performanceMode ? {} : { scale: 1.01 }}
+                      className={cn(
+                        'relative overflow-hidden rounded-[2.5rem] p-6 flex flex-col sm:flex-row items-center justify-between gap-6 glass-premium border-primary/10',
+                        performanceMode && 'bg-surface'
+                      )}
+                    >
+                      {!performanceMode && (
+                        <div
+                          className="absolute right-0 top-0 w-full h-full opacity-10 pointer-events-none"
+                          style={{
+                            background:
+                              'radial-gradient(ellipse at 100% 0%, rgba(44,252,125,0.6) 0%, transparent 60%)',
+                          }}
+                        />
+                      )}
+                      <div className="flex items-center gap-5 relative z-10">
+                        <div className="w-14 h-14 rounded-2xl flex items-center justify-center shrink-0 glass shadow-inner border-foreground/15">
+                          <Users className="w-7 h-7 text-primary" />
+                        </div>
+                        <div>
+                          <h4 className="text-xl font-black text-foreground italic uppercase tracking-tighter leading-none font-kanit">
+                            Comunidad Activa
+                          </h4>
+                          <p className="text-[10px] font-black text-foreground/40 uppercase tracking-[0.25em] mt-1 font-kanit">
+                            <span className="text-primary text-base font-black mr-1">{totalPlayers}</span>{' '}
+                            JUGADORES REGISTRADOS
+                          </p>
+                        </div>
+                      </div>
+                      <div className="flex gap-3 relative z-10 shrink-0 w-full sm:w-auto">
+                        <Link href="/teams" className="flex-1 sm:flex-none">
+                          <button className="w-full h-11 px-6 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all hover:bg-foreground/5 glass border-foreground/20 text-foreground/60 font-kanit">
+                            CLUBES TOP
+                          </button>
+                        </Link>
+                        <Link href="/search" className="flex-1 sm:flex-none">
+                          <button className="w-full h-11 px-6 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all hover:scale-[1.03] text-background bg-gradient-to-br from-primary to-primary-dark shadow-xl shadow-primary/20 font-kanit">
+                            MAPA VIVO
+                          </button>
+                        </Link>
+                      </div>
+                    </motion.div>
 
                     <motion.section
                       variants={fadeUp}
                       className="space-y-6"
                     >
-                      <div className="flex items-end justify-between px-2">
-                        <div className="space-y-1">
-                          <p className="text-[10px] font-black uppercase tracking-[0.4em] text-primary font-kanit italic">Progreso</p>
-                          <h2 className="text-3xl font-black italic text-foreground uppercase tracking-tighter leading-none font-kanit">
+                      <div className="flex items-end justify-between px-1">
+                        <div className="flex flex-col gap-1">
+                          <h2 className="text-xl lg:text-2xl font-black italic text-foreground uppercase tracking-tighter leading-none font-kanit">
                             Road to Glory
                           </h2>
+                          <span className="text-[9px] font-semibold text-foreground/40 tracking-wide font-kanit">
+                            Tu camino hacia la leyenda
+                          </span>
                         </div>
-                        <Sparkles className="w-6 h-6 text-primary/20 animate-pulse" />
+                        <Sparkles className="w-5 h-5 text-primary/30 shrink-0 mb-1 animate-pulse" />
                       </div>
 
-                      <div className="bg-surface-elevated/40 p-10 rounded-[3rem] border border-white/5 relative overflow-hidden backdrop-blur-sm">
-                        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(var(--primary-rgb),0.05),transparent_70%)]" />
-                        
-                        <div className="relative z-10 space-y-12">
-                          {/* Rank Nodes */}
-                          <div className="relative flex items-center justify-between px-10">
-                            {/* Track Base */}
-                            <div className="absolute left-0 right-0 h-1 bg-white/5 rounded-full top-1/2 -translate-y-1/2" />
-                            
-                            {/* Track Active */}
-                            <motion.div 
-                               initial={{ width: 0 }}
-                               whileInView={{ width: '100%' }}
-                               className="absolute left-0 h-1 bg-primary shadow-[0_0_15px_rgba(44,252,125,0.5)] rounded-full top-1/2 -translate-y-1/2"
-                               style={{ width: `${(statsSummary.elo / 1000) * 100}%` }}
-                            />
+                      <div className={cn("glass-premium p-6 lg:p-8 rounded-[2rem] lg:rounded-[2.5rem] border-foreground/15 relative overflow-hidden", isMobile && "px-4")}>
+                        <div className="absolute inset-0 opacity-[0.03] pointer-events-none">
+                          <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_center,_var(--primary)_0%,_transparent_70%)]" />
+                        </div>
 
-                            {RANKS.slice(0, 5).map((rankItem, i) => {
-                               const isReached = statsSummary.elo >= rankItem.minElo;
-                               const isCurrent = rankCalculation.info.name === rankItem.name;
-                               return (
-                                 <div key={i} className="relative z-10 flex flex-col items-center">
-                                    <div className={cn(
-                                       "w-16 h-16 rounded-[1.5rem] border-2 flex items-center justify-center transition-all duration-500",
-                                       isReached ? "bg-surface-elevated border-primary shadow-[0_0_20px_rgba(44,252,125,0.2)]" : "bg-surface-elevated/50 border-white/10 opacity-30 grayscale"
-                                    )}>
-                                       <RankBadgeInline rankName={rankItem.name} size="md" />
-                                    </div>
-                                    <p className={cn(
-                                       "absolute top-20 text-[10px] font-black uppercase tracking-widest font-kanit italic",
-                                       isReached ? "text-foreground" : "text-foreground/20"
-                                    )}>{rankItem.name}</p>
-                                 </div>
-                               )
+                        <div className="relative z-10 space-y-8">
+                          <div className="relative flex items-center justify-between px-2 sm:px-8 mt-2 overflow-x-auto no-scrollbar gap-8 pb-2">
+                            {/* Dotted/Dashed subtle background baseline */}
+                            <div className="absolute left-0 right-0 h-1.5 rounded-full top-1/2 -translate-y-1/2 bg-surface border border-foreground/10 overflow-hidden">
+                              <div className="absolute inset-0 bg-[url('/noise.png')] opacity-20 mix-blend-overlay" />
+                            </div>
+
+                            {/* Neon Active Track */}
+                            <div className="absolute left-0 h-1.5 rounded-full top-1/2 -translate-y-1/2 overflow-visible">
+                              <motion.div
+                                initial={{ width: 0 }}
+                                whileInView={{ width: '100%' }}
+                                transition={{ duration: 1.5, ease: 'easeOut' }}
+                                className="h-full bg-gradient-to-r from-primary-dark via-primary to-primary-light relative shadow-[0_0_20px_rgba(44,252,125,0.6)]"
+                                style={{
+                                  width: `calc(${(RANKS.findIndex((rank) => rank.name === rankCalculation.info.name) / (RANKS.length - 1)) * 100}% + 20px)`,
+                                }}
+                              >
+                                <div className="absolute -right-2 top-1/2 -translate-y-1/2 w-4 h-4 bg-white rounded-full shadow-[0_0_25px_rgba(44,252,125,1)] animate-pulse" />
+                              </motion.div>
+                            </div>
+
+                            {/* Nodes */}
+                            {RANKS.map((rankItem, i) => {
+                              const isReached = statsSummary.elo >= rankItem.minElo;
+                              const isCurrent = rankCalculation.info.name === rankItem.name;
+
+                              return (
+                                <div
+                                  key={rankItem.name}
+                                  className="relative flex flex-col items-center group z-10"
+                                >
+                                  {isReached && (
+                                    <div className="absolute inset-0 bg-primary/20 blur-xl rounded-full scale-150 animate-pulse" />
+                                  )}
+                                  <motion.div
+                                    whileHover={{ scale: 1.15, y: -5 }}
+                                    className={cn(
+                                      'w-12 h-12 rounded-[1rem] flex items-center justify-center border-2 transition-all duration-500 relative backdrop-blur-md',
+                                      isReached
+                                        ? 'bg-surface shadow-[0_10px_20px_rgba(0,0,0,0.5),inset_0_0_15px_rgba(44,252,125,0.2)] border-primary hover:border-primary-light'
+                                        : 'bg-surface/40 border-foreground/10 opacity-50 group-hover:opacity-100 grayscale'
+                                    )}
+                                  >
+                                    {isReached && <div className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-primary rounded-full shadow-[0_0_10px_rgba(44,252,125,0.8)]" />}
+                                    <RankBadgeInline rankName={rankItem.name} size="sm" className="scale-[0.85] drop-shadow-lg" />
+                                  </motion.div>
+
+                                  {isCurrent && (
+                                    <motion.div
+                                      layoutId="current-rank-indicator"
+                                      className="absolute -top-10"
+                                    >
+                                      <div className="px-3 py-1 rounded-lg bg-foreground text-background text-[8px] font-black uppercase tracking-widest whitespace-nowrap relative shadow-xl shadow-foreground/20">
+                                        PASO ACTUAL
+                                        <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-2 h-2 bg-foreground rotate-45" />
+                                      </div>
+                                    </motion.div>
+                                  )}
+                                </div>
+                              );
                             })}
                           </div>
 
-                          {/* Quick Detailed Stats */}
-                          <div className="grid grid-cols-3 gap-6 pt-10">
-                             {[
-                               { label: 'Elo actual', value: statsSummary.elo, icon: Zap, color: 'text-primary' },
-                               { label: 'Win Rate', value: `${statsSummary.winRate}%`, icon: TrendingUp, color: 'text-foreground' },
-                               { label: 'Matches', value: statsSummary.totalMatches, icon: Activity, color: 'text-foreground' }
-                             ].map((s, i) => (
-                               <div key={i} className="bg-foreground/[0.03] border border-white/5 rounded-2xl p-5 flex items-center gap-4">
-                                  <div className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center">
-                                     <s.icon className={cn("w-5 h-5", s.color)} />
-                                  </div>
-                                  <div>
-                                     <p className="text-[9px] font-black uppercase tracking-[0.2em] text-foreground/30 font-kanit">{s.label}</p>
-                                     <p className="text-xl font-black italic text-foreground font-kanit">{s.value}</p>
-                                  </div>
-                               </div>
-                             ))}
+                          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-4">
+                            {[
+                              { icon: Activity, color: sportTheme.accent, label: `${focusSportMeta.shortLabel}`, value: statsSummary.totalMatches },
+                              { icon: Trophy, color: '#f59e0b', label: 'Ganados', value: statsSummary.wins },
+                              { icon: Award, color: '#6366f1', label: 'PrÃ³ximos', value: statsSummary.upcomingMatches },
+                            ].map((item, i) => (
+                              <div key={i} className="flex items-center gap-4 p-4 rounded-2xl bg-foreground/[0.02] border border-foreground/15 group hover:bg-foreground/[0.04] transition-colors">
+                                <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0" style={{ backgroundColor: `${item.color}15` }}>
+                                  <item.icon className="w-5 h-5" style={{ color: item.color }} />
+                                </div>
+                                <div>
+                                  <p className="text-[10px] font-black text-foreground/40 uppercase tracking-widest">{item.label}</p>
+                                  <p className="text-xl font-black italic font-kanit text-foreground">{item.value}</p>
+                                </div>
+                              </div>
+                            ))}
                           </div>
                         </div>
                       </div>
                     </motion.section>
 
+                    <SectionDivider />
+
                     <section className="space-y-6">
-                      <div className="flex items-center justify-between px-2">
-                        <div className="space-y-1">
-                          <p className="text-[10px] font-black uppercase tracking-[0.4em] text-primary font-kanit italic">Actividad</p>
-                          <h2 className="text-3xl font-black italic text-foreground uppercase tracking-tighter leading-none font-kanit">
-                            Comunidad Live
+                      <div className="flex items-center justify-between px-1">
+                        <div className="flex flex-col gap-1">
+                          <h2 className="text-xl lg:text-2xl font-black text-foreground italic uppercase tracking-tighter font-kanit">
+                            Feed de Actividad
                           </h2>
+                          <span className="text-[9px] font-semibold text-foreground/40 tracking-wide font-kanit">
+                            Comunidad de {focusSportMeta.label} en tiempo real
+                          </span>
                         </div>
+                        <Activity className="w-5 h-5 text-primary/30" />
                       </div>
 
-                      <div className="grid grid-cols-1 gap-4">
-                        {activities.map((activity, idx) => (
-                          <div key={idx} className="group p-6 rounded-[2rem] bg-surface-elevated/40 border border-white/5 hover:border-primary/20 transition-all duration-300 flex items-center gap-6">
-                             <div className="w-14 h-14 rounded-2xl bg-foreground/5 border border-white/5 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
-                                <Activity className="w-6 h-6 text-primary" />
-                             </div>
-                             <div className="flex-1">
-                                <p className="text-lg font-bold text-foreground font-kanit italic uppercase leading-none">
-                                   {activity.user}
+                      <div className="space-y-4">
+                        {activities.length > 0 ? (
+                          activities.map((activity, idx) => (
+                            <motion.div
+                              key={idx}
+                              initial={{ opacity: 0, x: -10 }}
+                              animate={{ opacity: 1, x: 0 }}
+                              transition={{ delay: idx * 0.1 }}
+                              className="p-4 rounded-2xl glass-premium border-foreground/15 flex items-center gap-4 group"
+                            >
+                              <div className="w-10 h-10 rounded-full bg-surface border border-foreground/15 flex items-center justify-center shrink-0">
+                                {activity.type === 'RANK_UP' ? <TrendingUp className="w-4 h-4 text-primary" /> : <Star className="w-4 h-4 text-accent" />}
+                              </div>
+                              <div className="flex-1 min-w-0">
+                                <p className="text-[10px] font-bold text-foreground">
+                                  {activity.user} <span className="text-foreground/40 font-medium tracking-tight"> {activity.detail}</span>
                                 </p>
-                                <p className="text-foreground/40 text-sm mt-1">
-                                   {activity.detail}
-                                </p>
-                             </div>
-                             <div className="text-right">
-                                <p className="text-[10px] font-black text-primary uppercase tracking-widest font-kanit italic">{activity.time}</p>
-                             </div>
-                          </div>
-                        ))}
+                                <p className="text-[8px] font-black text-primary/60 uppercase mt-0.5 tracking-tighter">hace {activity.time}</p>
+                              </div>
+                            </motion.div>
+                          ))
+                        ) : (
+                          <EmptyState icon={Activity} title="Silencio en la Cancha" description="No hay actividad reciente en tu zona." />
+                        )}
                       </div>
                     </section>
                   </motion.div>
@@ -1214,47 +1374,27 @@ export default function HomePage() {
                     animate="visible"
                     exit="exit"
                     variants={tabContentVariants}
-                    className="space-y-10"
+                    className="space-y-6"
                   >
-                    <div className="flex items-end justify-between px-2">
-                      <div className="space-y-1">
-                        <p className="text-[10px] font-black uppercase tracking-[0.4em] text-primary font-kanit italic">Clubes</p>
-                        <h2 className="text-3xl font-black italic text-foreground uppercase tracking-tighter leading-none font-kanit">
-                          Mis Equipos
+                    <div className="flex items-center justify-between px-1">
+                      <div className="flex flex-col gap-1">
+                        <h2 className="text-xl lg:text-2xl font-black text-foreground italic uppercase tracking-tighter font-kanit">
+                          Tus Equipos
                         </h2>
+                        <span className="text-[9px] font-semibold text-foreground/40 tracking-wide font-kanit">
+                          Plantel profesional
+                        </span>
                       </div>
-                      <Link href="/teams" className="text-[10px] font-black uppercase tracking-[0.2em] text-foreground/40 font-kanit border-b border-foreground/10 pb-0.5">
-                        Ver Todos
+                      <Link href="/teams" className="group flex items-center gap-1.5 px-4 py-2 rounded-2xl text-[9px] font-black text-foreground/55 hover:text-foreground transition-all tracking-[0.2em] uppercase glass border-foreground/20">
+                        VER TODOS <ChevronRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
                       </Link>
                     </div>
 
-                    <div className="grid grid-cols-1 gap-5">
+                    <div className="flex flex-col gap-5">
                       {userTeams.length > 0 ? (
-                        userTeams.map((team) => (
-                          <div key={team.id} className="group p-6 rounded-[2.5rem] bg-surface-elevated/40 border border-white/5 hover:border-primary/20 transition-all duration-500 flex items-center gap-8">
-                             <div className="w-20 h-20 rounded-3xl bg-surface border border-white/10 flex items-center justify-center overflow-hidden shrink-0 shadow-2xl group-hover:scale-105 transition-transform">
-                                {team.logo_url ? <img src={team.logo_url} alt="" className="w-full h-full object-cover" /> : <Shield className="w-10 h-10 text-foreground/10" />}
-                             </div>
-                             <div className="flex-1">
-                                <h3 className="text-2xl font-black italic text-foreground uppercase font-kanit tracking-tighter">{team.name}</h3>
-                                <div className="flex items-center gap-4 mt-2">
-                                   <div className="flex items-center gap-2 px-3 py-1 bg-foreground/5 rounded-full border border-white/5">
-                                      <Users className="w-3.5 h-3.5 text-primary" />
-                                      <span className="text-[10px] font-black text-foreground/60 uppercase font-kanit italic">{team.members_count} Jugadores</span>
-                                   </div>
-                                   <div className="flex items-center gap-2 px-3 py-1 bg-foreground/5 rounded-full border border-white/5">
-                                      <Trophy className="w-3.5 h-3.5 text-primary" />
-                                      <span className="text-[10px] font-black text-foreground/60 uppercase font-kanit italic">Level {team.level || 1}</span>
-                                   </div>
-                                </div>
-                             </div>
-                             <button className="px-8 h-12 rounded-2xl bg-foreground/5 border border-white/10 text-[10px] font-black uppercase tracking-widest text-foreground/40 hover:bg-primary hover:text-black hover:border-primary transition-all font-kanit italic">
-                                GESTIONAR
-                             </button>
-                          </div>
-                        ))
+                        userTeams.map((team) => <TeamCard key={team.id} team={team} performanceMode={performanceMode} />)
                       ) : (
-                        <EmptyState icon={Shield} title="Sin Plantel" description="Aún no eres parte de ningún equipo." />
+                        <EmptyState icon={Shield} title="Sin Plantel" description="AÃºn no eres parte de ningÃºn equipo." />
                       )}
                     </div>
                   </motion.div>
@@ -1267,21 +1407,23 @@ export default function HomePage() {
                     animate="visible"
                     exit="exit"
                     variants={tabContentVariants}
-                    className="space-y-10"
+                    className="space-y-6"
                   >
-                    <div className="flex items-end justify-between px-2">
-                      <div className="space-y-1">
-                        <p className="text-[10px] font-black uppercase tracking-[0.4em] text-primary font-kanit italic">Social</p>
-                        <h2 className="text-3xl font-black italic text-foreground uppercase tracking-tighter leading-none font-kanit">
-                          3er Tiempo
+                    <div className="flex items-center justify-between px-1">
+                      <div className="flex flex-col gap-1">
+                        <h2 className="text-xl lg:text-2xl font-black text-foreground italic uppercase tracking-tighter font-kanit">
+                          Lo Ãºltimo en 3erTiempo
                         </h2>
+                        <span className="text-[9px] font-semibold text-foreground/40 tracking-wide font-kanit">
+                          Conversaciones y posteos alrededor de {focusSportMeta.label}
+                        </span>
                       </div>
-                      <Link href="/feed" className="text-[10px] font-black uppercase tracking-[0.2em] text-foreground/40 font-kanit border-b border-foreground/10 pb-0.5">
-                        Ir al Muro
+                      <Link href="/feed" className="group flex items-center gap-2 px-5 py-2.5 rounded-full text-[9px] font-black text-white hover:text-primary transition-all tracking-[0.2em] uppercase glass-premium border-primary/20 hover:border-primary/50 shadow-lg shadow-primary/5">
+                        VER MURO <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
                       </Link>
                     </div>
 
-                    <div className="grid grid-cols-1 gap-6">
+                    <div className="space-y-4">
                       {recentPosts.length > 0 ? (
                         recentPosts.map((post, idx) => (
                           <motion.div
@@ -1289,56 +1431,74 @@ export default function HomePage() {
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: idx * 0.05 }}
-                            className="bg-surface-elevated/60 rounded-[3rem] border border-white/5 overflow-hidden group hover:border-primary/10 transition-all duration-300"
+                            className="glass-premium rounded-[2rem] border-foreground/10 overflow-hidden group hover:border-primary/20 transition-all duration-300"
                           >
-                            <div className="p-8 flex flex-col gap-6">
+                            <div className="p-5 flex flex-col gap-4">
                               <div className="flex items-center justify-between">
-                                <div className="flex items-center gap-4">
-                                  <div className="w-14 h-14 rounded-2xl overflow-hidden border border-white/10 bg-surface shadow-xl">
-                                    {post.author.avatar_url ? (
-                                      <img src={post.author.avatar_url} alt="" className="w-full h-full object-cover" />
-                                    ) : (
-                                      <div className="w-full h-full flex items-center justify-center text-foreground/10 font-bold text-xl font-kanit italic uppercase">
-                                        {post.author.name.charAt(0)}
+                                <div className="flex items-center gap-3">
+                                  <Link href={`/feed/profile?id=${post.author.id}`} className="relative">
+                                    <div className={cn(
+                                      "w-10 h-10 rounded-full overflow-hidden border border-foreground/10 shadow-sm",
+                                      post.author.is_pro && "ring-2 ring-primary ring-offset-2 ring-offset-background"
+                                    )}>
+                                      {post.author.avatar_url ? (
+                                        <img src={post.author.avatar_url} alt="" className="w-full h-full object-cover" />
+                                      ) : (
+                                        <div className="w-full h-full bg-surface-elevated flex items-center justify-center text-foreground/40 font-bold text-sm">
+                                          {post.author.name.charAt(0)}
+                                        </div>
+                                      )}
+                                    </div>
+                                    {post.author.is_pro && (
+                                      <div className="absolute -bottom-1 -right-1 bg-primary text-background p-0.5 rounded shadow-lg">
+                                        <Zap className="w-2.5 h-2.5 fill-black" />
                                       </div>
                                     )}
-                                  </div>
+                                  </Link>
                                   <div>
-                                    <p className="text-xl font-black italic text-foreground leading-none font-kanit uppercase">{post.author.name}</p>
-                                    <p className="text-[10px] font-black text-primary uppercase tracking-[0.2em] mt-1 font-kanit italic">
+                                    <div className="flex items-center gap-1.5">
+                                      <span className="font-bold text-sm text-foreground leading-none">{post.author.name}</span>
+                                      {post.author.is_pro && <span className="text-[8px] font-black text-primary uppercase tracking-tighter bg-primary/10 px-1 rounded">PRO</span>}
+                                    </div>
+                                    <div className="text-[10px] font-bold text-foreground/30 uppercase tracking-widest mt-0.5">
                                       @{post.author.handle || post.author.name.toLowerCase().replace(/\s+/g, '')}
-                                    </p>
+                                    </div>
                                   </div>
                                 </div>
-                                <span className="text-[10px] font-black text-foreground/20 uppercase tracking-widest font-kanit italic">
+                                <span className="text-[10px] font-bold text-foreground/20 uppercase">
                                   {new Date(post.created_at).toLocaleDateString()}
                                 </span>
                               </div>
 
-                              <p className="text-xl text-foreground font-medium leading-snug italic font-kanit">
-                                "{post.content}"
+                              <p className="text-[15px] text-foreground/80 leading-snug whitespace-pre-wrap font-medium">
+                                {post.content}
                               </p>
 
-                              <div className="flex items-center gap-8 pt-4 border-t border-white/5">
-                                <div className="flex items-center gap-2 text-primary font-kanit italic text-sm font-black">
-                                  <Heart className="w-4 h-4 fill-primary" />
-                                  <span>{post.likes_count} LIKES</span>
+                              {post.image_url && (
+                                <div className="relative aspect-video rounded-2xl overflow-hidden border border-foreground/10 shadow-sm">
+                                  <img src={post.image_url} alt="" className="w-full h-full object-cover" />
+                                  <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
                                 </div>
-                                <div className="flex items-center gap-2 text-foreground/40 font-kanit italic text-sm font-black">
+                              )}
+
+                              <div className="flex items-center gap-6 pt-2">
+                                <div className="flex items-center gap-1.5 text-foreground/40">
+                                  <Heart className={cn("w-4 h-4", post.user_has_liked && "fill-pink-500 text-pink-500")} />
+                                  <span className="text-xs font-bold">{post.likes_count}</span>
+                                </div>
+                                <div className="flex items-center gap-1.5 text-foreground/40">
                                   <MessageSquare className="w-4 h-4" />
-                                  <span>{post.comments_count} RESPUESTAS</span>
+                                  <span className="text-xs font-bold">{post.comments_count}</span>
                                 </div>
-                                <Link href={`/feed?post=${post.id}`} className="ml-auto">
-                                   <button className="h-10 px-6 rounded-xl bg-foreground/5 text-[10px] font-black uppercase tracking-widest text-foreground hover:bg-primary hover:text-black transition-all font-kanit italic">
-                                      VER CONVERSACIÓN
-                                   </button>
+                                <Link href={`/feed?post=${post.id}`} className="ml-auto text-[10px] font-black text-primary uppercase tracking-[0.2em] hover:underline">
+                                  RESPONDER
                                 </Link>
                               </div>
                             </div>
                           </motion.div>
                         ))
                       ) : (
-                        <EmptyState icon={MessageSquare} title="Silencio en el Muro" description="Se el primero en postear algo épico." />
+                        <EmptyState icon={MessageSquare} title="Silencio en el Muro" description="Se el primero en postear algo Ã©pico." />
                       )}
                     </div>
                   </motion.div>
@@ -1351,51 +1511,44 @@ export default function HomePage() {
                     animate="visible"
                     exit="exit"
                     variants={tabContentVariants}
-                    className="space-y-10"
+                    className="space-y-6"
                   >
-                    <div className="flex items-end justify-between px-2">
-                      <div className="space-y-1">
-                        <p className="text-[10px] font-black uppercase tracking-[0.4em] text-primary font-kanit italic">Highlights</p>
-                        <h2 className="text-3xl font-black italic text-foreground uppercase tracking-tighter leading-none font-kanit">
-                          Tendencias Clips
+                    <div className="flex items-center justify-between px-1">
+                      <div className="flex flex-col gap-1">
+                        <h2 className="text-xl lg:text-2xl font-black text-foreground italic uppercase tracking-tighter font-kanit">
+                          Tendencias en {focusSportMeta.highlightLabel}
                         </h2>
+                        <span className="text-[9px] font-semibold text-foreground/40 tracking-wide font-kanit">
+                          Lo mejor de la comunidad
+                        </span>
                       </div>
-                      <Link href="/highlights" className="text-[10px] font-black uppercase tracking-[0.2em] text-foreground/40 font-kanit border-b border-foreground/10 pb-0.5">
-                        Ver Todo
+                      <Link href="/highlights" className="group flex items-center gap-2 px-5 py-2.5 rounded-full text-[9px] font-black text-white hover:text-emerald-400 transition-all tracking-[0.2em] uppercase glass-premium border-emerald-500/20 hover:border-emerald-500/50 shadow-lg shadow-emerald-500/5">
+                        VER TODO <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
                       </Link>
                     </div>
 
-                    <div className="flex gap-6 overflow-x-auto pb-8 scrollbar-none snap-x h-[450px]">
+                    <div className="flex gap-4 overflow-x-auto pb-4 scrollbar-none snap-x h-[320px] sm:h-[420px]">
                       {highlights.length > 0 ? (
                         highlights.map((h) => (
-                          <Link key={h.id} href={`/highlights?v=${h.id}`} className="shrink-0 aspect-[9/16] h-full rounded-[3rem] overflow-hidden relative group snap-start border border-white/5 shadow-2xl">
+                          <Link key={h.id} href={`/highlights?v=${h.id}`} className="shrink-0 aspect-[9/16] h-full rounded-[2rem] overflow-hidden relative group snap-start border border-foreground/15 shadow-xl">
                             <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent z-10" />
-                            <div className="absolute inset-0 bg-surface z-0" />
-                            {h.thumbnail_url && <img src={h.thumbnail_url} alt="" className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 z-1" />}
-                            
-                            <div className="absolute inset-0 flex items-center justify-center z-20 opacity-0 group-hover:opacity-100 transition-opacity">
-                               <div className="w-16 h-16 rounded-full bg-primary/20 backdrop-blur-md border border-primary/40 flex items-center justify-center">
-                                  <Play className="w-8 h-8 text-primary fill-primary" />
-                               </div>
-                            </div>
-
-                            <div className="absolute bottom-6 left-6 right-6 z-20 flex items-center gap-3">
-                              <div className="w-8 h-8 rounded-xl bg-surface border border-white/20 flex items-center justify-center overflow-hidden shadow-lg">
-                                {h.profiles?.avatar_url ? <img src={h.profiles.avatar_url} alt="" className="w-full h-full object-cover" /> : <User2 className="w-4 h-4 text-white/40" />}
+                            <LazyVideo src={h.video_url} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 opacity-60 group-hover:opacity-100" />
+                            <div className="absolute bottom-4 left-4 right-4 z-20 flex items-center gap-2">
+                              <div className="w-6 h-6 rounded-full bg-surface border border-foreground/20 flex items-center justify-center overflow-hidden">
+                                {h.profiles?.avatar_url ? <img src={h.profiles.avatar_url} alt="" className="w-full h-full object-cover" /> : <User2 className="w-3 h-3 text-white/40" />}
                               </div>
-                              <span className="text-[11px] font-black text-white font-kanit italic uppercase tracking-widest">@{h.profiles?.name || 'jugador'}</span>
+                              <span className="text-[8px] font-black text-white">@{h.profiles?.name || 'user'}</span>
                             </div>
                           </Link>
                         ))
                       ) : (
-                        <EmptyState icon={Flame} title="Sin Brillo" description="Aún no hay clips tendencia." />
+                        <EmptyState icon={Flame} title="Sin Brillo" description="AÃºn no hay clips tendencia." />
                       )}
-                      
-                      <Link href="/highlights" className="shrink-0 aspect-[9/16] h-full rounded-[3rem] bg-surface-elevated/40 border-2 border-dashed border-white/5 flex flex-col items-center justify-center gap-4 group hover:border-primary/40 transition-all text-foreground/20 snap-start">
-                        <div className="w-14 h-14 rounded-2xl bg-foreground/5 flex items-center justify-center group-hover:scale-110 transition-transform border border-white/5">
-                          <PlusCircle className="w-6 h-6 text-primary" />
+                      <Link href="/highlights" className="shrink-0 aspect-[9/16] h-full rounded-[2rem] glass-premium border-dashed border-foreground/20 flex flex-col items-center justify-center gap-3 group hover:border-primary/40 transition-all text-foreground/30 snap-start">
+                        <div className="w-10 h-10 rounded-full bg-surface flex items-center justify-center group-hover:scale-110 transition-transform">
+                          <PlusCircle className="w-5 h-5 text-emerald-500" />
                         </div>
-                        <span className="text-[10px] font-black uppercase tracking-[0.2em] font-kanit italic">Subir Clip</span>
+                        <span className="text-[8px] font-semibold tracking-wide text-center px-4">Subir jugada</span>
                       </Link>
                     </div>
                   </motion.div>
@@ -1407,144 +1560,294 @@ export default function HomePage() {
               "lg:col-span-4 xl:col-span-4 lg:col-start-9 space-y-8 lg:sticky lg:top-24",
               nextMatch ? "order-1 lg:order-2" : "order-3 lg:order-2"
             )}>
-              {/* Featured / Next Match Card */}
-              <div id="featured-match" className="relative group/match overflow-hidden rounded-[3rem] bg-surface-elevated border border-white/5 shadow-2xl">
-                <div className="absolute top-0 right-0 w-64 h-64 bg-primary/5 blur-[100px] rounded-full -translate-y-1/2 translate-x-1/2" />
-                
+              <div id="featured-match" className="relative group/match overflow-hidden rounded-[3rem] glass-premium border-primary/20 shadow-[0_20px_50px_rgba(0,0,0,0.3)]">
+                {/* Background Effects */}
+                {!performanceMode && (
+                  <>
+                    <div className="absolute top-0 right-0 w-64 h-64 bg-primary/5 blur-[100px] rounded-full -translate-y-1/2 translate-x-1/2 group-hover/match:bg-primary/10 transition-all duration-700" />
+                    <div className="absolute bottom-0 left-0 w-64 h-64 bg-emerald-500/[0.03] blur-[80px] rounded-full translate-y-1/2 -translate-x-1/2" />
+                    <div className="absolute inset-0 bg-[url('/noise.png')] opacity-[0.03] mix-blend-overlay pointer-events-none" />
+                  </>
+                )}
+
                 <div className="relative z-10 p-8 space-y-8">
+                  {/* Header with Type & Badge */}
                   <div className="flex items-center justify-between">
-                    <div className="space-y-1">
-                      <p className="text-[10px] font-black uppercase tracking-[0.4em] text-primary font-kanit italic">Próximo</p>
-                      <h3 className="text-xl font-black italic uppercase tracking-tighter text-foreground font-kanit">Agenda Pro</h3>
+                    <div className="flex flex-col gap-1">
+                      <div className="flex items-center gap-2">
+                        <div className="w-2 h-2 rounded-full bg-foreground/30 shadow-[0_0_6px_rgba(var(--foreground-rgb),0.3)]" />
+                        <span className="text-[10px] font-black text-foreground/40 uppercase tracking-[0.4em] font-kanit">PRÓXIMO PARTIDO</span>
+                      </div>
+                      <h3 className="text-[11px] font-medium text-foreground/20 tracking-wide font-kanit">Agenda prioritaria</h3>
                     </div>
                     {nextMatch && (
-                      <div className="h-10 px-4 rounded-2xl bg-foreground/5 border border-white/5 flex items-center justify-center">
-                         <span className="text-[10px] font-black text-foreground/40 uppercase tracking-widest font-kanit">
+                      <div className="flex items-center gap-2">
+                        <WeatherWidget
+                          lat={nextMatch.lat}
+                          lng={nextMatch.lng}
+                          location={nextMatch.location || ''}
+                          date={nextMatch.date || ''}
+                          time={nextMatch.time || ''}
+                        />
+                        <div className="px-4 py-2 rounded-2xl bg-foreground/[0.05] border border-foreground/20 md:">
+                          <span className="text-[10px] font-black text-foreground/60 uppercase tracking-widest">
                             {nextMatchMeta.icon} {nextMatchFormat?.label || nextMatch.type || 'F5'}
-                         </span>
+                          </span>
+                        </div>
                       </div>
                     )}
                   </div>
 
                   {nextMatch ? (
                     <div className="space-y-8">
-                      {/* Matchup Visualization */}
-                      <div className="relative rounded-[2.5rem] bg-surface p-8 border border-white/5 shadow-inner overflow-hidden group/matchup">
-                        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(var(--primary-rgb),0.03),transparent)]" />
-                        
-                        <div className="relative z-10 flex items-center justify-between gap-4">
-                           {/* Team A */}
-                           <div className="flex flex-col items-center gap-4 flex-1">
-                              <div className="w-20 h-20 rounded-2xl bg-surface-elevated border border-white/5 p-3 shadow-xl group-hover/matchup:scale-105 transition-transform">
-                                 <JerseyVisualizer primaryColor="#10b981" secondaryColor="#ffffff" pattern="hoops" className="w-full h-full" />
-                              </div>
-                              <p className="text-sm font-black italic text-foreground uppercase font-kanit tracking-tighter truncate w-full text-center">
-                                 {nextMatch.team_a_name || 'LOCAL'}
-                              </p>
-                           </div>
+                      {/* Matchup Visualization Next-Gen */}
+                      <div className="relative rounded-[2.5rem] bg-gradient-to-b from-surface to-background border border-foreground/10 p-6 md:p-8 shadow-2xl overflow-hidden group/matchup">
+                        {/* Inner Grid / Lines */}
+                        <div className="absolute inset-0 bg-[url('/grid.svg')] opacity-[0.03] mix-blend-overlay pointer-events-none" />
+                        <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-primary/20 to-transparent opacity-0 group-hover/matchup:opacity-100 transition-opacity duration-700" />
 
-                           <div className="text-2xl font-black italic text-foreground/20 font-kanit">VS</div>
-
-                           {/* Team B */}
-                           <div className="flex flex-col items-center gap-4 flex-1">
-                              <div className="w-20 h-20 rounded-2xl bg-surface-elevated border border-white/5 p-3 shadow-xl group-hover/matchup:scale-105 transition-transform">
-                                 <JerseyVisualizer primaryColor="#3b82f6" secondaryColor="#ffffff" pattern="vertical" className="w-full h-full" />
+                        <div className="relative flex items-center justify-between z-10 w-full max-w-sm mx-auto">
+                          {/* LOCAL */}
+                          <div className="flex flex-col items-center gap-4 flex-1">
+                            <motion.div
+                              whileHover={{ scale: 1.1, rotate: -5 }}
+                              className="relative w-20 h-20 md:w-24 md:h-24"
+                            >
+                              <div className="absolute inset-0 bg-primary/20 blur-xl rounded-full opacity-0 group-hover/matchup:opacity-100 transition-opacity duration-500" />
+                              <div className="absolute inset-0 bg-surface border-2 border-foreground/15 rounded-[1.5rem] p-3 shadow-xl overflow-hidden z-10 flex items-center justify-center">
+                                <JerseyVisualizer primaryColor="#18181b" secondaryColor="#2cfc7d" pattern="vertical" className="w-full h-full object-contain" />
                               </div>
-                              <p className="text-sm font-black italic text-foreground uppercase font-kanit tracking-tighter truncate w-full text-center">
-                                 {nextMatch.team_b_name || 'VISITA'}
-                              </p>
-                           </div>
+                              <div className="absolute -bottom-2 -right-2 w-8 h-8 rounded-full bg-background border border-foreground/10 flex items-center justify-center z-20 shadow-lg">
+                                <Shield className="w-4 h-4 text-primary" />
+                              </div>
+                            </motion.div>
+                            <div className="text-center space-y-1">
+                              <span className="text-sm md:text-base font-black uppercase italic tracking-tighter text-foreground font-kanit block px-2 line-clamp-1 max-w-[120px]">
+                                {(nextMatch.team_a_name && nextMatch.team_a_name !== 'Team A') ? nextMatch.team_a_name : nextMatchSport === 'padel' ? 'DUPLA A' : 'LOCAL'}
+                              </span>
+                              <div className="inline-block px-2 py-0.5 rounded text-[8px] font-black bg-foreground/5 text-foreground/40 uppercase tracking-[0.2em] border border-foreground/10">
+                                {nextMatchSport === 'padel' ? 'LADO A' : 'LOCAL'}
+                              </div>
+                            </div>
+                          </div>
+
+                          {/* VS Center */}
+                          <div className="flex flex-col items-center justify-center shrink-0 w-20 relative z-20">
+                            {/* Animated connecting line */}
+                            <div className="absolute h-px w-64 bg-gradient-to-r from-transparent via-foreground/20 to-transparent top-1/2 -translate-y-1/2 -left-22 -z-10 group-hover/matchup:via-primary/40 transition-colors duration-500" />
+
+                            <div
+                              className="w-14 h-14 rounded-[1.2rem] bg-gradient-to-br from-surface to-background border border-foreground/20 flex items-center justify-center shadow-lg shadow-black/50 rotate-45"
+                            >
+                              <span className="text-xl font-black italic text-transparent bg-clip-text bg-gradient-to-b from-primary to-primary-dark font-kanit -rotate-45 leading-none mt-1">VS</span>
+                            </div>
+
+                            {countdownText && (
+                              <div className="absolute -bottom-10 whitespace-nowrap px-3 py-1.5 rounded-full bg-background/80 backdrop-blur-sm border border-primary/30 text-primary text-[9px] font-black uppercase tracking-[0.2em] shadow-[0_0_15px_rgba(44,252,125,0.2)] animate-pulse">
+                                {countdownText}
+                              </div>
+                            )}
+                          </div>
+
+                          {/* VISITA */}
+                          <div className="flex flex-col items-center gap-4 flex-1">
+                            <motion.div
+                              whileHover={{ scale: 1.1, rotate: 5 }}
+                              className="relative w-20 h-20 md:w-24 md:h-24"
+                            >
+                              <div className="absolute inset-0 bg-emerald-500/20 blur-xl rounded-full opacity-0 group-hover/matchup:opacity-100 transition-opacity duration-500" />
+                              <div className="absolute inset-0 bg-surface border-2 border-foreground/15 rounded-[1.5rem] p-3 shadow-xl overflow-hidden z-10 flex items-center justify-center">
+                                <JerseyVisualizer primaryColor="#10b981" secondaryColor="#ffffff" pattern="hoops" className="w-full h-full object-contain" />
+                              </div>
+                            </motion.div>
+                            <div className="text-center space-y-1">
+                              <span className="text-sm md:text-base font-black uppercase italic tracking-tighter text-foreground font-kanit block px-2 line-clamp-1 max-w-[120px]">
+                                {(nextMatch.team_b_name && nextMatch.team_b_name !== 'Team B') ? nextMatch.team_b_name : nextMatchSport === 'padel' ? 'DUPLA B' : 'VISITA'}
+                              </span>
+                              <div className="inline-block px-2 py-0.5 rounded text-[8px] font-black bg-foreground/5 text-foreground/40 uppercase tracking-[0.2em] border border-foreground/10">
+                                {nextMatchSport === 'padel' ? 'LADO B' : 'VISITA'}
+                              </div>
+                            </div>
+                          </div>
                         </div>
                       </div>
 
-                      {/* Info Grid */}
+                      {/* High-Contrast Info Grid */}
                       <div className="grid grid-cols-2 gap-3">
-                         <div className="bg-foreground/5 border border-white/5 rounded-2xl p-4">
-                            <p className="text-[9px] font-black text-foreground/30 uppercase tracking-widest font-kanit mb-1">Fecha</p>
-                            <p className="text-sm font-black italic text-foreground font-kanit uppercase">
-                               {new Date(nextMatch.date + 'T12:00:00').toLocaleDateString('es-ES', { weekday: 'short', day: 'numeric' })}
-                            </p>
-                         </div>
-                         <div className="bg-foreground/5 border border-white/5 rounded-2xl p-4">
-                            <p className="text-[9px] font-black text-foreground/30 uppercase tracking-widest font-kanit mb-1">Hora</p>
-                            <p className="text-sm font-black italic text-foreground font-kanit">{nextMatch.time?.slice(0, 5)} HS</p>
-                         </div>
+                        <div className="flex flex-col relative overflow-hidden p-4 rounded-[2rem] bg-surface/50 border border-foreground/10 group/info hover:border-primary/30 transition-all duration-300">
+                          <div className="absolute -top-2 -right-2 p-4 opacity-10 group-hover/info:opacity-20 group-hover/info:scale-110 transition-all">
+                            <Calendar className="w-16 h-16 text-primary" />
+                          </div>
+                          <span className="text-[9px] font-black text-foreground/40 uppercase tracking-[0.2em] mb-1 relative z-10 flex items-center gap-1.5"><Calendar className="w-3 h-3 text-primary" /> FECHA</span>
+                          <span className="text-sm font-black italic text-foreground tracking-tight font-kanit relative z-10 shadow-sm">{new Date(nextMatch.date + 'T12:00:00').toLocaleDateString('es-ES', { weekday: 'short', day: 'numeric', month: 'short' }).toUpperCase()}</span>
+                        </div>
+
+                        <div className="flex flex-col relative overflow-hidden p-4 rounded-[2rem] bg-surface/50 border border-foreground/10 group/info hover:border-primary/30 transition-all duration-300">
+                          <div className="absolute -top-2 -right-2 p-4 opacity-10 group-hover/info:opacity-20 group-hover/info:scale-110 transition-all">
+                            <Clock className="w-16 h-16 text-primary" />
+                          </div>
+                          <span className="text-[9px] font-black text-foreground/40 uppercase tracking-[0.2em] mb-1 relative z-10 flex items-center gap-1.5"><Clock className="w-3 h-3 text-primary" /> HORA</span>
+                          <span className="text-sm font-black italic text-foreground tracking-tight font-kanit relative z-10 shadow-sm">{nextMatch.time?.slice(0, 5)} HS</span>
+                        </div>
                       </div>
 
-                      <div className="flex flex-col gap-3">
-                        <Link href={`/match?id=${nextMatch.id}`} className="w-full">
-                           <button className="w-full h-14 rounded-2xl bg-primary text-black font-black uppercase text-[11px] tracking-[0.2em] shadow-[0_10px_20px_rgba(44,252,125,0.2)] hover:scale-[1.02] transition-all font-kanit italic">
-                              VER ENCUENTRO
-                           </button>
+                      <div className="flex items-center gap-4 p-5 rounded-[2.5rem] bg-gradient-to-r from-surface/80 to-surface border border-foreground/10 group/loc cursor-pointer hover:border-primary/30 transition-all overflow-hidden relative">
+                        <div className="absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b from-primary to-primary-dark group-hover/loc:w-2 transition-all duration-300" />
+                        <div className="w-12 h-12 rounded-[1.2rem] bg-foreground/5 flex items-center justify-center border border-foreground/10 shrink-0 group-hover/loc:scale-110 group-hover/loc:bg-primary/10 transition-all duration-500">
+                          <MapPin className="w-6 h-6 text-foreground/40 group-hover/loc:text-primary transition-colors" />
+                        </div>
+                        <div className="flex flex-col min-w-0 flex-1">
+                          <span className="text-[9px] font-black text-foreground/40 uppercase tracking-[0.2em] mb-0.5">UBICACIÃ“N DEL ENCUENTRO</span>
+                          <span className="text-[12px] font-bold text-foreground/90 truncate group-hover/loc:text-foreground transition-colors">{nextMatch.location || 'Sede por confirmar, mantÃ©n contacto.'}</span>
+                        </div>
+                        <ChevronRight className="w-5 h-5 text-foreground/20 group-hover/loc:text-primary group-hover/loc:translate-x-1 transition-all shrink-0" />
+                      </div>
+
+                      {/* Action Panel */}
+                      <div className="flex flex-col sm:flex-row gap-3 pt-2">
+                        <Link href={`/match?id=${nextMatch.id}`} className="flex-1">
+                          <motion.button
+                            whileHover={{ scale: 1.02 }}
+                            whileTap={{ scale: 0.98 }}
+                            className="w-full h-14 rounded-[1.5rem] bg-foreground text-background hover:bg-primary hover:text-black font-black uppercase text-[11px] tracking-[0.2em] flex items-center justify-center gap-3 shadow-[0_10px_25px_rgba(0,0,0,0.5)] hover:shadow-[0_15px_30px_rgba(44,252,125,0.4)] transition-all duration-300 group/btn"
+                          >
+                            VER ENCUENTRO <ArrowRight className="w-4 h-4 group-hover/btn:translate-x-1 transition-transform" />
+                          </motion.button>
                         </Link>
-                        <CalendarButton match={nextMatch} className="w-full h-14 rounded-2xl bg-foreground/5 text-foreground/40 font-black uppercase text-[10px] tracking-widest hover:bg-foreground/10 transition-all font-kanit italic" />
+                        <CalendarButton match={nextMatch} className="w-full h-14 sm:w-auto sm:flex-1 shrink-0 rounded-[1.5rem] bg-surface hover:bg-foreground/10 border border-foreground/15 text-foreground/60 hover:text-foreground transition-all" />
                       </div>
                     </div>
                   ) : (
-                    <div className="py-12 flex flex-col items-center text-center gap-6">
-                       <div className="w-20 h-20 rounded-3xl bg-foreground/5 border border-white/5 flex items-center justify-center">
-                          <Calendar className="w-8 h-8 text-foreground/20" />
-                       </div>
-                       <div className="space-y-2">
-                          <h4 className="text-2xl font-black italic uppercase tracking-tighter text-foreground/80 font-kanit">Agenda Libre</h4>
-                          <p className="text-xs text-foreground/40 font-medium max-w-[200px]">No hay encuentros programados por ahora.</p>
-                       </div>
-                       <Link href="/search" className="w-full">
-                          <button className="w-full h-12 rounded-2xl border border-white/10 text-[10px] font-black uppercase tracking-widest text-foreground/40 hover:bg-foreground/5 transition-all font-kanit italic">
-                             BUSCAR PARTIDO
-                          </button>
-                       </Link>
+                    <div className="relative group/agenda overflow-hidden rounded-[2.5rem] p-10 flex flex-col items-center text-center gap-8 glass-premium border-primary/20 bg-surface/40 hover:bg-surface/50 transition-colors duration-500 shadow-2xl">
+                      {/* Minimalist Tech Background */}
+                      <div className="absolute inset-0 bg-[url('/grid.svg')] bg-center opacity-[0.03] mix-blend-overlay" />
+                      <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-transparent opacity-0 group-hover/agenda:opacity-100 transition-opacity duration-700" />
+
+                      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-48 h-48 bg-primary/10 blur-[60px] rounded-full pointer-events-none opacity-50 group-hover/agenda:opacity-100 group-hover/agenda:scale-125 transition-all duration-1000" />
+
+                      <div className="relative group-hover/agenda:-translate-y-2 transition-transform duration-500 z-10">
+                        <div className="absolute inset-0 bg-primary/20 blur-2xl rounded-full scale-0 group-hover/agenda:scale-150 transition-transform duration-1000 opacity-30" />
+                        <div className="w-20 h-20 rounded-3xl bg-foreground/[0.03] border border-foreground/10 flex items-center justify-center relative z-10 shadow-xl group-hover/agenda:border-primary/30 overflow-hidden">
+                          <div className="absolute inset-0 bg-gradient-to-br from-primary/10 to-transparent opacity-0 group-hover/agenda:opacity-100 transition-opacity" />
+                          <Calendar className="w-8 h-8 text-foreground/20 group-hover/agenda:text-primary transition-colors duration-500" />
+                        </div>
+                      </div>
+
+                      <div className="space-y-3 relative z-10 group-hover/agenda:-translate-y-1 transition-transform duration-700">
+                        <h4 className="text-3xl font-black italic uppercase tracking-tighter text-foreground/80 font-kanit">Agenda Libre</h4>
+                        <p className="text-[11px] font-medium text-foreground/40 tracking-wide leading-relaxed max-w-[240px] mx-auto">
+                          No hay encuentros programados.<br />Buscá uno nuevo o armalo desde cero.
+                        </p>
+                      </div>
+
+                      <Link href="/search" className="w-full relative z-10">
+                        <motion.button
+                          whileHover={{ scale: 1.02, y: -2 }}
+                          whileTap={{ scale: 0.98 }}
+                          className="w-full h-14 rounded-[1.5rem] bg-foreground text-background font-black uppercase text-[11px] tracking-[0.3em] flex items-center justify-center gap-3 shadow-xl hover:bg-primary hover:text-black transition-colors duration-300 group/btn border border-transparent overflow-hidden relative"
+                        >
+                          <div className="absolute inset-0 bg-[url('/noise.png')] opacity-10 mix-blend-overlay" />
+                          <Search className="w-4 h-4 group-hover/btn:text-black transition-colors" />
+                          <span className="relative z-10">RECLUTAR RIVAL</span>
+                          <ArrowRight className="w-4 h-4 opacity-0 -ml-4 group-hover/btn:opacity-100 group-hover/btn:ml-0 transition-all duration-300" />
+                        </motion.button>
+                      </Link>
+
+                      <div className="flex flex-col gap-2 pt-6 border-t border-foreground/10 w-full relative z-10">
+                        <div className="flex items-center justify-center gap-2 text-[8px] font-black text-foreground/30 uppercase tracking-[0.2em] mb-1">
+                          <Sparkles className="w-3 h-3 text-primary/50" />
+                          <span>Sugerencia del sistema</span>
+                          <Sparkles className="w-3 h-3 text-primary/50" />
+                        </div>
+                        <p className="text-[10px] font-medium text-foreground/50 italic leading-relaxed px-4">
+                          "La proxima historia deportiva arranca cuando alguien arma el encuentro."
+                        </p>
+                      </div>
                     </div>
                   )}
                 </div>
               </div>
 
-              {/* Recommendations Card */}
-              <div className="bg-surface-elevated/40 rounded-[3rem] border border-white/5 p-8 space-y-6 backdrop-blur-sm">
-                <div className="flex items-center justify-between">
-                   <div className="space-y-1">
-                      <p className="text-[10px] font-black uppercase tracking-[0.4em] text-primary font-kanit italic">Radar</p>
-                      <h3 className="text-xl font-black italic uppercase tracking-tighter text-foreground font-kanit">Para Vos</h3>
-                   </div>
-                   <Sparkles className="w-5 h-5 text-primary/20" />
+              <div className="glass-premium p-6 rounded-[2.5rem] border-foreground/15 space-y-4">
+                <div className="flex items-center justify-between gap-3">
+                  <div>
+                    <h3 className="text-[10px] font-semibold text-foreground/40 tracking-wide font-kanit">
+                      Recomendaciones para vos
+                    </h3>
+                    <p className="text-xl font-black italic uppercase tracking-tighter text-foreground font-kanit mt-1">
+                      Partidos sugeridos
+                    </p>
+                  </div>
+                  <Sparkles className="w-5 h-5 text-primary/40" />
                 </div>
 
-                <div className="space-y-4">
-                   {recommendedMatches.slice(0, 4).map((match) => (
-                     <Link key={match.id} href={`/match?id=${match.id}`} className="block group">
-                        <div className="p-5 rounded-[2rem] bg-foreground/[0.03] border border-white/5 group-hover:border-primary/20 transition-all duration-300">
-                           <p className="text-[8px] font-black uppercase tracking-[0.3em] text-primary font-kanit italic mb-1">
+                {recommendedMatches.length > 0 ? (
+                  <div className="space-y-3">
+                    {recommendedMatches.map((match) => (
+                      <Link
+                        key={match.id}
+                        href={`/match?id=${match.id}`}
+                        className="block rounded-[1.8rem] border border-foreground/10 bg-foreground/[0.02] p-4 hover:border-primary/30 transition-all"
+                      >
+                        <div className="flex items-start justify-between gap-3">
+                          <div>
+                            <p className="text-[10px] font-black uppercase tracking-[0.2em] text-primary">
                               {SPORT_META[getMatchSport(match)].icon} {getFormatMeta(match.type, getMatchSport(match)).label}
-                           </p>
-                           <h4 className="text-base font-black italic uppercase tracking-tighter text-foreground font-kanit group-hover:text-primary transition-colors truncate">
+                            </p>
+                            <h4 className="text-lg font-black italic uppercase tracking-tighter text-foreground mt-2">
                               {match.location}
-                           </h4>
-                           <p className="text-[10px] font-black text-foreground/30 uppercase mt-1 tracking-widest font-kanit italic">
-                              {match.date} · {match.time} HS
-                           </p>
+                            </h4>
+                            <p className="text-xs text-foreground/50 mt-1">
+                              {match.date} Â· {match.time}
+                            </p>
+                          </div>
+                          <span className="text-[10px] font-black uppercase tracking-[0.2em] text-foreground/40">
+                            {match.price ? `$${match.price.toLocaleString()}` : 'Libre'}
+                          </span>
                         </div>
-                     </Link>
-                   ))}
-                </div>
+                        {match.recommendationReasons?.length > 0 && (
+                          <div className="mt-3 flex flex-wrap gap-2">
+                            {match.recommendationReasons.map((reason) => (
+                              <span
+                                key={reason}
+                                className="px-2.5 py-1.5 rounded-full bg-primary/10 text-primary text-[9px] font-black"
+                              >
+                                {reason}
+                              </span>
+                            ))}
+                          </div>
+                        )}
+                      </Link>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="rounded-[1.8rem] border border-dashed border-foreground/15 p-5 text-center">
+                    <p className="text-sm font-bold text-foreground/60">
+                      Todavía no tenemos sugerencias para vos.
+                    </p>
+                    <p className="text-xs text-foreground/40 mt-2">
+                      Ajustá deportes y zona en configuración para mejorar el radar.
+                    </p>
+                  </div>
+                )}
               </div>
 
-              {/* Quick Access Links */}
-              <div className="bg-surface-elevated/40 rounded-[3rem] border border-white/5 p-8 space-y-6">
-                <h3 className="text-[10px] font-black uppercase tracking-[0.4em] text-foreground/20 font-kanit italic">Acceso Rápido</h3>
-                <div className="grid grid-cols-1 gap-3">
+              <div className="hidden lg:block glass-premium p-6 rounded-[2.5rem] border-foreground/15 space-y-4">
+                <h3 className="text-[10px] font-semibold text-foreground/40 tracking-wide font-kanit">Accesos rápidos</h3>
+                <div className="grid grid-cols-1 gap-2">
                   {[
-                    { label: 'Establecimientos', icon: MapPin, href: '/establecimientos' },
+                    { label: 'Sedes', icon: MapPin, href: '/establecimientos' },
                     { label: 'Mis Amigos', icon: Users, href: '/friends' },
                     { label: 'Chat Global', icon: MessageSquare, href: '/messages' },
                     { label: 'Configuración', icon: Target, href: '/settings' }
                   ].map((link, idx) => (
                     <Link key={idx} href={link.href}>
-                      <button className="w-full h-12 px-5 rounded-2xl flex items-center justify-between group hover:bg-foreground/5 transition-all border border-white/5">
+                      <button className="w-full h-12 px-4 rounded-xl flex items-center justify-between group hover:bg-foreground/[0.03] transition-all border border-transparent hover:border-foreground/15">
                         <div className="flex items-center gap-3">
-                          <link.icon className="w-4 h-4 text-foreground/20 group-hover:text-primary transition-colors" />
-                          <span className="text-[10px] font-black uppercase tracking-widest text-foreground/60 font-kanit italic group-hover:text-foreground">{link.label}</span>
+                          <link.icon className="w-4 h-4 text-foreground/40 group-hover:text-primary transition-colors" />
+                          <span className="text-[10px] font-black uppercase tracking-widest text-foreground/60 group-hover:text-foreground">{link.label}</span>
                         </div>
-                        <ChevronRight className="w-4 h-4 text-foreground/10 group-hover:translate-x-1 transition-all" />
+                        <ChevronRight className="w-4 h-4 text-foreground/20 group-hover:text-foreground/40 group-hover:translate-x-1 transition-all" />
                       </button>
                     </Link>
                   ))}
@@ -1556,68 +1859,21 @@ export default function HomePage() {
 
 
 
-        <footer className="mt-20 pt-20 pb-16 border-t border-white/5 relative overflow-hidden">
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_bottom,rgba(var(--primary-rgb),0.02),transparent_70%)]" />
-          
-          <div className="relative z-10 grid grid-cols-1 md:grid-cols-12 gap-12 lg:gap-16">
-            <div className="md:col-span-5 space-y-8">
-              <div className="flex items-center gap-4">
-                <div className="w-14 h-14 rounded-2xl bg-foreground/5 border border-white/5 p-2.5 flex items-center justify-center">
-                   <img src="/logo_pelotify.png" alt="Pelotify Logo" className="w-full h-full object-contain" />
-                </div>
-                <div>
-                   <h2 className="text-2xl font-black italic uppercase tracking-tighter text-foreground font-kanit">PELOTI<span className="text-primary">FY</span></h2>
-                   <p className="text-[10px] font-black text-foreground/20 uppercase tracking-[0.4em] font-kanit">Stadium Pro Ecosystem</p>
-                </div>
+        <footer className="mt-12 pt-12 pb-16 lg:pb-10">
+          <div className="grid grid-cols-1 md:grid-cols-12 gap-12 lg:gap-8">
+            <div className="md:col-span-4 space-y-6">
+              <div className="flex items-center gap-3">
+                <img src="/logo_pelotify.png" alt="Pelotify Logo" className="w-12 h-12 object-contain" />
+                <span className="text-xl font-black italic uppercase tracking-tighter text-foreground font-kanit">PELOTI<span className="text-primary">FY</span></span>
               </div>
-              <p className="text-sm text-foreground/40 font-medium tracking-wide leading-relaxed max-w-sm italic">
-                La plataforma definitiva para organizar fútbol, padel y basket amateur. Elevamos tu juego al siguiente nivel con tecnología de vanguardia y una comunidad imparable.
+              <p className="text-[11px] text-foreground/40 font-medium tracking-wide leading-relaxed max-w-sm">
+                La plataforma para organizar futbol, padel y basket amateur con una comunidad bien activa.
               </p>
-              
-              <div className="flex items-center gap-4">
-                 {[Twitter, Instagram, Github].map((Icon, i) => (
-                   <button key={i} className="w-10 h-10 rounded-xl bg-foreground/5 border border-white/5 flex items-center justify-center text-foreground/40 hover:text-primary hover:border-primary/40 transition-all">
-                      <Icon className="w-5 h-5" />
-                   </button>
-                 ))}
-              </div>
-            </div>
-
-            <div className="md:col-span-7 grid grid-cols-2 sm:grid-cols-3 gap-10">
-               <div className="space-y-6">
-                  <h4 className="text-[11px] font-black uppercase tracking-[0.3em] text-foreground font-kanit italic">Plataforma</h4>
-                  <ul className="space-y-4">
-                     {['Feed', 'Equipos', 'Ranks', 'Torneos'].map(item => (
-                       <li key={item}><a href="#" className="text-xs font-bold text-foreground/40 hover:text-primary transition-colors">{item}</a></li>
-                     ))}
-                  </ul>
-               </div>
-               <div className="space-y-6">
-                  <h4 className="text-[11px] font-black uppercase tracking-[0.3em] text-foreground font-kanit italic">Soporte</h4>
-                  <ul className="space-y-4">
-                     {['Ayuda', 'Términos', 'Privacidad', 'Contacto'].map(item => (
-                       <li key={item}><a href="#" className="text-xs font-bold text-foreground/40 hover:text-primary transition-colors">{item}</a></li>
-                     ))}
-                  </ul>
-               </div>
-               <div className="space-y-6 col-span-2 sm:col-span-1">
-                  <h4 className="text-[11px] font-black uppercase tracking-[0.3em] text-foreground font-kanit italic">Comunidad</h4>
-                  <div className="p-5 rounded-2xl bg-primary/5 border border-primary/10">
-                     <p className="text-[10px] font-bold text-primary leading-relaxed">
-                        Sumate a los +10,000 jugadores que ya están compitiendo.
-                     </p>
-                  </div>
-               </div>
             </div>
           </div>
-
-          <div className="mt-20 pt-8 border-t border-white/5 flex flex-col md:flex-row items-center justify-between gap-6 relative z-10">
-            <span className="text-[10px] font-black text-foreground/20 uppercase tracking-[0.2em] font-kanit italic">© 2026 Pelotify Pro. All glory reserved.</span>
-            <div className="flex items-center gap-6">
-               <span className="flex items-center gap-2 text-[10px] font-black text-foreground/40 uppercase tracking-widest font-kanit italic">
-                  Engineered for <Sparkles className="w-3.5 h-3.5 text-primary" /> greatness
-               </span>
-            </div>
+          <div className="mt-12 pt-8 flex flex-col md:flex-row items-center justify-between gap-4 text-[9px] font-medium tracking-wide text-foreground/30">
+            <span>Â© 2026 Pelotify. Todos los derechos reservados.</span>
+            <span className="flex items-center gap-2">DiseÃ±ado con <Sparkles className="w-3 h-3 text-primary" /> para campeones</span>
           </div>
         </footer>
       </div>
