@@ -25,6 +25,9 @@ import {
   Shield,
   Play,
   Heart,
+  Twitter,
+  Instagram,
+  Github,
 } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useSidebar } from '@/contexts/SidebarContext';
