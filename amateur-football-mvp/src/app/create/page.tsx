@@ -1,7 +1,7 @@
 'use client';
 
 import { motion, AnimatePresence } from 'framer-motion';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import {
   MapPin,
   Calendar,
@@ -248,6 +248,7 @@ function StepIndicator({ current, total }: { current: number; total: number }) {
 
 export default function CreateMatchPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { user } = useAuth();
   const queryClient = useQueryClient();
   const [step, setStep] = useState(0);
@@ -256,6 +257,11 @@ export default function CreateMatchPage() {
   const [dbFields, setDbFields] = useState<any[]>([]);
   const [bookedTimes, setBookedTimes] = useState<string[]>([]);
   const [isMpLinked, setIsMpLinked] = useState<boolean | null>(null);
+
+  // Initialize sport from URL
+  const urlSport = searchParams.get('sport') as Sport;
+  const initialSport = SPORT_OPTIONS.includes(urlSport) ? urlSport : 'football';
+  const initialType = initialSport === 'football' ? 'F5' : initialSport === 'padel' ? 'PADEL' : 'BASKET';
 
   useEffect(() => {
     const checkMp = async () => {
@@ -279,19 +285,21 @@ export default function CreateMatchPage() {
     };
     fetchVenues();
   }, []);
+
   const [priceManuallyEdited, setPriceManuallyEdited] = useState(false);
   const [formData, setFormData] = useState({
-    sport: 'football' as Sport,
+    sport: initialSport,
     location: '',
     date: '',
     time: '',
-    type: 'F5' as MatchFormat,
+    type: initialType as MatchFormat,
     price: 0,
     level: 'Amateur',
     is_private: false,
     missing_players: 0,
     field_id: '', // To link with canchas schema
     business_id: '',
+
     payment_method: 'mercado_pago' as 'mercado_pago' | 'cash',
     lat: undefined as number | undefined,
     lng: undefined as number | undefined,
