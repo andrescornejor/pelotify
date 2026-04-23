@@ -1445,7 +1445,7 @@ export default function HomePage() {
                            {/* Team B */}
                            <div className="flex flex-col items-center gap-4 flex-1">
                               <div className="w-20 h-20 rounded-2xl bg-surface-elevated border border-white/5 p-3 shadow-xl group-hover/matchup:scale-105 transition-transform">
-                                 <JerseyVisualizer primaryColor="#3b82f6" secondaryColor="#ffffff" pattern="stripes" className="w-full h-full" />
+                                 <JerseyVisualizer primaryColor="#3b82f6" secondaryColor="#ffffff" pattern="vertical" className="w-full h-full" />
                               </div>
                               <p className="text-sm font-black italic text-foreground uppercase font-kanit tracking-tighter truncate w-full text-center">
                                  {nextMatch.team_b_name || 'VISITA'}
