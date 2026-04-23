@@ -798,79 +798,79 @@ export default function HomePage() {
               {statCardsData.map((stat) => (
                 <div
                   key={stat.label}
-                  className="rounded-[1.6rem] border border-foreground/10 bg-white/[0.03] p-4 shadow-[0_10px_28px_rgba(0,0,0,0.14)]"
+                  className="rounded-[1.6rem] border border-foreground/5 bg-surface/50 p-4 shadow-lg backdrop-blur-sm"
                 >
                   <div
-                    className="w-10 h-10 rounded-[1rem] flex items-center justify-center border border-white/10"
-                    style={{ backgroundColor: `${stat.color}18` }}
+                    className="w-10 h-10 rounded-xl flex items-center justify-center border border-foreground/5"
+                    style={{ backgroundColor: `${stat.color}15` }}
                   >
                     <stat.icon className="w-5 h-5" style={{ color: stat.color }} />
                   </div>
-                  <p className="mt-4 text-[9px] font-black uppercase tracking-[0.18em] text-foreground/35">
+                  <p className="mt-4 text-[9px] font-black uppercase tracking-widest text-foreground/40 font-kanit">
                     {stat.label}
                   </p>
-                  <p className="mt-1 text-2xl font-black italic text-foreground tracking-tighter">
+                  <p className="mt-1 text-2xl font-black italic text-foreground tracking-tighter font-kanit">
                     {stat.value}
                   </p>
                 </div>
               ))}
             </section>
 
-            <section className="rounded-[1.8rem] border border-foreground/10 bg-white/[0.03] p-4 shadow-[0_12px_30px_rgba(0,0,0,0.14)]">
+            <section className="rounded-[1.8rem] border border-foreground/5 bg-surface/50 p-5 shadow-lg backdrop-blur-sm">
               <div className="flex items-center justify-between gap-3">
                 <div>
-                  <p className="text-[9px] font-black uppercase tracking-[0.22em] text-primary">Momentum</p>
-                  <h3 className="mt-2 text-lg font-black italic uppercase tracking-tighter text-foreground">
+                  <p className="text-[9px] font-black uppercase tracking-[0.22em] text-primary font-kanit">Momentum</p>
+                  <h3 className="mt-1 text-xl font-black italic uppercase tracking-tighter text-foreground font-kanit">
                     {rankCalculation.rank.name}
                   </h3>
                 </div>
                 <div className="text-right">
-                  <p className="text-[9px] font-black uppercase tracking-[0.18em] text-foreground/35">Racha</p>
-                  <p className="mt-2 text-2xl font-black italic text-primary">{usageSnapshot.streakDays}</p>
+                  <p className="text-[9px] font-black uppercase tracking-[0.18em] text-foreground/35 font-kanit">Racha</p>
+                  <p className="mt-1 text-2xl font-black italic text-primary font-kanit">{usageSnapshot.streakDays}</p>
                 </div>
               </div>
-              <div className="mt-4 h-2 rounded-full bg-white/5 overflow-hidden">
+              <div className="mt-5 h-2 rounded-full bg-foreground/5 overflow-hidden border border-foreground/10">
                 <div className="h-full rounded-full bg-primary" style={{ width: `${rankCalculation.progress}%` }} />
               </div>
-              <div className="mt-3 flex items-center justify-between text-[10px] font-bold text-foreground/45">
-                <span>Sección top: {usageSnapshot.favoriteSection}</span>
+              <div className="mt-3 flex items-center justify-between text-[10px] font-bold text-foreground/45 uppercase tracking-widest font-kanit">
+                <span>Top: {usageSnapshot.favoriteSection}</span>
                 <span>{Math.round(rankCalculation.progress)}%</span>
               </div>
             </section>
 
 
 
-            <section className="space-y-3">
-              <div className="flex items-center justify-between px-1">
+            <section className="space-y-4">
+              <div className="flex items-center justify-between px-2">
                 <div>
-                  <p className="text-[9px] font-black uppercase tracking-[0.22em] text-primary">Social</p>
-                  <h3 className="mt-1 text-lg font-black italic uppercase tracking-tighter text-foreground">
+                  <p className="text-[9px] font-black uppercase tracking-[0.22em] text-primary font-kanit">Social</p>
+                  <h3 className="mt-1 text-xl font-black italic uppercase tracking-tighter text-foreground font-kanit">
                     3erTiempo
                   </h3>
                 </div>
-                <Link href="/feed" className="text-[9px] font-black uppercase tracking-[0.18em] text-foreground/45">
+                <Link href="/feed" className="text-[10px] font-black uppercase tracking-widest text-foreground/40 hover:text-foreground/80 font-kanit italic">
                   Ver muro
                 </Link>
               </div>
               {recentPosts.length > 0 ? (
-                <div className="flex gap-3 overflow-x-auto pb-2 snap-x snap-mandatory no-scrollbar scroll-px-1 swipe-ignore">
+                <div className="flex gap-3 overflow-x-auto pb-4 snap-x snap-mandatory no-scrollbar scroll-px-2 swipe-ignore px-2">
                   {recentPosts.slice(0, 8).map((post, idx) => (
                     <Link
                       key={post.id}
                       href={`/feed?post=${post.id}`}
                       className="snap-start min-w-[280px] max-w-[280px] shrink-0"
                     >
-                      <div className="relative h-full overflow-hidden rounded-[2rem] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.06),rgba(255,255,255,0.02))] p-4 shadow-[0_18px_44px_rgba(0,0,0,0.16)]">
+                      <div className="relative h-full overflow-hidden rounded-[2rem] border border-foreground/5 bg-surface/50 p-5 shadow-lg backdrop-blur-sm group">
                         {post.image_url && (
                           <>
-                            <img src={post.image_url} alt="" className="absolute inset-0 h-full w-full object-cover opacity-25" />
-                            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/45 to-black/10" />
+                            <img src={post.image_url} alt="" className="absolute inset-0 h-full w-full object-cover opacity-20 group-hover:opacity-30 transition-opacity" />
+                            <div className="absolute inset-0 bg-gradient-to-t from-background/90 via-background/50 to-transparent" />
                           </>
                         )}
-                        <div className="relative flex h-full flex-col">
+                        <div className="relative flex h-full flex-col z-10">
                           <div className="flex items-center justify-between gap-3">
                             <div className="flex items-center gap-3 min-w-0">
-                              <div className="h-11 w-11 rounded-full overflow-hidden border border-white/10 bg-surface-elevated shrink-0">
+                              <div className="h-10 w-10 rounded-xl overflow-hidden border border-foreground/10 bg-surface-elevated shrink-0">
                                 {post.author?.avatar_url ? (
                                   <img src={post.author.avatar_url} alt="" className="h-full w-full object-cover" />
                                 ) : (
@@ -880,29 +880,26 @@ export default function HomePage() {
                                 )}
                               </div>
                               <div className="min-w-0">
-                                <p className="truncate text-sm font-black text-foreground">{post.author?.name || 'Jugador'}</p>
-                                <p className="text-[9px] font-black uppercase tracking-[0.16em] text-foreground/40">
+                                <p className="truncate text-sm font-black text-foreground italic uppercase font-kanit">{post.author?.name || 'Jugador'}</p>
+                                <p className="text-[9px] font-black uppercase tracking-widest text-foreground/40 font-kanit">
                                   {new Date(post.created_at).toLocaleDateString()}
                                 </p>
                               </div>
                             </div>
-                            <div className="rounded-full border border-white/10 bg-white/[0.05] px-2.5 py-1 text-[8px] font-black uppercase tracking-[0.18em] text-primary">
+                            <div className="rounded-full border border-primary/20 bg-primary/10 px-3 py-1 text-[8px] font-black uppercase tracking-[0.2em] text-primary font-kanit">
                               {idx === 0 ? 'En foco' : '3T'}
                             </div>
                           </div>
 
-                          <p className="mt-4 text-[15px] font-medium leading-relaxed text-foreground/82 line-clamp-5">
+                          <p className="mt-4 text-[13px] font-medium leading-relaxed text-foreground/70 line-clamp-4">
                             {post.content}
                           </p>
 
-                          <div className="mt-5 flex items-center justify-between border-t border-white/10 pt-3">
-                            <div className="flex items-center gap-4 text-[11px] font-bold text-foreground/55">
-                              <span>{post.likes_count || 0} likes</span>
-                              <span>{post.comments_count || 0} respuestas</span>
+                          <div className="mt-5 flex items-center justify-between border-t border-foreground/5 pt-4">
+                            <div className="flex items-center gap-4 text-[10px] font-black text-foreground/40 uppercase tracking-widest font-kanit">
+                              <span className="flex items-center gap-1.5"><Heart className="w-3.5 h-3.5"/> {post.likes_count || 0}</span>
+                              <span className="flex items-center gap-1.5"><MessageSquare className="w-3.5 h-3.5"/> {post.comments_count || 0}</span>
                             </div>
-                            <span className="text-[9px] font-black uppercase tracking-[0.18em] text-primary">
-                              Ver post
-                            </span>
                           </div>
                         </div>
                       </div>
@@ -910,69 +907,69 @@ export default function HomePage() {
                   ))}
                 </div>
               ) : (
-                <div className="rounded-[1.7rem] border border-dashed border-foreground/10 bg-white/[0.02] p-5 text-center text-sm font-bold text-foreground/55">
-                  El muro todavía está tranquilo.
+                <div className="rounded-[2rem] border border-dashed border-foreground/10 bg-surface/30 p-8 text-center text-xs font-black uppercase tracking-widest text-foreground/40 font-kanit italic mx-2">
+                  El muro está tranquilo
                 </div>
               )}
             </section>
 
-            <section className="space-y-3">
-              <div className="flex items-center justify-between px-1">
+            <section className="space-y-4">
+              <div className="flex items-center justify-between px-2">
                 <div>
-                  <p className="text-[9px] font-black uppercase tracking-[0.22em] text-primary">Highlights</p>
-                  <h3 className="mt-1 text-lg font-black italic uppercase tracking-tighter text-foreground">
+                  <p className="text-[9px] font-black uppercase tracking-[0.22em] text-primary font-kanit">Highlights</p>
+                  <h3 className="mt-1 text-xl font-black italic uppercase tracking-tighter text-foreground font-kanit">
                     {focusSportMeta.highlightLabel}
                   </h3>
                 </div>
-                <Link href="/highlights" className="text-[9px] font-black uppercase tracking-[0.18em] text-foreground/45">
+                <Link href="/highlights" className="text-[10px] font-black uppercase tracking-widest text-foreground/40 hover:text-foreground/80 font-kanit italic">
                   Ver todo
                 </Link>
               </div>
               {highlights.length > 0 ? (
-                <div className="flex gap-3 overflow-x-auto pb-2 snap-x snap-mandatory no-scrollbar scroll-px-1 swipe-ignore">
+                <div className="flex gap-3 overflow-x-auto pb-4 snap-x snap-mandatory no-scrollbar scroll-px-2 swipe-ignore px-2">
                   {highlights.slice(0, 4).map((highlight, idx) => (
                     <Link
                       key={highlight.id}
                       href={`/highlights?v=${highlight.id}`}
                       className={cn(
-                        'snap-start overflow-hidden rounded-[2rem] border border-white/10 shadow-[0_18px_44px_rgba(0,0,0,0.18)]',
+                        'snap-start overflow-hidden rounded-[2rem] border border-foreground/5 shadow-lg group',
                         idx === 0 ? 'min-w-[240px]' : 'min-w-[180px]'
                       )}
                     >
                       <div className={cn('relative', idx === 0 ? 'aspect-[10/16]' : 'aspect-[4/6]')}>
                         {highlight.thumbnail_url ? (
-                          <img src={highlight.thumbnail_url} alt="" className="absolute inset-0 h-full w-full object-cover" />
+                          <img src={highlight.thumbnail_url} alt="" className="absolute inset-0 h-full w-full object-cover opacity-90 group-hover:opacity-100 transition-opacity" />
                         ) : (
-                          <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(var(--primary-rgb),0.35),rgba(0,0,0,0.92))]" />
+                          <div className="absolute inset-0 bg-surface-elevated" />
                         )}
-                        <div className="absolute inset-0 bg-gradient-to-t from-black via-black/35 to-black/10" />
-                        <div className="absolute left-4 top-4 flex h-12 w-12 items-center justify-center rounded-full border border-white/15 bg-black/35 backdrop-blur-md">
+                        <div className="absolute inset-0 bg-gradient-to-t from-background/90 via-background/20 to-transparent" />
+                        <div className="absolute left-4 top-4 flex h-12 w-12 items-center justify-center rounded-xl border border-foreground/10 bg-surface/30 backdrop-blur-md group-hover:scale-105 transition-transform">
                           <Play className="h-5 w-5 translate-x-[1px] text-white" />
                         </div>
 
                         <div className="absolute inset-x-4 bottom-4">
-                          <div className="flex items-center gap-2">
-                            <div className="h-8 w-8 rounded-full overflow-hidden border border-white/15 bg-white/10">
+                          <div className="flex items-center gap-3">
+                            <div className="h-10 w-10 rounded-xl overflow-hidden border border-foreground/10 bg-surface-elevated shrink-0">
                               {highlight.profiles?.avatar_url ? (
                                 <img src={highlight.profiles.avatar_url} alt="" className="h-full w-full object-cover" />
                               ) : (
-                                <div className="flex h-full w-full items-center justify-center text-[10px] font-black text-white/70">
+                                <div className="flex h-full w-full items-center justify-center text-[10px] font-black text-foreground/40">
                                   {(highlight.profiles?.name || 'J').charAt(0)}
                                 </div>
                               )}
                             </div>
                             <div className="min-w-0">
-                              <p className="truncate text-[10px] font-black uppercase tracking-[0.16em] text-white">
+                              <p className="truncate text-sm font-black uppercase tracking-tighter text-white font-kanit italic">
                                 @{highlight.profiles?.name || 'Jugador'}
                               </p>
-                              <p className="text-[9px] font-bold text-white/65">
+                              <p className="text-[9px] font-black uppercase tracking-widest text-foreground/50 font-kanit">
                                 {highlight.likes_count || 0} likes · {highlight.views_count || 0} views
                               </p>
                             </div>
                           </div>
 
                           {idx === 0 && (
-                            <div className="mt-3 inline-flex rounded-full border border-white/10 bg-white/10 px-3 py-1.5 text-[9px] font-black uppercase tracking-[0.18em] text-white">
+                            <div className="mt-4 inline-flex rounded-full border border-primary/20 bg-primary/10 px-3 py-1.5 text-[8px] font-black uppercase tracking-[0.2em] text-primary font-kanit">
                               Clip destacado
                             </div>
                           )}
@@ -982,99 +979,99 @@ export default function HomePage() {
                   ))}
                 </div>
               ) : (
-                <div className="rounded-[1.7rem] border border-dashed border-foreground/10 bg-white/[0.02] p-5 text-center text-sm font-bold text-foreground/55">
-                  Todavía no hay highlights para mostrar.
+                <div className="rounded-[2rem] border border-dashed border-foreground/10 bg-surface/30 p-8 text-center text-xs font-black uppercase tracking-widest text-foreground/40 font-kanit italic mx-2">
+                  Todavía no hay highlights
                 </div>
               )}
             </section>
 
-            <section className="space-y-3">
-              <div className="flex items-center justify-between px-1">
+            <section className="space-y-4">
+              <div className="flex items-center justify-between px-2">
                 <div>
-                  <p className="text-[9px] font-black uppercase tracking-[0.22em] text-primary">Para vos</p>
-                  <h3 className="mt-1 text-lg font-black italic uppercase tracking-tighter text-foreground">
+                  <p className="text-[9px] font-black uppercase tracking-[0.22em] text-primary font-kanit">Para vos</p>
+                  <h3 className="mt-1 text-xl font-black italic uppercase tracking-tighter text-foreground font-kanit">
                     Recomendados
                   </h3>
                 </div>
-                <Link href={`/search?sport=${selectedSport}`} className="text-[9px] font-black uppercase tracking-[0.18em] text-foreground/45">
+                <Link href={`/search?sport=${selectedSport}`} className="text-[10px] font-black uppercase tracking-widest text-foreground/40 hover:text-foreground/80 font-kanit italic">
                   Ver más
                 </Link>
               </div>
-              <div className="flex gap-3 overflow-x-auto pb-2 snap-x snap-mandatory no-scrollbar scroll-px-1 swipe-ignore">
+              <div className="flex gap-3 overflow-x-auto pb-4 snap-x snap-mandatory no-scrollbar scroll-px-2 swipe-ignore px-2">
                 {recommendedMatches.length > 0 ? (
                   recommendedMatches.map((match) => (
                     <Link
                       key={match.id}
                       href={`/match?id=${match.id}`}
-                      className="snap-start min-w-[280px] rounded-[1.7rem] border border-foreground/10 bg-white/[0.03] p-4 shadow-[0_12px_28px_rgba(0,0,0,0.14)] shrink-0"
+                      className="snap-start min-w-[280px] rounded-[2rem] border border-foreground/5 bg-surface/50 p-5 shadow-lg backdrop-blur-sm shrink-0 hover:bg-surface/70 transition-colors"
                     >
-                      <p className="text-[9px] font-black uppercase tracking-[0.2em] text-primary">
+                      <p className="text-[9px] font-black uppercase tracking-[0.2em] text-primary flex items-center gap-1 font-kanit">
                         {SPORT_META[getMatchSport(match)].icon} {getFormatMeta(match.type, getMatchSport(match)).label}
                       </p>
-                      <h4 className="mt-2 text-base font-black italic uppercase tracking-tighter text-foreground truncate">
+                      <h4 className="mt-2 text-xl font-black italic uppercase tracking-tighter text-foreground truncate font-kanit">
                         {match.location}
                       </h4>
-                      <p className="mt-1 text-[11px] font-bold uppercase tracking-[0.15em] text-foreground/45">
+                      <p className="mt-1 text-[11px] font-black uppercase tracking-widest text-foreground/40 font-kanit">
                         {match.date} · {match.time}
                       </p>
                       {match.recommendationReasons?.[0] && (
-                        <div className="mt-3 inline-flex rounded-full bg-primary/10 px-3 py-1.5 text-[9px] font-black text-primary">
+                        <div className="mt-4 inline-flex rounded-full bg-primary/10 border border-primary/20 px-3 py-1.5 text-[8px] font-black text-primary uppercase tracking-[0.2em] font-kanit">
                           {match.recommendationReasons[0]}
                         </div>
                       )}
                     </Link>
                   ))
                 ) : (
-                  <div className="w-full rounded-[1.7rem] border border-dashed border-foreground/10 bg-white/[0.02] p-5 text-center text-sm font-bold text-foreground/55">
-                    No hay sugerencias para {focusSportMeta.label} por ahora.
+                  <div className="w-full rounded-[2rem] border border-dashed border-foreground/10 bg-surface/30 p-8 text-center text-xs font-black uppercase tracking-widest text-foreground/40 font-kanit italic">
+                    No hay sugerencias para {focusSportMeta.label}
                   </div>
                 )}
               </div>
             </section>
 
-            <section className="space-y-3">
-              <div className="flex items-center justify-between px-1">
+            <section className="space-y-4 pb-8">
+              <div className="flex items-center justify-between px-2">
                 <div>
-                  <p className="text-[9px] font-black uppercase tracking-[0.22em] text-primary">Actividad</p>
-                  <h3 className="mt-1 text-lg font-black italic uppercase tracking-tighter text-foreground">
-                    Comunidad en movimiento
+                  <p className="text-[9px] font-black uppercase tracking-[0.22em] text-primary font-kanit">Actividad</p>
+                  <h3 className="mt-1 text-xl font-black italic uppercase tracking-tighter text-foreground font-kanit">
+                    En movimiento
                   </h3>
                 </div>
-                <div className="rounded-full border border-white/10 bg-white/[0.04] px-3 py-1 text-[9px] font-black uppercase tracking-[0.18em] text-foreground/45">
-                  {totalPlayers}+ en juego
+                <div className="rounded-full border border-foreground/10 bg-surface/50 px-3 py-1.5 text-[8px] font-black uppercase tracking-[0.2em] text-foreground/50 font-kanit">
+                  {totalPlayers}+ online
                 </div>
               </div>
               {activities.length > 0 ? (
-                <div className="relative overflow-hidden rounded-[2rem] border border-white/10 bg-[linear-gradient(160deg,rgba(255,255,255,0.06),rgba(255,255,255,0.02))] p-4 shadow-[0_18px_40px_rgba(0,0,0,0.18)]">
-                  <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(var(--primary-rgb),0.22),transparent_34%),radial-gradient(circle_at_bottom_right,rgba(255,255,255,0.08),transparent_38%)] pointer-events-none" />
-                  <div className="relative space-y-3">
+                <div className="relative overflow-hidden rounded-[2rem] border border-foreground/5 bg-surface/30 p-5 shadow-lg mx-2">
+                  <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(var(--primary-rgb),0.05),transparent_40%)] pointer-events-none" />
+                  <div className="relative space-y-4">
                     {activities.slice(0, 3).map((activity, idx) => (
                       <div
                         key={`${activity.user}-${idx}`}
                         className={cn(
-                          'relative overflow-hidden rounded-[1.5rem] border border-white/10 p-4 backdrop-blur-sm',
-                          idx === 0 ? 'bg-black/20' : 'bg-white/[0.035]'
+                          'relative overflow-hidden rounded-2xl border p-4 backdrop-blur-sm transition-colors',
+                          idx === 0 ? 'bg-surface/80 border-foreground/10 shadow-sm' : 'bg-surface/40 border-foreground/5'
                         )}
                       >
-                        <div className="flex items-start gap-3">
+                        <div className="flex items-start gap-4">
                           <div className="relative flex flex-col items-center shrink-0">
-                            <div className="flex h-11 w-11 items-center justify-center rounded-[1.1rem] border border-primary/20 bg-primary/12 shadow-[0_0_24px_rgba(var(--primary-rgb),0.16)]">
-                              <TrendingUp className="h-4 w-4 text-primary" />
+                            <div className="flex h-12 w-12 items-center justify-center rounded-xl border border-primary/20 bg-primary/10 shadow-inner">
+                              <TrendingUp className="h-5 w-5 text-primary" />
                             </div>
-                            {idx < 2 && <div className="mt-2 h-8 w-px bg-gradient-to-b from-primary/40 to-transparent" />}
+                            {idx < 2 && <div className="mt-3 h-10 w-px bg-gradient-to-b from-primary/30 to-transparent" />}
                           </div>
-                          <div className="min-w-0 flex-1">
+                          <div className="min-w-0 flex-1 pt-1">
                             <div className="flex items-center justify-between gap-3">
-                              <p className="text-[9px] font-black uppercase tracking-[0.22em] text-primary">
-                                {idx === 0 ? 'Ahora' : `Pulso 0${idx + 1}`}
+                              <p className="text-[10px] font-black uppercase tracking-[0.2em] text-primary font-kanit">
+                                {idx === 0 ? 'Ahora' : `Pulse 0${idx + 1}`}
                               </p>
-                              <span className="rounded-full border border-white/10 bg-white/[0.04] px-2.5 py-1 text-[8px] font-black uppercase tracking-[0.16em] text-foreground/40">
+                              <span className="text-[9px] font-black uppercase tracking-widest text-foreground/40 font-kanit">
                                 {activity.time}
                               </span>
                             </div>
-                            <p className="mt-2 text-[15px] font-black leading-snug text-foreground">
+                            <p className="mt-2 text-sm font-black text-foreground italic uppercase tracking-tighter font-kanit">
                               {activity.user}
-                              <span className="ml-1 font-medium text-foreground/58">{activity.detail}</span>
+                              <span className="ml-1 text-foreground/40">{activity.detail}</span>
                             </p>
                           </div>
                         </div>
@@ -1083,8 +1080,8 @@ export default function HomePage() {
                   </div>
                 </div>
               ) : (
-                <div className="rounded-[1.7rem] border border-dashed border-foreground/10 bg-white/[0.02] p-5 text-center text-sm font-bold text-foreground/55">
-                  No hay movimiento reciente en la comunidad.
+                <div className="rounded-[2rem] border border-dashed border-foreground/10 bg-surface/30 p-8 text-center text-xs font-black uppercase tracking-widest text-foreground/40 font-kanit italic mx-2">
+                  No hay movimiento reciente
                 </div>
               )}
             </section>
@@ -1787,30 +1784,30 @@ export default function HomePage() {
                       <Link
                         key={match.id}
                         href={`/match?id=${match.id}`}
-                        className="block rounded-[1.8rem] border border-foreground/10 bg-foreground/[0.02] p-4 hover:border-primary/30 transition-all"
+                        className="block rounded-[2rem] border border-foreground/5 bg-surface/50 p-5 hover:border-primary/30 hover:bg-surface/80 transition-all group"
                       >
                         <div className="flex items-start justify-between gap-3">
                           <div>
-                            <p className="text-[10px] font-black uppercase tracking-[0.2em] text-primary">
+                            <p className="text-[9px] font-black uppercase tracking-[0.2em] text-primary flex items-center gap-1 font-kanit">
                               {SPORT_META[getMatchSport(match)].icon} {getFormatMeta(match.type, getMatchSport(match)).label}
                             </p>
-                            <h4 className="text-lg font-black italic uppercase tracking-tighter text-foreground mt-2">
+                            <h4 className="text-xl font-black italic uppercase tracking-tighter text-foreground mt-2 font-kanit group-hover:text-primary transition-colors">
                               {match.location}
                             </h4>
-                            <p className="text-xs text-foreground/50 mt-1">
-                              {match.date} Â· {match.time}
+                            <p className="text-[11px] font-black uppercase tracking-widest text-foreground/40 mt-1 font-kanit">
+                              {match.date} · {match.time}
                             </p>
                           </div>
-                          <span className="text-[10px] font-black uppercase tracking-[0.2em] text-foreground/40">
+                          <span className="text-[10px] font-black uppercase tracking-[0.2em] text-foreground/40 font-kanit">
                             {match.price ? `$${match.price.toLocaleString()}` : 'Libre'}
                           </span>
                         </div>
                         {match.recommendationReasons?.length > 0 && (
-                          <div className="mt-3 flex flex-wrap gap-2">
+                          <div className="mt-4 flex flex-wrap gap-2">
                             {match.recommendationReasons.map((reason) => (
                               <span
                                 key={reason}
-                                className="px-2.5 py-1.5 rounded-full bg-primary/10 text-primary text-[9px] font-black"
+                                className="px-3 py-1.5 rounded-full bg-primary/10 border border-primary/20 text-primary text-[8px] font-black uppercase tracking-[0.2em] font-kanit"
                               >
                                 {reason}
                               </span>
@@ -1821,12 +1818,12 @@ export default function HomePage() {
                     ))}
                   </div>
                 ) : (
-                  <div className="rounded-[1.8rem] border border-dashed border-foreground/15 p-5 text-center">
-                    <p className="text-sm font-bold text-foreground/60">
-                      Todavía no tenemos sugerencias para vos.
+                  <div className="rounded-[2rem] border border-dashed border-foreground/15 bg-surface/30 p-6 text-center">
+                    <p className="text-xs font-black uppercase tracking-widest text-foreground/60 font-kanit italic">
+                      Sin sugerencias
                     </p>
-                    <p className="text-xs text-foreground/40 mt-2">
-                      Ajustá deportes y zona en configuración para mejorar el radar.
+                    <p className="text-[10px] text-foreground/40 mt-2 tracking-wide">
+                      Ajustá deportes y zona en configuración.
                     </p>
                   </div>
                 )}
