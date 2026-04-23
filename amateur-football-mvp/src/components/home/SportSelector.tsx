@@ -1,6 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
+import { Trophy, Zap } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { type Sport, SPORT_META } from '@/lib/sports';
 
@@ -16,58 +17,91 @@ export function SportSelector({
   variant = 'default',
 }: SportSelectorProps) {
   const sports: Sport[] = ['football', 'padel', 'basket'];
+  const isCompact = variant === 'compact';
 
   return (
-    <div className="w-full flex justify-center">
-      <div
-        className={cn(
-          'relative flex items-center p-1.5 bg-surface/30 backdrop-blur-[24px] border border-white/10 shadow-[0_8px_30px_rgb(0,0,0,0.12)] overflow-hidden',
-          variant === 'compact' ? 'rounded-full' : 'rounded-full max-w-[400px] w-full'
-        )}
-      >
-        {/* Subtle inner highlight */}
-        <div className="absolute inset-x-0 top-0 h-[1px] bg-gradient-to-r from-transparent via-white/20 to-transparent" />
-        
+    <div
+      className={cn(
+        'relative w-full border border-foreground/10 bg-surface/50 backdrop-blur-2xl shadow-[0_20px_60px_rgba(0,0,0,0.08)] overflow-hidden',
+        isCompact ? 'rounded-[1.7rem] p-2' : 'rounded-[2rem] p-2.5'
+      )}
+    >
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(255,255,255,0.08),transparent_40%)] pointer-events-none" />
+      <div className="relative z-10 grid grid-cols-3 gap-2">
         {sports.map((sport) => {
           const isSelected = selectedSport === sport;
           const meta = SPORT_META[sport];
           const accent =
             sport === 'padel'
-              ? 'from-cyan-400 to-sky-500'
+              ? 'from-cyan-400/25 to-sky-500/15 text-cyan-300 border-cyan-400/30'
               : sport === 'basket'
-                ? 'from-orange-400 to-amber-500'
-                : 'from-emerald-400 to-green-500';
+                ? 'from-orange-400/25 to-amber-500/15 text-orange-300 border-orange-400/30'
+                : 'from-emerald-400/25 to-green-500/15 text-emerald-300 border-emerald-400/30';
 
           return (
             <button
               key={sport}
               onClick={() => onSelect(sport)}
-              className={cn(
-                'relative flex-1 flex items-center justify-center gap-2 py-2.5 px-4 outline-none rounded-full transition-colors duration-300 z-10 group min-w-0',
-                isSelected ? 'text-white' : 'text-foreground/50 hover:text-foreground/80'
-              )}
+                className={cn(
+                  'group relative min-w-0 border transition-all duration-300 outline-none text-left overflow-hidden',
+                  isCompact ? 'min-h-[92px] rounded-[1.15rem] px-2.5 py-2' : 'min-h-[82px] rounded-[1.4rem] px-3 py-3',
+                  isSelected
+                    ? cn('bg-gradient-to-br shadow-[0_18px_40px_rgba(0,0,0,0.12)] scale-[1.01]', accent)
+                    : 'bg-foreground/[0.03] border-foreground/10 text-foreground/55 hover:text-foreground hover:bg-foreground/[0.05] hover:border-foreground/20'
+                )}
             >
               {isSelected && (
                 <motion.div
-                  layoutId="active-sport-pill"
-                  className={cn("absolute inset-0 rounded-full shadow-[0_0_15px_rgba(0,0,0,0.2)] bg-gradient-to-br", accent)}
-                  transition={{ type: 'spring', stiffness: 400, damping: 30 }}
+                  layoutId="active-sport-surface"
+                  className="absolute inset-0 bg-gradient-to-br from-white/[0.08] to-transparent"
+                  transition={{ type: 'spring', stiffness: 320, damping: 28 }}
                 />
               )}
 
-              <span className={cn("relative z-10 text-xl leading-none transition-transform group-hover:scale-110 duration-300", isSelected && "drop-shadow-md")}>
-                {meta.icon}
-              </span>
-              
-              {/* Only show text on desktop if not incredibly compact, or always show if default */}
-              <span
-                className={cn(
-                  'relative z-10 font-black uppercase tracking-[0.15em] font-kanit italic text-[11px] truncate',
-                  isSelected ? 'opacity-100' : 'opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300 w-0 md:w-auto hidden md:block'
+              <div className={cn(
+                "relative z-10 flex h-full",
+                isCompact ? "items-center justify-center" : "flex-col justify-between"
+              )}>
+                <div className={cn(
+                  "flex items-start",
+                  isCompact ? "justify-center" : "justify-between w-full"
+                )}>
+                  <motion.span
+                    animate={isSelected ? { scale: 1.15, y: -2 } : { scale: 1, y: 0 }}
+                    transition={{ type: 'spring', stiffness: 280, damping: 18 }}
+                    className={cn('leading-none drop-shadow-sm', isCompact ? 'text-[2rem]' : 'text-[1.65rem]')}
+                  >
+                    {meta.icon}
+                  </motion.span>
+                  
+                  {!isCompact && (
+                    <div
+                      className={cn(
+                        'rounded-full border font-black uppercase tracking-[0.2em]',
+                        'px-2 py-1 text-[8px]',
+                        isSelected ? 'border-current/20 bg-black/10 text-current' : 'border-foreground/10 text-foreground/30'
+                      )}
+                    >
+                      {isSelected ? 'Activo' : 'Elegir'}
+                    </div>
+                  )}
+                </div>
+
+                {!isCompact && (
+                  <div className="mt-3">
+                    <div className="flex items-center gap-1.5">
+                      <span
+                        className={cn(
+                          'font-black uppercase tracking-[0.12em] font-kanit italic truncate text-[11px]'
+                        )}
+                      >
+                        {meta.shortLabel}
+                      </span>
+                      {isSelected && <Zap className="w-3.5 h-3.5" />}
+                    </div>
+                  </div>
                 )}
-              >
-                {meta.shortLabel}
-              </span>
+              </div>
             </button>
           );
         })}
