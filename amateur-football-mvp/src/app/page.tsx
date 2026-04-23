@@ -630,30 +630,23 @@ export default function HomePage() {
                     loading="eager"
                   />
                   
-                  {/* Dynamic Mesh Gradients - Simplified for performance */}
+                  {/* Dynamic Mesh Gradients - Ultra optimized to prevent lag */}
                   <div 
-                    className={cn(
-                      "absolute inset-0 opacity-40 mix-blend-screen",
-                      !reduceAnimations && "animate-pulse-slow"
-                    )}
+                    className="absolute inset-0 opacity-[0.15]"
                     style={{
-                      background: reduceAnimations 
-                        ? `radial-gradient(circle at 50% 50%, ${sportTheme.accent}22 0%, transparent 70%)`
-                        : `radial-gradient(circle at 0% 0%, ${sportTheme.accent}33 0%, transparent 50%),
-                           radial-gradient(circle at 100% 100%, ${sportTheme.accent}22 0%, transparent 50%)`
+                      background: `radial-gradient(circle at 30% 20%, ${sportTheme.accent}44 0%, transparent 60%)`
                     }}
                   />
                 </motion.div>
               </AnimatePresence>
 
-              {/* Court Lines Overlay - Static for better performance */}
-              <div className="absolute inset-0 opacity-[0.02] pointer-events-none mix-blend-overlay">
-                 <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.05)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.05)_1px,transparent_1px)] bg-[size:100px_100px]" />
+              {/* Court Lines Overlay - Simplified */}
+              <div className="absolute inset-0 opacity-[0.015] pointer-events-none mix-blend-overlay">
+                 <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.05)_2px,transparent_2px),linear-gradient(90deg,rgba(255,255,255,0.05)_2px,transparent_2px)] bg-[size:120px_120px]" />
               </div>
 
-              {/* Final depth layers */}
-              <div className="absolute inset-0 bg-gradient-to-t from-background via-background/60 to-transparent" />
-              <div className="absolute inset-0 bg-gradient-to-r from-background/80 via-transparent to-transparent" />
+              {/* Final depth layers - Using more performant linear gradients */}
+              <div className="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent" />
             </div>
 
             {/* Content Wrapper */}
@@ -667,7 +660,6 @@ export default function HomePage() {
                   className="inline-flex items-center gap-3 px-4 py-1.5 rounded-full bg-foreground/[0.04] border border-foreground/15"
                 >
                   <div className="relative flex h-2 w-2">
-                    {!reduceAnimations && <span className="absolute inline-flex h-full w-full rounded-full bg-foreground/20 opacity-75 animate-ping" />}
                     <span className="relative inline-flex rounded-full h-2 w-2 bg-foreground/30" />
                   </div>
                   <span className="text-[10px] font-black uppercase tracking-[0.4em] text-foreground/40 font-kanit">
@@ -678,30 +670,17 @@ export default function HomePage() {
                 {/* Title Section based on Branding */}
                 <div className="flex flex-col relative">
                   <AnimatePresence mode="wait">
-                    {!reduceAnimations && (
-                      <motion.div
-                        key={selectedSport + "-glow"}
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 0.25 }}
-                        exit={{ opacity: 0 }}
-                        className="absolute -inset-10 blur-[60px] pointer-events-none"
-                        style={{ backgroundColor: sportTheme.accent }}
-                      />
-                    )}
                     <motion.h1
                       key={selectedSport}
-                      initial={reduceAnimations ? { opacity: 0, y: 10 } : { opacity: 0, x: -30, filter: 'blur(8px)' }}
-                      animate={{ opacity: 1, x: 0, y: 0, filter: 'blur(0px)' }}
-                      exit={reduceAnimations ? { opacity: 0, y: -10 } : { opacity: 0, x: 30, filter: 'blur(8px)' }}
-                      transition={{ duration: 0.5, ease: "easeOut" }}
+                      initial={reduceAnimations ? { opacity: 0, y: 10 } : { opacity: 0, x: -20 }}
+                      animate={{ opacity: 1, x: 0, y: 0 }}
+                      exit={reduceAnimations ? { opacity: 0, y: -10 } : { opacity: 0, x: 20 }}
+                      transition={{ duration: 0.4, ease: "easeOut" }}
                       className="font-black italic uppercase font-kanit tracking-tighter text-foreground relative z-10"
                       style={{ fontSize: 'clamp(3rem, 9vw, 7rem)', lineHeight: '0.8' }}
                     >
                       {focusSportMeta.homeHeadline.split(' ')[0].toUpperCase()} <br /> 
-                      <span className={cn(
-                        "text-primary italic",
-                        !reduceAnimations && "drop-shadow-[0_0_20px_rgba(var(--primary-rgb),0.3)]"
-                      )}>
+                      <span className="text-primary italic">
                         {focusSportMeta.homeHeadline.split(' ').slice(1).join(' ').toUpperCase()}
                       </span>
                     </motion.h1>
