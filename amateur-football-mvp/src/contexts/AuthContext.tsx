@@ -418,10 +418,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     >
       {showLoader ? (
         <div className="fixed inset-0 bg-[#020203] flex flex-col items-center justify-center z-[9999] overflow-hidden">
-          {/* Atmospheric Background - More immersive for PC */}
-          <div className="absolute inset-0">
-            <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_40%,rgba(var(--primary-rgb),0.08),transparent_70%)]" />
-            <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_100%,rgba(var(--primary-rgb),0.03),transparent_80%)]" />
+          {/* Atmospheric Background - Consolidated to prevent horizontal seams */}
+          <div className="absolute inset-0 pointer-events-none">
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_35%,rgba(var(--primary-rgb),0.12),transparent_75%)]" />
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_100%,rgba(var(--primary-rgb),0.06),transparent_70%)]" />
           </div>
           
           <div className="relative flex flex-col items-center gap-12">
@@ -487,9 +487,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             </div>
           </div>
 
-          {/* Perspective Floor - High Visual / Zero Cost */}
-          <div className="absolute bottom-0 left-0 right-0 h-[40vh] bg-[radial-gradient(circle_at_50%_100%,rgba(var(--primary-rgb),0.08),transparent_70%)] pointer-events-none" />
-          <div className="absolute bottom-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-primary/20 to-transparent" />
         </div>
       ) : (
         children
