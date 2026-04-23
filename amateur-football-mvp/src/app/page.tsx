@@ -353,90 +353,81 @@ export default function HomePage() {
 
         {/* 
             MOBILE APP-LIKE HERO & QUICK ACTIONS
-         */}        {isMobile ? (
+         */}
+        {isMobile ? (
           <section className="space-y-4 pt-1">
-            <div className="relative overflow-hidden rounded-[2rem] border border-foreground/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.04),rgba(255,255,255,0.01))] p-6 shadow-[0_16px_50px_rgba(0,0,0,0.22)]">
+            <div className="relative overflow-hidden rounded-[2rem] border border-foreground/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.04),rgba(255,255,255,0.01))] p-4 shadow-[0_16px_50px_rgba(0,0,0,0.22)]">
               <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(var(--primary-rgb),0.18),transparent_35%),linear-gradient(180deg,rgba(255,255,255,0.03),transparent)] pointer-events-none" />
-              
-              <div className="relative z-10 flex flex-col gap-6">
-                {/* Header: Identity & Greeting */}
-                <div className="flex items-center justify-between">
-                  <div className="space-y-1">
-                    <p className="text-[10px] font-black uppercase tracking-[0.4em] text-foreground/30 font-kanit italic">{greeting}</p>
+              <div className="relative z-10 space-y-4">
+                <div className="flex items-start justify-between gap-3">
+                  <div className="min-w-0">
+                    <span className="text-[10px] font-black uppercase tracking-[0.28em] text-foreground/35 font-kanit">
+                      {greeting}
+                    </span>
                     <AnimatePresence mode="wait">
                       <motion.h1
                         key={selectedSport}
-                        initial={{ opacity: 0, x: -10 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        exit={{ opacity: 0, x: 10 }}
-                        className="text-3xl font-black italic uppercase font-kanit tracking-tighter text-foreground leading-none"
+                        initial={{ y: 15, opacity: 0, scale: 0.95 }}
+                        animate={{ y: 0, opacity: 1, scale: 1 }}
+                        exit={{ y: -15, opacity: 0, scale: 1.05 }}
+                        transition={{ duration: 0.3, type: "spring", bounce: 0.4 }}
+                        className="mt-2 text-[2rem] font-black italic uppercase tracking-tighter text-foreground leading-[0.9]"
                       >
-                        {focusSportMeta.homeHeadline.split(' ')[0]} <br/>
-                        <span className="text-primary">{focusSportMeta.homeHeadline.split(' ').slice(1).join(' ')}</span>
+                        {focusSportMeta.homeHeadline.split(' ')[0].toUpperCase()}
+                        <br />
+                        <span className="text-primary">{focusSportMeta.homeHeadline.split(' ').slice(1).join(' ').toUpperCase()}</span>
                       </motion.h1>
                     </AnimatePresence>
                   </div>
-                  <Link href="/profile/me">
-                    <div className="w-16 h-16 rounded-2xl border-2 border-primary/20 p-1 bg-surface-elevated shadow-lg">
-                      <div className="w-full h-full rounded-xl overflow-hidden bg-foreground/5">
-                        {metadata?.avatar_url ? (
-                          <img src={metadata.avatar_url} alt="" className="w-full h-full object-cover" />
-                        ) : (
-                          <div className="w-full h-full flex items-center justify-center">
-                            <User2 className="w-7 h-7 text-foreground/20" />
-                          </div>
-                        )}
-                      </div>
+
+                  <Link href="/profile/me" className="shrink-0">
+                    <div className="w-14 h-14 rounded-[1.2rem] border border-foreground/15 bg-foreground/5 backdrop-blur-sm flex items-center justify-center relative overflow-hidden">
+                      {metadata?.avatar_url ? (
+                        <img src={metadata.avatar_url} alt="" className="w-full h-full object-cover" />
+                      ) : (
+                        <User2 className="w-6 h-6 text-foreground/40" />
+                      )}
+                      <div className="absolute inset-x-2 bottom-1 h-1 rounded-full" style={{ background: rankCalculation.info.color }} />
                     </div>
                   </Link>
                 </div>
 
-                {/* Sport Selector Integration */}
-                <div className="w-full">
-                  <SportSelector selectedSport={selectedSport} onSelect={setSelectedSport} variant="compact" />
-                </div>
+                <SportSelector selectedSport={selectedSport} onSelect={setSelectedSport} variant="compact" />
 
-                {/* Stats & Actions Dashboard */}
-                <div className="grid grid-cols-2 gap-3">
-                  {/* Create Action */}
-                  <Link href={`/create?sport=${selectedSport}`} className="col-span-2">
-                    <button className="w-full h-16 rounded-[1.5rem] bg-primary text-black flex items-center justify-center gap-3 shadow-[0_12px_30px_rgba(44,252,125,0.25)]">
-                      <PlusCircle className="w-6 h-6" />
-                      <span className="text-xs font-black uppercase tracking-widest font-kanit italic">Armar Partido</span>
-                    </button>
-                  </Link>
-
-                  {/* Search Action */}
-                  <Link href={`/search?sport=${selectedSport}`}>
-                    <button className="w-full h-14 rounded-[1.5rem] bg-foreground/5 border border-foreground/10 flex items-center justify-center gap-2 text-foreground">
-                      <Search className="w-4 h-4 text-primary" />
-                      <span className="text-[10px] font-black uppercase tracking-widest font-kanit italic">Buscar</span>
-                    </button>
-                  </Link>
-
-                  {/* Highlights Action */}
-                  <Link href="/highlights">
-                    <button className="w-full h-14 rounded-[1.5rem] bg-foreground/5 border border-foreground/10 flex items-center justify-center gap-2 text-foreground">
-                      <Flame className="w-5 h-5 text-orange-500" />
-                      <span className="text-[10px] font-black uppercase tracking-widest font-kanit italic">Highlights</span>
-                    </button>
-                  </Link>
-
-                  {/* Quick Stats */}
-                  <div className="col-span-2 grid grid-cols-3 gap-2 mt-1">
-                    <div className="bg-foreground/[0.03] border border-foreground/[0.05] rounded-2xl p-3 flex flex-col items-center">
-                      <p className="text-[7px] font-black text-foreground/30 uppercase tracking-widest mb-1">Partidos</p>
-                      <p className="text-lg font-black text-foreground italic font-kanit">{statsSummary.totalMatches}</p>
-                    </div>
-                    <div className="bg-foreground/[0.03] border border-foreground/[0.05] rounded-2xl p-3 flex flex-col items-center">
-                      <p className="text-[7px] font-black text-foreground/30 uppercase tracking-widest mb-1">Victorias</p>
-                      <p className="text-lg font-black text-primary italic font-kanit">{statsSummary.wins}</p>
-                    </div>
-                    <div className="bg-foreground/[0.03] border border-foreground/[0.05] rounded-2xl p-3 flex flex-col items-center">
-                      <p className="text-[7px] font-black text-foreground/30 uppercase tracking-widest mb-1">Eficiencia</p>
-                      <p className="text-lg font-black text-foreground italic font-kanit">{statsSummary.winRate}%</p>
-                    </div>
+                <div className="grid grid-cols-3 gap-2">
+                  <div className="rounded-[1.2rem] border border-foreground/10 bg-foreground/[0.03] px-3 py-3">
+                    <p className="text-[8px] font-black uppercase tracking-[0.2em] text-foreground/35">{focusSportMeta.shortLabel}</p>
+                    <AnimatePresence mode="wait">
+                      <motion.p key={`total-${selectedSport}`} initial={{ y: 10, opacity: 0, filter: 'blur(4px)' }} animate={{ y: 0, opacity: 1, filter: 'blur(0px)' }} exit={{ y: -10, opacity: 0, filter: 'blur(4px)' }} transition={{ duration: 0.2 }} className="mt-2 text-xl font-black italic text-foreground">{statsSummary.totalMatches}</motion.p>
+                    </AnimatePresence>
                   </div>
+                  <div className="rounded-[1.2rem] border border-foreground/10 bg-foreground/[0.03] px-3 py-3">
+                    <p className="text-[8px] font-black uppercase tracking-[0.2em] text-foreground/35">Ganados</p>
+                    <AnimatePresence mode="wait">
+                      <motion.p key={`wins-${selectedSport}`} initial={{ y: 10, opacity: 0, filter: 'blur(4px)' }} animate={{ y: 0, opacity: 1, filter: 'blur(0px)' }} exit={{ y: -10, opacity: 0, filter: 'blur(4px)' }} transition={{ duration: 0.2 }} className="mt-2 text-xl font-black italic text-primary">{statsSummary.wins}</motion.p>
+                    </AnimatePresence>
+                  </div>
+                  <div className="rounded-[1.2rem] border border-foreground/10 bg-foreground/[0.03] px-3 py-3">
+                    <p className="text-[8px] font-black uppercase tracking-[0.2em] text-foreground/35">Win Rate</p>
+                    <AnimatePresence mode="wait">
+                      <motion.p key={`winrate-${selectedSport}`} initial={{ y: 10, opacity: 0, filter: 'blur(4px)' }} animate={{ y: 0, opacity: 1, filter: 'blur(0px)' }} exit={{ y: -10, opacity: 0, filter: 'blur(4px)' }} transition={{ duration: 0.2 }} className="mt-2 text-xl font-black italic text-foreground">{statsSummary.winRate}%</motion.p>
+                    </AnimatePresence>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-2">
+                  <Link href={`/create?sport=${selectedSport}`}>
+                    <button className="w-full h-12 rounded-[1.2rem] bg-primary text-black text-[10px] font-black uppercase tracking-[0.18em] flex items-center justify-center gap-2 shadow-[0_10px_25px_rgba(44,252,125,0.22)]">
+                      <PlusCircle className="w-4 h-4" />
+                      Armar partido
+                    </button>
+                  </Link>
+                  <Link href={`/search?sport=${selectedSport}`}>
+                    <button className="w-full h-12 rounded-[1.2rem] border border-foreground/10 bg-foreground/[0.04] text-foreground text-[10px] font-black uppercase tracking-[0.18em] flex items-center justify-center gap-2">
+                      <Search className="w-4 h-4 text-primary" />
+                      Buscar
+                    </button>
+                  </Link>
                 </div>
               </div>
             </div>
@@ -489,7 +480,6 @@ export default function HomePage() {
                 <p className="mt-2 text-sm font-bold text-foreground/65">No hay partidos de {focusSportMeta.label} programados.</p>
               </div>
             )}
-            
             <div className="grid grid-cols-3 gap-2">
               {[
                 { label: 'Radar', icon: Search, color: 'text-primary', href: `/search?sport=${selectedSport}` },
@@ -504,290 +494,423 @@ export default function HomePage() {
                 </Link>
               ))}
             </div>
-          </section>
-        ) : reduceAnimations ? (
-          <section className="relative overflow-hidden rounded-[2.5rem] shadow-xl bg-background border border-foreground/5 group/hero">
-            <div className="absolute inset-0 z-0 select-none">
-              <img
-                src={focusSportMeta.heroImage}
-                alt=""
-                className="w-full h-full object-cover opacity-20 grayscale"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent opacity-80" />
-            </div>
-
-            <div className="relative z-10 flex flex-col p-8 gap-8">
-              <div className="space-y-4 max-w-2xl">
-                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-surface border border-foreground/10">
-                  <span className="inline-flex w-1.5 h-1.5 rounded-full bg-foreground/30" />
-                  <span className="text-[9px] font-black uppercase tracking-[0.3em] text-foreground/40 font-kanit">
-                    {greeting}
-                  </span>
-                </div>
-
-                <div className="flex flex-col">
-                  <h1
-                    className="font-black italic uppercase font-kanit tracking-tighter text-foreground leading-[0.85]"
-                    style={{ fontSize: 'clamp(2.5rem, 12vw, 5rem)' }}
-                  >
-                    {focusSportMeta.homeHeadline.split(' ')[0].toUpperCase()} <br /> 
-                    <span className="text-primary italic">{focusSportMeta.homeHeadline.split(' ').slice(1).join(' ').toUpperCase()}</span>
-                  </h1>
-                </div>
-
-                <div className="flex items-center gap-4 py-2">
-                  <div className="w-12 h-12 rounded-full border-2 overflow-hidden flex items-center justify-center bg-surface relative" style={{ borderColor: rankCalculation.info.color }}>
-                    {metadata?.avatar_url ? (
-                      <img src={metadata.avatar_url} alt="" className="w-full h-full object-cover" />
-                    ) : (
-                      <User2 className="w-6 h-6 text-foreground/40" />
-                    )}
-                  </div>
-                  <div>
-                    <p className="text-foreground/40 text-[10px] font-black uppercase tracking-widest">Bienvenido de nuevo</p>
-                    <p className="text-foreground text-xl font-black font-kanit uppercase italic">{userName}</p>
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-2 gap-6 pt-4">
-                  {[
-                    { label: `${focusSportMeta.shortLabel} jugados`, value: statsSummary.totalMatches, color: 'text-accent', icon: Calendar },
-                    { label: 'Efectividad', value: `${statsSummary.winRate}%`, color: 'text-primary', icon: TrendingUp },
-                  ].map((item, idx) => (
-                    <div key={idx} className="space-y-1">
-                      <p className="text-[9px] font-black text-foreground/40 uppercase tracking-[0.2em] flex items-center gap-1.5">
-                        <item.icon className="w-3 h-3" /> {item.label}
-                      </p>
-                      <p className={cn('text-2xl font-black italic tracking-tighter uppercase font-kanit', item.color)}>
-                        {item.value}
-                      </p>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              <div className="w-full max-w-md space-y-4">
-                <div className="bg-surface/60 p-6 rounded-[2rem] border border-foreground/5 space-y-4">
-                  <div className="flex items-center gap-4">
-                    <RankBadgeInline rankName={rankCalculation.info.name} size="sm" />
-                    <div className="flex-1">
-                      <h3 className="text-xl font-black italic text-foreground leading-none font-kanit uppercase tracking-tighter">
-                        {rankCalculation.info.name}
-                      </h3>
-                    </div>
-                    <span className="text-2xl font-black text-foreground italic font-kanit leading-none">{Math.round(rankCalculation.progress)}%</span>
-                  </div>
-
-                  <div className="space-y-2">
-                    <div className="h-2 bg-foreground/5 rounded-full overflow-hidden border border-foreground/10">
-                      <div
-                        className="h-full rounded-full"
-                        style={{
-                          width: `${rankCalculation.progress}%`,
-                          background: rankCalculation.info.color,
-                        }}
-                      />
-                    </div>
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-2 gap-3">
-                  <Link href={`/create?sport=${selectedSport}`} className="col-span-2">
-                    <button className="w-full h-14 rounded-2xl bg-primary text-black text-[11px] font-black uppercase tracking-widest italic flex items-center justify-center gap-2">
-                      <PlusCircle className="w-5 h-5" />
-                      Armar partido
-                    </button>
-                  </Link>
-
-                  <Link href={`/search?sport=${selectedSport}`} className="col-span-2">
-                    <button className="w-full h-14 rounded-2xl bg-surface border border-foreground/5 text-foreground text-[11px] font-black uppercase tracking-widest italic flex items-center justify-center gap-2">
-                      <Search className="w-5 h-5 text-primary" />
-                      Buscar
-                    </button>
-                  </Link>
-                </div>
-              </div>
-            </div>
-          </section>
-        ) : (
-          <motion.section
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 1 }}
-            className="relative overflow-hidden rounded-[3.5rem] lg:rounded-[5rem] border border-white/5 bg-[#0a0a0a] min-h-[700px] flex flex-col items-center justify-center text-center p-8 lg:p-20 group/hero transform-gpu"
-          >
-            {/* Stage Background */}
-            <div className="absolute inset-0 z-0">
-               {/* Sport Background Image with elegant fade */}
-               <AnimatePresence mode="wait">
-                 <motion.div
-                   key={selectedSport}
-                   initial={{ opacity: 0, scale: 1.1 }}
-                   animate={{ opacity: 0.15, scale: 1 }}
-                   exit={{ opacity: 0, scale: 0.9 }}
-                   transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
-                   className="absolute inset-0"
-                 >
-                   <img
-                     src={focusSportMeta.heroImage}
-                     alt=""
-                     className="w-full h-full object-cover grayscale brightness-50"
-                   />
-                 </motion.div>
-               </AnimatePresence>
-
-               {/* Stage Lighting - Single performant gradient */}
-               <div 
-                 className="absolute inset-0 opacity-40 mix-blend-overlay transition-colors duration-1000"
-                 style={{
-                   background: `radial-gradient(circle at center, ${sportTheme.accent}88 0%, transparent 70%)`
-                 }}
-               />
-
-               {/* Subtle Grain Overlay */}
-               <div className="absolute inset-0 opacity-[0.03] pointer-events-none mix-blend-screen bg-[url('https://grainy-gradients.vercel.app/noise.svg')]" />
-               
-               {/* Vignette */}
-               <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#0a0a0a]/20 to-[#0a0a0a]" />
-            </div>
-
-            {/* Content Container */}
-            <div className="relative z-10 w-full max-w-5xl flex flex-col items-center">
-              {/* Top Badge */}
-              <motion.div
-                initial={{ y: 20, opacity: 0 }}
-                animate={{ y: 0, opacity: 1 }}
-                transition={{ delay: 0.2 }}
-                className="mb-8 px-6 py-2 rounded-full bg-white/5 border border-white/10 backdrop-blur-md"
-              >
-                <span className="text-[10px] font-black uppercase tracking-[0.5em] text-white/40 font-kanit italic">
-                  {greeting} • Pelotify Pro
-                </span>
-              </motion.div>
-
-              {/* Main Headline */}
-              <div className="relative mb-12">
-                <AnimatePresence mode="wait">
-                  <motion.h1
-                    key={selectedSport}
-                    initial={{ opacity: 0, y: 30 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -30 }}
-                    transition={{ duration: 0.8, type: "spring", bounce: 0.4 }}
-                    className="text-6xl md:text-8xl lg:text-[10rem] font-black italic uppercase font-kanit tracking-tighter text-white leading-none"
-                  >
-                    {focusSportMeta.homeHeadline.split(' ')[0]} <br />
-                    <span className="text-primary">{focusSportMeta.homeHeadline.split(' ').slice(1).join(' ')}</span>
-                  </motion.h1>
-                </AnimatePresence>
-                
-                {/* Decorative Elements */}
-                <div className="absolute -top-10 -left-10 w-20 h-20 border-t-2 border-l-2 border-primary/20 rounded-tl-3xl" />
-                <div className="absolute -bottom-10 -right-10 w-20 h-20 border-b-2 border-r-2 border-primary/20 rounded-br-3xl" />
-              </div>
-
-              {/* Sport Switcher - Redesigned integration */}
-              <motion.div
-                initial={{ scale: 0.9, opacity: 0 }}
-                animate={{ scale: 1, opacity: 1 }}
-                transition={{ delay: 0.4 }}
-                className="w-full max-w-md mb-12"
-              >
-                <SportSelector
-                  selectedSport={selectedSport}
-                  onSelect={setSelectedSport}
+          </section>) : reduceAnimations ? (
+            <section className="relative overflow-hidden rounded-[2.5rem] shadow-xl bg-background border border-foreground/5 group/hero">
+              <div className="absolute inset-0 z-0 select-none">
+                <img
+                  src="https://images.unsplash.com/photo-1574629810360-7efbbe195018?auto=format&fit=crop&q=60&w=1200"
+                  alt=""
+                  fetchPriority="high"
+                  decoding="async"
+                  className="w-full h-full object-cover opacity-20"
                 />
-              </motion.div>
+                <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent opacity-80" />
+              </div>
 
-              {/* Bottom Grid: Identity & Stats */}
-              <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 w-full items-stretch">
-                {/* Pro Identity Card */}
-                <motion.div
-                  initial={{ x: -30, opacity: 0 }}
-                  animate={{ x: 0, opacity: 1 }}
-                  transition={{ delay: 0.6 }}
-                  className="lg:col-span-1 bg-white/5 border border-white/10 rounded-[2.5rem] p-6 flex flex-col justify-between group hover:bg-white/[0.08] transition-colors"
-                >
-                  <div className="flex items-center gap-4">
-                    <div className="w-16 h-16 rounded-full border-2 border-primary/30 p-1">
-                      <div className="w-full h-full rounded-full overflow-hidden bg-white/10">
-                        {metadata?.avatar_url ? (
-                          <img src={metadata.avatar_url} alt="" className="w-full h-full object-cover" />
-                        ) : (
-                          <div className="w-full h-full flex items-center justify-center text-white/20">
-                            <Users className="w-8 h-8" />
-                          </div>
-                        )}
+              <div className="relative z-10 flex flex-col p-6 gap-6">
+                <div className="space-y-4 max-w-2xl">
+                  <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-surface border border-foreground/10">
+                    <span className="inline-flex w-1.5 h-1.5 rounded-full bg-foreground/30" />
+                    <span className="text-[9px] font-black uppercase tracking-[0.3em] text-foreground/40 font-kanit">
+                      {greeting}
+                    </span>
+                  </div>
+
+                  <div className="flex flex-col">
+                    <h1
+                      className="font-black italic uppercase font-kanit tracking-tighter text-foreground leading-[0.85]"
+                      style={{ fontSize: 'clamp(2.5rem, 12vw, 4rem)' }}
+                    >
+                      {focusSportMeta.homeHeadline.split(' ')[0].toUpperCase()} <br /> <span className="text-primary italic">{focusSportMeta.homeHeadline.split(' ').slice(1).join(' ').toUpperCase()}</span>
+                    </h1>
+                  </div>
+
+                  <div className="flex items-center gap-3 py-1">
+                    <div className="w-10 h-10 rounded-full border-2 overflow-hidden flex items-center justify-center bg-surface relative" style={{ borderColor: rankCalculation.info.color }}>
+                      {metadata?.avatar_url ? (
+                        <img src={metadata.avatar_url} alt="" className="w-full h-full object-cover" />
+                      ) : (
+                        <User2 className="w-5 h-5 text-foreground/40" />
+                      )}
+                      <div className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-background border border-foreground/20 flex items-center justify-center shadow-sm">
+                        <rankCalculation.rank.icon className="w-2.5 h-2.5" style={{ color: rankCalculation.rank.hex }} />
                       </div>
                     </div>
-                    <div className="text-left">
-                      <p className="text-[10px] font-black text-white/30 uppercase tracking-widest leading-none mb-1">Identidad</p>
-                      <h3 className="text-2xl font-black italic text-white font-kanit uppercase leading-none">{userName}</h3>
+                    <p className="text-foreground/70 text-base font-medium font-kanit">
+                      Hola, <span className="text-foreground font-black uppercase">{userName}</span>
+                    </p>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-4 pt-2">
+                    {[
+                      { label: `${focusSportMeta.shortLabel}`, value: `${statsSummary.totalMatches} jug.`, color: 'text-accent', icon: Calendar },
+                      { label: 'Win Rate', value: `${statsSummary.winRate}%`, color: 'text-primary', icon: TrendingUp },
+                    ].map((item, idx) => (
+                      <div key={idx} className="space-y-0.5">
+                        <p className="text-[8px] font-black text-foreground/40 uppercase tracking-[0.2em] flex items-center gap-1">
+                          <item.icon className="w-2.5 h-2.5" /> {item.label}
+                        </p>
+                        <p className={cn('text-xl font-black italic tracking-tighter uppercase font-kanit', item.color)}>
+                          {item.value}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="w-full space-y-3">
+                  <div className="bg-surface/60 p-4 rounded-2xl border border-foreground/5 space-y-4">
+                    <div className="flex items-center gap-3">
+                      <RankBadgeInline rankName={rankCalculation.info.name} size="sm" />
+                      <div className="flex-1">
+                        <h3 className="text-lg font-black italic text-foreground leading-none font-kanit uppercase tracking-tighter">
+                          {rankCalculation.info.name}
+                        </h3>
+                      </div>
+                      <span className="text-xl font-black text-foreground italic font-kanit leading-none">{Math.round(rankCalculation.progress)}%</span>
+                    </div>
+
+                    <div className="space-y-1.5">
+                      <div className="h-1.5 bg-foreground/5 rounded-full overflow-hidden border border-foreground/10">
+                        <div
+                          className="h-full rounded-full"
+                          style={{
+                            width: `${rankCalculation.progress}%`,
+                            background: rankCalculation.info.color,
+                          }}
+                        />
+                      </div>
+                      <div className="flex justify-between text-[8px] font-medium text-foreground/40 tracking-wide uppercase">
+                        <span>Progreso</span>
+                        <span>Siguiente: {rankCalculation.nextRank.name}</span>
+                      </div>
                     </div>
                   </div>
-                  
-                  <div className="mt-6 pt-6 border-t border-white/5 flex items-center justify-between">
-                     <div className="text-left">
-                        <p className="text-[9px] font-bold text-white/20 uppercase tracking-widest mb-1">Rango actual</p>
-                        <div className="flex items-center gap-2">
-                           <rankCalculation.rank.icon className="w-4 h-4 text-primary" />
-                           <span className="text-sm font-black text-white italic font-kanit uppercase">{rankCalculation.info.name}</span>
-                        </div>
-                     </div>
-                     <div className="text-right">
-                        <p className="text-[9px] font-bold text-white/20 uppercase tracking-widest mb-1">Socio No.</p>
-                        <p className="text-sm font-black text-white font-mono opacity-40">#{user?.id?.slice(0, 5).toUpperCase()}</p>
-                     </div>
+
+                  <div className="grid grid-cols-3 gap-2">
+                    <Link href={`/create?sport=${selectedSport}`} className="col-span-3">
+                      <button className="w-full h-12 rounded-xl bg-primary text-black text-[10px] font-black uppercase tracking-widest italic flex items-center justify-center gap-2">
+                        <PlusCircle className="w-4 h-4" />
+                        ARMAR PARTIDO {selectedSport !== 'football' && `DE ${selectedSport.toUpperCase()}`}
+                      </button>
+                    </Link>
+
+                    <Link href={`/search?sport=${selectedSport}`} className="col-span-3">
+                      <button className="w-full h-12 rounded-xl bg-surface border border-foreground/5 text-foreground text-[10px] font-black uppercase tracking-widest italic flex items-center justify-center gap-2">
+                        <Search className="w-3.5 h-3.5 text-primary" />
+                        BUSCAR {selectedSport !== 'football' ? selectedSport.toUpperCase() : 'PARTIDO'}
+                      </button>
+                    </Link>
                   </div>
-                </motion.div>
-
-                {/* Primary CTA Block */}
+                </div>
+              </div>
+            </section>
+          ) : (
+          <motion.section
+            initial={reduceAnimations ? { opacity: 1 } : { opacity: 0, scale: 0.98 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.8, ease: "easeOut" }}
+            className="relative overflow-hidden rounded-[3rem] lg:rounded-[4rem] shadow-[0_40px_100px_rgba(0,0,0,0.25)] group/hero border border-foreground/10 bg-background transform-gpu"
+          >
+            {/* Backdrop image & Effects */}
+            <div className="absolute inset-0 z-0 select-none">
+              <AnimatePresence mode="wait">
                 <motion.div
-                  initial={{ y: 30, opacity: 0 }}
-                  animate={{ y: 0, opacity: 1 }}
-                  transition={{ delay: 0.7 }}
-                  className="lg:col-span-1 flex flex-col gap-4"
+                  key={selectedSport}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: reduceAnimations ? 0.3 : 0.6 }}
+                  className="absolute inset-0"
                 >
-                  <Link href={`/create?sport=${selectedSport}`} className="h-full">
-                    <motion.button
-                      whileHover={{ scale: 1.02, y: -2 }}
-                      whileTap={{ scale: 0.98 }}
-                      className="w-full h-full min-h-[140px] rounded-[2.5rem] bg-primary text-black flex flex-col items-center justify-center gap-2 group relative overflow-hidden shadow-[0_20px_50px_rgba(44,252,125,0.3)]"
-                    >
-                      <div className="absolute inset-0 bg-white/20 opacity-0 group-hover:opacity-100 transition-opacity" />
-                      <PlusCircle className="w-10 h-10 mb-1" />
-                      <span className="text-sm font-black uppercase tracking-[0.2em] font-kanit italic">Armar Partido</span>
-                    </motion.button>
-                  </Link>
+                  <img
+                    src={focusSportMeta.heroImage}
+                    alt=""
+                    className="w-full h-full object-cover grayscale opacity-[0.08]"
+                    loading="eager"
+                  />
+                  
+                  {/* Dynamic Mesh Gradients - Ultra optimized to prevent lag */}
+                  <div 
+                    className="absolute inset-0 opacity-[0.15]"
+                    style={{
+                      background: `radial-gradient(circle at 30% 20%, ${sportTheme.accent}44 0%, transparent 60%)`
+                    }}
+                  />
                 </motion.div>
+              </AnimatePresence>
 
-                {/* Secondary Actions & Stats */}
+              {/* Court Lines Overlay - Simplified */}
+              <div className="absolute inset-0 opacity-[0.015] pointer-events-none mix-blend-overlay">
+                 <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.05)_2px,transparent_2px),linear-gradient(90deg,rgba(255,255,255,0.05)_2px,transparent_2px)] bg-[size:120px_120px]" />
+              </div>
+
+              {/* Final depth layers - Using more performant linear gradients */}
+              <div className="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent" />
+            </div>
+
+            {/* Content Wrapper */}
+            <div className="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-6 lg:gap-10 p-5 sm:p-12 lg:p-16 xl:p-20">
+              {/* Left: Text & Branding */}
+              <div className="flex-1 space-y-6 lg:space-y-8 max-w-2xl">
                 <motion.div
-                  initial={{ x: 30, opacity: 0 }}
+                  initial={{ x: -10, opacity: 0 }}
                   animate={{ x: 0, opacity: 1 }}
-                  transition={{ delay: 0.8 }}
-                  className="lg:col-span-1 grid grid-cols-2 gap-4"
+                  transition={{ delay: 0.1 }}
+                  className="inline-flex items-center gap-3 px-4 py-1.5 rounded-full bg-foreground/[0.04] border border-foreground/15"
                 >
-                  <Link href={`/search?sport=${selectedSport}`} className="col-span-2">
-                    <motion.button
-                      whileHover={{ scale: 1.02 }}
-                      className="w-full h-20 rounded-[2.5rem] bg-white/5 border border-white/10 flex items-center justify-center gap-3 text-white group"
+                  <div className="relative flex h-2 w-2">
+                    <span className="relative inline-flex rounded-full h-2 w-2 bg-foreground/30" />
+                  </div>
+                  <span className="text-[10px] font-black uppercase tracking-[0.4em] text-foreground/40 font-kanit">
+                    {greeting}
+                  </span>
+                </motion.div>
+
+                {/* Title Section based on Branding */}
+                <div className="flex flex-col relative">
+                  <AnimatePresence mode="wait">
+                    <motion.h1
+                      key={selectedSport}
+                      initial={reduceAnimations ? { opacity: 0, y: 10 } : { opacity: 0, x: -20 }}
+                      animate={{ opacity: 1, x: 0, y: 0 }}
+                      exit={reduceAnimations ? { opacity: 0, y: -10 } : { opacity: 0, x: 20 }}
+                      transition={{ duration: 0.4, ease: "easeOut" }}
+                      className="font-black italic uppercase font-kanit tracking-tighter text-foreground relative z-10"
+                      style={{ fontSize: 'clamp(3rem, 9vw, 7rem)', lineHeight: '0.8' }}
                     >
-                      <Search className="w-5 h-5 text-primary group-hover:scale-110 transition-transform" />
-                      <span className="text-xs font-black uppercase tracking-widest font-kanit italic">Buscar Partido</span>
-                    </motion.button>
-                  </Link>
-                  
-                  <div className="bg-white/5 border border-white/10 rounded-[2rem] p-4 flex flex-col justify-center items-center">
-                    <p className="text-[8px] font-bold text-white/30 uppercase tracking-[0.2em] mb-1">Partidos</p>
-                    <p className="text-2xl font-black text-white italic font-kanit">{statsSummary.totalMatches}</p>
+                      {focusSportMeta.homeHeadline.split(' ')[0].toUpperCase()} <br /> 
+                      <span className="text-primary italic">
+                        {focusSportMeta.homeHeadline.split(' ').slice(1).join(' ').toUpperCase()}
+                      </span>
+                    </motion.h1>
+                  </AnimatePresence>
+                </div>
+
+                <motion.div
+                  initial={{ opacity: 0, y: 30 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.5, type: "spring", stiffness: 150 }}
+                  className="flex items-stretch gap-0 mt-8 rounded-[2.5rem] w-fit relative group cursor-pointer"
+                >
+                  {/* VIP ID Side Bar */}
+                  <div className="w-3 rounded-l-[2rem] shadow-[0_0_30px_rgba(0,0,0,0.5)] z-20" style={{ backgroundColor: rankCalculation.info.color, boxShadow: !reduceAnimations ? `0 0 40px ${rankCalculation.info.color}60` : 'none' }} />
+
+                  {/* VIP ID Main Body */}
+                  <div className="glass-premium border-y border-r border-white/10 rounded-r-[2rem] py-4 px-8 shadow-2xl flex items-center gap-8 relative z-10 overflow-hidden min-w-[380px] transform-gpu">
+                    <div className="absolute inset-0 bg-gradient-to-r from-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
+                    {!reduceAnimations && <div className="absolute -right-20 -top-20 w-40 h-40 bg-white/5 rounded-full blur-3xl group-hover:bg-white/10 transition-colors" />}
+
+                    {/* Avatar Block */}
+                    <div className="relative">
+                      <div className="w-20 h-20 rounded-full overflow-hidden flex items-center justify-center bg-surface-elevated border-2 border-white/10 shadow-2xl p-1">
+                        <div className="w-full h-full rounded-full overflow-hidden">
+                          {metadata?.avatar_url ? (
+                            <img src={metadata.avatar_url} alt="" className={cn("w-full h-full object-cover", !reduceAnimations && "scale-110 group-hover:scale-125 transition-transform duration-700")} />
+                          ) : (
+                            <User2 className="w-10 h-10 text-foreground/20" />
+                          )}
+                        </div>
+                      </div>
+                      <motion.div 
+                        animate={!reduceAnimations ? { rotate: [0, 10, -10, 0] } : {}}
+                        transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
+                        className="absolute -bottom-3 -right-3 w-10 h-10 rounded-full bg-surface border-2 border-white/10 flex items-center justify-center shadow-2xl" 
+                        style={{ borderColor: `${rankCalculation.info.color}80` }}
+                      >
+                        <rankCalculation.rank.icon className="w-5 h-5" style={{ color: rankCalculation.info.color }} />
+                      </motion.div>
+                    </div>
+
+                    {/* Data Block */}
+                    <div className="flex flex-col py-1">
+                      <div className="flex items-center gap-3">
+                        <span className="text-[10px] font-black tracking-[0.4em] uppercase text-foreground/30 font-kanit">IDENTIDAD PELOTIFY</span>
+                        <div className="h-[1px] w-8 bg-foreground/10" />
+                        <Shield className="w-3.5 h-3.5 opacity-40 text-primary" />
+                      </div>
+                      <h3 className="text-3xl font-black italic uppercase leading-none font-kanit tracking-tighter text-foreground mt-2 group-hover:text-primary transition-colors duration-500">
+                        {userName}
+                      </h3>
+                      <div className="mt-2 flex items-center gap-3">
+                         <span className="text-[9px] font-bold text-foreground/40 tracking-widest uppercase">{rankCalculation.info.name}</span>
+                         <div className="w-1 h-1 rounded-full bg-foreground/20" />
+                         <span className="text-[9px] font-bold text-foreground/40 tracking-widest uppercase">LVL {Math.floor(statsSummary.elo / 100)}</span>
+                      </div>
+                    </div>
                   </div>
-                  <div className="bg-white/5 border border-white/10 rounded-[2rem] p-4 flex flex-col justify-center items-center">
-                    <p className="text-[8px] font-bold text-white/30 uppercase tracking-[0.2em] mb-1">Victorias</p>
-                    <p className="text-2xl font-black text-primary italic font-kanit">{statsSummary.wins}</p>
-                  </div>
+                </motion.div>
+
+                {/* Stats / Rank Summary */}
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.6 }}
+                  className="grid grid-cols-2 sm:grid-cols-3 gap-4 lg:gap-6 pt-2 lg:pt-4"
+                >
+                  {[
+                    {
+                      label: `${focusSportMeta.shortLabel} jugados`,
+                      value: statsSummary.totalMatches,
+                      color: 'text-accent',
+                      icon: Calendar,
+                    },
+                    {
+                      label: 'Victorias',
+                      value: statsSummary.wins,
+                      color: 'text-primary',
+                      icon: Trophy,
+                    },
+                  ].map((item, idx) => (
+                    <div key={idx} className={cn("space-y-1", idx === 2 && "hidden sm:block")}>
+                      <p className="text-[9px] font-black text-foreground/40 uppercase tracking-[0.25em] flex items-center gap-1.5">
+                        <item.icon className="w-2.5 h-2.5" /> {item.label}
+                      </p>
+                      <AnimatePresence mode="wait">
+                        <motion.p
+                          key={`desktop-stat-${selectedSport}`}
+                          initial={{ y: 15, opacity: 0, filter: 'blur(5px)' }}
+                          animate={{ y: 0, opacity: 1, filter: 'blur(0px)' }}
+                          exit={{ y: -15, opacity: 0, filter: 'blur(5px)' }}
+                          transition={{ duration: 0.3 }}
+                          className={cn(
+                            'text-2xl font-black italic tracking-tighter uppercase font-kanit',
+                            item.color
+                          )}
+                        >
+                          {item.value}
+                        </motion.p>
+                      </AnimatePresence>
+                    </div>
+                  ))}
                 </motion.div>
               </div>
+
+              {/* Right: Modern CTA Cards */}
+              <motion.div
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 0.4, duration: 0.7 }}
+                className="lg:shrink-0 w-full lg:w-[400px] space-y-4"
+              >
+                <div className="hidden lg:block">
+                  <SportSelector
+                    selectedSport={selectedSport}
+                    onSelect={setSelectedSport}
+                    variant="compact"
+                  />
+                </div>
+
+                {/* Rank Progress Card */}
+                <div className="glass-premium p-6 rounded-[2.5rem] border-foreground/15 space-y-6 relative overflow-hidden group">
+                  {/* Background Rank Glow */}
+                  <div
+                    className="absolute -top-20 -right-20 w-40 h-40 blur-[80px] opacity-20 transition-opacity group-hover:opacity-40"
+                    style={{ backgroundColor: rankCalculation.info.color }}
+                  />
+
+                  <div className="flex items-center gap-6 relative z-10">
+                    <RankBadgeInline rankName={rankCalculation.info.name} size="lg" />
+                    <div className="flex-1 space-y-2">
+                      <p className="text-[10px] font-semibold text-foreground/40 tracking-wide leading-none font-kanit">
+                        Progreso de liga
+                      </p>
+                      <div className="flex items-center gap-2">
+                        <h3 className="text-2xl font-black italic text-foreground leading-none font-kanit uppercase tracking-tighter">
+                          {rankCalculation.info.name}
+                        </h3>
+                        <rankCalculation.rank.icon className="w-5 h-5" style={{ color: rankCalculation.rank.hex }} />
+                      </div>
+                      <span className="text-[9px] font-semibold text-foreground/40 tracking-wide font-kanit">
+                        Estado de temporada
+                      </span>
+                    </div>
+                    <div className="text-right flex flex-col items-end">
+                      <div className="flex items-center gap-2">
+                        <span className="text-3xl font-black text-foreground italic font-kanit leading-none">
+                          {Math.round(rankCalculation.progress)}%
+                        </span>
+                        <rankCalculation.nextRank.icon className="w-6 h-6 opacity-20" style={{ color: rankCalculation.nextRank.color }} />
+                      </div>
+                      <p className="text-[8px] font-black text-foreground/30 uppercase mt-1">
+                        PARA {rankCalculation.nextRank.name}
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="space-y-3 relative z-10">
+                    <div className="relative h-3 bg-foreground/5 rounded-full p-0.5 overflow-hidden border border-foreground/15">
+                      <motion.div
+                        initial={{ width: 0 }}
+                        animate={{ width: `${rankCalculation.progress}%` }}
+                        transition={{ duration: 2, ease: 'circOut', delay: 0.8 }}
+                        className="h-full rounded-full relative"
+                        style={{
+                          background: `linear-gradient(90deg, ${rankCalculation.info.color}, #5dfd9d)`,
+                          boxShadow: `0 0 10px ${rankCalculation.info.color}30`,
+                        }}
+                      >
+                        <div className="absolute inset-0 animate-shimmer opacity-30 bg-gradient-to-r from-transparent via-white/40 to-transparent" />
+                      </motion.div>
+                    </div>
+
+                    <div className="flex justify-between text-[8px] font-medium text-foreground/30 tracking-wide">
+                      <span>Progreso de temporada</span>
+                      <span>Siguiente nivel</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-3 gap-4">
+                  <Link href={`/create?sport=${selectedSport}`} className="col-span-3">
+                    <motion.button
+                      whileHover={{ scale: 1.02, y: -5 }}
+                      whileTap={{ scale: 0.98 }}
+                      className="w-full h-20 rounded-[2.5rem] bg-foreground text-background text-[12px] font-black uppercase tracking-[0.3em] italic shadow-[0_30px_60px_rgba(0,0,0,0.3)] flex items-center justify-center gap-4 relative overflow-hidden group transition-all duration-500"
+                    >
+                      {/* Dynamic Background Glow on Hover */}
+                      <div 
+                        className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700" 
+                        style={{ 
+                          background: `radial-gradient(circle at center, ${sportTheme.accent}44 0%, transparent 70%)` 
+                        }} 
+                      />
+                      
+                      <div className="absolute inset-0 bg-gradient-to-r from-white/10 via-transparent to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />
+                      
+                      <PlusCircle className="w-7 h-7 relative z-10 group-hover:rotate-90 transition-transform duration-500" />
+                      <span className="relative z-10 drop-shadow-md">ARMAR PARTIDO {selectedSport !== 'football' && `DE ${selectedSport.toUpperCase()}`}</span>
+                      
+                      <div className="absolute right-8 opacity-20 group-hover:opacity-40 transition-opacity">
+                         <ChevronRight className="w-6 h-6" />
+                      </div>
+                    </motion.button>
+                  </Link>
+
+                  <Link href={`/search?sport=${selectedSport}`} className="col-span-2">
+                    <motion.button
+                      whileHover={{ scale: 1.02, y: -5 }}
+                      whileTap={{ scale: 0.98 }}
+                      className="w-full h-20 rounded-[2.5rem] glass-premium border-white/10 text-foreground text-[11px] font-black uppercase tracking-[0.25em] italic flex items-center justify-center gap-4 relative overflow-hidden group shadow-2xl transition-all duration-500"
+                    >
+                      <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                      <Search className="w-6 h-6 relative z-10 text-primary group-hover:scale-110 transition-transform duration-500" />
+                      <span className="relative z-10 group-hover:text-primary transition-colors">BUSCAR {selectedSport !== 'football' ? selectedSport.toUpperCase() : 'PARTIDO'}</span>
+                    </motion.button>
+                  </Link>
+
+                  <Link href="/highlights" className="col-span-1">
+                    <motion.button
+                      whileHover={{ scale: 1.02, y: -5 }}
+                      whileTap={{ scale: 0.98 }}
+                      className="w-full h-20 rounded-[2.5rem] glass-premium border-white/10 text-orange-500/50 hover:text-orange-500 flex items-center justify-center transition-all duration-500 shadow-2xl relative overflow-hidden group"
+                    >
+                      <div className="absolute inset-0 bg-gradient-to-br from-orange-500/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                      <Flame className="w-7 h-7 relative z-10 transition-transform group-hover:scale-125 group-hover:rotate-12 duration-500" />
+                    </motion.button>
+                  </Link>
+                </div>
+              </motion.div>
             </div>
           </motion.section>
         )}
@@ -798,79 +921,79 @@ export default function HomePage() {
               {statCardsData.map((stat) => (
                 <div
                   key={stat.label}
-                  className="rounded-[1.6rem] border border-foreground/5 bg-surface/50 p-4 shadow-lg backdrop-blur-sm"
+                  className="rounded-[1.6rem] border border-foreground/10 bg-white/[0.03] p-4 shadow-[0_10px_28px_rgba(0,0,0,0.14)]"
                 >
                   <div
-                    className="w-10 h-10 rounded-xl flex items-center justify-center border border-foreground/5"
-                    style={{ backgroundColor: `${stat.color}15` }}
+                    className="w-10 h-10 rounded-[1rem] flex items-center justify-center border border-white/10"
+                    style={{ backgroundColor: `${stat.color}18` }}
                   >
                     <stat.icon className="w-5 h-5" style={{ color: stat.color }} />
                   </div>
-                  <p className="mt-4 text-[9px] font-black uppercase tracking-widest text-foreground/40 font-kanit">
+                  <p className="mt-4 text-[9px] font-black uppercase tracking-[0.18em] text-foreground/35">
                     {stat.label}
                   </p>
-                  <p className="mt-1 text-2xl font-black italic text-foreground tracking-tighter font-kanit">
+                  <p className="mt-1 text-2xl font-black italic text-foreground tracking-tighter">
                     {stat.value}
                   </p>
                 </div>
               ))}
             </section>
 
-            <section className="rounded-[1.8rem] border border-foreground/5 bg-surface/50 p-5 shadow-lg backdrop-blur-sm">
+            <section className="rounded-[1.8rem] border border-foreground/10 bg-white/[0.03] p-4 shadow-[0_12px_30px_rgba(0,0,0,0.14)]">
               <div className="flex items-center justify-between gap-3">
                 <div>
-                  <p className="text-[9px] font-black uppercase tracking-[0.22em] text-primary font-kanit">Momentum</p>
-                  <h3 className="mt-1 text-xl font-black italic uppercase tracking-tighter text-foreground font-kanit">
+                  <p className="text-[9px] font-black uppercase tracking-[0.22em] text-primary">Momentum</p>
+                  <h3 className="mt-2 text-lg font-black italic uppercase tracking-tighter text-foreground">
                     {rankCalculation.rank.name}
                   </h3>
                 </div>
                 <div className="text-right">
-                  <p className="text-[9px] font-black uppercase tracking-[0.18em] text-foreground/35 font-kanit">Racha</p>
-                  <p className="mt-1 text-2xl font-black italic text-primary font-kanit">{usageSnapshot.streakDays}</p>
+                  <p className="text-[9px] font-black uppercase tracking-[0.18em] text-foreground/35">Racha</p>
+                  <p className="mt-2 text-2xl font-black italic text-primary">{usageSnapshot.streakDays}</p>
                 </div>
               </div>
-              <div className="mt-5 h-2 rounded-full bg-foreground/5 overflow-hidden border border-foreground/10">
+              <div className="mt-4 h-2 rounded-full bg-white/5 overflow-hidden">
                 <div className="h-full rounded-full bg-primary" style={{ width: `${rankCalculation.progress}%` }} />
               </div>
-              <div className="mt-3 flex items-center justify-between text-[10px] font-bold text-foreground/45 uppercase tracking-widest font-kanit">
-                <span>Top: {usageSnapshot.favoriteSection}</span>
+              <div className="mt-3 flex items-center justify-between text-[10px] font-bold text-foreground/45">
+                <span>Sección top: {usageSnapshot.favoriteSection}</span>
                 <span>{Math.round(rankCalculation.progress)}%</span>
               </div>
             </section>
 
 
 
-            <section className="space-y-4">
-              <div className="flex items-center justify-between px-2">
+            <section className="space-y-3">
+              <div className="flex items-center justify-between px-1">
                 <div>
-                  <p className="text-[9px] font-black uppercase tracking-[0.22em] text-primary font-kanit">Social</p>
-                  <h3 className="mt-1 text-xl font-black italic uppercase tracking-tighter text-foreground font-kanit">
+                  <p className="text-[9px] font-black uppercase tracking-[0.22em] text-primary">Social</p>
+                  <h3 className="mt-1 text-lg font-black italic uppercase tracking-tighter text-foreground">
                     3erTiempo
                   </h3>
                 </div>
-                <Link href="/feed" className="text-[10px] font-black uppercase tracking-widest text-foreground/40 hover:text-foreground/80 font-kanit italic">
+                <Link href="/feed" className="text-[9px] font-black uppercase tracking-[0.18em] text-foreground/45">
                   Ver muro
                 </Link>
               </div>
               {recentPosts.length > 0 ? (
-                <div className="flex gap-3 overflow-x-auto pb-4 snap-x snap-mandatory no-scrollbar scroll-px-2 swipe-ignore px-2">
+                <div className="flex gap-3 overflow-x-auto pb-2 snap-x snap-mandatory no-scrollbar scroll-px-1 swipe-ignore">
                   {recentPosts.slice(0, 8).map((post, idx) => (
                     <Link
                       key={post.id}
                       href={`/feed?post=${post.id}`}
                       className="snap-start min-w-[280px] max-w-[280px] shrink-0"
                     >
-                      <div className="relative h-full overflow-hidden rounded-[2rem] border border-foreground/5 bg-surface/50 p-5 shadow-lg backdrop-blur-sm group">
+                      <div className="relative h-full overflow-hidden rounded-[2rem] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.06),rgba(255,255,255,0.02))] p-4 shadow-[0_18px_44px_rgba(0,0,0,0.16)]">
                         {post.image_url && (
                           <>
-                            <img src={post.image_url} alt="" className="absolute inset-0 h-full w-full object-cover opacity-20 group-hover:opacity-30 transition-opacity" />
-                            <div className="absolute inset-0 bg-gradient-to-t from-background/90 via-background/50 to-transparent" />
+                            <img src={post.image_url} alt="" className="absolute inset-0 h-full w-full object-cover opacity-25" />
+                            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/45 to-black/10" />
                           </>
                         )}
-                        <div className="relative flex h-full flex-col z-10">
+                        <div className="relative flex h-full flex-col">
                           <div className="flex items-center justify-between gap-3">
                             <div className="flex items-center gap-3 min-w-0">
-                              <div className="h-10 w-10 rounded-xl overflow-hidden border border-foreground/10 bg-surface-elevated shrink-0">
+                              <div className="h-11 w-11 rounded-full overflow-hidden border border-white/10 bg-surface-elevated shrink-0">
                                 {post.author?.avatar_url ? (
                                   <img src={post.author.avatar_url} alt="" className="h-full w-full object-cover" />
                                 ) : (
@@ -880,26 +1003,29 @@ export default function HomePage() {
                                 )}
                               </div>
                               <div className="min-w-0">
-                                <p className="truncate text-sm font-black text-foreground italic uppercase font-kanit">{post.author?.name || 'Jugador'}</p>
-                                <p className="text-[9px] font-black uppercase tracking-widest text-foreground/40 font-kanit">
+                                <p className="truncate text-sm font-black text-foreground">{post.author?.name || 'Jugador'}</p>
+                                <p className="text-[9px] font-black uppercase tracking-[0.16em] text-foreground/40">
                                   {new Date(post.created_at).toLocaleDateString()}
                                 </p>
                               </div>
                             </div>
-                            <div className="rounded-full border border-primary/20 bg-primary/10 px-3 py-1 text-[8px] font-black uppercase tracking-[0.2em] text-primary font-kanit">
+                            <div className="rounded-full border border-white/10 bg-white/[0.05] px-2.5 py-1 text-[8px] font-black uppercase tracking-[0.18em] text-primary">
                               {idx === 0 ? 'En foco' : '3T'}
                             </div>
                           </div>
 
-                          <p className="mt-4 text-[13px] font-medium leading-relaxed text-foreground/70 line-clamp-4">
+                          <p className="mt-4 text-[15px] font-medium leading-relaxed text-foreground/82 line-clamp-5">
                             {post.content}
                           </p>
 
-                          <div className="mt-5 flex items-center justify-between border-t border-foreground/5 pt-4">
-                            <div className="flex items-center gap-4 text-[10px] font-black text-foreground/40 uppercase tracking-widest font-kanit">
-                              <span className="flex items-center gap-1.5"><Heart className="w-3.5 h-3.5"/> {post.likes_count || 0}</span>
-                              <span className="flex items-center gap-1.5"><MessageSquare className="w-3.5 h-3.5"/> {post.comments_count || 0}</span>
+                          <div className="mt-5 flex items-center justify-between border-t border-white/10 pt-3">
+                            <div className="flex items-center gap-4 text-[11px] font-bold text-foreground/55">
+                              <span>{post.likes_count || 0} likes</span>
+                              <span>{post.comments_count || 0} respuestas</span>
                             </div>
+                            <span className="text-[9px] font-black uppercase tracking-[0.18em] text-primary">
+                              Ver post
+                            </span>
                           </div>
                         </div>
                       </div>
@@ -907,69 +1033,69 @@ export default function HomePage() {
                   ))}
                 </div>
               ) : (
-                <div className="rounded-[2rem] border border-dashed border-foreground/10 bg-surface/30 p-8 text-center text-xs font-black uppercase tracking-widest text-foreground/40 font-kanit italic mx-2">
-                  El muro está tranquilo
+                <div className="rounded-[1.7rem] border border-dashed border-foreground/10 bg-white/[0.02] p-5 text-center text-sm font-bold text-foreground/55">
+                  El muro todavía está tranquilo.
                 </div>
               )}
             </section>
 
-            <section className="space-y-4">
-              <div className="flex items-center justify-between px-2">
+            <section className="space-y-3">
+              <div className="flex items-center justify-between px-1">
                 <div>
-                  <p className="text-[9px] font-black uppercase tracking-[0.22em] text-primary font-kanit">Highlights</p>
-                  <h3 className="mt-1 text-xl font-black italic uppercase tracking-tighter text-foreground font-kanit">
+                  <p className="text-[9px] font-black uppercase tracking-[0.22em] text-primary">Highlights</p>
+                  <h3 className="mt-1 text-lg font-black italic uppercase tracking-tighter text-foreground">
                     {focusSportMeta.highlightLabel}
                   </h3>
                 </div>
-                <Link href="/highlights" className="text-[10px] font-black uppercase tracking-widest text-foreground/40 hover:text-foreground/80 font-kanit italic">
+                <Link href="/highlights" className="text-[9px] font-black uppercase tracking-[0.18em] text-foreground/45">
                   Ver todo
                 </Link>
               </div>
               {highlights.length > 0 ? (
-                <div className="flex gap-3 overflow-x-auto pb-4 snap-x snap-mandatory no-scrollbar scroll-px-2 swipe-ignore px-2">
+                <div className="flex gap-3 overflow-x-auto pb-2 snap-x snap-mandatory no-scrollbar scroll-px-1 swipe-ignore">
                   {highlights.slice(0, 4).map((highlight, idx) => (
                     <Link
                       key={highlight.id}
                       href={`/highlights?v=${highlight.id}`}
                       className={cn(
-                        'snap-start overflow-hidden rounded-[2rem] border border-foreground/5 shadow-lg group',
+                        'snap-start overflow-hidden rounded-[2rem] border border-white/10 shadow-[0_18px_44px_rgba(0,0,0,0.18)]',
                         idx === 0 ? 'min-w-[240px]' : 'min-w-[180px]'
                       )}
                     >
                       <div className={cn('relative', idx === 0 ? 'aspect-[10/16]' : 'aspect-[4/6]')}>
                         {highlight.thumbnail_url ? (
-                          <img src={highlight.thumbnail_url} alt="" className="absolute inset-0 h-full w-full object-cover opacity-90 group-hover:opacity-100 transition-opacity" />
+                          <img src={highlight.thumbnail_url} alt="" className="absolute inset-0 h-full w-full object-cover" />
                         ) : (
-                          <div className="absolute inset-0 bg-surface-elevated" />
+                          <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(var(--primary-rgb),0.35),rgba(0,0,0,0.92))]" />
                         )}
-                        <div className="absolute inset-0 bg-gradient-to-t from-background/90 via-background/20 to-transparent" />
-                        <div className="absolute left-4 top-4 flex h-12 w-12 items-center justify-center rounded-xl border border-foreground/10 bg-surface/30 backdrop-blur-md group-hover:scale-105 transition-transform">
+                        <div className="absolute inset-0 bg-gradient-to-t from-black via-black/35 to-black/10" />
+                        <div className="absolute left-4 top-4 flex h-12 w-12 items-center justify-center rounded-full border border-white/15 bg-black/35 backdrop-blur-md">
                           <Play className="h-5 w-5 translate-x-[1px] text-white" />
                         </div>
 
                         <div className="absolute inset-x-4 bottom-4">
-                          <div className="flex items-center gap-3">
-                            <div className="h-10 w-10 rounded-xl overflow-hidden border border-foreground/10 bg-surface-elevated shrink-0">
+                          <div className="flex items-center gap-2">
+                            <div className="h-8 w-8 rounded-full overflow-hidden border border-white/15 bg-white/10">
                               {highlight.profiles?.avatar_url ? (
                                 <img src={highlight.profiles.avatar_url} alt="" className="h-full w-full object-cover" />
                               ) : (
-                                <div className="flex h-full w-full items-center justify-center text-[10px] font-black text-foreground/40">
+                                <div className="flex h-full w-full items-center justify-center text-[10px] font-black text-white/70">
                                   {(highlight.profiles?.name || 'J').charAt(0)}
                                 </div>
                               )}
                             </div>
                             <div className="min-w-0">
-                              <p className="truncate text-sm font-black uppercase tracking-tighter text-white font-kanit italic">
+                              <p className="truncate text-[10px] font-black uppercase tracking-[0.16em] text-white">
                                 @{highlight.profiles?.name || 'Jugador'}
                               </p>
-                              <p className="text-[9px] font-black uppercase tracking-widest text-foreground/50 font-kanit">
+                              <p className="text-[9px] font-bold text-white/65">
                                 {highlight.likes_count || 0} likes · {highlight.views_count || 0} views
                               </p>
                             </div>
                           </div>
 
                           {idx === 0 && (
-                            <div className="mt-4 inline-flex rounded-full border border-primary/20 bg-primary/10 px-3 py-1.5 text-[8px] font-black uppercase tracking-[0.2em] text-primary font-kanit">
+                            <div className="mt-3 inline-flex rounded-full border border-white/10 bg-white/10 px-3 py-1.5 text-[9px] font-black uppercase tracking-[0.18em] text-white">
                               Clip destacado
                             </div>
                           )}
@@ -979,99 +1105,99 @@ export default function HomePage() {
                   ))}
                 </div>
               ) : (
-                <div className="rounded-[2rem] border border-dashed border-foreground/10 bg-surface/30 p-8 text-center text-xs font-black uppercase tracking-widest text-foreground/40 font-kanit italic mx-2">
-                  Todavía no hay highlights
+                <div className="rounded-[1.7rem] border border-dashed border-foreground/10 bg-white/[0.02] p-5 text-center text-sm font-bold text-foreground/55">
+                  Todavía no hay highlights para mostrar.
                 </div>
               )}
             </section>
 
-            <section className="space-y-4">
-              <div className="flex items-center justify-between px-2">
+            <section className="space-y-3">
+              <div className="flex items-center justify-between px-1">
                 <div>
-                  <p className="text-[9px] font-black uppercase tracking-[0.22em] text-primary font-kanit">Para vos</p>
-                  <h3 className="mt-1 text-xl font-black italic uppercase tracking-tighter text-foreground font-kanit">
+                  <p className="text-[9px] font-black uppercase tracking-[0.22em] text-primary">Para vos</p>
+                  <h3 className="mt-1 text-lg font-black italic uppercase tracking-tighter text-foreground">
                     Recomendados
                   </h3>
                 </div>
-                <Link href={`/search?sport=${selectedSport}`} className="text-[10px] font-black uppercase tracking-widest text-foreground/40 hover:text-foreground/80 font-kanit italic">
+                <Link href={`/search?sport=${selectedSport}`} className="text-[9px] font-black uppercase tracking-[0.18em] text-foreground/45">
                   Ver más
                 </Link>
               </div>
-              <div className="flex gap-3 overflow-x-auto pb-4 snap-x snap-mandatory no-scrollbar scroll-px-2 swipe-ignore px-2">
+              <div className="flex gap-3 overflow-x-auto pb-2 snap-x snap-mandatory no-scrollbar scroll-px-1 swipe-ignore">
                 {recommendedMatches.length > 0 ? (
                   recommendedMatches.map((match) => (
                     <Link
                       key={match.id}
                       href={`/match?id=${match.id}`}
-                      className="snap-start min-w-[280px] rounded-[2rem] border border-foreground/5 bg-surface/50 p-5 shadow-lg backdrop-blur-sm shrink-0 hover:bg-surface/70 transition-colors"
+                      className="snap-start min-w-[280px] rounded-[1.7rem] border border-foreground/10 bg-white/[0.03] p-4 shadow-[0_12px_28px_rgba(0,0,0,0.14)] shrink-0"
                     >
-                      <p className="text-[9px] font-black uppercase tracking-[0.2em] text-primary flex items-center gap-1 font-kanit">
+                      <p className="text-[9px] font-black uppercase tracking-[0.2em] text-primary">
                         {SPORT_META[getMatchSport(match)].icon} {getFormatMeta(match.type, getMatchSport(match)).label}
                       </p>
-                      <h4 className="mt-2 text-xl font-black italic uppercase tracking-tighter text-foreground truncate font-kanit">
+                      <h4 className="mt-2 text-base font-black italic uppercase tracking-tighter text-foreground truncate">
                         {match.location}
                       </h4>
-                      <p className="mt-1 text-[11px] font-black uppercase tracking-widest text-foreground/40 font-kanit">
+                      <p className="mt-1 text-[11px] font-bold uppercase tracking-[0.15em] text-foreground/45">
                         {match.date} · {match.time}
                       </p>
                       {match.recommendationReasons?.[0] && (
-                        <div className="mt-4 inline-flex rounded-full bg-primary/10 border border-primary/20 px-3 py-1.5 text-[8px] font-black text-primary uppercase tracking-[0.2em] font-kanit">
+                        <div className="mt-3 inline-flex rounded-full bg-primary/10 px-3 py-1.5 text-[9px] font-black text-primary">
                           {match.recommendationReasons[0]}
                         </div>
                       )}
                     </Link>
                   ))
                 ) : (
-                  <div className="w-full rounded-[2rem] border border-dashed border-foreground/10 bg-surface/30 p-8 text-center text-xs font-black uppercase tracking-widest text-foreground/40 font-kanit italic">
-                    No hay sugerencias para {focusSportMeta.label}
+                  <div className="w-full rounded-[1.7rem] border border-dashed border-foreground/10 bg-white/[0.02] p-5 text-center text-sm font-bold text-foreground/55">
+                    No hay sugerencias para {focusSportMeta.label} por ahora.
                   </div>
                 )}
               </div>
             </section>
 
-            <section className="space-y-4 pb-8">
-              <div className="flex items-center justify-between px-2">
+            <section className="space-y-3">
+              <div className="flex items-center justify-between px-1">
                 <div>
-                  <p className="text-[9px] font-black uppercase tracking-[0.22em] text-primary font-kanit">Actividad</p>
-                  <h3 className="mt-1 text-xl font-black italic uppercase tracking-tighter text-foreground font-kanit">
-                    En movimiento
+                  <p className="text-[9px] font-black uppercase tracking-[0.22em] text-primary">Actividad</p>
+                  <h3 className="mt-1 text-lg font-black italic uppercase tracking-tighter text-foreground">
+                    Comunidad en movimiento
                   </h3>
                 </div>
-                <div className="rounded-full border border-foreground/10 bg-surface/50 px-3 py-1.5 text-[8px] font-black uppercase tracking-[0.2em] text-foreground/50 font-kanit">
-                  {totalPlayers}+ online
+                <div className="rounded-full border border-white/10 bg-white/[0.04] px-3 py-1 text-[9px] font-black uppercase tracking-[0.18em] text-foreground/45">
+                  {totalPlayers}+ en juego
                 </div>
               </div>
               {activities.length > 0 ? (
-                <div className="relative overflow-hidden rounded-[2rem] border border-foreground/5 bg-surface/30 p-5 shadow-lg mx-2">
-                  <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(var(--primary-rgb),0.05),transparent_40%)] pointer-events-none" />
-                  <div className="relative space-y-4">
+                <div className="relative overflow-hidden rounded-[2rem] border border-white/10 bg-[linear-gradient(160deg,rgba(255,255,255,0.06),rgba(255,255,255,0.02))] p-4 shadow-[0_18px_40px_rgba(0,0,0,0.18)]">
+                  <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(var(--primary-rgb),0.22),transparent_34%),radial-gradient(circle_at_bottom_right,rgba(255,255,255,0.08),transparent_38%)] pointer-events-none" />
+                  <div className="relative space-y-3">
                     {activities.slice(0, 3).map((activity, idx) => (
                       <div
                         key={`${activity.user}-${idx}`}
                         className={cn(
-                          'relative overflow-hidden rounded-2xl border p-4 backdrop-blur-sm transition-colors',
-                          idx === 0 ? 'bg-surface/80 border-foreground/10 shadow-sm' : 'bg-surface/40 border-foreground/5'
+                          'relative overflow-hidden rounded-[1.5rem] border border-white/10 p-4 backdrop-blur-sm',
+                          idx === 0 ? 'bg-black/20' : 'bg-white/[0.035]'
                         )}
                       >
-                        <div className="flex items-start gap-4">
+                        <div className="flex items-start gap-3">
                           <div className="relative flex flex-col items-center shrink-0">
-                            <div className="flex h-12 w-12 items-center justify-center rounded-xl border border-primary/20 bg-primary/10 shadow-inner">
-                              <TrendingUp className="h-5 w-5 text-primary" />
+                            <div className="flex h-11 w-11 items-center justify-center rounded-[1.1rem] border border-primary/20 bg-primary/12 shadow-[0_0_24px_rgba(var(--primary-rgb),0.16)]">
+                              <TrendingUp className="h-4 w-4 text-primary" />
                             </div>
-                            {idx < 2 && <div className="mt-3 h-10 w-px bg-gradient-to-b from-primary/30 to-transparent" />}
+                            {idx < 2 && <div className="mt-2 h-8 w-px bg-gradient-to-b from-primary/40 to-transparent" />}
                           </div>
-                          <div className="min-w-0 flex-1 pt-1">
+                          <div className="min-w-0 flex-1">
                             <div className="flex items-center justify-between gap-3">
-                              <p className="text-[10px] font-black uppercase tracking-[0.2em] text-primary font-kanit">
-                                {idx === 0 ? 'Ahora' : `Pulse 0${idx + 1}`}
+                              <p className="text-[9px] font-black uppercase tracking-[0.22em] text-primary">
+                                {idx === 0 ? 'Ahora' : `Pulso 0${idx + 1}`}
                               </p>
-                              <span className="text-[9px] font-black uppercase tracking-widest text-foreground/40 font-kanit">
+                              <span className="rounded-full border border-white/10 bg-white/[0.04] px-2.5 py-1 text-[8px] font-black uppercase tracking-[0.16em] text-foreground/40">
                                 {activity.time}
                               </span>
                             </div>
-                            <p className="mt-2 text-sm font-black text-foreground italic uppercase tracking-tighter font-kanit">
+                            <p className="mt-2 text-[15px] font-black leading-snug text-foreground">
                               {activity.user}
-                              <span className="ml-1 text-foreground/40">{activity.detail}</span>
+                              <span className="ml-1 font-medium text-foreground/58">{activity.detail}</span>
                             </p>
                           </div>
                         </div>
@@ -1080,8 +1206,8 @@ export default function HomePage() {
                   </div>
                 </div>
               ) : (
-                <div className="rounded-[2rem] border border-dashed border-foreground/10 bg-surface/30 p-8 text-center text-xs font-black uppercase tracking-widest text-foreground/40 font-kanit italic mx-2">
-                  No hay movimiento reciente
+                <div className="rounded-[1.7rem] border border-dashed border-foreground/10 bg-white/[0.02] p-5 text-center text-sm font-bold text-foreground/55">
+                  No hay movimiento reciente en la comunidad.
                 </div>
               )}
             </section>
@@ -1784,30 +1910,30 @@ export default function HomePage() {
                       <Link
                         key={match.id}
                         href={`/match?id=${match.id}`}
-                        className="block rounded-[2rem] border border-foreground/5 bg-surface/50 p-5 hover:border-primary/30 hover:bg-surface/80 transition-all group"
+                        className="block rounded-[1.8rem] border border-foreground/10 bg-foreground/[0.02] p-4 hover:border-primary/30 transition-all"
                       >
                         <div className="flex items-start justify-between gap-3">
                           <div>
-                            <p className="text-[9px] font-black uppercase tracking-[0.2em] text-primary flex items-center gap-1 font-kanit">
+                            <p className="text-[10px] font-black uppercase tracking-[0.2em] text-primary">
                               {SPORT_META[getMatchSport(match)].icon} {getFormatMeta(match.type, getMatchSport(match)).label}
                             </p>
-                            <h4 className="text-xl font-black italic uppercase tracking-tighter text-foreground mt-2 font-kanit group-hover:text-primary transition-colors">
+                            <h4 className="text-lg font-black italic uppercase tracking-tighter text-foreground mt-2">
                               {match.location}
                             </h4>
-                            <p className="text-[11px] font-black uppercase tracking-widest text-foreground/40 mt-1 font-kanit">
-                              {match.date} · {match.time}
+                            <p className="text-xs text-foreground/50 mt-1">
+                              {match.date} Â· {match.time}
                             </p>
                           </div>
-                          <span className="text-[10px] font-black uppercase tracking-[0.2em] text-foreground/40 font-kanit">
+                          <span className="text-[10px] font-black uppercase tracking-[0.2em] text-foreground/40">
                             {match.price ? `$${match.price.toLocaleString()}` : 'Libre'}
                           </span>
                         </div>
                         {match.recommendationReasons?.length > 0 && (
-                          <div className="mt-4 flex flex-wrap gap-2">
+                          <div className="mt-3 flex flex-wrap gap-2">
                             {match.recommendationReasons.map((reason) => (
                               <span
                                 key={reason}
-                                className="px-3 py-1.5 rounded-full bg-primary/10 border border-primary/20 text-primary text-[8px] font-black uppercase tracking-[0.2em] font-kanit"
+                                className="px-2.5 py-1.5 rounded-full bg-primary/10 text-primary text-[9px] font-black"
                               >
                                 {reason}
                               </span>
@@ -1818,12 +1944,12 @@ export default function HomePage() {
                     ))}
                   </div>
                 ) : (
-                  <div className="rounded-[2rem] border border-dashed border-foreground/15 bg-surface/30 p-6 text-center">
-                    <p className="text-xs font-black uppercase tracking-widest text-foreground/60 font-kanit italic">
-                      Sin sugerencias
+                  <div className="rounded-[1.8rem] border border-dashed border-foreground/15 p-5 text-center">
+                    <p className="text-sm font-bold text-foreground/60">
+                      Todavía no tenemos sugerencias para vos.
                     </p>
-                    <p className="text-[10px] text-foreground/40 mt-2 tracking-wide">
-                      Ajustá deportes y zona en configuración.
+                    <p className="text-xs text-foreground/40 mt-2">
+                      Ajustá deportes y zona en configuración para mejorar el radar.
                     </p>
                   </div>
                 )}

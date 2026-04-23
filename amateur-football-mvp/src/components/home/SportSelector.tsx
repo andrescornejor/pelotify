@@ -1,6 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
+import { Trophy, Zap } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { type Sport, SPORT_META } from '@/lib/sports';
 
@@ -21,69 +22,90 @@ export function SportSelector({
   return (
     <div
       className={cn(
-        'relative flex items-center bg-foreground/[0.03] border border-foreground/[0.08] backdrop-blur-xl p-1.5 shadow-[inset_0_2px_4px_rgba(255,255,255,0.05),0_10px_30px_rgba(0,0,0,0.1)]',
-        isCompact ? 'rounded-[2rem] gap-1' : 'rounded-[2.5rem] gap-2'
+        'relative w-full border border-foreground/10 bg-surface/50 backdrop-blur-2xl shadow-[0_20px_60px_rgba(0,0,0,0.08)] overflow-hidden',
+        isCompact ? 'rounded-[1.7rem] p-2' : 'rounded-[2rem] p-2.5'
       )}
     >
-      {/* Background Active Slider */}
-      <div className="absolute inset-1.5 grid grid-cols-3 gap-2 pointer-events-none">
-        {sports.map((sport) => (
-          <div key={sport} className="relative h-full w-full">
-            {selectedSport === sport && (
-              <motion.div
-                layoutId="active-pill"
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(255,255,255,0.08),transparent_40%)] pointer-events-none" />
+      <div className="relative z-10 grid grid-cols-3 gap-2">
+        {sports.map((sport) => {
+          const isSelected = selectedSport === sport;
+          const meta = SPORT_META[sport];
+          const accent =
+            sport === 'padel'
+              ? 'from-cyan-400/25 to-sky-500/15 text-cyan-300 border-cyan-400/30'
+              : sport === 'basket'
+                ? 'from-orange-400/25 to-amber-500/15 text-orange-300 border-orange-400/30'
+                : 'from-emerald-400/25 to-green-500/15 text-emerald-300 border-emerald-400/30';
+
+          return (
+            <button
+              key={sport}
+              onClick={() => onSelect(sport)}
                 className={cn(
-                  "absolute inset-0 rounded-[1.6rem] shadow-2xl z-0 border border-white/10 overflow-hidden",
-                  sport === 'football' ? "bg-primary" : sport === 'padel' ? "bg-cyan-500" : "bg-orange-500"
+                  'group relative min-w-0 border transition-all duration-300 outline-none text-left overflow-hidden',
+                  isCompact ? 'min-h-[92px] rounded-[1.15rem] px-2.5 py-2' : 'min-h-[82px] rounded-[1.4rem] px-3 py-3',
+                  isSelected
+                    ? cn('bg-gradient-to-br shadow-[0_18px_40px_rgba(0,0,0,0.12)] scale-[1.01]', accent)
+                    : 'bg-foreground/[0.03] border-foreground/10 text-foreground/55 hover:text-foreground hover:bg-foreground/[0.05] hover:border-foreground/20'
                 )}
-                transition={{ type: 'spring', stiffness: 350, damping: 30 }}
-              >
-                <div className="absolute inset-0 bg-gradient-to-br from-white/20 to-transparent" />
-                <div className="absolute inset-0 animate-shimmer opacity-30 bg-gradient-to-r from-transparent via-white/40 to-transparent" />
-              </motion.div>
-            )}
-          </div>
-        ))}
-      </div>
-
-      {sports.map((sport) => {
-        const isSelected = selectedSport === sport;
-        const meta = SPORT_META[sport];
-
-        return (
-          <button
-            key={sport}
-            onClick={() => onSelect(sport)}
-            className={cn(
-              'relative z-10 flex-1 flex items-center justify-center transition-all duration-500 outline-none group overflow-hidden',
-              isCompact ? 'h-12 rounded-[1.5rem]' : 'h-14 rounded-[1.8rem]',
-              isSelected ? 'text-background' : 'text-foreground/40 hover:text-foreground/70'
-            )}
-          >
-            <div className="flex items-center gap-2.5">
-              <span className={cn(
-                'leading-none transition-transform duration-500',
-                isSelected ? 'text-[1.4rem] scale-110' : 'text-[1.2rem] scale-100 opacity-60 group-hover:opacity-100 group-hover:scale-105'
-              )}>
-                {meta.icon}
-              </span>
-              {!isCompact && (
-                <span className={cn(
-                  'font-black uppercase tracking-[0.15em] font-kanit italic text-[10px] transition-all duration-500',
-                  isSelected ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-2'
-                )}>
-                  {meta.shortLabel}
-                </span>
+            >
+              {isSelected && (
+                <motion.div
+                  layoutId="active-sport-surface"
+                  className="absolute inset-0 bg-gradient-to-br from-white/[0.08] to-transparent"
+                  transition={{ type: 'spring', stiffness: 320, damping: 28 }}
+                />
               )}
-            </div>
 
-            {/* Hover Indicator for non-selected */}
-            {!isSelected && (
-              <div className="absolute inset-0 bg-foreground/5 opacity-0 group-hover:opacity-100 transition-opacity rounded-full mx-1 my-1" />
-            )}
-          </button>
-        );
-      })}
+              <div className={cn(
+                "relative z-10 flex h-full",
+                isCompact ? "items-center justify-center" : "flex-col justify-between"
+              )}>
+                <div className={cn(
+                  "flex items-start",
+                  isCompact ? "justify-center" : "justify-between w-full"
+                )}>
+                  <motion.span
+                    animate={isSelected ? { scale: 1.15, y: -2 } : { scale: 1, y: 0 }}
+                    transition={{ type: 'spring', stiffness: 280, damping: 18 }}
+                    className={cn('leading-none drop-shadow-sm', isCompact ? 'text-[2rem]' : 'text-[1.65rem]')}
+                  >
+                    {meta.icon}
+                  </motion.span>
+                  
+                  {!isCompact && (
+                    <div
+                      className={cn(
+                        'rounded-full border font-black uppercase tracking-[0.2em]',
+                        'px-2 py-1 text-[8px]',
+                        isSelected ? 'border-current/20 bg-black/10 text-current' : 'border-foreground/10 text-foreground/30'
+                      )}
+                    >
+                      {isSelected ? 'Activo' : 'Elegir'}
+                    </div>
+                  )}
+                </div>
+
+                {!isCompact && (
+                  <div className="mt-3">
+                    <div className="flex items-center gap-1.5">
+                      <span
+                        className={cn(
+                          'font-black uppercase tracking-[0.12em] font-kanit italic truncate text-[11px]'
+                        )}
+                      >
+                        {meta.shortLabel}
+                      </span>
+                      {isSelected && <Zap className="w-3.5 h-3.5" />}
+                    </div>
+                  </div>
+                )}
+              </div>
+            </button>
+          );
+        })}
+      </div>
     </div>
   );
 }
