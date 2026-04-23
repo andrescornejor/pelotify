@@ -105,12 +105,12 @@ export function BottomNav() {
                   >
                     <motion.div
                       whileTap={{ scale: 0.95 }}
-                      className="glass-premium border border-white/20 rounded-[1.8rem] p-4 flex items-center gap-4 bg-black/40 shadow-[0_20px_50px_rgba(0,0,0,0.3)] backdrop-blur-md"
+                      className="glass-premium border border-foreground/10 dark:border-white/20 rounded-[1.8rem] p-4 flex items-center gap-4 bg-white/80 dark:bg-black/40 shadow-[0_20px_50px_rgba(0,0,0,0.1)] dark:shadow-[0_20px_50px_rgba(0,0,0,0.3)] backdrop-blur-md"
                     >
                       <div className="w-12 h-12 rounded-2xl bg-white/10 border border-white/10 flex items-center justify-center shrink-0">
                         <action.icon className={cn("w-6 h-6", action.color)} />
                       </div>
-                      <span className="text-[15px] font-black italic uppercase font-kanit text-white tracking-tighter">
+                      <span className="text-[15px] font-black italic uppercase font-kanit text-foreground dark:text-white tracking-tighter">
                         {action.label}
                       </span>
                     </motion.div>

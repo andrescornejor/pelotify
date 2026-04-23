@@ -137,7 +137,7 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
                 hapticLight();
                 setNavMenuOpen(false);
               }}
-              className="fixed inset-0 z-[80] bg-black/60 backdrop-blur-xl lg:hidden cursor-pointer"
+              className="fixed inset-0 z-[80] bg-white/40 dark:bg-black/60 backdrop-blur-xl lg:hidden cursor-pointer"
             />
           )}
         </AnimatePresence>
@@ -174,9 +174,6 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
                   <div className="w-8 h-[2px] rounded-full bg-primary/30" />
                 </div>
               </div>
-
-
-
             )}
 
             {/* Main content — slides during swipe */}
