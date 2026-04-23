@@ -3,6 +3,10 @@
 import { useEffect, useState } from 'react';
 import { Cloud, CloudFog, CloudLightning, CloudRain, CloudSnow, Sun, CloudDrizzle, Thermometer } from 'lucide-react';
 import { cn } from '@/lib/utils';
+
+// In-memory cache to avoid re-fetching weather on every mount (30min TTL)
+const weatherCache = new Map<string, { data: { temp: number; code: number } | null; ts: number }>();
+const CACHE_TTL = 30 * 60 * 1000;
 import { findVenueByLocation } from '@/lib/venues';
 
 interface WeatherWidgetProps {
@@ -48,10 +52,18 @@ export function WeatherWidget({ lat, lng, location, date, time, className }: Wea
                 targetLat = venue.lat;
                 targetLng = venue.lng;
             } else {
-                // Default to Rosario coordinates if everything else fails
                 targetLat = -32.9468;
                 targetLng = -60.6393;
             }
+        }
+
+        // Check cache first
+        const cacheKey = `${targetLat},${targetLng},${date}`;
+        const cached = weatherCache.get(cacheKey);
+        if (cached && Date.now() - cached.ts < CACHE_TTL) {
+          setWeather(cached.data);
+          setLoading(false);
+          return;
         }
 
         // Open-Meteo is free and doesn't require an API key
@@ -77,14 +89,13 @@ export function WeatherWidget({ lat, lng, location, date, time, className }: Wea
         });
 
         // If the date is too far in the future, we might not have data
-        if (minDiff > 24 * 60 * 60 * 1000) {
-            setWeather(null);
-        } else {
-            setWeather({
-                temp: Math.round(data.hourly.temperature_2m[closestIdx]),
-                code: data.hourly.weathercode[closestIdx],
-            });
-        }
+        const result = minDiff > 24 * 60 * 60 * 1000 ? null : {
+          temp: Math.round(data.hourly.temperature_2m[closestIdx]),
+          code: data.hourly.weathercode[closestIdx],
+        };
+
+        weatherCache.set(cacheKey, { data: result, ts: Date.now() });
+        setWeather(result);
       } catch (error) {
         console.error('Error fetching weather:', error);
       } finally {
