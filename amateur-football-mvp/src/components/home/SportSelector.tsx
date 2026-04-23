@@ -58,39 +58,49 @@ export function SportSelector({
                 />
               )}
 
-              <div className="relative z-10 flex h-full flex-col justify-between">
-                <div className="flex items-start justify-between">
+              <div className={cn(
+                "relative z-10 flex h-full",
+                isCompact ? "items-center justify-center" : "flex-col justify-between"
+              )}>
+                <div className={cn(
+                  "flex items-start",
+                  isCompact ? "justify-center" : "justify-between w-full"
+                )}>
                   <motion.span
-                    animate={isSelected ? { scale: 1.14, y: -1 } : { scale: 1, y: 0 }}
+                    animate={isSelected ? { scale: 1.15, y: -2 } : { scale: 1, y: 0 }}
                     transition={{ type: 'spring', stiffness: 280, damping: 18 }}
-                    className={cn('leading-none drop-shadow-sm', isCompact ? 'text-[1.3rem]' : 'text-[1.65rem]')}
+                    className={cn('leading-none drop-shadow-sm', isCompact ? 'text-[2rem]' : 'text-[1.65rem]')}
                   >
                     {meta.icon}
                   </motion.span>
-                  <div
+                  
+                  {!isCompact && (
+                    <div
                       className={cn(
                         'rounded-full border font-black uppercase tracking-[0.2em]',
-                        isCompact ? 'px-1.5 py-1 text-[7px]' : 'px-2 py-1 text-[8px]',
+                        'px-2 py-1 text-[8px]',
                         isSelected ? 'border-current/20 bg-black/10 text-current' : 'border-foreground/10 text-foreground/30'
                       )}
-                  >
-                    {isSelected ? 'Activo' : 'Elegir'}
-                  </div>
+                    >
+                      {isSelected ? 'Activo' : 'Elegir'}
+                    </div>
+                  )}
                 </div>
 
-                <div className="mt-3">
-                  <div className="flex items-center gap-1.5">
-                    <span
-                      className={cn(
-                        'font-black uppercase tracking-[0.12em] font-kanit italic truncate',
-                        isCompact ? 'text-[10px]' : 'text-[11px]'
-                      )}
-                    >
-                      {meta.shortLabel}
-                    </span>
-                    {isSelected && <Zap className={cn(isCompact ? 'w-3 h-3' : 'w-3.5 h-3.5')} />}
+                {!isCompact && (
+                  <div className="mt-3">
+                    <div className="flex items-center gap-1.5">
+                      <span
+                        className={cn(
+                          'font-black uppercase tracking-[0.12em] font-kanit italic truncate text-[11px]'
+                        )}
+                      >
+                        {meta.shortLabel}
+                      </span>
+                      {isSelected && <Zap className="w-3.5 h-3.5" />}
+                    </div>
                   </div>
-                </div>
+                )}
               </div>
             </button>
           );
