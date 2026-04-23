@@ -776,7 +776,6 @@ export default function HomePage() {
 
             </div>
           </motion.section>
-on>
         )}
 
         {isMobile ? (
