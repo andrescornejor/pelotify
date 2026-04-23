@@ -353,39 +353,28 @@ export default function HomePage() {
 
         {/* 
             MOBILE APP-LIKE HERO & QUICK ACTIONS
-         */}
-        {isMobile ? (
+         */}        {isMobile ? (
           <section className="space-y-4 pt-1">
-            <div className="relative overflow-hidden rounded-[2rem] border border-foreground/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.04),rgba(255,255,255,0.01))] p-4 shadow-[0_16px_50px_rgba(0,0,0,0.22)]">
+            <div className="relative overflow-hidden rounded-[2rem] border border-foreground/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.04),rgba(255,255,255,0.01))] p-6 shadow-[0_16px_50px_rgba(0,0,0,0.22)]">
               <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(var(--primary-rgb),0.18),transparent_35%),linear-gradient(180deg,rgba(255,255,255,0.03),transparent)] pointer-events-none" />
-              <div className="relative z-10 space-y-4">
-                <div className="flex items-start justify-between gap-3">
-                  <div className="min-w-0">
-                    <span className="text-[10px] font-black uppercase tracking-[0.28em] text-foreground/35 font-kanit">
-                      {greeting}
-                    </span>
-                    <AnimatePresence mode="wait">
-                      <motion.h1
-                        key={selectedSport}
-                        initial={{ y: 15, opacity: 0, scale: 0.95 }}
-                        animate={{ y: 0, opacity: 1, scale: 1 }}
-                        exit={{ y: -15, opacity: 0, scale: 1.05 }}
-                        transition={{ duration: 0.3, type: "spring", bounce: 0.4 }}
-                        className="mt-2 text-[2rem] font-black italic uppercase tracking-tighter text-foreground leading-[0.9]"
-                      >
-                        {focusSportMeta.homeHeadline.split(' ')[0].toUpperCase()}
-                        <br />
-                        <span className="text-primary">{focusSportMeta.homeHeadline.split(' ').slice(1).join(' ').toUpperCase()}</span>
-                      </motion.h1>
-            <div className="flex flex-col gap-6">
+              
+              <div className="relative z-10 flex flex-col gap-6">
                 {/* Header: Identity & Greeting */}
                 <div className="flex items-center justify-between">
                   <div className="space-y-1">
                     <p className="text-[10px] font-black uppercase tracking-[0.4em] text-foreground/30 font-kanit italic">{greeting}</p>
-                    <h1 className="text-3xl font-black italic uppercase font-kanit tracking-tighter text-foreground">
-                      {focusSportMeta.homeHeadline.split(' ')[0]} <br/>
-                      <span className="text-primary">{focusSportMeta.homeHeadline.split(' ').slice(1).join(' ')}</span>
-                    </h1>
+                    <AnimatePresence mode="wait">
+                      <motion.h1
+                        key={selectedSport}
+                        initial={{ opacity: 0, x: -10 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        exit={{ opacity: 0, x: 10 }}
+                        className="text-3xl font-black italic uppercase font-kanit tracking-tighter text-foreground leading-none"
+                      >
+                        {focusSportMeta.homeHeadline.split(' ')[0]} <br/>
+                        <span className="text-primary">{focusSportMeta.homeHeadline.split(' ').slice(1).join(' ')}</span>
+                      </motion.h1>
+                    </AnimatePresence>
                   </div>
                   <Link href="/profile/me">
                     <div className="w-16 h-16 rounded-2xl border-2 border-primary/20 p-1 bg-surface-elevated shadow-lg">
@@ -435,20 +424,21 @@ export default function HomePage() {
 
                   {/* Quick Stats */}
                   <div className="col-span-2 grid grid-cols-3 gap-2 mt-1">
-                     <div className="bg-foreground/[0.03] border border-foreground/[0.05] rounded-2xl p-3 flex flex-col items-center">
-                        <p className="text-[7px] font-black text-foreground/30 uppercase tracking-widest mb-1">Partidos</p>
-                        <p className="text-lg font-black text-foreground italic font-kanit">{statsSummary.totalMatches}</p>
-                     </div>
-                     <div className="bg-foreground/[0.03] border border-foreground/[0.05] rounded-2xl p-3 flex flex-col items-center">
-                        <p className="text-[7px] font-black text-foreground/30 uppercase tracking-widest mb-1">Victorias</p>
-                        <p className="text-lg font-black text-primary italic font-kanit">{statsSummary.wins}</p>
-                     </div>
-                     <div className="bg-foreground/[0.03] border border-foreground/[0.05] rounded-2xl p-3 flex flex-col items-center">
-                        <p className="text-[7px] font-black text-foreground/30 uppercase tracking-widest mb-1">Efectividad</p>
-                        <p className="text-lg font-black text-foreground italic font-kanit">{statsSummary.winRate}%</p>
-                     </div>
+                    <div className="bg-foreground/[0.03] border border-foreground/[0.05] rounded-2xl p-3 flex flex-col items-center">
+                      <p className="text-[7px] font-black text-foreground/30 uppercase tracking-widest mb-1">Partidos</p>
+                      <p className="text-lg font-black text-foreground italic font-kanit">{statsSummary.totalMatches}</p>
+                    </div>
+                    <div className="bg-foreground/[0.03] border border-foreground/[0.05] rounded-2xl p-3 flex flex-col items-center">
+                      <p className="text-[7px] font-black text-foreground/30 uppercase tracking-widest mb-1">Victorias</p>
+                      <p className="text-lg font-black text-primary italic font-kanit">{statsSummary.wins}</p>
+                    </div>
+                    <div className="bg-foreground/[0.03] border border-foreground/[0.05] rounded-2xl p-3 flex flex-col items-center">
+                      <p className="text-[7px] font-black text-foreground/30 uppercase tracking-widest mb-1">Eficiencia</p>
+                      <p className="text-lg font-black text-foreground italic font-kanit">{statsSummary.winRate}%</p>
+                    </div>
                   </div>
                 </div>
+              </div>
             </div>
 
             {nextMatch ? (
@@ -499,6 +489,7 @@ export default function HomePage() {
                 <p className="mt-2 text-sm font-bold text-foreground/65">No hay partidos de {focusSportMeta.label} programados.</p>
               </div>
             )}
+            
             <div className="grid grid-cols-3 gap-2">
               {[
                 { label: 'Radar', icon: Search, color: 'text-primary', href: `/search?sport=${selectedSport}` },
@@ -513,118 +504,112 @@ export default function HomePage() {
                 </Link>
               ))}
             </div>
-          </section>) : reduceAnimations ? (
-            <section className="relative overflow-hidden rounded-[2.5rem] shadow-xl bg-background border border-foreground/5 group/hero">
-              <div className="absolute inset-0 z-0 select-none">
-                <img
-                  src="https://images.unsplash.com/photo-1574629810360-7efbbe195018?auto=format&fit=crop&q=60&w=1200"
-                  alt=""
-                  fetchPriority="high"
-                  decoding="async"
-                  className="w-full h-full object-cover opacity-20"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent opacity-80" />
-              </div>
+          </section>
+        ) : reduceAnimations ? (
+          <section className="relative overflow-hidden rounded-[2.5rem] shadow-xl bg-background border border-foreground/5 group/hero">
+            <div className="absolute inset-0 z-0 select-none">
+              <img
+                src={focusSportMeta.heroImage}
+                alt=""
+                className="w-full h-full object-cover opacity-20 grayscale"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent opacity-80" />
+            </div>
 
-              <div className="relative z-10 flex flex-col p-6 gap-6">
-                <div className="space-y-4 max-w-2xl">
-                  <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-surface border border-foreground/10">
-                    <span className="inline-flex w-1.5 h-1.5 rounded-full bg-foreground/30" />
-                    <span className="text-[9px] font-black uppercase tracking-[0.3em] text-foreground/40 font-kanit">
-                      {greeting}
-                    </span>
+            <div className="relative z-10 flex flex-col p-8 gap-8">
+              <div className="space-y-4 max-w-2xl">
+                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-surface border border-foreground/10">
+                  <span className="inline-flex w-1.5 h-1.5 rounded-full bg-foreground/30" />
+                  <span className="text-[9px] font-black uppercase tracking-[0.3em] text-foreground/40 font-kanit">
+                    {greeting}
+                  </span>
+                </div>
+
+                <div className="flex flex-col">
+                  <h1
+                    className="font-black italic uppercase font-kanit tracking-tighter text-foreground leading-[0.85]"
+                    style={{ fontSize: 'clamp(2.5rem, 12vw, 5rem)' }}
+                  >
+                    {focusSportMeta.homeHeadline.split(' ')[0].toUpperCase()} <br /> 
+                    <span className="text-primary italic">{focusSportMeta.homeHeadline.split(' ').slice(1).join(' ').toUpperCase()}</span>
+                  </h1>
+                </div>
+
+                <div className="flex items-center gap-4 py-2">
+                  <div className="w-12 h-12 rounded-full border-2 overflow-hidden flex items-center justify-center bg-surface relative" style={{ borderColor: rankCalculation.info.color }}>
+                    {metadata?.avatar_url ? (
+                      <img src={metadata.avatar_url} alt="" className="w-full h-full object-cover" />
+                    ) : (
+                      <User2 className="w-6 h-6 text-foreground/40" />
+                    )}
                   </div>
-
-                  <div className="flex flex-col">
-                    <h1
-                      className="font-black italic uppercase font-kanit tracking-tighter text-foreground leading-[0.85]"
-                      style={{ fontSize: 'clamp(2.5rem, 12vw, 4rem)' }}
-                    >
-                      {focusSportMeta.homeHeadline.split(' ')[0].toUpperCase()} <br /> <span className="text-primary italic">{focusSportMeta.homeHeadline.split(' ').slice(1).join(' ').toUpperCase()}</span>
-                    </h1>
-                  </div>
-
-                  <div className="flex items-center gap-3 py-1">
-                    <div className="w-10 h-10 rounded-full border-2 overflow-hidden flex items-center justify-center bg-surface relative" style={{ borderColor: rankCalculation.info.color }}>
-                      {metadata?.avatar_url ? (
-                        <img src={metadata.avatar_url} alt="" className="w-full h-full object-cover" />
-                      ) : (
-                        <User2 className="w-5 h-5 text-foreground/40" />
-                      )}
-                      <div className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-background border border-foreground/20 flex items-center justify-center shadow-sm">
-                        <rankCalculation.rank.icon className="w-2.5 h-2.5" style={{ color: rankCalculation.rank.hex }} />
-                      </div>
-                    </div>
-                    <p className="text-foreground/70 text-base font-medium font-kanit">
-                      Hola, <span className="text-foreground font-black uppercase">{userName}</span>
-                    </p>
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-4 pt-2">
-                    {[
-                      { label: `${focusSportMeta.shortLabel}`, value: `${statsSummary.totalMatches} jug.`, color: 'text-accent', icon: Calendar },
-                      { label: 'Win Rate', value: `${statsSummary.winRate}%`, color: 'text-primary', icon: TrendingUp },
-                    ].map((item, idx) => (
-                      <div key={idx} className="space-y-0.5">
-                        <p className="text-[8px] font-black text-foreground/40 uppercase tracking-[0.2em] flex items-center gap-1">
-                          <item.icon className="w-2.5 h-2.5" /> {item.label}
-                        </p>
-                        <p className={cn('text-xl font-black italic tracking-tighter uppercase font-kanit', item.color)}>
-                          {item.value}
-                        </p>
-                      </div>
-                    ))}
+                  <div>
+                    <p className="text-foreground/40 text-[10px] font-black uppercase tracking-widest">Bienvenido de nuevo</p>
+                    <p className="text-foreground text-xl font-black font-kanit uppercase italic">{userName}</p>
                   </div>
                 </div>
 
-                <div className="w-full space-y-3">
-                  <div className="bg-surface/60 p-4 rounded-2xl border border-foreground/5 space-y-4">
-                    <div className="flex items-center gap-3">
-                      <RankBadgeInline rankName={rankCalculation.info.name} size="sm" />
-                      <div className="flex-1">
-                        <h3 className="text-lg font-black italic text-foreground leading-none font-kanit uppercase tracking-tighter">
-                          {rankCalculation.info.name}
-                        </h3>
-                      </div>
-                      <span className="text-xl font-black text-foreground italic font-kanit leading-none">{Math.round(rankCalculation.progress)}%</span>
+                <div className="grid grid-cols-2 gap-6 pt-4">
+                  {[
+                    { label: `${focusSportMeta.shortLabel} jugados`, value: statsSummary.totalMatches, color: 'text-accent', icon: Calendar },
+                    { label: 'Efectividad', value: `${statsSummary.winRate}%`, color: 'text-primary', icon: TrendingUp },
+                  ].map((item, idx) => (
+                    <div key={idx} className="space-y-1">
+                      <p className="text-[9px] font-black text-foreground/40 uppercase tracking-[0.2em] flex items-center gap-1.5">
+                        <item.icon className="w-3 h-3" /> {item.label}
+                      </p>
+                      <p className={cn('text-2xl font-black italic tracking-tighter uppercase font-kanit', item.color)}>
+                        {item.value}
+                      </p>
                     </div>
-
-                    <div className="space-y-1.5">
-                      <div className="h-1.5 bg-foreground/5 rounded-full overflow-hidden border border-foreground/10">
-                        <div
-                          className="h-full rounded-full"
-                          style={{
-                            width: `${rankCalculation.progress}%`,
-                            background: rankCalculation.info.color,
-                          }}
-                        />
-                      </div>
-                      <div className="flex justify-between text-[8px] font-medium text-foreground/40 tracking-wide uppercase">
-                        <span>Progreso</span>
-                        <span>Siguiente: {rankCalculation.nextRank.name}</span>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="grid grid-cols-3 gap-2">
-                    <Link href={`/create?sport=${selectedSport}`} className="col-span-3">
-                      <button className="w-full h-12 rounded-xl bg-primary text-black text-[10px] font-black uppercase tracking-widest italic flex items-center justify-center gap-2">
-                        <PlusCircle className="w-4 h-4" />
-                        ARMAR PARTIDO {selectedSport !== 'football' && `DE ${selectedSport.toUpperCase()}`}
-                      </button>
-                    </Link>
-
-                    <Link href={`/search?sport=${selectedSport}`} className="col-span-3">
-                      <button className="w-full h-12 rounded-xl bg-surface border border-foreground/5 text-foreground text-[10px] font-black uppercase tracking-widest italic flex items-center justify-center gap-2">
-                        <Search className="w-3.5 h-3.5 text-primary" />
-                        BUSCAR {selectedSport !== 'football' ? selectedSport.toUpperCase() : 'PARTIDO'}
-                      </button>
-                    </Link>
-                  </div>
+                  ))}
                 </div>
               </div>
-            </section>
-          ) : (
+
+              <div className="w-full max-w-md space-y-4">
+                <div className="bg-surface/60 p-6 rounded-[2rem] border border-foreground/5 space-y-4">
+                  <div className="flex items-center gap-4">
+                    <RankBadgeInline rankName={rankCalculation.info.name} size="sm" />
+                    <div className="flex-1">
+                      <h3 className="text-xl font-black italic text-foreground leading-none font-kanit uppercase tracking-tighter">
+                        {rankCalculation.info.name}
+                      </h3>
+                    </div>
+                    <span className="text-2xl font-black text-foreground italic font-kanit leading-none">{Math.round(rankCalculation.progress)}%</span>
+                  </div>
+
+                  <div className="space-y-2">
+                    <div className="h-2 bg-foreground/5 rounded-full overflow-hidden border border-foreground/10">
+                      <div
+                        className="h-full rounded-full"
+                        style={{
+                          width: `${rankCalculation.progress}%`,
+                          background: rankCalculation.info.color,
+                        }}
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-3">
+                  <Link href={`/create?sport=${selectedSport}`} className="col-span-2">
+                    <button className="w-full h-14 rounded-2xl bg-primary text-black text-[11px] font-black uppercase tracking-widest italic flex items-center justify-center gap-2">
+                      <PlusCircle className="w-5 h-5" />
+                      Armar partido
+                    </button>
+                  </Link>
+
+                  <Link href={`/search?sport=${selectedSport}`} className="col-span-2">
+                    <button className="w-full h-14 rounded-2xl bg-surface border border-foreground/5 text-foreground text-[11px] font-black uppercase tracking-widest italic flex items-center justify-center gap-2">
+                      <Search className="w-5 h-5 text-primary" />
+                      Buscar
+                    </button>
+                  </Link>
+                </div>
+              </div>
+            </div>
+          </section>
+        ) : (
           <motion.section
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
