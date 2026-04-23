@@ -607,53 +607,51 @@ export default function HomePage() {
             </section>
           ) : (
           <motion.section
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-            className="relative overflow-hidden rounded-[2.5rem] lg:rounded-[3rem] shadow-2xl group/hero"
-            style={{
-              background:
-                'linear-gradient(135deg, rgba(var(--foreground-rgb),0.03) 0%, rgba(var(--foreground-rgb),0.01) 100%)',
-              border: '1px solid rgba(var(--foreground-rgb),0.08)',
-            }}
+            initial={{ opacity: 0, scale: 0.98 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
+            className="relative overflow-hidden rounded-[3rem] lg:rounded-[4rem] shadow-[0_40px_100px_rgba(0,0,0,0.25)] group/hero border border-foreground/10 bg-background"
           >
             {/* Backdrop image & Effects */}
-            <div className="absolute inset-0 z-0 select-none bg-background">
+            <div className="absolute inset-0 z-0 select-none">
               <AnimatePresence mode="wait">
-                <motion.img
+                <motion.div
                   key={selectedSport}
-                  initial={{ opacity: 0, scale: 1.05, filter: 'blur(8px)' }}
-                  animate={{ opacity: 0.12, scale: 1, filter: 'blur(0px)' }}
-                  exit={{ opacity: 0, scale: 0.95, filter: 'blur(8px)' }}
-                  transition={{ duration: 0.4, type: "spring", bounce: 0.15 }}
-                  src={focusSportMeta.heroImage}
-                  alt=""
-                  fetchPriority="high"
-                  decoding="async"
-                  className="w-full h-full object-cover grayscale"
-                />
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.8 }}
+                  className="absolute inset-0"
+                >
+                  <img
+                    src={focusSportMeta.heroImage}
+                    alt=""
+                    className="w-full h-full object-cover grayscale opacity-[0.08] scale-110"
+                  />
+                  
+                  {/* Dynamic Mesh Gradients */}
+                  <div 
+                    className="absolute inset-0 opacity-40 mix-blend-screen animate-pulse-slow"
+                    style={{
+                      background: `
+                        radial-gradient(circle at 0% 0%, ${sportTheme.accent}33 0%, transparent 50%),
+                        radial-gradient(circle at 100% 100%, ${sportTheme.accent}22 0%, transparent 50%),
+                        radial-gradient(circle at 50% 0%, ${sportTheme.accent}11 0%, transparent 40%)
+                      `
+                    }}
+                  />
+                </motion.div>
               </AnimatePresence>
 
-              {/* Specialized Court Overlays */}
-              <div className="absolute inset-0 pointer-events-none">
-                <AnimatePresence mode="wait">
-                  {selectedSport === 'football' && (
-                    <motion.div key="football" initial={{ opacity: 0, scale: 1.1 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.9 }} transition={{ duration: 0.4, type: "spring" }} className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(44,252,125,0.05)_0%,transparent_100%)]" />
-                  )}
-                  {selectedSport === 'padel' && (
-                    <motion.div key="padel" initial={{ opacity: 0, scale: 1.1 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.9 }} transition={{ duration: 0.4, type: "spring" }} className="absolute inset-0 bg-[linear-gradient(rgba(34,211,238,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(34,211,238,0.03)_1px,transparent_1px)] bg-[size:40px_40px]" />
-                  )}
-                  {selectedSport === 'basket' && (
-                    <motion.div key="basket" initial={{ opacity: 0, scale: 1.1 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.9 }} transition={{ duration: 0.4, type: "spring" }} className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(249,115,22,0.1)_0%,transparent_50%)]" />
-                  )}
-                </AnimatePresence>
+              {/* Court Lines Overlay (PC specific high fidelity) */}
+              <div className="absolute inset-0 opacity-[0.03] pointer-events-none mix-blend-overlay scale-125">
+                 {/* This creates a subtle grid/court feel without being distracting */}
+                 <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.05)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.05)_1px,transparent_1px)] bg-[size:100px_100px]" />
               </div>
 
-
-              {/* Overlay gradients for depth */}
-              <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent opacity-90" />
-              <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-transparent to-accent/5" />
-              <div className="absolute inset-0 backdrop-blur-[2px] opacity-40 mix-blend-overlay" />
+              {/* Final depth layers */}
+              <div className="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent" />
+              <div className="absolute inset-0 bg-gradient-to-r from-background/80 via-transparent to-transparent" />
             </div>
 
             {/* Content Wrapper */}
@@ -676,58 +674,83 @@ export default function HomePage() {
                 </motion.div>
 
                 {/* Title Section based on Branding */}
-                <div className="flex flex-col">
+                <div className="flex flex-col relative">
                   <AnimatePresence mode="wait">
+                    <motion.div
+                      key={selectedSport + "-glow"}
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 0.3 }}
+                      exit={{ opacity: 0 }}
+                      className="absolute -inset-10 blur-[100px] pointer-events-none"
+                      style={{ backgroundColor: sportTheme.accent }}
+                    />
                     <motion.h1
                       key={selectedSport}
-                      initial={{ opacity: 0, x: -30, scale: 0.95 }}
-                      animate={{ opacity: 1, x: 0, scale: 1 }}
-                      exit={{ opacity: 0, x: 30, scale: 1.05 }}
-                      transition={{ duration: 0.35, type: "spring", bounce: 0.4 }}
-                      className="font-black italic uppercase font-kanit tracking-tighter text-foreground"
-                      style={{ fontSize: 'clamp(2.5rem, 8vw, 6rem)', lineHeight: '0.85' }}
+                      initial={{ opacity: 0, x: -50, filter: 'blur(10px)' }}
+                      animate={{ opacity: 1, x: 0, filter: 'blur(0px)' }}
+                      exit={{ opacity: 0, x: 50, filter: 'blur(10px)' }}
+                      transition={{ duration: 0.6, type: "spring", bounce: 0.2 }}
+                      className="font-black italic uppercase font-kanit tracking-tighter text-foreground relative z-10"
+                      style={{ fontSize: 'clamp(3rem, 9vw, 7rem)', lineHeight: '0.8' }}
                     >
-                      {focusSportMeta.homeHeadline.split(' ')[0].toUpperCase()} <br /> <span className="text-primary italic">{focusSportMeta.homeHeadline.split(' ').slice(1).join(' ').toUpperCase()}</span>
+                      {focusSportMeta.homeHeadline.split(' ')[0].toUpperCase()} <br /> 
+                      <span className="text-primary italic drop-shadow-[0_0_30px_rgba(var(--primary-rgb),0.3)]">
+                        {focusSportMeta.homeHeadline.split(' ').slice(1).join(' ').toUpperCase()}
+                      </span>
                     </motion.h1>
                   </AnimatePresence>
                 </div>
 
                 <motion.div
-                  initial={{ opacity: 0, y: 15 }}
+                  initial={{ opacity: 0, y: 30 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.5, type: "spring", stiffness: 200 }}
-                  className="flex items-stretch gap-0 mt-4 rounded-2xl w-fit relative group cursor-pointer"
+                  transition={{ delay: 0.5, type: "spring", stiffness: 150 }}
+                  className="flex items-stretch gap-0 mt-8 rounded-[2.5rem] w-fit relative group cursor-pointer"
                 >
-                  <div className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-10 transition-opacity duration-500 blur-xl" style={{ backgroundColor: rankCalculation.info.color }} />
-
                   {/* VIP ID Side Bar */}
-                  <div className="w-2 rounded-l-[1rem] shadow-[0_0_10px_rgba(0,0,0,0.5)] z-10" style={{ backgroundColor: rankCalculation.info.color, boxShadow: `0 0 15px ${rankCalculation.info.color}80` }} />
+                  <div className="w-3 rounded-l-[2rem] shadow-[0_0_30px_rgba(0,0,0,0.5)] z-20" style={{ backgroundColor: rankCalculation.info.color, boxShadow: `0 0 40px ${rankCalculation.info.color}60` }} />
 
                   {/* VIP ID Main Body */}
-                  <div className="glass-premium border-y border-r border-foreground/15 rounded-r-[1rem] py-2 px-4 shadow-xl flex items-center gap-4 relative z-10 overflow-hidden">
-                    <div className="absolute inset-0 bg-gradient-to-r from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                  <div className="glass-premium border-y border-r border-white/10 rounded-r-[2rem] py-4 px-8 shadow-2xl flex items-center gap-8 relative z-10 overflow-hidden min-w-[380px]">
+                    <div className="absolute inset-0 bg-gradient-to-r from-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
+                    <div className="absolute -right-20 -top-20 w-40 h-40 bg-white/5 rounded-full blur-3xl group-hover:bg-white/10 transition-colors" />
 
                     {/* Avatar Block */}
                     <div className="relative">
-                      <div className="w-12 h-12 rounded-full overflow-hidden flex items-center justify-center bg-surface border border-foreground/10 shadow-inner">
-                        {metadata?.avatar_url ? (
-                          <img src={metadata.avatar_url} alt="" className="w-full h-full object-cover scale-105" />
-                        ) : (
-                          <User2 className="w-6 h-6 text-foreground/40" />
-                        )}
+                      <div className="w-20 h-20 rounded-full overflow-hidden flex items-center justify-center bg-surface-elevated border-2 border-white/10 shadow-2xl p-1">
+                        <div className="w-full h-full rounded-full overflow-hidden">
+                          {metadata?.avatar_url ? (
+                            <img src={metadata.avatar_url} alt="" className="w-full h-full object-cover scale-110 group-hover:scale-125 transition-transform duration-700" />
+                          ) : (
+                            <User2 className="w-10 h-10 text-foreground/20" />
+                          )}
+                        </div>
                       </div>
-                      <div className="absolute -bottom-2 -right-2 w-6 h-6 rounded-full bg-surface border border-foreground/10 flex items-center justify-center shadow-lg rotate-12 group-hover:rotate-0 transition-transform" style={{ borderColor: `${rankCalculation.info.color}50` }}>
-                        <rankCalculation.rank.icon className="w-3.5 h-3.5 drop-shadow-md" style={{ color: rankCalculation.info.color }} />
-                      </div>
+                      <motion.div 
+                        animate={{ rotate: [0, 10, -10, 0] }}
+                        transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
+                        className="absolute -bottom-3 -right-3 w-10 h-10 rounded-full bg-surface border-2 border-white/10 flex items-center justify-center shadow-2xl" 
+                        style={{ borderColor: `${rankCalculation.info.color}80` }}
+                      >
+                        <rankCalculation.rank.icon className="w-5 h-5" style={{ color: rankCalculation.info.color }} />
+                      </motion.div>
                     </div>
 
                     {/* Data Block */}
                     <div className="flex flex-col py-1">
-                      <div className="flex items-center gap-2">
-                        <span className="text-[9px] font-black tracking-[0.2em] uppercase text-foreground/40">JUGADOR REGISTRADO</span>
-                        <Shield className="w-3 h-3 opacity-30 text-primary" />
+                      <div className="flex items-center gap-3">
+                        <span className="text-[10px] font-black tracking-[0.4em] uppercase text-foreground/30 font-kanit">IDENTIDAD PELOTIFY</span>
+                        <div className="h-[1px] w-8 bg-foreground/10" />
+                        <Shield className="w-3.5 h-3.5 opacity-40 text-primary" />
                       </div>
-                      <h3 className="text-xl font-black italic uppercase leading-none font-kanit tracking-tighter text-foreground mt-0.5">{userName}</h3>
+                      <h3 className="text-3xl font-black italic uppercase leading-none font-kanit tracking-tighter text-foreground mt-2 group-hover:text-primary transition-colors duration-500">
+                        {userName}
+                      </h3>
+                      <div className="mt-2 flex items-center gap-3">
+                         <span className="text-[9px] font-bold text-foreground/40 tracking-widest uppercase">{rankCalculation.info.name}</span>
+                         <div className="w-1 h-1 rounded-full bg-foreground/20" />
+                         <span className="text-[9px] font-bold text-foreground/40 tracking-widest uppercase">LVL {Math.floor(rankCalculation.elo / 100)}</span>
+                      </div>
                     </div>
                   </div>
                 </motion.div>
@@ -852,44 +875,52 @@ export default function HomePage() {
                   </div>
                 </div>
 
-                <div className="grid grid-cols-3 gap-3">
+                <div className="grid grid-cols-3 gap-4">
                   <Link href={`/create?sport=${selectedSport}`} className="col-span-3">
                     <motion.button
-                      whileHover={{ scale: 1.015, y: -4 }}
+                      whileHover={{ scale: 1.02, y: -5 }}
                       whileTap={{ scale: 0.98 }}
-                      className="w-full h-16 rounded-[2rem] bg-gradient-to-r from-primary to-primary-dark text-background text-[11px] font-black uppercase tracking-widest italic shadow-[0_20px_40px_rgba(44,252,125,0.25)] flex items-center justify-center gap-3 relative overflow-hidden group border border-foreground/20 leading-none"
+                      className="w-full h-20 rounded-[2.5rem] bg-foreground text-background text-[12px] font-black uppercase tracking-[0.3em] italic shadow-[0_30px_60px_rgba(0,0,0,0.3)] flex items-center justify-center gap-4 relative overflow-hidden group transition-all duration-500"
                     >
-                      <div className="absolute inset-x-0 top-0 h-1/2 bg-foreground/10 group-hover:h-full transition-all duration-700" />
-                      <div className="absolute inset-0 bg-gradient-to-b from-white/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-                      <PlusCircle className="w-6 h-6 relative z-10 group-hover:rotate-180 transition-transform duration-700" />
-                      <span className="relative z-10 drop-shadow-sm uppercase">ARMAR PARTIDO {selectedSport !== 'football' && `DE ${selectedSport}`}</span>
+                      {/* Dynamic Background Glow on Hover */}
+                      <div 
+                        className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700" 
+                        style={{ 
+                          background: `radial-gradient(circle at center, ${sportTheme.accent}44 0%, transparent 70%)` 
+                        }} 
+                      />
+                      
+                      <div className="absolute inset-0 bg-gradient-to-r from-white/10 via-transparent to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />
+                      
+                      <PlusCircle className="w-7 h-7 relative z-10 group-hover:rotate-90 transition-transform duration-500" />
+                      <span className="relative z-10 drop-shadow-md">ARMAR PARTIDO {selectedSport !== 'football' && `DE ${selectedSport.toUpperCase()}`}</span>
+                      
+                      <div className="absolute right-8 opacity-20 group-hover:opacity-40 transition-opacity">
+                         <ChevronRight className="w-6 h-6" />
+                      </div>
                     </motion.button>
                   </Link>
 
                   <Link href={`/search?sport=${selectedSport}`} className="col-span-2">
                     <motion.button
-                      whileHover={{ scale: 1.015, y: -4 }}
+                      whileHover={{ scale: 1.02, y: -5 }}
                       whileTap={{ scale: 0.98 }}
-                      className="w-full h-16 rounded-[2rem] glass-premium border-foreground/15 text-foreground text-[11px] font-black uppercase tracking-widest italic flex items-center justify-center gap-3 relative overflow-hidden group shadow-xl transition-all duration-500 leading-none"
+                      className="w-full h-20 rounded-[2.5rem] glass-premium border-white/10 text-foreground text-[11px] font-black uppercase tracking-[0.25em] italic flex items-center justify-center gap-4 relative overflow-hidden group shadow-2xl transition-all duration-500"
                     >
                       <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                      <Search className="w-5 h-5 relative z-10 text-primary group-hover:scale-110 transition-transform duration-500" />
-                      <span className="relative z-10 group-hover:text-primary transition-colors uppercase">BUSCAR {selectedSport !== 'football' ? selectedSport : 'PARTIDO'}</span>
-
-                      <div className="absolute top-2.5 right-4 flex items-center gap-1.5 z-20">
-                        <div className="w-1.5 h-1.5 bg-primary/40 rounded-full animate-pulse" />
-                      </div>
+                      <Search className="w-6 h-6 relative z-10 text-primary group-hover:scale-110 transition-transform duration-500" />
+                      <span className="relative z-10 group-hover:text-primary transition-colors">BUSCAR {selectedSport !== 'football' ? selectedSport.toUpperCase() : 'PARTIDO'}</span>
                     </motion.button>
                   </Link>
 
                   <Link href="/highlights" className="col-span-1">
                     <motion.button
-                      whileHover={{ scale: 1.02, y: -4 }}
+                      whileHover={{ scale: 1.02, y: -5 }}
                       whileTap={{ scale: 0.98 }}
-                      className="w-full h-16 rounded-[2rem] glass-premium border-foreground/15 text-orange-500/50 hover:text-orange-500 font-black uppercase text-[10px] tracking-[0.2em] flex items-center justify-center transition-all duration-500 shadow-xl relative overflow-hidden group"
+                      className="w-full h-20 rounded-[2.5rem] glass-premium border-white/10 text-orange-500/50 hover:text-orange-500 flex items-center justify-center transition-all duration-500 shadow-2xl relative overflow-hidden group"
                     >
-                      <div className="absolute inset-0 bg-gradient-to-br from-orange-500/5 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                      <Flame className="w-6 h-6 relative z-10 transition-transform group-hover:scale-125 group-hover:rotate-12 duration-500" />
+                      <div className="absolute inset-0 bg-gradient-to-br from-orange-500/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                      <Flame className="w-7 h-7 relative z-10 transition-transform group-hover:scale-125 group-hover:rotate-12 duration-500" />
                     </motion.button>
                   </Link>
                 </div>
