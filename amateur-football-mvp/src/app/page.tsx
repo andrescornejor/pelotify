@@ -607,10 +607,10 @@ export default function HomePage() {
             </section>
           ) : (
           <motion.section
-            initial={{ opacity: 0, scale: 0.98 }}
+            initial={reduceAnimations ? { opacity: 1 } : { opacity: 0, scale: 0.98 }}
             animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
-            className="relative overflow-hidden rounded-[3rem] lg:rounded-[4rem] shadow-[0_40px_100px_rgba(0,0,0,0.25)] group/hero border border-foreground/10 bg-background"
+            transition={{ duration: 0.8, ease: "easeOut" }}
+            className="relative overflow-hidden rounded-[3rem] lg:rounded-[4rem] shadow-[0_40px_100px_rgba(0,0,0,0.25)] group/hero border border-foreground/10 bg-background transform-gpu"
           >
             {/* Backdrop image & Effects */}
             <div className="absolute inset-0 z-0 select-none">
@@ -620,37 +620,39 @@ export default function HomePage() {
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0 }}
-                  transition={{ duration: 0.8 }}
+                  transition={{ duration: reduceAnimations ? 0.3 : 0.6 }}
                   className="absolute inset-0"
                 >
                   <img
                     src={focusSportMeta.heroImage}
                     alt=""
-                    className="w-full h-full object-cover grayscale opacity-[0.08] scale-110"
+                    className="w-full h-full object-cover grayscale opacity-[0.08]"
+                    loading="eager"
                   />
                   
-                  {/* Dynamic Mesh Gradients */}
+                  {/* Dynamic Mesh Gradients - Simplified for performance */}
                   <div 
-                    className="absolute inset-0 opacity-40 mix-blend-screen animate-pulse-slow"
+                    className={cn(
+                      "absolute inset-0 opacity-40 mix-blend-screen",
+                      !reduceAnimations && "animate-pulse-slow"
+                    )}
                     style={{
-                      background: `
-                        radial-gradient(circle at 0% 0%, ${sportTheme.accent}33 0%, transparent 50%),
-                        radial-gradient(circle at 100% 100%, ${sportTheme.accent}22 0%, transparent 50%),
-                        radial-gradient(circle at 50% 0%, ${sportTheme.accent}11 0%, transparent 40%)
-                      `
+                      background: reduceAnimations 
+                        ? `radial-gradient(circle at 50% 50%, ${sportTheme.accent}22 0%, transparent 70%)`
+                        : `radial-gradient(circle at 0% 0%, ${sportTheme.accent}33 0%, transparent 50%),
+                           radial-gradient(circle at 100% 100%, ${sportTheme.accent}22 0%, transparent 50%)`
                     }}
                   />
                 </motion.div>
               </AnimatePresence>
 
-              {/* Court Lines Overlay (PC specific high fidelity) */}
-              <div className="absolute inset-0 opacity-[0.03] pointer-events-none mix-blend-overlay scale-125">
-                 {/* This creates a subtle grid/court feel without being distracting */}
+              {/* Court Lines Overlay - Static for better performance */}
+              <div className="absolute inset-0 opacity-[0.02] pointer-events-none mix-blend-overlay">
                  <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.05)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.05)_1px,transparent_1px)] bg-[size:100px_100px]" />
               </div>
 
               {/* Final depth layers */}
-              <div className="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent" />
+              <div className="absolute inset-0 bg-gradient-to-t from-background via-background/60 to-transparent" />
               <div className="absolute inset-0 bg-gradient-to-r from-background/80 via-transparent to-transparent" />
             </div>
 
@@ -659,13 +661,13 @@ export default function HomePage() {
               {/* Left: Text & Branding */}
               <div className="flex-1 space-y-6 lg:space-y-8 max-w-2xl">
                 <motion.div
-                  initial={{ x: -20, opacity: 0 }}
+                  initial={{ x: -10, opacity: 0 }}
                   animate={{ x: 0, opacity: 1 }}
-                  transition={{ delay: 0.2, type: 'spring', stiffness: 200 }}
+                  transition={{ delay: 0.1 }}
                   className="inline-flex items-center gap-3 px-4 py-1.5 rounded-full bg-foreground/[0.04] border border-foreground/15"
                 >
                   <div className="relative flex h-2 w-2">
-                    <span className="absolute inline-flex h-full w-full rounded-full bg-foreground/20 opacity-75 animate-ping" />
+                    {!reduceAnimations && <span className="absolute inline-flex h-full w-full rounded-full bg-foreground/20 opacity-75 animate-ping" />}
                     <span className="relative inline-flex rounded-full h-2 w-2 bg-foreground/30" />
                   </div>
                   <span className="text-[10px] font-black uppercase tracking-[0.4em] text-foreground/40 font-kanit">
@@ -676,25 +678,30 @@ export default function HomePage() {
                 {/* Title Section based on Branding */}
                 <div className="flex flex-col relative">
                   <AnimatePresence mode="wait">
-                    <motion.div
-                      key={selectedSport + "-glow"}
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 0.3 }}
-                      exit={{ opacity: 0 }}
-                      className="absolute -inset-10 blur-[100px] pointer-events-none"
-                      style={{ backgroundColor: sportTheme.accent }}
-                    />
+                    {!reduceAnimations && (
+                      <motion.div
+                        key={selectedSport + "-glow"}
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 0.25 }}
+                        exit={{ opacity: 0 }}
+                        className="absolute -inset-10 blur-[60px] pointer-events-none"
+                        style={{ backgroundColor: sportTheme.accent }}
+                      />
+                    )}
                     <motion.h1
                       key={selectedSport}
-                      initial={{ opacity: 0, x: -50, filter: 'blur(10px)' }}
-                      animate={{ opacity: 1, x: 0, filter: 'blur(0px)' }}
-                      exit={{ opacity: 0, x: 50, filter: 'blur(10px)' }}
-                      transition={{ duration: 0.6, type: "spring", bounce: 0.2 }}
+                      initial={reduceAnimations ? { opacity: 0, y: 10 } : { opacity: 0, x: -30, filter: 'blur(8px)' }}
+                      animate={{ opacity: 1, x: 0, y: 0, filter: 'blur(0px)' }}
+                      exit={reduceAnimations ? { opacity: 0, y: -10 } : { opacity: 0, x: 30, filter: 'blur(8px)' }}
+                      transition={{ duration: 0.5, ease: "easeOut" }}
                       className="font-black italic uppercase font-kanit tracking-tighter text-foreground relative z-10"
                       style={{ fontSize: 'clamp(3rem, 9vw, 7rem)', lineHeight: '0.8' }}
                     >
                       {focusSportMeta.homeHeadline.split(' ')[0].toUpperCase()} <br /> 
-                      <span className="text-primary italic drop-shadow-[0_0_30px_rgba(var(--primary-rgb),0.3)]">
+                      <span className={cn(
+                        "text-primary italic",
+                        !reduceAnimations && "drop-shadow-[0_0_20px_rgba(var(--primary-rgb),0.3)]"
+                      )}>
                         {focusSportMeta.homeHeadline.split(' ').slice(1).join(' ').toUpperCase()}
                       </span>
                     </motion.h1>
@@ -708,26 +715,26 @@ export default function HomePage() {
                   className="flex items-stretch gap-0 mt-8 rounded-[2.5rem] w-fit relative group cursor-pointer"
                 >
                   {/* VIP ID Side Bar */}
-                  <div className="w-3 rounded-l-[2rem] shadow-[0_0_30px_rgba(0,0,0,0.5)] z-20" style={{ backgroundColor: rankCalculation.info.color, boxShadow: `0 0 40px ${rankCalculation.info.color}60` }} />
+                  <div className="w-3 rounded-l-[2rem] shadow-[0_0_30px_rgba(0,0,0,0.5)] z-20" style={{ backgroundColor: rankCalculation.info.color, boxShadow: !reduceAnimations ? `0 0 40px ${rankCalculation.info.color}60` : 'none' }} />
 
                   {/* VIP ID Main Body */}
-                  <div className="glass-premium border-y border-r border-white/10 rounded-r-[2rem] py-4 px-8 shadow-2xl flex items-center gap-8 relative z-10 overflow-hidden min-w-[380px]">
+                  <div className="glass-premium border-y border-r border-white/10 rounded-r-[2rem] py-4 px-8 shadow-2xl flex items-center gap-8 relative z-10 overflow-hidden min-w-[380px] transform-gpu">
                     <div className="absolute inset-0 bg-gradient-to-r from-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
-                    <div className="absolute -right-20 -top-20 w-40 h-40 bg-white/5 rounded-full blur-3xl group-hover:bg-white/10 transition-colors" />
+                    {!reduceAnimations && <div className="absolute -right-20 -top-20 w-40 h-40 bg-white/5 rounded-full blur-3xl group-hover:bg-white/10 transition-colors" />}
 
                     {/* Avatar Block */}
                     <div className="relative">
                       <div className="w-20 h-20 rounded-full overflow-hidden flex items-center justify-center bg-surface-elevated border-2 border-white/10 shadow-2xl p-1">
                         <div className="w-full h-full rounded-full overflow-hidden">
                           {metadata?.avatar_url ? (
-                            <img src={metadata.avatar_url} alt="" className="w-full h-full object-cover scale-110 group-hover:scale-125 transition-transform duration-700" />
+                            <img src={metadata.avatar_url} alt="" className={cn("w-full h-full object-cover", !reduceAnimations && "scale-110 group-hover:scale-125 transition-transform duration-700")} />
                           ) : (
                             <User2 className="w-10 h-10 text-foreground/20" />
                           )}
                         </div>
                       </div>
                       <motion.div 
-                        animate={{ rotate: [0, 10, -10, 0] }}
+                        animate={!reduceAnimations ? { rotate: [0, 10, -10, 0] } : {}}
                         transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
                         className="absolute -bottom-3 -right-3 w-10 h-10 rounded-full bg-surface border-2 border-white/10 flex items-center justify-center shadow-2xl" 
                         style={{ borderColor: `${rankCalculation.info.color}80` }}
