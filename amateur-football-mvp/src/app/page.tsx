@@ -392,7 +392,7 @@ export default function HomePage() {
                   </Link>
                 </div>
 
-                <SportSelector selectedSport={selectedSport} onSelect={setSelectedSport} />
+                <SportSelector selectedSport={selectedSport} onSelect={setSelectedSport} variant="compact" />
 
                 <div className="grid grid-cols-3 gap-2">
                   <div className="rounded-[1.2rem] border border-foreground/10 bg-foreground/[0.03] px-3 py-3">
